@@ -76,3 +76,12 @@ Thanks again for your support, it is much appreciated! :pray:
 
 LGPL-3.0. See `LICENSE` for more details.<br />
 Icon credit to [David Vignoni](http://www.icon-king.com/).
+
+## How to create release from dev
+If you are not familiar with pull request, you can create a new module like this :
+
+Increment the build.release in the build.properties file.
+If you want you can change the build.path (default C:\neard-build).
+Open a command prompt in your module folder and call the Ant target release : ant release.
+Upload your release on a file hosting system like Sendspace.
+Create an issue on Neard repository to integrate your release.
