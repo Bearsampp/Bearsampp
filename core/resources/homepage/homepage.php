@@ -1,4 +1,4 @@
-<?php include '../core/bootstrap.php'; ?>
+<?php include __DIR__ . '\..\..\bootstrap.php'; ?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -42,16 +42,16 @@
         </ul>
       </div>
     </nav>
-    
+
     <div id="page-wrapper">
         <?php include 'tpls/hp.latestversion.php'; ?>
         <?php include 'tpls/hp.' . $neardHomepage->getPage() . '.php'; ?>
     </div>
-    
+
     <script type="text/javascript">
     $('.navbar-nav a.addtooltip[title]').tooltip({ html: true, placement: 'bottom' });
     $('a.addtooltip[title]').tooltip({ html: true });
     </script>
-    
+
   </body>
 </html>

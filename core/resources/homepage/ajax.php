@@ -1,6 +1,6 @@
 <?php
 
-include_once '../../bootstrap.php';
+include_once __DIR__ . '\..\..\bootstrap.php';
 
 $procs = array(
     'summary',

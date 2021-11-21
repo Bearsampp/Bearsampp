@@ -282,6 +282,8 @@ class BinApache extends Module
             '/^#?PHPIniDir\s.*/' => ($neardBins->getPhp()->isEnable() ? '' : '#') . 'PHPIniDir "' . $neardBins->getPhp()->getSymlinkPath() . '"',
             '/^#?LoadFile\s.*php.ts\.dll.*/' => ($neardBins->getPhp()->isEnable() ? '' : '#') . (!file_exists($neardBins->getPhp()->getSymlinkPath() . '/' . $tsDll) ? '#' : '') . 'LoadFile "' . $neardBins->getPhp()->getSymlinkPath() . '/' . $tsDll . '"',
             '/^#?LoadModule\sphp.*/' => ($neardBins->getPhp()->isEnable() ? '' : '#') . 'LoadModule ' . $apachePhpModuleName . ' "' . $neardBins->getPhp()->getSymlinkPath() . '/' . $apachePhpModuleDll . '"',
+            '/^#?LoadModule\sphp_*/' => ($neardBins->getPhp()->isEnable() ? '' : '#') . 'LoadModule ' . $apachePhpModuleName . ' "' . $neardBins->getPhp()->getSymlinkPath() . '/' . $apachePhpModuleDll . '"',
+
 
             // Port
             '/^Listen\s(\d+)/' => 'Listen ' . $this->port,
