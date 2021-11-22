@@ -9,10 +9,10 @@ class Autoloader
     public function load($class)
     {
         global $neardBs;
-        
+
         $class = strtolower($class);
         $rootPath = $neardBs->getCorePath();
-        
+
         $file = $rootPath . '/classes/class.' . $class . '.php';
         if (Util::startWith($class, 'bin')) {
             $class = $class != 'bins' ? substr_replace($class, '.', 3, 0) : $class;
@@ -33,21 +33,20 @@ class Autoloader
             $class = $class != 'tpls' ? substr_replace($class, '.', 3, 0) : $class;
             $file = $rootPath . '/classes/tpls/class.' . $class . '.php';
         }
-        
+
         if (!file_exists($file)) {
             return false;
         }
-        
+
         require_once $file;
         return true;
     }
-    
+
     public function register()
     {
-        spl_autoload_register(null, false);
         return spl_autoload_register(array($this, 'load'));
     }
-    
+
     public function unregister()
     {
         return spl_autoload_unregister(array($this, 'load'));
