@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.3 ( 23 Nov 21)
+* Fixed homepage spinner issue.
+* Apache 2.4.51 release
+* php 8.0.13 release
+* git 2.34.0-r14 release
+
 ## 1.8.2 (2020/12/13)
 
 * Fix Apache PHP 8 module
