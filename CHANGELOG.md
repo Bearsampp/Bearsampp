@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.8.3 ( 23 Nov 21)
+## 1.8.3-rc1 ( 23 Nov 21)
 * Fixed homepage spinner issue.
 * Apache 2.4.51 release
 * php 8.0.13 release
