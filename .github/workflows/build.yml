@@ -52,7 +52,7 @@ jobs:
             bin/releases/*
           name: ${{ env.GITHUB_TAGNAME }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS }}
       -
         name: Dump context
         if: always()
