@@ -15,6 +15,7 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v2
-      -
-        name: Run Labeler
-        uses: crazy-max/ghaction-github-labeler@v3
+      
+      - name: GitHub Labeler
+        uses: crazy-max/ghaction-github-labeler@v3.1.1
+
