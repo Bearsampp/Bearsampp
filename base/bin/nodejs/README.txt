@@ -1,2 +1,2 @@
 Place Node.js module releases here.
-Documentation and downloads : https://neard.io/modules/nodejs
+Documentation and downloads : https://bearsampp.github.io/modules/nodejs

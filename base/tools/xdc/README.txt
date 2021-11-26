@@ -1,2 +1,2 @@
 Place XDebugClient module releases here.
-Documentation and downloads : https://neard.io/modules/xdc
+Documentation and downloads : https://bearsampp.github.io/modules/xdc

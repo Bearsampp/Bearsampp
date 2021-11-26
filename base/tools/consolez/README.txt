@@ -1,2 +1,2 @@
 Place ConsoleZ module releases here.
-Documentation and downloads : https://neard.io/modules/consolez
+Documentation and downloads : https://bearsampp.github.io/modules/consolez

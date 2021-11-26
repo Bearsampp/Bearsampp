@@ -1,2 +1,2 @@
 Place Adminer module releases here.
-Documentation and downloads : https://neard.io/modules/adminer
+Documentation and downloads : https://bearsampp.github.io/modules/adminer

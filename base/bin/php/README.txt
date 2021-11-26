@@ -1,2 +1,2 @@
 Place PHP module releases here.
-Documentation and downloads : https://neard.io/modules/php
+Documentation and downloads : https://bearsampp.github.io/modules/php
