@@ -1,4 +1,4 @@
-<p align="center"><a href="https://github.com/bearsampp" target="_blank"><img width="100" src="https://bearsampp.github.io/img/logo.png"></a></p>
+<p align="center"><a href="https://github.com/bearsampp" target="_blank"><img width="100" src="https://bearsampp.github.io/img/panda-logo.png"></a></p>
 
 <p align="center">
   <a href="https://github.com/bearsampp/release/latest"><img src="https://img.shields.io/github/release/bearsampp/bearsampp.svg?style=flat-square" alt="GitHub release"></a>
