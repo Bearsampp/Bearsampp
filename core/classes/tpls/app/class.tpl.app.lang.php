@@ -3,37 +3,37 @@
 class TplAppLang
 {
     const MENU = 'lang';
-    
+
     public static function process()
     {
-        global $neardLang;
-        
-        return TplApp::getMenu($neardLang->getValue(Lang::LANG), self::MENU, get_called_class());
+        global $bearsamppLang;
+
+        return TplApp::getMenu($bearsamppLang->getValue(Lang::LANG), self::MENU, get_called_class());
     }
-    
+
     public static function getMenuLang()
     {
-        global $neardLang;
+        global $bearsamppLang;
         $items = '';
         $actions = '';
-    
-        foreach ($neardLang->getList() as $lang) {
+
+        foreach ($bearsamppLang->getList() as $lang) {
             $tplSwitchLang = TplApp::getActionMulti(
                 Action::SWITCH_LANG, array($lang),
-                array(ucfirst($lang), $lang == $neardLang->getCurrent() ? TplAestan::GLYPH_CHECK : ''),
+                array(ucfirst($lang), $lang == $bearsamppLang->getCurrent() ? TplAestan::GLYPH_CHECK : ''),
                 false, get_called_class()
             );
-            
+
             // Item
             $items .= $tplSwitchLang[TplApp::SECTION_CALL] . PHP_EOL;
-            
+
             // Action
             $actions .= PHP_EOL . $tplSwitchLang[TplApp::SECTION_CONTENT] .  PHP_EOL;
         }
-    
+
         return $items . $actions;
     }
-    
+
     public static function getActionSwitchLang($lang)
     {
         return TplApp::getActionRun(Action::SWITCH_LANG, array($lang)) . PHP_EOL .

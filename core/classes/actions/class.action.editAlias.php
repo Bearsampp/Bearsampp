@@ -3,154 +3,154 @@
 class ActionEditAlias
 {
     private $initName;
-    
+
     private $wbWindow;
-    
+
     private $wbLabelName;
     private $wbInputName;
-    
+
     private $wbLabelDest;
     private $wbInputDest;
     private $wbBtnDest;
-    
+
     private $wbLabelExp;
-    
+
     private $wbProgressBar;
     private $wbBtnSave;
     private $wbBtnDelete;
     private $wbBtnCancel;
-    
+
     const GAUGE_SAVE = 2;
     const GAUGE_DELETE = 2;
-    
+
     public function __construct($args)
     {
-        global $neardBs, $neardLang, $neardBins, $neardWinbinder;
-        
+        global $bearsamppBs, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
+
         if (isset($args[0]) && !empty($args[0])) {
-            $filePath = $neardBs->getAliasPath() . '/' . $args[0] . '.conf';
+            $filePath = $bearsamppBs->getAliasPath() . '/' . $args[0] . '.conf';
             $fileContent = file_get_contents($filePath);
             if (preg_match('/^Alias \/' . $args[0] . ' "(.+)"/', $fileContent, $match)) {
                 $this->initName = $args[0];
                 $initDest = Util::formatWindowsPath($match[1]);
-                $apachePortUri = $neardBins->getApache()->getPort() != 80 ? ':' . $neardBins->getApache()->getPort() : '';
-                
-                $neardWinbinder->reset();
-                $this->wbWindow = $neardWinbinder->createAppWindow(sprintf($neardLang->getValue(Lang::EDIT_ALIAS_TITLE), $this->initName), 490, 200, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP);
-                
-                $this->wbLabelName = $neardWinbinder->createLabel($this->wbWindow, $neardLang->getValue(Lang::ALIAS_NAME_LABEL) . ' :', 15, 15, 85, null, WBC_RIGHT);
-                $this->wbInputName = $neardWinbinder->createInputText($this->wbWindow, $this->initName, 105, 13, 150, null);
-                
-                $this->wbLabelDest = $neardWinbinder->createLabel($this->wbWindow, $neardLang->getValue(Lang::ALIAS_DEST_LABEL) . ' :', 15, 45, 85, null, WBC_RIGHT);
-                $this->wbInputDest = $neardWinbinder->createInputText($this->wbWindow, $initDest, 105, 43, 190, null, null, WBC_READONLY);
-                $this->wbBtnDest = $neardWinbinder->createButton($this->wbWindow, $neardLang->getValue(Lang::BUTTON_BROWSE), 300, 43, 110);
-                
-                $this->wbLabelExp = $neardWinbinder->createLabel($this->wbWindow, sprintf($neardLang->getValue(Lang::ALIAS_EXP_LABEL), $apachePortUri, $this->initName, $initDest), 15, 80, 470, 50);
-                
-                $this->wbProgressBar = $neardWinbinder->createProgressBar($this->wbWindow, self::GAUGE_SAVE + 1, 15, 137, 190);
-                $this->wbBtnSave = $neardWinbinder->createButton($this->wbWindow, $neardLang->getValue(Lang::BUTTON_SAVE), 215, 132);
-                $this->wbBtnDelete = $neardWinbinder->createButton($this->wbWindow, $neardLang->getValue(Lang::BUTTON_DELETE), 300, 132);
-                $this->wbBtnCancel = $neardWinbinder->createButton($this->wbWindow, $neardLang->getValue(Lang::BUTTON_CANCEL), 385, 132);
-                
-                $neardWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
-                $neardWinbinder->mainLoop();
-                $neardWinbinder->reset();
+                $apachePortUri = $bearsamppBins->getApache()->getPort() != 80 ? ':' . $bearsamppBins->getApache()->getPort() : '';
+
+                $bearsamppWinbinder->reset();
+                $this->wbWindow = $bearsamppWinbinder->createAppWindow(sprintf($bearsamppLang->getValue(Lang::EDIT_ALIAS_TITLE), $this->initName), 490, 200, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP);
+
+                $this->wbLabelName = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::ALIAS_NAME_LABEL) . ' :', 15, 15, 85, null, WBC_RIGHT);
+                $this->wbInputName = $bearsamppWinbinder->createInputText($this->wbWindow, $this->initName, 105, 13, 150, null);
+
+                $this->wbLabelDest = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::ALIAS_DEST_LABEL) . ' :', 15, 45, 85, null, WBC_RIGHT);
+                $this->wbInputDest = $bearsamppWinbinder->createInputText($this->wbWindow, $initDest, 105, 43, 190, null, null, WBC_READONLY);
+                $this->wbBtnDest = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_BROWSE), 300, 43, 110);
+
+                $this->wbLabelExp = $bearsamppWinbinder->createLabel($this->wbWindow, sprintf($bearsamppLang->getValue(Lang::ALIAS_EXP_LABEL), $apachePortUri, $this->initName, $initDest), 15, 80, 470, 50);
+
+                $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE_SAVE + 1, 15, 137, 190);
+                $this->wbBtnSave = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_SAVE), 215, 132);
+                $this->wbBtnDelete = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_DELETE), 300, 132);
+                $this->wbBtnCancel = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_CANCEL), 385, 132);
+
+                $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
+                $bearsamppWinbinder->mainLoop();
+                $bearsamppWinbinder->reset();
             }
         }
     }
-    
+
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
-        global $neardBs, $neardBins, $neardLang, $neardWinbinder;
-        
-        $apachePortUri = $neardBins->getApache()->getPort() != 80 ? ':' . $neardBins->getApache()->getPort() : '';
-        $aliasName = $neardWinbinder->getText($this->wbInputName[WinBinder::CTRL_OBJ]);
-        $aliasDest = $neardWinbinder->getText($this->wbInputDest[WinBinder::CTRL_OBJ]);
-        
+        global $bearsamppBs, $bearsamppBins, $bearsamppLang, $bearsamppWinbinder;
+
+        $apachePortUri = $bearsamppBins->getApache()->getPort() != 80 ? ':' . $bearsamppBins->getApache()->getPort() : '';
+        $aliasName = $bearsamppWinbinder->getText($this->wbInputName[WinBinder::CTRL_OBJ]);
+        $aliasDest = $bearsamppWinbinder->getText($this->wbInputDest[WinBinder::CTRL_OBJ]);
+
         switch ($id) {
             case $this->wbInputName[WinBinder::CTRL_ID]:
-                $neardWinbinder->setText(
+                $bearsamppWinbinder->setText(
                 $this->wbLabelExp[WinBinder::CTRL_OBJ],
-                sprintf($neardLang->getValue(Lang::ALIAS_EXP_LABEL), $apachePortUri, $aliasName, $aliasDest)
+                sprintf($bearsamppLang->getValue(Lang::ALIAS_EXP_LABEL), $apachePortUri, $aliasName, $aliasDest)
                 );
-                $neardWinbinder->setEnabled($this->wbBtnSave[WinBinder::CTRL_OBJ], empty($aliasName) ? false : true);
+                $bearsamppWinbinder->setEnabled($this->wbBtnSave[WinBinder::CTRL_OBJ], empty($aliasName) ? false : true);
                 break;
             case $this->wbBtnDest[WinBinder::CTRL_ID]:
-                $aliasDest = $neardWinbinder->sysDlgPath($window, $neardLang->getValue(Lang::ALIAS_DEST_PATH), $aliasDest);
+                $aliasDest = $bearsamppWinbinder->sysDlgPath($window, $bearsamppLang->getValue(Lang::ALIAS_DEST_PATH), $aliasDest);
                 if ($aliasDest && is_dir($aliasDest)) {
-                    $neardWinbinder->setText($this->wbInputDest[WinBinder::CTRL_OBJ], $aliasDest . '\\');
-                    $neardWinbinder->setText(
+                    $bearsamppWinbinder->setText($this->wbInputDest[WinBinder::CTRL_OBJ], $aliasDest . '\\');
+                    $bearsamppWinbinder->setText(
                         $this->wbLabelExp[WinBinder::CTRL_OBJ],
-                        sprintf($neardLang->getValue(Lang::ALIAS_EXP_LABEL), $apachePortUri, $aliasName, $aliasDest . '\\')
+                        sprintf($bearsamppLang->getValue(Lang::ALIAS_EXP_LABEL), $apachePortUri, $aliasName, $aliasDest . '\\')
                     );
                 }
                 break;
             case $this->wbBtnSave[WinBinder::CTRL_ID]:
-                $neardWinbinder->setProgressBarMax($this->wbProgressBar, self::GAUGE_SAVE + 1);
-                $neardWinbinder->incrProgressBar($this->wbProgressBar);
-                
+                $bearsamppWinbinder->setProgressBarMax($this->wbProgressBar, self::GAUGE_SAVE + 1);
+                $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
+
                 if (!ctype_alnum($aliasName)) {
-                    $neardWinbinder->messageBoxError(
-                        sprintf($neardLang->getValue(Lang::ALIAS_NOT_VALID_ALPHA), $aliasName),
-                        $neardLang->getValue(Lang::ADD_ALIAS_TITLE));
-                    $neardWinbinder->resetProgressBar($this->wbProgressBar);
+                    $bearsamppWinbinder->messageBoxError(
+                        sprintf($bearsamppLang->getValue(Lang::ALIAS_NOT_VALID_ALPHA), $aliasName),
+                        $bearsamppLang->getValue(Lang::ADD_ALIAS_TITLE));
+                    $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                     break;
                 }
-                
-                if ($aliasName != $this->initName && is_file($neardBs->getAliasPath() . '/' . $aliasName . '.conf')) {
-                    $neardWinbinder->messageBoxError(
-                        sprintf($neardLang->getValue(Lang::ALIAS_ALREADY_EXISTS), $aliasName),
-                        $neardLang->getValue(Lang::ADD_ALIAS_TITLE));
-                    $neardWinbinder->resetProgressBar($this->wbProgressBar);
+
+                if ($aliasName != $this->initName && is_file($bearsamppBs->getAliasPath() . '/' . $aliasName . '.conf')) {
+                    $bearsamppWinbinder->messageBoxError(
+                        sprintf($bearsamppLang->getValue(Lang::ALIAS_ALREADY_EXISTS), $aliasName),
+                        $bearsamppLang->getValue(Lang::ADD_ALIAS_TITLE));
+                    $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                     break;
                 }
-                if (file_put_contents($neardBs->getAliasPath() . '/' . $aliasName . '.conf', $neardBins->getApache()->getAliasContent($aliasName, $aliasDest)) !== false) {
-                    $neardWinbinder->incrProgressBar($this->wbProgressBar);
-                    
-                    $neardBins->getApache()->getService()->restart();
-                    $neardWinbinder->incrProgressBar($this->wbProgressBar);
-                    
-                    $neardWinbinder->messageBoxInfo(
-                        sprintf($neardLang->getValue(Lang::ALIAS_CREATED), $aliasName, $apachePortUri, $aliasName, $aliasDest),
-                        $neardLang->getValue(Lang::ADD_ALIAS_TITLE));
-                    $neardWinbinder->destroyWindow($window);
+                if (file_put_contents($bearsamppBs->getAliasPath() . '/' . $aliasName . '.conf', $bearsamppBins->getApache()->getAliasContent($aliasName, $aliasDest)) !== false) {
+                    $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
+
+                    $bearsamppBins->getApache()->getService()->restart();
+                    $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
+
+                    $bearsamppWinbinder->messageBoxInfo(
+                        sprintf($bearsamppLang->getValue(Lang::ALIAS_CREATED), $aliasName, $apachePortUri, $aliasName, $aliasDest),
+                        $bearsamppLang->getValue(Lang::ADD_ALIAS_TITLE));
+                    $bearsamppWinbinder->destroyWindow($window);
                 } else {
-                    $neardWinbinder->messageBoxError($neardLang->getValue(Lang::ALIAS_CREATED_ERROR), $neardLang->getValue(Lang::ADD_ALIAS_TITLE));
-                    $neardWinbinder->resetProgressBar($this->wbProgressBar);
+                    $bearsamppWinbinder->messageBoxError($bearsamppLang->getValue(Lang::ALIAS_CREATED_ERROR), $bearsamppLang->getValue(Lang::ADD_ALIAS_TITLE));
+                    $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                 }
                 break;
             case $this->wbBtnDelete[WinBinder::CTRL_ID]:
-                $neardWinbinder->setProgressBarMax($this->wbProgressBar, self::GAUGE_DELETE + 1);
-                
-                $boxTitle = $neardLang->getValue(Lang::DELETE_ALIAS_TITLE);
-                $confirm = $neardWinbinder->messageBoxYesNo(
-                    sprintf($neardLang->getValue(Lang::DELETE_ALIAS), $this->initName),
+                $bearsamppWinbinder->setProgressBarMax($this->wbProgressBar, self::GAUGE_DELETE + 1);
+
+                $boxTitle = $bearsamppLang->getValue(Lang::DELETE_ALIAS_TITLE);
+                $confirm = $bearsamppWinbinder->messageBoxYesNo(
+                    sprintf($bearsamppLang->getValue(Lang::DELETE_ALIAS), $this->initName),
                     $boxTitle);
-                
-                $neardWinbinder->incrProgressBar($this->wbProgressBar);
-                
+
+                $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
+
                 if ($confirm) {
-                    if (@unlink($neardBs->getAliasPath() . '/' . $this->initName . '.conf')) {
-                        $neardWinbinder->incrProgressBar($this->wbProgressBar);
-                        
-                        $neardBins->getApache()->getService()->restart();
-                        $neardWinbinder->incrProgressBar($this->wbProgressBar);
-                        
-                        $neardWinbinder->messageBoxInfo(
-                            sprintf($neardLang->getValue(Lang::ALIAS_REMOVED), $this->initName),
+                    if (@unlink($bearsamppBs->getAliasPath() . '/' . $this->initName . '.conf')) {
+                        $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
+
+                        $bearsamppBins->getApache()->getService()->restart();
+                        $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
+
+                        $bearsamppWinbinder->messageBoxInfo(
+                            sprintf($bearsamppLang->getValue(Lang::ALIAS_REMOVED), $this->initName),
                             $boxTitle);
-                        $neardWinbinder->destroyWindow($window);
+                        $bearsamppWinbinder->destroyWindow($window);
                     } else {
-                        $neardWinbinder->messageBoxError(
-                            sprintf($neardLang->getValue(Lang::ALIAS_REMOVE_ERROR), $neardBs->getAliasPath() . '/' . $this->initName . '.conf'),
+                        $bearsamppWinbinder->messageBoxError(
+                            sprintf($bearsamppLang->getValue(Lang::ALIAS_REMOVE_ERROR), $bearsamppBs->getAliasPath() . '/' . $this->initName . '.conf'),
                             $boxTitle);
-                        $neardWinbinder->resetProgressBar($this->wbProgressBar);
+                        $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                     }
                 }
                 break;
             case IDCLOSE:
             case $this->wbBtnCancel[WinBinder::CTRL_ID]:
-                $neardWinbinder->destroyWindow($window);
+                $bearsamppWinbinder->destroyWindow($window);
                 break;
         }
     }

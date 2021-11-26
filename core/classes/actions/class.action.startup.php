@@ -15,7 +15,7 @@ class ActionStartup
 
     public function __construct($args)
     {
-        global $neardBs, $neardCore, $neardLang, $neardBins, $neardWinbinder;
+        global $bearsamppBs, $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
         $this->writeLog('Starting ' . APP_TITLE . '...');
 
         // Init
@@ -24,27 +24,27 @@ class ActionStartup
         $this->startTime = Util::getMicrotime();
         $this->error = '';
 
-        $this->rootPath = $neardBs->getRootPath();
+        $this->rootPath = $bearsamppBs->getRootPath();
         $this->filesToScan = array();
 
-        $gauge = self::GAUGE_SERVICES * count($neardBins->getServices());
+        $gauge = self::GAUGE_SERVICES * count($bearsamppBins->getServices());
         $gauge += self::GAUGE_OTHERS + 1;
 
         // Start splash screen
         $this->splash->init(
-            $neardLang->getValue(Lang::STARTUP),
+            $bearsamppLang->getValue(Lang::STARTUP),
             $gauge,
-            sprintf($neardLang->getValue(Lang::STARTUP_STARTING_TEXT), APP_TITLE . ' ' . $neardCore->getAppVersion())
+            sprintf($bearsamppLang->getValue(Lang::STARTUP_STARTING_TEXT), APP_TITLE . ' ' . $bearsamppCore->getAppVersion())
         );
 
-        $neardWinbinder->setHandler($this->splash->getWbWindow(), $this, 'processWindow', 1000);
-        $neardWinbinder->mainLoop();
-        $neardWinbinder->reset();
+        $bearsamppWinbinder->setHandler($this->splash->getWbWindow(), $this, 'processWindow', 1000);
+        $bearsamppWinbinder->mainLoop();
+        $bearsamppWinbinder->reset();
     }
 
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
-        global $neardBs, $neardCore, $neardLang, $neardBins, $neardTools, $neardApps, $neardWinbinder;
+        global $bearsamppBs, $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppTools, $bearsamppApps, $bearsamppWinbinder;
 
         // Rotation logs
         $this->rotationLogs();
@@ -54,10 +54,10 @@ class ActionStartup
         $this->cleanOldBehaviors();
 
         // List procs
-        if ($neardBs->getProcs() !== false) {
+        if ($bearsamppBs->getProcs() !== false) {
             $this->writeLog('List procs:');
             $listProcs = array();
-            foreach ($neardBs->getProcs() as $proc) {
+            foreach ($bearsamppBs->getProcs() as $proc) {
                 $unixExePath = Util::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]);
                 $listProcs[] = '-> ' . basename($unixExePath) . ' (PID ' . $proc[Win32Ps::PROCESS_ID] . ') in ' . $unixExePath;
             }
@@ -69,25 +69,25 @@ class ActionStartup
 
         // List modules
         $this->writeLog('List bins modules:');
-        foreach ($neardBins->getAll() as $module) {
+        foreach ($bearsamppBins->getAll() as $module) {
             if (!$module->isEnable()) {
-                $this->writeLog('-> ' . $module->getName() . ': ' . $neardLang->getValue(Lang::DISABLED));
+                $this->writeLog('-> ' . $module->getName() . ': ' . $bearsamppLang->getValue(Lang::DISABLED));
             } else {
                 $this->writeLog('-> ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
             }
         }
         $this->writeLog('List tools modules:');
-        foreach ($neardTools->getAll() as $module) {
+        foreach ($bearsamppTools->getAll() as $module) {
             if (!$module->isEnable()) {
-                $this->writeLog('-> ' . $module->getName() . ': ' . $neardLang->getValue(Lang::DISABLED));
+                $this->writeLog('-> ' . $module->getName() . ': ' . $bearsamppLang->getValue(Lang::DISABLED));
             } else {
                 $this->writeLog('-> ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
             }
         }
         $this->writeLog('List apps modules:');
-        foreach ($neardApps->getAll() as $module) {
+        foreach ($bearsamppApps->getAll() as $module) {
             if (!$module->isEnable()) {
-                $this->writeLog('-> ' . $module->getName() . ': ' . $neardLang->getValue(Lang::DISABLED));
+                $this->writeLog('-> ' . $module->getName() . ': ' . $bearsamppLang->getValue(Lang::DISABLED));
             } else {
                 $this->writeLog('-> ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
             }
@@ -110,7 +110,7 @@ class ActionStartup
         $this->changePath();
         $this->savePath();
 
-        // Check NEARD_PATH, NEARD_BINS and System Path reg keys
+        // Check bearsampp_PATH, bearsampp_BINS and System Path reg keys
         $this->checkPathRegKey();
         $this->checkBinsRegKey();
         $this->checkSystemPathRegKey();
@@ -135,32 +135,32 @@ class ActionStartup
         if ($this->restart) {
             $this->writeLog(APP_TITLE . ' has to be restarted');
             $this->splash->setTextLoading(sprintf(
-                $neardLang->getValue(Lang::STARTUP_PREPARE_RESTART_TEXT),
-                APP_TITLE . ' ' . $neardCore->getAppVersion())
+                $bearsamppLang->getValue(Lang::STARTUP_PREPARE_RESTART_TEXT),
+                APP_TITLE . ' ' . $bearsamppCore->getAppVersion())
             );
-            foreach ($neardBins->getServices() as $sName => $service) {
+            foreach ($bearsamppBins->getServices() as $sName => $service) {
                 $service->delete();
             }
-            $neardCore->setExec(ActionExec::RESTART);
+            $bearsamppCore->setExec(ActionExec::RESTART);
         }
 
         if (!empty($this->error)) {
             $this->writeLog('Error: ' . $this->error);
-            $neardWinbinder->messageBoxError($this->error, $neardLang->getValue(Lang::STARTUP_ERROR_TITLE));
+            $bearsamppWinbinder->messageBoxError($this->error, $bearsamppLang->getValue(Lang::STARTUP_ERROR_TITLE));
         }
 
         Util::startLoading();
-        $neardWinbinder->destroyWindow($window);
+        $bearsamppWinbinder->destroyWindow($window);
     }
 
     private function rotationLogs()
     {
-        global $neardBs, $neardCore, $neardConfig, $neardLang, $neardBins;
+        global $bearsamppBs, $bearsamppCore, $bearsamppConfig, $bearsamppLang, $bearsamppBins;
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_ROTATION_LOGS_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_ROTATION_LOGS_TEXT));
         $this->splash->incrProgressBar();
 
-        $archivesPath = $neardBs->getLogsPath() . '/archives';
+        $archivesPath = $bearsamppBs->getLogsPath() . '/archives';
         if (!is_dir($archivesPath)) {
             mkdir($archivesPath, 0777, true);
             return;
@@ -190,15 +190,15 @@ class ActionStartup
         sort($archives);
 
         // Remove old archives
-        if (count($archives) > $neardConfig->getMaxLogsArchives()) {
-            $total = count($archives) - $neardConfig->getMaxLogsArchives();
+        if (count($archives) > $bearsamppConfig->getMaxLogsArchives()) {
+            $total = count($archives) - $bearsamppConfig->getMaxLogsArchives();
             for ($i = 0; $i < $total; $i++) {
                 Util::deleteFolder($archives[$i]);
             }
         }
 
         // Logs
-        $srcPath = $neardBs->getLogsPath();
+        $srcPath = $bearsamppBs->getLogsPath();
         $handle = @opendir($srcPath);
         if (!$handle) {
             return;
@@ -212,7 +212,7 @@ class ActionStartup
         closedir($handle);
 
         // Scripts
-        $srcPath = $neardCore->getTmpPath();
+        $srcPath = $bearsamppCore->getTmpPath();
         $handle = @opendir($srcPath);
         if (!$handle) {
             return;
@@ -226,33 +226,33 @@ class ActionStartup
         closedir($handle);
 
         // Purge logs
-        Util::clearFolders($neardBins->getLogsPath());
-        Util::clearFolder($neardBs->getLogsPath(), array('archives'));
+        Util::clearFolders($bearsamppBins->getLogsPath());
+        Util::clearFolder($bearsamppBs->getLogsPath(), array('archives'));
     }
 
     private function cleanTmpFolders()
     {
-        global $neardBs, $neardLang, $neardCore;
+        global $bearsamppBs, $bearsamppLang, $bearsamppCore;
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_CLEAN_TMP_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_CLEAN_TMP_TEXT));
         $this->splash->incrProgressBar();
 
         $this->writeLog('Clear tmp folders');
-        Util::clearFolder($neardBs->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'npm-cache', 'pip', 'yarn'));
-        Util::clearFolder($neardCore->getTmpPath());
+        Util::clearFolder($bearsamppBs->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'npm-cache', 'pip', 'yarn'));
+        Util::clearFolder($bearsamppCore->getTmpPath());
     }
 
     private function cleanOldBehaviors()
     {
-        global $neardLang, $neardRegistry;
+        global $bearsamppLang, $bearsamppRegistry;
 
         $this->writeLog('Clean old behaviors');
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_CLEAN_OLD_BEAHAVIORS_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_CLEAN_OLD_BEAHAVIORS_TEXT));
         $this->splash->incrProgressBar();
 
         // App >= 1.0.13
-        $neardRegistry->deleteValue(
+        $bearsamppRegistry->deleteValue(
             Registry::HKEY_LOCAL_MACHINE,
             'SOFTWARE\Microsoft\Windows\CurrentVersion\Run',
             APP_TITLE
@@ -261,13 +261,13 @@ class ActionStartup
 
     private function killOldInstances()
     {
-        global $neardLang;
+        global $bearsamppLang;
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_KILL_OLD_PROCS_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_KILL_OLD_PROCS_TEXT));
         $this->splash->incrProgressBar();
 
         // Stop services
-        /*foreach ($neardBins->getServices() as $sName => $service) {
+        /*foreach ($bearsamppBins->getServices() as $sName => $service) {
             $serviceInfos = $service->infos();
             if ($serviceInfos === false) {
                 continue;
@@ -293,22 +293,22 @@ class ActionStartup
 
     private function refreshHostname()
     {
-        global $neardConfig, $neardLang;
+        global $bearsamppConfig, $bearsamppLang;
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_REFRESH_HOSTNAME_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_REFRESH_HOSTNAME_TEXT));
         $this->splash->incrProgressBar();
         $this->writeLog('Refresh hostname');
 
-        $neardConfig->replace(Config::CFG_HOSTNAME, gethostname());
+        $bearsamppConfig->replace(Config::CFG_HOSTNAME, gethostname());
     }
 
     private function checkLaunchStartup()
     {
-        global $neardConfig;
+        global $bearsamppConfig;
 
         $this->writeLog('Check launch startup');
 
-        if ($neardConfig->isLaunchStartup()) {
+        if ($bearsamppConfig->isLaunchStartup()) {
             Util::enableLaunchStartup();
         } else {
             Util::disableLaunchStartup();
@@ -317,23 +317,23 @@ class ActionStartup
 
     private function checkBrowser()
     {
-        global $neardConfig, $neardLang;
+        global $bearsamppConfig, $bearsamppLang;
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_CHECK_BROWSER_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_CHECK_BROWSER_TEXT));
         $this->splash->incrProgressBar();
         $this->writeLog('Check browser');
 
-        $currentBrowser = $neardConfig->getBrowser();
+        $currentBrowser = $bearsamppConfig->getBrowser();
         if (empty($currentBrowser) || !file_exists($currentBrowser)) {
-            $neardConfig->replace(Config::CFG_BROWSER, Vbs::getDefaultBrowser());
+            $bearsamppConfig->replace(Config::CFG_BROWSER, Vbs::getDefaultBrowser());
         }
     }
 
     private function sysInfos()
     {
-        global $neardLang;
+        global $bearsamppLang;
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_SYS_INFOS));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_SYS_INFOS));
         $this->splash->incrProgressBar();
 
         $os = Batch::getOsInfo();
@@ -342,41 +342,41 @@ class ActionStartup
 
     private function refreshAliases()
     {
-        global $neardConfig, $neardLang, $neardBins;
+        global $bearsamppConfig, $bearsamppLang, $bearsamppBins;
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_REFRESH_ALIAS_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_REFRESH_ALIAS_TEXT));
         $this->splash->incrProgressBar();
         $this->writeLog('Refresh aliases');
 
-        $neardBins->getApache()->refreshAlias($neardConfig->isOnline());
+        $bearsamppBins->getApache()->refreshAlias($bearsamppConfig->isOnline());
     }
 
     private function refreshVhosts()
     {
-        global $neardConfig, $neardLang, $neardBins;
+        global $bearsamppConfig, $bearsamppLang, $bearsamppBins;
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_REFRESH_VHOSTS_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_REFRESH_VHOSTS_TEXT));
         $this->splash->incrProgressBar();
         $this->writeLog('Refresh vhosts');
 
-        $neardBins->getApache()->refreshVhosts($neardConfig->isOnline());
+        $bearsamppBins->getApache()->refreshVhosts($bearsamppConfig->isOnline());
     }
 
     private function checkPath()
     {
-        global $neardCore, $neardLang;
+        global $bearsamppCore, $bearsamppLang;
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_CHECK_PATH_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_CHECK_PATH_TEXT));
         $this->splash->incrProgressBar();
 
-        $this->writeLog('Last path: ' . $neardCore->getLastPathContent());
+        $this->writeLog('Last path: ' . $bearsamppCore->getLastPathContent());
     }
 
     private function scanFolders()
     {
-        global $neardLang;
+        global $bearsamppLang;
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_SCAN_FOLDERS_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_SCAN_FOLDERS_TEXT));
         $this->splash->incrProgressBar();
 
         $this->filesToScan = Util::getFilesToScan();
@@ -385,9 +385,9 @@ class ActionStartup
 
     private function changePath()
     {
-        global $neardLang;
+        global $bearsamppLang;
 
-        $this->splash->setTextLoading(sprintf($neardLang->getValue(Lang::STARTUP_CHANGE_PATH_TEXT), $this->rootPath));
+        $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_CHANGE_PATH_TEXT), $this->rootPath));
         $this->splash->incrProgressBar();
 
         $result = Util::changePath($this->filesToScan, $this->rootPath);
@@ -397,21 +397,21 @@ class ActionStartup
 
     private function savePath()
     {
-        global $neardCore;
+        global $bearsamppCore;
 
-        file_put_contents($neardCore->getLastPath(), $this->rootPath);
+        file_put_contents($bearsamppCore->getLastPath(), $this->rootPath);
         $this->writeLog('Save current path: ' . $this->rootPath);
     }
 
     private function checkPathRegKey()
     {
-        global $neardBs, $neardLang, $neardRegistry;
+        global $bearsamppBs, $bearsamppLang, $bearsamppRegistry;
 
-        $this->splash->setTextLoading(sprintf($neardLang->getValue(Lang::STARTUP_REGISTRY_TEXT), Registry::APP_PATH_REG_ENTRY));
+        $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_REGISTRY_TEXT), Registry::APP_PATH_REG_ENTRY));
         $this->splash->incrProgressBar();
 
         $currentAppPathRegKey = Util::getAppPathRegKey();
-        $genAppPathRegKey = Util::formatWindowsPath($neardBs->getRootPath());
+        $genAppPathRegKey = Util::formatWindowsPath($bearsamppBs->getRootPath());
         $this->writeLog('Current app path reg key: ' . $currentAppPathRegKey);
         $this->writeLog('Gen app path reg key: ' . $genAppPathRegKey);
         if ($currentAppPathRegKey != $genAppPathRegKey) {
@@ -419,8 +419,8 @@ class ActionStartup
                 if (!empty($this->error)) {
                     $this->error .= PHP_EOL . PHP_EOL;
                 }
-                $this->error .= sprintf($neardLang->getValue(Lang::STARTUP_REGISTRY_ERROR_TEXT), Registry::APP_PATH_REG_ENTRY);
-                $this->error .= PHP_EOL . $neardRegistry->getLatestError();
+                $this->error .= sprintf($bearsamppLang->getValue(Lang::STARTUP_REGISTRY_ERROR_TEXT), Registry::APP_PATH_REG_ENTRY);
+                $this->error .= PHP_EOL . $bearsamppRegistry->getLatestError();
             } else {
                 $this->writeLog('Need restart: checkPathRegKey');
                 $this->restart = true;
@@ -430,9 +430,9 @@ class ActionStartup
 
     private function checkBinsRegKey()
     {
-        global $neardLang, $neardRegistry;
+        global $bearsamppLang, $bearsamppRegistry;
 
-        $this->splash->setTextLoading(sprintf($neardLang->getValue(Lang::STARTUP_REGISTRY_TEXT), Registry::APP_BINS_REG_ENTRY));
+        $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_REGISTRY_TEXT), Registry::APP_BINS_REG_ENTRY));
         $this->splash->incrProgressBar();
 
         $currentAppBinsRegKey = Util::getAppBinsRegKey();
@@ -444,8 +444,8 @@ class ActionStartup
                 if (!empty($this->error)) {
                     $this->error .= PHP_EOL . PHP_EOL;
                 }
-                $this->error .= sprintf($neardLang->getValue(Lang::STARTUP_REGISTRY_ERROR_TEXT), Registry::APP_BINS_REG_ENTRY);
-                $this->error .= PHP_EOL . $neardRegistry->getLatestError();
+                $this->error .= sprintf($bearsamppLang->getValue(Lang::STARTUP_REGISTRY_ERROR_TEXT), Registry::APP_BINS_REG_ENTRY);
+                $this->error .= PHP_EOL . $bearsamppRegistry->getLatestError();
             } else {
                 $this->writeLog('Need restart: checkBinsRegKey');
                 $this->restart = true;
@@ -455,9 +455,9 @@ class ActionStartup
 
     private function checkSystemPathRegKey()
     {
-        global $neardLang, $neardRegistry;
+        global $bearsamppLang, $bearsamppRegistry;
 
-        $this->splash->setTextLoading(sprintf($neardLang->getValue(Lang::STARTUP_REGISTRY_TEXT), Registry::SYSPATH_REG_ENTRY));
+        $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_REGISTRY_TEXT), Registry::SYSPATH_REG_ENTRY));
         $this->splash->incrProgressBar();
 
         $currentSysPathRegKey = Util::getSysPathRegKey();
@@ -473,8 +473,8 @@ class ActionStartup
                 if (!empty($this->error)) {
                     $this->error .= PHP_EOL . PHP_EOL;
                 }
-                $this->error .= sprintf($neardLang->getValue(Lang::STARTUP_REGISTRY_ERROR_TEXT), Registry::SYSPATH_REG_ENTRY);
-                $this->error .= PHP_EOL . $neardRegistry->getLatestError();
+                $this->error .= sprintf($bearsamppLang->getValue(Lang::STARTUP_REGISTRY_ERROR_TEXT), Registry::SYSPATH_REG_ENTRY);
+                $this->error .= PHP_EOL . $bearsamppRegistry->getLatestError();
             } else {
                 $this->writeLog('Need restart: checkSystemPathRegKey');
                 $this->restart = true;
@@ -488,34 +488,34 @@ class ActionStartup
 
     private function updateConfig()
     {
-        global $neardLang, $neardBins, $neardTools, $neardApps;
+        global $bearsamppLang, $bearsamppBins, $bearsamppTools, $bearsamppApps;
 
-        $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_UPDATE_CONFIG_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_UPDATE_CONFIG_TEXT));
         $this->splash->incrProgressBar();
         $this->writeLog('Update config');
 
-        $neardBins->update();
-        $neardTools->update();
-        $neardApps->update();
+        $bearsamppBins->update();
+        $bearsamppTools->update();
+        $bearsamppApps->update();
     }
 
     private function createSslCrts()
     {
-        global $neardLang, $neardOpenSsl;
+        global $bearsamppLang, $bearsamppOpenSsl;
 
         $this->splash->incrProgressBar();
-        if (!$neardOpenSsl->existsCrt('localhost')) {
-            $this->splash->setTextLoading(sprintf($neardLang->getValue(Lang::STARTUP_GEN_SSL_CRT_TEXT), 'localhost'));
-            $neardOpenSsl->createCrt('localhost');
+        if (!$bearsamppOpenSsl->existsCrt('localhost')) {
+            $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_GEN_SSL_CRT_TEXT), 'localhost'));
+            $bearsamppOpenSsl->createCrt('localhost');
         }
     }
 
     private function installServices()
     {
-        global $neardLang, $neardBins;
+        global $bearsamppLang, $bearsamppBins;
 
         if (!$this->restart) {
-            foreach ($neardBins->getServices() as $sName => $service) {
+            foreach ($bearsamppBins->getServices() as $sName => $service) {
                 $serviceError = '';
                 $serviceRestart = false;
                 $serviceAlreadyInstalled = false;
@@ -526,41 +526,41 @@ class ActionStartup
                 $bin = null;
                 $port = 0;
                 if ($sName == BinMailhog::SERVICE_NAME) {
-                    $bin = $neardBins->getMailhog();
-                    $port = $neardBins->getMailhog()->getSmtpPort();
+                    $bin = $bearsamppBins->getMailhog();
+                    $port = $bearsamppBins->getMailhog()->getSmtpPort();
                 } elseif ($sName == BinMemcached::SERVICE_NAME) {
-                    $bin = $neardBins->getMemcached();
-                    $port = $neardBins->getMemcached()->getPort();
+                    $bin = $bearsamppBins->getMemcached();
+                    $port = $bearsamppBins->getMemcached()->getPort();
                 } elseif ($sName == BinApache::SERVICE_NAME) {
-                    $bin = $neardBins->getApache();
-                    $port = $neardBins->getApache()->getPort();
+                    $bin = $bearsamppBins->getApache();
+                    $port = $bearsamppBins->getApache()->getPort();
                     $syntaxCheckCmd = BinApache::CMD_SYNTAX_CHECK;
                 } elseif ($sName == BinMysql::SERVICE_NAME) {
-                    $bin = $neardBins->getMysql();
-                    $port = $neardBins->getMysql()->getPort();
+                    $bin = $bearsamppBins->getMysql();
+                    $port = $bearsamppBins->getMysql()->getPort();
                     $syntaxCheckCmd = BinMysql::CMD_SYNTAX_CHECK;
                 } elseif ($sName == BinMariadb::SERVICE_NAME) {
-                    $bin = $neardBins->getMariadb();
-                    $port = $neardBins->getMariadb()->getPort();
+                    $bin = $bearsamppBins->getMariadb();
+                    $port = $bearsamppBins->getMariadb()->getPort();
                     $syntaxCheckCmd = BinMariadb::CMD_SYNTAX_CHECK;
                 } elseif ($sName == BinMongodb::SERVICE_NAME) {
-                    $bin = $neardBins->getMongodb();
-                    $port = $neardBins->getMongodb()->getPort();
+                    $bin = $bearsamppBins->getMongodb();
+                    $port = $bearsamppBins->getMongodb()->getPort();
                 } elseif ($sName == BinPostgresql::SERVICE_NAME) {
-                    $bin = $neardBins->getPostgresql();
-                    $port = $neardBins->getPostgresql()->getPort();
+                    $bin = $bearsamppBins->getPostgresql();
+                    $port = $bearsamppBins->getPostgresql()->getPort();
                 } elseif ($sName == BinFilezilla::SERVICE_NAME) {
-                    $bin = $neardBins->getFilezilla();
-                    $port = $neardBins->getFilezilla()->getPort();
+                    $bin = $bearsamppBins->getFilezilla();
+                    $port = $bearsamppBins->getFilezilla()->getPort();
                 } elseif ($sName == BinSvn::SERVICE_NAME) {
-                    $bin = $neardBins->getSvn();
-                    $port = $neardBins->getSvn()->getPort();
+                    $bin = $bearsamppBins->getSvn();
+                    $port = $bearsamppBins->getSvn()->getPort();
                 }
 
                 $name = $bin->getName() . ' ' . $bin->getVersion() . ' (' . $service->getName() . ')';
 
                 $this->splash->incrProgressBar();
-                $this->splash->setTextLoading(sprintf($neardLang->getValue(Lang::STARTUP_CHECK_SERVICE_TEXT), $name));
+                $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_CHECK_SERVICE_TEXT), $name));
                 $serviceInfos = $service->infos();
                 if ($serviceInfos !== false) {
                     $serviceAlreadyInstalled = true;
@@ -588,23 +588,23 @@ class ActionStartup
                     if ($isPortInUse === false) {
                         $this->splash->incrProgressBar();
                         if (!$serviceAlreadyInstalled && !$serviceToRemove) {
-                            $this->splash->setTextLoading(sprintf($neardLang->getValue(Lang::STARTUP_INSTALL_SERVICE_TEXT), $name));
+                            $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_INSTALL_SERVICE_TEXT), $name));
                             if (!$service->create()) {
-                                $serviceError .= sprintf($neardLang->getValue(Lang::STARTUP_SERVICE_CREATE_ERROR), $service->getError());
+                                $serviceError .= sprintf($bearsamppLang->getValue(Lang::STARTUP_SERVICE_CREATE_ERROR), $service->getError());
                             }
                         }
 
                         $this->splash->incrProgressBar();
-                        $this->splash->setTextLoading(sprintf($neardLang->getValue(Lang::STARTUP_START_SERVICE_TEXT), $name));
+                        $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_START_SERVICE_TEXT), $name));
                         if (!$service->start()) {
                             if (!empty($serviceError)) {
                                 $serviceError .= PHP_EOL;
                             }
-                            $serviceError .= sprintf($neardLang->getValue(Lang::STARTUP_SERVICE_START_ERROR), $service->getError());
+                            $serviceError .= sprintf($bearsamppLang->getValue(Lang::STARTUP_SERVICE_START_ERROR), $service->getError());
                             if (!empty($syntaxCheckCmd)) {
                                 $cmdSyntaxCheck = $bin->getCmdLineOutput($syntaxCheckCmd);
                                 if (!$cmdSyntaxCheck['syntaxOk']) {
-                                    $serviceError .= PHP_EOL . sprintf($neardLang->getValue(Lang::STARTUP_SERVICE_SYNTAX_ERROR), $cmdSyntaxCheck['content']);
+                                    $serviceError .= PHP_EOL . sprintf($bearsamppLang->getValue(Lang::STARTUP_SERVICE_SYNTAX_ERROR), $cmdSyntaxCheck['content']);
                                 }
                             }
                         }
@@ -613,7 +613,7 @@ class ActionStartup
                         if (!empty($serviceError)) {
                             $serviceError .= PHP_EOL;
                         }
-                        $serviceError .= sprintf($neardLang->getValue(Lang::STARTUP_SERVICE_PORT_ERROR), $port, $isPortInUse);
+                        $serviceError .= sprintf($bearsamppLang->getValue(Lang::STARTUP_SERVICE_PORT_ERROR), $port, $isPortInUse);
                         $this->splash->incrProgressBar(3);
                     }
                 } else {
@@ -626,32 +626,32 @@ class ActionStartup
                     if (!empty($this->error)) {
                         $this->error .= PHP_EOL . PHP_EOL;
                     }
-                    $this->error .= sprintf($neardLang->getValue(Lang::STARTUP_SERVICE_ERROR), $name) . PHP_EOL . $serviceError;
+                    $this->error .= sprintf($bearsamppLang->getValue(Lang::STARTUP_SERVICE_ERROR), $name) . PHP_EOL . $serviceError;
                 } else {
                     $this->writeLog($name . ' service installed in ' . round(Util::getMicrotime() - $startServiceTime, 3) . 's');
                 }
             }
         } else {
-            $this->splash->incrProgressBar(self::GAUGE_SERVICES * count($neardBins->getServices()));
+            $this->splash->incrProgressBar(self::GAUGE_SERVICES * count($bearsamppBins->getServices()));
         }
     }
 
     private function refreshGitRepos()
     {
-        global $neardLang, $neardTools;
+        global $bearsamppLang, $bearsamppTools;
 
         $this->splash->incrProgressBar();
-        if ($neardTools->getGit()->isScanStartup()) {
-            $this->splash->setTextLoading($neardLang->getValue(Lang::STARTUP_REFRESH_GIT_REPOS_TEXT));
+        if ($bearsamppTools->getGit()->isScanStartup()) {
+            $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_REFRESH_GIT_REPOS_TEXT));
 
-            $repos = $neardTools->getGit()->findRepos(false);
+            $repos = $bearsamppTools->getGit()->findRepos(false);
             $this->writeLog('Update GIT repos: ' . count($repos) . ' found');
         }
     }
 
     private function writeLog($log)
     {
-        global $neardBs;
-        Util::logDebug($log, $neardBs->getStartupLogFilePath());
+        global $bearsamppBs;
+        Util::logDebug($log, $bearsamppBs->getStartupLogFilePath());
     }
 }

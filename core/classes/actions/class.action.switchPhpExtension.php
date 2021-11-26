@@ -7,28 +7,28 @@ class ActionSwitchPhpExtension
 
     public function __construct($args)
     {
-        global $neardBins;
+        global $bearsamppBins;
 
         if (isset($args[0]) && !empty($args[0]) && isset($args[1]) && !empty($args[1])) {
             $onContent = 'extension=' . $args[0];
             $offContent = ';extension=' . $args[0];
-            if (version_compare($neardBins->getPhp()->getVersion(), '7.2', '<')) {
+            if (version_compare($bearsamppBins->getPhp()->getVersion(), '7.2', '<')) {
                 $onContent = 'extension=php_' . $args[0] . '.dll';
                 $offContent = ';extension=php_' . $args[0] . '.dll';
             }
 
-            $phpiniContent = file_get_contents($neardBins->getPhp()->getConf());
+            $phpiniContent = file_get_contents($bearsamppBins->getPhp()->getConf());
             if ($args[1] == self::SWITCH_ON) {
                 $phpiniContent = str_replace($offContent, $onContent, $phpiniContent);
             } elseif ($args[1] == self::SWITCH_OFF) {
                 $phpiniContent = str_replace($onContent, $offContent, $phpiniContent);
             }
 
-            $phpiniContentOr = file_get_contents($neardBins->getPhp()->getConf());
-            if ($phpiniContent == $phpiniContentOr && file_exists($neardBins->getPhp()->getSymlinkPath() . '/ext/php_' . $args[0] . '.dll')) {
-                $extsIni = $neardBins->getPhp()->getExtensionsFromConf();
+            $phpiniContentOr = file_get_contents($bearsamppBins->getPhp()->getConf());
+            if ($phpiniContent == $phpiniContentOr && file_exists($bearsamppBins->getPhp()->getSymlinkPath() . '/ext/php_' . $args[0] . '.dll')) {
+                $extsIni = $bearsamppBins->getPhp()->getExtensionsFromConf();
                 $latestExt = (end($extsIni) == '0' ? ';' : '');
-                if (version_compare($neardBins->getPhp()->getVersion(), '7.2', '<')) {
+                if (version_compare($bearsamppBins->getPhp()->getVersion(), '7.2', '<')) {
                     $latestExt .= 'extension=php_' . key($extsIni) . '.dll';
                 } else {
                     $latestExt .= 'extension=' . key($extsIni);
@@ -40,7 +40,7 @@ class ActionSwitchPhpExtension
                 );
             }
 
-            file_put_contents($neardBins->getPhp()->getConf(), $phpiniContent);
+            file_put_contents($bearsamppBins->getPhp()->getConf(), $phpiniContent);
         }
     }
 }

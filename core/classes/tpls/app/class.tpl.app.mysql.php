@@ -16,21 +16,21 @@ class TplAppMysql
 
     public static function process()
     {
-        global $neardLang, $neardBins;
+        global $bearsamppLang, $bearsamppBins;
 
-        return TplApp::getMenuEnable($neardLang->getValue(Lang::MYSQL), self::MENU, get_called_class(), $neardBins->getMysql()->isEnable());
+        return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::MYSQL), self::MENU, get_called_class(), $bearsamppBins->getMysql()->isEnable());
     }
 
     public static function getMenuMysql()
     {
-        global $neardBins, $neardLang, $neardTools;
+        global $bearsamppBins, $bearsamppLang, $bearsamppTools;
         $resultItems = $resultActions = '';
 
-        $isEnabled = $neardBins->getMysql()->isEnable();
+        $isEnabled = $bearsamppBins->getMysql()->isEnable();
 
         // Download
         $resultItems .= TplAestan::getItemLink(
-            $neardLang->getValue(Lang::DOWNLOAD_MORE),
+            $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
             Util::getWebsiteUrl('modules/mysql', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
@@ -39,7 +39,7 @@ class TplAppMysql
         // Enable
         $tplEnable = TplApp::getActionMulti(
             self::ACTION_ENABLE, array($isEnabled ? Config::DISABLED : Config::ENABLED),
-            array($neardLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
+            array($bearsamppLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
             false, get_called_class()
         );
         $resultItems .= $tplEnable[TplApp::SECTION_CALL] . PHP_EOL;
@@ -49,32 +49,32 @@ class TplAppMysql
             $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
             // Versions
-            $tplVersions = TplApp::getMenu($neardLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
+            $tplVersions = TplApp::getMenu($bearsamppLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
             $resultItems .= $tplVersions[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplVersions[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Service
-            $tplService = TplApp::getMenu($neardLang->getValue(Lang::SERVICE), self::MENU_SERVICE, get_called_class());
+            $tplService = TplApp::getMenu($bearsamppLang->getValue(Lang::SERVICE), self::MENU_SERVICE, get_called_class());
             $resultItems .= $tplService[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplService[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Debug
-            $tplDebug = TplApp::getMenu($neardLang->getValue(Lang::DEBUG), self::MENU_DEBUG, get_called_class());
+            $tplDebug = TplApp::getMenu($bearsamppLang->getValue(Lang::DEBUG), self::MENU_DEBUG, get_called_class());
             $resultItems .= $tplDebug[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplDebug[TplApp::SECTION_CONTENT];
 
             // Console
             $resultItems .= TplAestan::getItemConsoleZ(
-                $neardLang->getValue(Lang::CONSOLE),
+                $bearsamppLang->getValue(Lang::CONSOLE),
                 TplAestan::GLYPH_CONSOLEZ,
-                $neardTools->getConsoleZ()->getTabTitleMysql()
+                $bearsamppTools->getConsoleZ()->getTabTitleMysql()
             ) . PHP_EOL;
 
             // Conf
-            $resultItems .= TplAestan::getItemNotepad(basename($neardBins->getMysql()->getConf()), $neardBins->getMysql()->getConf()) . PHP_EOL;
+            $resultItems .= TplAestan::getItemNotepad(basename($bearsamppBins->getMysql()->getConf()), $bearsamppBins->getMysql()->getConf()) . PHP_EOL;
 
             // Errors log
-            $resultItems .= TplAestan::getItemNotepad($neardLang->getValue(Lang::MENU_ERROR_LOGS), $neardBins->getMysql()->getErrorLog()) . PHP_EOL;
+            $resultItems .= TplAestan::getItemNotepad($bearsamppLang->getValue(Lang::MENU_ERROR_LOGS), $bearsamppBins->getMysql()->getErrorLog()) . PHP_EOL;
         }
 
         return $resultItems . PHP_EOL . $resultActions;
@@ -82,14 +82,14 @@ class TplAppMysql
 
     public static function getMenuMysqlVersions()
     {
-        global $neardBins;
+        global $bearsamppBins;
         $items = '';
         $actions = '';
 
-        foreach ($neardBins->getMysql()->getVersionList() as $version) {
+        foreach ($bearsamppBins->getMysql()->getVersionList() as $version) {
             $tplSwitchMysqlVersion = TplApp::getActionMulti(
                 self::ACTION_SWITCH_VERSION, array($version),
-                array($version, $version == $neardBins->getMysql()->getVersion() ? TplAestan::GLYPH_CHECK : ''),
+                array($version, $version == $bearsamppBins->getMysql()->getVersion() ? TplAestan::GLYPH_CHECK : ''),
                 false, get_called_class()
             );
 
@@ -105,39 +105,39 @@ class TplAppMysql
 
     public static function getActionEnableMysql($enable)
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::ENABLE, array($neardBins->getMysql()->getName(), $enable)) . PHP_EOL .
+        return TplApp::getActionRun(Action::ENABLE, array($bearsamppBins->getMysql()->getName(), $enable)) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 
     public static function getActionSwitchMysqlVersion($version)
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::SWITCH_VERSION, array($neardBins->getMysql()->getName(), $version)) . PHP_EOL .
+        return TplApp::getActionRun(Action::SWITCH_VERSION, array($bearsamppBins->getMysql()->getName(), $version)) . PHP_EOL .
             TplAppReload::getActionReload() . PHP_EOL;
     }
 
     public static function getMenuMysqlService()
     {
-        global $neardLang, $neardBins;
+        global $bearsamppLang, $bearsamppBins;
 
         $tplChangePort = TplApp::getActionMulti(
             self::ACTION_CHANGE_PORT, null,
-            array($neardLang->getValue(Lang::MENU_CHANGE_PORT), TplAestan::GLYPH_NETWORK),
+            array($bearsamppLang->getValue(Lang::MENU_CHANGE_PORT), TplAestan::GLYPH_NETWORK),
             false, get_called_class()
         );
 
-        $isInstalled = $neardBins->getMysql()->getService()->isInstalled();
+        $isInstalled = $bearsamppBins->getMysql()->getService()->isInstalled();
 
-        $result = TplAestan::getItemActionServiceStart($neardBins->getMysql()->getService()->getName()) . PHP_EOL .
-            TplAestan::getItemActionServiceStop($neardBins->getMysql()->getService()->getName()) . PHP_EOL .
-            TplAestan::getItemActionServiceRestart($neardBins->getMysql()->getService()->getName()) . PHP_EOL .
+        $result = TplAestan::getItemActionServiceStart($bearsamppBins->getMysql()->getService()->getName()) . PHP_EOL .
+            TplAestan::getItemActionServiceStop($bearsamppBins->getMysql()->getService()->getName()) . PHP_EOL .
+            TplAestan::getItemActionServiceRestart($bearsamppBins->getMysql()->getService()->getName()) . PHP_EOL .
             TplAestan::getItemSeparator() . PHP_EOL .
             TplApp::getActionRun(
-                Action::CHECK_PORT, array($neardBins->getMysql()->getName(), $neardBins->getMysql()->getPort()),
-                array(sprintf($neardLang->getValue(Lang::MENU_CHECK_PORT), $neardBins->getMysql()->getPort()), TplAestan::GLYPH_LIGHT)
+                Action::CHECK_PORT, array($bearsamppBins->getMysql()->getName(), $bearsamppBins->getMysql()->getPort()),
+                array(sprintf($bearsamppLang->getValue(Lang::MENU_CHECK_PORT), $bearsamppBins->getMysql()->getPort()), TplAestan::GLYPH_LIGHT)
             ) . PHP_EOL .
             $tplChangePort[TplApp::SECTION_CALL] . PHP_EOL;
 
@@ -145,7 +145,7 @@ class TplAppMysql
         if ($isInstalled) {
             $tplChangeRootPwd = TplApp::getActionMulti(
                 self::ACTION_CHANGE_ROOT_PWD, null,
-                array($neardLang->getValue(Lang::MENU_CHANGE_ROOT_PWD), TplAestan::GLYPH_PASSWORD),
+                array($bearsamppLang->getValue(Lang::MENU_CHANGE_ROOT_PWD), TplAestan::GLYPH_PASSWORD),
                 !$isInstalled, get_called_class()
             );
 
@@ -155,7 +155,7 @@ class TplAppMysql
         if (!$isInstalled) {
             $tplInstallService = TplApp::getActionMulti(
                 self::ACTION_INSTALL_SERVICE, null,
-                array($neardLang->getValue(Lang::MENU_INSTALL_SERVICE), TplAestan::GLYPH_SERVICE_INSTALL),
+                array($bearsamppLang->getValue(Lang::MENU_INSTALL_SERVICE), TplAestan::GLYPH_SERVICE_INSTALL),
                 $isInstalled, get_called_class()
             );
 
@@ -164,7 +164,7 @@ class TplAppMysql
         } else {
             $tplRemoveService = TplApp::getActionMulti(
                 self::ACTION_REMOVE_SERVICE, null,
-                array($neardLang->getValue(Lang::MENU_REMOVE_SERVICE), TplAestan::GLYPH_SERVICE_REMOVE),
+                array($bearsamppLang->getValue(Lang::MENU_REMOVE_SERVICE), TplAestan::GLYPH_SERVICE_REMOVE),
                 !$isInstalled, get_called_class()
             );
 
@@ -180,35 +180,35 @@ class TplAppMysql
 
     public static function getMenuMysqlDebug()
     {
-        global $neardLang;
+        global $bearsamppLang;
 
         return TplApp::getActionRun(
             Action::DEBUG_MYSQL, array(BinMysql::CMD_VERSION),
-            array($neardLang->getValue(Lang::DEBUG_MYSQL_VERSION), TplAestan::GLYPH_DEBUG)
+            array($bearsamppLang->getValue(Lang::DEBUG_MYSQL_VERSION), TplAestan::GLYPH_DEBUG)
         ) . PHP_EOL .
         TplApp::getActionRun(
             Action::DEBUG_MYSQL, array(BinMysql::CMD_VARIABLES),
-            array($neardLang->getValue(Lang::DEBUG_MYSQL_VARIABLES), TplAestan::GLYPH_DEBUG)
+            array($bearsamppLang->getValue(Lang::DEBUG_MYSQL_VARIABLES), TplAestan::GLYPH_DEBUG)
         ) . PHP_EOL .
         TplApp::getActionRun(
             Action::DEBUG_MYSQL, array(BinMysql::CMD_SYNTAX_CHECK),
-            array($neardLang->getValue(Lang::DEBUG_MYSQL_SYNTAX_CHECK), TplAestan::GLYPH_DEBUG)
+            array($bearsamppLang->getValue(Lang::DEBUG_MYSQL_SYNTAX_CHECK), TplAestan::GLYPH_DEBUG)
         ) . PHP_EOL;
     }
 
     public static function getActionChangeMysqlPort()
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::CHANGE_PORT, array($neardBins->getMysql()->getName())) . PHP_EOL .
+        return TplApp::getActionRun(Action::CHANGE_PORT, array($bearsamppBins->getMysql()->getName())) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 
     public static function getActionChangeMysqlRootPwd()
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::CHANGE_DB_ROOT_PWD, array($neardBins->getMysql()->getName())) . PHP_EOL .
+        return TplApp::getActionRun(Action::CHANGE_DB_ROOT_PWD, array($bearsamppBins->getMysql()->getName())) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 

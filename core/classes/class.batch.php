@@ -3,7 +3,7 @@
 class Batch
 {
     const END_PROCESS_STR = 'FINISHED!';
-    const CATCH_OUTPUT_FALSE = 'neardCatchOutputFalse';
+    const CATCH_OUTPUT_FALSE = 'bearsamppCatchOutputFalse';
 
     public function __construct()
     {
@@ -11,8 +11,8 @@ class Batch
 
     private static function writeLog($log)
     {
-        global $neardBs;
-        Util::logDebug($log, $neardBs->getBatchLogFilePath());
+        global $bearsamppBs;
+        Util::logDebug($log, $bearsamppBs->getBatchLogFilePath());
     }
 
     public static function findExeByPid($pid)
@@ -53,14 +53,14 @@ class Batch
 
     public static function exitApp($restart = false)
     {
-        global $neardBs, $neardCore;
+        global $bearsamppBs, $bearsamppCore;
 
         $content = 'PING 1.1.1.1 -n 1 -w 2000 > nul' . PHP_EOL;
-        $content .= '"' . $neardBs->getExeFilePath() . '" -quit -id={neard}' . PHP_EOL;
+        $content .= '"' . $bearsamppBs->getExeFilePath() . '" -quit -id={bearsampp}' . PHP_EOL;
         if ($restart) {
             $basename = 'restartApp';
             Util::logInfo('Restart App');
-            $content .= '"' . $neardCore->getPhpExe() . '" "' . Core::BOOTSTRAP_FILE . '" "' . Action::RESTART . '"' . PHP_EOL;
+            $content .= '"' . $bearsamppCore->getPhpExe() . '" "' . Core::BOOTSTRAP_FILE . '" "' . Action::RESTART . '"' . PHP_EOL;
         } else {
             $basename = 'exitApp';
             Util::logInfo('Exit App');
@@ -77,9 +77,9 @@ class Batch
 
     public static function getPearVersion()
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        $result = self::exec('getPearVersion', 'CMD /C "' . $neardBins->getPhp()->getPearExe() . '" -V', 5);
+        $result = self::exec('getPearVersion', 'CMD /C "' . $bearsamppBins->getPhp()->getPearExe() . '" -V', 5);
         if (is_array($result)) {
             foreach ($result as $row) {
                 if (Util::startWith($row, 'PEAR Version:')) {
@@ -96,31 +96,31 @@ class Batch
 
     public static function refreshEnvVars()
     {
-        global $neardBs, $neardCore;
-        self::execStandalone('refreshEnvVars', '"' . $neardCore->getSetEnvExe() . '" -a ' . Registry::APP_PATH_REG_ENTRY . ' "' . Util::formatWindowsPath($neardBs->getRootPath()) . '"');
+        global $bearsamppBs, $bearsamppCore;
+        self::execStandalone('refreshEnvVars', '"' . $bearsamppCore->getSetEnvExe() . '" -a ' . Registry::APP_PATH_REG_ENTRY . ' "' . Util::formatWindowsPath($bearsamppBs->getRootPath()) . '"');
     }
 
     public static function installFilezillaService()
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        self::exec('installFilezillaService', '"' . $neardBins->getFilezilla()->getExe() . '" /install', true, false);
+        self::exec('installFilezillaService', '"' . $bearsamppBins->getFilezilla()->getExe() . '" /install', true, false);
 
-        if (!$neardBins->getFilezilla()->getService()->isInstalled()) {
+        if (!$bearsamppBins->getFilezilla()->getService()->isInstalled()) {
             return false;
         }
 
-        self::setServiceDescription(BinFilezilla::SERVICE_NAME, $neardBins->getFilezilla()->getService()->getDisplayName());
+        self::setServiceDescription(BinFilezilla::SERVICE_NAME, $bearsamppBins->getFilezilla()->getService()->getDisplayName());
 
         return true;
     }
 
     public static function uninstallFilezillaService()
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        self::exec('uninstallFilezillaService', '"' . $neardBins->getFilezilla()->getExe() . '" /uninstall', true, false);
-        return !$neardBins->getFilezilla()->getService()->isInstalled();
+        self::exec('uninstallFilezillaService', '"' . $bearsamppBins->getFilezilla()->getExe() . '" /uninstall', true, false);
+        return !$bearsamppBins->getFilezilla()->getService()->isInstalled();
     }
 
     public static function initializeMysql($path)
@@ -134,19 +134,19 @@ class Batch
 
     public static function installPostgresqlService()
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        $cmd = '"' . Util::formatWindowsPath($neardBins->getPostgresql()->getCtlExe()) . '" register -N "' . BinPostgresql::SERVICE_NAME . '"';
-        $cmd .= ' -U "LocalSystem" -D "' . Util::formatWindowsPath($neardBins->getPostgresql()->getSymlinkPath()) . '\\data"';
-        $cmd .= ' -l "' . Util::formatWindowsPath($neardBins->getPostgresql()->getErrorLog()) . '" -w';
+        $cmd = '"' . Util::formatWindowsPath($bearsamppBins->getPostgresql()->getCtlExe()) . '" register -N "' . BinPostgresql::SERVICE_NAME . '"';
+        $cmd .= ' -U "LocalSystem" -D "' . Util::formatWindowsPath($bearsamppBins->getPostgresql()->getSymlinkPath()) . '\\data"';
+        $cmd .= ' -l "' . Util::formatWindowsPath($bearsamppBins->getPostgresql()->getErrorLog()) . '" -w';
         self::exec('installPostgresqlService', $cmd, true, false);
 
-        if (!$neardBins->getPostgresql()->getService()->isInstalled()) {
+        if (!$bearsamppBins->getPostgresql()->getService()->isInstalled()) {
             return false;
         }
 
-        self::setServiceDisplayName(BinPostgresql::SERVICE_NAME, $neardBins->getPostgresql()->getService()->getDisplayName());
-        self::setServiceDescription(BinPostgresql::SERVICE_NAME, $neardBins->getPostgresql()->getService()->getDisplayName());
+        self::setServiceDisplayName(BinPostgresql::SERVICE_NAME, $bearsamppBins->getPostgresql()->getService()->getDisplayName());
+        self::setServiceDescription(BinPostgresql::SERVICE_NAME, $bearsamppBins->getPostgresql()->getService()->getDisplayName());
         self::setServiceStartType(BinPostgresql::SERVICE_NAME, "demand");
 
         return true;
@@ -154,12 +154,12 @@ class Batch
 
     public static function uninstallPostgresqlService()
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        $cmd = '"' . Util::formatWindowsPath($neardBins->getPostgresql()->getCtlExe()) . '" unregister -N "' . BinPostgresql::SERVICE_NAME . '"';
-        $cmd .= ' -l "' . Util::formatWindowsPath($neardBins->getPostgresql()->getErrorLog()) . '" -w';
+        $cmd = '"' . Util::formatWindowsPath($bearsamppBins->getPostgresql()->getCtlExe()) . '" unregister -N "' . BinPostgresql::SERVICE_NAME . '"';
+        $cmd .= ' -l "' . Util::formatWindowsPath($bearsamppBins->getPostgresql()->getErrorLog()) . '" -w';
         self::exec('uninstallPostgresqlService', $cmd, true, false);
-        return !$neardBins->getPostgresql()->getService()->isInstalled();
+        return !$bearsamppBins->getPostgresql()->getService()->isInstalled();
     }
 
     public static function initializePostgresql($path)
@@ -179,10 +179,10 @@ class Batch
 
     public static function createSymlink($src, $dest)
     {
-        global $neardCore;
+        global $bearsamppCore;
         $src = Util::formatWindowsPath($src);
         $dest = Util::formatWindowsPath($dest);
-        self::exec('createSymlink', '"' . $neardCore->getLnExe() . '" --absolute --symbolic --traditional --1023safe "' . $src . '" ' . '"' . $dest . '"', true, false);
+        self::exec('createSymlink', '"' . $bearsamppCore->getLnExe() . '" --absolute --symbolic --traditional --1023safe "' . $src . '" ' . '"' . $dest . '"', true, false);
     }
 
     public static function removeSymlink($link)
@@ -228,7 +228,7 @@ class Batch
 
     public static function exec($basename, $content, $timeout = true, $catchOutput = true, $standalone = false, $silent = true, $rebuild = true)
     {
-        global $neardConfig, $neardWinbinder;
+        global $bearsamppConfig, $bearsamppWinbinder;
         $result = false;
 
         $resultFile = self::getTmpFile('.tmp', $basename);
@@ -248,10 +248,10 @@ class Batch
 
         // Process
         file_put_contents($scriptPath, $header . $content . $footer);
-        $neardWinbinder->exec($scriptPath, null, $silent);
+        $bearsamppWinbinder->exec($scriptPath, null, $silent);
 
         if (!$standalone) {
-            $timeout = is_numeric($timeout) ? $timeout : ($timeout === true ? $neardConfig->getScriptsTimeout() : false);
+            $timeout = is_numeric($timeout) ? $timeout : ($timeout === true ? $bearsamppConfig->getScriptsTimeout() : false);
             $maxtime = time() + $timeout;
             $noTimeout = $timeout === false;
             while ($result === false || empty($result)) {
@@ -299,7 +299,7 @@ class Batch
 
     private static function getTmpFile($ext, $customName = null)
     {
-        global $neardCore;
-        return Util::formatWindowsPath($neardCore->getTmpPath() . '/' . (!empty($customName) ? $customName . '-' : '') . Util::random() . $ext);
+        global $bearsamppCore;
+        return Util::formatWindowsPath($bearsamppCore->getTmpPath() . '/' . (!empty($customName) ? $customName . '-' : '') . Util::random() . $ext);
     }
 }

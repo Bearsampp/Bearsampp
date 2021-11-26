@@ -14,15 +14,15 @@ class AppAdminer extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $neardConfig, $neardLang;
+        global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
-        $this->name = $neardLang->getValue(Lang::ADMINER);
-        $this->version = $neardConfig->getRaw(self::ROOT_CFG_VERSION);
+        $this->name = $bearsamppLang->getValue(Lang::ADMINER);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
-        if ($this->neardConfRaw !== false) {
-            $this->conf = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_CONF];
+        if ($this->bearsamppConfRaw !== false) {
+            $this->conf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
         }
 
         if (!$this->enable) {
@@ -30,22 +30,22 @@ class AppAdminer extends Module
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
-        if (!is_file($this->neardConf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->neardConf));
+        if (!is_file($this->bearsamppConf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
         }
         if (!is_file($this->conf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
         }
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $neardBs, $neardBins;
+        global $bearsamppBs, $bearsamppBins;
 
         if (!$this->enable) {
             return true;
@@ -54,7 +54,7 @@ class AppAdminer extends Module
         $version = $version == null ? $this->version : $version;
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
-        $alias = $neardBs->getAliasPath() . '/adminer.conf';
+        $alias = $bearsamppBs->getAliasPath() . '/adminer.conf';
         if (is_file($alias)) {
             Util::replaceInFile($alias, array(
                 '/^Alias\s\/adminer\s.*/' => 'Alias /adminer "' . $this->getSymlinkPath() . '/"',
@@ -64,30 +64,30 @@ class AppAdminer extends Module
             Util::logError($this->getName() . ' alias not found : ' . $alias);
         }
 
-        if ($neardBins->getMysql()->isEnable()) {
+        if ($bearsamppBins->getMysql()->isEnable()) {
             Util::replaceInFile($this->getConf(), array(
-                '/^\$mysqlPort\s=\s(\d+)/' => '$mysqlPort = ' . $neardBins->getMysql()->getPort() . ';',
-                '/^\$mysqlRootUser\s=\s/' => '$mysqlRootUser = \'' . $neardBins->getMysql()->getRootUser() . '\';',
-                '/^\$mysqlRootPwd\s=\s/' => '$mysqlRootPwd = \'' . $neardBins->getMysql()->getRootPwd() . '\';'
+                '/^\$mysqlPort\s=\s(\d+)/' => '$mysqlPort = ' . $bearsamppBins->getMysql()->getPort() . ';',
+                '/^\$mysqlRootUser\s=\s/' => '$mysqlRootUser = \'' . $bearsamppBins->getMysql()->getRootUser() . '\';',
+                '/^\$mysqlRootPwd\s=\s/' => '$mysqlRootPwd = \'' . $bearsamppBins->getMysql()->getRootPwd() . '\';'
             ));
         }
-        if ($neardBins->getMariadb()->isEnable()) {
+        if ($bearsamppBins->getMariadb()->isEnable()) {
             Util::replaceInFile($this->getConf(), array(
-                '/^\$mariadbPort\s=\s(\d+)/' => '$mariadbPort = ' . $neardBins->getMariadb()->getPort() . ';',
-                '/^\$mariadbRootUser\s=\s/' => '$mariadbRootUser = \'' . $neardBins->getMariadb()->getRootUser() . '\';',
-                '/^\$mariadbRootPwd\s=\s/' => '$mariadbRootPwd = \'' . $neardBins->getMariadb()->getRootPwd() . '\';'
+                '/^\$mariadbPort\s=\s(\d+)/' => '$mariadbPort = ' . $bearsamppBins->getMariadb()->getPort() . ';',
+                '/^\$mariadbRootUser\s=\s/' => '$mariadbRootUser = \'' . $bearsamppBins->getMariadb()->getRootUser() . '\';',
+                '/^\$mariadbRootPwd\s=\s/' => '$mariadbRootPwd = \'' . $bearsamppBins->getMariadb()->getRootPwd() . '\';'
             ));
         }
-        if ($neardBins->getPostgresql()->isEnable()) {
+        if ($bearsamppBins->getPostgresql()->isEnable()) {
             Util::replaceInFile($this->getConf(), array(
-                '/^\$postgresqlPort\s=\s(\d+)/' => '$postgresqlPort = ' . $neardBins->getPostgresql()->getPort() . ';',
-                '/^\$postgresqlRootUser\s=\s/' => '$postgresqlRootUser = \'' . $neardBins->getPostgresql()->getRootUser() . '\';',
-                '/^\$postgresqlRootPwd\s=\s/' => '$postgresqlRootPwd = \'' . $neardBins->getPostgresql()->getRootPwd() . '\';'
+                '/^\$postgresqlPort\s=\s(\d+)/' => '$postgresqlPort = ' . $bearsamppBins->getPostgresql()->getPort() . ';',
+                '/^\$postgresqlRootUser\s=\s/' => '$postgresqlRootUser = \'' . $bearsamppBins->getPostgresql()->getRootUser() . '\';',
+                '/^\$postgresqlRootPwd\s=\s/' => '$postgresqlRootPwd = \'' . $bearsamppBins->getPostgresql()->getRootPwd() . '\';'
             ));
         }
-        if ($neardBins->getMongodb()->isEnable()) {
+        if ($bearsamppBins->getMongodb()->isEnable()) {
             Util::replaceInFile($this->getConf(), array(
-                '/^\$mongodbPort\s=\s(\d+)/' => '$mongodbPort = ' . $neardBins->getMongodb()->getPort() . ';'
+                '/^\$mongodbPort\s=\s(\d+)/' => '$mongodbPort = ' . $bearsamppBins->getMongodb()->getPort() . ';'
             ));
         }
 
@@ -95,9 +95,9 @@ class AppAdminer extends Module
     }
 
     public function setVersion($version) {
-        global $neardConfig;
+        global $bearsamppConfig;
         $this->version = $version;
-        $neardConfig->replace(self::ROOT_CFG_VERSION, $version);
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 

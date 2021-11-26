@@ -4,9 +4,9 @@ class ActionReload
 {
     public function __construct($args)
     {
-        global $neardBs, $neardCore, $neardConfig, $neardBins, $neardHomepage;
+        global $bearsamppBs, $bearsamppCore, $bearsamppConfig, $bearsamppBins, $bearsamppHomepage;
 
-        if (file_exists($neardCore->getExec())) {
+        if (file_exists($bearsamppCore->getExec())) {
             return;
         }
 
@@ -14,19 +14,19 @@ class ActionReload
         Util::startLoading();
 
         // Refresh hostname
-        $neardConfig->replace(Config::CFG_HOSTNAME, gethostname());
+        $bearsamppConfig->replace(Config::CFG_HOSTNAME, gethostname());
 
         // Refresh launch startup
-        $neardConfig->replace(Config::CFG_LAUNCH_STARTUP, Util::isLaunchStartup() ? Config::ENABLED : Config::DISABLED);
+        $bearsamppConfig->replace(Config::CFG_LAUNCH_STARTUP, Util::isLaunchStartup() ? Config::ENABLED : Config::DISABLED);
 
         // Check browser
-        $currentBrowser = $neardConfig->getBrowser();
+        $currentBrowser = $bearsamppConfig->getBrowser();
         if (empty($currentBrowser) || !file_exists($currentBrowser)) {
-            $neardConfig->replace(Config::CFG_BROWSER, Vbs::getDefaultBrowser());
+            $bearsamppConfig->replace(Config::CFG_BROWSER, Vbs::getDefaultBrowser());
         }
 
-        // Process neard.ini
-        file_put_contents($neardBs->getIniFilePath(), Util::utf8ToCp1252(TplApp::process()));
+        // Process bearsampp.ini
+        file_put_contents($bearsamppBs->getIniFilePath(), Util::utf8ToCp1252(TplApp::process()));
 
         // Process ConsoleZ config
         TplConsoleZ::process();
@@ -38,12 +38,12 @@ class ActionReload
         TplGitlist::process();
 
         // Refresh PEAR version cache file
-        $neardBins->getPhp()->getPearVersion();
+        $bearsamppBins->getPhp()->getPearVersion();
 
         // Rebuild alias homepage
-        $neardHomepage->refreshAliasContent();
+        $bearsamppHomepage->refreshAliasContent();
 
         // Rebuild _commons.js
-        $neardHomepage->refreshCommonsJsContent();
+        $bearsamppHomepage->refreshCommonsJsContent();
     }
 }

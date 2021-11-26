@@ -23,7 +23,7 @@ class TplConsoleZ
 
     public static function process()
     {
-        global $neardTools;
+        global $bearsamppTools;
         $result = '<?xml version="1.0"?>' . PHP_EOL . '<settings>' . PHP_EOL .
             self::getConsoleSection() . PHP_EOL .
             self::getAppearanceSection() . PHP_EOL .
@@ -33,22 +33,22 @@ class TplConsoleZ
             self::getTabsSection() . PHP_EOL .
             '</settings>';
 
-        file_put_contents($neardTools->getConsoleZ()->getConf(), $result);
+        file_put_contents($bearsamppTools->getConsoleZ()->getConf(), $result);
     }
 
     private static function getConsoleSection()
     {
-        global $neardBs, $neardTools;
+        global $bearsamppBs, $bearsamppTools;
 
         $sectionConsoleStart = self::getIncrStr(1) . '<console ' .
             'change_refresh="10" ' .
             'refresh="100" ' .
-            'rows="' . $neardTools->getConsoleZ()->getRows() . '" ' .
-            'columns="' . $neardTools->getConsoleZ()->getCols() . '" ' .
+            'rows="' . $bearsamppTools->getConsoleZ()->getRows() . '" ' .
+            'columns="' . $bearsamppTools->getConsoleZ()->getCols() . '" ' .
             'buffer_rows="2048" ' .
             'buffer_columns="0" ' .
             'shell="" ' .
-            'init_dir="' . $neardBs->getRootPath() . '" ' .
+            'init_dir="' . $bearsamppBs->getRootPath() . '" ' .
             'start_hidden="0" ' .
             'save_size="0">' . PHP_EOL;
 
@@ -238,27 +238,27 @@ class TplConsoleZ
 
     private static function getTabCmdSection()
     {
-        global $neardBs, $neardTools;
+        global $bearsamppBs, $bearsamppTools;
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleDefault(),
+            $bearsamppTools->getConsoleZ()->getTabTitleDefault(),
             self::ICON_APP,
-            $neardTools->getConsoleZ()->getShell(),
-            $neardBs->getRootPath()
+            $bearsamppTools->getConsoleZ()->getShell(),
+            $bearsamppBs->getRootPath()
         ) . PHP_EOL;
     }
 
     private static function getTabPowerShellSection()
     {
-        global $neardBs, $neardTools;
+        global $bearsamppBs, $bearsamppTools;
 
         $powerShellPath = Util::getPowerShellPath();
         if ($powerShellPath !== false) {
             return self::getTab(
-                $neardTools->getConsoleZ()->getTabTitlePowershell(),
+                $bearsamppTools->getConsoleZ()->getTabTitlePowershell(),
                 self::ICON_POWERSHELL,
                 $powerShellPath,
-                $neardBs->getRootPath()
+                $bearsamppBs->getRootPath()
             ) . PHP_EOL;
         }
 
@@ -267,271 +267,271 @@ class TplConsoleZ
 
     private static function getTabPearSection()
     {
-        global $neardBins, $neardTools;
+        global $bearsamppBins, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardBins->getPhp()->getPearExe() . '&quot; -V');
-        if (!file_exists($neardBins->getPhp()->getPearExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardBins->getPhp()->getPearExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppBins->getPhp()->getPearExe() . '&quot; -V');
+        if (!file_exists($bearsamppBins->getPhp()->getPearExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppBins->getPhp()->getPearExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitlePear(),
+            $bearsamppTools->getConsoleZ()->getTabTitlePear(),
             self::ICON_PEAR,
             $shell,
-            $neardBins->getPhp()->getSymlinkPath() . '/pear'
+            $bearsamppBins->getPhp()->getSymlinkPath() . '/pear'
         ) . PHP_EOL;
     }
 
     private static function getTabMysqlSection()
     {
-        global $neardBins, $neardTools;
+        global $bearsamppBins, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardBins->getMysql()->getCliExe() . '&quot; -u' .
-            $neardBins->getMysql()->getRootUser() .
-            ($neardBins->getMysql()->getRootPwd() ? ' -p' : ''));
-        if (!file_exists($neardBins->getMysql()->getCliExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardBins->getMysql()->getCliExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppBins->getMysql()->getCliExe() . '&quot; -u' .
+            $bearsamppBins->getMysql()->getRootUser() .
+            ($bearsamppBins->getMysql()->getRootPwd() ? ' -p' : ''));
+        if (!file_exists($bearsamppBins->getMysql()->getCliExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppBins->getMysql()->getCliExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleMysql(),
+            $bearsamppTools->getConsoleZ()->getTabTitleMysql(),
             self::ICON_DB,
             $shell,
-            $neardBins->getMysql()->getSymlinkPath()
+            $bearsamppBins->getMysql()->getSymlinkPath()
         ) . PHP_EOL;
     }
 
     private static function getTabMariadbSection()
     {
-        global $neardBins, $neardTools;
+        global $bearsamppBins, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardBins->getMariadb()->getCliExe() . '&quot; -u' .
-            $neardBins->getMariadb()->getRootUser() .
-            ($neardBins->getMariadb()->getRootPwd() ? ' -p' : ''));
-        if (!file_exists($neardBins->getMariadb()->getCliExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardBins->getMariadb()->getCliExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppBins->getMariadb()->getCliExe() . '&quot; -u' .
+            $bearsamppBins->getMariadb()->getRootUser() .
+            ($bearsamppBins->getMariadb()->getRootPwd() ? ' -p' : ''));
+        if (!file_exists($bearsamppBins->getMariadb()->getCliExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppBins->getMariadb()->getCliExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleMariadb(),
+            $bearsamppTools->getConsoleZ()->getTabTitleMariadb(),
             self::ICON_DB,
             $shell,
-            $neardBins->getMariadb()->getSymlinkPath()
+            $bearsamppBins->getMariadb()->getSymlinkPath()
         ) . PHP_EOL;
     }
 
     private static function getTabMongodbSection()
     {
-        global $neardBins, $neardTools;
+        global $bearsamppBins, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardBins->getMongodb()->getCliExe() . '&quot;');
-        if (!file_exists($neardBins->getMongodb()->getCliExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardBins->getMongodb()->getCliExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppBins->getMongodb()->getCliExe() . '&quot;');
+        if (!file_exists($bearsamppBins->getMongodb()->getCliExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppBins->getMongodb()->getCliExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleMongodb(),
+            $bearsamppTools->getConsoleZ()->getTabTitleMongodb(),
             self::ICON_DB,
             $shell,
-            $neardBins->getMongodb()->getSymlinkPath()
+            $bearsamppBins->getMongodb()->getSymlinkPath()
         ) . PHP_EOL;
     }
 
     private static function getTabPostgresqlSection()
     {
-        global $neardBins, $neardTools;
+        global $bearsamppBins, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardBins->getPostgresql()->getCliExe() . '&quot;' .
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppBins->getPostgresql()->getCliExe() . '&quot;' .
             ' -h 127.0.0.1' .
-            ' -p ' . $neardBins->getPostgresql()->getPort() .
-            ' -U ' . $neardBins->getPostgresql()->getRootUser() .
+            ' -p ' . $bearsamppBins->getPostgresql()->getPort() .
+            ' -U ' . $bearsamppBins->getPostgresql()->getRootUser() .
             ' -d postgres');
-        if (!file_exists($neardBins->getPostgresql()->getCliExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardBins->getPostgresql()->getCliExe() . ' not found...');
+        if (!file_exists($bearsamppBins->getPostgresql()->getCliExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppBins->getPostgresql()->getCliExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitlePostgresql(),
+            $bearsamppTools->getConsoleZ()->getTabTitlePostgresql(),
             self::ICON_DB,
             $shell,
-            $neardBins->getPostgresql()->getSymlinkPath()
+            $bearsamppBins->getPostgresql()->getSymlinkPath()
         ) . PHP_EOL;
     }
 
     private static function getTabSvnSection()
     {
-        global $neardBs, $neardBins, $neardTools;
+        global $bearsamppBs, $bearsamppBins, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardBins->getSvn()->getExe() . '&quot; --version');
-        if (!file_exists($neardBins->getSvn()->getExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardBins->getSvn()->getExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppBins->getSvn()->getExe() . '&quot; --version');
+        if (!file_exists($bearsamppBins->getSvn()->getExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppBins->getSvn()->getExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleSvn(),
+            $bearsamppTools->getConsoleZ()->getTabTitleSvn(),
             self::ICON_SVN,
             $shell,
-            $neardBs->getWwwPath()
+            $bearsamppBs->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabGitSection()
     {
-        global $neardBs, $neardTools;
+        global $bearsamppBs, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardTools->getGit()->getExe() . '&quot; --version');
-        if (!file_exists($neardTools->getGit()->getExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardTools->getGit()->getExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getGit()->getExe() . '&quot; --version');
+        if (!file_exists($bearsamppTools->getGit()->getExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppTools->getGit()->getExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleGit(),
+            $bearsamppTools->getConsoleZ()->getTabTitleGit(),
             self::ICON_GIT,
             $shell,
-            $neardBs->getWwwPath()
+            $bearsamppBs->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabNodejsSection()
     {
-        global $neardBs, $neardBins, $neardTools;
+        global $bearsamppBs, $bearsamppBins, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardBins->getNodejs()->getLaunch(). '&quot;');
-        if (!file_exists($neardBins->getNodejs()->getLaunch())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardBins->getNodejs()->getLaunch() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppBins->getNodejs()->getLaunch(). '&quot;');
+        if (!file_exists($bearsamppBins->getNodejs()->getLaunch())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppBins->getNodejs()->getLaunch() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleNodejs(),
+            $bearsamppTools->getConsoleZ()->getTabTitleNodejs(),
             self::ICON_NODEJS,
             $shell,
-            $neardBs->getWwwPath()
+            $bearsamppBs->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabComposerSection()
     {
-        global $neardBs, $neardTools;
+        global $bearsamppBs, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardTools->getComposer()->getExe() . '&quot; -V');
-        if (!file_exists($neardTools->getComposer()->getExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardTools->getComposer()->getExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getComposer()->getExe() . '&quot; -V');
+        if (!file_exists($bearsamppTools->getComposer()->getExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppTools->getComposer()->getExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleComposer(),
+            $bearsamppTools->getConsoleZ()->getTabTitleComposer(),
             self::ICON_COMPOSER,
             $shell,
-            $neardBs->getWwwPath()
+            $bearsamppBs->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabPythonSection()
     {
-        global $neardBs, $neardTools;
+        global $bearsamppBs, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardTools->getPython()->getExe() . '&quot; -V');
-        if (!file_exists($neardTools->getPython()->getExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardTools->getPython()->getExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getPython()->getExe() . '&quot; -V');
+        if (!file_exists($bearsamppTools->getPython()->getExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppTools->getPython()->getExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitlePython(),
+            $bearsamppTools->getConsoleZ()->getTabTitlePython(),
             self::ICON_PYTHON,
             $shell,
-            $neardBs->getWwwPath()
+            $bearsamppBs->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabRubySection()
     {
-        global $neardBs, $neardTools;
+        global $bearsamppBs, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardTools->getRuby()->getExe() . '&quot; -v');
-        if (!file_exists($neardTools->getRuby()->getExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardTools->getRuby()->getExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getRuby()->getExe() . '&quot; -v');
+        if (!file_exists($bearsamppTools->getRuby()->getExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppTools->getRuby()->getExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleRuby(),
+            $bearsamppTools->getConsoleZ()->getTabTitleRuby(),
             self::ICON_RUBY,
             $shell,
-            $neardBs->getWwwPath()
+            $bearsamppBs->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabYarnSection()
     {
-        global $neardBs, $neardTools;
+        global $bearsamppBs, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardTools->getYarn()->getExe() . '&quot; --version');
-        if (!file_exists($neardTools->getYarn()->getExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardTools->getYarn()->getExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getYarn()->getExe() . '&quot; --version');
+        if (!file_exists($bearsamppTools->getYarn()->getExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppTools->getYarn()->getExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleYarn(),
+            $bearsamppTools->getConsoleZ()->getTabTitleYarn(),
             self::ICON_YARN,
             $shell,
-            $neardBs->getWwwPath()
+            $bearsamppBs->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabPerlSection()
     {
-        global $neardBs, $neardTools;
+        global $bearsamppBs, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardTools->getPerl()->getExe() . '&quot; -v');
-        if (!file_exists($neardTools->getPerl()->getExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardTools->getPerl()->getExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getPerl()->getExe() . '&quot; -v');
+        if (!file_exists($bearsamppTools->getPerl()->getExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppTools->getPerl()->getExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitlePerl(),
+            $bearsamppTools->getConsoleZ()->getTabTitlePerl(),
             self::ICON_PERL,
             $shell,
-            $neardBs->getWwwPath()
+            $bearsamppBs->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabGhostscriptSection()
     {
-        global $neardBs, $neardTools;
+        global $bearsamppBs, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardTools->getGhostscript()->getExeConsole() . '&quot; -v');
-        if (!file_exists($neardTools->getGhostscript()->getExeConsole())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardTools->getGhostscript()->getExeConsole() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getGhostscript()->getExeConsole() . '&quot; -v');
+        if (!file_exists($bearsamppTools->getGhostscript()->getExeConsole())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppTools->getGhostscript()->getExeConsole() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleGhostscript(),
+            $bearsamppTools->getConsoleZ()->getTabTitleGhostscript(),
             self::ICON_GHOSTSCRIPT,
             $shell,
-            $neardBs->getWwwPath()
+            $bearsamppBs->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabNgrokSection()
     {
-        global $neardBs, $neardTools;
+        global $bearsamppBs, $bearsamppTools;
 
-        $shell = $neardTools->getConsoleZ()->getShell('&quot;' . $neardTools->getNgrok()->getExe() . '&quot; version');
-        if (!file_exists($neardTools->getNgrok()->getExe())) {
-            $shell = $neardTools->getConsoleZ()->getShell('echo ' . $neardTools->getNgrok()->getExe() . ' not found...');
+        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getNgrok()->getExe() . '&quot; version');
+        if (!file_exists($bearsamppTools->getNgrok()->getExe())) {
+            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppTools->getNgrok()->getExe() . ' not found...');
         }
 
         return self::getTab(
-            $neardTools->getConsoleZ()->getTabTitleNgrok(),
+            $bearsamppTools->getConsoleZ()->getTabTitleNgrok(),
             self::ICON_NGROK,
             $shell,
-            $neardBs->getWwwPath()
+            $bearsamppBs->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTab($title, $icon, $shell, $initDir)
     {
-        global $neardCore;
-        return self::getIncrStr(2) . '<tab title="' . $title . '" icon="' . $neardCore->getIconsPath(false) . '/' . $icon . '" use_default_icon="0">' . PHP_EOL .
+        global $bearsamppCore;
+        return self::getIncrStr(2) . '<tab title="' . $title . '" icon="' . $bearsamppCore->getIconsPath(false) . '/' . $icon . '" use_default_icon="0">' . PHP_EOL .
                 self::getIncrStr(3) . '<console shell="' . $shell . '" init_dir="' . $initDir . '" run_as_user="0" user=""/>' . PHP_EOL .
                 self::getIncrStr(3) . '<cursor style="0" r="255" g="255" b="255"/>' . PHP_EOL .
                 self::getIncrStr(3) . '<background type="0" r="0" g="0" b="0">' . PHP_EOL .

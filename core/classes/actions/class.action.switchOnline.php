@@ -4,49 +4,49 @@ class ActionSwitchOnline
 {
     public function __construct($args)
     {
-        global $neardConfig;
-        
+        global $bearsamppConfig;
+
         if (isset($args[0]) && $args[0] == Config::ENABLED || $args[0] == Config::DISABLED) {
             Util::startLoading();
             $putOnline = $args[0] == Config::ENABLED;
-            
+
             $this->switchApache($putOnline);
             $this->switchAlias($putOnline);
             $this->switchVhosts($putOnline);
             $this->switchFilezilla($putOnline);
-            $neardConfig->replace(Config::CFG_ONLINE, $args[0]);
+            $bearsamppConfig->replace(Config::CFG_ONLINE, $args[0]);
         }
     }
-    
+
     private function switchApache($putOnline)
     {
-        global $neardBins;
-        $neardBins->getApache()->refreshConf($putOnline);
+        global $bearsamppBins;
+        $bearsamppBins->getApache()->refreshConf($putOnline);
     }
-    
+
     private function switchAlias($putOnline)
     {
-        global $neardBins;
-        $neardBins->getApache()->refreshAlias($putOnline);
+        global $bearsamppBins;
+        $bearsamppBins->getApache()->refreshAlias($putOnline);
     }
-    
+
     private function switchVhosts($putOnline)
     {
-        global $neardBins;
-        $neardBins->getApache()->refreshVhosts($putOnline);
+        global $bearsamppBins;
+        $bearsamppBins->getApache()->refreshVhosts($putOnline);
     }
-    
+
     private function switchFilezilla($putOnline)
     {
-        global $neardBins;
-        
+        global $bearsamppBins;
+
         if ($putOnline) {
-            $neardBins->getFilezilla()->setConf(array(
+            $bearsamppBins->getFilezilla()->setConf(array(
                 BinFilezilla::CFG_IP_FILTER_ALLOWED => '*',
                 BinFilezilla::CFG_IP_FILTER_DISALLOWED => '',
             ));
         } else {
-            $neardBins->getFilezilla()->setConf(array(
+            $bearsamppBins->getFilezilla()->setConf(array(
                 BinFilezilla::CFG_IP_FILTER_ALLOWED => '127.0.0.1 ::1',
                 BinFilezilla::CFG_IP_FILTER_DISALLOWED => '*',
             ));

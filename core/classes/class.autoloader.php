@@ -8,10 +8,10 @@ class Autoloader
 
     public function load($class)
     {
-        global $neardBs;
+        global $bearsamppBs;
 
         $class = strtolower($class);
-        $rootPath = $neardBs->getCorePath();
+        $rootPath = $bearsamppBs->getCorePath();
 
         $file = $rootPath . '/classes/class.' . $class . '.php';
         if (Util::startWith($class, 'bin')) {

@@ -276,60 +276,60 @@ class Util
 
     public static function getAppBinsRegKey($fromRegistry = true)
     {
-        global $neardRegistry;
+        global $bearsamppRegistry;
 
         if ($fromRegistry) {
-            $value = $neardRegistry->getValue(
+            $value = $bearsamppRegistry->getValue(
                 Registry::HKEY_LOCAL_MACHINE,
                 Registry::ENV_KEY,
                 Registry::APP_BINS_REG_ENTRY
             );
             self::logDebug('App reg key from registry: ' . $value);
         } else {
-            global $neardBins, $neardTools;
+            global $bearsamppBins, $bearsamppTools;
             $value = '';
-            if ($neardBins->getApache()->isEnable()) {
-                $value .= $neardBins->getApache()->getSymlinkPath() . '/bin;';
+            if ($bearsamppBins->getApache()->isEnable()) {
+                $value .= $bearsamppBins->getApache()->getSymlinkPath() . '/bin;';
             }
-            if ($neardBins->getPhp()->isEnable()) {
-                $value .= $neardBins->getPhp()->getSymlinkPath() . ';';
-                $value .= $neardBins->getPhp()->getSymlinkPath() . '/pear;';
-                $value .= $neardBins->getPhp()->getSymlinkPath() . '/deps;';
-                $value .= $neardBins->getPhp()->getSymlinkPath() . '/imagick;';
+            if ($bearsamppBins->getPhp()->isEnable()) {
+                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . ';';
+                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/pear;';
+                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/deps;';
+                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/imagick;';
             }
-            if ($neardBins->getNodejs()->isEnable()) {
-                $value .= $neardBins->getNodejs()->getSymlinkPath() . ';';
+            if ($bearsamppBins->getNodejs()->isEnable()) {
+                $value .= $bearsamppBins->getNodejs()->getSymlinkPath() . ';';
             }
-            if ($neardBins->getSvn()->isEnable()) {
-                $value .= $neardBins->getSvn()->getSymlinkPath() . ';';
+            if ($bearsamppBins->getSvn()->isEnable()) {
+                $value .= $bearsamppBins->getSvn()->getSymlinkPath() . ';';
             }
-            if ($neardTools->getComposer()->isEnable()) {
-                $value .= $neardTools->getComposer()->getSymlinkPath() . ';';
-                $value .= $neardTools->getComposer()->getSymlinkPath() . '/vendor/bin;';
+            if ($bearsamppTools->getComposer()->isEnable()) {
+                $value .= $bearsamppTools->getComposer()->getSymlinkPath() . ';';
+                $value .= $bearsamppTools->getComposer()->getSymlinkPath() . '/vendor/bin;';
             }
-            if ($neardTools->getGhostscript()->isEnable()) {
-                $value .= $neardTools->getGhostscript()->getSymlinkPath() . '/bin;';
+            if ($bearsamppTools->getGhostscript()->isEnable()) {
+                $value .= $bearsamppTools->getGhostscript()->getSymlinkPath() . '/bin;';
             }
-            if ($neardTools->getGit()->isEnable()) {
-                $value .= $neardTools->getGit()->getSymlinkPath() . '/bin;';
+            if ($bearsamppTools->getGit()->isEnable()) {
+                $value .= $bearsamppTools->getGit()->getSymlinkPath() . '/bin;';
             }
-            if ($neardTools->getNgrok()->isEnable()) {
-                $value .= $neardTools->getNgrok()->getSymlinkPath() . ';';
+            if ($bearsamppTools->getNgrok()->isEnable()) {
+                $value .= $bearsamppTools->getNgrok()->getSymlinkPath() . ';';
             }
-            if ($neardTools->getPerl()->isEnable()) {
-                $value .= $neardTools->getPerl()->getSymlinkPath() . '/perl/site/bin;';
-                $value .= $neardTools->getPerl()->getSymlinkPath() . '/perl/bin;';
-                $value .= $neardTools->getPerl()->getSymlinkPath() . '/c/bin;';
+            if ($bearsamppTools->getPerl()->isEnable()) {
+                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/perl/site/bin;';
+                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/perl/bin;';
+                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/c/bin;';
             }
-            if ($neardTools->getPython()->isEnable()) {
-                $value .= $neardTools->getPython()->getSymlinkPath() . '/bin;';
+            if ($bearsamppTools->getPython()->isEnable()) {
+                $value .= $bearsamppTools->getPython()->getSymlinkPath() . '/bin;';
             }
-            if ($neardTools->getRuby()->isEnable()) {
-                $value .= $neardTools->getRuby()->getSymlinkPath() . '/bin;';
+            if ($bearsamppTools->getRuby()->isEnable()) {
+                $value .= $bearsamppTools->getRuby()->getSymlinkPath() . '/bin;';
             }
-            if ($neardTools->getYarn()->isEnable()) {
-                $value .= $neardTools->getYarn()->getSymlinkPath() . ';';
-                $value .= $neardTools->getYarn()->getSymlinkPath() . '/global/bin;';
+            if ($bearsamppTools->getYarn()->isEnable()) {
+                $value .= $bearsamppTools->getYarn()->getSymlinkPath() . ';';
+                $value .= $bearsamppTools->getYarn()->getSymlinkPath() . '/global/bin;';
             }
             $value = self::formatWindowsPath($value);
             self::logDebug('Generated app bins reg key: ' . $value);
@@ -340,8 +340,8 @@ class Util
 
     public static function setAppBinsRegKey($value)
     {
-        global $neardRegistry;
-        return $neardRegistry->setStringValue(
+        global $bearsamppRegistry;
+        return $bearsamppRegistry->setStringValue(
             Registry::HKEY_LOCAL_MACHINE,
             Registry::ENV_KEY,
             Registry::APP_BINS_REG_ENTRY,
@@ -351,8 +351,8 @@ class Util
 
     public static function getAppPathRegKey()
     {
-        global $neardRegistry;
-        return $neardRegistry->getValue(
+        global $bearsamppRegistry;
+        return $bearsamppRegistry->getValue(
             Registry::HKEY_LOCAL_MACHINE,
             Registry::ENV_KEY,
             Registry::APP_PATH_REG_ENTRY
@@ -361,8 +361,8 @@ class Util
 
     public static function setAppPathRegKey($value)
     {
-        global $neardRegistry;
-        return $neardRegistry->setStringValue(
+        global $bearsamppRegistry;
+        return $bearsamppRegistry->setStringValue(
             Registry::HKEY_LOCAL_MACHINE,
             Registry::ENV_KEY,
             Registry::APP_PATH_REG_ENTRY,
@@ -372,8 +372,8 @@ class Util
 
     public static function getSysPathRegKey()
     {
-        global $neardRegistry;
-        return $neardRegistry->getValue(
+        global $bearsamppRegistry;
+        return $bearsamppRegistry->getValue(
             Registry::HKEY_LOCAL_MACHINE,
             Registry::ENV_KEY,
             Registry::SYSPATH_REG_ENTRY
@@ -382,8 +382,8 @@ class Util
 
     public static function setSysPathRegKey($value)
     {
-        global $neardRegistry;
-        return $neardRegistry->setExpandStringValue(
+        global $bearsamppRegistry;
+        return $bearsamppRegistry->setExpandStringValue(
             Registry::HKEY_LOCAL_MACHINE,
             Registry::ENV_KEY,
             Registry::SYSPATH_REG_ENTRY,
@@ -393,8 +393,8 @@ class Util
 
     public static function getProcessorRegKey()
     {
-        global $neardRegistry;
-        return $neardRegistry->getValue(
+        global $bearsamppRegistry;
+        return $bearsamppRegistry->getValue(
             Registry::HKEY_LOCAL_MACHINE,
             Registry::PROCESSOR_REG_SUBKEY,
             Registry::PROCESSOR_REG_ENTRY
@@ -423,10 +423,10 @@ class Util
 
     private static function log($data, $type, $file = null)
     {
-        global $neardBs, $neardCore, $neardConfig;
-        $file = $file == null ? ($type == self::LOG_ERROR ? $neardBs->getErrorLogFilePath() : $neardBs->getLogFilePath()) : $file;
-        if (!$neardBs->isBootstrap()) {
-            $file = $neardBs->getHomepageLogFilePath();
+        global $bearsamppBs, $bearsamppCore, $bearsamppConfig;
+        $file = $file == null ? ($type == self::LOG_ERROR ? $bearsamppBs->getErrorLogFilePath() : $bearsamppBs->getLogFilePath()) : $file;
+        if (!$bearsamppBs->isBootstrap()) {
+            $file = $bearsamppBs->getHomepageLogFilePath();
         }
 
         $verbose = array();
@@ -436,20 +436,20 @@ class Util
         $verbose[Config::VERBOSE_TRACE] = $verbose[Config::VERBOSE_DEBUG] || $type == self::LOG_TRACE;
 
         $writeLog = false;
-        if ($neardConfig->getLogsVerbose() == Config::VERBOSE_SIMPLE && $verbose[Config::VERBOSE_SIMPLE]) {
+        if ($bearsamppConfig->getLogsVerbose() == Config::VERBOSE_SIMPLE && $verbose[Config::VERBOSE_SIMPLE]) {
             $writeLog = true;
-        } elseif ($neardConfig->getLogsVerbose() == Config::VERBOSE_REPORT && $verbose[Config::VERBOSE_REPORT]) {
+        } elseif ($bearsamppConfig->getLogsVerbose() == Config::VERBOSE_REPORT && $verbose[Config::VERBOSE_REPORT]) {
             $writeLog = true;
-        } elseif ($neardConfig->getLogsVerbose() == Config::VERBOSE_DEBUG && $verbose[Config::VERBOSE_DEBUG]) {
+        } elseif ($bearsamppConfig->getLogsVerbose() == Config::VERBOSE_DEBUG && $verbose[Config::VERBOSE_DEBUG]) {
             $writeLog = true;
-        } elseif ($neardConfig->getLogsVerbose() == Config::VERBOSE_TRACE && $verbose[Config::VERBOSE_TRACE]) {
+        } elseif ($bearsamppConfig->getLogsVerbose() == Config::VERBOSE_TRACE && $verbose[Config::VERBOSE_TRACE]) {
             $writeLog = true;
         }
 
         if ($writeLog) {
             file_put_contents(
                 $file,
-                '[' . date('Y-m-d H:i:s', time()) . '] # ' . APP_TITLE . ' ' . $neardCore->getAppVersion() . ' # ' . $type . ': ' . $data . PHP_EOL,
+                '[' . date('Y-m-d H:i:s', time()) . '] # ' . APP_TITLE . ' ' . $bearsamppCore->getAppVersion() . ' # ' . $type . ': ' . $data . PHP_EOL,
                 FILE_APPEND
             );
         }
@@ -457,17 +457,17 @@ class Util
 
     public static function logSeparator()
     {
-        global $neardBs;
+        global $bearsamppBs;
 
         $logs = array(
-            $neardBs->getLogFilePath(),
-            $neardBs->getErrorLogFilePath(),
-            $neardBs->getServicesLogFilePath(),
-            $neardBs->getRegistryLogFilePath(),
-            $neardBs->getStartupLogFilePath(),
-            $neardBs->getBatchLogFilePath(),
-            $neardBs->getVbsLogFilePath(),
-            $neardBs->getWinbinderLogFilePath(),
+            $bearsamppBs->getLogFilePath(),
+            $bearsamppBs->getErrorLogFilePath(),
+            $bearsamppBs->getServicesLogFilePath(),
+            $bearsamppBs->getRegistryLogFilePath(),
+            $bearsamppBs->getStartupLogFilePath(),
+            $bearsamppBs->getBatchLogFilePath(),
+            $bearsamppBs->getVbsLogFilePath(),
+            $bearsamppBs->getWinbinderLogFilePath(),
         );
 
         $separator = '========================================================================================' . PHP_EOL;
@@ -579,19 +579,19 @@ class Util
 
     public static function startLoading()
     {
-        global $neardCore, $neardWinbinder;
-        $neardWinbinder->exec($neardCore->getPhpExe(), Core::BOOTSTRAP_FILE . ' ' . Action::LOADING);
+        global $bearsamppCore, $bearsamppWinbinder;
+        $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), Core::BOOTSTRAP_FILE . ' ' . Action::LOADING);
     }
 
     public static function stopLoading()
     {
-        global $neardCore;
-        if (file_exists($neardCore->getLoadingPid())) {
-            $pids = file($neardCore->getLoadingPid());
+        global $bearsamppCore;
+        if (file_exists($bearsamppCore->getLoadingPid())) {
+            $pids = file($bearsamppCore->getLoadingPid());
             foreach ($pids as $pid) {
                 Win32Ps::kill($pid);
             }
-            @unlink($neardCore->getLoadingPid());
+            @unlink($bearsamppCore->getLoadingPid());
         }
     }
 
@@ -612,207 +612,207 @@ class Util
 
     private static function getPathsToScan()
     {
-        global $neardBs, $neardCore, $neardBins, $neardApps, $neardTools;
+        global $bearsamppBs, $bearsamppCore, $bearsamppBins, $bearsamppApps, $bearsamppTools;
         $paths = array();
 
         // Alias
         $paths[] = array(
-            'path' => $neardBs->getAliasPath(),
+            'path' => $bearsamppBs->getAliasPath(),
             'includes' => array(''),
             'recursive' => false
         );
 
         // Vhosts
         $paths[] = array(
-            'path' => $neardBs->getVhostsPath(),
+            'path' => $bearsamppBs->getVhostsPath(),
             'includes' => array(''),
             'recursive' => false
         );
 
         // OpenSSL
         $paths[] = array(
-            'path' => $neardCore->getOpenSslPath(),
+            'path' => $bearsamppCore->getOpenSslPath(),
             'includes' => array('openssl.cfg'),
             'recursive' => false
         );
 
         // Homepage
         $paths[] = array(
-            'path' => $neardCore->getResourcesPath() . '/homepage',
+            'path' => $bearsamppCore->getResourcesPath() . '/homepage',
             'includes' => array('alias.conf'),
             'recursive' => false
         );
 
         // Apache
-        $folderList = self::getFolderList($neardBins->getApache()->getRootPath());
+        $folderList = self::getFolderList($bearsamppBins->getApache()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardBins->getApache()->getRootPath() . '/' . $folder,
+                'path' => $bearsamppBins->getApache()->getRootPath() . '/' . $folder,
                 'includes' => array('.ini', '.conf'),
                 'recursive' => true
             );
         }
 
         // PHP
-        $folderList = self::getFolderList($neardBins->getPhp()->getRootPath());
+        $folderList = self::getFolderList($bearsamppBins->getPhp()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardBins->getPhp()->getRootPath() . '/' . $folder,
+                'path' => $bearsamppBins->getPhp()->getRootPath() . '/' . $folder,
                 'includes' => array('.php', '.bat', '.ini', '.reg', '.inc'),
                 'recursive' => true
             );
         }
 
         // MySQL
-        $folderList = self::getFolderList($neardBins->getMysql()->getRootPath());
+        $folderList = self::getFolderList($bearsamppBins->getMysql()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardBins->getMysql()->getRootPath() . '/' . $folder,
+                'path' => $bearsamppBins->getMysql()->getRootPath() . '/' . $folder,
                 'includes' => array('my.ini'),
                 'recursive' => false
             );
         }
 
         // MariaDB
-        $folderList = self::getFolderList($neardBins->getMariadb()->getRootPath());
+        $folderList = self::getFolderList($bearsamppBins->getMariadb()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardBins->getMariadb()->getRootPath() . '/' . $folder,
+                'path' => $bearsamppBins->getMariadb()->getRootPath() . '/' . $folder,
                 'includes' => array('my.ini'),
                 'recursive' => false
             );
         }
 
         // MongoDB
-        $folderList = self::getFolderList($neardBins->getMongodb()->getRootPath());
+        $folderList = self::getFolderList($bearsamppBins->getMongodb()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardBins->getMongodb()->getRootPath() . '/' . $folder,
+                'path' => $bearsamppBins->getMongodb()->getRootPath() . '/' . $folder,
                 'includes' => array('mongodb.conf'),
                 'recursive' => false
             );
         }
 
         // PostgreSQL
-        $folderList = self::getFolderList($neardBins->getPostgresql()->getRootPath());
+        $folderList = self::getFolderList($bearsamppBins->getPostgresql()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardBins->getPostgresql()->getRootPath() . '/' . $folder,
+                'path' => $bearsamppBins->getPostgresql()->getRootPath() . '/' . $folder,
                 'includes' => array('.nrd', '.conf', '.bat'),
                 'recursive' => true
             );
         }
 
         // Node.js
-        $folderList = self::getFolderList($neardBins->getNodejs()->getRootPath());
+        $folderList = self::getFolderList($bearsamppBins->getNodejs()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardBins->getNodejs()->getRootPath() . '/' . $folder . '/etc',
+                'path' => $bearsamppBins->getNodejs()->getRootPath() . '/' . $folder . '/etc',
                 'includes' => array('npmrc'),
                 'recursive' => true
             );
             $paths[] = array(
-                'path' => $neardBins->getNodejs()->getRootPath() . '/' . $folder . '/node_modules/npm',
+                'path' => $bearsamppBins->getNodejs()->getRootPath() . '/' . $folder . '/node_modules/npm',
                 'includes' => array('npmrc'),
                 'recursive' => false
             );
         }
 
         // Filezilla
-        $folderList = self::getFolderList($neardBins->getFilezilla()->getRootPath());
+        $folderList = self::getFolderList($bearsamppBins->getFilezilla()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardBins->getFilezilla()->getRootPath() . '/' . $folder,
+                'path' => $bearsamppBins->getFilezilla()->getRootPath() . '/' . $folder,
                 'includes' => array('.xml'),
                 'recursive' => true
             );
         }
 
         // WebSVN
-        $folderList = self::getFolderList($neardApps->getWebsvn()->getRootPath());
+        $folderList = self::getFolderList($bearsamppApps->getWebsvn()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardApps->getWebsvn()->getRootPath() . '/' . $folder . '/include',
+                'path' => $bearsamppApps->getWebsvn()->getRootPath() . '/' . $folder . '/include',
                 'includes' => array('config.php'),
                 'recursive' => false
             );
         }
 
         // GitList
-        $folderList = self::getFolderList($neardApps->getGitlist()->getRootPath());
+        $folderList = self::getFolderList($bearsamppApps->getGitlist()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardApps->getGitlist()->getRootPath() . '/' . $folder,
+                'path' => $bearsamppApps->getGitlist()->getRootPath() . '/' . $folder,
                 'includes' => array('config.ini'),
                 'recursive' => false
             );
         }
 
         // Composer
-        $folderList = self::getFolderList($neardTools->getComposer()->getRootPath());
+        $folderList = self::getFolderList($bearsamppTools->getComposer()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardTools->getComposer()->getRootPath() . '/' . $folder,
+                'path' => $bearsamppTools->getComposer()->getRootPath() . '/' . $folder,
                 'includes' => array('composer.json'),
                 'recursive' => false
             );
         }
 
         // ConsoleZ
-        $folderList = self::getFolderList($neardTools->getConsoleZ()->getRootPath());
+        $folderList = self::getFolderList($bearsamppTools->getConsoleZ()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardTools->getConsoleZ()->getRootPath() . '/' . $folder,
+                'path' => $bearsamppTools->getConsoleZ()->getRootPath() . '/' . $folder,
                 'includes' => array('console.xml', '.ini', '.btm'),
                 'recursive' => true
             );
         }
 
         // Python
-        $folderList = self::getFolderList($neardTools->getPython()->getRootPath());
+        $folderList = self::getFolderList($bearsamppTools->getPython()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardTools->getPython()->getRootPath() . '/' . $folder . '/bin',
+                'path' => $bearsamppTools->getPython()->getRootPath() . '/' . $folder . '/bin',
                 'includes' => array('.bat'),
                 'recursive' => false
             );
             $paths[] = array(
-                'path' => $neardTools->getPython()->getRootPath() . '/' . $folder . '/settings',
+                'path' => $bearsamppTools->getPython()->getRootPath() . '/' . $folder . '/settings',
                 'includes' => array('winpython.ini'),
                 'recursive' => false
             );
         }
 
         // Ruby
-        $folderList = self::getFolderList($neardTools->getRuby()->getRootPath());
+        $folderList = self::getFolderList($bearsamppTools->getRuby()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardTools->getRuby()->getRootPath() . '/' . $folder . '/bin',
+                'path' => $bearsamppTools->getRuby()->getRootPath() . '/' . $folder . '/bin',
                 'includes' => array('!.dll','!.exe'),
                 'recursive' => false
             );
         }
 
         // Yarn
-        $folderList = self::getFolderList($neardTools->getYarn()->getRootPath());
+        $folderList = self::getFolderList($bearsamppTools->getYarn()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path' => $neardTools->getYarn()->getRootPath() . '/' . $folder,
+                'path' => $bearsamppTools->getYarn()->getRootPath() . '/' . $folder,
                 'includes' => array('yarn.bat'),
                 'recursive' => false
             );
             $paths[] = array(
-                'path' => $neardTools->getYarn()->getRootPath() . '/' . $folder . '/global/bin',
+                'path' => $bearsamppTools->getYarn()->getRootPath() . '/' . $folder . '/global/bin',
                 'includes' => array('.bat'),
                 'recursive' => false
             );
             $paths[] = array(
-                'path' => $neardTools->getYarn()->getRootPath() . '/' . $folder . '/nodejs/etc',
+                'path' => $bearsamppTools->getYarn()->getRootPath() . '/' . $folder . '/nodejs/etc',
                 'includes' => array('npmrc'),
                 'recursive' => true
             );
             $paths[] = array(
-                'path' => $neardTools->getYarn()->getRootPath() . '/' . $folder . '/nodejs/node_modules/npm',
+                'path' => $bearsamppTools->getYarn()->getRootPath() . '/' . $folder . '/nodejs/node_modules/npm',
                 'includes' => array('npmrc'),
                 'recursive' => false
             );
@@ -861,16 +861,16 @@ class Util
 
     public static function changePath($filesToScan, $rootPath = null)
     {
-        global $neardBs, $neardCore;
+        global $bearsamppBs, $bearsamppCore;
 
         $result = array(
             'countChangedOcc' => 0,
             'countChangedFiles' => 0
         );
 
-        $rootPath = $rootPath != null ? $rootPath : $neardBs->getRootPath();
-        $unixOldPath = self::formatUnixPath($neardCore->getLastPathContent());
-        $windowsOldPath = self::formatWindowsPath($neardCore->getLastPathContent());
+        $rootPath = $rootPath != null ? $rootPath : $bearsamppBs->getRootPath();
+        $unixOldPath = self::formatUnixPath($bearsamppCore->getLastPathContent());
+        $windowsOldPath = self::formatWindowsPath($bearsamppCore->getLastPathContent());
         $unixCurrentPath = self::formatUnixPath($rootPath);
         $windowsCurrentPath = self::formatWindowsPath($rootPath);
 
@@ -926,7 +926,7 @@ class Util
 
     public static function getLatestChangelog($markdown = false)
     {
-        global $neardCore, $neardBins;
+        global $bearsamppCore, $bearsamppBins;
 
         $content = self::getRemoteFile(self::getGithubRawUrl('CHANGELOG.md'));
         if (empty($content)) {
@@ -935,13 +935,13 @@ class Util
         }
 
         if ($markdown) {
-            if (version_compare($neardBins->getPhp()->getVersion(), '5.2.17', '>')) {
-                require_once $neardCore->getLibsPath() . '/markdown/1.7.0/MarkdownInterface.php';
-                require_once $neardCore->getLibsPath() . '/markdown/1.7.0/Markdown.php';
-                require_once $neardCore->getLibsPath() . '/markdown/1.7.0/MarkdownExtra.php';
+            if (version_compare($bearsamppBins->getPhp()->getVersion(), '5.2.17', '>')) {
+                require_once $bearsamppCore->getLibsPath() . '/markdown/1.7.0/MarkdownInterface.php';
+                require_once $bearsamppCore->getLibsPath() . '/markdown/1.7.0/Markdown.php';
+                require_once $bearsamppCore->getLibsPath() . '/markdown/1.7.0/MarkdownExtra.php';
                 $content = call_user_func_array(array('Michelf\\MarkDownExtra', 'defaultTransform'), array($content));
             } else {
-                require_once $neardCore->getLibsPath() . '/markdown/1.0.2/markdown.php';
+                require_once $bearsamppCore->getLibsPath() . '/markdown/1.0.2/markdown.php';
                 $content = Markdown(preg_replace('/^.+\n.*\n/', '', $content));
             }
         }
@@ -956,14 +956,14 @@ class Util
 
     public static function getWebsiteUrl($path = '', $fragment = '', $utmSource = true)
     {
-        global $neardCore;
+        global $bearsamppCore;
 
         $url = APP_WEBSITE;
         if (!empty($path)) {
             $url .= '/' . ltrim($path, '/');
         }
         if ($utmSource) {
-            $url = rtrim($url, '/') . '/?utm_source=neard-' . $neardCore->getAppVersion();
+            $url = rtrim($url, '/') . '/?utm_source=bearsampp-' . $bearsamppCore->getAppVersion();
         }
         if (!empty($fragment)) {
             $url .= $fragment;
@@ -1160,10 +1160,10 @@ class Util
 
     public static function installService($bin, $port, $syntaxCheckCmd, $showWindow = false)
     {
-        global $neardLang, $neardWinbinder;
+        global $bearsamppLang, $bearsamppWinbinder;
         $name = $bin->getName();
         $service = $bin->getService();
-        $boxTitle = sprintf($neardLang->getValue(Lang::INSTALL_SERVICE_TITLE), $name);
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::INSTALL_SERVICE_TITLE), $name);
 
         $isPortInUse = self::isPortInUse($port);
         if ($isPortInUse === false) {
@@ -1172,32 +1172,32 @@ class Util
                 if ($service->start()) {
                     self::logInfo(sprintf('%s service successfully installed. (name: %s ; port: %s)', $name, $service->getName(), $port));
                     if ($showWindow) {
-                        $neardWinbinder->messageBoxInfo(
-                            sprintf($neardLang->getValue(Lang::SERVICE_INSTALLED), $name, $service->getName(), $port),
+                        $bearsamppWinbinder->messageBoxInfo(
+                            sprintf($bearsamppLang->getValue(Lang::SERVICE_INSTALLED), $name, $service->getName(), $port),
                             $boxTitle
                         );
                     }
                     return true;
                 } else {
-                    $serviceError = sprintf($neardLang->getValue(Lang::SERVICE_INSTALL_ERROR), $name);
+                    $serviceError = sprintf($bearsamppLang->getValue(Lang::SERVICE_INSTALL_ERROR), $name);
                     $serviceErrorLog = sprintf('Error during the installation of %s service', $name);
                     if (!empty($syntaxCheckCmd)) {
                         $cmdSyntaxCheck = $bin->getCmdLineOutput($syntaxCheckCmd);
                         if (!$cmdSyntaxCheck['syntaxOk']) {
-                            $serviceError .= PHP_EOL . sprintf($neardLang->getValue(Lang::STARTUP_SERVICE_SYNTAX_ERROR), $cmdSyntaxCheck['content']);
+                            $serviceError .= PHP_EOL . sprintf($bearsamppLang->getValue(Lang::STARTUP_SERVICE_SYNTAX_ERROR), $cmdSyntaxCheck['content']);
                             $serviceErrorLog .= sprintf(' (conf errors detected : %s)', $cmdSyntaxCheck['content']);
                         }
                     }
                     self::logError($serviceErrorLog);
                     if ($showWindow) {
-                        $neardWinbinder->messageBoxError($serviceError, $boxTitle);
+                        $bearsamppWinbinder->messageBoxError($serviceError, $boxTitle);
                     }
                 }
             } else {
                 self::logWarning(sprintf('%s service already installed', $name));
                 if ($showWindow) {
-                    $neardWinbinder->messageBoxWarning(
-                        sprintf($neardLang->getValue(Lang::SERVICE_ALREADY_INSTALLED), $name),
+                    $bearsamppWinbinder->messageBoxWarning(
+                        sprintf($bearsamppLang->getValue(Lang::SERVICE_ALREADY_INSTALLED), $name),
                         $boxTitle
                     );
                 }
@@ -1206,8 +1206,8 @@ class Util
         } elseif ($service->isRunning()) {
             self::logWarning(sprintf('%s service already installed and running', $name));
             if ($showWindow) {
-                $neardWinbinder->messageBoxWarning(
-                    sprintf($neardLang->getValue(Lang::SERVICE_ALREADY_INSTALLED), $name),
+                $bearsamppWinbinder->messageBoxWarning(
+                    sprintf($bearsamppLang->getValue(Lang::SERVICE_ALREADY_INSTALLED), $name),
                     $boxTitle
                 );
             }
@@ -1215,8 +1215,8 @@ class Util
         } else {
             self::logError(sprintf('Port %s is used by an other application : %s', $name));
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::PORT_NOT_USED_BY), $port, $isPortInUse),
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port, $isPortInUse),
                     $boxTitle
                 );
             }
@@ -1249,24 +1249,24 @@ class Util
 
     public static function startService($bin, $syntaxCheckCmd, $showWindow = false)
     {
-        global $neardLang, $neardWinbinder;
+        global $bearsamppLang, $bearsamppWinbinder;
         $name = $bin->getName();
         $service = $bin->getService();
-        $boxTitle = sprintf($neardLang->getValue(Lang::START_SERVICE_TITLE), $name);
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::START_SERVICE_TITLE), $name);
 
         if (!$service->start()) {
-            $serviceError = sprintf($neardLang->getValue(Lang::START_SERVICE_ERROR), $name);
+            $serviceError = sprintf($bearsamppLang->getValue(Lang::START_SERVICE_ERROR), $name);
             $serviceErrorLog = sprintf('Error while starting the %s service', $name);
             if (!empty($syntaxCheckCmd)) {
                 $cmdSyntaxCheck = $bin->getCmdLineOutput($syntaxCheckCmd);
                 if (!$cmdSyntaxCheck['syntaxOk']) {
-                    $serviceError .= PHP_EOL . sprintf($neardLang->getValue(Lang::STARTUP_SERVICE_SYNTAX_ERROR), $cmdSyntaxCheck['content']);
+                    $serviceError .= PHP_EOL . sprintf($bearsamppLang->getValue(Lang::STARTUP_SERVICE_SYNTAX_ERROR), $cmdSyntaxCheck['content']);
                     $serviceErrorLog .= sprintf(' (conf errors detected : %s)', $cmdSyntaxCheck['content']);
                 }
             }
             self::logError($serviceErrorLog);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError($serviceError, $boxTitle);
+                $bearsamppWinbinder->messageBoxError($serviceError, $boxTitle);
             }
             return false;
         }
@@ -1310,17 +1310,17 @@ class Util
     }
 
     public static function getNssmEnvPaths() {
-        global $neardBs;
+        global $bearsamppBs;
 
         $result = '';
-        $nssmEnvPathsFile = $neardBs->getRootPath() . '/nssmEnvPaths.dat';
+        $nssmEnvPathsFile = $bearsamppBs->getRootPath() . '/nssmEnvPaths.dat';
 
         if (is_file($nssmEnvPathsFile)) {
             $paths = explode(PHP_EOL, file_get_contents($nssmEnvPathsFile));
             foreach ($paths as $path) {
                 $path = trim($path);
                 if (stripos($path, ':') === false) {
-                    $path = $neardBs->getRootPath() . '/' . $path;
+                    $path = $bearsamppBs->getRootPath() . '/' . $path;
                 }
                 if (is_dir($path)) {
                     $result .= self::formatUnixPath($path) . ';';
@@ -1334,9 +1334,9 @@ class Util
     }
 
     public static function openFileContent($caption, $content) {
-        global $neardBs, $neardConfig, $neardWinbinder;
+        global $bearsamppBs, $bearsamppConfig, $bearsamppWinbinder;
 
-        $folderPath = $neardBs->getTmpPath() . '/openFileContent-' . self::random();
+        $folderPath = $bearsamppBs->getTmpPath() . '/openFileContent-' . self::random();
         if (!is_dir($folderPath)) {
             mkdir($folderPath, 0777, true);
         }
@@ -1344,6 +1344,6 @@ class Util
         $filepath = self::formatWindowsPath($folderPath . '/' . $caption);
         file_put_contents($filepath, $content);
 
-        $neardWinbinder->exec($neardConfig->getNotepad(), '"' . $filepath . '"');
+        $bearsamppWinbinder->exec($bearsamppConfig->getNotepad(), '"' . $filepath . '"');
     }
 }

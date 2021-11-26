@@ -4,11 +4,11 @@ class ActionRefreshReposStartup
 {
     public function __construct($args)
     {
-        global $neardTools;
-        
+        global $bearsamppTools;
+
         if (isset($args[0]) && !empty($args[0]) && isset($args[1])) {
             if ($args[0] == ActionRefreshRepos::GIT) {
-                $neardTools->getGit()->setScanStartup($args[1]);
+                $bearsamppTools->getGit()->setScanStartup($args[1]);
             }
         }
     }

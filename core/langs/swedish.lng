@@ -149,8 +149,8 @@ switchVersionOk = "%s version har bytts till %s"
 switchVersionOkRestart = "%s version har ändrats till %s"
 apacheIncpt = "Apache %s verkar inte vara kompatibelt med PHP %s."
 phpIncpt = "PHP %s verkar inte vara kompatibelt med Apache %s."
-neardConfNotFoundError = "Neard konfig-filer hittades inte för %s."
-neardConfMalformedError = "Neard konfig-filer felbildades för %s."
+bearsamppConfNotFoundError = "bearsampp konfig-filer hittades inte för %s."
+bearsamppConfMalformedError = "bearsampp konfig-filer felbildades för %s."
 
 ; Action Switch PHP setting
 switchPhpSettingTitle = "Ändra PHP-inställningar"
@@ -283,7 +283,7 @@ changeBrowserOk = "Webbläsare byttes framgångsrikt till:@nl@%s"
 
 ; Action About
 aboutTitle = "Om..."
-aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@Neard is free software; you can redistribute it and/or modify it@nl@under the terms of the GNU LESSER GENERAL PUBLIC LICENSE."
+aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@bearsampp is free software; you can redistribute it and/or modify it@nl@under the terms of the GNU LESSER GENERAL PUBLIC LICENSE."
 
 ; Action Debug Apache
 debugApacheVersionNumber = "Versions-nummer"
@@ -320,7 +320,7 @@ registrySetErrorText = "Registreringsvärde inkorrekt : %s"
 checkVersionTitle = "Kontrollerar version"
 checkVersionAvailableText = "Ny version tillgänglig!"
 checkVersionChangelogText = "#Before updating please read the changelog : "
-checkVersionLatestText = "Du har hämtat den senaste versionen av Neard..."
+checkVersionLatestText = "Du har hämtat den senaste versionen av bearsampp..."
 
 ; Action gen SSL certificate
 genSslTitle = "#Generate SSL certificate"
@@ -351,10 +351,10 @@ loading = "Laddar..."
 homepageOfficialWebsite = "Officiell Webbplats"
 homepageServiceStarted = "startad på port %s"
 homepageServiceStopped = "stoppad"
-homepageAboutHtml = "#<p><strong>Neard</strong> is a portable WAMP software stack involving useful binaries, tools and applications for your web development.<br/>For those who wish to contribute, have an issue or questions, read the <a target="_blank" href="%s/doc">Documentation</a>.<br/>To be notified of new releases you can star the <a target="_blank" href="%s">repository on Github</a>.</p>"
-homepageLicenseText = "Neard är en kostnadsfri mjukvara; du får återdistribuera den och/eller modifiera den under villkoren av GNU Lesser General Public License som publicerats av Free Software Foundation, antingen version 3 av Licensen, eller (ut efter ditt val) någon senare version."
+homepageAboutHtml = "#<p><strong>bearsampp</strong> is a portable WAMP software stack involving useful binaries, tools and applications for your web development.<br/>For those who wish to contribute, have an issue or questions, read the <a target="_blank" href="%s/doc">Documentation</a>.<br/>To be notified of new releases you can star the <a target="_blank" href="%s">repository on Github</a>.</p>"
+homepageLicenseText = "bearsampp är en kostnadsfri mjukvara; du får återdistribuera den och/eller modifiera den under villkoren av GNU Lesser General Public License som publicerats av Free Software Foundation, antingen version 3 av Licensen, eller (ut efter ditt val) någon senare version."
 homepageQuestionsTitle = "Frågor ?"
-homepageQuestionsText = "Om du upptäcker problem eller om du har idéer kring utvecklandet av Neard, publicera då frågan på GitHub!"
+homepageQuestionsText = "Om du upptäcker problem eller om du har idéer kring utvecklandet av bearsampp, publicera då frågan på GitHub!"
 homepagePostIssue = "Publicera ett problem"
 homepagePhpinfoText = "Visa phpinfo()"
 homepageMailhogText = "#View received emails"

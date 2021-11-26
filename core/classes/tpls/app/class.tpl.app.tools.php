@@ -8,14 +8,14 @@ class TplAppTools
 
     public static function process()
     {
-        global $neardLang;
+        global $bearsamppLang;
 
-        return TplApp::getMenu($neardLang->getValue(Lang::TOOLS), self::MENU, get_called_class());
+        return TplApp::getMenu($bearsamppLang->getValue(Lang::TOOLS), self::MENU, get_called_class());
     }
 
     public static function getMenuTools()
     {
-        global $neardLang, $neardCore, $neardTools;
+        global $bearsamppLang, $bearsamppCore, $bearsamppTools;
         $resultItems = $resultActions = '';
 
         // Git
@@ -30,79 +30,79 @@ class TplAppTools
 
         // Composer
         $resultItems .= TplAestan::getItemConsoleZ(
-            $neardLang->getValue(Lang::COMPOSER),
+            $bearsamppLang->getValue(Lang::COMPOSER),
             TplAestan::GLYPH_COMPOSER,
-            $neardTools->getConsoleZ()->getTabTitleComposer()
+            $bearsamppTools->getConsoleZ()->getTabTitleComposer()
         ) . PHP_EOL;
 
         // Ghostscript
         $resultItems .= TplAestan::getItemConsoleZ(
-            $neardLang->getValue(Lang::GHOSTSCRIPT),
+            $bearsamppLang->getValue(Lang::GHOSTSCRIPT),
             TplAestan::GLYPH_GHOSTSCRIPT,
-            $neardTools->getConsoleZ()->getTabTitleGhostscript()
+            $bearsamppTools->getConsoleZ()->getTabTitleGhostscript()
         ) . PHP_EOL;
 
         // Ngrok
         $resultItems .= TplAestan::getItemConsoleZ(
-            $neardLang->getValue(Lang::NGROK),
+            $bearsamppLang->getValue(Lang::NGROK),
             TplAestan::GLYPH_NGROK,
-            $neardTools->getConsoleZ()->getTabTitleNgrok()
+            $bearsamppTools->getConsoleZ()->getTabTitleNgrok()
         ) . PHP_EOL;
 
         // Pear
         $resultItems .= TplAestan::getItemConsoleZ(
-            $neardLang->getValue(Lang::PEAR),
+            $bearsamppLang->getValue(Lang::PEAR),
             TplAestan::GLYPH_PEAR,
-            $neardTools->getConsoleZ()->getTabTitlePear()
+            $bearsamppTools->getConsoleZ()->getTabTitlePear()
         ) . PHP_EOL;
 
         // Perl
         $resultItems .= TplAestan::getItemConsoleZ(
-            $neardLang->getValue(Lang::PERL),
+            $bearsamppLang->getValue(Lang::PERL),
             TplAestan::GLYPH_PERL,
-            $neardTools->getConsoleZ()->getTabTitlePerl()
+            $bearsamppTools->getConsoleZ()->getTabTitlePerl()
         ) . PHP_EOL;
 
         // Ruby
         $resultItems .= TplAestan::getItemConsoleZ(
-            $neardLang->getValue(Lang::RUBY),
+            $bearsamppLang->getValue(Lang::RUBY),
             TplAestan::GLYPH_RUBY,
-            $neardTools->getConsoleZ()->getTabTitleRuby()
+            $bearsamppTools->getConsoleZ()->getTabTitleRuby()
         ) . PHP_EOL;
 
         // XDebugClient
         $resultItems .= TplAestan::getItemExe(
-            $neardLang->getValue(Lang::XDC),
-            $neardTools->getXdc()->getExe(),
+            $bearsamppLang->getValue(Lang::XDC),
+            $bearsamppTools->getXdc()->getExe(),
             TplAestan::GLYPH_DEBUG
         ) . PHP_EOL;
 
         // Yarn
         $resultItems .= TplAestan::getItemConsoleZ(
-            $neardLang->getValue(Lang::YARN),
+            $bearsamppLang->getValue(Lang::YARN),
             TplAestan::GLYPH_YARN,
-            $neardTools->getConsoleZ()->getTabTitleYarn()
+            $bearsamppTools->getConsoleZ()->getTabTitleYarn()
         ) . PHP_EOL;
 
         $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
         // Console
         $resultItems .= TplAestan::getItemConsoleZ(
-            $neardLang->getValue(Lang::CONSOLE),
+            $bearsamppLang->getValue(Lang::CONSOLE),
             TplAestan::GLYPH_CONSOLEZ
         ) . PHP_EOL;
 
         // HostsEditor
         $resultItems .= TplAestan::getItemExe(
-            $neardLang->getValue(Lang::HOSTSEDITOR),
-            $neardCore->getHostsEditorExe(),
+            $bearsamppLang->getValue(Lang::HOSTSEDITOR),
+            $bearsamppCore->getHostsEditorExe(),
             TplAestan::GLYPH_HOSTSEDITOR
         ) . PHP_EOL;
 
         // Generate SSL Certificate
         $tplGenSslCertificate = TplApp::getActionMulti(
             self::ACTION_GEN_SSL_CERTIFICATE, null,
-            array($neardLang->getValue(Lang::MENU_GEN_SSL_CERTIFICATE), TplAestan::GLYPH_SSL_CERTIFICATE),
+            array($bearsamppLang->getValue(Lang::MENU_GEN_SSL_CERTIFICATE), TplAestan::GLYPH_SSL_CERTIFICATE),
             false, get_called_class()
         );
         $resultItems .= $tplGenSslCertificate[TplApp::SECTION_CALL] . PHP_EOL;

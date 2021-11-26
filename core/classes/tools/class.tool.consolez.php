@@ -22,19 +22,19 @@ class ToolConsoleZ extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $neardConfig, $neardLang;
+        global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
-        $this->name = $neardLang->getValue(Lang::CONSOLEZ);
-        $this->version = $neardConfig->getRaw(self::ROOT_CFG_VERSION);
+        $this->name = $bearsamppLang->getValue(Lang::CONSOLEZ);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
-        if ($this->neardConfRaw !== false) {
-            $this->exe = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_EXE];
-            $this->launchExe = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_LAUNCH_EXE];
-            $this->conf = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_CONF];
-            $this->rows = intval($this->neardConfRaw[self::LOCAL_CFG_ROWS]);
-            $this->cols = intval($this->neardConfRaw[self::LOCAL_CFG_COLS]);
+        if ($this->bearsamppConfRaw !== false) {
+            $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
+            $this->launchExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_LAUNCH_EXE];
+            $this->conf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
+            $this->rows = intval($this->bearsamppConfRaw[self::LOCAL_CFG_ROWS]);
+            $this->cols = intval($this->bearsamppConfRaw[self::LOCAL_CFG_COLS]);
         }
 
         if (!$this->enable) {
@@ -42,36 +42,36 @@ class ToolConsoleZ extends Module
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
-        if (!is_file($this->neardConf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->neardConf));
+        if (!is_file($this->bearsamppConf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
         }
         if (!is_file($this->exe)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
         }
         if (!is_file($this->launchExe)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->launchExe));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->launchExe));
         }
         if (!is_file($this->conf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
         }
         if (!is_numeric($this->rows) || $this->rows <= 0) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_ROWS, $this->rows));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_ROWS, $this->rows));
         }
         if (!is_numeric($this->cols) || $this->cols <= 0) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_COLS, $this->cols));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_COLS, $this->cols));
         }
     }
 
     public function setVersion($version) {
-        global $neardConfig;
+        global $bearsamppConfig;
         $this->version = $version;
-        $neardConfig->replace(self::ROOT_CFG_VERSION, $version);
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 
@@ -104,8 +104,8 @@ class ToolConsoleZ extends Module
     }
 
     public function getTabTitleDefault() {
-        global $neardLang;
-        return $neardLang->getValue(Lang::CONSOLE);
+        global $bearsamppLang;
+        return $bearsamppLang->getValue(Lang::CONSOLE);
     }
 
     public function getTabTitlePowershell() {
@@ -113,33 +113,33 @@ class ToolConsoleZ extends Module
     }
 
     public function getTabTitlePear() {
-        global $neardLang, $neardBins;
-        return $neardLang->getValue(Lang::PEAR) . ' ' . $neardBins->getPhp()->getPearVersion(true);
+        global $bearsamppLang, $bearsamppBins;
+        return $bearsamppLang->getValue(Lang::PEAR) . ' ' . $bearsamppBins->getPhp()->getPearVersion(true);
     }
 
     public function getTabTitleMysql() {
-        global $neardLang, $neardBins;
-        return $neardLang->getValue(Lang::MYSQL) . ' ' . $neardBins->getMysql()->getVersion();
+        global $bearsamppLang, $bearsamppBins;
+        return $bearsamppLang->getValue(Lang::MYSQL) . ' ' . $bearsamppBins->getMysql()->getVersion();
     }
 
     public function getTabTitleMariadb() {
-        global $neardLang, $neardBins;
-        return $neardLang->getValue(Lang::MARIADB) . ' ' . $neardBins->getMariadb()->getVersion();
+        global $bearsamppLang, $bearsamppBins;
+        return $bearsamppLang->getValue(Lang::MARIADB) . ' ' . $bearsamppBins->getMariadb()->getVersion();
     }
 
     public function getTabTitleMongodb() {
-        global $neardLang, $neardBins;
-        return $neardLang->getValue(Lang::MONGODB) . ' ' . $neardBins->getMongodb()->getVersion();
+        global $bearsamppLang, $bearsamppBins;
+        return $bearsamppLang->getValue(Lang::MONGODB) . ' ' . $bearsamppBins->getMongodb()->getVersion();
     }
 
     public function getTabTitlePostgresql() {
-        global $neardLang, $neardBins;
-        return $neardLang->getValue(Lang::POSTGRESQL) . ' ' . $neardBins->getPostgresql()->getVersion();
+        global $bearsamppLang, $bearsamppBins;
+        return $bearsamppLang->getValue(Lang::POSTGRESQL) . ' ' . $bearsamppBins->getPostgresql()->getVersion();
     }
 
     public function getTabTitleSvn($repoPath = null) {
-        global $neardLang, $neardBins;
-        $result = $neardLang->getValue(Lang::SVN) . ' ' . $neardBins->getSvn()->getVersion();
+        global $bearsamppLang, $bearsamppBins;
+        $result = $bearsamppLang->getValue(Lang::SVN) . ' ' . $bearsamppBins->getSvn()->getVersion();
         if ($repoPath != null) {
             $result .= ' - ' . basename($repoPath);
         }
@@ -147,8 +147,8 @@ class ToolConsoleZ extends Module
     }
 
     public function getTabTitleGit($repoPath = null) {
-        global $neardLang, $neardTools;
-        $result = $neardLang->getValue(Lang::GIT) . ' ' . $neardTools->getGit()->getVersion();
+        global $bearsamppLang, $bearsamppTools;
+        $result = $bearsamppLang->getValue(Lang::GIT) . ' ' . $bearsamppTools->getGit()->getVersion();
         if ($repoPath != null) {
             $result .= ' - ' . basename($repoPath);
         }
@@ -156,42 +156,42 @@ class ToolConsoleZ extends Module
     }
 
     public function getTabTitleNodejs() {
-        global $neardLang, $neardBins;
-        return $neardLang->getValue(Lang::NODEJS) . ' ' . $neardBins->getNodejs()->getVersion();
+        global $bearsamppLang, $bearsamppBins;
+        return $bearsamppLang->getValue(Lang::NODEJS) . ' ' . $bearsamppBins->getNodejs()->getVersion();
     }
 
     public function getTabTitleComposer() {
-        global $neardLang, $neardTools;
-        return $neardLang->getValue(Lang::COMPOSER) . ' ' . $neardTools->getComposer()->getVersion();
+        global $bearsamppLang, $bearsamppTools;
+        return $bearsamppLang->getValue(Lang::COMPOSER) . ' ' . $bearsamppTools->getComposer()->getVersion();
     }
 
     public function getTabTitlePython() {
-        global $neardLang, $neardTools;
-        return $neardLang->getValue(Lang::PYTHON) . ' ' . $neardTools->getPython()->getVersion();
+        global $bearsamppLang, $bearsamppTools;
+        return $bearsamppLang->getValue(Lang::PYTHON) . ' ' . $bearsamppTools->getPython()->getVersion();
     }
 
     public function getTabTitleRuby() {
-        global $neardLang, $neardTools;
-        return $neardLang->getValue(Lang::RUBY) . ' ' . $neardTools->getRuby()->getVersion();
+        global $bearsamppLang, $bearsamppTools;
+        return $bearsamppLang->getValue(Lang::RUBY) . ' ' . $bearsamppTools->getRuby()->getVersion();
     }
 
     public function getTabTitleYarn() {
-        global $neardLang, $neardTools;
-        return $neardLang->getValue(Lang::YARN) . ' ' . $neardTools->getYarn()->getVersion();
+        global $bearsamppLang, $bearsamppTools;
+        return $bearsamppLang->getValue(Lang::YARN) . ' ' . $bearsamppTools->getYarn()->getVersion();
     }
 
     public function getTabTitlePerl() {
-        global $neardLang, $neardTools;
-        return $neardLang->getValue(Lang::PERL) . ' ' . $neardTools->getPerl()->getVersion();
+        global $bearsamppLang, $bearsamppTools;
+        return $bearsamppLang->getValue(Lang::PERL) . ' ' . $bearsamppTools->getPerl()->getVersion();
     }
 
     public function getTabTitleGhostscript() {
-        global $neardLang, $neardTools;
-        return $neardLang->getValue(Lang::GHOSTSCRIPT) . ' ' . $neardTools->getGhostscript()->getVersion();
+        global $bearsamppLang, $bearsamppTools;
+        return $bearsamppLang->getValue(Lang::GHOSTSCRIPT) . ' ' . $bearsamppTools->getGhostscript()->getVersion();
     }
 
     public function getTabTitleNgrok() {
-        global $neardLang, $neardTools;
-        return $neardLang->getValue(Lang::NGROK) . ' ' . $neardTools->getNgrok()->getVersion();
+        global $bearsamppLang, $bearsamppTools;
+        return $bearsamppLang->getValue(Lang::NGROK) . ' ' . $bearsamppTools->getNgrok()->getVersion();
     }
 }

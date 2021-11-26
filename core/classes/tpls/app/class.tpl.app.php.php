@@ -14,21 +14,21 @@ class TplAppPhp
 
     public static function process()
     {
-        global $neardLang, $neardBins;
+        global $bearsamppLang, $bearsamppBins;
 
-        return TplApp::getMenuEnable($neardLang->getValue(Lang::PHP), self::MENU, get_called_class(), $neardBins->getPhp()->isEnable());
+        return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::PHP), self::MENU, get_called_class(), $bearsamppBins->getPhp()->isEnable());
     }
 
     public static function getMenuPhp()
     {
-        global $neardBins, $neardLang;
+        global $bearsamppBins, $bearsamppLang;
         $resultItems = $resultActions = '';
 
-        $isEnabled = $neardBins->getPhp()->isEnable();
+        $isEnabled = $bearsamppBins->getPhp()->isEnable();
 
         // Download
         $resultItems .= TplAestan::getItemLink(
-            $neardLang->getValue(Lang::DOWNLOAD_MORE),
+            $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
             Util::getWebsiteUrl('modules/php', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
@@ -37,7 +37,7 @@ class TplAppPhp
         // Enable
         $tplEnable = TplApp::getActionMulti(
             self::ACTION_ENABLE, array($isEnabled ? Config::DISABLED : Config::ENABLED),
-            array($neardLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
+            array($bearsamppLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
             false, get_called_class()
         );
         $resultItems .= $tplEnable[TplApp::SECTION_CALL] . PHP_EOL;
@@ -47,25 +47,25 @@ class TplAppPhp
             $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
             // Versions
-            $tplVersions = TplApp::getMenu($neardLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
+            $tplVersions = TplApp::getMenu($bearsamppLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
             $resultItems .= $tplVersions[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplVersions[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Settings
-            $tplSettings = TplApp::getMenu($neardLang->getValue(Lang::SETTINGS), self::MENU_SETTINGS, get_called_class());
+            $tplSettings = TplApp::getMenu($bearsamppLang->getValue(Lang::SETTINGS), self::MENU_SETTINGS, get_called_class());
             $resultItems .= $tplSettings[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplSettings[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Extensions
-            $tplExtensions = TplApp::getMenu($neardLang->getValue(Lang::EXTENSIONS), self::MENU_EXTENSIONS, get_called_class());
+            $tplExtensions = TplApp::getMenu($bearsamppLang->getValue(Lang::EXTENSIONS), self::MENU_EXTENSIONS, get_called_class());
             $resultItems .= $tplExtensions[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplExtensions[TplApp::SECTION_CONTENT];
 
             // Conf
-            $resultItems .= TplAestan::getItemNotepad(basename($neardBins->getPhp()->getConf()), $neardBins->getPhp()->getConf()) . PHP_EOL;
+            $resultItems .= TplAestan::getItemNotepad(basename($bearsamppBins->getPhp()->getConf()), $bearsamppBins->getPhp()->getConf()) . PHP_EOL;
 
             // Errors log
-            $resultItems .= TplAestan::getItemNotepad($neardLang->getValue(Lang::MENU_ERROR_LOGS), $neardBins->getPhp()->getErrorLog()) . PHP_EOL;
+            $resultItems .= TplAestan::getItemNotepad($bearsamppLang->getValue(Lang::MENU_ERROR_LOGS), $bearsamppBins->getPhp()->getErrorLog()) . PHP_EOL;
         }
 
         return $resultItems . PHP_EOL . $resultActions;
@@ -73,16 +73,16 @@ class TplAppPhp
 
     public static function getMenuPhpVersions()
     {
-        global $neardBins;
+        global $bearsamppBins;
         $items = '';
         $actions = '';
 
-        foreach ($neardBins->getPhp()->getVersionList() as $version) {
+        foreach ($bearsamppBins->getPhp()->getVersionList() as $version) {
             $glyph = '';
-            $apachePhpModule = $neardBins->getPhp()->getApacheModule($neardBins->getApache()->getVersion(), $version);
+            $apachePhpModule = $bearsamppBins->getPhp()->getApacheModule($bearsamppBins->getApache()->getVersion(), $version);
             if ($apachePhpModule === false) {
                 $glyph = TplAestan::GLYPH_WARNING;
-            } elseif ($version == $neardBins->getPhp()->getVersion()) {
+            } elseif ($version == $bearsamppBins->getPhp()->getVersion()) {
                 $glyph = TplAestan::GLYPH_CHECK;
             }
 
@@ -104,27 +104,27 @@ class TplAppPhp
 
     public static function getActionEnablePhp($enable)
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::ENABLE, array($neardBins->getPhp()->getName(), $enable)) . PHP_EOL .
+        return TplApp::getActionRun(Action::ENABLE, array($bearsamppBins->getPhp()->getName(), $enable)) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 
     public static function getActionSwitchPhpVersion($version)
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::SWITCH_VERSION, array($neardBins->getPhp()->getName(), $version)) . PHP_EOL .
+        return TplApp::getActionRun(Action::SWITCH_VERSION, array($bearsamppBins->getPhp()->getName(), $version)) . PHP_EOL .
             TplAppReload::getActionReload() . PHP_EOL;
     }
 
     public static function getMenuPhpSettings()
     {
-        global $neardBins;
+        global $bearsamppBins;
 
         $menuItems = '';
         $menuActions = '';
-        foreach ($neardBins->getPhp()->getSettings() as $key => $value) {
+        foreach ($bearsamppBins->getPhp()->getSettings() as $key => $value) {
             if (is_array($value)) {
                 $menuItems .= 'Type: submenu; ' .
                     'Caption: "' . $key . '"; ' .
@@ -132,8 +132,8 @@ class TplAppPhp
                     'Glyph: ' . TplAestan::GLYPH_FOLDER_CLOSE . PHP_EOL;
             } else {
                 $glyph = '';
-                $settingEnabled = $neardBins->getPhp()->isSettingActive($value);
-                if (!$neardBins->getPhp()->isSettingExists($value)) {
+                $settingEnabled = $bearsamppBins->getPhp()->isSettingActive($value);
+                if (!$bearsamppBins->getPhp()->isSettingExists($value)) {
                     $glyph = TplAestan::GLYPH_WARNING;
                 } elseif ($settingEnabled) {
                     $glyph = TplAestan::GLYPH_CHECK;
@@ -164,8 +164,8 @@ class TplAppPhp
 
     private static function getSubmenuPhpSettings($passThr = array(), $result = array(), $settings = array(), $sectionCall = true)
     {
-        global $neardBins;
-        $settings = empty($settings) ? $neardBins->getPhp()->getSettings() : $settings;
+        global $bearsamppBins;
+        $settings = empty($settings) ? $bearsamppBins->getPhp()->getSettings() : $settings;
 
         foreach ($settings as $key => $value) {
             if (is_array($value)) {
@@ -183,8 +183,8 @@ class TplAppPhp
                                     'Glyph: ' . TplAestan::GLYPH_FOLDER_CLOSE . PHP_EOL;
                             } elseif (!is_array($value2)) {
                                 $glyph = '';
-                                $settingEnabled = $neardBins->getPhp()->isSettingActive($value2);
-                                if (!$neardBins->getPhp()->isSettingExists($value2)) {
+                                $settingEnabled = $bearsamppBins->getPhp()->isSettingActive($value2);
+                                if (!$bearsamppBins->getPhp()->isSettingExists($value2)) {
                                     $glyph = TplAestan::GLYPH_WARNING;
                                 } elseif ($settingEnabled) {
                                     $glyph = TplAestan::GLYPH_CHECK;
@@ -222,11 +222,11 @@ class TplAppPhp
 
     public static function getMenuPhpExtensions()
     {
-        global $neardBins;
+        global $bearsamppBins;
         $items = '';
         $actions = '';
 
-        foreach ($neardBins->getPhp()->getExtensions() as $extension => $switch) {
+        foreach ($bearsamppBins->getPhp()->getExtensions() as $extension => $switch) {
             $tplSwitchPhpExtension = TplApp::getActionMulti(
                 self::ACTION_SWITCH_EXTENSION, array($extension, $switch),
                 array($extension, ($switch == ActionSwitchPhpExtension::SWITCH_ON ? TplAestan::GLYPH_CHECK : '')),

@@ -10,7 +10,7 @@
 
 ## About
 
-**Neard** is a portable WAMP software stack involving useful binaries, tools and applications for your web development.
+**bearsampp** is a portable WAMP software stack involving useful binaries, tools and applications for your web development.
 
 ![](https://bearsampp.github.io/img/screenshots/menu1.png)  ![](https://bearsampp.github.io/img/screenshots/menu2.png)  ![](https://bearsampp.github.io/img/screenshots/menu-tools2.png)
 
@@ -81,7 +81,7 @@ Icon credit to [David Vignoni](http://www.icon-king.com/).
 If you are not familiar with pull request, you can create a new module like this :
 
 Increment the build.release in the build.properties file.
-If you want you can change the build.path (default C:\neard-build).
+If you want you can change the build.path (default C:\bearsampp-build).
 Open a command prompt in your module folder and call the Ant target release : ant release.
 Upload your release on a file hosting system like Sendspace.
-Create an issue on Neard repository to integrate your release.
+Create an issue on bearsampp repository to integrate your release.

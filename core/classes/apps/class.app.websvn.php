@@ -14,15 +14,15 @@ class AppWebsvn extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $neardConfig, $neardLang;
+        global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
-        $this->name = $neardLang->getValue(Lang::WEBSVN);
-        $this->version = $neardConfig->getRaw(self::ROOT_CFG_VERSION);
+        $this->name = $bearsamppLang->getValue(Lang::WEBSVN);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
-        if ($this->neardConfRaw !== false) {
-            $this->conf = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_CONF];
+        if ($this->bearsamppConfRaw !== false) {
+            $this->conf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
         }
 
         if (!$this->enable) {
@@ -30,22 +30,22 @@ class AppWebsvn extends Module
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
-        if (!is_file($this->neardConf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->neardConf));
+        if (!is_file($this->bearsamppConf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
         }
         if (!is_file($this->conf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
         }
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $neardBs, $neardBins;
+        global $bearsamppBs, $bearsamppBins;
 
         if (!$this->enable) {
             return true;
@@ -54,7 +54,7 @@ class AppWebsvn extends Module
         $version = $version == null ? $this->version : $version;
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
-        $alias = $neardBs->getAliasPath() . '/websvn.conf';
+        $alias = $bearsamppBs->getAliasPath() . '/websvn.conf';
         if (is_file($alias)) {
             Util::replaceInFile($alias, array(
                 '/^Alias\s\/websvn\s.*/' => 'Alias /websvn "' . $this->getSymlinkPath() . '/"',
@@ -65,16 +65,16 @@ class AppWebsvn extends Module
         }
 
         Util::replaceInFile($this->getConf(), array(
-            '/^\$config->parentPath/' => '$config->parentPath(\'' . $neardBins->getSvn()->getRoot() . '\');',
+            '/^\$config->parentPath/' => '$config->parentPath(\'' . $bearsamppBins->getSvn()->getRoot() . '\');',
         ));
 
         return true;
     }
 
     public function setVersion($version) {
-        global $neardConfig;
+        global $bearsamppConfig;
         $this->version = $version;
-        $neardConfig->replace(self::ROOT_CFG_VERSION, $version);
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 

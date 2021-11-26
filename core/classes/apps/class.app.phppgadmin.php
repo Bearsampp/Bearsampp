@@ -14,15 +14,15 @@ class AppPhppgadmin extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $neardConfig, $neardLang;
+        global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
-        $this->name = $neardLang->getValue(Lang::PHPPGADMIN);
-        $this->version = $neardConfig->getRaw(self::ROOT_CFG_VERSION);
+        $this->name = $bearsamppLang->getValue(Lang::PHPPGADMIN);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
-        if ($this->neardConfRaw !== false) {
-            $this->conf = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_CONF];
+        if ($this->bearsamppConfRaw !== false) {
+            $this->conf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
         }
 
         if (!$this->enable) {
@@ -30,22 +30,22 @@ class AppPhppgadmin extends Module
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
-        if (!is_file($this->neardConf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->neardConf));
+        if (!is_file($this->bearsamppConf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
         }
         if (!is_file($this->conf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
         }
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $neardBs, $neardBins;
+        global $bearsamppBs, $bearsamppBins;
 
         if (!$this->enable) {
             return true;
@@ -54,7 +54,7 @@ class AppPhppgadmin extends Module
         $version = $version == null ? $this->version : $version;
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
-        $alias = $neardBs->getAliasPath() . '/phppgadmin.conf';
+        $alias = $bearsamppBs->getAliasPath() . '/phppgadmin.conf';
         if (is_file($alias)) {
             Util::replaceInFile($alias, array(
                 '/^Alias\s\/phppgadmin\s.*/' => 'Alias /phppgadmin "' . $this->getSymlinkPath() . '/"',
@@ -64,13 +64,13 @@ class AppPhppgadmin extends Module
             Util::logError($this->getName() . ' alias not found : ' . $alias);
         }
 
-        if ($neardBins->getPostgresql()->isEnable()) {
+        if ($bearsamppBins->getPostgresql()->isEnable()) {
             Util::replaceInFile($this->getConf(), array(
-                '/^\$postgresqlPort\s=\s(\d+)/' => '$postgresqlPort = ' . $neardBins->getPostgresql()->getPort() . ';',
-                '/^\$postgresqlRootUser\s=\s/' => '$postgresqlRootUser = \'' . $neardBins->getPostgresql()->getRootUser() . '\';',
-                '/^\$postgresqlRootPwd\s=\s/' => '$postgresqlRootPwd = \'' . $neardBins->getPostgresql()->getRootPwd() . '\';',
-                '/^\$postgresqlDumpExe\s=\s/' => '$postgresqlDumpExe = \'' . $neardBins->getPostgresql()->getDumpExe() . '\';',
-                '/^\$postgresqlDumpAllExe\s=\s/' => '$postgresqlDumpAllExe = \'' . $neardBins->getPostgresql()->getDumpAllExe() . '\';',
+                '/^\$postgresqlPort\s=\s(\d+)/' => '$postgresqlPort = ' . $bearsamppBins->getPostgresql()->getPort() . ';',
+                '/^\$postgresqlRootUser\s=\s/' => '$postgresqlRootUser = \'' . $bearsamppBins->getPostgresql()->getRootUser() . '\';',
+                '/^\$postgresqlRootPwd\s=\s/' => '$postgresqlRootPwd = \'' . $bearsamppBins->getPostgresql()->getRootPwd() . '\';',
+                '/^\$postgresqlDumpExe\s=\s/' => '$postgresqlDumpExe = \'' . $bearsamppBins->getPostgresql()->getDumpExe() . '\';',
+                '/^\$postgresqlDumpAllExe\s=\s/' => '$postgresqlDumpAllExe = \'' . $bearsamppBins->getPostgresql()->getDumpAllExe() . '\';',
             ));
         }
 
@@ -78,9 +78,9 @@ class AppPhppgadmin extends Module
     }
 
     public function setVersion($version) {
-        global $neardConfig;
+        global $bearsamppConfig;
         $this->version = $version;
-        $neardConfig->replace(self::ROOT_CFG_VERSION, $version);
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 

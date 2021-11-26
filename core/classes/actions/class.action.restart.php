@@ -4,10 +4,10 @@ class ActionRestart
 {
     public function __construct($args)
     {
-        global $neardLang, $neardWinbinder;
-        
-        $neardWinbinder->messageBoxInfo(
-            sprintf($neardLang->getValue(Lang::RESTART_TEXT), APP_TITLE),
-            $neardLang->getValue(Lang::RESTART_TITLE));
+        global $bearsamppLang, $bearsamppWinbinder;
+
+        $bearsamppWinbinder->messageBoxInfo(
+            sprintf($bearsamppLang->getValue(Lang::RESTART_TEXT), APP_TITLE),
+            $bearsamppLang->getValue(Lang::RESTART_TITLE));
     }
 }

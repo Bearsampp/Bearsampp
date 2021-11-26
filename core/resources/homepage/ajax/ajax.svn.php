@@ -6,14 +6,14 @@ $result = array(
 );
 
 // Check port
-$port = $neardBins->getSvn()->getPort();
+$port = $bearsamppBins->getSvn()->getPort();
 
-$textServiceStarted = $neardLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
-$textServiceStopped = $neardLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
-$textDisabled = $neardLang->getValue(Lang::DISABLED);
+$textServiceStarted = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
+$textServiceStopped = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
+$textDisabled = $bearsamppLang->getValue(Lang::DISABLED);
 
-if ($neardBins->getSvn()->isEnable()) {
-    if ($neardBins->getSvn()->checkPort($port)) {
+if ($bearsamppBins->getSvn()->isEnable()) {
+    if ($bearsamppBins->getSvn()->checkPort($port)) {
         $result['checkport'] .= '<span style="float:right;font-size:12px" class="label label-success">' . sprintf($textServiceStarted, $port) . '</span>';
     } else {
         $result['checkport'] .= '<span style="float:right;font-size:12px" class="label label-danger">' . $textServiceStopped . '</span>';
@@ -23,11 +23,11 @@ if ($neardBins->getSvn()->isEnable()) {
 }
 
 // Versions
-foreach ($neardBins->getSvn()->getVersionList() as $version) {
-    if ($version != $neardBins->getSvn()->getVersion()) {
+foreach ($bearsamppBins->getSvn()->getVersionList() as $version) {
+    if ($version != $bearsamppBins->getSvn()->getVersion()) {
         $result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-default">' . $version . '</span>';
     }
 }
-$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-primary">' . $neardBins->getSvn()->getVersion() . '</span>';
+$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-primary">' . $bearsamppBins->getSvn()->getVersion() . '</span>';
 
 echo json_encode($result);

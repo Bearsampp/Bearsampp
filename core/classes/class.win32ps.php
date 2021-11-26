@@ -7,22 +7,22 @@ class Win32Ps
     const EXECUTABLE_PATH = 'ExecutablePath';
     const CAPTION = 'Caption';
     const COMMAND_LINE = 'CommandLine';
-    
+
     public function __construct()
     {
     }
-    
+
     private static function callWin32Ps($function)
     {
         $result = false;
-        
+
         if (function_exists($function)) {
             $result = @call_user_func($function);
         }
-        
+
         return $result;
     }
-    
+
     public static function getKeys()
     {
         return array(
@@ -33,37 +33,37 @@ class Win32Ps
             self::COMMAND_LINE
         );
     }
-    
+
     public static function getCurrentPid()
     {
         $procInfo = self::getStatProc();
         return isset($procInfo[self::PROCESS_ID]) ? intval($procInfo[self::PROCESS_ID]) : 0;
     }
-    
+
     public static function getListProcs()
     {
         return Vbs::getListProcs(self::getKeys());
     }
-    
+
     public static function getStatProc()
     {
         $statProc = self::callWin32Ps('win32_ps_stat_proc');
-        
+
         if ($statProc !== false) {
             return array(
                 self::PROCESS_ID => $statProc['pid'],
                 self::EXECUTABLE_PATH => $statProc['exe']
             );
         }
-        
+
         return null;
     }
-    
+
     public static function exists($pid)
     {
         return self::findByPid($pid) !== false;
     }
-    
+
     public static function findByPid($pid)
     {
         if (!empty($pid)) {
@@ -76,10 +76,10 @@ class Win32Ps
                 }
             }
         }
-    
+
         return false;
     }
-    
+
     public static function findByPath($path)
     {
         $path = Util::formatUnixPath($path);
@@ -94,10 +94,10 @@ class Win32Ps
                 }
             }
         }
-    
+
         return false;
     }
-    
+
     public static function kill($pid)
     {
         $pid = intval($pid);
@@ -105,47 +105,47 @@ class Win32Ps
             Vbs::killProc($pid);
         }
     }
-    
+
     public static function killBins($refreshProcs = false)
     {
-        global $neardBs;
+        global $bearsamppBs;
         $killed = array();
-    
-        $procs = $neardBs->getProcs();
+
+        $procs = $bearsamppBs->getProcs();
         if ($refreshProcs) {
             $procs = self::getListProcs();
         }
-    
+
         if ($procs !== false) {
             foreach ($procs as $proc) {
                 $unixExePath = Util::formatUnixPath($proc[self::EXECUTABLE_PATH]);
                 $unixCommandPath = Util::formatUnixPath($proc[self::COMMAND_LINE]);
-    
+
                 // Not kill current PID (PHP)
                 if ($proc[self::PROCESS_ID] == self::getCurrentPid()) {
                     continue;
                 }
-    
-                // Not kill Neard
-                if ($unixExePath == $neardBs->getExeFilePath()) {
+
+                // Not kill bearsampp
+                if ($unixExePath == $bearsamppBs->getExeFilePath()) {
                     continue;
                 }
-                
+
                 // Not kill inside www
-                if (Util::startWith($unixExePath, $neardBs->getWwwPath() . '/') || Util::contains($unixCommandPath, $neardBs->getWwwPath() . '/')) {
+                if (Util::startWith($unixExePath, $bearsamppBs->getWwwPath() . '/') || Util::contains($unixCommandPath, $bearsamppBs->getWwwPath() . '/')) {
                     continue;
                 }
-    
+
                 // Not kill external process
-                if (!Util::startWith($unixExePath, $neardBs->getRootPath() . '/') && !Util::contains($unixCommandPath, $neardBs->getRootPath() . '/')) {
+                if (!Util::startWith($unixExePath, $bearsamppBs->getRootPath() . '/') && !Util::contains($unixCommandPath, $bearsamppBs->getRootPath() . '/')) {
                     continue;
                 }
-    
+
                 self::kill($proc[self::PROCESS_ID]);
                 $killed[] = $proc;
             }
         }
-    
+
         return $killed;
     }
 }

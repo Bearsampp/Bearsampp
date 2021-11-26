@@ -2,7 +2,7 @@
 
 class BinMemcached extends Module
 {
-    const SERVICE_NAME = 'neardmemcached';
+    const SERVICE_NAME = 'bearsamppmemcached';
     const SERVICE_PARAMS = '-m %d -p %d -U 0 -vv';
 
     const ROOT_CFG_ENABLE = 'memcachedEnable';
@@ -25,21 +25,21 @@ class BinMemcached extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $neardBs, $neardConfig, $neardLang;
+        global $bearsamppBs, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
-        $this->name = $neardLang->getValue(Lang::MEMCACHED);
-        $this->version = $neardConfig->getRaw(self::ROOT_CFG_VERSION);
+        $this->name = $bearsamppLang->getValue(Lang::MEMCACHED);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
-        $this->enable = $this->enable && $neardConfig->getRaw(self::ROOT_CFG_ENABLE);
+        $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
         $this->service = new Win32Service(self::SERVICE_NAME);
-        $this->log = $neardBs->getLogsPath() . '/memcached.log';
+        $this->log = $bearsamppBs->getLogsPath() . '/memcached.log';
 
-        if ($this->neardConfRaw !== false) {
-            $this->exe = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_EXE];
-            $this->memory = intval($this->neardConfRaw[self::LOCAL_CFG_MEMORY]);
-            $this->port = intval($this->neardConfRaw[self::LOCAL_CFG_PORT]);
+        if ($this->bearsamppConfRaw !== false) {
+            $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
+            $this->memory = intval($this->bearsamppConfRaw[self::LOCAL_CFG_MEMORY]);
+            $this->port = intval($this->bearsamppConfRaw[self::LOCAL_CFG_PORT]);
         }
 
         if (!$this->enable) {
@@ -47,27 +47,27 @@ class BinMemcached extends Module
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
             return;
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
-        if (!is_file($this->neardConf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->neardConf));
+        if (!is_file($this->bearsamppConf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
             return;
         }
         if (!is_file($this->exe)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
             return;
         }
         if (empty($this->memory)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_MEMORY, $this->memory));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_MEMORY, $this->memory));
             return;
         }
         if (empty($this->port)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_PORT, $this->port));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_PORT, $this->port));
             return;
         }
 
@@ -76,18 +76,18 @@ class BinMemcached extends Module
         $nssm->setBinPath($this->exe);
         $nssm->setParams(sprintf(self::SERVICE_PARAMS, $this->memory, $this->port));
         $nssm->setStart(Nssm::SERVICE_DEMAND_START);
-        $nssm->setStdout($neardBs->getLogsPath() . '/memcached.out.log');
-        $nssm->setStderr($neardBs->getLogsPath() . '/memcached.err.log');
+        $nssm->setStdout($bearsamppBs->getLogsPath() . '/memcached.out.log');
+        $nssm->setStderr($bearsamppBs->getLogsPath() . '/memcached.err.log');
 
         $this->service->setNssm($nssm);
     }
 
     protected function replaceAll($params) {
-        $content = file_get_contents($this->neardConf);
+        $content = file_get_contents($this->bearsamppConf);
 
         foreach ($params as $key => $value) {
             $content = preg_replace('|' . $key . ' = .*|', $key . ' = ' . '"' . $value.'"', $content);
-            $this->neardConfRaw[$key] = $value;
+            $this->bearsamppConfRaw[$key] = $value;
             switch ($key) {
                 case self::LOCAL_CFG_MEMORY:
                     $this->memory = intval($value);
@@ -98,19 +98,19 @@ class BinMemcached extends Module
             }
         }
 
-        file_put_contents($this->neardConf, $content);
+        file_put_contents($this->bearsamppConf, $content);
     }
 
     public function rebuildConf() {
-        global $neardRegistry;
+        global $bearsamppRegistry;
 
-        $exists = $neardRegistry->exists(
+        $exists = $bearsamppRegistry->exists(
             Registry::HKEY_LOCAL_MACHINE,
             'SYSTEM\CurrentControlSet\Services\\' . self::SERVICE_NAME . '\Parameters',
             Nssm::INFO_APP_PARAMETERS
         );
         if ($exists) {
-            return $neardRegistry->setExpandStringValue(
+            return $bearsamppRegistry->setExpandStringValue(
                 Registry::HKEY_LOCAL_MACHINE,
                 'SYSTEM\CurrentControlSet\Services\\' . self::SERVICE_NAME . '\Parameters',
                 Nssm::INFO_APP_PARAMETERS,
@@ -122,7 +122,7 @@ class BinMemcached extends Module
     }
 
     public function changePort($port, $checkUsed = false, $wbProgressBar = null) {
-        global $neardWinbinder;
+        global $bearsamppWinbinder;
 
         if (!Util::isValidPort($port)) {
             Util::logError($this->getName() . ' port not valid: ' . $port);
@@ -130,17 +130,17 @@ class BinMemcached extends Module
         }
 
         $port = intval($port);
-        $neardWinbinder->incrProgressBar($wbProgressBar);
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
         $isPortInUse = Util::isPortInUse($port);
         if (!$checkUsed || $isPortInUse === false) {
-            // neard.conf
+            // bearsampp.conf
             $this->setPort($port);
-            $neardWinbinder->incrProgressBar($wbProgressBar);
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             // conf
             $this->update();
-            $neardWinbinder->incrProgressBar($wbProgressBar);
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             return true;
         }
@@ -150,8 +150,8 @@ class BinMemcached extends Module
     }
 
     public function checkPort($port, $showWindow = false) {
-        global $neardLang, $neardWinbinder;
-        $boxTitle = sprintf($neardLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
+        global $bearsamppLang, $bearsamppWinbinder;
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
         if (!Util::isValidPort($port)) {
             Util::logError($this->getName() . ' port not valid: ' . $port);
@@ -165,8 +165,8 @@ class BinMemcached extends Module
                 Util::logDebug($this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $memcacheVersion);
                 memcache_close($memcache);
                 if ($showWindow) {
-                    $neardWinbinder->messageBoxInfo(
-                        sprintf($neardLang->getValue(Lang::PORT_USED_BY), $port, $this->getName() . ' ' . $memcacheVersion),
+                    $bearsamppWinbinder->messageBoxInfo(
+                        sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY), $port, $this->getName() . ' ' . $memcacheVersion),
                         $boxTitle
                     );
                 }
@@ -177,16 +177,16 @@ class BinMemcached extends Module
             if (!$fp) {
                 Util::logDebug($this->getName() . ' port ' . $port . ' is used by another application');
                 if ($showWindow) {
-                    $neardWinbinder->messageBoxWarning(
-                        sprintf($neardLang->getValue(Lang::PORT_NOT_USED_BY), $port),
+                    $bearsamppWinbinder->messageBoxWarning(
+                        sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port),
                         $boxTitle
                     );
                 }
             } else {
                 Util::logDebug($this->getName() . ' port ' . $port . ' is not used');
                 if ($showWindow) {
-                    $neardWinbinder->messageBoxError(
-                        sprintf($neardLang->getValue(Lang::PORT_NOT_USED), $port),
+                    $bearsamppWinbinder->messageBoxError(
+                        sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED), $port),
                         $boxTitle
                     );
                 }
@@ -203,7 +203,7 @@ class BinMemcached extends Module
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $neardLang, $neardApps, $neardWinbinder;
+        global $bearsamppLang, $bearsamppApps, $bearsamppWinbinder;
 
         if (!$this->enable) {
             return true;
@@ -212,45 +212,45 @@ class BinMemcached extends Module
         $version = $version == null ? $this->version : $version;
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
-        $boxTitle = sprintf($neardLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
-        $neardConf = str_replace('memcached' . $this->getVersion(), 'memcached' . $version, $this->neardConf);
-        if (!file_exists($neardConf)) {
-            Util::logError('Neard config files not found for ' . $this->getName() . ' ' . $version);
+        $bearsamppConf = str_replace('memcached' . $this->getVersion(), 'memcached' . $version, $this->bearsamppConf);
+        if (!file_exists($bearsamppConf)) {
+            Util::logError('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::NEARD_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::bearsampp_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
             return false;
         }
 
-        $neardConfRaw = parse_ini_file($neardConf);
-        if ($neardConfRaw === false || !isset($neardConfRaw[self::ROOT_CFG_VERSION]) || $neardConfRaw[self::ROOT_CFG_VERSION] != $version) {
-            Util::logError('Neard config file malformed for ' . $this->getName() . ' ' . $version);
+        $bearsamppConfRaw = parse_ini_file($bearsamppConf);
+        if ($bearsamppConfRaw === false || !isset($bearsamppConfRaw[self::ROOT_CFG_VERSION]) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version) {
+            Util::logError('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::NEARD_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::bearsampp_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
             return false;
         }
 
-        // neard.conf
+        // bearsampp.conf
         $this->setVersion($version);
 
         // phpmemadmin
-        $neardApps->getPhpmemadmin()->update($sub + 1);
+        $bearsamppApps->getPhpmemadmin()->update($sub + 1);
 
         return true;
     }
 
     public function setVersion($version) {
-        global $neardConfig;
+        global $bearsamppConfig;
         $this->version = $version;
-        $neardConfig->replace(self::ROOT_CFG_VERSION, $version);
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 
@@ -259,14 +259,14 @@ class BinMemcached extends Module
     }
 
     public function setEnable($enabled, $showWindow = false) {
-        global $neardConfig, $neardLang, $neardWinbinder;
+        global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
         if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
             Util::logDebug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
-                    sprintf($neardLang->getValue(Lang::ENABLE_TITLE), $this->getName())
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_TITLE), $this->getName())
                 );
             }
             $enabled = Config::DISABLED;
@@ -274,7 +274,7 @@ class BinMemcached extends Module
 
         Util::logInfo($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
         $this->enable = $enabled == Config::ENABLED;
-        $neardConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
+        $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
 
         $this->reload();
         if ($this->enable) {

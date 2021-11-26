@@ -16,21 +16,21 @@ class TplAppSvn
 
     public static function process()
     {
-        global $neardLang, $neardBins;
+        global $bearsamppLang, $bearsamppBins;
 
-        return TplApp::getMenuEnable($neardLang->getValue(Lang::SVN), self::MENU, get_called_class(), $neardBins->getSvn()->isEnable());
+        return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::SVN), self::MENU, get_called_class(), $bearsamppBins->getSvn()->isEnable());
     }
 
     public static function getMenuSvn()
     {
-        global $neardBins, $neardLang, $neardTools;
+        global $bearsamppBins, $bearsamppLang, $bearsamppTools;
         $resultItems = $resultActions = '';
 
-        $isEnabled = $neardBins->getSvn()->isEnable();
+        $isEnabled = $bearsamppBins->getSvn()->isEnable();
 
         // Download
         $resultItems .= TplAestan::getItemLink(
-        $neardLang->getValue(Lang::DOWNLOAD_MORE),
+        $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
             Util::getWebsiteUrl('modules/svn', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
@@ -39,7 +39,7 @@ class TplAppSvn
         // Enable
         $tplEnable = TplApp::getActionMulti(
             self::ACTION_ENABLE, array($isEnabled ? Config::DISABLED : Config::ENABLED),
-            array($neardLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
+            array($bearsamppLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
             false, get_called_class()
         );
         $resultItems .= $tplEnable[TplApp::SECTION_CALL] . PHP_EOL;
@@ -49,22 +49,22 @@ class TplAppSvn
             $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
             // Versions
-            $tplVersions = TplApp::getMenu($neardLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
+            $tplVersions = TplApp::getMenu($bearsamppLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
             $resultItems .= $tplVersions[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplVersions[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Service
-            $tplService = TplApp::getMenu($neardLang->getValue(Lang::SERVICE), self::MENU_SERVICE, get_called_class());
+            $tplService = TplApp::getMenu($bearsamppLang->getValue(Lang::SERVICE), self::MENU_SERVICE, get_called_class());
             $resultItems .= $tplService[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplService[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Debug
-            $tplDebug = TplApp::getMenu($neardLang->getValue(Lang::DEBUG), self::MENU_DEBUG, get_called_class());
+            $tplDebug = TplApp::getMenu($bearsamppLang->getValue(Lang::DEBUG), self::MENU_DEBUG, get_called_class());
             $resultItems .= $tplDebug[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplDebug[TplApp::SECTION_CONTENT];
 
             // Repos
-            $tplRepos = TplApp::getMenu($neardLang->getValue(Lang::REPOS), self::MENU_REPOS, get_called_class());
+            $tplRepos = TplApp::getMenu($bearsamppLang->getValue(Lang::REPOS), self::MENU_REPOS, get_called_class());
             $emptyRepos = count(explode(PHP_EOL, $tplRepos[TplApp::SECTION_CONTENT])) == 2;
             if (!$emptyRepos) {
                 $resultItems .= $tplRepos[TplApp::SECTION_CALL] . PHP_EOL;
@@ -73,13 +73,13 @@ class TplAppSvn
 
             // Console
             $resultItems .= TplAestan::getItemConsoleZ(
-                $neardLang->getValue(Lang::SVN_CONSOLE),
+                $bearsamppLang->getValue(Lang::SVN_CONSOLE),
                 TplAestan::GLYPH_SVN,
-                $neardTools->getConsoleZ()->getTabTitleSvn()
+                $bearsamppTools->getConsoleZ()->getTabTitleSvn()
             ) . PHP_EOL;
 
             // Log
-            $resultItems .= TplAestan::getItemNotepad($neardLang->getValue(Lang::MENU_LOGS), $neardBins->getSvn()->getLog()) . PHP_EOL;
+            $resultItems .= TplAestan::getItemNotepad($bearsamppLang->getValue(Lang::MENU_LOGS), $bearsamppBins->getSvn()->getLog()) . PHP_EOL;
         }
 
         return $resultItems . PHP_EOL . $resultActions;
@@ -87,14 +87,14 @@ class TplAppSvn
 
     public static function getMenuSvnVersions()
     {
-        global $neardBins;
+        global $bearsamppBins;
         $items = '';
         $actions = '';
 
-        foreach ($neardBins->getSvn()->getVersionList() as $version) {
+        foreach ($bearsamppBins->getSvn()->getVersionList() as $version) {
             $tplSwitchVersion = TplApp::getActionMulti(
                 self::ACTION_SWITCH_VERSION, array($version),
-                array($version, $version == $neardBins->getSvn()->getVersion() ? TplAestan::GLYPH_CHECK : ''),
+                array($version, $version == $bearsamppBins->getSvn()->getVersion() ? TplAestan::GLYPH_CHECK : ''),
                 false, get_called_class()
             );
 
@@ -110,46 +110,46 @@ class TplAppSvn
 
     public static function getActionEnableSvn($enable)
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::ENABLE, array($neardBins->getSvn()->getName(), $enable)) . PHP_EOL .
+        return TplApp::getActionRun(Action::ENABLE, array($bearsamppBins->getSvn()->getName(), $enable)) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 
     public static function getActionSwitchSvnVersion($version)
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::SWITCH_VERSION, array($neardBins->getSvn()->getName(), $version)) . PHP_EOL .
+        return TplApp::getActionRun(Action::SWITCH_VERSION, array($bearsamppBins->getSvn()->getName(), $version)) . PHP_EOL .
             TplAppReload::getActionReload() . PHP_EOL;
     }
 
     public static function getMenuSvnService()
     {
-        global $neardLang, $neardBins;
+        global $bearsamppLang, $bearsamppBins;
 
         $tplChangePort = TplApp::getActionMulti(
             self::ACTION_CHANGE_PORT, null,
-            array($neardLang->getValue(Lang::MENU_CHANGE_PORT), TplAestan::GLYPH_NETWORK),
+            array($bearsamppLang->getValue(Lang::MENU_CHANGE_PORT), TplAestan::GLYPH_NETWORK),
             false, get_called_class()
         );
 
-        $isInstalled = $neardBins->getSvn()->getService()->isInstalled();
+        $isInstalled = $bearsamppBins->getSvn()->getService()->isInstalled();
 
-        $result = TplAestan::getItemActionServiceStart($neardBins->getSvn()->getService()->getName()) . PHP_EOL .
-        TplAestan::getItemActionServiceStop($neardBins->getSvn()->getService()->getName()) . PHP_EOL .
-        TplAestan::getItemActionServiceRestart($neardBins->getSvn()->getService()->getName()) . PHP_EOL .
+        $result = TplAestan::getItemActionServiceStart($bearsamppBins->getSvn()->getService()->getName()) . PHP_EOL .
+        TplAestan::getItemActionServiceStop($bearsamppBins->getSvn()->getService()->getName()) . PHP_EOL .
+        TplAestan::getItemActionServiceRestart($bearsamppBins->getSvn()->getService()->getName()) . PHP_EOL .
         TplAestan::getItemSeparator() . PHP_EOL .
         TplApp::getActionRun(
-            Action::CHECK_PORT, array($neardBins->getSvn()->getName(), $neardBins->getSvn()->getPort()),
-            array(sprintf($neardLang->getValue(Lang::MENU_CHECK_PORT), $neardBins->getSvn()->getPort()), TplAestan::GLYPH_LIGHT)
+            Action::CHECK_PORT, array($bearsamppBins->getSvn()->getName(), $bearsamppBins->getSvn()->getPort()),
+            array(sprintf($bearsamppLang->getValue(Lang::MENU_CHECK_PORT), $bearsamppBins->getSvn()->getPort()), TplAestan::GLYPH_LIGHT)
         ) . PHP_EOL .
         $tplChangePort[TplApp::SECTION_CALL] . PHP_EOL;
 
         if (!$isInstalled) {
             $tplInstallService = TplApp::getActionMulti(
                 self::ACTION_INSTALL_SERVICE, null,
-                array($neardLang->getValue(Lang::MENU_INSTALL_SERVICE), TplAestan::GLYPH_SERVICE_INSTALL),
+                array($bearsamppLang->getValue(Lang::MENU_INSTALL_SERVICE), TplAestan::GLYPH_SERVICE_INSTALL),
                 $isInstalled, get_called_class()
             );
 
@@ -158,7 +158,7 @@ class TplAppSvn
         } else {
             $tplRemoveService = TplApp::getActionMulti(
                 self::ACTION_REMOVE_SERVICE, null,
-                array($neardLang->getValue(Lang::MENU_REMOVE_SERVICE), TplAestan::GLYPH_SERVICE_REMOVE),
+                array($bearsamppLang->getValue(Lang::MENU_REMOVE_SERVICE), TplAestan::GLYPH_SERVICE_REMOVE),
                 !$isInstalled, get_called_class()
             );
 
@@ -172,25 +172,25 @@ class TplAppSvn
 
     public static function getMenuSvnDebug()
     {
-        global $neardLang;
+        global $bearsamppLang;
 
         return TplApp::getActionRun(
             Action::DEBUG_SVN, array(BinSvn::CMD_VERSION),
-            array($neardLang->getValue(Lang::DEBUG_SVN_VERSION), TplAestan::GLYPH_DEBUG)
+            array($bearsamppLang->getValue(Lang::DEBUG_SVN_VERSION), TplAestan::GLYPH_DEBUG)
         ) . PHP_EOL;
     }
 
     public static function getMenuSvnRepos()
     {
-        global $neardBins, $neardTools;
+        global $bearsamppBins, $bearsamppTools;
         $result = '';
 
-        foreach ($neardBins->getSvn()->findRepos() as $repo) {
+        foreach ($bearsamppBins->getSvn()->findRepos() as $repo) {
             $result .= TplAestan::getItemConsoleZ(
                 basename($repo),
                 TplAestan::GLYPH_SVN,
-                $neardTools->getConsoleZ()->getTabTitleSvn(),
-                $neardTools->getConsoleZ()->getTabTitleSvn($repo),
+                $bearsamppTools->getConsoleZ()->getTabTitleSvn(),
+                $bearsamppTools->getConsoleZ()->getTabTitleSvn($repo),
                 $repo
             ) . PHP_EOL;
         }
@@ -200,9 +200,9 @@ class TplAppSvn
 
     public static function getActionChangeSvnPort()
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::CHANGE_PORT, array($neardBins->getSvn()->getName())) . PHP_EOL .
+        return TplApp::getActionRun(Action::CHANGE_PORT, array($bearsamppBins->getSvn()->getName())) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 

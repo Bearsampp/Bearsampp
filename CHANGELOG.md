@@ -26,7 +26,7 @@
 
 ## 1.7.2 (2020/04/19)
 
-* Repairing symbolic links when Neard changes path (#452)
+* Repairing symbolic links when bearsampp changes path (#452)
 * Use symlink path for PostgreSQL service
 * Git 2.26.1
 * Coding style
@@ -47,7 +47,7 @@
 * Fix MongoDB service startup
 * Use MongoDB driver to check connection status (#372)
 * Replace Console with ConsoleZ (#406)
-* It is no longer necessary to restart Neard when changing module versions
+* It is no longer necessary to restart bearsampp when changing module versions
 * Use symlinks to handle current path of active module version
 * Fix MariaDB folder scan
 * Log system info
@@ -71,7 +71,7 @@
 * Switch to TravisCI
 * Fix update URL
 * Check Apache HTTP headers insensitive
-* Add homepage logging in `neard-homepage.log`
+* Add homepage logging in `bearsampp-homepage.log`
 * Typo lang
 * Increase MySQL initialization timeout
 * Apache 2.4.39
@@ -104,14 +104,14 @@
 
 * Manage Yarn cache and global path (#354)
 * Yarn config not updated (#353)
-* Put Composer cache-dir to neard/tmp/composer (bearsampp/bearsampp#346)
+* Put Composer cache-dir to bearsampp/tmp/composer (bearsampp/bearsampp#346)
 * Add global composer vendor/bin in PATH (#344)
-* Move neard repositories to its own organization (#339)
+* Move bearsampp repositories to its own organization (#339)
 * Add ngrok (#334)
 * Remove HostsEditor module and add in core instead (#329)
 * Create separated logs (stdout / stderr) for NSSM services (#326)
 * ImageMagick `convert.exe` is overridden by `convert.exe` from Windows (#323)
-* Put NEARD_BINS at the beginning of PATH (#323)
+* Put bearsampp_BINS at the beginning of PATH (#323)
 * Remove ImageMagick module (#322)
 * Add a deps folder to load additional dependencies for PHP (#321)
 * Fix error on homepage
@@ -123,7 +123,7 @@
 * Upgrade to Markdown lib 1.7.0
 * Wrong file size for version check on homepage
 * Exclude .editorconfig from core
-* Neard settings configurable through build.properties
+* bearsampp settings configurable through build.properties
 * Apache 2.4.29
 * Composer 1.5.6
 * Console 2.00.148.4
@@ -198,7 +198,7 @@
 * Add Ruby tool (#154)
 * Add Python tool (#98)
 * Add Perl, Vbs and Python CGI scripts examples
-* Bug while setting version in neard.conf
+* Bug while setting version in bearsampp.conf
 * Downgrade default Filezilla release to 0.9.42 (XP compatibility)
 * Implement enable on tools and apps
 * Integration of Codacy and Travis
@@ -213,7 +213,7 @@
 * Bug on install service item menu (#152)
 * Redundant check service installed
 * libpq required for php lib core (PostgreSQL)
-* Update Neard Visual C++ Redistributables Package (PostgreSQL)
+* Update bearsampp Visual C++ Redistributables Package (PostgreSQL)
 * Add npmrc item in Node.js menu
 * Add phpPgAdmin app
 * Update about dialog
@@ -259,7 +259,7 @@
 * Wrong RewriteBase on GitList 0.5.0-r2
 * Upgrade PHP Markdown
 * Add NSSM lib required for MailHog
-* Add reference to IMDisplay.exe in ImageMagick neard.conf
+* Add reference to IMDisplay.exe in ImageMagick bearsampp.conf
 * Upgrade ImageMagick to release 3
 * Move Console icons to core resources
 * Add [ANSICON](https://github.com/adoxa/ansicon) to resolve ANSI escape sequences in Console
@@ -285,7 +285,7 @@
 * Update SVN Apache module path on fly (#124)
 * Update config files on startup (apps, bins, tools) (#123)
 * Skip npm-cache clear on startup (#122)
-* Always need a restart to run Neard (#118)
+* Always need a restart to run bearsampp (#118)
 * Check valid domain name when adding vhost (#117)
 * Add aliases doesn't work with quote or accented letters or special letters (#116)
 * Add Hungarian language (#112)
@@ -309,7 +309,7 @@
 * Review phpMyAdmin module implementation
 * Display changelog link in new release dialog
 * Create sub repositories on Github for apps and tools (see 'Download' section in README.md)
-* Neard is now compressed with 7z format
+* bearsampp is now compressed with 7z format
 * Use resources url instead of base64 data
 * Remove internal hosts management
 * HTTP headers now retrieved via cURL if available
@@ -318,10 +318,10 @@
 ## 1.0.17 (2016/01/26)
 
 * Retrieve latest version from CHANGELOG.md
-* Restart Neard when Node.js has been switched (environment variables)
+* Restart bearsampp when Node.js has been switched (environment variables)
 * Missplaced ActionReload
 * phpMyAdmin 4.0.10.12 / 4.4.15.2 / 4.5.3.1 (#107)
-* Add manifest inside neard.exe
+* Add manifest inside bearsampp.exe
 
 ## 1.0.16 (2015/12/13)
 
@@ -343,7 +343,7 @@
 * Zend extension not recognized on PHP 5.2.x (#96)
 * Add NodeJS to PATH (#95)
 * Increase input length (#91)
-* Add Composer in Neard tools (#80)
+* Add Composer in bearsampp tools (#80)
 * PHP 5.6.14 (#34)
 
 ## 1.0.14 (2015/06/09)
@@ -363,7 +363,7 @@
 ## 1.0.13 (2015/04/20)
 
 * Launch on startup fails sometimes (#83)
-* Restarting Neard doesn't work (#82)
+* Restarting bearsampp doesn't work (#82)
 * Installing Apache addon need manual configuration (#81)
 * Bug switching Online/Offline (#78)
 * Add option to scan SVN and Git repos on Startup (#75)
@@ -379,7 +379,7 @@
 * Adding APC manager page (#73)
 * Adding PHP extensions version (if available) on homepage (#72)
 * Add logs menu (#71)
-* Launch Neard as an explorer.exe child process (#70)
+* Launch bearsampp as an explorer.exe child process (#70)
 * Bug with APC configuration (#57, #67)
 * PHP 5.3.29, PHP 5.4.31, PHP 5.5.16, PHP 5.6.0, Filezilla Server 0.9.47 (#34)
 * Avoid unlink and fsockopen errors
@@ -387,7 +387,7 @@
 * Change check port calls method
 * Bug hard link log for filezilla
 * Imagick core dll files splitted for each PHP version
-* Adding Winbinder specific log file (neard-winbinder.log)
+* Adding Winbinder specific log file (bearsampp-winbinder.log)
 * Remove wget util
 * Refresh environment variables only for Environment registry subkey
 * Do not check Sublimetext updates
@@ -431,7 +431,7 @@
 * Bug check MySQL and MariaDB ports (#56)
 * Add Adminer application (#55)
 * Failed to load PHP extensions from config file (#53)
-* Restart all services restarts Neard (#52)
+* Restart all services restarts bearsampp (#52)
 * Display www directories on homepage (#50)
 * Bug switching php extension or apache module (#49)
 * PHP 5.4.30, PHP 5.5.14 (#34)
@@ -492,7 +492,7 @@
 * Move VBS and Batch processes
 * Review loader
 * Review switch online/offline
-* Add batch and vbs logs files (neard-batch.log and neard-vbs.log)
+* Add batch and vbs logs files (bearsampp-batch.log and bearsampp-vbs.log)
 
 ## 1.0.3 (2014/03/10)
 

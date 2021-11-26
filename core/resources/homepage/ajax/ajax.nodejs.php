@@ -6,18 +6,18 @@ $result = array(
 );
 
 // Status
-if ($neardBins->getNodejs()->isEnable()) {
-    $result['status'] = '<span style="float:right;font-size:12px" class="label label-primary">' . $neardLang->getValue(Lang::ENABLED) . '</span>';
+if ($bearsamppBins->getNodejs()->isEnable()) {
+    $result['status'] = '<span style="float:right;font-size:12px" class="label label-primary">' . $bearsamppLang->getValue(Lang::ENABLED) . '</span>';
 } else {
-    $result['status'] = '<span style="float:right;font-size:12px" class="label label-default">' . $neardLang->getValue(Lang::DISABLED) . '</span>';
+    $result['status'] = '<span style="float:right;font-size:12px" class="label label-default">' . $bearsamppLang->getValue(Lang::DISABLED) . '</span>';
 }
 
 // Versions
-foreach ($neardBins->getNodejs()->getVersionList() as $version) {
-    if ($version != $neardBins->getNodejs()->getVersion()) {
+foreach ($bearsamppBins->getNodejs()->getVersionList() as $version) {
+    if ($version != $bearsamppBins->getNodejs()->getVersion()) {
         $result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-default">' . $version . '</span>';
     }
 }
-$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-primary">' . $neardBins->getNodejs()->getVersion() . '</span>';
+$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-primary">' . $bearsamppBins->getNodejs()->getVersion() . '</span>';
 
 echo json_encode($result);

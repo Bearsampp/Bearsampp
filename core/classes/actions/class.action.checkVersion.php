@@ -3,69 +3,69 @@
 class ActionCheckVersion
 {
     const DISPLAY_OK = 'displayOk';
-    
+
     private $wbWindow;
-    
+
     private $wbImage;
     private $wbLinkChangelog;
     private $wbLinkFull;
     private $wbBtnOk;
-    
+
     private $currentVersion;
     private $latestVersion;
-    
+
     public function __construct($args)
     {
-        global $neardCore, $neardLang, $neardWinbinder;
-        
-        if (!file_exists($neardCore->getExec())) {
+        global $bearsamppCore, $bearsamppLang, $bearsamppWinbinder;
+
+        if (!file_exists($bearsamppCore->getExec())) {
             Util::startLoading();
-            $this->currentVersion = $neardCore->getAppVersion();
+            $this->currentVersion = $bearsamppCore->getAppVersion();
             $this->latestVersion =  Util::getLatestVersion();
-            
+
             if ($this->latestVersion != null && version_compare($this->currentVersion, $this->latestVersion, '<')) {
-                $labelFullLink = $neardLang->getValue(Lang::DOWNLOAD) . ' ' . APP_TITLE . ' ' . $this->latestVersion;
-                
-                $neardWinbinder->reset();
-                $this->wbWindow = $neardWinbinder->createAppWindow($neardLang->getValue(Lang::CHECK_VERSION_TITLE), 480, 170, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP);
-                
-                $neardWinbinder->createLabel($this->wbWindow, $neardLang->getValue(Lang::CHECK_VERSION_AVAILABLE_TEXT), 80, 15, 470, 120);
-                
-                $neardWinbinder->createLabel($this->wbWindow, $neardLang->getValue(Lang::CHECK_VERSION_CHANGELOG_TEXT), 80, 40, 470, 20);
-                $this->wbLinkChangelog = $neardWinbinder->createHyperLink($this->wbWindow, Util::getChangelogUrl(false), 80, 57, 470, 20, WBC_LINES | WBC_RIGHT);
-                
-                $this->wbLinkFull = $neardWinbinder->createHyperLink($this->wbWindow, $labelFullLink, 80, 87, 300, 20, WBC_LINES | WBC_RIGHT);
-                
-                $this->wbBtnOk = $neardWinbinder->createButton($this->wbWindow, $neardLang->getValue(Lang::BUTTON_OK), 380, 103);
-                $this->wbImage = $neardWinbinder->drawImage($this->wbWindow, $neardCore->getResourcesPath() . '/about.bmp');
-                
+                $labelFullLink = $bearsamppLang->getValue(Lang::DOWNLOAD) . ' ' . APP_TITLE . ' ' . $this->latestVersion;
+
+                $bearsamppWinbinder->reset();
+                $this->wbWindow = $bearsamppWinbinder->createAppWindow($bearsamppLang->getValue(Lang::CHECK_VERSION_TITLE), 480, 170, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP);
+
+                $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::CHECK_VERSION_AVAILABLE_TEXT), 80, 15, 470, 120);
+
+                $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::CHECK_VERSION_CHANGELOG_TEXT), 80, 40, 470, 20);
+                $this->wbLinkChangelog = $bearsamppWinbinder->createHyperLink($this->wbWindow, Util::getChangelogUrl(false), 80, 57, 470, 20, WBC_LINES | WBC_RIGHT);
+
+                $this->wbLinkFull = $bearsamppWinbinder->createHyperLink($this->wbWindow, $labelFullLink, 80, 87, 300, 20, WBC_LINES | WBC_RIGHT);
+
+                $this->wbBtnOk = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_OK), 380, 103);
+                $this->wbImage = $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getResourcesPath() . '/about.bmp');
+
                 Util::stopLoading();
-                $neardWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
-                $neardWinbinder->mainLoop();
-                $neardWinbinder->reset();
+                $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
+                $bearsamppWinbinder->mainLoop();
+                $bearsamppWinbinder->reset();
             } elseif (isset($args[0]) && !empty($args[0]) && $args[0] == self::DISPLAY_OK) {
                 Util::stopLoading();
-                $neardWinbinder->messageBoxInfo(
-                    $neardLang->getValue(Lang::CHECK_VERSION_LATEST_TEXT),
-                    $neardLang->getValue(Lang::CHECK_VERSION_TITLE));
+                $bearsamppWinbinder->messageBoxInfo(
+                    $bearsamppLang->getValue(Lang::CHECK_VERSION_LATEST_TEXT),
+                    $bearsamppLang->getValue(Lang::CHECK_VERSION_TITLE));
             }
         }
     }
-    
+
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
-        global $neardConfig, $neardWinbinder;
-    
+        global $bearsamppConfig, $bearsamppWinbinder;
+
         switch ($id) {
             case $this->wbLinkChangelog[WinBinder::CTRL_ID]:
-                $neardWinbinder->exec($neardConfig->getBrowser(), Util::getChangelogUrl());
+                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getChangelogUrl());
                 break;
             case $this->wbLinkFull[WinBinder::CTRL_ID]:
-                $neardWinbinder->exec($neardConfig->getBrowser(), Util::getVersionUrl($this->latestVersion));
+                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getVersionUrl($this->latestVersion));
                 break;
             case IDCLOSE:
             case $this->wbBtnOk[WinBinder::CTRL_ID]:
-                $neardWinbinder->destroyWindow($window);
+                $bearsamppWinbinder->destroyWindow($window);
                 break;
         }
     }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="neard" basedir=".">
-  
-  <dirname property="project.basedir" file="${ant.file.neard}"/>
+<project name="bearsampp" basedir=".">
+
+  <dirname property="project.basedir" file="${ant.file.bearsampp}"/>
   <property name="build.properties" value="${project.basedir}/build.properties"/>
   <property file="${build.properties}"/>
-  
-  <!-- Neard dev -->
+
+  <!-- bearsampp dev -->
   <property name="dev.path" location="${project.basedir}\${dev.dir}"/>
   <fail unless="dev.path" message="Core directory '${dev.path}' not found in ${dev.path}"/>
-  <echo message="Neard dev found in ${dev.path}" level="debug"/>
+  <echo message="bearsampp dev found in ${dev.path}" level="debug"/>
 
   <!-- Build dir -->
   <property name="build.path" location="${project.basedir}\${build.dir}"/>
@@ -21,12 +21,12 @@
 
   <property name="release.tmp.path" value="${build.tmp.path}/release"/>
   <mkdir dir="${release.tmp.path}"/>
-  
+
   <target name="check.lang" description="Check languages files" depends="init, load.lib">
     <phpdev action="checklang"/>
   </target>
-  
-  <target name="release" depends="init, load.lib, build-full, build-basic, build-light" description="Release Neard"/>
+
+  <target name="release" depends="init, load.lib, build-full, build-basic, build-light" description="Release bearsampp"/>
 
   <target name="base" depends="init, load.lib" unless="is.base.prepared">
     <var name="release.base.target" unset="true"/>
@@ -57,7 +57,7 @@
         *.launch"
       />
     </copy>
-    
+
     <!-- Copy base -->
     <copy todir="${release.base.target}">
       <fileset dir="${project.basedir}/base" defaultexcludes="yes" excludes="
@@ -70,9 +70,9 @@
         <type type="dir"/>
       </fileset>
     </copy>
-    
+
     <!-- Replacements -->
-    <copy file="${project.basedir}/base/neard.conf" tofile="${release.base.target}/neard.conf" overwrite="true">
+    <copy file="${project.basedir}/base/bearsampp.conf" tofile="${release.base.target}/bearsampp.conf" overwrite="true">
       <filterset>
         <filter token="APPCONF_LANG" value="${appconf.lang}"/>
         <filter token="APPCONF_TIMEZONE" value="${appconf.timezone}"/>
@@ -80,7 +80,7 @@
         <filter token="APPCONF_MAX_LOGS_ARCHIVES" value="${appconf.maxLogsArchives}"/>
         <filter token="APPCONF_LOGS_VERBOSE" value="${appconf.logsVerbose}"/>
         <filter token="APPCONF_SCRIPTS_TIMEOUT" value="${appconf.scriptsTimeout}"/>
-        
+
         <filter token="BIN_APACHE_VERSION" value="${bin.apache.version}"/>
         <filter token="BIN_PHP_VERSION" value="${bin.php.version}"/>
         <filter token="BIN_MYSQL_VERSION" value="${bin.mysql.version}"/>
@@ -92,7 +92,7 @@
         <filter token="BIN_MAILHOG_VERSION" value="${bin.mailhog.version}"/>
         <filter token="BIN_MEMCACHED_VERSION" value="${bin.memcached.version}"/>
         <filter token="BIN_SVN_VERSION" value="${bin.svn.version}"/>
-        
+
         <filter token="TOOL_COMPOSER_VERSION" value="${tool.composer.version}"/>
         <filter token="TOOL_CONSOLEZ_VERSION" value="${tool.consolez.version}"/>
         <filter token="TOOL_GHOSTSCRIPT_VERSION" value="${tool.ghostscript.version}"/>
@@ -103,7 +103,7 @@
         <filter token="TOOL_RUBY_VERSION" value="${tool.ruby.version}"/>
         <filter token="TOOL_XDC_VERSION" value="${tool.xdc.version}"/>
         <filter token="TOOL_YARN_VERSION" value="${tool.yarn.version}"/>
-        
+
         <filter token="APP_ADMINER_VERSION" value="${app.adminer.version}"/>
         <filter token="APP_GITLIST_VERSION" value="${app.gitlist.version}"/>
         <filter token="APP_PHPMEMADMIN_VERSION" value="${app.phpmemadmin.version}"/>
@@ -113,9 +113,9 @@
         <filter token="APP_WEBSVN_VERSION" value="${app.websvn.version}"/>
       </filterset>
     </copy>
-      
+
     <!-- Write version -->
-    <copy file="${project.basedir}/base/neard.ini" tofile="${release.base.target}/neard.ini" overwrite="true">
+    <copy file="${project.basedir}/base/bearsampp.ini" tofile="${release.base.target}/bearsampp.ini" overwrite="true">
     <filterset>
       <filter token="RELEASE_VERSION" value="${release.fullversion}"/>
     </filterset>
@@ -151,7 +151,7 @@
     </copy>
 
     <!-- Replacements -->
-    <copy file="${release.base.target}/neard.conf" tofile="${release.target}/neard.conf" overwrite="true">
+    <copy file="${release.base.target}/bearsampp.conf" tofile="${release.target}/bearsampp.conf" overwrite="true">
       <filterset>
         <filter token="BIN_APACHE_ENABLE" value="1"/>
         <filter token="BIN_PHP_ENABLE" value="1"/>
@@ -265,7 +265,7 @@
     </copy>
 
     <!-- Replacements -->
-    <copy file="${release.base.target}/neard.conf" tofile="${release.target}/neard.conf" overwrite="true">
+    <copy file="${release.base.target}/bearsampp.conf" tofile="${release.target}/bearsampp.conf" overwrite="true">
       <filterset>
         <filter token="BIN_APACHE_ENABLE" value="1"/>
         <filter token="BIN_PHP_ENABLE" value="1"/>
@@ -379,7 +379,7 @@
     </copy>
 
     <!-- Replacements -->
-    <copy file="${release.base.target}/neard.conf" tofile="${release.target}/neard.conf" overwrite="true">
+    <copy file="${release.base.target}/bearsampp.conf" tofile="${release.target}/bearsampp.conf" overwrite="true">
       <filterset>
         <filter token="BIN_APACHE_ENABLE" value="1"/>
         <filter token="BIN_PHP_ENABLE" value="1"/>
@@ -468,20 +468,20 @@
     </if>
   </target>
 
-  <target name="launch" depends="build-full" description="Launch Neard">
+  <target name="launch" depends="build-full" description="Launch bearsampp">
     <assertdir dir="${release.target}"/>
     <property name="build.launch.path" value="${build.path}/launch"/>
-    
+
     <delete dir="${build.launch.path}"/>
     <mkdir dir="${build.launch.path}"/>
     <move todir="${build.launch.path}">
-      <fileset dir="${release.target}/neard">
+      <fileset dir="${release.target}/bearsampp">
         <include name="**"/>
       </fileset>
     </move>
-    
-    <echo message="Executing Neard. Please wait..."/>
-    <exec executable="${build.launch.path}/neard.exe"/>
-    <echo message="If the application needs to restart, you can execute neard.exe in : ${build.launch.path}"/>
+
+    <echo message="Executing bearsampp. Please wait..."/>
+    <exec executable="${build.launch.path}/bearsampp.exe"/>
+    <echo message="If the application needs to restart, you can execute bearsampp.exe in : ${build.launch.path}"/>
   </target>
 </project>

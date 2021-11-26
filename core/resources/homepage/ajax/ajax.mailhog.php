@@ -6,14 +6,14 @@ $result = array(
 );
 
 // Check port
-$smtpPort = $neardBins->getMailhog()->getSmtpPort();
+$smtpPort = $bearsamppBins->getMailhog()->getSmtpPort();
 
-$textServiceStarted = $neardLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
-$textServiceStopped = $neardLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
-$textDisabled = $neardLang->getValue(Lang::DISABLED);
+$textServiceStarted = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
+$textServiceStopped = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
+$textDisabled = $bearsamppLang->getValue(Lang::DISABLED);
 
-if ($neardBins->getMailhog()->checkPort($smtpPort)) {
-    if ($neardBins->getMailhog()->checkPort($smtpPort)) {
+if ($bearsamppBins->getMailhog()->checkPort($smtpPort)) {
+    if ($bearsamppBins->getMailhog()->checkPort($smtpPort)) {
         $result['checkport'] .= '<span style="float:right;font-size:12px" class="label label-success">' . sprintf($textServiceStarted, $smtpPort) . '</span>';
     } else {
         $result['checkport'] .= '<span style="float:right;font-size:12px" class="label label-danger">' . $textServiceStopped . '</span>';
@@ -23,11 +23,11 @@ if ($neardBins->getMailhog()->checkPort($smtpPort)) {
 }
 
 // Versions
-foreach ($neardBins->getMailhog()->getVersionList() as $version) {
-    if ($version != $neardBins->getMailhog()->getVersion()) {
+foreach ($bearsamppBins->getMailhog()->getVersionList() as $version) {
+    if ($version != $bearsamppBins->getMailhog()->getVersion()) {
         $result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-default">' . $version . '</span>';
     }
 }
-$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-primary">' . $neardBins->getMailhog()->getVersion() . '</span>';
+$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-primary">' . $bearsamppBins->getMailhog()->getVersion() . '</span>';
 
 echo json_encode($result);

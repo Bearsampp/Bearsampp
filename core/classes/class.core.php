@@ -3,8 +3,8 @@
 class Core
 {
     const BOOTSTRAP_FILE = 'bootstrap.php';
-    const PATH_WIN_PLACEHOLDER = '~NEARD_WIN_PATH~';
-    const PATH_LIN_PLACEHOLDER = '~NEARD_LIN_PATH~';
+    const PATH_WIN_PLACEHOLDER = '~bearsampp_WIN_PATH~';
+    const PATH_LIN_PLACEHOLDER = '~bearsampp_LIN_PATH~';
 
     const PHP_VERSION = '5.4.23';
     const PHP_EXE = 'php-win.exe';
@@ -42,32 +42,32 @@ class Core
 
     public function getLangsPath($aetrayPath = false)
     {
-        global $neardBs;
-        return $neardBs->getCorePath($aetrayPath) . '/langs';
+        global $bearsamppBs;
+        return $bearsamppBs->getCorePath($aetrayPath) . '/langs';
     }
 
     public function getLibsPath($aetrayPath = false)
     {
-        global $neardBs;
-        return $neardBs->getCorePath($aetrayPath) . '/libs';
+        global $bearsamppBs;
+        return $bearsamppBs->getCorePath($aetrayPath) . '/libs';
     }
 
     public function getResourcesPath($aetrayPath = false)
     {
-        global $neardBs;
-        return $neardBs->getCorePath($aetrayPath) . '/resources';
+        global $bearsamppBs;
+        return $bearsamppBs->getCorePath($aetrayPath) . '/resources';
     }
 
     public function getIconsPath($aetrayPath = false)
     {
-        global $neardCore;
-        return $neardCore->getResourcesPath($aetrayPath) . '/icons';
+        global $bearsamppCore;
+        return $bearsamppCore->getResourcesPath($aetrayPath) . '/icons';
     }
 
     public function getScriptsPath($aetrayPath = false)
     {
-        global $neardBs;
-        return $neardBs->getCorePath($aetrayPath) . '/scripts';
+        global $bearsamppBs;
+        return $bearsamppBs->getCorePath($aetrayPath) . '/scripts';
     }
 
     public function getScript($type)
@@ -77,23 +77,23 @@ class Core
 
     public function getTmpPath($aetrayPath = false)
     {
-        global $neardBs;
-        return $neardBs->getCorePath($aetrayPath) . '/tmp';
+        global $bearsamppBs;
+        return $bearsamppBs->getCorePath($aetrayPath) . '/tmp';
     }
 
     public function getBootstrapFilePath($aetrayPath = false)
     {
-        global $neardBs;
-        return $neardBs->getCorePath($aetrayPath) . '/' . self::BOOTSTRAP_FILE;
+        global $bearsamppBs;
+        return $bearsamppBs->getCorePath($aetrayPath) . '/' . self::BOOTSTRAP_FILE;
     }
 
     public function getAppVersion()
     {
-        global $neardLang;
+        global $bearsamppLang;
 
         $filePath = $this->getResourcesPath() . '/' . self::APP_VERSION;
         if (!is_file($filePath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), APP_TITLE, $filePath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), APP_TITLE, $filePath));
             return null;
         }
 

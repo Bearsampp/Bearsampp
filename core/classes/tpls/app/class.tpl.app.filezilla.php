@@ -14,21 +14,21 @@ class TplAppFilezilla
 
     public static function process()
     {
-        global $neardLang, $neardBins;
+        global $bearsamppLang, $bearsamppBins;
 
-        return TplApp::getMenuEnable($neardLang->getValue(Lang::FILEZILLA), self::MENU, get_called_class(), $neardBins->getFilezilla()->isEnable());
+        return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::FILEZILLA), self::MENU, get_called_class(), $bearsamppBins->getFilezilla()->isEnable());
     }
 
     public static function getMenuFilezilla()
     {
-        global $neardBins, $neardLang;
+        global $bearsamppBins, $bearsamppLang;
         $resultItems = $resultActions = '';
 
-        $isEnabled = $neardBins->getFilezilla()->isEnable();
+        $isEnabled = $bearsamppBins->getFilezilla()->isEnable();
 
         // Download
         $resultItems .= TplAestan::getItemLink(
-        $neardLang->getValue(Lang::DOWNLOAD_MORE),
+        $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
             Util::getWebsiteUrl('modules/filezilla', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
@@ -37,7 +37,7 @@ class TplAppFilezilla
         // Enable
         $tplEnable = TplApp::getActionMulti(
             self::ACTION_ENABLE, array($isEnabled ? Config::DISABLED : Config::ENABLED),
-            array($neardLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
+            array($bearsamppLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
             false, get_called_class()
         );
         $resultItems .= $tplEnable[TplApp::SECTION_CALL] . PHP_EOL;
@@ -47,24 +47,24 @@ class TplAppFilezilla
             $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
             // Versions
-            $tplVersions = TplApp::getMenu($neardLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
+            $tplVersions = TplApp::getMenu($bearsamppLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
             $resultItems .= $tplVersions[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplVersions[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Service
-            $tplService = TplApp::getMenu($neardLang->getValue(Lang::SERVICE), self::MENU_SERVICE, get_called_class());
+            $tplService = TplApp::getMenu($bearsamppLang->getValue(Lang::SERVICE), self::MENU_SERVICE, get_called_class());
             $resultItems .= $tplService[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplService[TplApp::SECTION_CONTENT];
 
             // Admin interface
             $resultItems .= TplAestan::getItemExe(
-                $neardLang->getValue(Lang::ADMINISTRATION),
-                $neardBins->getFilezilla()->getItfExe(),
+                $bearsamppLang->getValue(Lang::ADMINISTRATION),
+                $bearsamppBins->getFilezilla()->getItfExe(),
                 TplAestan::GLYPH_FILEZILLA
             ) . PHP_EOL;
 
             // Log
-            $resultItems .= TplAestan::getItemNotepad($neardLang->getValue(Lang::MENU_LOGS), $neardBins->getFilezilla()->getLog()) . PHP_EOL;
+            $resultItems .= TplAestan::getItemNotepad($bearsamppLang->getValue(Lang::MENU_LOGS), $bearsamppBins->getFilezilla()->getLog()) . PHP_EOL;
         }
 
         return $resultItems . PHP_EOL . $resultActions;
@@ -72,14 +72,14 @@ class TplAppFilezilla
 
     public static function getMenuFilezillaVersions()
     {
-        global $neardBins;
+        global $bearsamppBins;
         $items = '';
         $actions = '';
 
-        foreach ($neardBins->getFilezilla()->getVersionList() as $version) {
+        foreach ($bearsamppBins->getFilezilla()->getVersionList() as $version) {
             $tplSwitchFilezillaVersion = TplApp::getActionMulti(
                 self::ACTION_SWITCH_VERSION, array($version),
-                array($version, $version == $neardBins->getFilezilla()->getVersion() ? TplAestan::GLYPH_CHECK : ''),
+                array($version, $version == $bearsamppBins->getFilezilla()->getVersion() ? TplAestan::GLYPH_CHECK : ''),
                 false, get_called_class()
             );
 
@@ -95,49 +95,49 @@ class TplAppFilezilla
 
     public static function getActionEnableFilezilla($enable)
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::ENABLE, array($neardBins->getFilezilla()->getName(), $enable)) . PHP_EOL .
+        return TplApp::getActionRun(Action::ENABLE, array($bearsamppBins->getFilezilla()->getName(), $enable)) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 
     public static function getActionSwitchFilezillaVersion($version)
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::SWITCH_VERSION, array($neardBins->getFilezilla()->getName(), $version)) . PHP_EOL .
+        return TplApp::getActionRun(Action::SWITCH_VERSION, array($bearsamppBins->getFilezilla()->getName(), $version)) . PHP_EOL .
             TplAppReload::getActionReload() . PHP_EOL;
     }
 
     public static function getMenuFilezillaService()
     {
-        global $neardLang, $neardBins;
+        global $bearsamppLang, $bearsamppBins;
 
         $tplChangePort = TplApp::getActionMulti(
             self::ACTION_CHANGE_PORT, null,
-            array($neardLang->getValue(Lang::MENU_CHANGE_PORT), TplAestan::GLYPH_NETWORK),
+            array($bearsamppLang->getValue(Lang::MENU_CHANGE_PORT), TplAestan::GLYPH_NETWORK),
             false, get_called_class()
         );
 
-        $result = TplAestan::getItemActionServiceStart($neardBins->getFilezilla()->getService()->getName()) . PHP_EOL .
-            TplAestan::getItemActionServiceStop($neardBins->getFilezilla()->getService()->getName()) . PHP_EOL .
-            TplAestan::getItemActionServiceRestart($neardBins->getFilezilla()->getService()->getName()) . PHP_EOL .
+        $result = TplAestan::getItemActionServiceStart($bearsamppBins->getFilezilla()->getService()->getName()) . PHP_EOL .
+            TplAestan::getItemActionServiceStop($bearsamppBins->getFilezilla()->getService()->getName()) . PHP_EOL .
+            TplAestan::getItemActionServiceRestart($bearsamppBins->getFilezilla()->getService()->getName()) . PHP_EOL .
             TplAestan::getItemSeparator() . PHP_EOL .
             TplApp::getActionRun(
-                Action::CHECK_PORT, array($neardBins->getFilezilla()->getName(), $neardBins->getFilezilla()->getPort()),
-                array(sprintf($neardLang->getValue(Lang::MENU_CHECK_PORT), $neardBins->getFilezilla()->getPort()), TplAestan::GLYPH_LIGHT)
+                Action::CHECK_PORT, array($bearsamppBins->getFilezilla()->getName(), $bearsamppBins->getFilezilla()->getPort()),
+                array(sprintf($bearsamppLang->getValue(Lang::MENU_CHECK_PORT), $bearsamppBins->getFilezilla()->getPort()), TplAestan::GLYPH_LIGHT)
             ) . PHP_EOL .
             TplApp::getActionRun(
-                Action::CHECK_PORT, array($neardBins->getFilezilla()->getName(), $neardBins->getFilezilla()->getSslPort(), true),
-                array(sprintf($neardLang->getValue(Lang::MENU_CHECK_PORT), $neardBins->getFilezilla()->getSslPort()) . ' (SSL)', TplAestan::GLYPH_RED_LIGHT)
+                Action::CHECK_PORT, array($bearsamppBins->getFilezilla()->getName(), $bearsamppBins->getFilezilla()->getSslPort(), true),
+                array(sprintf($bearsamppLang->getValue(Lang::MENU_CHECK_PORT), $bearsamppBins->getFilezilla()->getSslPort()) . ' (SSL)', TplAestan::GLYPH_RED_LIGHT)
             ) . PHP_EOL .
             $tplChangePort[TplApp::SECTION_CALL] . PHP_EOL;
 
-        $isInstalled = $neardBins->getFilezilla()->getService()->isInstalled();
+        $isInstalled = $bearsamppBins->getFilezilla()->getService()->isInstalled();
         if (!$isInstalled) {
             $tplInstallService = TplApp::getActionMulti(
                 self::ACTION_INSTALL_SERVICE, null,
-                array($neardLang->getValue(Lang::MENU_INSTALL_SERVICE), TplAestan::GLYPH_SERVICE_INSTALL),
+                array($bearsamppLang->getValue(Lang::MENU_INSTALL_SERVICE), TplAestan::GLYPH_SERVICE_INSTALL),
                 $isInstalled, get_called_class()
             );
 
@@ -146,7 +146,7 @@ class TplAppFilezilla
         } else {
             $tplRemoveService = TplApp::getActionMulti(
                 self::ACTION_REMOVE_SERVICE, null,
-                array($neardLang->getValue(Lang::MENU_REMOVE_SERVICE), TplAestan::GLYPH_SERVICE_REMOVE),
+                array($bearsamppLang->getValue(Lang::MENU_REMOVE_SERVICE), TplAestan::GLYPH_SERVICE_REMOVE),
                 !$isInstalled, get_called_class()
             );
 
@@ -161,9 +161,9 @@ class TplAppFilezilla
 
     public static function getActionChangeFilezillaPort()
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::CHANGE_PORT, array($neardBins->getFilezilla()->getName())) . PHP_EOL .
+        return TplApp::getActionRun(Action::CHANGE_PORT, array($bearsamppBins->getFilezilla()->getName())) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 

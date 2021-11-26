@@ -4,9 +4,9 @@ class ActionClearFolders
 {
     public function __construct($args)
     {
-        global $neardBs, $neardCore;
+        global $bearsamppBs, $bearsamppCore;
 
-        Util::clearFolder($neardBs->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'npm-cache', 'pip', 'yarn'));
-        Util::clearFolder($neardCore->getTmpPath());
+        Util::clearFolder($bearsamppBs->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'npm-cache', 'pip', 'yarn'));
+        Util::clearFolder($bearsamppCore->getTmpPath());
     }
 }

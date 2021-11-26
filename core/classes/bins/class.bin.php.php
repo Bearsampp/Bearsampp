@@ -92,22 +92,22 @@ class BinPhp extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $neardBs, $neardConfig, $neardBins, $neardLang;
+        global $bearsamppBs, $bearsamppConfig, $bearsamppBins, $bearsamppLang;
         Util::logReloadClass($this);
 
-        $this->name = $neardLang->getValue(Lang::PHP);
-        $this->version = $neardConfig->getRaw(self::ROOT_CFG_VERSION);
+        $this->name = $bearsamppLang->getValue(Lang::PHP);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
-        $this->enable = $this->enable && $neardConfig->getRaw(self::ROOT_CFG_ENABLE);
-        $this->apacheConf = $neardBins->getApache()->getCurrentPath() . '/' . $this->apacheConf; //FIXME: Useful ?
-        $this->errorLog = $neardBs->getLogsPath() . '/php_error.log';
+        $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
+        $this->apacheConf = $bearsamppBins->getApache()->getCurrentPath() . '/' . $this->apacheConf; //FIXME: Useful ?
+        $this->errorLog = $bearsamppBs->getLogsPath() . '/php_error.log';
 
-        if ($this->neardConfRaw !== false) {
-            $this->cliExe = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_CLI_EXE];
-            $this->cliSilentExe = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_CLI_SILENT_EXE];
-            $this->conf = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_CONF];
-            $this->pearExe = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_PEAR_EXE];
+        if ($this->bearsamppConfRaw !== false) {
+            $this->cliExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CLI_EXE];
+            $this->cliSilentExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CLI_SILENT_EXE];
+            $this->conf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
+            $this->pearExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_PEAR_EXE];
         }
 
         if (!$this->enable) {
@@ -115,28 +115,28 @@ class BinPhp extends Module
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
             return;
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
-        if (!is_file($this->neardConf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->neardConf));
+        if (!is_file($this->bearsamppConf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
             return;
         }
         if (!is_file($this->cliExe)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cliExe));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cliExe));
         }
         if (!is_file($this->cliSilentExe)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cliSilentExe));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cliSilentExe));
         }
         if (!is_file($this->conf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
         }
         if (!is_file($this->pearExe)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->pearExe));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->pearExe));
         }
     }
 
@@ -146,7 +146,7 @@ class BinPhp extends Module
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $neardLang, $neardBins, $neardApps, $neardWinbinder;
+        global $bearsamppLang, $bearsamppBins, $bearsamppApps, $bearsamppWinbinder;
 
         if (!$this->enable) {
             return true;
@@ -155,37 +155,37 @@ class BinPhp extends Module
         $version = $version == null ? $this->version : $version;
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
-        $boxTitle = sprintf($neardLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
         //$phpPath = str_replace('php' . $this->getVersion(), 'php' . $version, $this->getCurrentPath());
         $conf = str_replace('php' . $this->getVersion(), 'php' . $version, $this->getConf());
-        $neardConf = str_replace('php' . $this->getVersion(), 'php' . $version, $this->neardConf);
+        $bearsamppConf = str_replace('php' . $this->getVersion(), 'php' . $version, $this->bearsamppConf);
 
         $tsDll = $this->getTsDll($version);
-        //$apacheShortVersion = substr(str_replace('.', '', $neardBins->getApache()->getVersion()), 0, 2);
+        //$apacheShortVersion = substr(str_replace('.', '', $bearsamppBins->getApache()->getVersion()), 0, 2);
         //$apachePhpModuleName = $tsDll !== false ? substr($tsDll, 0, 4) . '_module' : null;
-        $apachePhpModulePath = $this->getApacheModule($neardBins->getApache()->getVersion(), $version);
+        $apachePhpModulePath = $this->getApacheModule($bearsamppBins->getApache()->getVersion(), $version);
 
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'PHP TsDll found: ' . $tsDll);
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'PHP Apache module found: ' . $apachePhpModulePath);
 
-        if (!file_exists($conf) || !file_exists($neardConf)) {
-            Util::logError('Neard config files not found for ' . $this->getName() . ' ' . $version);
+        if (!file_exists($conf) || !file_exists($bearsamppConf)) {
+            Util::logError('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::NEARD_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::bearsampp_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
             return false;
         }
 
-        $neardConfRaw = parse_ini_file($neardConf);
-        if ($neardConfRaw === false || !isset($neardConfRaw[self::ROOT_CFG_VERSION]) || $neardConfRaw[self::ROOT_CFG_VERSION] != $version) {
-            Util::logError('Neard config file malformed for ' . $this->getName() . ' ' . $version);
+        $bearsamppConfRaw = parse_ini_file($bearsamppConf);
+        if ($bearsamppConfRaw === false || !isset($bearsamppConfRaw[self::ROOT_CFG_VERSION]) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version) {
+            Util::logError('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::NEARD_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::bearsampp_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
@@ -193,30 +193,30 @@ class BinPhp extends Module
         }
 
         if ($tsDll === false || $apachePhpModulePath === false) {
-            Util::logDebug($this->getName() . ' ' . $version . ' does not seem to be compatible with Apache ' . $neardBins->getApache()->getVersion());
+            Util::logDebug($this->getName() . ' ' . $version . ' does not seem to be compatible with Apache ' . $bearsamppBins->getApache()->getVersion());
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::PHP_INCPT), $version, $neardBins->getApache()->getVersion()),
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::PHP_INCPT), $version, $bearsamppBins->getApache()->getVersion()),
                     $boxTitle
                 );
             }
             return false;
         }
 
-        // neard.conf
+        // bearsampp.conf
         $this->setVersion($version);
 
         // conf
         Util::replaceInFile($this->getConf(), array(
-            '/^mysql.default_port\s=\s(\d+)/' => 'mysql.default_port = ' . $neardBins->getMysql()->getPort(),
-            '/^mysqli.default_port\s=\s(\d+)/' => 'mysqli.default_port = ' . $neardBins->getMysql()->getPort()
+            '/^mysql.default_port\s=\s(\d+)/' => 'mysql.default_port = ' . $bearsamppBins->getMysql()->getPort(),
+            '/^mysqli.default_port\s=\s(\d+)/' => 'mysqli.default_port = ' . $bearsamppBins->getMysql()->getPort()
         ));
 
         // apache
-        $neardBins->getApache()->update($sub + 1);
+        $bearsamppBins->getApache()->update($sub + 1);
 
         // phpmyadmin
-        $neardApps->getPhpmyadmin()->update($sub + 1);
+        $bearsamppApps->getPhpmyadmin()->update($sub + 1);
 
         return true;
     }
@@ -511,10 +511,10 @@ class BinPhp extends Module
         $phpVersion = $phpVersion == null ? $this->getVersion() : $phpVersion;
 
         $currentPath = str_replace('php' . $this->getVersion(), 'php' . $phpVersion, $this->getCurrentPath());
-        $neardConf = str_replace('php' . $this->getVersion(), 'php' . $phpVersion, $this->neardConf);
+        $bearsamppConf = str_replace('php' . $this->getVersion(), 'php' . $phpVersion, $this->bearsamppConf);
 
-        if (in_array($phpVersion, $this->getVersionList()) && file_exists($neardConf)) {
-            $apacheCpt = parse_ini_file($neardConf);
+        if (in_array($phpVersion, $this->getVersionList()) && file_exists($bearsamppConf)) {
+            $apacheCpt = parse_ini_file($bearsamppConf);
             if ($apacheCpt !== false) {
                 foreach ($apacheCpt as $aVersion => $apacheModule) {
                     $aVersion = str_replace('apache', '', $aVersion);
@@ -545,21 +545,21 @@ class BinPhp extends Module
     }
 
     public function setVersion($version) {
-        global $neardConfig;
+        global $bearsamppConfig;
         $this->version = $version;
-        $neardConfig->replace(self::ROOT_CFG_VERSION, $version);
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 
     public function setEnable($enabled, $showWindow = false) {
-        global $neardConfig, $neardBins, $neardLang, $neardWinbinder;
+        global $bearsamppConfig, $bearsamppBins, $bearsamppLang, $bearsamppWinbinder;
 
         if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
             Util::logDebug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
-                    sprintf($neardLang->getValue(Lang::ENABLE_TITLE), $this->getName())
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_TITLE), $this->getName())
                 );
             }
             $enabled = Config::DISABLED;
@@ -567,13 +567,13 @@ class BinPhp extends Module
 
         Util::logInfo($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
         $this->enable = $enabled == Config::ENABLED;
-        $neardConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
+        $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
 
         $this->reload();
-        $neardBins->getApache()->update();
-        if ($neardBins->getApache()->isEnable() && $neardBins->getApache()->getService()->isRunning()) {
-            $neardBins->getApache()->getService()->stop();
-            Util::startService($neardBins->getApache(), BinApache::CMD_SYNTAX_CHECK, $showWindow);
+        $bearsamppBins->getApache()->update();
+        if ($bearsamppBins->getApache()->isEnable() && $bearsamppBins->getApache()->getService()->isRunning()) {
+            $bearsamppBins->getApache()->getService()->stop();
+            Util::startService($bearsamppBins->getApache(), BinApache::CMD_SYNTAX_CHECK, $showWindow);
         }
     }
 

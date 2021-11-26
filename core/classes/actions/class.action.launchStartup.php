@@ -4,7 +4,7 @@ class ActionLaunchStartup
 {
     public function __construct($args)
     {
-        global $neardConfig;
+        global $bearsamppConfig;
         
         if (isset($args[0])) {
             Util::startLoading();
@@ -14,7 +14,7 @@ class ActionLaunchStartup
             } else {
                 Util::disableLaunchStartup();
             }
-            $neardConfig->replace(Config::CFG_LAUNCH_STARTUP, $args[0]);
+            $bearsamppConfig->replace(Config::CFG_LAUNCH_STARTUP, $args[0]);
         }
     }
 }

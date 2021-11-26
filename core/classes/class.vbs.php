@@ -4,27 +4,27 @@ class Vbs
 {
     const END_PROCESS_STR = 'FINISHED!';
     const STR_SEPARATOR = ' || ';
-    
+
     const DESKTOP_PATH = 'objShell.SpecialFolders("Desktop")';
     const ALL_DESKTOP_PATH = 'objShell.SpecialFolders("AllUsersDesktop")';
     const STARTUP_PATH = 'objShell.SpecialFolders("Startup")';
     const ALL_STARTUP_PATH = 'objShell.SpecialFolders("AllUsersStartup")';
-    
+
     public function __construct()
     {
     }
-    
+
     private static function writeLog($log)
     {
-        global $neardBs;
-        Util::logDebug($log, $neardBs->getVbsLogFilePath());
+        global $bearsamppBs;
+        Util::logDebug($log, $bearsamppBs->getVbsLogFilePath());
     }
-    
+
     public static function countFilesFolders($path)
     {
         $basename = 'countFilesFolders';
         $resultFile = self::getResultFile($basename);
-        
+
         $content = 'Dim objFso, objResultFile, objCheckFile' . PHP_EOL . PHP_EOL;
         $content .= 'Set objFso = CreateObject("scripting.filesystemobject")' . PHP_EOL;
         $content .= 'Set objResultFile = objFso.CreateTextFile("' . $resultFile . '", True)' . PHP_EOL;
@@ -40,16 +40,16 @@ class Vbs
         $content .= 'End Function' . PHP_EOL . PHP_EOL;
         $content .= 'objResultFile.Write count' . PHP_EOL;
         $content .= 'objResultFile.Close' . PHP_EOL;
-    
+
         $result = self::exec($basename, $resultFile, $content);
         return isset($result[0]) && is_numeric($result[0]) ? intval($result[0]) : false;
     }
-    
+
     public static function getDefaultBrowser()
     {
         $basename = 'getDefaultBrowser';
         $resultFile = self::getResultFile($basename);
-    
+
         $content = 'On Error Resume Next' . PHP_EOL;
         $content .= 'Err.Clear' . PHP_EOL . PHP_EOL;
         $content .= 'Dim objShell, objFso, objFile' . PHP_EOL . PHP_EOL;
@@ -58,7 +58,7 @@ class Vbs
         $content .= 'Set objFile = objFso.CreateTextFile("' . $resultFile . '", True)' . PHP_EOL . PHP_EOL;
         $content .= 'objFile.Write objShell.RegRead("HKLM\SOFTWARE\Classes\http\shell\open\command\")' . PHP_EOL;
         $content .= 'objFile.Close' . PHP_EOL;
-    
+
         $result = self::exec($basename, $resultFile, $content);
         if ($result !== false && !empty($result)) {
             if (preg_match('/"([^"]+)"/', $result[0], $matches)) {
@@ -70,12 +70,12 @@ class Vbs
             return false;
         }
     }
-    
+
     public static function getInstalledBrowsers()
     {
         $basename = 'getInstalledBrowsers';
         $resultFile = self::getResultFile($basename);
-        
+
         $content = 'On Error Resume Next' . PHP_EOL;
         $content .= 'Err.Clear' . PHP_EOL . PHP_EOL;
         $content .= 'Dim objShell, objRegistry, objFso, objFile' . PHP_EOL . PHP_EOL;
@@ -101,7 +101,7 @@ class Vbs
         $content .= '    Next' . PHP_EOL;
         $content .= 'End If' . PHP_EOL;
         $content .= 'objFile.Close' . PHP_EOL;
-    
+
         $result = self::exec($basename, $resultFile, $content);
         if ($result !== false && !empty($result)) {
             $rebuildResult = array();
@@ -110,16 +110,16 @@ class Vbs
             }
             $result = $rebuildResult;
         }
-    
+
         return $result;
     }
-    
+
     public static function getListProcs($vbsKeys)
     {
         $basename = 'getListProcs';
         $resultFile = self::getResultFile($basename);
         $sep = ' & "' . self::STR_SEPARATOR . '" & _';
-    
+
         $content = 'Dim objFso, objResultFile, objWMIService' . PHP_EOL . PHP_EOL;
         $content .= 'Set objFso = CreateObject("scripting.filesystemobject")' . PHP_EOL;
         $content .= 'Set objResultFile = objFso.CreateTextFile("' . $resultFile . '", True)' . PHP_EOL;
@@ -127,23 +127,23 @@ class Vbs
         $content .= 'Set objWMIService = GetObject("winmgmts:" & "{impersonationLevel=impersonate}!\\\\" & strComputer & "\root\cimv2")' . PHP_EOL;
         $content .= 'Set listProcess = objWMIService.ExecQuery ("SELECT * FROM Win32_Process")' . PHP_EOL;
         $content .= 'For Each process in listProcess' . PHP_EOL;
-        
+
         $content .= '    objResultFile.WriteLine(_' . PHP_EOL;
         foreach ($vbsKeys as $vbsKey) {
             $content .= '        process.' . $vbsKey . $sep . PHP_EOL;
         }
         $content = substr($content, 0, strlen($content) - strlen($sep) - 1) . ')' . PHP_EOL;
-        
+
         $content .= 'Next' . PHP_EOL;
         $content .= 'objResultFile.WriteLine("' . self::END_PROCESS_STR . '")' . PHP_EOL;
         $content .= 'objResultFile.Close' . PHP_EOL;
         $content .= 'Err.Clear' . PHP_EOL;
-        
+
         $result = self::exec($basename, $resultFile, $content);
         if (empty($result)) {
             return false;
         }
-    
+
         unset($result[array_search(self::END_PROCESS_STR, $result)]);
         if (is_array($result) && count($result) > 0) {
             $rebuildResult = array();
@@ -162,15 +162,15 @@ class Vbs
             }
             return $rebuildResult;
         }
-    
+
         return false;
     }
-    
+
     public static function killProc($pid)
     {
         $basename = 'killProc';
         $resultFile = self::getResultFile($basename);
-    
+
         $content = 'Dim objFso, objResultFile, objWMIService' . PHP_EOL . PHP_EOL;
         $content .= 'Set objFso = CreateObject("scripting.filesystemobject")' . PHP_EOL;
         $content .= 'Set objResultFile = objFso.CreateTextFile("' . $resultFile . '", True)' . PHP_EOL;
@@ -183,12 +183,12 @@ class Vbs
         $content .= '    objProcess.Terminate()' . PHP_EOL;
         $content .= 'Next' . PHP_EOL;
         $content .= 'objResultFile.Close' . PHP_EOL;
-    
+
         $result = self::exec($basename, $resultFile, $content);
         if (empty($result)) {
             return true;
         }
-    
+
         if (is_array($result) && count($result) > 0) {
             foreach ($result as $row) {
                 $row = explode(self::STR_SEPARATOR, $row);
@@ -197,56 +197,56 @@ class Vbs
                 }
             }
         }
-    
+
         return true;
     }
-    
+
     private static function getSpecialPath($path)
     {
         $basename = 'getSpecialPath';
         $resultFile = self::getResultFile($basename);
-    
+
         $content = 'Dim objShell, objFso, objResultFile' . PHP_EOL . PHP_EOL;
         $content .= 'Set objShell = Wscript.CreateObject("Wscript.Shell")' . PHP_EOL;
         $content .= 'Set objFso = CreateObject("scripting.filesystemobject")' . PHP_EOL;
         $content .= 'Set objResultFile = objFso.CreateTextFile("' . $resultFile . '", True)' . PHP_EOL . PHP_EOL;
         $content .= 'objResultFile.WriteLine(' . $path . ')' . PHP_EOL;
         $content .= 'objResultFile.Close' . PHP_EOL;
-    
+
         $result = self::exec($basename, $resultFile, $content);
         if (!empty($result) && is_array($result) && count($result) == 1) {
             return Util::formatUnixPath($result[0]);
         }
-    
+
         return null;
     }
-    
+
     public static function getStartupPath($file = null)
     {
         return self::getSpecialPath(self::STARTUP_PATH) . ($file != null ? '/' . $file : '');
     }
-    
+
     public static function createShortcut($savePath)
     {
-        global $neardBs, $neardCore;
+        global $bearsamppBs, $bearsamppCore;
         $basename = 'createShortcut';
         $resultFile = self::getResultFile($basename);
-        
+
         $content = 'Dim objShell, objFso, objResultFile' . PHP_EOL . PHP_EOL;
         $content .= 'Set objShell = Wscript.CreateObject("Wscript.Shell")' . PHP_EOL;
         $content .= 'Set objFso = CreateObject("scripting.filesystemobject")' . PHP_EOL;
         $content .= 'Set objResultFile = objFso.CreateTextFile("' . $resultFile . '", True)' . PHP_EOL . PHP_EOL;
         $content .= 'Set objShortcut = objShell.CreateShortcut("' . $savePath . '")' . PHP_EOL;
-        $content .= 'objShortCut.TargetPath = "' . $neardBs->getExeFilePath() . '"' . PHP_EOL;
-        $content .= 'objShortCut.WorkingDirectory = "' . $neardBs->getRootPath() . '"' . PHP_EOL;
-        $content .= 'objShortCut.Description = "' . APP_TITLE . ' ' . $neardCore->getAppVersion() . '"' . PHP_EOL;
-        $content .= 'objShortCut.IconLocation = "' .  $neardCore->getResourcesPath() . '/neard.ico' . '"' . PHP_EOL;
+        $content .= 'objShortCut.TargetPath = "' . $bearsamppBs->getExeFilePath() . '"' . PHP_EOL;
+        $content .= 'objShortCut.WorkingDirectory = "' . $bearsamppBs->getRootPath() . '"' . PHP_EOL;
+        $content .= 'objShortCut.Description = "' . APP_TITLE . ' ' . $bearsamppCore->getAppVersion() . '"' . PHP_EOL;
+        $content .= 'objShortCut.IconLocation = "' .  $bearsamppCore->getResourcesPath() . '/bearsampp.ico' . '"' . PHP_EOL;
         $content .= 'objShortCut.Save' . PHP_EOL;
         $content .= 'If Err.Number <> 0 Then' . PHP_EOL;
         $content .= '    objResultFile.Write Err.Number & ": " & Err.Description' . PHP_EOL;
         $content .= 'End If' . PHP_EOL;
         $content .= 'objResultFile.Close' . PHP_EOL;
-        
+
         $result = self::exec($basename, $resultFile, $content);
         if (empty($result)) {
             return true;
@@ -254,17 +254,17 @@ class Vbs
             Util::logError('createShortcut: ' . $result[0]);
             return false;
         }
-        
+
         return false;
     }
-    
+
     public static function getServiceInfos($serviceName)
     {
         $basename = 'getServiceInfos';
         $resultFile = self::getResultFile($basename);
         $sep = ' & "' . self::STR_SEPARATOR . '" & _';
         $vbsKeys = Win32Service::getVbsKeys();
-    
+
         $content = 'Dim objFso, objResultFile, objWMIService' . PHP_EOL . PHP_EOL;
         $content .= 'Set objFso = CreateObject("scripting.filesystemobject")' . PHP_EOL;
         $content .= 'Set objResultFile = objFso.CreateTextFile("' . $resultFile . '", True)' . PHP_EOL;
@@ -272,22 +272,22 @@ class Vbs
         $content .= 'Set objWMIService = GetObject("winmgmts:" & "{impersonationLevel=impersonate}!\\\\" & strComputer & "\root\cimv2")' . PHP_EOL;
         $content .= 'Set listServices = objWMIService.ExecQuery ("SELECT * FROM Win32_Service WHERE Name=\'' . $serviceName . '\'")' . PHP_EOL;
         $content .= 'For Each service in listServices' . PHP_EOL;
-    
+
         $content .= '    objResultFile.WriteLine(_' . PHP_EOL;
         foreach ($vbsKeys as $vbsKey) {
             $content .= '        service.' . $vbsKey . $sep . PHP_EOL;
         }
         $content = substr($content, 0, strlen($content) - strlen($sep) - 1) . ')' . PHP_EOL;
-    
+
         $content .= 'Next' . PHP_EOL;
         $content .= 'objResultFile.WriteLine("' . self::END_PROCESS_STR . '")' . PHP_EOL;
         $content .= 'objResultFile.Close' . PHP_EOL;
-    
+
         $result = self::exec($basename, $resultFile, $content);
         if (empty($result)) {
             return false;
         }
-    
+
         unset($result[array_search(self::END_PROCESS_STR, $result)]);
         if (is_array($result) && count($result) == 1) {
             $rebuildResult = array();
@@ -300,20 +300,20 @@ class Vbs
             }
             return $rebuildResult;
         }
-    
+
         return false;
     }
-    
+
     public static function getResultFile($basename)
     {
         return self::getTmpFile('.vbs', $basename);
     }
-    
+
     public static function exec($basename, $resultFile, $content, $timeout = true)
     {
-        global $neardConfig, $neardWinbinder;
+        global $bearsamppConfig, $bearsamppWinbinder;
         $result = false;
-    
+
         $scriptPath = self::getTmpFile('.vbs', $basename);
         $checkFile = self::getTmpFile('.tmp', $basename);
         $errFile = self::getTmpFile('.tmp', $basename);
@@ -321,14 +321,14 @@ class Vbs
         $randomObjErrFile = Util::random(15, false);
         $randomObjFile = Util::random(15, false);
         $randomObjFso = Util::random(15, false);
-        
+
         // Header
         $header = 'On Error Resume Next' . PHP_EOL .
             'Dim ' . $randomVarName . ', ' . $randomObjFso . ', ' . $randomObjErrFile . ', ' . $randomObjFile . PHP_EOL .
             'Set ' . $randomObjFso . ' = CreateObject("scripting.filesystemobject")' . PHP_EOL .
             'Set ' . $randomObjErrFile . ' = ' . $randomObjFso . '.CreateTextFile("' . $errFile . '", True)' . PHP_EOL .
             'Set ' . $randomObjFile . ' = ' . $randomObjFso . '.CreateTextFile("' . $checkFile . '", True)' . PHP_EOL . PHP_EOL;
-        
+
         // Footer
         $footer = PHP_EOL . PHP_EOL .
             'If Err.Number <> 0 Then' . PHP_EOL .
@@ -337,12 +337,12 @@ class Vbs
             $randomObjFile . '.Write "' . self::END_PROCESS_STR . '"' . PHP_EOL .
             $randomObjFile . '.Close' . PHP_EOL .
             $randomObjErrFile . '.Close' . PHP_EOL;
-    
+
         // Process
         file_put_contents($scriptPath, $header . $content . $footer);
-        $neardWinbinder->exec('wscript.exe', '"' . $scriptPath . '"');
-    
-        $timeout = is_numeric($timeout) ? $timeout : ($timeout === true ? $neardConfig->getScriptsTimeout() : false);
+        $bearsamppWinbinder->exec('wscript.exe', '"' . $scriptPath . '"');
+
+        $timeout = is_numeric($timeout) ? $timeout : ($timeout === true ? $bearsamppConfig->getScriptsTimeout() : false);
         $maxtime = time() + $timeout;
         $noTimeout = $timeout === false;
         while ($result === false || empty($result)) {
@@ -357,19 +357,19 @@ class Vbs
                 break;
             }
         }
-        
+
         $err = file_get_contents($errFile);
         if (!empty($err)) {
             Util::logError('VBS error on ' . $basename . ': ' . $err);
         }
-        
+
         self::writeLog('Exec ' . $basename . ':');
         self::writeLog('-> content: ' . str_replace(PHP_EOL, ' \\\\ ', $content));
         self::writeLog('-> errFile: ' . $errFile);
         self::writeLog('-> checkFile: ' . $checkFile);
         self::writeLog('-> resultFile: ' . $resultFile);
         self::writeLog('-> scriptPath: ' . $scriptPath);
-        
+
         if ($result !== false && !empty($result)) {
             $rebuildResult = array();
             foreach ($result as $row) {
@@ -383,13 +383,13 @@ class Vbs
         } else {
             self::writeLog('-> result: N/A');
         }
-        
+
         return $result;
     }
-    
+
     private static function getTmpFile($ext, $customName = null)
     {
-        global $neardCore;
-        return Util::formatWindowsPath($neardCore->getTmpPath() . '/' . (!empty($customName) ? $customName . '-' : '') . Util::random() . $ext);
+        global $bearsamppCore;
+        return Util::formatWindowsPath($bearsamppCore->getTmpPath() . '/' . (!empty($customName) ? $customName . '-' : '') . Util::random() . $ext);
     }
 }

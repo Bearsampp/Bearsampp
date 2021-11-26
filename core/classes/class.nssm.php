@@ -53,27 +53,27 @@ class Nssm
     
     private function writeLog($log)
     {
-        global $neardBs;
-        Util::logDebug($log, $neardBs->getNssmLogFilePath());
+        global $bearsamppBs;
+        Util::logDebug($log, $bearsamppBs->getNssmLogFilePath());
     }
     
     private function writeLogInfo($log)
     {
-        global $neardBs;
-        Util::logInfo($log, $neardBs->getNssmLogFilePath());
+        global $bearsamppBs;
+        Util::logInfo($log, $bearsamppBs->getNssmLogFilePath());
     }
     
     private function writeLogError($log)
     {
-        global $neardBs;
-        Util::logError($log, $neardBs->getNssmLogFilePath());
+        global $bearsamppBs;
+        Util::logError($log, $bearsamppBs->getNssmLogFilePath());
     }
     
     private function exec($args)
     {
-        global $neardCore;
+        global $bearsamppCore;
         
-        $command = '"' . $neardCore->getNssmExe() . '" ' . $args;
+        $command = '"' . $bearsamppCore->getNssmExe() . '" ' . $args;
         $this->writeLogInfo('Cmd: ' . $command);
         
         $result = Batch::exec('nssm', $command, 10);
@@ -261,7 +261,7 @@ class Nssm
     
     public function infos()
     {
-        global $neardRegistry;
+        global $bearsamppRegistry;
         
         $infos = Vbs::getServiceInfos($this->getName());
         if ($infos === false) {
@@ -276,13 +276,13 @@ class Nssm
             
         foreach ($infosKeys as $infoKey) {
             $value = null;
-            $exists = $neardRegistry->exists(
+            $exists = $bearsamppRegistry->exists(
                 Registry::HKEY_LOCAL_MACHINE,
                 'SYSTEM\CurrentControlSet\Services\\' . $this->getName() . '\Parameters',
                 $infoKey
             );
             if ($exists) {
-                $value = $neardRegistry->getValue(
+                $value = $bearsamppRegistry->getValue(
                     Registry::HKEY_LOCAL_MACHINE,
                     'SYSTEM\CurrentControlSet\Services\\' . $this->getName() . '\Parameters',
                     $infoKey
@@ -466,12 +466,12 @@ class Nssm
     
     public function getError()
     {
-        global $neardLang;
+        global $bearsamppLang;
         
         if (!empty($this->latestError)) {
-            return $neardLang->getValue(Lang::ERROR) . ' ' . $this->latestError;
+            return $bearsamppLang->getValue(Lang::ERROR) . ' ' . $this->latestError;
         } elseif ($this->latestStatus != self::STATUS_NA) {
-            return $neardLang->getValue(Lang::STATUS) . ' ' . $this->latestStatus . ' : ' . $this->getWin32ServiceStatusDesc($this->latestStatus);
+            return $bearsamppLang->getValue(Lang::STATUS) . ' ' . $this->latestStatus . ' : ' . $this->getWin32ServiceStatusDesc($this->latestStatus);
         }
         
         return null;

@@ -23,21 +23,21 @@ class BinNodejs extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $neardConfig, $neardLang;
+        global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
-        $this->name = $neardLang->getValue(Lang::NODEJS);
-        $this->version = $neardConfig->getRaw(self::ROOT_CFG_VERSION);
+        $this->name = $bearsamppLang->getValue(Lang::NODEJS);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
-        $this->enable = $this->enable && $neardConfig->getRaw(self::ROOT_CFG_ENABLE);
+        $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
 
-        if ($this->neardConfRaw !== false) {
-            $this->exe = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_EXE];
-            $this->conf = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_CONF];
-            $this->vars = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_VARS];
-            $this->npm = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_NPM];
-            $this->launch = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_LAUNCH];
+        if ($this->bearsamppConfRaw !== false) {
+            $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
+            $this->conf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
+            $this->vars = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_VARS];
+            $this->npm = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_NPM];
+            $this->launch = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_LAUNCH];
         }
 
         if (!$this->enable) {
@@ -45,31 +45,31 @@ class BinNodejs extends Module
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
             return;
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
-        if (!is_file($this->neardConf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->neardConf));
+        if (!is_file($this->bearsamppConf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
             return;
         }
         if (!is_file($this->exe)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
         }
         if (!is_file($this->conf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
         }
         if (!is_file($this->vars)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->vars));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->vars));
         }
         if (!is_file($this->npm)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->npm));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->npm));
         }
         if (!is_file($this->launch)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->launch));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->launch));
         }
     }
 
@@ -79,7 +79,7 @@ class BinNodejs extends Module
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $neardLang, $neardWinbinder;
+        global $bearsamppLang, $bearsamppWinbinder;
 
         if (!$this->enable) {
             return true;
@@ -88,56 +88,56 @@ class BinNodejs extends Module
         $version = $version == null ? $this->version : $version;
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
-        $boxTitle = sprintf($neardLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
         $conf = str_replace('nodejs' . $this->getVersion(), 'nodejs' . $version, $this->getConf());
-        $neardConf = str_replace('nodejs' . $this->getVersion(), 'nodejs' . $version, $this->neardConf);
+        $bearsamppConf = str_replace('nodejs' . $this->getVersion(), 'nodejs' . $version, $this->bearsamppConf);
 
-        if (!file_exists($conf) || !file_exists($neardConf)) {
-            Util::logError('Neard config files not found for ' . $this->getName() . ' ' . $version);
+        if (!file_exists($conf) || !file_exists($bearsamppConf)) {
+            Util::logError('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::NEARD_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::bearsampp_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
             return false;
         }
 
-        $neardConfRaw = parse_ini_file($neardConf);
-        if ($neardConfRaw === false || !isset($neardConfRaw[self::ROOT_CFG_VERSION]) || $neardConfRaw[self::ROOT_CFG_VERSION] != $version) {
-            Util::logError('Neard config file malformed for ' . $this->getName() . ' ' . $version);
+        $bearsamppConfRaw = parse_ini_file($bearsamppConf);
+        if ($bearsamppConfRaw === false || !isset($bearsamppConfRaw[self::ROOT_CFG_VERSION]) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version) {
+            Util::logError('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::NEARD_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::bearsampp_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
             return false;
         }
 
-        // neard.conf
+        // bearsampp.conf
         $this->setVersion($version);
 
         return true;
     }
 
     public function setVersion($version) {
-        global $neardConfig;
+        global $bearsamppConfig;
         $this->version = $version;
-        $neardConfig->replace(self::ROOT_CFG_VERSION, $version);
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 
     public function setEnable($enabled, $showWindow = false) {
-        global $neardConfig, $neardLang, $neardWinbinder;
+        global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
         if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
             Util::logDebug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
-                    sprintf($neardLang->getValue(Lang::ENABLE_TITLE), $this->getName())
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_TITLE), $this->getName())
                 );
             }
             $enabled = Config::DISABLED;
@@ -145,7 +145,7 @@ class BinNodejs extends Module
 
         Util::logInfo($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
         $this->enable = $enabled == Config::ENABLED;
-        $neardConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
+        $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
     }
 
     public function getExe() {

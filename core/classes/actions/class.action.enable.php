@@ -4,32 +4,32 @@ class ActionEnable
 {
     public function __construct($args)
     {
-        global $neardBins;
-        
+        global $bearsamppBins;
+
         if (isset($args[0]) && !empty($args[0]) && isset($args[1])) {
             Util::startLoading();
-            if ($args[0] == $neardBins->getApache()->getName()) {
-                $neardBins->getApache()->setEnable($args[1], true);
-            } elseif ($args[0] == $neardBins->getPhp()->getName()) {
-                $neardBins->getPhp()->setEnable($args[1], true);
-            } elseif ($args[0] == $neardBins->getMysql()->getName()) {
-                $neardBins->getMysql()->setEnable($args[1], true);
-            } elseif ($args[0] == $neardBins->getMariadb()->getName()) {
-                $neardBins->getMariadb()->setEnable($args[1], true);
-            } elseif ($args[0] == $neardBins->getMongodb()->getName()) {
-                $neardBins->getMongodb()->setEnable($args[1], true);
-            } elseif ($args[0] == $neardBins->getNodejs()->getName()) {
-                $neardBins->getNodejs()->setEnable($args[1], true);
-            } elseif ($args[0] == $neardBins->getPostgresql()->getName()) {
-                $neardBins->getPostgresql()->setEnable($args[1], true);
-            } elseif ($args[0] == $neardBins->getFilezilla()->getName()) {
-                $neardBins->getFilezilla()->setEnable($args[1], true);
-            } elseif ($args[0] == $neardBins->getMailhog()->getName()) {
-                $neardBins->getMailhog()->setEnable($args[1], true);
-            } elseif ($args[0] == $neardBins->getMemcached()->getName()) {
-                $neardBins->getMemcached()->setEnable($args[1], true);
-            } elseif ($args[0] == $neardBins->getSvn()->getName()) {
-                $neardBins->getSvn()->setEnable($args[1], true);
+            if ($args[0] == $bearsamppBins->getApache()->getName()) {
+                $bearsamppBins->getApache()->setEnable($args[1], true);
+            } elseif ($args[0] == $bearsamppBins->getPhp()->getName()) {
+                $bearsamppBins->getPhp()->setEnable($args[1], true);
+            } elseif ($args[0] == $bearsamppBins->getMysql()->getName()) {
+                $bearsamppBins->getMysql()->setEnable($args[1], true);
+            } elseif ($args[0] == $bearsamppBins->getMariadb()->getName()) {
+                $bearsamppBins->getMariadb()->setEnable($args[1], true);
+            } elseif ($args[0] == $bearsamppBins->getMongodb()->getName()) {
+                $bearsamppBins->getMongodb()->setEnable($args[1], true);
+            } elseif ($args[0] == $bearsamppBins->getNodejs()->getName()) {
+                $bearsamppBins->getNodejs()->setEnable($args[1], true);
+            } elseif ($args[0] == $bearsamppBins->getPostgresql()->getName()) {
+                $bearsamppBins->getPostgresql()->setEnable($args[1], true);
+            } elseif ($args[0] == $bearsamppBins->getFilezilla()->getName()) {
+                $bearsamppBins->getFilezilla()->setEnable($args[1], true);
+            } elseif ($args[0] == $bearsamppBins->getMailhog()->getName()) {
+                $bearsamppBins->getMailhog()->setEnable($args[1], true);
+            } elseif ($args[0] == $bearsamppBins->getMemcached()->getName()) {
+                $bearsamppBins->getMemcached()->setEnable($args[1], true);
+            } elseif ($args[0] == $bearsamppBins->getSvn()->getName()) {
+                $bearsamppBins->getSvn()->setEnable($args[1], true);
             }
         }
     }

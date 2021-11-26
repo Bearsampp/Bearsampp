@@ -10,21 +10,21 @@ class TplAppNodejs
 
     public static function process()
     {
-        global $neardLang, $neardBins;
+        global $bearsamppLang, $bearsamppBins;
 
-        return TplApp::getMenuEnable($neardLang->getValue(Lang::NODEJS), self::MENU, get_called_class(), $neardBins->getNodejs()->isEnable());
+        return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::NODEJS), self::MENU, get_called_class(), $bearsamppBins->getNodejs()->isEnable());
     }
 
     public static function getMenuNodejs()
     {
-        global $neardBins, $neardLang, $neardTools;
+        global $bearsamppBins, $bearsamppLang, $bearsamppTools;
         $resultItems = $resultActions = '';
 
-        $isEnabled = $neardBins->getNodejs()->isEnable();
+        $isEnabled = $bearsamppBins->getNodejs()->isEnable();
 
         // Download
         $resultItems .= TplAestan::getItemLink(
-        $neardLang->getValue(Lang::DOWNLOAD_MORE),
+        $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
             Util::getWebsiteUrl('modules/nodejs', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
@@ -33,7 +33,7 @@ class TplAppNodejs
         // Enable
         $tplEnable = TplApp::getActionMulti(
             self::ACTION_ENABLE, array($isEnabled ? Config::DISABLED : Config::ENABLED),
-            array($neardLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
+            array($bearsamppLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
             false, get_called_class()
         );
         $resultItems .= $tplEnable[TplApp::SECTION_CALL] . PHP_EOL;
@@ -43,19 +43,19 @@ class TplAppNodejs
             $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
             // Versions
-            $tplVersions = TplApp::getMenu($neardLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
+            $tplVersions = TplApp::getMenu($bearsamppLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
             $resultItems .= $tplVersions[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplVersions[TplApp::SECTION_CONTENT];
 
             // Console
             $resultItems .= TplAestan::getItemConsoleZ(
-                $neardLang->getValue(Lang::CONSOLE),
+                $bearsamppLang->getValue(Lang::CONSOLE),
                 TplAestan::GLYPH_CONSOLEZ,
-                $neardTools->getConsoleZ()->getTabTitleNodejs()
+                $bearsamppTools->getConsoleZ()->getTabTitleNodejs()
             ) . PHP_EOL;
 
             // Conf
-            $resultItems .= TplAestan::getItemNotepad(basename($neardBins->getNodejs()->getConf()), $neardBins->getNodejs()->getConf()) . PHP_EOL;
+            $resultItems .= TplAestan::getItemNotepad(basename($bearsamppBins->getNodejs()->getConf()), $bearsamppBins->getNodejs()->getConf()) . PHP_EOL;
         }
 
         return $resultItems . PHP_EOL . $resultActions;
@@ -63,14 +63,14 @@ class TplAppNodejs
 
     public static function getMenuNodejsVersions()
     {
-        global $neardBins;
+        global $bearsamppBins;
         $items = '';
         $actions = '';
 
-        foreach ($neardBins->getNodejs()->getVersionList() as $version) {
+        foreach ($bearsamppBins->getNodejs()->getVersionList() as $version) {
             $tplSwitchNodejsVersion = TplApp::getActionMulti(
                 self::ACTION_SWITCH_VERSION, array($version),
-                array($version, $version == $neardBins->getNodejs()->getVersion() ? TplAestan::GLYPH_CHECK : ''),
+                array($version, $version == $bearsamppBins->getNodejs()->getVersion() ? TplAestan::GLYPH_CHECK : ''),
                 false, get_called_class()
             );
 
@@ -86,17 +86,17 @@ class TplAppNodejs
 
     public static function getActionEnableNodejs($enable)
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::ENABLE, array($neardBins->getNodejs()->getName(), $enable)) . PHP_EOL .
+        return TplApp::getActionRun(Action::ENABLE, array($bearsamppBins->getNodejs()->getName(), $enable)) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 
     public static function getActionSwitchNodejsVersion($version)
     {
-        global $neardBins;
+        global $bearsamppBins;
 
-        return TplApp::getActionRun(Action::SWITCH_VERSION, array($neardBins->getNodejs()->getName(), $version)) . PHP_EOL .
+        return TplApp::getActionRun(Action::SWITCH_VERSION, array($bearsamppBins->getNodejs()->getName(), $version)) . PHP_EOL .
             TplAppReload::getActionReload() . PHP_EOL;
     }
 }

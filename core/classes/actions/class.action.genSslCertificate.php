@@ -3,79 +3,79 @@
 class ActionGenSslCertificate
 {
     private $wbWindow;
-    
+
     private $wbLabelName;
     private $wbInputName;
-    
+
     private $wbLabelDest;
     private $wbInputDest;
     private $wbBtnDest;
-    
+
     private $wbProgressBar;
     private $wbBtnSave;
     private $wbBtnCancel;
-    
+
     const GAUGE_SAVE = 2;
-    
+
     public function __construct($args)
     {
-        global $neardBs, $neardLang, $neardWinbinder;
-        
-        $initServerName = 'test.local';
-        $initDocumentRoot = Util::formatWindowsPath($neardBs->getSslPath());
+        global $bearsamppBs, $bearsamppLang, $bearsamppWinbinder;
 
-        $neardWinbinder->reset();
-        $this->wbWindow = $neardWinbinder->createAppWindow($neardLang->getValue(Lang::GENSSL_TITLE), 490, 160, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP);
-        
-        $this->wbLabelName = $neardWinbinder->createLabel($this->wbWindow, $neardLang->getValue(Lang::NAME) . ' :', 15, 15, 85, null, WBC_RIGHT);
-        $this->wbInputName = $neardWinbinder->createInputText($this->wbWindow, $initServerName, 105, 13, 150, null);
-        
-        $this->wbLabelDest = $neardWinbinder->createLabel($this->wbWindow, $neardLang->getValue(Lang::TARGET) . ' :', 15, 45, 85, null, WBC_RIGHT);
-        $this->wbInputDest = $neardWinbinder->createInputText($this->wbWindow, $initDocumentRoot, 105, 43, 190, null, null, WBC_READONLY);
-        $this->wbBtnDest = $neardWinbinder->createButton($this->wbWindow, $neardLang->getValue(Lang::BUTTON_BROWSE), 300, 43, 110);
-        
-        $this->wbProgressBar = $neardWinbinder->createProgressBar($this->wbWindow, self::GAUGE_SAVE + 1, 15, 97, 275);
-        $this->wbBtnSave = $neardWinbinder->createButton($this->wbWindow, $neardLang->getValue(Lang::BUTTON_SAVE), 300, 92);
-        $this->wbBtnCancel = $neardWinbinder->createButton($this->wbWindow, $neardLang->getValue(Lang::BUTTON_CANCEL), 387, 92);
-        
-        $neardWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
-        $neardWinbinder->mainLoop();
-        $neardWinbinder->reset();
+        $initServerName = 'test.local';
+        $initDocumentRoot = Util::formatWindowsPath($bearsamppBs->getSslPath());
+
+        $bearsamppWinbinder->reset();
+        $this->wbWindow = $bearsamppWinbinder->createAppWindow($bearsamppLang->getValue(Lang::GENSSL_TITLE), 490, 160, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP);
+
+        $this->wbLabelName = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::NAME) . ' :', 15, 15, 85, null, WBC_RIGHT);
+        $this->wbInputName = $bearsamppWinbinder->createInputText($this->wbWindow, $initServerName, 105, 13, 150, null);
+
+        $this->wbLabelDest = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::TARGET) . ' :', 15, 45, 85, null, WBC_RIGHT);
+        $this->wbInputDest = $bearsamppWinbinder->createInputText($this->wbWindow, $initDocumentRoot, 105, 43, 190, null, null, WBC_READONLY);
+        $this->wbBtnDest = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_BROWSE), 300, 43, 110);
+
+        $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE_SAVE + 1, 15, 97, 275);
+        $this->wbBtnSave = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_SAVE), 300, 92);
+        $this->wbBtnCancel = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_CANCEL), 387, 92);
+
+        $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
+        $bearsamppWinbinder->mainLoop();
+        $bearsamppWinbinder->reset();
     }
 
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
-        global $neardLang, $neardOpenSsl, $neardWinbinder;
-        
-        $name = $neardWinbinder->getText($this->wbInputName[WinBinder::CTRL_OBJ]);
-        $target = $neardWinbinder->getText($this->wbInputDest[WinBinder::CTRL_OBJ]);
-        
+        global $bearsamppLang, $bearsamppOpenSsl, $bearsamppWinbinder;
+
+        $name = $bearsamppWinbinder->getText($this->wbInputName[WinBinder::CTRL_OBJ]);
+        $target = $bearsamppWinbinder->getText($this->wbInputDest[WinBinder::CTRL_OBJ]);
+
         switch ($id) {
             case $this->wbBtnDest[WinBinder::CTRL_ID]:
-                $target = $neardWinbinder->sysDlgPath($window, $neardLang->getValue(Lang::GENSSL_PATH), $target);
+                $target = $bearsamppWinbinder->sysDlgPath($window, $bearsamppLang->getValue(Lang::GENSSL_PATH), $target);
                 if ($target && is_dir($target)) {
-                    $neardWinbinder->setText($this->wbInputDest[WinBinder::CTRL_OBJ], $target . '\\');
+                    $bearsamppWinbinder->setText($this->wbInputDest[WinBinder::CTRL_OBJ], $target . '\\');
                 }
                 break;
             case $this->wbBtnSave[WinBinder::CTRL_ID]:
-                $neardWinbinder->setProgressBarMax($this->wbProgressBar, self::GAUGE_SAVE + 1);
-                $neardWinbinder->incrProgressBar($this->wbProgressBar);
-                
+                $bearsamppWinbinder->setProgressBarMax($this->wbProgressBar, self::GAUGE_SAVE + 1);
+                $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
+
                 $target = Util::formatUnixPath($target);
-                if ($neardOpenSsl->createCrt($name, $target)) {
-                    $neardWinbinder->incrProgressBar($this->wbProgressBar);
-                    $neardWinbinder->messageBoxInfo(
-                            sprintf($neardLang->getValue(Lang::GENSSL_CREATED), $name),
-                            $neardLang->getValue(Lang::GENSSL_TITLE));
-                    $neardWinbinder->destroyWindow($window);
+                if ($bearsamppOpenSsl->createCrt($name, $target)) {
+                    $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
+                    $bearsamppWinbinder->messageBoxInfo(
+                            sprintf($bearsamppLang->getValue(Lang::GENSSL_CREATED), $name),
+                            $bearsamppLang->getValue(Lang::GENSSL_TITLE));
+                    $bearsamppWinbinder->destroyWindow($window);
                 } else {
-                    $neardWinbinder->messageBoxError($neardLang->getValue(Lang::GENSSL_CREATED_ERROR), $neardLang->getValue(Lang::GENSSL_TITLE));
-                    $neardWinbinder->resetProgressBar($this->wbProgressBar);
+                    $bearsamppWinbinder->messageBoxError($bearsamppLang->getValue(Lang::GENSSL_CREATED_ERROR), $bearsamppLang->getValue(Lang::GENSSL_TITLE));
+                    $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                 }
                 break;
             case IDCLOSE:
             case $this->wbBtnCancel[WinBinder::CTRL_ID]:
-                $neardWinbinder->destroyWindow($window);
+                $bearsamppWinbinder->destroyWindow($window);
                 break;
         }
     }

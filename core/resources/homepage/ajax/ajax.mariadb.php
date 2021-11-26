@@ -6,14 +6,14 @@ $result = array(
 );
 
 // Check port
-$port = $neardBins->getMariadb()->getPort();
+$port = $bearsamppBins->getMariadb()->getPort();
 
-$textServiceStarted = $neardLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
-$textServiceStopped = $neardLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
-$textDisabled = $neardLang->getValue(Lang::DISABLED);
+$textServiceStarted = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
+$textServiceStopped = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
+$textDisabled = $bearsamppLang->getValue(Lang::DISABLED);
 
-if ($neardBins->getMariadb()->isEnable()) {
-    if ($neardBins->getMariadb()->checkPort($port)) {
+if ($bearsamppBins->getMariadb()->isEnable()) {
+    if ($bearsamppBins->getMariadb()->checkPort($port)) {
         $result['checkport'] .= '<span style="float:right;font-size:12px" class="label label-success">' . sprintf($textServiceStarted, $port) . '</span>';
     } else {
         $result['checkport'] .= '<span style="float:right;font-size:12px" class="label label-danger">' . $textServiceStopped . '</span>';
@@ -23,11 +23,11 @@ if ($neardBins->getMariadb()->isEnable()) {
 }
 
 // Versions
-foreach ($neardBins->getMariadb()->getVersionList() as $version) {
-    if ($version != $neardBins->getMariadb()->getVersion()) {
+foreach ($bearsamppBins->getMariadb()->getVersionList() as $version) {
+    if ($version != $bearsamppBins->getMariadb()->getVersion()) {
         $result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-default">' . $version . '</span>';
     }
 }
-$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-primary">' . $neardBins->getMariadb()->getVersion() . '</span>';
+$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-primary">' . $bearsamppBins->getMariadb()->getVersion() . '</span>';
 
 echo json_encode($result);

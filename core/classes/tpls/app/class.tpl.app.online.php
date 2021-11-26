@@ -6,11 +6,11 @@ class TplAppOnline
     
     public static function process()
     {
-        global $neardConfig, $neardLang;
+        global $bearsamppConfig, $bearsamppLang;
         
         return TplApp::getActionMulti(
-            self::ACTION, array($neardConfig->isOnline() ? Config::DISABLED : Config::ENABLED),
-            array($neardConfig->isOnline() ? $neardLang->getValue(Lang::MENU_PUT_OFFLINE) : $neardLang->getValue(Lang::MENU_PUT_ONLINE)),
+            self::ACTION, array($bearsamppConfig->isOnline() ? Config::DISABLED : Config::ENABLED),
+            array($bearsamppConfig->isOnline() ? $bearsamppLang->getValue(Lang::MENU_PUT_OFFLINE) : $bearsamppLang->getValue(Lang::MENU_PUT_ONLINE)),
             false, get_called_class()
         );
     }

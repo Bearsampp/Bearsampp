@@ -4,24 +4,24 @@ class OpenSsl
 {
     public function createCrt($name, $destPath = null)
     {
-        global $neardBs, $neardCore;
-        $destPath = empty($destPath) ? $neardBs->getSslPath() : $destPath;
+        global $bearsamppBs, $bearsamppCore;
+        $destPath = empty($destPath) ? $bearsamppBs->getSslPath() : $destPath;
 
-        $subject = '"/C=FR/O=neard/CN=' . $name . '"';
-        $password = 'pass:neard';
+        $subject = '"/C=FR/O=bearsampp/CN=' . $name . '"';
+        $password = 'pass:bearsampp';
         $ppkPath = '"' . $destPath . '/' . $name . '.ppk"';
         $pubPath = '"' . $destPath . '/' . $name . '.pub"';
         $crtPath = '"' . $destPath . '/' . $name . '.crt"';
         $extension = 'SAN';
-        $exe = '"' . $neardCore->getOpenSslExe() . '"';
-        
+        $exe = '"' . $bearsamppCore->getOpenSslExe() . '"';
+
         // ext
         $extContent = PHP_EOL . '[' . $extension . ']' . PHP_EOL;
         $extContent .= 'subjectAltName=DNS:*.' . $name . ',DNS:' . $name . PHP_EOL;
-        
+
         // tmp openssl.cfg
-        $conf = $neardCore->getTmpPath() . '/openssl_' . $name . '_' . Util::random() . '.cfg';
-        file_put_contents($conf, file_get_contents($neardCore->getOpenSslConf()) . $extContent);
+        $conf = $bearsamppCore->getTmpPath() . '/openssl_' . $name . '_' . Util::random() . '.cfg';
+        file_put_contents($conf, file_get_contents($bearsamppCore->getOpenSslConf()) . $extContent);
 
         // ppk
         $batch = $exe . ' genrsa -des3 -passout ' . $password . ' -out ' . $ppkPath . ' 2048 -noout -config ' . $conf. PHP_EOL;
@@ -47,22 +47,22 @@ class OpenSsl
 
     public function existsCrt($name)
     {
-        global $neardBs;
+        global $bearsamppBs;
 
-        $ppkPath = $neardBs->getSslPath() . '/' . $name . '.ppk';
-        $pubPath = $neardBs->getSslPath() . '/' . $name . '.pub';
-        $crtPath = $neardBs->getSslPath() . '/' . $name . '.crt';
+        $ppkPath = $bearsamppBs->getSslPath() . '/' . $name . '.ppk';
+        $pubPath = $bearsamppBs->getSslPath() . '/' . $name . '.pub';
+        $crtPath = $bearsamppBs->getSslPath() . '/' . $name . '.crt';
 
         return is_file($ppkPath) && is_file($pubPath) && is_file($crtPath);
     }
 
     public function removeCrt($name)
     {
-        global $neardBs;
+        global $bearsamppBs;
 
-        $ppkPath = $neardBs->getSslPath() . '/' . $name . '.ppk';
-        $pubPath = $neardBs->getSslPath() . '/' . $name . '.pub';
-        $crtPath = $neardBs->getSslPath() . '/' . $name . '.crt';
+        $ppkPath = $bearsamppBs->getSslPath() . '/' . $name . '.ppk';
+        $pubPath = $bearsamppBs->getSslPath() . '/' . $name . '.pub';
+        $crtPath = $bearsamppBs->getSslPath() . '/' . $name . '.crt';
 
         return @unlink($ppkPath) && @unlink($pubPath) && @unlink($crtPath);
     }

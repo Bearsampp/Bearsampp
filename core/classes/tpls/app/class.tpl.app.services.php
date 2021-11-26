@@ -8,23 +8,23 @@ class TplAppServices
     
     public static function process()
     {
-        global $neardLang;
+        global $bearsamppLang;
         
         $tplStart = TplApp::getActionMulti(
             self::ACTION_START, null,
-            array($neardLang->getValue(Lang::MENU_START_SERVICES), TplAestan::GLYPH_SERVICES_START),
+            array($bearsamppLang->getValue(Lang::MENU_START_SERVICES), TplAestan::GLYPH_SERVICES_START),
             false, get_called_class()
         );
         
         $tplStop = TplApp::getActionMulti(
             self::ACTION_STOP, null,
-            array($neardLang->getValue(Lang::MENU_STOP_SERVICES), TplAestan::GLYPH_SERVICES_STOP),
+            array($bearsamppLang->getValue(Lang::MENU_STOP_SERVICES), TplAestan::GLYPH_SERVICES_STOP),
             false, get_called_class()
         );
         
         $tplRestart = TplApp::getActionMulti(
             self::ACTION_RESTART, null,
-            array($neardLang->getValue(Lang::MENU_RESTART_SERVICES), TplAestan::GLYPH_SERVICES_RESTART),
+            array($bearsamppLang->getValue(Lang::MENU_RESTART_SERVICES), TplAestan::GLYPH_SERVICES_RESTART),
             false, get_called_class()
         );
         
@@ -43,10 +43,10 @@ class TplAppServices
     
     public static function getActionStartServices()
     {
-        global $neardBins;
+        global $bearsamppBins;
         $actions = '';
         
-        foreach ($neardBins->getServices() as $sName => $service) {
+        foreach ($bearsamppBins->getServices() as $sName => $service) {
             $actions .= TplService::getActionStart($service->getName()) . PHP_EOL;
         }
         
@@ -55,10 +55,10 @@ class TplAppServices
     
     public static function getActionStopServices()
     {
-        global $neardBins;
+        global $bearsamppBins;
         $actions = '';
         
-        foreach ($neardBins->getServices() as $sName => $service) {
+        foreach ($bearsamppBins->getServices() as $sName => $service) {
             $actions .= TplService::getActionStop($service->getName()) . PHP_EOL;
         }
     

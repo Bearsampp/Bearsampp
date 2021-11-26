@@ -25,10 +25,10 @@ class Registry
     const ENV_KEY = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
 
     // App bins entry
-    const APP_BINS_REG_ENTRY = 'NEARD_BINS';
+    const APP_BINS_REG_ENTRY = 'bearsampp_BINS';
 
     // App path entry
-    const APP_PATH_REG_ENTRY = 'NEARD_PATH';
+    const APP_PATH_REG_ENTRY = 'bearsampp_PATH';
 
     // System path entry
     const SYSPATH_REG_ENTRY = 'Path';
@@ -48,8 +48,8 @@ class Registry
 
     private function writeLog($log)
     {
-        global $neardBs;
-        Util::logDebug($log, $neardBs->getRegistryLogFilePath());
+        global $bearsamppBs;
+        Util::logDebug($log, $bearsamppBs->getRegistryLogFilePath());
     }
 
     public function exists($key, $subkey, $entry = null)
@@ -103,7 +103,7 @@ class Registry
 
     public function getValue($key, $subkey, $entry = null)
     {
-        global $neardLang;
+        global $bearsamppLang;
 
         $basename = 'registryGetValue';
         $resultFile = Vbs::getResultFile($basename);
@@ -132,7 +132,7 @@ class Registry
         $this->writeLog('GetValue ' . $key . '\\' . $subkey . '\\' . $entry);
         $this->writeLog('-> result: ' . $result);
         if (Util::startWith($result, self::REG_ERROR_ENTRY)) {
-            $this->latestError = $neardLang->getValue(Lang::ERROR) . ' ' . str_replace(self::REG_ERROR_ENTRY, '', $result);
+            $this->latestError = $bearsamppLang->getValue(Lang::ERROR) . ' ' . str_replace(self::REG_ERROR_ENTRY, '', $result);
             return false;
         }
 
@@ -157,7 +157,7 @@ class Registry
 
     private function setValue($key, $subkey, $entry, $value, $type)
     {
-        global $neardLang;
+        global $bearsamppLang;
 
         $basename = 'registrySetValue';
         $resultFile = Vbs::getResultFile($basename);
@@ -222,10 +222,10 @@ class Registry
         $this->writeLog('-> value: ' . $value);
         $this->writeLog('-> result: ' . $result);
         if (Util::startWith($result, self::REG_ERROR_SET)) {
-            $this->latestError = sprintf($neardLang->getValue(Lang::REGISTRY_SET_ERROR_TEXT), str_replace(self::REG_ERROR_SET, '', $result));
+            $this->latestError = sprintf($bearsamppLang->getValue(Lang::REGISTRY_SET_ERROR_TEXT), str_replace(self::REG_ERROR_SET, '', $result));
             return false;
         } elseif (Util::startWith($result, self::REG_ERROR_ENTRY)) {
-            $this->latestError = $neardLang->getValue(Lang::ERROR) . ' ' . str_replace(self::REG_ERROR_ENTRY, '', $result);
+            $this->latestError = $bearsamppLang->getValue(Lang::ERROR) . ' ' . str_replace(self::REG_ERROR_ENTRY, '', $result);
             return false;
         }
 

@@ -4,10 +4,10 @@ class ActionSwitchLang
 {
     public function __construct($args)
     {
-        global $neardConfig;
-        
+        global $bearsamppConfig;
+
         if (isset($args[0]) && !empty($args[0])) {
-            $neardConfig->replace(Config::CFG_LANG, $args[0]);
+            $bearsamppConfig->replace(Config::CFG_LANG, $args[0]);
         }
     }
 }

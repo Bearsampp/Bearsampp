@@ -6,20 +6,20 @@ $result = array(
 );
 
 // Check port
-$port = $neardBins->getFilezilla()->getPort();
-$sslPort = $neardBins->getFilezilla()->getSslPort();
+$port = $bearsamppBins->getFilezilla()->getPort();
+$sslPort = $bearsamppBins->getFilezilla()->getSslPort();
 
-$textServiceStarted = $neardLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
-$textServiceStopped = $neardLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
-$textDisabled = $neardLang->getValue(Lang::DISABLED);
+$textServiceStarted = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
+$textServiceStopped = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
+$textDisabled = $bearsamppLang->getValue(Lang::DISABLED);
 
-if ($neardBins->getFilezilla()->isEnable()) {
-    if ($neardBins->getFilezilla()->checkPort($sslPort, true)) {
+if ($bearsamppBins->getFilezilla()->isEnable()) {
+    if ($bearsamppBins->getFilezilla()->checkPort($sslPort, true)) {
         $result['checkport'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-success">' . sprintf($textServiceStarted, $sslPort) . ' (SSL)</span>';
     } else {
         $result['checkport'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-danger">' . $textServiceStopped . ' (SSL)</span>';
     }
-    if ($neardBins->getFilezilla()->checkPort($port)) {
+    if ($bearsamppBins->getFilezilla()->checkPort($port)) {
         $result['checkport'] .= '<span style="float:right;font-size:12px" class="label label-success">' . sprintf($textServiceStarted, $port) . '</span>';
     } else {
         $result['checkport'] .= '<span style="float:right;font-size:12px" class="label label-danger">' . $textServiceStopped . '</span>';
@@ -29,11 +29,11 @@ if ($neardBins->getFilezilla()->isEnable()) {
 }
 
 // Versions
-foreach ($neardBins->getFilezilla()->getVersionList() as $version) {
-    if ($version != $neardBins->getFilezilla()->getVersion()) {
+foreach ($bearsamppBins->getFilezilla()->getVersionList() as $version) {
+    if ($version != $bearsamppBins->getFilezilla()->getVersion()) {
         $result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-default">' . $version . '</span>';
     }
 }
-$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-primary">' . $neardBins->getFilezilla()->getVersion() . '</span>';
+$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-primary">' . $bearsamppBins->getFilezilla()->getVersion() . '</span>';
 
 echo json_encode($result);

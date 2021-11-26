@@ -73,7 +73,7 @@ class TplAestan
 
     public static function getItemConsoleZ($caption, $glyph, $id = null, $title = null, $initDir = null, $command = null)
     {
-        global $neardTools;
+        global $bearsamppTools;
 
         $args = '';
         if ($id != null) {
@@ -91,7 +91,7 @@ class TplAestan
 
         return self::getItemExe(
             $caption,
-            $neardTools->getConsoleZ()->getExe(),
+            $bearsamppTools->getConsoleZ()->getExe(),
             $glyph,
             $args
         );
@@ -99,15 +99,15 @@ class TplAestan
 
     public static function getItemLink($caption, $link, $local = false, $glyph = self::GLYPH_WEB_PAGE)
     {
-        global $neardBs, $neardConfig;
+        global $bearsamppBs, $bearsamppConfig;
 
         if ($local) {
-            $link = $neardBs->getLocalUrl($link);
+            $link = $bearsamppBs->getLocalUrl($link);
         }
 
         return self::getItemExe(
             $caption,
-            $neardConfig->getBrowser(),
+            $bearsamppConfig->getBrowser(),
             $glyph,
             $link
         );
@@ -115,11 +115,11 @@ class TplAestan
 
     public static function getItemNotepad($caption, $path)
     {
-        global $neardConfig;
+        global $bearsamppConfig;
 
         return self::getItemExe(
             $caption,
-            $neardConfig->getNotepad(),
+            $bearsamppConfig->getNotepad(),
             self::GLYPH_FILE,
             $path
         );
@@ -146,7 +146,7 @@ class TplAestan
 
     private static function getActionService($service, $action, $item = false)
     {
-        global $neardLang;
+        global $bearsamppLang;
         $result = 'Action: ' . $action;
 
         if ($service != null) {
@@ -158,13 +158,13 @@ class TplAestan
         if ($item) {
             $result = 'Type: item; ' . $result;
             if ($action == self::SERVICE_START) {
-                $result .= '; Caption: "' . $neardLang->getValue(Lang::MENU_START_SERVICE) . '"' .
+                $result .= '; Caption: "' . $bearsamppLang->getValue(Lang::MENU_START_SERVICE) . '"' .
                     '; Glyph: ' . self::GLYPH_START;
             } elseif ($action == self::SERVICE_STOP) {
-                $result .= '; Caption: "' . $neardLang->getValue(Lang::MENU_STOP_SERVICE) . '"' .
+                $result .= '; Caption: "' . $bearsamppLang->getValue(Lang::MENU_STOP_SERVICE) . '"' .
                     '; Glyph: ' . self::GLYPH_STOP;
             } elseif ($action == self::SERVICE_RESTART) {
-                $result .= '; Caption: "' . $neardLang->getValue(Lang::MENU_RESTART_SERVICE) . '"' .
+                $result .= '; Caption: "' . $bearsamppLang->getValue(Lang::MENU_RESTART_SERVICE) . '"' .
                     '; Glyph: ' . self::GLYPH_RELOAD;
             }
         } elseif ($action != self::SERVICES_CLOSE) {
@@ -216,17 +216,17 @@ class TplAestan
 
     public static function getSectionMessages()
     {
-        global $neardLang;
+        global $bearsamppLang;
 
         return '[Messages]' . PHP_EOL .
-            'AllRunningHint=' . $neardLang->getValue(Lang::ALL_RUNNING_HINT) . PHP_EOL .
-            'SomeRunningHint=' . $neardLang->getValue(Lang::SOME_RUNNING_HINT) . PHP_EOL .
-            'NoneRunningHint=' . $neardLang->getValue(Lang::NONE_RUNNING_HINT) . PHP_EOL;
+            'AllRunningHint=' . $bearsamppLang->getValue(Lang::ALL_RUNNING_HINT) . PHP_EOL .
+            'SomeRunningHint=' . $bearsamppLang->getValue(Lang::SOME_RUNNING_HINT) . PHP_EOL .
+            'NoneRunningHint=' . $bearsamppLang->getValue(Lang::NONE_RUNNING_HINT) . PHP_EOL;
     }
 
     public static function getSectionConfig()
     {
-        global $neardCore;
+        global $bearsamppCore;
         return '[Config]' . PHP_EOL .
             'ImageList=' . self::IMG_GLYPH_SPRITES . PHP_EOL .
             'ServiceCheckInterval=1' . PHP_EOL .
@@ -235,7 +235,7 @@ class TplAestan
             'TrayIconNoneRunning=' . self::GLYPH_SERVICE_NONE_RUNNING . PHP_EOL .
             'ID={' . strtolower(APP_TITLE) . '}' . PHP_EOL .
             'AboutHeader=' . APP_TITLE . PHP_EOL .
-            'AboutVersion=Version ' . $neardCore->getAppVersion() . PHP_EOL;
+            'AboutVersion=Version ' . $bearsamppCore->getAppVersion() . PHP_EOL;
     }
 
     public static function getSectionMenuRightSettings()

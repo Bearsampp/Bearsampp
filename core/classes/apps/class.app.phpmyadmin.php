@@ -18,18 +18,18 @@ class AppPhpmyadmin extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $neardConfig, $neardLang;
+        global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
-        $this->name = $neardLang->getValue(Lang::PHPMYADMIN);
-        $this->version = $neardConfig->getRaw(self::ROOT_CFG_VERSION);
+        $this->name = $bearsamppLang->getValue(Lang::PHPMYADMIN);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
         $versions = array();
-        if ($this->neardConfRaw !== false) {
-            $versions[self::LOCAL_CFG_PHP52] = $this->neardConfRaw[self::LOCAL_CFG_PHP52];
-            $versions[self::LOCAL_CFG_PHP53] = $this->neardConfRaw[self::LOCAL_CFG_PHP53];
-            $versions[self::LOCAL_CFG_PHP55] = $this->neardConfRaw[self::LOCAL_CFG_PHP55];
+        if ($this->bearsamppConfRaw !== false) {
+            $versions[self::LOCAL_CFG_PHP52] = $this->bearsamppConfRaw[self::LOCAL_CFG_PHP52];
+            $versions[self::LOCAL_CFG_PHP53] = $this->bearsamppConfRaw[self::LOCAL_CFG_PHP53];
+            $versions[self::LOCAL_CFG_PHP55] = $this->bearsamppConfRaw[self::LOCAL_CFG_PHP55];
         }
 
         if (!$this->enable) {
@@ -37,26 +37,26 @@ class AppPhpmyadmin extends Module
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
-        if (!is_file($this->neardConf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->neardConf));
+        if (!is_file($this->bearsamppConf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
         }
 
         foreach ($versions as $key => $versionSub) {
-            $neardConfSub = $this->symlinkPath . '/' . $versionSub . '/neard.conf';
-            if (!is_file($neardConfSub)) {
-                Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version . ' / ' . $versionSub, $neardConfSub));
+            $bearsamppConfSub = $this->symlinkPath . '/' . $versionSub . '/bearsampp.conf';
+            if (!is_file($bearsamppConfSub)) {
+                Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version . ' / ' . $versionSub, $bearsamppConfSub));
             }
-            $neardConfRawSub = parse_ini_file($neardConfSub);
-            if ($neardConfRawSub !== false) {
-                $confSub = $this->symlinkPath . '/' . $versionSub . '/' . $neardConfRawSub[self::LOCAL_CFG_CONF];
+            $bearsamppConfRawSub = parse_ini_file($bearsamppConfSub);
+            if ($bearsamppConfRawSub !== false) {
+                $confSub = $this->symlinkPath . '/' . $versionSub . '/' . $bearsamppConfRawSub[self::LOCAL_CFG_CONF];
                 if (!is_file($confSub)) {
-                    Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version . ' / ' . $confSub));
+                    Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version . ' / ' . $confSub));
                 } else {
                     $this->versions[$key] = array(
                         'version' => $versionSub,
@@ -68,7 +68,7 @@ class AppPhpmyadmin extends Module
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $neardBs, $neardBins;
+        global $bearsamppBs, $bearsamppBins;
 
         if (!$this->enable) {
             return true;
@@ -77,7 +77,7 @@ class AppPhpmyadmin extends Module
         $version = $version == null ? $this->version : $version;
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
-        $alias = $neardBs->getAliasPath() . '/phpmyadmin.conf';
+        $alias = $bearsamppBs->getAliasPath() . '/phpmyadmin.conf';
         if (is_file($alias)) {
             $version = $this->getVersionCompatPhp();
             Util::replaceInFile($alias, array(
@@ -89,18 +89,18 @@ class AppPhpmyadmin extends Module
         }
 
         foreach ($this->getConfs() as $pmaConf) {
-            if ($neardBins->getMysql()->isEnable()) {
+            if ($bearsamppBins->getMysql()->isEnable()) {
                 Util::replaceInFile($pmaConf, array(
-                    '/^\$mysqlPort\s=\s(\d+)/' => '$mysqlPort = ' . $neardBins->getMysql()->getPort() . ';',
-                    '/^\$mysqlRootUser\s=\s/' => '$mysqlRootUser = \'' . $neardBins->getMysql()->getRootUser() . '\';',
-                    '/^\$mysqlRootPwd\s=\s/' => '$mysqlRootPwd = \'' . $neardBins->getMysql()->getRootPwd() . '\';'
+                    '/^\$mysqlPort\s=\s(\d+)/' => '$mysqlPort = ' . $bearsamppBins->getMysql()->getPort() . ';',
+                    '/^\$mysqlRootUser\s=\s/' => '$mysqlRootUser = \'' . $bearsamppBins->getMysql()->getRootUser() . '\';',
+                    '/^\$mysqlRootPwd\s=\s/' => '$mysqlRootPwd = \'' . $bearsamppBins->getMysql()->getRootPwd() . '\';'
                 ));
             }
-            if ($neardBins->getMariadb()->isEnable()) {
+            if ($bearsamppBins->getMariadb()->isEnable()) {
                 Util::replaceInFile($pmaConf, array(
-                    '/^\$mariadbPort\s=\s(\d+)/' => '$mariadbPort = ' . $neardBins->getMariadb()->getPort() . ';',
-                    '/^\$mariadbRootUser\s=\s/' => '$mariadbRootUser = \'' . $neardBins->getMariadb()->getRootUser() . '\';',
-                    '/^\$mariadbRootPwd\s=\s/' => '$mariadbRootPwd = \'' . $neardBins->getMariadb()->getRootPwd() . '\';'
+                    '/^\$mariadbPort\s=\s(\d+)/' => '$mariadbPort = ' . $bearsamppBins->getMariadb()->getPort() . ';',
+                    '/^\$mariadbRootUser\s=\s/' => '$mariadbRootUser = \'' . $bearsamppBins->getMariadb()->getRootUser() . '\';',
+                    '/^\$mariadbRootPwd\s=\s/' => '$mariadbRootPwd = \'' . $bearsamppBins->getMariadb()->getRootPwd() . '\';'
                 ));
             }
         }
@@ -124,9 +124,9 @@ class AppPhpmyadmin extends Module
     }
 
     public function getVersionCompatPhp($phpVersion = null) {
-        global $neardBins;
+        global $bearsamppBins;
 
-        $phpVersion = empty($phpVersion) ? $neardBins->getPhp()->getVersion() : $phpVersion;
+        $phpVersion = empty($phpVersion) ? $bearsamppBins->getPhp()->getVersion() : $phpVersion;
         $versions = $this->getVersions();
         $version = $versions[self::LOCAL_CFG_PHP52]['version'];
         if (version_compare($phpVersion, '5.5', '>=')) {
@@ -139,9 +139,9 @@ class AppPhpmyadmin extends Module
     }
 
     public function setVersion($version) {
-        global $neardConfig;
+        global $bearsamppConfig;
         $this->version = $version;
-        $neardConfig->replace(self::ROOT_CFG_VERSION, $version);
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 

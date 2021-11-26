@@ -25,20 +25,20 @@ class ToolGit extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $neardBs, $neardConfig, $neardLang;
+        global $bearsamppBs, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
-        $this->name = $neardLang->getValue(Lang::GIT);
-        $this->version = $neardConfig->getRaw(self::ROOT_CFG_VERSION);
+        $this->name = $bearsamppLang->getValue(Lang::GIT);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
         $this->reposFile = $this->symlinkPath . '/' . self::REPOS_FILE;
         $this->reposCacheFile = $this->symlinkPath . '/' . self::REPOS_CACHE_FILE;
 
-        if ($this->neardConfRaw !== false) {
-            $this->exe = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_EXE];
-            $this->bash = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_BASH];
-            $this->scanStartup = $this->neardConfRaw[self::LOCAL_CFG_SCAN_STARTUP];
+        if ($this->bearsamppConfRaw !== false) {
+            $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
+            $this->bash = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_BASH];
+            $this->scanStartup = $this->bearsamppConfRaw[self::LOCAL_CFG_SCAN_STARTUP];
         }
 
         if (!$this->enable) {
@@ -46,23 +46,23 @@ class ToolGit extends Module
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
-        if (!is_file($this->neardConf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->neardConf));
+        if (!is_file($this->bearsamppConf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
         }
         if (!is_file($this->reposFile)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->reposFile));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->reposFile));
         }
         if (!is_file($this->exe)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
         }
         if (!is_file($this->bash)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->bash));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->bash));
         }
 
         if (is_file($this->reposFile)) {
@@ -71,7 +71,7 @@ class ToolGit extends Module
             foreach ($this->repos as $repo) {
                 $repo = trim($repo);
                 if (stripos($repo, ':') === false) {
-                    $repo = $neardBs->getRootPath() . '/' . $repo;
+                    $repo = $bearsamppBs->getRootPath() . '/' . $repo;
                 }
                 if (is_dir($repo)) {
                     $rebuildRepos[] = Util::formatUnixPath($repo);
@@ -84,7 +84,7 @@ class ToolGit extends Module
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $neardWinbinder;
+        global $bearsamppWinbinder;
 
         if (!$this->enable) {
             return true;
@@ -94,11 +94,11 @@ class ToolGit extends Module
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
         if (file_exists($this->getSymlinkPath() . '/post-install.bat')) {
-            $neardWinbinder->exec($this->getBash(), '--no-needs-console --hide --no-cd --command=' . $this->getSymlinkPath() . '/post-install.bat', true);
+            $bearsamppWinbinder->exec($this->getBash(), '--no-needs-console --hide --no-cd --command=' . $this->getSymlinkPath() . '/post-install.bat', true);
         }
 
-        $neardWinbinder->exec($this->getExe(), 'config --global core.autocrlf false', true);
-        $neardWinbinder->exec($this->getExe(), 'config --global core.eol lf', true);
+        $bearsamppWinbinder->exec($this->getExe(), 'config --global core.autocrlf false', true);
+        $bearsamppWinbinder->exec($this->getExe(), 'config --global core.eol lf', true);
 
         return true;
     }
@@ -132,9 +132,9 @@ class ToolGit extends Module
     }
 
     public function setVersion($version) {
-        global $neardConfig;
+        global $bearsamppConfig;
         $this->version = $version;
-        $neardConfig->replace(self::ROOT_CFG_VERSION, $version);
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 
@@ -156,7 +156,7 @@ class ToolGit extends Module
 
     public function setScanStartup($scanStartup) {
         $this->scanStartup = $scanStartup;
-        Util::replaceInFile($this->neardConf, array(
+        Util::replaceInFile($this->bearsamppConf, array(
             '/^' . self::LOCAL_CFG_SCAN_STARTUP . '/' => self::LOCAL_CFG_SCAN_STARTUP . ' = "' . $this->scanStartup . '"'
         ));
     }

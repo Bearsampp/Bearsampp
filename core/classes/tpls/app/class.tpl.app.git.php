@@ -10,34 +10,34 @@ class TplAppGit
 
     public static function process()
     {
-        global $neardLang;
+        global $bearsamppLang;
 
-        return TplApp::getMenu($neardLang->getValue(Lang::GIT), self::MENU, get_called_class());
+        return TplApp::getMenu($bearsamppLang->getValue(Lang::GIT), self::MENU, get_called_class());
     }
 
     public static function getMenuGit()
     {
-        global $neardLang, $neardTools;
+        global $bearsamppLang, $bearsamppTools;
 
-        $tplRepos = TplApp::getMenu($neardLang->getValue(Lang::REPOS), self::MENU_REPOS, get_called_class());
+        $tplRepos = TplApp::getMenu($bearsamppLang->getValue(Lang::REPOS), self::MENU_REPOS, get_called_class());
         $emptyRepos = count(explode(PHP_EOL, $tplRepos[TplApp::SECTION_CONTENT])) == 2;
-        $isScanStartup = $neardTools->getGit()->isScanStartup();
+        $isScanStartup = $bearsamppTools->getGit()->isScanStartup();
 
         $tplRefreshRepos = TplApp::getActionMulti(
             self::ACTION_REFRESH_REPOS, null,
-            array($neardLang->getValue(Lang::MENU_REFRESH_REPOS), TplAestan::GLYPH_RELOAD),
+            array($bearsamppLang->getValue(Lang::MENU_REFRESH_REPOS), TplAestan::GLYPH_RELOAD),
             false, get_called_class()
         );
         $tplRefreshReposStartup = TplApp::getActionMulti(
             self::ACTION_REFRESH_REPOS_STARTUP, array($isScanStartup ? Config::DISABLED : Config::ENABLED),
-            array($neardLang->getValue(Lang::MENU_SCAN_REPOS_STARTUP), $isScanStartup ? TplAestan::GLYPH_CHECK : ''),
+            array($bearsamppLang->getValue(Lang::MENU_SCAN_REPOS_STARTUP), $isScanStartup ? TplAestan::GLYPH_CHECK : ''),
             false, get_called_class()
         );
 
         return TplAestan::getItemConsoleZ(
-                $neardLang->getValue(Lang::GIT_CONSOLE),
+                $bearsamppLang->getValue(Lang::GIT_CONSOLE),
                 TplAestan::GLYPH_GIT,
-                $neardTools->getConsoleZ()->getTabTitleGit()
+                $bearsamppTools->getConsoleZ()->getTabTitleGit()
             ) . PHP_EOL .
             TplAestan::getItemSeparator() . PHP_EOL .
 
@@ -54,15 +54,15 @@ class TplAppGit
 
     public static function getMenuGitRepos()
     {
-        global $neardTools;
+        global $bearsamppTools;
         $result = '';
 
-        foreach ($neardTools->getGit()->findRepos() as $repo) {
+        foreach ($bearsamppTools->getGit()->findRepos() as $repo) {
             $result .= TplAestan::getItemConsoleZ(
                 basename($repo),
                 TplAestan::GLYPH_GIT,
-                $neardTools->getConsoleZ()->getTabTitleGit(),
-                $neardTools->getConsoleZ()->getTabTitleGit($repo),
+                $bearsamppTools->getConsoleZ()->getTabTitleGit(),
+                $bearsamppTools->getConsoleZ()->getTabTitleGit($repo),
                 $repo
             ) . PHP_EOL;
         }

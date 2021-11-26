@@ -15,15 +15,15 @@ abstract class Module
     protected $currentPath;
     protected $symlinkPath;
     protected $enable;
-    protected $neardConf;
-    protected $neardConfRaw;
+    protected $bearsamppConf;
+    protected $bearsamppConfRaw;
 
     protected function __construct() {
 
     }
 
     protected function reload($id = null, $type = null) {
-        global $neardBs;
+        global $bearsamppBs;
 
         $this->id = empty($id) ? $this->id : $id;
         $this->type = empty($type) ? $this->type : $type;
@@ -31,13 +31,13 @@ abstract class Module
 
         switch ($this->type) {
             case Apps::TYPE:
-                $mainPath = $neardBs->getAppsPath();
+                $mainPath = $bearsamppBs->getAppsPath();
                 break;
             case Bins::TYPE:
-                $mainPath = $neardBs->getBinPath();
+                $mainPath = $bearsamppBs->getBinPath();
                 break;
             case Tools::TYPE:
-                $mainPath = $neardBs->getToolsPath();
+                $mainPath = $bearsamppBs->getToolsPath();
                 break;
         }
 
@@ -45,16 +45,16 @@ abstract class Module
         $this->currentPath = $this->rootPath . '/' . $this->id . $this->version;
         $this->symlinkPath = $this->rootPath . '/current';
         $this->enable = is_dir($this->currentPath);
-        $this->neardConf = $this->currentPath . '/neard.conf';
-        $this->neardConfRaw = @parse_ini_file($this->neardConf);
+        $this->bearsamppConf = $this->currentPath . '/bearsampp.conf';
+        $this->bearsamppConfRaw = @parse_ini_file($this->bearsamppConf);
 
-        if ($neardBs->isBootstrap()) {
+        if ($bearsamppBs->isBootstrap()) {
             $this->createSymlink();
         }
 
-        if ($this->neardConfRaw !== false) {
-            if (isset($this->neardConfRaw[self::BUNDLE_RELEASE])) {
-                $this->release = $this->neardConfRaw[self::BUNDLE_RELEASE];
+        if ($this->bearsamppConfRaw !== false) {
+            if (isset($this->bearsamppConfRaw[self::BUNDLE_RELEASE])) {
+                $this->release = $this->bearsamppConfRaw[self::BUNDLE_RELEASE];
             }
         }
     }
@@ -78,7 +78,7 @@ abstract class Module
                 if (!(new \FilesystemIterator($dest))->valid()) {
                     rmdir($dest);
                 } else {
-                    Util::logError($this->symlinkPath . ' should be a symlink to ' . $this->currentPath . '. Please remove this dir and restart Neard.');
+                    Util::logError($this->symlinkPath . ' should be a symlink to ' . $this->currentPath . '. Please remove this dir and restart bearsampp.');
                     return;
                 }
             }
@@ -92,14 +92,14 @@ abstract class Module
     }
 
     protected function replaceAll($params) {
-        $content = file_get_contents($this->neardConf);
+        $content = file_get_contents($this->bearsamppConf);
 
         foreach ($params as $key => $value) {
             $content = preg_replace('|' . $key . ' = .*|', $key . ' = ' . '"' . $value.'"', $content);
-            $this->neardConfRaw[$key] = $value;
+            $this->bearsamppConfRaw[$key] = $value;
         }
 
-        file_put_contents($this->neardConf, $content);
+        file_put_contents($this->bearsamppConf, $content);
     }
 
     public function update($sub = 0, $showWindow = false) {

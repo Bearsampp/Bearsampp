@@ -2,7 +2,7 @@
 
 class BinFilezilla extends Module
 {
-    const SERVICE_NAME = 'neardfilezilla';
+    const SERVICE_NAME = 'bearsamppfilezilla';
 
     const ROOT_CFG_ENABLE = 'filezillaEnable';
     const ROOT_CFG_VERSION = 'filezillaVersion';
@@ -39,26 +39,26 @@ class BinFilezilla extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $neardBs, $neardConfig, $neardLang;
+        global $bearsamppBs, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
-        $this->name = $neardLang->getValue(Lang::FILEZILLA);
-        $this->version = $neardConfig->getRaw(self::ROOT_CFG_VERSION);
+        $this->name = $bearsamppLang->getValue(Lang::FILEZILLA);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
-        $this->enable = $this->enable && $neardConfig->getRaw(self::ROOT_CFG_ENABLE);
+        $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
         $this->service = new Win32Service(self::SERVICE_NAME);
         $this->logsPath = $this->symlinkPath . '/Logs';
-        $this->log = $neardBs->getLogsPath() . '/filezilla.log';
+        $this->log = $bearsamppBs->getLogsPath() . '/filezilla.log';
 
-        if ($this->neardConfRaw !== false) {
-            $this->exe = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_EXE];
-            $this->itfExe = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_ITF_EXE];
-            $this->conf = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_CONF];
-            $this->itfConf = $this->symlinkPath . '/' . $this->neardConfRaw[self::LOCAL_CFG_ITF_CONF];
-            $this->localItfConf = Util::formatUnixPath(getenv('APPDATA')) . '/FileZilla Server/' . $this->neardConfRaw[self::LOCAL_CFG_ITF_CONF];
-            $this->port = $this->neardConfRaw[self::LOCAL_CFG_PORT];
-            $this->sslPort = $this->neardConfRaw[self::LOCAL_CFG_SSL_PORT];
+        if ($this->bearsamppConfRaw !== false) {
+            $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
+            $this->itfExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_ITF_EXE];
+            $this->conf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
+            $this->itfConf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_ITF_CONF];
+            $this->localItfConf = Util::formatUnixPath(getenv('APPDATA')) . '/FileZilla Server/' . $this->bearsamppConfRaw[self::LOCAL_CFG_ITF_CONF];
+            $this->port = $this->bearsamppConfRaw[self::LOCAL_CFG_PORT];
+            $this->sslPort = $this->bearsamppConfRaw[self::LOCAL_CFG_SSL_PORT];
         }
 
         if (!$this->enable) {
@@ -66,15 +66,15 @@ class BinFilezilla extends Module
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
             return;
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
-        if (!is_file($this->neardConf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->neardConf));
+        if (!is_file($this->bearsamppConf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
             return;
         }
 
@@ -85,19 +85,19 @@ class BinFilezilla extends Module
         }
 
         if (!is_file($this->exe)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
             return;
         }
         if (!is_file($this->conf)) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
             return;
         }
         if (!is_numeric($this->port) || $this->port <= 0) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_PORT, $this->port));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_PORT, $this->port));
             return;
         }
         if (!is_numeric($this->sslPort) || $this->sslPort <= 0) {
-            Util::logError(sprintf($neardLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_SSL_PORT, $this->sslPort));
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_SSL_PORT, $this->sslPort));
             return;
         }
         if (!file_exists($this->localItfConf)) {
@@ -105,7 +105,7 @@ class BinFilezilla extends Module
                 Util::logDebug('Create folder ' . dirname($this->localItfConf));
                 @mkdir(dirname($this->localItfConf), 0777);
             }
-            Util::logDebug('Write ' . $this->neardConfRaw[self::LOCAL_CFG_ITF_CONF] . ' to ' . $this->localItfConf);
+            Util::logDebug('Write ' . $this->bearsamppConfRaw[self::LOCAL_CFG_ITF_CONF] . ' to ' . $this->localItfConf);
             @copy($this->itfConf, $this->localItfConf);
         }
 
@@ -116,11 +116,11 @@ class BinFilezilla extends Module
     }
 
     protected function replaceAll($params) {
-        $content = file_get_contents($this->neardConf);
+        $content = file_get_contents($this->bearsamppConf);
 
         foreach ($params as $key => $value) {
             $content = preg_replace('|' . $key . ' = .*|', $key . ' = ' . '"' . $value.'"', $content);
-            $this->neardConfRaw[$key] = $value;
+            $this->bearsamppConfRaw[$key] = $value;
             switch ($key) {
                 case self::LOCAL_CFG_PORT:
                     $this->port = $value;
@@ -131,7 +131,7 @@ class BinFilezilla extends Module
             }
         }
 
-        file_put_contents($this->neardConf, $content);
+        file_put_contents($this->bearsamppConf, $content);
     }
 
     public function rebuildConf() {
@@ -160,7 +160,7 @@ class BinFilezilla extends Module
     }
 
     public function changePort($port, $checkUsed = false, $wbProgressBar = null) {
-        global $neardWinbinder;
+        global $bearsamppWinbinder;
 
         if (!Util::isValidPort($port)) {
             Util::logError($this->getName() . ' port not valid: ' . $port);
@@ -168,17 +168,17 @@ class BinFilezilla extends Module
         }
 
         $port = intval($port);
-        $neardWinbinder->incrProgressBar($wbProgressBar);
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
         $isPortInUse = Util::isPortInUse($port);
         if (!$checkUsed || $isPortInUse === false) {
-            // neard.conf
+            // bearsampp.conf
             $this->setPort($port);
-            $neardWinbinder->incrProgressBar($wbProgressBar);
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             // conf
             $this->update();
-            $neardWinbinder->incrProgressBar($wbProgressBar);
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             return true;
         }
@@ -188,8 +188,8 @@ class BinFilezilla extends Module
     }
 
     public function checkPort($port, $ssl = false, $showWindow = false) {
-        global $neardLang, $neardWinbinder;
-        $boxTitle = sprintf($neardLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
+        global $bearsamppLang, $bearsamppWinbinder;
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
         if (!Util::isValidPort($port)) {
             Util::logError($this->getName() . ' port not valid: ' . $port);
@@ -201,8 +201,8 @@ class BinFilezilla extends Module
             if ($headers[0] == '220 ' . $this->getService()->getDisplayName()) {
                 Util::logDebug($this->getName() . ' port ' . $port . ' is used by: ' . str_replace('220 ', '', $headers[0]));
                 if ($showWindow) {
-                    $neardWinbinder->messageBoxInfo(
-                        sprintf($neardLang->getValue(Lang::PORT_USED_BY), $port, str_replace('220 ', '', $headers[0])),
+                    $bearsamppWinbinder->messageBoxInfo(
+                        sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY), $port, str_replace('220 ', '', $headers[0])),
                         $boxTitle
                     );
                 }
@@ -210,16 +210,16 @@ class BinFilezilla extends Module
             }
             Util::logDebug($this->getName() . ' port ' . $port . ' is used by another application');
             if ($showWindow) {
-                $neardWinbinder->messageBoxWarning(
-                    sprintf($neardLang->getValue(Lang::PORT_NOT_USED_BY), $port),
+                $bearsamppWinbinder->messageBoxWarning(
+                    sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port),
                     $boxTitle
                 );
             }
         } else {
             Util::logDebug($this->getName() . ' port ' . $port . ' is not used');
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::PORT_NOT_USED), $port),
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED), $port),
                     $boxTitle
                 );
             }
@@ -234,7 +234,7 @@ class BinFilezilla extends Module
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $neardLang, $neardWinbinder;
+        global $bearsamppLang, $bearsamppWinbinder;
 
         if (!$this->enable) {
             return true;
@@ -243,35 +243,35 @@ class BinFilezilla extends Module
         $version = $version == null ? $this->version : $version;
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
-        $boxTitle = sprintf($neardLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
         $conf = str_replace('filezilla' . $this->getVersion(), 'filezilla' . $version, $this->getConf());
-        $neardConf = str_replace('filezilla' . $this->getVersion(), 'filezilla' . $version, $this->neardConf);
+        $bearsamppConf = str_replace('filezilla' . $this->getVersion(), 'filezilla' . $version, $this->bearsamppConf);
 
-        if (!file_exists($conf) || !file_exists($neardConf)) {
-            Util::logError('Neard config files not found for ' . $this->getName() . ' ' . $version);
+        if (!file_exists($conf) || !file_exists($bearsamppConf)) {
+            Util::logError('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::NEARD_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::bearsampp_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
             return false;
         }
 
-        $neardConfRaw = parse_ini_file($neardConf);
-        if ($neardConfRaw === false || !isset($neardConfRaw[self::ROOT_CFG_VERSION]) || $neardConfRaw[self::ROOT_CFG_VERSION] != $version) {
-            Util::logError('Neard config file malformed for ' . $this->getName() . ' ' . $version);
+        $bearsamppConfRaw = parse_ini_file($bearsamppConf);
+        if ($bearsamppConfRaw === false || !isset($bearsamppConfRaw[self::ROOT_CFG_VERSION]) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version) {
+            Util::logError('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::NEARD_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::bearsampp_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
             return false;
         }
 
-        // neard.conf
+        // bearsampp.conf
         $this->setVersion($version);
 
         // conf
@@ -281,9 +281,9 @@ class BinFilezilla extends Module
     }
 
     public function setVersion($version) {
-        global $neardConfig;
+        global $bearsamppConfig;
         $this->version = $version;
-        $neardConfig->replace(self::ROOT_CFG_VERSION, $version);
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 
@@ -293,14 +293,14 @@ class BinFilezilla extends Module
     }
 
     public function setEnable($enabled, $showWindow = false) {
-        global $neardConfig, $neardLang, $neardWinbinder;
+        global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
         if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
             Util::logDebug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
             if ($showWindow) {
-                $neardWinbinder->messageBoxError(
-                    sprintf($neardLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
-                    sprintf($neardLang->getValue(Lang::ENABLE_TITLE), $this->getName())
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_TITLE), $this->getName())
                 );
             }
             $enabled = Config::DISABLED;
@@ -308,7 +308,7 @@ class BinFilezilla extends Module
 
         Util::logInfo($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
         $this->enable = $enabled == Config::ENABLED;
-        $neardConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
+        $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
 
         $this->reload();
         if ($this->enable) {
