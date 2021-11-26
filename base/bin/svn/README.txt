@@ -1,2 +1,2 @@
 Place SVN module releases here.
-Documentation and downloads : https://neard.io/modules/svn
+Documentation and downloads : https://github.com/bearsampp/modules/svn

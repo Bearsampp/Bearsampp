@@ -1,8 +1,8 @@
-# Support [![](https://isitmaintained.com/badge/resolution/neard/neard.svg)](https://isitmaintained.com/project/neard/neard)
+# Support [![](https://isitmaintained.com/badge/resolution/bearsampp/bearsampp.svg)](https://isitmaintained.com/project/bearsampp/bearsampp)
 
 ## Reporting an issue
 
-Please do a search in [open issues](https://github.com/neard/neard/issues?utf8=%E2%9C%93&q=) to see if the issue or feature request has already been filed and read the [FAQ](https://neard.io/doc/faq/) page first.
+Please do a search in [open issues](https://github.com/bearsampp/bearsampp/issues?utf8=%E2%9C%93&q=) to see if the issue or feature request has already been filed and read the [FAQ](https://bearsampp.github.io/doc/faq/) page first.
 
 If you find your issue already exists, make relevant comments and add your [reaction](https://github.com/blog/2119-add-reactions-to-pull-requests-issues-and-comments). Use a reaction in place of a "+1" comment.
 
@@ -21,7 +21,7 @@ File a single issue per problem and feature request.
 
 The more information you can provide, the more likely someone will be successful reproducing the issue and finding a fix.
 
-You are now ready to [create a new issue](https://github.com/neard/neard/issues/new/choose)!
+You are now ready to [create a new issue](https://github.com/bearsampp/bearsampp/issues/new/choose)!
 
 ## Closure policy
 

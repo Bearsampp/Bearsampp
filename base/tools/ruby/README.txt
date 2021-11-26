@@ -1,2 +1,2 @@
 Place Ruby module releases here.
-Documentation and downloads : https://neard.io/modules/ruby
+Documentation and downloads : https://github.com/bearsampp/modules/ruby

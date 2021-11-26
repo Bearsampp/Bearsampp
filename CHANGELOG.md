@@ -104,7 +104,7 @@
 
 * Manage Yarn cache and global path (#354)
 * Yarn config not updated (#353)
-* Put Composer cache-dir to neard/tmp/composer (neard/neard#346)
+* Put Composer cache-dir to neard/tmp/composer (bearsampp/bearsampp#346)
 * Add global composer vendor/bin in PATH (#344)
 * Move neard repositories to its own organization (#339)
 * Add ngrok (#334)
@@ -162,7 +162,7 @@
 * Change some access modifiers
 * 7z release format only
 
-> :warning: Modules have been updated to the latest stable release (#264). For Windows XP users, please read the [Windows XP limitation](https://neard.io/doc/faq/#windows-xp-limitation) section in the FAQ to download the right release.
+> :warning: Modules have been updated to the latest stable release (#264). For Windows XP users, please read the [Windows XP limitation](https://bearsampp.github.io/doc/faq/#windows-xp-limitation) section in the FAQ to download the right release.
 
 ## 1.2 (2017/04/20)
 

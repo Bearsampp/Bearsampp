@@ -1,2 +1,2 @@
 Place Memcached module releases here.
-Documentation and downloads : https://neard.io/modules/memcached
+Documentation and downloads : https://github.com/bearsampp/modules/memcached

@@ -1,2 +1,2 @@
 Place WebSVN module releases here.
-Documentation and downloads : https://neard.io/modules/websvn
+Documentation and downloads : https://github.com/bearsampp/modules/websvn

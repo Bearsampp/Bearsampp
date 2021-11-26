@@ -1,2 +1,2 @@
 Place MongoDB module releases here.
-Documentation and downloads : https://neard.io/modules/mongodb
+Documentation and downloads : https://github.com/bearsampp/modules/mongodb

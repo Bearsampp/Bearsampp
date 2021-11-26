@@ -1,2 +1,2 @@
 Place Webgrind module releases here.
-Documentation and downloads : https://neard.io/modules/webgrind
+Documentation and downloads : https://github.com/bearsampp/modules/webgrind

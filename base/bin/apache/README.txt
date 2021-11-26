@@ -1,2 +1,2 @@
 Place Apache module releases here.
-Documentation and downloads : https://neard.io/modules/apache
+Documentation and downloads : https://github.com/bearsampp/modules/apache
