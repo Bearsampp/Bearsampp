@@ -1,2 +1,2 @@
 Place MailHog module releases here.
-Documentation and downloads : https://github.com/bearsampp/modules/mailhog
+Documentation and downloads : https://bearsampp.github.io/modules/mailhog

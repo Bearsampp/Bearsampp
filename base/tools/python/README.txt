@@ -1,2 +1,2 @@
 Place Python module releases here.
-Documentation and downloads : https://github.com/bearsampp/modules/python
+Documentation and downloads : https://bearsampp.github.io/modules/python

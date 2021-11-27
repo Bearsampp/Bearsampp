@@ -1,2 +1,2 @@
 Place phpMemAdmin module releases here.
-Documentation and downloads : https://github.com/bearsampp/modules/phpmemadmin
+Documentation and downloads : https://bearsampp.github.io/modules/phpmemadmin

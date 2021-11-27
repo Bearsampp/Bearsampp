@@ -1,2 +1,2 @@
 Place SVN module releases here.
-Documentation and downloads : https://github.com/bearsampp/modules/svn
+Documentation and downloads : https://bearsampp.github.io/modules/svn
