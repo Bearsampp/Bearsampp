@@ -1,7 +1,7 @@
 <p align="center"><a href="https://bearsampp.github.io" target="_blank"><img width="100" src="https://github.com/Bearsampp/.settings/blob/master/img/panda-logo.png></a></p>
 
 <p align="center">
-  <a href="https://bearsampp.github.io/release/latest"><img src="https://img.shields.io/github/release/neard/neard.svg?style=flat-square" alt="GitHub release"></a>
+  <a href="https://bearsampp.github.io/release/latest"><img src="https://img.shields.io/github/release/bearsampp/bearsampp.svg?style=flat-square" alt="GitHub release"></a>
   <a href="https://bearsampp.github.io/releases"><img src="https://img.shields.io/github/downloads/bearsampp/bearsampp/total.svg?style=flat-square" alt="Total downloads"></a>
   <a href="https://github.com/bearsampp/bearsampp/actions?workflow=build"><img src="https://img.shields.io/github/workflow/status/bearsampp/bearsampp/build?label=build&logo=github&style=flat-square" alt="Build Status"></a>
   <br /><a href="https://github.com/sponsors/N6REJ"><img src="https://img.shields.io/badge/sponsor-N6REJ-181717.svg?logo=github&style=flat-square" alt="Become a sponsor"></a>
