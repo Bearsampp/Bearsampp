@@ -10,7 +10,7 @@
 
 ## About
 
-**bearsampp** is a portable WAMP software stack involving useful binaries, tools and applications for your web development.
+**Bearsampp** is a portable WAMP software stack involving useful binaries, tools and applications for your web development.
 
 ![](https://github.com/Bearsampp/.settings/blob/master/img/screenshots/menu1.png) ![](https://github.com/Bearsampp/.settings/blob/master/img/screenshots/menu2.png)
 ![](https://github.com/Bearsampp/.settings/blob/master/img/screenshots/menu3.png)
