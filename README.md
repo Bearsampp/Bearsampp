@@ -68,15 +68,14 @@ For those who wish to contribute, have an issue or questions, read the [Document
 Want to contribute? Awesome! The most basic way to show your support is to star the project, or to raise issues. If
 you want to open a pull request, please read the [contributing guidelines](.github/CONTRIBUTING.md).
 
-You can also support this project by [**becoming a sponsor on GitHub**](https://github.com/sponsors/crazy-max) or by
-making a [Paypal donation](https://www.paypal.me/crazyws) to ensure this journey continues indefinitely!
+You can also support this project by [**becoming a sponsor on GitHub**](https://github.com/sponsors/N6REJ) or by
+making a [Paypal donation](https://www.paypal.me/BearLeeAble) to ensure this journey continues indefinitely!
 
 Thanks again for your support, it is much appreciated! :pray:
 
 ## License
 
 LGPL-3.0. See `LICENSE` for more details.<br />
-Icon credit to [David Vignoni](http://www.icon-king.com/).
 
 ## How to create release from dev
 If you are not familiar with pull request, you can create a new module like this :
@@ -85,4 +84,4 @@ Increment the build.release in the build.properties file.
 If you want you can change the build.path (default C:\bearsampp-build).
 Open a command prompt in your module folder and call the Ant target release : ant release.
 Upload your release on a file hosting system like Sendspace.
-Create an issue on bearsampp repository to integrate your release.
+Create an issue on Bearsampp repository to integrate your release.
