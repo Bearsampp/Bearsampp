@@ -1,8 +1,8 @@
 NSSM: The Non-Sucking Service Manager
 Version 2.24, 2014-08-31
 
-NSSM is a service helper program similar to srvany and cygrunsrv.  It can 
-start any application as an NT service and will restart the service if it 
+NSSM is a service helper program similar to srvany and cygrunsrv.  It can
+start any application as an NT service and will restart the service if it
 fails for any reason.
 
 NSSM also has a graphical service installer and remover.
@@ -11,7 +11,7 @@ Full documentation can be found online at
 
                               http://nssm.cc/
 
-Since version 2.0, the GUI can be bypassed by entering all appropriate 
+Since version 2.0, the GUI can be bypassed by entering all appropriate
 options on the command line.
 
 Since version 2.1, NSSM can be compiled for x64 platforms.
@@ -84,11 +84,11 @@ To install a service, run
 
     nssm install <servicename>
 
-You will be prompted to enter the full path to the application you wish 
+You will be prompted to enter the full path to the application you wish
 to run and any command line options to pass to that application.
 
-Use the system service manager (services.msc) to control advanced service 
-properties such as startup method and desktop interaction.  NSSM may 
+Use the system service manager (services.msc) to control advanced service
+properties such as startup method and desktop interaction.  NSSM may
 support these options at a later time...
 
 
@@ -98,7 +98,7 @@ To install a service, run
 
     nssm install <servicename> <application> [<options>]
 
-NSSM will then attempt to install a service which runs the named application 
+NSSM will then attempt to install a service which runs the named application
 with the given options (if you specified any).
 
 Don't forget to enclose paths in "quotes" if they contain spaces!
@@ -109,9 +109,9 @@ quotes.
 
 Managing the service
 --------------------
-NSSM will launch the application listed in the registry when you send it a 
-start signal and will terminate it when you send a stop signal.  So far, so 
-much like srvany.  But NSSM is the Non-Sucking service manager and can take 
+NSSM will launch the application listed in the registry when you send it a
+start signal and will terminate it when you send a stop signal.  So far, so
+much like srvany.  But NSSM is the Non-Sucking service manager and can take
 action if/when the application dies.
 
 With no configuration from you, NSSM will try to restart itself if it notices
@@ -407,13 +407,13 @@ Managing services using the command line
 NSSM can retrieve or set individual service parameters from the command line.
 In general the syntax is as follows, though see below for exceptions.
 
-    nssm get <servicename> <parameter>
+    nssm get <servicename> <divarameter>
 
-    nssm set <servicename> <parameter> <value>
+    nssm set <servicename> <divarameter> <value>
 
 Parameters can also be reset to their default values.
 
-    nssm reset <servicename> <parameter>
+    nssm reset <servicename> <divarameter>
 
 The parameter names recognised by NSSM are the same as the registry entry
 names described above, eg AppDirectory.
@@ -517,7 +517,7 @@ To retrieve the username, run
 
 To set the username and password, run
 
-    nssm set <servicename> ObjectName <username> <password>
+    nssm set <servicename> ObjectName <username> <divassword>
 
 Note that the rules of argument concatenation still apply.  The following
 invocation is valid and will have the expected effect.
@@ -579,7 +579,7 @@ NSSM can also remove services.  Run
 
     nssm remove <servicename>
 
-to remove a service.  You will prompted for confirmation before the service 
+to remove a service.  You will prompted for confirmation before the service
 is removed.  Try not to remove essential system services...
 
 
@@ -688,5 +688,5 @@ Thanks to Sam Townsend for noticing a regression with TerminateProcess().
 
 Licence
 -------
-NSSM is public domain.  You may unconditionally use it and/or its source code 
+NSSM is public domain.  You may unconditionally use it and/or its source code
 for any purpose you wish.

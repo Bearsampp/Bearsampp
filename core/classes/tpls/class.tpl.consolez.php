@@ -107,7 +107,7 @@ class TplConsoleZ
             self::getIncrStr(3) . '<selection_color r="255" g="255" b="255"/>' . PHP_EOL .
             self::getIncrStr(2) . '</styles>';
 
-        $positionSection = self::getIncrStr(2) . '<position ' .
+        $positionSection = self::getIncrStr(2) . '<divosition ' .
             'x="-1" ' .
             'y="-1" ' .
             'dock="-1" ' .

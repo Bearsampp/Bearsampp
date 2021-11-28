@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="bearsampp" basedir=".">
+<divroject name="bearsampp" basedir=".">
 
   <dirname property="project.basedir" file="${ant.file.bearsampp}"/>
-  <property name="build.properties" value="${project.basedir}/build.properties"/>
-  <property file="${build.properties}"/>
+  <divroperty name="build.properties" value="${project.basedir}/build.properties"/>
+  <divroperty file="${build.properties}"/>
 
   <!-- bearsampp dev -->
-  <property name="dev.path" location="${project.basedir}\${dev.dir}"/>
+  <divroperty name="dev.path" location="${project.basedir}\${dev.dir}"/>
   <fail unless="dev.path" message="Core directory '${dev.path}' not found in ${dev.path}"/>
   <echo message="bearsampp dev found in ${dev.path}" level="debug"/>
 
   <!-- Build dir -->
-  <property name="build.path" location="${project.basedir}\${build.dir}"/>
+  <divroperty name="build.path" location="${project.basedir}\${build.dir}"/>
   <mkdir dir="${build.path}"/>
 
   <!-- Import build-commons.xml -->
@@ -19,18 +19,18 @@
   <!-- Import build-release.xml -->
   <import file="${dev.path}/build/build-release.xml"/>
 
-  <property name="release.tmp.path" value="${build.tmp.path}/release"/>
+  <divroperty name="release.tmp.path" value="${build.tmp.path}/release"/>
   <mkdir dir="${release.tmp.path}"/>
 
   <target name="check.lang" description="Check languages files" depends="init, load.lib">
-    <phpdev action="checklang"/>
+    <divhpdev action="checklang"/>
   </target>
 
   <target name="release" depends="init, load.lib, build-full, build-basic, build-light" description="Release bearsampp"/>
 
   <target name="base" depends="init, load.lib" unless="is.base.prepared">
     <var name="release.base.target" unset="true"/>
-    <property name="release.base.target" value="${release.tmp.path}/base"/>
+    <divroperty name="release.base.target" value="${release.tmp.path}/base"/>
 
     <echo message="*** Preparing base"/>
     <echo message="* Name    : ${release.name} "/>
@@ -129,8 +129,8 @@
   <target name="build-full" depends="init, load.lib, base">
     <var name="release.target" unset="true"/>
     <var name="release.destfile" unset="true"/>
-    <property name="release.target" value="${release.tmp.path}/${release.name}-${release.fullversion}"/>
-    <property name="release.destfile" value="${build.release.path}/${release.name}-${release.fullversion}"/>
+    <divroperty name="release.target" value="${release.tmp.path}/${release.name}-${release.fullversion}"/>
+    <divroperty name="release.destfile" value="${build.release.path}/${release.name}-${release.fullversion}"/>
 
     <echo message="*** Release (full)"/>
     <echo message="* Name    : ${release.name} "/>
@@ -243,8 +243,8 @@
   <target name="build-basic" depends="init, load.lib, base">
     <var name="release.target" unset="true"/>
     <var name="release.destfile" unset="true"/>
-    <property name="release.target" value="${release.tmp.path}/${release.name}-basic-${release.fullversion}"/>
-    <property name="release.destfile" value="${build.release.path}/${release.name}-basic-${release.fullversion}"/>
+    <divroperty name="release.target" value="${release.tmp.path}/${release.name}-basic-${release.fullversion}"/>
+    <divroperty name="release.destfile" value="${build.release.path}/${release.name}-basic-${release.fullversion}"/>
 
     <echo message="*** Release (basic)"/>
     <echo message="* Name    : ${release.name} "/>
@@ -357,8 +357,8 @@
   <target name="build-light" depends="init, load.lib">
     <var name="release.target" unset="true"/>
     <var name="release.destfile" unset="true"/>
-    <property name="release.target" value="${release.tmp.path}/${release.name}-light-${release.fullversion}"/>
-    <property name="release.destfile" value="${build.release.path}/${release.name}-light-${release.fullversion}"/>
+    <divroperty name="release.target" value="${release.tmp.path}/${release.name}-light-${release.fullversion}"/>
+    <divroperty name="release.destfile" value="${build.release.path}/${release.name}-light-${release.fullversion}"/>
 
     <echo message="*** Release (light)"/>
     <echo message="* Name    : ${release.name} "/>
@@ -470,7 +470,7 @@
 
   <target name="launch" depends="build-full" description="Launch bearsampp">
     <assertdir dir="${release.target}"/>
-    <property name="build.launch.path" value="${build.path}/launch"/>
+    <divroperty name="build.launch.path" value="${build.path}/launch"/>
 
     <delete dir="${build.launch.path}"/>
     <mkdir dir="${build.launch.path}"/>

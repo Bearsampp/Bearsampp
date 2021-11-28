@@ -3,7 +3,7 @@
     <div class="list-group">
       <div class="list-group-item" style="min-height:150px">
         <h4 class="list-group-item-heading"><?php echo $bearsamppLang->getValue(Lang::ABOUT); ?></h4>
-        <p class="list-group-item-text"><?php echo sprintf($bearsamppLang->getValue(Lang::HOMEPAGE_ABOUT_HTML), Util::getWebsiteUrl(), Util::getGithubUrl()); ?></p>
+        <div class="list-group-item-text"><?php echo sprintf($bearsamppLang->getValue(Lang::HOMEPAGE_ABOUT_HTML), Util::getWebsiteUrl(), Util::getGithubUrl()); ?></div>
       </div>
     </div>
   </div>
@@ -11,7 +11,7 @@
     <div class="list-group">
       <div class="list-group-item" style="min-height:150px">
         <h4 class="list-group-item-heading"><?php echo $bearsamppLang->getValue(Lang::LICENSE); ?></h4>
-        <p class="list-group-item-text"><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_LICENSE_TEXT); ?></p>
+        <div class="list-group-item-text"><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_LICENSE_TEXT); ?></div>
       </div>
     </div>
   </div>
@@ -20,8 +20,8 @@
       <div class="list-group-item" style="min-height:150px">
         <h4 class="list-group-item-heading"><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_QUESTIONS_TITLE); ?></h4>
         <div class="list-group-item-text">
-          <p><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_QUESTIONS_TEXT); ?></p>
-          <p><a target="_blank" href="<?php echo Util::getGithubUrl('issues'); ?>" class="btn btn-primary" role="button"><i class="fa fa-github"></i> <?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_POST_ISSUE); ?></a></p>
+          <div><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_QUESTIONS_TEXT); ?></div>
+          <div><a target="_blank" href="<?php echo Util::getGithubUrl('issues'); ?>" class="btn btn-primary" role="button"><i class="fa fa-github"></i> <?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_POST_ISSUE); ?></a></div>
         </div>
       </div>
     </div>
