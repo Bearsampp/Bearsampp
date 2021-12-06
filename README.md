@@ -12,8 +12,8 @@
 
 **Bearsampp** is a portable WAMP software stack involving useful binaries, tools and applications for your web development.
 
-![](https://github.com/Bearsampp/.settings/blob/master/img/screenshots/menu1.png) ![](https://github.com/Bearsampp/.settings/blob/master/img/screenshots/menu2.png)
-![](https://github.com/Bearsampp/.settings/blob/master/img/screenshots/menu3.png)
+![](https://github.com/Bearsampp/.settings/blob/main/img/screenshots/menu1.png) ![](https://github.com/Bearsampp/.settings/blob/main/img/screenshots/menu2.png)
+![](https://github.com/Bearsampp/.settings/blob/main/img/screenshots/menu3.png)
 
 It also offers several versions of the various [modules](https://bearsampp.github.io/modules) for download on the
 [official website](https://bearsampp.github.io) and many other features.<br />
