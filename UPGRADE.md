@@ -33,10 +33,10 @@
 * **required** : Remove folder `tools/phpmetrics`
 * **required** : Remove folder `tools/phpunit`
 * **required** : Remove folder `tools/wpcli`
-* **required** : Remove line `drushVersion` in tools section in `neard.conf`
-* **required** : Remove line `phpmetricsVersion` in tools section in `neard.conf`
-* **required** : Remove line `phpunitVersion` in tools section in `neard.conf`
-* **required** : Remove line `wpcliVersion` in tools section in `neard.conf`
+* **required** : Remove line `drushVersion` in tools section in `bearsampp.conf`
+* **required** : Remove line `phpmetricsVersion` in tools section in `bearsampp.conf`
+* **required** : Remove line `phpunitVersion` in tools section in `bearsampp.conf`
+* **required** : Remove line `wpcliVersion` in tools section in `bearsampp.conf`
 
 ## 1.7.1 > 1.7.2
 
@@ -51,8 +51,8 @@
 * **required** : Remove then copy folder `core`
 * **required** : Remove folder `tools/console`
 * **required** : Copy folder `tools/consolez`
-* **required** : Remove `consoleVersion` key in `neard.conf`
-* **required** : Add line `consolezVersion = "1.19.0.19104"` after `composerVersion` in `neard.conf`
+* **required** : Remove `consoleVersion` key in `bearsampp.conf`
+* **required** : Add line `consolezVersion = "1.19.0.19104"` after `composerVersion` in `bearsampp.conf`
 * **required** : Replace file `alias/adminer.conf`
 * **required** : Replace file `alias/gitlist.conf`
 * **required** : Replace file `alias/phpmemadmin.conf`
@@ -75,12 +75,12 @@
 * **required** : Remove then copy folder `core`
 * **required** : Remove then copy file `sprites.dat`
 * **required** : Copy folder `tools\ngrok`
-* **required** : Add line `ngrokVersion = "2.2.8"` after `gitVersion` in `neard.conf`
-* **required** : Remove line `hostseditorVersion` in tools section in `neard.conf` and remove folder `tools\hostseditor`
-* **required** : Remove line `imagemagickVersion` in tools section in `neard.conf` and remove folder `tools\imagemagick`
-* **required** : Change `consoleVersion` value to `2.00.148.4` in `neard.conf` and copy folder `tools\console\console2.00.148.4`
-* **required** : Change `yarnVersion` value to `1.3.2` in `neard.conf` and copy folder `tools\yarn\yarn1.3.2`
-* **required** : Change `gitlistVersion` value to `0.6.0` in `neard.conf` and copy folder `apps\gitlist\gitlist0.6.0`
+* **required** : Add line `ngrokVersion = "2.2.8"` after `gitVersion` in `bearsampp.conf`
+* **required** : Remove line `hostseditorVersion` in tools section in `bearsampp.conf` and remove folder `tools\hostseditor`
+* **required** : Remove line `imagemagickVersion` in tools section in `bearsampp.conf` and remove folder `tools\imagemagick`
+* **required** : Change `consoleVersion` value to `2.00.148.4` in `bearsampp.conf` and copy folder `tools\console\console2.00.148.4`
+* **required** : Change `yarnVersion` value to `1.3.2` in `bearsampp.conf` and copy folder `tools\yarn\yarn1.3.2`
+* **required** : Change `gitlistVersion` value to `0.6.0` in `bearsampp.conf` and copy folder `apps\gitlist\gitlist0.6.0`
 * **required** : Replace your existing Composer version(s) with the latest [Composer release](https://bearsampp.github.io/modules/composer/#releases).
 * **required** : Replace your existing PHP version(s) with the latest [PHP release](https://bearsampp.github.io/modules/php/#releases).
 
@@ -93,11 +93,11 @@
 * **required** : Remove folder `tools\notepad2mod`
 * **required** : Copy folder `tools\perl`
 * **required** : Copy folder `tools\yarn`
-* **required** : Add line `ghostscriptVersion = "9.21"` after `drushVersion` in `neard.conf`
-* **required** : Remove line `notepad2modVersion` in the tools part in `neard.conf`
-* **required** : Add line `perlVersion = "5.26.0.1"` after `imagemagickVersion` in `neard.conf`
-* **required** : Add line `yarnVersion = "0.24.6"` after `xdcVersion` in `neard.conf`
-* **required** : Change `consoleVersion` value to `2.00.148.3` in `neard.conf` and copy folder `tools\console\console2.00.148.3`
+* **required** : Add line `ghostscriptVersion = "9.21"` after `drushVersion` in `bearsampp.conf`
+* **required** : Remove line `notepad2modVersion` in the tools part in `bearsampp.conf`
+* **required** : Add line `perlVersion = "5.26.0.1"` after `imagemagickVersion` in `bearsampp.conf`
+* **required** : Add line `yarnVersion = "0.24.6"` after `xdcVersion` in `bearsampp.conf`
+* **required** : Change `consoleVersion` value to `2.00.148.3` in `bearsampp.conf` and copy folder `tools\console\console2.00.148.3`
 * **optional** : Regenerate new SSL certificates for localhost and vhosts (Neard > Tools > Generate SSL certificate)
 
 ## 1.0.22 > 1.2
@@ -105,10 +105,10 @@
 * **required** : Download and install the latests [Bearsampp Prerequisites Package](https://github.com/bearsampp/prerequisites/releases/latest)
 * **required** : Remove then copy folder `core`
 * **required** : Copy file `nssmEnvPaths.dat`
-* **required** : Add line `mongodbVersion = "2.6.12"` after `mariadbEnable` in `neard.conf`
-* **required** : Add line `mongodbEnable = "1"` after `mongodbVersion` in `neard.conf`
+* **required** : Add line `mongodbVersion = "2.6.12"` after `mariadbEnable` in `bearsampp.conf`
+* **required** : Add line `mongodbEnable = "1"` after `mongodbVersion` in `bearsampp.conf`
 * **required** : Copy folder `bins\mongodb`
-* **optional** : Change `phpmemadminVersion` value to `0.1.0.41` in `neard.conf` and copy folder `apps\phpmemadmin\phpmemadmin0.1.0.41`
+* **optional** : Change `phpmemadminVersion` value to `0.1.0.41` in `bearsampp.conf` and copy folder `apps\phpmemadmin\phpmemadmin0.1.0.41`
 * **required** : Remove then copy folder `apps\websvn\websvn2.3.3`
 * **required** : Replace your existing Adminer version with the latest [Adminer release](https://bearsampp.github.io/modules/adminer/#releases).
 * **required** : Replace your existing Apache version with the latest [Apache release](https://bearsampp.github.io/modules/apache/#releases).
@@ -124,11 +124,11 @@
 * **required** : Copy folder `tools\python`
 * **required** : Copy folder `tools\ruby`
 * **required** : Remove folder `tools\svn`
-* **required** : Add line `pythonVersion = "2.7.12.3"` after `phpunitVersion` in `neard.conf`
-* **required** : Add line `rubyVersion = "2.0.0.p648"` after `pythonVersion` in `neard.conf`
-* **required** : Remove line `svnVersion` in the tools part in `neard.conf`
-* **required** : Add line `svnVersion = "1.7.19"` after `memcachedEnable` in `neard.conf`
-* **required** : Add line `svnEnable = "1"` after `svnVersion` in `neard.conf`
+* **required** : Add line `pythonVersion = "2.7.12.3"` after `phpunitVersion` in `bearsampp.conf`
+* **required** : Add line `rubyVersion = "2.0.0.p648"` after `pythonVersion` in `bearsampp.conf`
+* **required** : Remove line `svnVersion` in the tools part in `bearsampp.conf`
+* **required** : Add line `svnVersion = "1.7.19"` after `memcachedEnable` in `bearsampp.conf`
+* **required** : Add line `svnEnable = "1"` after `svnVersion` in `bearsampp.conf`
 * **required** : Remove then copy file `sprites.dat`
 * **required** : Remove files `ssl\neardfilezilla.*`
 * **required** : Replace your existing Apache version with the latest [Apache release](https://bearsampp.github.io/modules/apache/#releases).
@@ -146,53 +146,53 @@
 * **required** : Copy folder `bin\memcached`
 * **required** : Copy folder `bin\postgresql`
 * **required** : Remove then copy folder `core`
-* **required** : Replace `apacheLaunchStartup` with `apacheEnable` in `neard.conf`
-* **required** : Replace `mysqlLaunchStartup` with `mysqlEnable` in `neard.conf`
-* **required** : Replace `mariadbLaunchStartup` with `mariadbEnable` in `neard.conf`
-* **required** : Replace `filezillaLaunchStartup` with `filezillaEnable` in `neard.conf`
-* **required** : Replace `mailhogLaunchStartup` with `mailhogEnable` in `neard.conf`
-* **required** : Add line `phpEnable = "1"` after `phpVersion` in `neard.conf`
-* **required** : Add line `nodejsEnable = "1"` after `nodejsVersion` in `neard.conf`
-* **required** : Add line `postgresqlVersion = "9.4.8"` after `mariadbEnable` in `neard.conf`
-* **required** : Add line `postgresqlEnable = "1"` after `postgresqlVersion` in `neard.conf`
-* **required** : Add line `memcachedVersion = "1.4.5"` after `mailhogEnable` in `neard.conf`
-* **required** : Add line `memcachedEnable = "1"` after `memcachedVersion` in `neard.conf`
-* **required** : Add line `phpmemadminVersion = "0.3.1"` after `gitlistVersion` in `neard.conf`
-* **required** : Add line `phppgadminVersion = "5.2"` after `phpmyadminVersion` in `neard.conf`
+* **required** : Replace `apacheLaunchStartup` with `apacheEnable` in `bearsampp.conf`
+* **required** : Replace `mysqlLaunchStartup` with `mysqlEnable` in `bearsampp.conf`
+* **required** : Replace `mariadbLaunchStartup` with `mariadbEnable` in `bearsampp.conf`
+* **required** : Replace `filezillaLaunchStartup` with `filezillaEnable` in `bearsampp.conf`
+* **required** : Replace `mailhogLaunchStartup` with `mailhogEnable` in `bearsampp.conf`
+* **required** : Add line `phpEnable = "1"` after `phpVersion` in `bearsampp.conf`
+* **required** : Add line `nodejsEnable = "1"` after `nodejsVersion` in `bearsampp.conf`
+* **required** : Add line `postgresqlVersion = "9.4.8"` after `mariadbEnable` in `bearsampp.conf`
+* **required** : Add line `postgresqlEnable = "1"` after `postgresqlVersion` in `bearsampp.conf`
+* **required** : Add line `memcachedVersion = "1.4.5"` after `mailhogEnable` in `bearsampp.conf`
+* **required** : Add line `memcachedEnable = "1"` after `memcachedVersion` in `bearsampp.conf`
+* **required** : Add line `phpmemadminVersion = "0.3.1"` after `gitlistVersion` in `bearsampp.conf`
+* **required** : Add line `phppgadminVersion = "5.2"` after `phpmyadminVersion` in `bearsampp.conf`
 
 ## 1.0.19 > 1.0.20
 
 * **required** : Remove then copy folder `bin\filezilla` (or download a compatible version of your choice)
-* **required** : Remove line starting with `notepad2Version =` in `neard.conf`
-* **required** : Add line `notepad2modVersion = "4.2.25.980"` after `imagemagickVersion` in `neard.conf`
+* **required** : Remove line starting with `notepad2Version =` in `bearsampp.conf`
+* **required** : Add line `notepad2modVersion = "4.2.25.980"` after `imagemagickVersion` in `bearsampp.conf`
 * **required** : Copy folder `tools\notepad2mod`
 * **required** : Remove folder `tools\notepad2`
 * **required** : Remove then copy folder `core`
 * **required** : Remove then copy file `sprites.dat`
-* **optional** : Change `composerVersion` value to `1.1.2` in `neard.conf` and copy folder `tools\composer\composer1.1.2`
-* **optional** : Change `gitVersion` value to `2.9.0` in `neard.conf` and copy folder `tools\git\git2.9.0`
-* **optional** : Change `imagemagickVersion` value to `6.9.3-10` in `neard.conf` and copy folder `tools\imagemagick\imagemagick6.9.3-10`
-* **optional** : Change `phpunitVersion` value to `4.8.26` in `neard.conf` and copy folder `tools\phpunit\phpunit4.8.26`
-* **optional** : Change `adminerVersion` value to `4.2.5` in `neard.conf` and copy folder `apps\adminer\adminer4.2.5`
-* **optional** : Change `phpmyadminVersion` value to `4p3` in `neard.conf` and copy folder `apps\phpmyadmin\phpmyadmin4p3`
-* **optional** : Change `webgrindVersion` value to `1.3.1` in `neard.conf` and copy folder `apps\webgrind\webgrind1.3.1`
+* **optional** : Change `composerVersion` value to `1.1.2` in `bearsampp.conf` and copy folder `tools\composer\composer1.1.2`
+* **optional** : Change `gitVersion` value to `2.9.0` in `bearsampp.conf` and copy folder `tools\git\git2.9.0`
+* **optional** : Change `imagemagickVersion` value to `6.9.3-10` in `bearsampp.conf` and copy folder `tools\imagemagick\imagemagick6.9.3-10`
+* **optional** : Change `phpunitVersion` value to `4.8.26` in `bearsampp.conf` and copy folder `tools\phpunit\phpunit4.8.26`
+* **optional** : Change `adminerVersion` value to `4.2.5` in `bearsampp.conf` and copy folder `apps\adminer\adminer4.2.5`
+* **optional** : Change `phpmyadminVersion` value to `4p3` in `bearsampp.conf` and copy folder `apps\phpmyadmin\phpmyadmin4p3`
+* **optional** : Change `webgrindVersion` value to `1.3.1` in `bearsampp.conf` and copy folder `apps\webgrind\webgrind1.3.1`
 
 ## 1.0.18 > 1.0.19
 
-* Add line `mailhogVersion = "0.2.0"` after `filezillaLaunchStartup` in `neard.conf`
-* Add line `mailhogLaunchStartup = "1"` after `mailhogVersion` in `neard.conf`
-* Add line `drushVersion = "7.3.0"` after `consoleVersion` in `neard.conf`
-* Add line `phpunitVersion = "4.8.24"` after `notepad2Version` in `neard.conf`
-* Add line `phpmetricsVersion = "1.0.1"` after `phpunitVersion` in `neard.conf`
-* Add line `wpcliVersion = "0.20.4"` after `svnVersion` in `neard.conf`
+* Add line `mailhogVersion = "0.2.0"` after `filezillaLaunchStartup` in `bearsampp.conf`
+* Add line `mailhogLaunchStartup = "1"` after `mailhogVersion` in `bearsampp.conf`
+* Add line `drushVersion = "7.3.0"` after `consoleVersion` in `bearsampp.conf`
+* Add line `phpunitVersion = "4.8.24"` after `notepad2Version` in `bearsampp.conf`
+* Add line `phpmetricsVersion = "1.0.1"` after `phpunitVersion` in `bearsampp.conf`
+* Add line `wpcliVersion = "0.20.4"` after `svnVersion` in `bearsampp.conf`
 * Remove then copy folder `apps\adminer`
 * Remove then copy folder `apps\gitlist`
 * Remove then copy folder `apps\phpmyadmin`
 * Copy folder `bin\mailhog`
-* Add line `mariadbRootUser = "root"` after `mariadbPort` in `bin\mariadb\mariadbx.x.x\neard.conf`
-* Add line `mariadbRootPwd = ""` after `mariadbRootUser` in `bin\mariadb\mariadbx.x.x\neard.conf`
-* Add line `mysqlRootUser = "root"` after `mysqlPort` in `bin\mysql\mysqlx.x.x\neard.conf`
-* Add line `mysqlRootPwd = ""` after `mysqlRootUser` in `bin\mysql\mysqlx.x.x\neard.conf`
+* Add line `mariadbRootUser = "root"` after `mariadbPort` in `bin\mariadb\mariadbx.x.x\bearsampp.conf`
+* Add line `mariadbRootPwd = ""` after `mariadbRootUser` in `bin\mariadb\mariadbx.x.x\bearsampp.conf`
+* Add line `mysqlRootUser = "root"` after `mysqlPort` in `bin\mysql\mysqlx.x.x\bearsampp.conf`
+* Add line `mysqlRootPwd = ""` after `mysqlRootUser` in `bin\mysql\mysqlx.x.x\bearsampp.conf`
 * Remove then copy folder `core`
 * Remove then copy folder `tools\console`
 * Copy folder `tools\drush`
@@ -207,17 +207,17 @@
 
 ## 1.0.17 > 1.0.18
 
-* Change `consoleVersion` value to `p2` in `neard.conf`
-* Change `gitVersion` value to `2.8.1` in `neard.conf`
-* Add line `hostseditorVersion = "1.1.0.0"` after `gitVersion` in `neard.conf`
-* Change `imagemagickVersion` value to `6.9.3-8` in `neard.conf`
-* Change `svnVersion` value to `1.7.22` in `neard.conf`
-* Change `xdcVersion` value to `1.0b5` in `neard.conf`
-* Change `adminerVersion` value to `4.2.4` in `neard.conf`
-* Change `gitlistVersion` value to `0.5.0` in `neard.conf`
-* Change `phpmyadminVersion` value to `4p2` in `neard.conf`
-* Change `webgrindVersion` value to `1.1` in `neard.conf`
-* Remove `setenvVersion` key in `neard.conf`
+* Change `consoleVersion` value to `p2` in `bearsampp.conf`
+* Change `gitVersion` value to `2.8.1` in `bearsampp.conf`
+* Add line `hostseditorVersion = "1.1.0.0"` after `gitVersion` in `bearsampp.conf`
+* Change `imagemagickVersion` value to `6.9.3-8` in `bearsampp.conf`
+* Change `svnVersion` value to `1.7.22` in `bearsampp.conf`
+* Change `xdcVersion` value to `1.0b5` in `bearsampp.conf`
+* Change `adminerVersion` value to `4.2.4` in `bearsampp.conf`
+* Change `gitlistVersion` value to `0.5.0` in `bearsampp.conf`
+* Change `phpmyadminVersion` value to `4p2` in `bearsampp.conf`
+* Change `webgrindVersion` value to `1.1` in `bearsampp.conf`
+* Remove `setenvVersion` key in `bearsampp.conf`
 * Remove then copy file `alias/adminer.conf`
 * Remove then copy file `alias/gitlist.conf`
 * Remove then copy file `alias/phpmyadmin.conf`
@@ -229,8 +229,8 @@
 
 ## 1.0.16 > 1.0.17
 
-* Remove `tccleVersion` key in `neard.conf`
-* Change `phpmyadminVersion` value to `4` in `neard.conf`
+* Remove `tccleVersion` key in `bearsampp.conf`
+* Change `phpmyadminVersion` value to `4` in `bearsampp.conf`
 * Remove then copy file `alias/phpmyadmin.conf`
 * Remove then copy folder `apps/phpmyadmin`
 * Remove then copy folder `core`
