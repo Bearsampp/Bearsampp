@@ -602,9 +602,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 				markdown
 				\s*=\s*
 				(?>
-					(["\'])		# $1: quote delimiter		
+					(["\'])		# $1: quote delimiter
 					(.*?)		# $2: attribute value
-					\1			# matching delimiter	
+					\1			# matching delimiter
 				|
 					([^\s>]*)	# $3: unquoted attribute value
 				)
@@ -1107,10 +1107,10 @@ class MarkdownExtra extends \Michelf\Markdown {
 				[ ]{0,' . $less_than_tab . '}	# Allowed whitespace.
 				[|]							# Optional leading pipe (present)
 				(.+) \n						# $1: Header row (at least one pipe)
-				
+
 				[ ]{0,' . $less_than_tab . '}	# Allowed whitespace.
 				[|] ([ ]*[-:]+[-| :]*) \n	# $2: Header underline
-				
+
 				(							# $3: Cells
 					(?>
 						[ ]*				# Allowed whitespace.
@@ -1132,10 +1132,10 @@ class MarkdownExtra extends \Michelf\Markdown {
 				^							# Start of a line
 				[ ]{0,' . $less_than_tab . '}	# Allowed whitespace.
 				(\S.*[|].*) \n				# $1: Header row (at least one pipe)
-				
+
 				[ ]{0,' . $less_than_tab . '}	# Allowed whitespace.
 				([-:]+[ ]*[|][-| :]*) \n	# $2: Header underline
-				
+
 				(							# $3: Cells
 					(?>
 						.* [|] .* \n		# Row content
@@ -1327,9 +1327,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 				[ ]{0,' . $less_than_tab . '}	# leading whitespace
 				(?!\:[ ]|[ ])					# negative lookahead for a definition
 												#   mark (colon) or more whitespace.
-				(?> \S.* \n)+?					# actual term (not whitespace).	
-			)			
-			(?=\n?[ ]{0,3}:[ ])					# lookahead for following line feed 
+				(?> \S.* \n)+?					# actual term (not whitespace).
+			)
+			(?=\n?[ ]{0,3}:[ ])					# lookahead for following line feed
 												#   with a definition mark.
 			}xm',
 			array($this, '_processDefListItems_callback_dt'), $list_str);
@@ -1346,8 +1346,8 @@ class MarkdownExtra extends \Michelf\Markdown {
 				(?:								# next term or end of text
 					[ ]{0,' . $less_than_tab . '} \:[ ]	|
 					<dt> | \z
-				)						
-			)					
+				)
+			)
 			}xm',
 			array($this, '_processDefListItems_callback_dd'), $list_str);
 
@@ -1422,7 +1422,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 					' . $this->id_class_attr_catch_re . ' # 3: Extra attributes
 				)?
 				[ ]* \n # Whitespace and newline following marker.
-				
+
 				# 4: Content
 				(
 					(?>
@@ -1430,7 +1430,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 						.*\n+
 					)+
 				)
-				
+
 				# Closing marker.
 				\1 [ ]* (?= \n )
 			}xm',
@@ -1467,7 +1467,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs, null, $classes);
 		$pre_attr_str  = $this->code_attr_on_pre ? $attr_str : '';
 		$code_attr_str = $this->code_attr_on_pre ? '' : $attr_str;
-		$codeblock  = "<divre$pre_attr_str><code$code_attr_str>$codeblock</code></pre>";
+		$codeblock  = "<pre$pre_attr_str><code$code_attr_str>$codeblock</code></pre>";
 
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
@@ -1554,15 +1554,15 @@ class MarkdownExtra extends \Michelf\Markdown {
 			  [ ]*
 			  \n?					# maybe *one* newline
 			(						# text = $2 (no blank lines allowed)
-				(?:					
+				(?:
 					.+				# actual text
 				|
-					\n				# newlines but 
+					\n				# newlines but
 					(?!\[.+?\][ ]?:\s)# negative lookahead for footnote or link definition marker.
-					(?!\n+[ ]{0,3}\S)# ensure line is not blank and followed 
+					(?!\n+[ ]{0,3}\S)# ensure line is not blank and followed
 									# by non-indented content
 				)*
-			)		
+			)
 			}xm',
 			array($this, '_stripFootnotes_callback'),
 			$text);
@@ -1721,7 +1721,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		// Link defs are in the form: [id]*: url "optional title"
 		$text = preg_replace_callback('{
 			^[ ]{0,' . $less_than_tab . '}\*\[(.+?)\][ ]?:	# abbr_id = $1
-			(.*)					# text = $2 (no blank lines allowed)	
+			(.*)					# text = $2 (no blank lines allowed)
 			}xm',
 			array($this, '_stripAbbreviations_callback'),
 			$text);

@@ -109,7 +109,7 @@ if (isset($wp_version)) {
 
 		global $mdwp_hidden_tags, $mdwp_placeholders;
 		$mdwp_hidden_tags = explode(' ',
-			'<div> </div> <divre> </pre> <ol> </ol> <ul> </ul> <li> </li>');
+			'<div> </div> <pre> </pre> <ol> </ol> <ul> </ul> <li> </li>');
 		$mdwp_placeholders = explode(' ', str_rot13(
 			'pEj07ZbbBZ U1kqgh4w4p pre2zmeN6K QTi31t9pre ol0MP1jzJR '.
 			'ML5IjmbRol ulANi1NsGY J7zRLJqPul liA8ctl16T K9nhooUHli'));
@@ -405,7 +405,7 @@ class Markdown_Parser {
 			  |
 				\'[^\']*\'	# text inside single quotes (tolerate ">")
 			  )*
-			)?	
+			)?
 			';
 		$content =
 			str_repeat('
@@ -422,7 +422,7 @@ class Markdown_Parser {
 			str_repeat('
 					  </\2\s*>	# closing nested tag
 					)
-				  |				
+				  |
 					<(?!/\2\s*>	# other tags with a different name
 				  )
 				)*',
@@ -448,9 +448,9 @@ class Markdown_Parser {
 			)
 			(						# save in $1
 
-			  # Match from `\n<tag>` to `</tag>\n`, handling nested tags 
+			  # Match from `\n<tag>` to `</tag>\n`, handling nested tags
 			  # in between.
-					
+
 						[ ]{0,'.$less_than_tab.'}
 						<('.$block_tags_b_re.')# start tag = $2
 						'.$attr.'>			# attributes followed by > and \n
@@ -468,28 +468,28 @@ class Markdown_Parser {
 						</\3>				# the matching end tag
 						[ ]*				# trailing spaces/tabs
 						(?=\n+|\Z)	# followed by a newline or end of document
-					
-			| # Special case just for <hr />. It was easier to make a special 
+
+			| # Special case just for <hr />. It was easier to make a special
 			  # case than to make the other regex more complicated.
-			
+
 						[ ]{0,'.$less_than_tab.'}
 						<(hr)				# start tag = $2
 						'.$attr.'			# attributes
 						/?>					# the matching end tag
 						[ ]*
 						(?=\n{2,}|\Z)		# followed by a blank line or end of document
-			
+
 			| # Special case for standalone HTML comments:
-			
+
 					[ ]{0,'.$less_than_tab.'}
 					(?s:
 						<!-- .*? -->
 					)
 					[ ]*
 					(?=\n{2,}|\Z)		# followed by a blank line or end of document
-			
+
 			| # PHP and ASP-style processor instructions (<? and <%)
-			
+
 					[ ]{0,'.$less_than_tab.'}
 					(?s:
 						<([?%])			# $2
@@ -498,7 +498,7 @@ class Markdown_Parser {
 					)
 					[ ]*
 					(?=\n{2,}|\Z)		# followed by a blank line or end of document
-					
+
 			)
 			)}Sxmi',
 			array(&$this, '_hashHTMLBlocks_callback'),
@@ -1084,7 +1084,7 @@ class Markdown_Parser {
 
 	function doCodeBlocks($text) {
 	#
-	#	Process Markdown `<divre><code>` blocks.
+	#	Process Markdown `<pre><code>` blocks.
 	#
 		$text = preg_replace_callback('{
 				(?:\n\n|\A\n?)
@@ -1109,7 +1109,7 @@ class Markdown_Parser {
 		# trim leading newlines and trailing newlines
 		$codeblock = preg_replace('/\A\n+|\n+\z/', '', $codeblock);
 
-		$codeblock = "<divre><code>$codeblock\n</code></pre>";
+		$codeblock = "<pre><code>$codeblock\n</code></pre>";
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
 
@@ -1307,9 +1307,9 @@ class Markdown_Parser {
 		$bq = $this->runBlockGamut($bq);		# recurse
 
 		$bq = preg_replace('/^/m', "  ", $bq);
-		# These leading spaces cause problem with <divre> content,
+		# These leading spaces cause problem with <pre> content,
 		# so we need to fix that:
-		$bq = preg_replace_callback('{(\s*<divre>.+?</pre>)}sx',
+		$bq = preg_replace_callback('{(\s*<pre>.+?</pre>)}sx',
 			array(&$this, '_doBlockQuotes_callback2'), $bq);
 
 		return "\n". $this->hashBlock("<blockquote>\n$bq\n</blockquote>")."\n\n";
@@ -1645,7 +1645,7 @@ class Markdown_Parser {
 	#
 		if (function_exists($this->utf8_strlen)) return;
 		$this->utf8_strlen = create_function('$text', 'return preg_match_all(
-			"/[\\\\x00-\\\\xBF]|[\\\\xC0-\\\\xFF][\\\\x80-\\\\xBF]*/", 
+			"/[\\\\x00-\\\\xBF]|[\\\\xC0-\\\\xFF][\\\\x80-\\\\xBF]*/",
 			$text, $m);');
 	}
 

@@ -120,7 +120,7 @@ sub get_timestamp {
 sub usage {
 
     print STDERR "usage: $0 -h <server_url> [-e <extension>] [-o <output>] ";
-    print STDERR "[-v] [-d] [-k <divrivate_key.pem>] [-p <key_password>] ";
+    print STDERR "[-v] [-d] [-k <private_key.pem>] [-p <key_password>] ";
     print STDERR "[-c <client_cert.pem>] [-C <CA_certs.pem>] [-P <CA_path>] ";
     print STDERR "[-r <file:file...>] [-g <EGD_socket>] [<request>]...\n";
     exit 1;

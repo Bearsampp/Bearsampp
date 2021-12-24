@@ -996,7 +996,7 @@ EOB;
 					$m=1-$m;
 				}
 				if($fieldkey=='info') {
-					echo "<tr class=tr-$m><td class=td-0>Stored Value</td><td class=td-last><divre>";
+					echo "<tr class=tr-$m><td class=td-0>Stored Value</td><td class=td-last><pre>";
 					$output = var_export(apc_fetch($entry[$fieldkey]),true);
 					echo htmlspecialchars($output, ENT_QUOTES, 'UTF-8');
 					echo "</pre></td></tr>\n";

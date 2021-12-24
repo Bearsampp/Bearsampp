@@ -10962,7 +10962,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      [Steve Henson]
 
   *) Copy the flags in ASN1_STRING_dup().
-     [Roman E. Pavlov <divre@mo.msk.ru>]
+     [Roman E. Pavlov <pre@mo.msk.ru>]
 
   *) The x509 application mishandled signing requests containing DSA
      keys when the signing key was also DSA and the parameters didn't match.
