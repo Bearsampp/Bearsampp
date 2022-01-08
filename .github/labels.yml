@@ -11,10 +11,6 @@
   name: ":game_die: dependencies"
   color: "0366d6"
   description: ""
-- # devkit
-  name: ":gear: devkit"
-  color: "c1ed5c"
-  description: ""
 - # documentation
   name: ":memo: documentation"
   color: "c5def5"
@@ -55,29 +51,13 @@
   name: ":no_entry_sign: invalid"
   color: "e6e6e6"
   description: ""
-- # lang
-  name: ":world_map: lang"
-  color: "1d8cd6"
-  description: ""
 - # maybe bug
   name: ":interrobang: maybe bug"
   color: "ff5722"
   description: ""
-- # module
-  name: ":package: module"
-  color: "aa7788"
-  description: ""
 - # needs more info
   name: ":thinking: needs more info"
   color: "795548"
-  description: ""
-- # pinned
-  name: ":pushpin: pinned"
-  color: "28008e"
-  description: ""
-- # prerequisites
-  name: ":white_check_mark: prerequisites"
-  color: "bfdadc"
   description: ""
 - # question
   name: ":question: question"
