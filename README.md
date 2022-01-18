@@ -1,6 +1,6 @@
 # Bearsampp
 
-<div>
+<div align="center">
    <img src="/img/Bearsampp-logo.png" />
   </div>
 
