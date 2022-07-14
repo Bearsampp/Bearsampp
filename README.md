@@ -1,4 +1,4 @@
-<p align="center"><a href="https://bearsampp.com" target="_blank"><img width="100" src="https://github.com/Bearsampp/.settings/blob/main/img/bearsampp-logo.png"></a></p>
+<p align="center"><a href="https://bearsampp.com" target="_blank"><img width="100" src="https://github.com/Bearsampp/.settings/blob/main/img/Bearsampp-logo.png"></a></p>
 
 <p align="center">
   <a href="https://bearsampp.com/release/latest"><img src="https://img.shields.io/github/release/bearsampp/bearsampp.svg?style=flat-square" alt="GitHub release"></a>
@@ -53,15 +53,15 @@ For those who wish to contribute, have an issue or questions, read the [Document
 
 ## Documentation
 
-* [Get started](https://bearsampp.com/doc/get-started)
-* [Screenshots](https://bearsampp.com/doc/screenshots)
-* [FAQ](https://bearsampp.com/doc/faq)
-* [Changelog](https://bearsampp.com/doc/changelog)
-* [Upgrade notes](https://bearsampp.com/doc/upgrade-notes)
-* [Reporting an issue](https://bearsampp.com/doc/reporting-issue)
-* [Request a module](https://bearsampp.com/doc/request-module)
-* [Contribute](https://bearsampp.com/doc/contribute)
-* [Translations](https://bearsampp.com/doc/translations)
+* [Get started](https://bearsampp.com/get-started)
+* [Screenshots](https://bearsampp.com/screenshots)
+* [FAQ](https://bearsampp.com/faq)
+* [Changelog](https://bearsampp.com/changelog)
+* [Upgrade notes](https://bearsampp.com/upgrade-notes)
+* [Reporting an issue](https://bearsampp.com/reporting-issue)
+* [Request a module](https://bearsampp.com/request-module)
+* [Contribute](https://bearsampp.com/contribute)
+* [Translations](https://bearsampp.com/translations)
 
 ## Contributing
 

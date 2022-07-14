@@ -4,7 +4,7 @@ about: Do you want a new module to be added?
 labels: ":bulb: feature request, :package: module"
 ---
 
-> Please follow this guide to file a proper request report : https://bearsampp.com/doc/request-app/
+> Please follow this guide to file a proper request report : https://bearsampp.com/request-app/
 
 * Name: 
 * Description: 

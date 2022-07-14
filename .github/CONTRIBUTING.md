@@ -1,3 +1,3 @@
 # Contributing guidelines
 
-Please read [the 'Contribute' official page](https://bearsampp.com/doc/contribute).
+Please read [the 'Contribute' official page](https://bearsampp.com/contribute).
