@@ -753,7 +753,7 @@ class Util
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path' => $bearsamppTools->getComposer()->getRootPath() . '/' . $folder,
-                'includes' => array('composer.json'),
+                'includes' => array('giscus.json'),
                 'recursive' => false
             );
         }
