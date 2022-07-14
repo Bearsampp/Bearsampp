@@ -1,2 +1,2 @@
 Place phpMyAdmin module releases here.
-Documentation and downloads : https://bearsampp.github.io/modules/phpmyadmin
+Documentation and downloads : https://bearsampp.com/module/phpmyadmin

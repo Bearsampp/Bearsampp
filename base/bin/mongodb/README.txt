@@ -1,2 +1,2 @@
 Place MongoDB module releases here.
-Documentation and downloads : https://bearsampp.github.io/modules/mongodb
+Documentation and downloads : https://bearsampp.com/module/mongodb
