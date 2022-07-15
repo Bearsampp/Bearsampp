@@ -1,12 +1,13 @@
-name: labels
+name: Create labels
 
 on:
   push:
     branches:
+      - 'main'
       - 'master'
     paths:
       - '.github/labels.yml'
-      - '.github/workflows/labels.yml'
+      - '.github/workflows/create-labels.yml'
 
 jobs:
   labeler:
@@ -15,7 +16,7 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v2
-      
-      - name: GitHub Labeler
-        uses: crazy-max/ghaction-github-labeler@v4.0.0
-
+      -
+        name: Run Labeler
+        if: success()
+        uses: crazy-max/ghaction-github-labeler@v3.1.1
