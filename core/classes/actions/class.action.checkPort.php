@@ -14,8 +14,6 @@ class ActionCheckPort
                 $bearsamppBins->getMysql()->checkPort($args[1], true);
             } elseif ($args[0] == $bearsamppBins->getMariadb()->getName()) {
                 $bearsamppBins->getMariadb()->checkPort($args[1], true);
-            } elseif ($args[0] == $bearsamppBins->getMongodb()->getName()) {
-                $bearsamppBins->getMongodb()->checkPort($args[1], true);
             } elseif ($args[0] == $bearsamppBins->getPostgresql()->getName()) {
                 $bearsamppBins->getPostgresql()->checkPort($args[1], true);
             } elseif ($args[0] == $bearsamppBins->getFilezilla()->getName()) {

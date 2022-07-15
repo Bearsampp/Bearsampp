@@ -150,8 +150,8 @@ class Lang
     const SWITCH_VERSION_OK_RESTART = 'switchVersionOkRestart';
     const APACHE_INCPT = 'apacheIncpt';
     const PHP_INCPT = 'phpIncpt';
-    const bearsampp_CONF_NOT_FOUND_ERROR = 'bearsamppConfNotFoundError';
-    const bearsampp_CONF_MALFORMED_ERROR = 'bearsamppConfMalformedError';
+    const BEARSAMPP_CONF_NOT_FOUND_ERROR = 'bearsamppConfNotFoundError';
+    const BEARSAMPP_CONF_MALFORMED_ERROR = 'bearsamppConfMalformedError';
 
     // Action Switch PHP setting
     const SWITCH_PHP_SETTING_TITLE = 'switchPhpSettingTitle';
@@ -511,8 +511,8 @@ class Lang
             self::SWITCH_VERSION_OK_RESTART,
             self::APACHE_INCPT,
             self::PHP_INCPT,
-            self::bearsampp_CONF_NOT_FOUND_ERROR,
-            self::bearsampp_CONF_MALFORMED_ERROR,
+            self::BEARSAMPP_CONF_NOT_FOUND_ERROR,
+            self::BEARSAMPP_CONF_MALFORMED_ERROR,
 
             // Action Switch PHP setting
             self::SWITCH_PHP_SETTING_TITLE,

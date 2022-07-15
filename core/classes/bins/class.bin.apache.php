@@ -243,7 +243,7 @@ class BinApache extends Module
             Util::logError('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf($bearsamppLang->getValue(Lang::bearsampp_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
+                    sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
@@ -255,7 +255,7 @@ class BinApache extends Module
             Util::logError('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf($bearsamppLang->getValue(Lang::bearsampp_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
+                    sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }

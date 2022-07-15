@@ -698,7 +698,7 @@ class Util
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path' => $bearsamppBins->getPostgresql()->getRootPath() . '/' . $folder,
-                'includes' => array('.nrd', '.conf', '.bat'),
+                'includes' => array('.ber', '.conf', '.bat'),
                 'recursive' => true
             );
         }

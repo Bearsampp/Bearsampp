@@ -16,8 +16,6 @@ class ActionEnable
                 $bearsamppBins->getMysql()->setEnable($args[1], true);
             } elseif ($args[0] == $bearsamppBins->getMariadb()->getName()) {
                 $bearsamppBins->getMariadb()->setEnable($args[1], true);
-            } elseif ($args[0] == $bearsamppBins->getMongodb()->getName()) {
-                $bearsamppBins->getMongodb()->setEnable($args[1], true);
             } elseif ($args[0] == $bearsamppBins->getNodejs()->getName()) {
                 $bearsamppBins->getNodejs()->setEnable($args[1], true);
             } elseif ($args[0] == $bearsamppBins->getPostgresql()->getName()) {

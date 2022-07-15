@@ -33,10 +33,6 @@ class ActionChangePort
                 $this->bin = $bearsamppBins->getMariadb();
                 $this->currentPort = $bearsamppBins->getMariadb()->getPort();
                 $this->cntProcessActions = 3;
-            } elseif ($args[0] == $bearsamppBins->getMongodb()->getName()) {
-                $this->bin = $bearsamppBins->getMongodb();
-                $this->currentPort = $bearsamppBins->getMongodb()->getPort();
-                $this->cntProcessActions = 3;
             } elseif ($args[0] == $bearsamppBins->getPostgresql()->getName()) {
                 $this->bin = $bearsamppBins->getPostgresql();
                 $this->currentPort = $bearsamppBins->getPostgresql()->getPort();

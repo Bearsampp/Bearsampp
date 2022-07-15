@@ -110,7 +110,7 @@ class ActionStartup
         $this->changePath();
         $this->savePath();
 
-        // Check bearsampp_PATH, bearsampp_BINS and System Path reg keys
+        // Check BEARSAMPP_PATH, BEARSAMPP_BINS and System Path reg keys
         $this->checkPathRegKey();
         $this->checkBinsRegKey();
         $this->checkSystemPathRegKey();

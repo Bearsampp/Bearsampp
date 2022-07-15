@@ -3,8 +3,8 @@
 class Core
 {
     const BOOTSTRAP_FILE = 'bootstrap.php';
-    const PATH_WIN_PLACEHOLDER = '~bearsampp_WIN_PATH~';
-    const PATH_LIN_PLACEHOLDER = '~bearsampp_LIN_PATH~';
+    const PATH_WIN_PLACEHOLDER = '~BEARSAMPP_WIN_PATH~';
+    const PATH_LIN_PLACEHOLDER = '~BEARSAMPP_LIN_PATH~';
 
     const PHP_VERSION = '5.4.23';
     const PHP_EXE = 'php-win.exe';

@@ -25,10 +25,10 @@ class Registry
     const ENV_KEY = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
 
     // App bins entry
-    const APP_BINS_REG_ENTRY = 'bearsampp_BINS';
+    const APP_BINS_REG_ENTRY = 'BEARSAMPP_BINS';
 
     // App path entry
-    const APP_PATH_REG_ENTRY = 'bearsampp_PATH';
+    const APP_PATH_REG_ENTRY = 'BEARSAMPP_PATH';
 
     // System path entry
     const SYSPATH_REG_ENTRY = 'Path';

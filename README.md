@@ -32,7 +32,6 @@ For those who wish to contribute, have an issue or questions, read the [Document
 * ![](https://bearsampp.com/img/modules/type-app.png) [GitList](https://bearsampp.com/module/gitlist): an elegant and modern git repository viewer.
 * ![](https://bearsampp.com/img/modules/type-bin.png) [MailHog](https://bearsampp.com/module/mailhog): a Web and API based SMTP testing.
 * ![](https://bearsampp.com/img/modules/type-bin.png) [MariaDB](https://bearsampp.com/module/mariadb): a community-developed fork of the MySQL relational database management system.
-* ![](https://bearsampp.com/img/modules/type-bin.png) [MongoDB](https://bearsampp.com/module/mongodb): a free and open-source cross-platform document-oriented database program.
 * ![](https://bearsampp.com/img/modules/type-bin.png) [Memcached](https://bearsampp.com/module/memcached): a distributed memory object caching system.
 * ![](https://bearsampp.com/img/modules/type-bin.png) [MySQL](https://bearsampp.com/module/mysql): an open-source relational database management system.
 * ![](https://bearsampp.com/img/modules/type-tool.png) [ngrok](https://bearsampp.com/module/ngrok): secure tunnels to localhost.

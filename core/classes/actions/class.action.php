@@ -13,7 +13,6 @@ class Action
     const CLEAR_FOLDERS = 'clearFolders';
     const DEBUG_APACHE = 'debugApache';
     const DEBUG_MARIADB = 'debugMariadb';
-    const DEBUG_MONGODB = 'debugMongodb';
     const DEBUG_MYSQL = 'debugMysql';
     const DEBUG_POSTGRESQL = 'debugPostgresql';
     const DEBUG_SVN = 'debugSvn';
@@ -39,11 +38,11 @@ class Action
     const SWITCH_PHP_PARAM = 'switchPhpParam';
     const SWITCH_ONLINE = 'switchOnline';
     const SWITCH_VERSION = 'switchVersion';
-    
+
     const EXT = 'ext';
-    
+
     private $current;
-    
+
     public function __construct()
     {
     }
@@ -53,14 +52,14 @@ class Action
         if ($this->exists()) {
             $action = Util::cleanArgv(1);
             $actionClass = 'Action' . ucfirst($action);
-            
+
             $args = array();
             foreach ($_SERVER['argv'] as $key => $arg) {
                 if ($key > 1) {
                     $args[] = $action == self::EXT ? $arg : base64_decode($arg);
                 }
             }
-            
+
             $this->current = null;
             if (class_exists($actionClass)) {
                 Util::logDebug('Start ' . $actionClass);
@@ -68,7 +67,7 @@ class Action
             }
         }
     }
-    
+
     public function call($actionName, $actionArgs = null)
     {
         $actionClass = 'Action' . ucfirst($actionName);

@@ -85,7 +85,6 @@
         <filter token="BIN_PHP_VERSION" value="${bin.php.version}"/>
         <filter token="BIN_MYSQL_VERSION" value="${bin.mysql.version}"/>
         <filter token="BIN_MARIADB_VERSION" value="${bin.mariadb.version}"/>
-        <filter token="BIN_MONGODB_VERSION" value="${bin.mongodb.version}"/>
         <filter token="BIN_POSTGRESQL_VERSION" value="${bin.postgresql.version}"/>
         <filter token="BIN_NODEJS_VERSION" value="${bin.nodejs.version}"/>
         <filter token="BIN_FILEZILLA_VERSION" value="${bin.filezilla.version}"/>
@@ -157,7 +156,6 @@
         <filter token="BIN_PHP_ENABLE" value="1"/>
         <filter token="BIN_MYSQL_ENABLE" value="1"/>
         <filter token="BIN_MARIADB_ENABLE" value="1"/>
-        <filter token="BIN_MONGODB_ENABLE" value="1"/>
         <filter token="BIN_POSTGRESQL_ENABLE" value="1"/>
         <filter token="BIN_NODEJS_ENABLE" value="1"/>
         <filter token="BIN_FILEZILLA_ENABLE" value="1"/>
@@ -172,7 +170,6 @@
     <getmodule releasesurl="${bin.filezilla.url}" version="${bin.filezilla.version}" dest="${release.target}/bin/filezilla"/>
     <getmodule releasesurl="${bin.mailhog.url}" version="${bin.mailhog.version}" dest="${release.target}/bin/mailhog"/>
     <getmodule releasesurl="${bin.mariadb.url}" version="${bin.mariadb.version}" dest="${release.target}/bin/mariadb"/>
-    <getmodule releasesurl="${bin.mongodb.url}" version="${bin.mongodb.version}" dest="${release.target}/bin/mongodb"/>
     <getmodule releasesurl="${bin.postgresql.url}" version="${bin.postgresql.version}" dest="${release.target}/bin/postgresql"/>
     <getmodule releasesurl="${bin.memcached.url}" version="${bin.memcached.version}" dest="${release.target}/bin/memcached"/>
     <getmodule releasesurl="${bin.mysql.url}" version="${bin.mysql.version}" dest="${release.target}/bin/mysql"/>
@@ -271,7 +268,6 @@
         <filter token="BIN_PHP_ENABLE" value="1"/>
         <filter token="BIN_MYSQL_ENABLE" value="1"/>
         <filter token="BIN_MARIADB_ENABLE" value="0"/>
-        <filter token="BIN_MONGODB_ENABLE" value="0"/>
         <filter token="BIN_POSTGRESQL_ENABLE" value="0"/>
         <filter token="BIN_NODEJS_ENABLE" value="0"/>
         <filter token="BIN_FILEZILLA_ENABLE" value="0"/>
@@ -286,7 +282,6 @@
     <!--getmodule releasesurl="${bin.filezilla.url}" version="${bin.filezilla.version}" dest="${release.target}/bin/filezilla"/-->
     <!--getmodule releasesurl="${bin.mailhog.url}" version="${bin.mailhog.version}" dest="${release.target}/bin/mailhog"/-->
     <!--getmodule releasesurl="${bin.mariadb.url}" version="${bin.mariadb.version}" dest="${release.target}/bin/mariadb"/-->
-    <!--getmodule releasesurl="${bin.mongodb.url}" version="${bin.mongodb.version}" dest="${release.target}/bin/mongodb"/-->
     <!--getmodule releasesurl="${bin.postgresql.url}" version="${bin.postgresql.version}" dest="${release.target}/bin/postgresql"/-->
     <!--getmodule releasesurl="${bin.memcached.url}" version="${bin.memcached.version}" dest="${release.target}/bin/memcached"/-->
     <getmodule releasesurl="${bin.mysql.url}" version="${bin.mysql.version}" dest="${release.target}/bin/mysql"/>
@@ -385,7 +380,6 @@
         <filter token="BIN_PHP_ENABLE" value="1"/>
         <filter token="BIN_MYSQL_ENABLE" value="0"/>
         <filter token="BIN_MARIADB_ENABLE" value="0"/>
-        <filter token="BIN_MONGODB_ENABLE" value="0"/>
         <filter token="BIN_POSTGRESQL_ENABLE" value="0"/>
         <filter token="BIN_NODEJS_ENABLE" value="0"/>
         <filter token="BIN_FILEZILLA_ENABLE" value="0"/>
@@ -400,7 +394,6 @@
     <!--getmodule releasesurl="${bin.filezilla.url}" version="${bin.filezilla.version}" dest="${release.target}/bin/filezilla"/-->
     <!--getmodule releasesurl="${bin.mailhog.url}" version="${bin.mailhog.version}" dest="${release.target}/bin/mailhog"/-->
     <!--getmodule releasesurl="${bin.mariadb.url}" version="${bin.mariadb.version}" dest="${release.target}/bin/mariadb"/-->
-    <!--getmodule releasesurl="${bin.mongodb.url}" version="${bin.mongodb.version}" dest="${release.target}/bin/mongodb"/-->
     <!--getmodule releasesurl="${bin.postgresql.url}" version="${bin.postgresql.version}" dest="${release.target}/bin/postgresql"/-->
     <!--getmodule releasesurl="${bin.memcached.url}" version="${bin.memcached.version}" dest="${release.target}/bin/memcached"/-->
     <!--getmodule releasesurl="${bin.mysql.url}" version="${bin.mysql.version}" dest="${release.target}/bin/mysql"/-->

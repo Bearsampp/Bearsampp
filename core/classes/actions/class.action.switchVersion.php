@@ -96,7 +96,7 @@ class ActionSwitchVersion
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
                         'path' => $bearsamppBins->getPostgresql()->getRootPath() . '/' . $folder,
-                        'includes' => array('.nrd', '.conf', '.bat'),
+                        'includes' => array('.ber', '.conf', '.bat'),
                         'recursive' => true
                     );
                 }
