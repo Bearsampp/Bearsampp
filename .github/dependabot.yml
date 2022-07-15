@@ -7,5 +7,9 @@ updates:
       time: "08:00"
       timezone: "America/Chicago"
     labels:
-      - ":game_die: dependencies"
       - ":robot: bot"
+# Set the access for individual scopes, or use permissions: write-all
+permissions:
+  pull-requests: write
+  issues: write
+  repository-projects: write

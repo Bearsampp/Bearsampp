@@ -1,4 +1,4 @@
-<p align="center"><a href="https://bearsampp.com" target="_blank"><img width="100" src="https://github.com/Bearsampp/.settings/blob/main/img/Bearsampp-logo.png"></a></p>
+<p align="center"><a href="https://bearsampp.com" target="_blank"><img width="100" src="https://github.com/Bearsampp/Bearsampp/blob/main/img/Bearsampp-logo-500x-500x-transparent.png"></a></p>
 
 <p align="center">
   <a href="https://bearsampp.com/release/latest"><img src="https://img.shields.io/github/release/bearsampp/bearsampp.svg?style=flat-square" alt="GitHub release"></a>
@@ -70,6 +70,7 @@ you want to open a pull request, please read the [contributing guidelines](.gith
 You can also support this project by [**becoming a sponsor on GitHub**](https://github.com/sponsors/N6REJ) or by
 making a [Paypal donation](https://www.paypal.me/BearLeeAble) to ensure this journey continues indefinitely!
 
+Your always welcome to join the [project team](https://github.com/orgs/Bearsampp/teams) to help insure the longevity of the project.
 Thanks again for your support, it is much appreciated! :pray:
 
 ## License
