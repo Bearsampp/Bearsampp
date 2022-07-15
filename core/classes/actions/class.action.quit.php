@@ -36,8 +36,6 @@ class ActionQuit
                 $name = $bearsamppBins->getMailhog()->getName() . ' ' . $bearsamppBins->getMailhog()->getVersion();
             } elseif ($sName == BinMariadb::SERVICE_NAME) {
                 $name = $bearsamppBins->getMariadb()->getName() . ' ' . $bearsamppBins->getMariadb()->getVersion();
-            } elseif ($sName == BinMongodb::SERVICE_NAME) {
-                $name = $bearsamppBins->getMongodb()->getName() . ' ' . $bearsamppBins->getMongodb()->getVersion();
             } elseif ($sName == BinPostgresql::SERVICE_NAME) {
                 $name = $bearsamppBins->getPostgresql()->getName() . ' ' . $bearsamppBins->getPostgresql()->getVersion();
             } elseif ($sName == BinMailhog::SERVICE_NAME) {

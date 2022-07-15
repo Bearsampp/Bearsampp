@@ -106,7 +106,6 @@ class Lang
     const MEMCACHED = 'memcached';
     const MAILHOG = 'mailhog';
     const MARIADB = 'mariadb';
-    const MONGODB = 'mongodb';
     const MYSQL = 'mysql';
     const NODEJS = 'nodejs';
     const POSTGRESQL = 'postgresql';
@@ -304,9 +303,6 @@ class Lang
     const DEBUG_MARIADB_VARIABLES = 'debugMariadbVariables';
     const DEBUG_MARIADB_SYNTAX_CHECK = 'debugMariadbSyntaxCheck';
 
-    // Action Debug MongoDB
-    const DEBUG_MONGODB_VERSION = 'debugMongodbVersion';
-
     // Action Debug PostgreSQL
     const DEBUG_POSTGRESQL_VERSION = 'debugPostgresqlVersion';
 
@@ -468,7 +464,6 @@ class Lang
             self::MEMCACHED,
             self::MAILHOG,
             self::MARIADB,
-            self::MONGODB,
             self::MYSQL,
             self::NODEJS,
             self::POSTGRESQL,
@@ -664,9 +659,6 @@ class Lang
             self::DEBUG_MARIADB_VERSION,
             self::DEBUG_MARIADB_VARIABLES,
             self::DEBUG_MARIADB_SYNTAX_CHECK,
-
-            // Action Debug MongoDB
-            self::DEBUG_MONGODB_VERSION,
 
             // Action Debug PostgreSQL
             self::DEBUG_POSTGRESQL_VERSION,

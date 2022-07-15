@@ -227,8 +227,6 @@ class Win32Service
             $bearsamppBins->getFilezilla()->rebuildConf();
         } elseif ($this->getName() == BinMysql::SERVICE_NAME) {
             $bearsamppBins->getMysql()->initData();
-        } elseif ($this->getName() == BinMongodb::SERVICE_NAME) {
-            $bearsamppBins->getMongodb()->initData();
         } elseif ($this->getName() == BinMailhog::SERVICE_NAME) {
             $bearsamppBins->getMailhog()->rebuildConf();
         } elseif ($this->getName() == BinMemcached::SERVICE_NAME) {

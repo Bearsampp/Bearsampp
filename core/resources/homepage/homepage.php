@@ -16,7 +16,6 @@
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/filezilla.js"></script>
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/mailhog.js"></script>
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/mariadb.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/mongodb.js"></script>
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/memcached.js"></script>
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/mysql.js"></script>
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/nodejs.js"></script>

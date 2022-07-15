@@ -171,12 +171,6 @@ class Batch
         self::exec('initializePostgresql', 'CMD /C "' . $path . '/init.bat"', 15);
     }
 
-    public static function repairMongodb($mongod, $config)
-    {
-        $mongod = Util::formatWindowsPath($mongod);
-        self::exec('repairMongodb', '"' . $mongod . '" --config "' . $config . '" --repair', 60, false);
-    }
-
     public static function createSymlink($src, $dest)
     {
         global $bearsamppCore;

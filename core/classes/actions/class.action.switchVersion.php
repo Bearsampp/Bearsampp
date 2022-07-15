@@ -74,19 +74,6 @@ class ActionSwitchVersion
                         'recursive' => false
                     );
                 }
-            } elseif ($args[0] == $bearsamppBins->getMongodb()->getName()) {
-                $this->bin = $bearsamppBins->getMongodb();
-                $this->currentVersion = $bearsamppBins->getMongodb()->getVersion();
-                $this->service = $bearsamppBins->getMongodb()->getService();
-                $this->changePort = true;
-                $folderList = Util::getFolderList($bearsamppBins->getMongodb()->getRootPath());
-                foreach ($folderList as $folder) {
-                    $this->pathsToScan[] = array(
-                        'path' => $bearsamppBins->getMongodb()->getRootPath() . '/' . $folder,
-                        'includes' => array('mongodb.conf'),
-                        'recursive' => false
-                    );
-                }
             } elseif ($args[0] == $bearsamppBins->getPostgresql()->getName()) {
                 $this->bin = $bearsamppBins->getPostgresql();
                 $this->currentVersion = $bearsamppBins->getPostgresql()->getVersion();

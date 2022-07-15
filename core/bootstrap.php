@@ -2,7 +2,7 @@
 
 define('APP_TITLE', 'bearsampp');
 define('APP_WEBSITE', 'https://bearsampp.com');
-define('APP_UPDATE_URL', 'http://pastebin.com/raw/cPewk367');
+define('APP_UPDATE_URL', 'https://bearsampp.com//templates/j51_layla/release.txt');
 define('APP_GITHUB_USER', 'bearsampp');
 define('APP_GITHUB_REPO', 'bearsampp');
 define('APP_AUTHOR_NAME', '/bearsampp');

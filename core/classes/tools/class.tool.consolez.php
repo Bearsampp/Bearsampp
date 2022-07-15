@@ -127,11 +127,6 @@ class ToolConsoleZ extends Module
         return $bearsamppLang->getValue(Lang::MARIADB) . ' ' . $bearsamppBins->getMariadb()->getVersion();
     }
 
-    public function getTabTitleMongodb() {
-        global $bearsamppLang, $bearsamppBins;
-        return $bearsamppLang->getValue(Lang::MONGODB) . ' ' . $bearsamppBins->getMongodb()->getVersion();
-    }
-
     public function getTabTitlePostgresql() {
         global $bearsamppLang, $bearsamppBins;
         return $bearsamppLang->getValue(Lang::POSTGRESQL) . ' ' . $bearsamppBins->getPostgresql()->getVersion();

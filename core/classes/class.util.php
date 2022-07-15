@@ -683,16 +683,6 @@ class Util
             );
         }
 
-        // MongoDB
-        $folderList = self::getFolderList($bearsamppBins->getMongodb()->getRootPath());
-        foreach ($folderList as $folder) {
-            $paths[] = array(
-                'path' => $bearsamppBins->getMongodb()->getRootPath() . '/' . $folder,
-                'includes' => array('mongodb.conf'),
-                'recursive' => false
-            );
-        }
-
         // PostgreSQL
         $folderList = self::getFolderList($bearsamppBins->getPostgresql()->getRootPath());
         foreach ($folderList as $folder) {

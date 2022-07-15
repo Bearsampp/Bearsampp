@@ -85,11 +85,6 @@ class AppAdminer extends Module
                 '/^\$postgresqlRootPwd\s=\s/' => '$postgresqlRootPwd = \'' . $bearsamppBins->getPostgresql()->getRootPwd() . '\';'
             ));
         }
-        if ($bearsamppBins->getMongodb()->isEnable()) {
-            Util::replaceInFile($this->getConf(), array(
-                '/^\$mongodbPort\s=\s(\d+)/' => '$mongodbPort = ' . $bearsamppBins->getMongodb()->getPort() . ';'
-            ));
-        }
 
         return true;
     }

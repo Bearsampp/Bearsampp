@@ -543,9 +543,6 @@ class ActionStartup
                     $bin = $bearsamppBins->getMariadb();
                     $port = $bearsamppBins->getMariadb()->getPort();
                     $syntaxCheckCmd = BinMariadb::CMD_SYNTAX_CHECK;
-                } elseif ($sName == BinMongodb::SERVICE_NAME) {
-                    $bin = $bearsamppBins->getMongodb();
-                    $port = $bearsamppBins->getMongodb()->getPort();
                 } elseif ($sName == BinPostgresql::SERVICE_NAME) {
                     $bin = $bearsamppBins->getPostgresql();
                     $port = $bearsamppBins->getPostgresql()->getPort();

@@ -221,7 +221,6 @@ class TplConsoleZ
                 self::getTabPearSection() .
                 self::getTabMysqlSection() .
                 self::getTabMariadbSection() .
-                self::getTabMongodbSection() .
                 self::getTabPostgresqlSection() .
                 self::getTabGhostscriptSection() .
                 self::getTabGitSection() .
@@ -317,23 +316,6 @@ class TplConsoleZ
             self::ICON_DB,
             $shell,
             $bearsamppBins->getMariadb()->getSymlinkPath()
-        ) . PHP_EOL;
-    }
-
-    private static function getTabMongodbSection()
-    {
-        global $bearsamppBins, $bearsamppTools;
-
-        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppBins->getMongodb()->getCliExe() . '&quot;');
-        if (!file_exists($bearsamppBins->getMongodb()->getCliExe())) {
-            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppBins->getMongodb()->getCliExe() . ' not found...');
-        }
-
-        return self::getTab(
-            $bearsamppTools->getConsoleZ()->getTabTitleMongodb(),
-            self::ICON_DB,
-            $shell,
-            $bearsamppBins->getMongodb()->getSymlinkPath()
         ) . PHP_EOL;
     }
 

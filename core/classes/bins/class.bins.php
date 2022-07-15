@@ -10,17 +10,16 @@ class Bins
     private $php;
     private $mysql;
     private $mariadb;
-    private $mongodb;
     private $postgresql;
     private $nodejs;
     private $filezilla;
     private $svn;
-    
+
     public function __construct()
     {
         Util::logInitClass($this);
     }
-    
+
     public function reload()
     {
         Util::logInfo('Reload bins');
@@ -28,7 +27,7 @@ class Bins
             $bin->reload();
         }
     }
-    
+
     public function update()
     {
         Util::logInfo('Update bins config');
@@ -36,7 +35,7 @@ class Bins
             $bin->update();
         }
     }
-    
+
     public function getAll()
     {
         return array(
@@ -45,7 +44,6 @@ class Bins
             $this->getApache(),
             $this->getFilezilla(),
             $this->getMariadb(),
-            $this->getMongodb(),
             $this->getPostgresql(),
             $this->getMysql(),
             $this->getSvn(),
@@ -53,7 +51,7 @@ class Bins
             $this->getNodejs(),
         );
     }
-    
+
     public function getMailhog()
     {
         if ($this->mailhog == null) {
@@ -61,7 +59,7 @@ class Bins
         }
         return $this->mailhog;
     }
-    
+
     public function getMemcached()
     {
         if ($this->memcached == null) {
@@ -101,15 +99,7 @@ class Bins
         }
         return $this->mariadb;
     }
-    
-    public function getMongodb()
-    {
-        if ($this->mongodb == null) {
-            $this->mongodb = new BinMongodb('mongodb', self::TYPE);
-        }
-        return $this->mongodb;
-    }
-    
+
     public function getPostgresql()
     {
         if ($this->postgresql == null) {
@@ -125,7 +115,7 @@ class Bins
         }
         return $this->nodejs;
     }
-    
+
     public function getFilezilla()
     {
         if ($this->filezilla == null) {
@@ -133,7 +123,7 @@ class Bins
         }
         return $this->filezilla;
     }
-    
+
     public function getSvn()
     {
         if ($this->svn == null) {
@@ -141,7 +131,7 @@ class Bins
         }
         return $this->svn;
     }
-    
+
     public function getLogsPath()
     {
         return array(
@@ -152,7 +142,7 @@ class Bins
     public function getServices()
     {
         $result = array();
-        
+
         if ($this->getMailhog()->isEnable()) {
             $result[BinMailhog::SERVICE_NAME] = $this->getMailhog()->getService();
         }
@@ -168,9 +158,6 @@ class Bins
         if ($this->getMariadb()->isEnable()) {
             $result[BinMariadb::SERVICE_NAME] = $this->getMariadb()->getService();
         }
-        if ($this->getMongodb()->isEnable()) {
-            $result[BinMongodb::SERVICE_NAME] = $this->getMongodb()->getService();
-        }
         if ($this->getPostgresql()->isEnable()) {
             $result[BinPostgresql::SERVICE_NAME] = $this->getPostgresql()->getService();
         }
@@ -180,7 +167,7 @@ class Bins
         if ($this->getSvn()->isEnable()) {
             $result[BinSvn::SERVICE_NAME] = $this->getSvn()->getService();
         }
-        
+
         return $result;
     }
 }
