@@ -1,15 +1,18 @@
-# Eclipse
-/.settings
-/.settings/*
-/.buildpath
-/.project
-/.jsdtscope
-/*.launch
-
 # Jetbrains
-/.idea
 /*.iml
+/.idea
+/.idea/.gitignore
+/.idea/deployment.xml
+/.idea/discord.xml
+/.idea/module-perl.iml
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/vcs.xml
 
-# bearsampp
+# Neard
 /.dev
-/bin
+
+# Visual Studio
+.vscode/
+.vs/
+.vsc/
