@@ -9,10 +9,13 @@
 /.idea/php.xml
 /.idea/vcs.xml
 
-# Neard
+# Bearsampp
 /.dev
 
 # Visual Studio
 .vscode/
 .vs/
 .vsc/
+
+#Bearsampp
+/bin

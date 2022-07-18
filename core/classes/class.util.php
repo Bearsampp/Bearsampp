@@ -1276,7 +1276,7 @@ class Util
 
     public static function getGithubRawUrl($file) {
         $file = !empty($file) ? '/' . $file : null;
-        return 'https://raw.githubusercontent.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . '/master' . $file;
+        return 'https://raw.githubusercontent.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . '/main' . $file;
     }
 
     public static function getFolderList($path)
