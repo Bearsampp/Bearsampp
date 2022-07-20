@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "08:00"
+      timezone: "America/Chicago"
+    labels:
+      - ":robot: bot"
+# Set the access for individual scopes, or use permissions: write-all
+permissions: write-all
