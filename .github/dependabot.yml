@@ -9,7 +9,4 @@ updates:
     labels:
       - ":robot: bot"
 # Set the access for individual scopes, or use permissions: write-all
-permissions:
-  pull-requests: write
-  issues: write
-  repository-projects: write
+permissions: write-all
