@@ -20,8 +20,8 @@ class Core
     const OPENSSL_EXE = 'openssl.exe';
     const OPENSSL_CONF = 'openssl.cfg';
 
-    const HOSTSEDITOR_VERSION = '1.2';
-    const HOSTSEDITOR_EXE = 'HostsEditor.exe';
+    const HOSTSEDITOR_VERSION = '1.3';
+    const HOSTSEDITOR_EXE = 'hEdit_x64.exe';
 
     const LN_VERSION = '2.928';
     const LN_EXE = 'ln.exe';
