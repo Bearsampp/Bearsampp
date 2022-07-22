@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="bearsampp" basedir=".">
+<project name="Bearsampp" basedir=".">
 
   <dirname property="project.basedir" file="${ant.file.bearsampp}"/>
   <property name="build.properties" value="${project.basedir}/build.properties"/>
   <property file="${build.properties}"/>
 
-  <!-- bearsampp dev -->
+  <!-- Bearsampp dev -->
   <property name="dev.path" location="${project.basedir}\${dev.dir}"/>
   <fail unless="dev.path" message="Core directory '${dev.path}' not found in ${dev.path}"/>
-  <echo message="bearsampp dev found in ${dev.path}" level="debug"/>
+  <echo message="Bearsampp dev found in ${dev.path}" level="debug"/>
 
   <!-- Build dir -->
   <property name="build.path" location="${project.basedir}\${build.dir}"/>
@@ -26,7 +26,7 @@
     <divhpdev action="checklang"/>
   </target>
 
-  <target name="release" depends="init, load.lib, build-full, build-basic, build-light" description="Release bearsampp"/>
+  <target name="release" depends="init, load.lib, build-full, build-basic, build-light" description="Release Bearsampp"/>
 
   <target name="base" depends="init, load.lib" unless="is.base.prepared">
     <var name="release.base.target" unset="true"/>
@@ -47,6 +47,7 @@
         .github/**,
         .idea/**,
         .settings/**,
+        giscus.json,
         base/**,
         bin/**,
         core/tmp/*,
@@ -461,7 +462,7 @@
     </if>
   </target>
 
-  <target name="launch" depends="build-full" description="Launch bearsampp">
+  <target name="launch" depends="build-full" description="Launch Bearsampp">
     <assertdir dir="${release.target}"/>
     <property name="build.launch.path" value="${build.path}/launch"/>
 
@@ -473,8 +474,8 @@
       </fileset>
     </move>
 
-    <echo message="Executing bearsampp. Please wait..."/>
+    <echo message="Executing Bearsampp. Please wait..."/>
     <exec executable="${build.launch.path}/bearsampp.exe"/>
-    <echo message="If the application needs to restart, you can execute bearsampp.exe in : ${build.launch.path}"/>
+    <echo message="If the application needs to restart, you can execute Bearsampp.exe in : ${build.launch.path}"/>
   </target>
 </project>
