@@ -1,4 +1,4 @@
-; Author: /bearsampp
+; Author: /Bearsamppampp
 ;
 
 ; General
@@ -148,8 +148,8 @@ switchVersionOk = "%s version switched successfully to %s"
 switchVersionOkRestart = "%s version switched successfully to %s"
 apacheIncpt = "Apache %s does not seem to be compatible with PHP %s."
 phpIncpt = "PHP %s does not seem to be compatible with Apache %s."
-bearsamppConfNotFoundError = "bearsampp config files not found for %s."
-bearsamppConfMalformedError = "bearsampp config file malformed for %s."
+bearsamppConfNotFoundError = "Bearsampp config files not found for %s."
+bearsamppConfMalformedError = "Bearsampp config file malformed for %s."
 
 ; Action Switch PHP setting
 switchPhpSettingTitle = "Switch PHP setting"
@@ -282,7 +282,7 @@ changeBrowserOk = "Browser changed successfully to:@nl@%s"
 
 ; Action About
 aboutTitle = "About..."
-aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@bearsampp is free software; you can redistribute it and/or modify it@nl@under the terms of the GNU LESSER GENERAL PUBLIC LICENSE."
+aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@Bearsampp is free software; you can redistribute it and/or modify it@nl@under the terms of the GNU LESSER GENERAL PUBLIC LICENSE."
 
 ; Action Debug Apache
 debugApacheVersionNumber = "Version number"
@@ -316,7 +316,7 @@ registrySetErrorText = "Registry value incorrect : %s"
 checkVersionTitle = "Check version"
 checkVersionAvailableText = "New version available!"
 checkVersionChangelogText = "Before updating please read the changelog : "
-checkVersionLatestText = "You've got the latest version of bearsampp..."
+checkVersionLatestText = "You've got the latest version of Bearsampp..."
 
 ; Action gen SSL certificate
 genSslTitle = "Generate SSL certificate"

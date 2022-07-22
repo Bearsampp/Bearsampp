@@ -1,4 +1,4 @@
-; Author: /bearsampp
+; Author: /Bearsampp
 ;
 
 ; General
@@ -148,8 +148,8 @@ switchVersionOk = "Version de %s passée avec succès vers %s"
 switchVersionOkRestart = "Version de %s passée avec succès vers %s"
 apacheIncpt = "Apache %s ne semble pas être compatible avec PHP %s."
 phpIncpt = "PHP %s ne semble pas être compatible avec Apache %s."
-bearsamppConfNotFoundError = "Fichiers de configuration de bearsampp introuvables pour %s."
-bearsamppConfMalformedError = "Fichiers de configuration de bearsampp malformé pour %s."
+bearsamppConfNotFoundError = "Fichiers de configuration de Bearsampp introuvables pour %s."
+bearsamppConfMalformedError = "Fichiers de configuration de Bearsampp malformé pour %s."
 
 ; Action Switch PHP setting
 switchPhpSettingTitle = "Changer un paramètre PHP"
@@ -282,7 +282,7 @@ changeBrowserOk = "Navigateur changé avec succès :@nl@%s"
 
 ; Action About
 aboutTitle = "À propos..."
-aboutText = "%s@nl@Copyright(C) 2014 - %s %s@nl@@nl@bearsampp est un logiciel gratuit ; vous pouvez le redistribuer et/ou le modifier@nl@sous les termes de la GNU LESSER GENERAL PUBLIC LICENSE."
+aboutText = "%s@nl@Copyright(C) 2014 - %s %s@nl@@nl@Bearsampp est un logiciel gratuit ; vous pouvez le redistribuer et/ou le modifier@nl@sous les termes de la GNU LESSER GENERAL PUBLIC LICENSE."
 
 ; Action Debug Apache
 debugApacheVersionNumber = "Numéro de version"
@@ -316,7 +316,7 @@ registrySetErrorText = "Valeur de clé de registre incorrecte : %s"
 checkVersionTitle = "Vérifier la version"
 checkVersionAvailableText = "Nouvelle version disponible !"
 checkVersionChangelogText = "Avant la mise à jour veuillez lire le journal des changements : "
-checkVersionLatestText = "Vous avez la dernière version de bearsampp..."
+checkVersionLatestText = "Vous avez la dernière version de Bearsampp..."
 
 ; Action gen SSL certificate
 genSslTitle = "Générer un certificat SSL"

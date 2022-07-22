@@ -148,8 +148,8 @@ switchVersionOk = "%s version har bytts till %s"
 switchVersionOkRestart = "%s version har ändrats till %s"
 apacheIncpt = "Apache %s verkar inte vara kompatibelt med PHP %s."
 phpIncpt = "PHP %s verkar inte vara kompatibelt med Apache %s."
-bearsamppConfNotFoundError = "bearsampp konfig-filer hittades inte för %s."
-bearsamppConfMalformedError = "bearsampp konfig-filer felbildades för %s."
+bearsamppConfNotFoundError = "Bearsampp konfig-filer hittades inte för %s."
+bearsamppConfMalformedError = "Bearsampp konfig-filer felbildades för %s."
 
 ; Action Switch PHP setting
 switchPhpSettingTitle = "Ändra PHP-inställningar"
@@ -282,7 +282,7 @@ changeBrowserOk = "Webbläsare byttes framgångsrikt till:@nl@%s"
 
 ; Action About
 aboutTitle = "Om..."
-aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@bearsampp is free software; you can redistribute it and/or modify it@nl@under the terms of the GNU LESSER GENERAL PUBLIC LICENSE."
+aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@Bearsampp is free software; you can redistribute it and/or modify it@nl@under the terms of the GNU LESSER GENERAL PUBLIC LICENSE."
 
 ; Action Debug Apache
 debugApacheVersionNumber = "Versions-nummer"
@@ -316,7 +316,7 @@ registrySetErrorText = "Registreringsvärde inkorrekt : %s"
 checkVersionTitle = "Kontrollerar version"
 checkVersionAvailableText = "Ny version tillgänglig!"
 checkVersionChangelogText = "#Before updating please read the changelog : "
-checkVersionLatestText = "Du har hämtat den senaste versionen av bearsampp..."
+checkVersionLatestText = "Du har hämtat den senaste versionen av Bearsampp..."
 
 ; Action gen SSL certificate
 genSslTitle = "#Generate SSL certificate"
