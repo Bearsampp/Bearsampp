@@ -914,31 +914,6 @@ class Util
         return $result;
     }
 
-    public static function getLatestChangelog($markdown = false)
-    {
-        global $bearsamppCore, $bearsamppBins;
-
-        $content = self::getRemoteFile(self::getGithubRawUrl('CHANGELOG.md'));
-        if (empty($content)) {
-            self::logError('Cannot retrieve latest CHANGELOG');
-            return null;
-        }
-
-        if ($markdown) {
-            if (version_compare($bearsamppBins->getPhp()->getVersion(), '5.2.17', '>')) {
-                require_once $bearsamppCore->getLibsPath() . '/markdown/1.7.0/MarkdownInterface.php';
-                require_once $bearsamppCore->getLibsPath() . '/markdown/1.7.0/Markdown.php';
-                require_once $bearsamppCore->getLibsPath() . '/markdown/1.7.0/MarkdownExtra.php';
-                $content = call_user_func_array(array('Michelf\\MarkDownExtra', 'defaultTransform'), array($content));
-            } else {
-                require_once $bearsamppCore->getLibsPath() . '/markdown/1.0.2/markdown.php';
-                $content = Markdown(preg_replace('/^.+\n.*\n/', '', $content));
-            }
-        }
-
-        return $content;
-    }
-
     public static function getWebsiteUrlNoUtm($path = '', $fragment = '')
     {
         return self::getWebsiteUrl($path, $fragment, false);
