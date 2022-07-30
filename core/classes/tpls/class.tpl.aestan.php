@@ -59,7 +59,7 @@ class TplAestan
     const SERVICE_RESTART = 'restart';
     const SERVICES_CLOSE = 'closeservices';
 
-    const IMG_BAR_PICTURE = 'bearsampp.dat';
+    const IMG_BAR_PICTURE = 'bar.dat';
     const IMG_GLYPH_SPRITES = 'sprites.dat';
 
     public static function getGlyphFlah($lang)
