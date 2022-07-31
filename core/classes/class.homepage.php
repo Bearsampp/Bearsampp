@@ -40,7 +40,9 @@ class Homepage
         if (!empty($query) && in_array($query, $this->pageStdl)) {
             $request = $query;
         }
-
+        if (!empty($query) && self::PAGE_INDEX) {
+            $request = "index";
+        }
         return $request;
     }
 
