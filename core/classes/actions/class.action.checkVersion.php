@@ -31,8 +31,6 @@ class ActionCheckVersion
 
                 $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::CHECK_VERSION_AVAILABLE_TEXT), 80, 15, 470, 120);
 
-                $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::CHECK_VERSION_CHANGELOG_TEXT), 80, 40, 470, 20);
-                $this->wbLinkChangelog = $bearsamppWinbinder->createHyperLink($this->wbWindow, Util::getChangelogUrl(false), 80, 57, 470, 20, WBC_LINES | WBC_RIGHT);
 
                 $this->wbLinkFull = $bearsamppWinbinder->createHyperLink($this->wbWindow, $labelFullLink, 80, 87, 300, 20, WBC_LINES | WBC_RIGHT);
 
