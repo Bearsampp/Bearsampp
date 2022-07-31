@@ -57,9 +57,6 @@ class ActionCheckVersion
         global $bearsamppConfig, $bearsamppWinbinder;
 
         switch ($id) {
-            case $this->wbLinkChangelog[WinBinder::CTRL_ID]:
-                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getChangelogUrl());
-                break;
             case $this->wbLinkFull[WinBinder::CTRL_ID]:
                 $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getVersionUrl($this->latestVersion));
                 break;
