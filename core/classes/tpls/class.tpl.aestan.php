@@ -272,8 +272,8 @@ class TplAestan
             'BarPictureTransparent=yes' . PHP_EOL .
             'BarPictureVertAlignment=bottom' . PHP_EOL .
             'BarBorder=clNone' . PHP_EOL .
-            'BarGradientEnd=$0030BF00' . PHP_EOL .
-            'BarGradientStart=$0030BF00' . PHP_EOL .
+            'BarGradientEnd=$00c07840' . PHP_EOL .
+            'BarGradientStart=$00c07840' . PHP_EOL .
             'BarGradientStyle=horizontal' . PHP_EOL .
             'BarSide=left' . PHP_EOL .
             'BarSpace=0' . PHP_EOL .
