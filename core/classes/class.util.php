@@ -939,7 +939,7 @@ class Util
 
     public static function getVersionUrl($version)
     {
-        return self::getWebsiteUrl('/release/' . $version);
+        return 'https://github.com/Bearsampp/Bearsampp/releases/tag/' . $version;
     }
 
     public static function getChangelogUrl($utmSource = true)
