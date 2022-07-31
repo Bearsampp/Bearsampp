@@ -966,8 +966,8 @@ extension=sodium
 ;extension=sqlite3
 ;extension=tidy
 ;extension=xsl
-extension=php_imagick.dll
 extension=php_memcache.dll
+extension=php_imagick.dll
 
 
 ;zend_extension=opcache
