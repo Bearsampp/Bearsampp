@@ -19,12 +19,12 @@ REM -------------------
 REM Test to see if this is a raw pear.bat (uninstalled version)
 SET TMPTMPTMPTMPT=@includ
 SET PMTPMTPMT=%TMPTMPTMPTMPT%e_path@
-FOR %%x IN ("~BEARSAMPP_WIN_PATH~\bin\php\php5.6.40\pear\pear") DO (if %%x=="%PMTPMTPMT%" GOTO :NOTINSTALLED)
+FOR %%x IN ("E:\Development\Bearsampp\bin\php\php5.6.40\pear\pear") DO (if %%x=="%PMTPMTPMT%" GOTO :NOTINSTALLED)
 
 REM Check PEAR global ENV, set them if they do not exist
-IF "%PHP_PEAR_INSTALL_DIR%"=="" SET "PHP_PEAR_INSTALL_DIR=~BEARSAMPP_WIN_PATH~\bin\php\php5.6.40\pear\pear"
-IF "%PHP_PEAR_BIN_DIR%"=="" SET "PHP_PEAR_BIN_DIR=~BEARSAMPP_WIN_PATH~\bin\php\php5.6.40\pear"
-IF "%PHP_PEAR_PHP_BIN%"=="" SET "PHP_PEAR_PHP_BIN=~BEARSAMPP_WIN_PATH~\bin\php\php5.6.40\php.exe"
+IF "%PHP_PEAR_INSTALL_DIR%"=="" SET "PHP_PEAR_INSTALL_DIR=E:\Development\Bearsampp\bin\php\php5.6.40\pear\pear"
+IF "%PHP_PEAR_BIN_DIR%"=="" SET "PHP_PEAR_BIN_DIR=E:\Development\Bearsampp\bin\php\php5.6.40\pear"
+IF "%PHP_PEAR_PHP_BIN%"=="" SET "PHP_PEAR_PHP_BIN=E:\Development\Bearsampp\bin\php\php5.6.40\php.exe"
 
 GOTO :INSTALLED
 

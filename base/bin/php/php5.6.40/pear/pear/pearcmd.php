@@ -26,11 +26,12 @@ define('PEAR_IGNORE_BACKTRACE', 1);
  */
 //the space is needed for windows include paths with trailing backslash
 // http://pear.php.net/bugs/bug.php?id=19482
-if ('~BEARSAMPP_WIN_PATH~\bin\php\php5.6.40\pear\pear ' != '@'.'include_path'.'@ ') {
-    ini_set('include_path', trim('~BEARSAMPP_WIN_PATH~\bin\php\php5.6.40\pear\pear '). PATH_SEPARATOR .  get_include_path());
+if ('E:\Development\Bearsampp\bin\php\php5.6.40\pear\pear ' != '@'.'include_path'.'@ ') {
+    ini_set('include_path', trim('E:\Development\Bearsampp\bin\php\php5.6.40\pear\pear '). PATH_SEPARATOR .  get_include_path());
     $raw = false;
 } else {
     // this is a raw, uninstalled pear, either a cvs checkout, or php distro
+    ini_set('include_path', dirname(__DIR__) . PATH_SEPARATOR . get_include_path());
     $raw = true;
 }
 @ini_set('allow_url_fopen', true);
@@ -41,7 +42,7 @@ ob_implicit_flush(true);
 $_PEAR_PHPDIR = '#$%^&*';
 set_error_handler('error_handler');
 
-$pear_package_version = "1.10.1";
+$pear_package_version = "1.10.13";
 
 require_once 'PEAR.php';
 require_once 'PEAR/Frontend.php';
@@ -52,13 +53,6 @@ require_once 'Console/Getopt.php';
 
 PEAR_Command::setFrontendType('CLI');
 $all_commands = PEAR_Command::getCommands();
-
-// remove this next part when we stop supporting that crap-ass PHP 4.2
-if (!isset($_SERVER['argv']) && !isset($argv) && !isset($HTTP_SERVER_VARS['argv'])) {
-    echo 'ERROR: either use the CLI php executable, ' .
-         'or set register_argc_argv=On in php.ini';
-    exit(1);
-}
 
 $argv = Console_Getopt::readPHPArgv();
 // fix CGI sapi oddity - the -- in pear.bat/pear is not removed
@@ -438,26 +432,23 @@ function cmdHelp($command)
  * @param mixed $errmsg Message
  * @param mixed $file   Filename
  * @param mixed $line   Line number
- * @param mixed $vars   Variables
  *
  * @access public
  * @return boolean
  */
-function error_handler($errno, $errmsg, $file, $line, $vars)
+function error_handler($errno, $errmsg, $file, $line)
 {
-    if ($errno & E_STRICT
-        || $errno & E_DEPRECATED
-        || !error_reporting()
+    if ($errno & E_STRICT) {
+        return; // E_STRICT
+    }
+    if ($errno & E_DEPRECATED) {
+        return; // E_DEPRECATED
+    }
+    if (!(error_reporting() & $errno) &&
+        isset($GLOBALS['config']) &&
+        $GLOBALS['config']->get('verbose') < 4
     ) {
-        if ($errno & E_STRICT) {
-            return; // E_STRICT
-        }
-        if ($errno & E_DEPRECATED) {
-            return; // E_DEPRECATED
-        }
-        if (!error_reporting() && isset($GLOBALS['config']) && $GLOBALS['config']->get('verbose') < 4) {
-            return false; // @silenced error, show all if debug is high enough
-        }
+        return false; // @silenced error, show all if debug is high enough
     }
     $errortype = array (
         E_DEPRECATED  => 'Deprecated Warning',

@@ -17,7 +17,7 @@ if ($bearsamppLatestVersion != null && version_compare($bearsamppCurrentVersion,
     $result['download'] .= $bearsamppLang->getValue(Lang::DOWNLOAD) . ' <strong>' . APP_TITLE . ' ' . $bearsamppLatestVersion . '</strong><br />';
     $result['download'] .= '<small>bearsampp-' . $bearsamppLatestVersion . '.7z</small></a>';
 
-    $result['changelog'] = Util::getLatestChangelog(true);
+    $result['changelog'] = ''; // Function removed since we don't use Changelog.md
 }
 
 echo json_encode($result);

@@ -923,9 +923,10 @@ extension=php_pgsql.dll
 ;extension=php_tidy.dll
 ;extension=php_xmlrpc.dll
 ;extension=php_xsl.dll
-extension=php_memcache.dll
+extension=php_mongodb.dll
 extension=php_vld.dll
 extension=php_ssh2.dll
+extension=php_memcache.dll
 extension=php_imagick.dll
 
 
