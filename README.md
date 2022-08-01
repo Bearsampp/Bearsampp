@@ -1,4 +1,4 @@
-<p align="center"><a href="https://bearsampp.com" target="_blank"><img width="100" src="https://github.com/Bearsampp/Bearsampp/blob/main/img/Bearsampp-logo-500x-500x-transparent.png"></a></p>
+<p align="center"><a href="https://bearsampp.com" target="_blank"><img width="100" src="https://github.com/Bearsampp/Bearsampp/blob/main/img/Bearsampp-logo.png"></a></p>
 
 <p align="center">
   <a href="https://bearsampp.com/release/latest"><img src="https://img.shields.io/github/release/bearsampp/bearsampp.svg?style=flat-square" alt="GitHub release"></a>
@@ -17,7 +17,7 @@
 It also offers several versions of the various [modules](https://bearsampp.com/module) for download on the
 [official website](https://bearsampp.com) and many other features.<br />
 
-For those who wish to contribute, have an issue or questions, read the [Documentation](https://bearsampp.com/doc).
+For those who wish to contribute, have an issue or questions, read the [Documentation](https://bearsampp.com/documentation).
 
 ### Modules
 
@@ -54,7 +54,6 @@ For those who wish to contribute, have an issue or questions, read the [Document
 * [Get started](https://bearsampp.com/get-started)
 * [Screenshots](https://bearsampp.com/screenshots)
 * [FAQ](https://bearsampp.com/faq)
-* [Changelog](https://bearsampp.com/changelog)
 * [Upgrade notes](https://bearsampp.com/upgrade-notes)
 * [Reporting an issue](https://bearsampp.com/reporting-issue)
 * [Request a module](https://bearsampp.com/request-module)
