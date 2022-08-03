@@ -26,7 +26,7 @@
     <divhpdev action="checklang"/>
   </target>
 
-  <target name="release" depends="init, load.lib, build-full, build-basic, build-light" description="Release Bearsampp"/>
+  <target name="release" depends="init, load.lib, build-full, build-basic, build-lite" description="Release Bearsampp"/>
 
   <target name="base" depends="init, load.lib" unless="is.base.prepared">
     <var name="release.base.target" unset="true"/>
@@ -350,11 +350,11 @@
     </if>
   </target>
 
-  <target name="build-light" depends="init, load.lib">
+  <target name="build-lite" depends="init, load.lib, base">
     <var name="release.target" unset="true"/>
     <var name="release.destfile" unset="true"/>
-    <property name="release.target" value="${release.tmp.path}/${release.name}-light-${release.fullversion}"/>
-    <property name="release.destfile" value="${build.release.path}/${release.name}-light-${release.fullversion}"/>
+    <property name="release.target" value="${release.tmp.path}/${release.name}-lite-${release.fullversion}"/>
+    <property name="release.destfile" value="${build.release.path}/${release.name}-lite-${release.fullversion}"/>
 
     <echo message="*** Release (light)"/>
     <echo message="* Name    : ${release.name} "/>
