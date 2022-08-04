@@ -33,7 +33,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav navbar-header">
-          <li><a href="<?php echo Util::getWebsiteUrl(); ?>"><img alt="<?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?>" src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/logo.png'; ?>" /></a></li>
+          <li><a href="<?php echo Util::getWebsiteUrl(); ?>"><img alt="<?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?>" src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/header-logo.png'; ?>" /></a></li>
         </ul>
         <ul style="margin-right:0;" class="nav navbar-nav navbar-right">
           <li><a class="addtooltip" title="<?php echo $bearsamppLang->getValue(Lang::GITHUB); ?>" target="_blank" href="<?php echo Util::getGithubUrl(); ?>"><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/github.png'; ?>" /></a></li>

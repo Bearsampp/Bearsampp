@@ -29,7 +29,7 @@ class TplAppPhp
         // Download
         $resultItems .= TplAestan::getItemLink(
             $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
-            Util::getWebsiteUrl('modules/php', '#releases'),
+            Util::getWebsiteUrl('module/php', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
         ) . PHP_EOL;

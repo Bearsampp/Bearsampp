@@ -31,7 +31,7 @@ class TplAppSvn
         // Download
         $resultItems .= TplAestan::getItemLink(
         $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
-            Util::getWebsiteUrl('modules/svn', '#releases'),
+            Util::getWebsiteUrl('module/svn', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
         ) . PHP_EOL;

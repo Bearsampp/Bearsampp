@@ -29,7 +29,7 @@ class TplAppFilezilla
         // Download
         $resultItems .= TplAestan::getItemLink(
         $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
-            Util::getWebsiteUrl('modules/filezilla', '#releases'),
+            Util::getWebsiteUrl('module/filezilla', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
         ) . PHP_EOL;
