@@ -13,7 +13,7 @@ $result = array(
     'binphp' => '',
 );
 
-$dlMoreTpl = '<a href="' . Util::getWebsiteUrl('modules/%s', '#releases') . '" target="_blank" title="' . $bearsamppLang->getValue(Lang::DOWNLOAD_MORE) . '"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>';
+$dlMoreTpl = '<a href="' . Util::getWebsiteUrl('module/%s', '#releases') . '" target="_blank" title="' . $bearsamppLang->getValue(Lang::DOWNLOAD_MORE) . '"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>';
 
 // Bin Apache
 $apachePort = $bearsamppBins->getApache()->getPort();

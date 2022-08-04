@@ -21,33 +21,33 @@ For those who wish to contribute, have an issue or questions, read the [Document
 
 ### Modules
 
-* ![](https://bearsampp.com/img/modules/type-app.png) [Adminer](https://bearsampp.com/module/adminer): a full-featured database management tool written in PHP.
-* ![](https://bearsampp.com/img/modules/type-bin.png) [Apache](https://bearsampp.com/module/apache): the world's most used web server software.
-* ![](https://bearsampp.com/img/modules/type-tool.png) [Composer](https://bearsampp.com/module/composer): a dependency manager for PHP.
-* ![](https://bearsampp.com/img/modules/type-tool.png) [ConsoleZ](https://bearsampp.com/module/consolez): modified version of Console 2 for a better experience.
-* ![](https://bearsampp.com/img/modules/type-bin.png) [Filezilla](https://bearsampp.com/module/filezilla): a FTP server application.
-* ![](https://bearsampp.com/img/modules/type-tool.png) [Ghostscript](https://bearsampp.com/module/ghostscript): an interpreter for the PostScript language and for PDF.
-* ![](https://bearsampp.com/img/modules/type-tool.png) [Git](https://bearsampp.com/module/git): a widely used version control system for software development.
-* ![](https://bearsampp.com/img/modules/type-app.png) [GitList](https://bearsampp.com/module/gitlist): an elegant and modern git repository viewer.
-* ![](https://bearsampp.com/img/modules/type-bin.png) [MailHog](https://bearsampp.com/module/mailhog): a Web and API based SMTP testing.
-* ![](https://bearsampp.com/img/modules/type-bin.png) [MariaDB](https://bearsampp.com/module/mariadb): a community-developed fork of the MySQL relational database management system.
-* ![](https://bearsampp.com/img/modules/type-bin.png) [Memcached](https://bearsampp.com/module/memcached): a distributed memory object caching system.
-* ![](https://bearsampp.com/img/modules/type-bin.png) [MySQL](https://bearsampp.com/module/mysql): an open-source relational database management system.
-* ![](https://bearsampp.com/img/modules/type-tool.png) [ngrok](https://bearsampp.com/module/ngrok): secure tunnels to localhost.
-* ![](https://bearsampp.com/img/modules/type-bin.png) [Node.js](https://bearsampp.com/module/nodejs): an open-source, cross-platform runtime environment for developing server-side web applications.
-* ![](https://bearsampp.com/img/modules/type-tool.png) [Perl](https://bearsampp.com/module/perl): a family of high-level, general-purpose, interpreted, dynamic programming languages.
-* ![](https://bearsampp.com/img/modules/type-bin.png) [PHP](https://bearsampp.com/module/php): a server-side scripting language designed for web development including PEAR and extra extensions.
-* ![](https://bearsampp.com/img/modules/type-app.png) [phpMemAdmin](https://bearsampp.com/module/phpmemadmin): to handle the administration of Memcached over the web.
-* ![](https://bearsampp.com/img/modules/type-app.png) [phpMyAdmin](https://bearsampp.com/module/phpmyadmin): to handle the administration of MySQL and MariaDB over the Web.
-* ![](https://bearsampp.com/img/modules/type-app.png) [phpPgAdmin](https://bearsampp.com/module/phppgadmin): a web-based administration tool for PostgreSQL.
-* ![](https://bearsampp.com/img/modules/type-bin.png) [PostgreSQL](https://bearsampp.com/module/postgresql): an object-relational database management system (ORDBMS).
-* ![](https://bearsampp.com/img/modules/type-tool.png) [Python](https://bearsampp.com/module/python): a widely used high-level, general-purpose, interpreted, dynamic programming language.
-* ![](https://bearsampp.com/img/modules/type-tool.png) [Ruby](https://bearsampp.com/module/ruby): a dynamic, reflective, object-oriented, general-purpose programming language.
-* ![](https://bearsampp.com/img/modules/type-bin.png) [SVN](https://bearsampp.com/module/svn): a software versioning and revision control system.
-* ![](https://bearsampp.com/img/modules/type-app.png) [Webgrind](https://bearsampp.com/module/webgrind): the Xdebug Profiling Web Frontend in PHP.
-* ![](https://bearsampp.com/img/modules/type-app.png) [WebSVN](https://bearsampp.com/module/websvn): an Online subversion repository browser.
-* ![](https://bearsampp.com/img/modules/type-tool.png) [XDebugClient](https://bearsampp.com/module/xdc): a simple frontend for XDebug.
-* ![](https://bearsampp.com/img/modules/type-tool.png) [Yarn](https://bearsampp.com/module/yarn): a fast, reliable, and secure dependency management.
+* ![](https://bearsampp.com/img/module/type-applicatoin.png) [Adminer](https://bearsampp.com/module/adminer): a full-featured database management tool written in PHP.
+* ![](https://bearsampp.com/img/module/type-binary.png) [Apache](https://bearsampp.com/module/apache): the world's most used web server software.
+* ![](https://bearsampp.com/img/module/type-tool.png) [Composer](https://bearsampp.com/module/composer): a dependency manager for PHP.
+* ![](https://bearsampp.com/img/module/type-tool.png) [ConsoleZ](https://bearsampp.com/module/consolez): modified version of Console 2 for a better experience.
+* ![](https://bearsampp.com/img/module/type-binary.png) [Filezilla](https://bearsampp.com/module/filezilla): a FTP server application.
+* ![](https://bearsampp.com/img/module/type-tool.png) [Ghostscript](https://bearsampp.com/module/ghostscript): an interpreter for the PostScript language and for PDF.
+* ![](https://bearsampp.com/img/module/type-tool.png) [Git](https://bearsampp.com/module/git): a widely used version control system for software development.
+* ![](https://bearsampp.com/img/module/type-applicatoin.png) [GitList](https://bearsampp.com/module/gitlist): an elegant and modern git repository viewer.
+* ![](https://bearsampp.com/img/module/type-binary.png) [MailHog](https://bearsampp.com/module/mailhog): a Web and API based SMTP testing.
+* ![](https://bearsampp.com/img/module/type-binary.png) [MariaDB](https://bearsampp.com/module/mariadb): a community-developed fork of the MySQL relational database management system.
+* ![](https://bearsampp.com/img/module/type-binary.png) [Memcached](https://bearsampp.com/module/memcached): a distributed memory object caching system.
+* ![](https://bearsampp.com/img/module/type-binary.png) [MySQL](https://bearsampp.com/module/mysql): an open-source relational database management system.
+* ![](https://bearsampp.com/img/module/type-tool.png) [ngrok](https://bearsampp.com/module/ngrok): secure tunnels to localhost.
+* ![](https://bearsampp.com/img/module/type-binary.png) [Node.js](https://bearsampp.com/module/nodejs): an open-source, cross-platform runtime environment for developing server-side web applications.
+* ![](https://bearsampp.com/img/module/type-tool.png) [Perl](https://bearsampp.com/module/perl): a family of high-level, general-purpose, interpreted, dynamic programming languages.
+* ![](https://bearsampp.com/img/module/type-binary.png) [PHP](https://bearsampp.com/module/php): a server-side scripting language designed for web development including PEAR and extra extensions.
+* ![](https://bearsampp.com/img/module/type-applicatoin.png) [phpMemAdmin](https://bearsampp.com/module/phpmemadmin): to handle the administration of Memcached over the web.
+* ![](https://bearsampp.com/img/module/type-applicatoin.png) [phpMyAdmin](https://bearsampp.com/module/phpmyadmin): to handle the administration of MySQL and MariaDB over the Web.
+* ![](https://bearsampp.com/img/module/type-applicatoin.png) [phpPgAdmin](https://bearsampp.com/module/phppgadmin): a web-based administration tool for PostgreSQL.
+* ![](https://bearsampp.com/img/module/type-binary.png) [PostgreSQL](https://bearsampp.com/module/postgresql): an object-relational database management system (ORDBMS).
+* ![](https://bearsampp.com/img/module/type-tool.png) [Python](https://bearsampp.com/module/python): a widely used high-level, general-purpose, interpreted, dynamic programming language.
+* ![](https://bearsampp.com/img/module/type-tool.png) [Ruby](https://bearsampp.com/module/ruby): a dynamic, reflective, object-oriented, general-purpose programming language.
+* ![](https://bearsampp.com/img/module/type-binary.png) [SVN](https://bearsampp.com/module/svn): a software versioning and revision control system.
+* ![](https://bearsampp.com/img/module/type-applicatoin.png) [Webgrind](https://bearsampp.com/module/webgrind): the Xdebug Profiling Web Frontend in PHP.
+* ![](https://bearsampp.com/img/module/type-applicatoin.png) [WebSVN](https://bearsampp.com/module/websvn): an Online subversion repository browser.
+* ![](https://bearsampp.com/img/module/type-tool.png) [XDebugClient](https://bearsampp.com/module/xdc): a simple frontend for XDebug.
+* ![](https://bearsampp.com/img/module/type-tool.png) [Yarn](https://bearsampp.com/module/yarn): a fast, reliable, and secure dependency management.
 
 ## Documentation
 
