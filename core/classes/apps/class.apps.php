@@ -11,7 +11,7 @@ class Apps
     private $adminer;
     private $phpmemadmin;
     private $phppgadmin;
-    
+
     public function __construct()
     {
     }
@@ -23,7 +23,7 @@ class Apps
             $tool->update();
         }
     }
-    
+
     public function getAll()
     {
         return array(
@@ -36,7 +36,7 @@ class Apps
             $this->getWebsvn(),
         );
     }
-    
+
     public function getAdminer()
     {
         if ($this->adminer == null) {
@@ -44,7 +44,7 @@ class Apps
         }
         return $this->adminer;
     }
-    
+
     public function getGitlist()
     {
         if ($this->gitlist == null) {
@@ -52,7 +52,7 @@ class Apps
         }
         return $this->gitlist;
     }
-    
+
     public function getPhpmemadmin()
     {
         if ($this->phpmemadmin == null) {
@@ -68,7 +68,7 @@ class Apps
         }
         return $this->phpmyadmin;
     }
-    
+
     public function getPhppgadmin()
     {
         if ($this->phppgadmin == null) {
@@ -76,7 +76,7 @@ class Apps
         }
         return $this->phppgadmin;
     }
-    
+
     public function getWebgrind()
     {
         if ($this->webgrind == null) {
@@ -84,7 +84,8 @@ class Apps
         }
         return $this->webgrind;
     }
-    
+
+    /*
     public function getWebsvn()
     {
         if ($this->websvn == null) {
@@ -92,4 +93,5 @@ class Apps
         }
         return $this->websvn;
     }
+    */
 }
