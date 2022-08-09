@@ -185,7 +185,7 @@
     <getmodule releasesurl="${app.phpmyadmin.url}" version="${app.phpmyadmin.version}" dest="${release.target}/apps/phpmyadmin"/>
     <getmodule releasesurl="${app.phppgadmin.url}" version="${app.phppgadmin.version}" dest="${release.target}/apps/phppgadmin"/>
     <getmodule releasesurl="${app.webgrind.url}" version="${app.webgrind.version}" dest="${release.target}/apps/webgrind"/>
-    <getmodule releasesurl="${app.websvn.url}" version="${app.websvn.version}" dest="${release.target}/apps/websvn"/>
+   <!--<getmodule releasesurl="${app.websvn.url}" version="${app.websvn.version}" dest="${release.target}/apps/websvn"/ -->
 
     <!--  Get tools -->
     <getmodule releasesurl="${tool.composer.url}" version="${tool.composer.version}" dest="${release.target}/tools/composer"/>

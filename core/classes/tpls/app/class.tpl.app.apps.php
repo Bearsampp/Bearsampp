@@ -44,11 +44,13 @@ class TplAppApps
                 $bearsamppLang->getValue(Lang::WEBGRIND),
                 'webgrind/',
                 true
-            ) . PHP_EOL .
-            TplAestan::getItemLink(
+            ) . PHP_EOL;
+        /* replace ; above with . when/if svn is reinstated */
+          /*  TplAestan::getItemLink(
                 $bearsamppLang->getValue(Lang::WEBSVN),
                 'websvn/',
                 true
             );
+          */
     }
 }
