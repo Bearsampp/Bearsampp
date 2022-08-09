@@ -32,8 +32,8 @@ class Apps
             $this->getPhpmemadmin(),
             $this->getPhpmyadmin(),
             $this->getPhppgadmin(),
-            $this->getWebgrind(),
-            $this->getWebsvn(),
+            $this->getWebgrind()
+           // $this->getWebsvn(),
         );
     }
 
