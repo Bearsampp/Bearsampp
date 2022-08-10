@@ -719,6 +719,7 @@ class Util
         }
 
         // WebSVN
+       /*
         $folderList = self::getFolderList($bearsamppApps->getWebsvn()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
@@ -727,6 +728,7 @@ class Util
                 'recursive' => false
             );
         }
+        */
 
         // GitList
         $folderList = self::getFolderList($bearsamppApps->getGitlist()->getRootPath());
