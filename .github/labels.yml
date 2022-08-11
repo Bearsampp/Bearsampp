@@ -7,14 +7,20 @@
   name: ":bug: bug"
   color: "b60205"
   description: ""
+  from_name: "bug"
+- # Urgent
+  name: ":triangular_flag_on_post: Blocker"
+  color: "FFFFFF"
+  description: "Release blocker"
 - # dependencies
   name: ":game_die: dependencies"
   color: "0366d6"
   description: ""
 - # documentation
-  name: ":memo: documentation"
+  name: ":books: documentation"
   color: "c5def5"
   description: ""
+  from_name: "documentation"
 - # duplicate
   name: ":busts_in_silhouette: duplicate"
   color: "cccccc"
@@ -71,3 +77,15 @@
   name: ":coffin: wontfix"
   color: "ffffff"
   description: ""
+- # Blocker
+  name: ":triangular_flag_on_post: Blocker"
+  color: "ff0000"
+  description: "Urgent bug blocking release"
+- # Website
+  name: ":technologist: Website"
+  color: "FFFFFF"
+  description: "Our website"
+- # Security
+  name: ":closed_lock_with_key: Security"
+  color: "CD5C5C"
+  description: "Security issue"
