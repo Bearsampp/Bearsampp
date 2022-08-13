@@ -34,7 +34,7 @@ For those who wish to contribute, have an issue or questions, read the [Document
 * ![](img/binary.png) [Memcached](https://bearsampp.com/module/memcached): a distributed memory object caching system.
 * ![](img/binary.png) [MySQL](https://bearsampp.com/module/mysql): an open-source relational database management system.
 * ![](img/tool.png) [ngrok](https://bearsampp.com/module/ngrok): secure tunnels to localhost.
-* ![](img/binary.png) [Node.js](https://bearsampp.com/module/nodejs): an open-source, cross-platform runtime environment for developing server-side web           applications.
+* ![](img/binary.png) [Node.js](https://bearsampp.com/module/nodejs): an open-source, cross-platform runtime environment for developing server-side web applications.
 * ![](img/tool.png) [Perl](https://bearsampp.com/module/perl): a family of high-level, general-purpose, interpreted, dynamic programming languages.
 * ![](img/binary.png) [PHP](https://bearsampp.com/module/php): a server-side scripting language designed for web development including PEAR and extra extensions.
 * ![](img/application.png) [phpMemAdmin](https://bearsampp.com/module/phpmemadmin): to handle the administration of Memcached over the web.
