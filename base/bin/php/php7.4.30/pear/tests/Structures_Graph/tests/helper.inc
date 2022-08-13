@@ -1,5 +1,5 @@
 <?php
-if ('~BEARSAMPP_WIN_PATH~\bin\php\php7.4.30\pear\pear' == '@'.'php_dir'.'@') {
+if ('E:\Development\Bearsampp\bin\php\php7.4.30\pear\pear' == '@'.'php_dir'.'@') {
     // This package hasn't been installed.
     // Adjust path to ensure includes find files in working directory.
     set_include_path(dirname(dirname(__FILE__))

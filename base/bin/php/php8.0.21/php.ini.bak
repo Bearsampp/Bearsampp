@@ -956,7 +956,7 @@ extension=sodium
 ;extension=xsl
 extension=memcache
 extension=imagick
-
+extension=php_memcache
 
 
 ;zend_extension=opcache
