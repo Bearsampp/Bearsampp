@@ -22,7 +22,7 @@
   #phpinfo hr {width: 600px; background-color: #cccccc; border: 0; height: 1px; color: #000;}
 </style>
 
-<a href="/" class="btn btn-primary" role="button"><i class="fa fa-arrow-circle-left"></i> <?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_BACK_TEXT); ?></a>
+<a href="<?php echo $bearsamppHomepage->getPageQuery(Homepage::PAGE_INDEX); ?>" class="btn btn-primary" role="button"><i class="fa fa-arrow-circle-left"></i> <?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_BACK_TEXT); ?></a>
 
 <div id="phpinfo"><?php
 
