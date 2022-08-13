@@ -39,6 +39,9 @@ group:
       - source: .github
         dest: .github
         deleteOrphaned: true # Removes deleted files
+        exclude: |
+          - sync.yml
+
       - source: img/artwork/Bearsampp-with-text-stroked.svg
         dest: img/Bearsampp-logo.svg
         deleteOrphaned: true
