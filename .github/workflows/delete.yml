@@ -1,0 +1,18 @@
+name: Delete Files
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove File
+        uses: JesseTG/rm@v1.0.3
+        with:
+          path: .github/sync.yml
+      - name: Remove File2
+        uses: JesseTG/rm@v1.0.3
+        with:
+          path: .github/workflows/sync.yml
