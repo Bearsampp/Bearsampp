@@ -15,17 +15,3 @@ jobs:
         with:
           GH_PAT: ${{ secrets.GH_PAT }}
           SKIP_PR: true
-      - name: Remove File
-        uses: JesseTG/rm@v1.0.3
-        with:
-          path: .github/sync.yml
-      - name: Remove File2
-        uses: JesseTG/rm@v1.0.3
-        with:
-          path: .github/workflows/sync.yml
-      - name: Remove File3
-        uses: JesseTG/rm@v1.0.3
-        with:
-          path: .github/delete-sync.yml
-
-
