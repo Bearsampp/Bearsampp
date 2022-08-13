@@ -1,0 +1,92 @@
+group:
+
+  # Bearsampp repo unique things
+  - files:
+      - source: .git-sync/modules/.github
+        dest: .github
+        deleteOrphaned: true # Removes deleted files
+      - source: img/artwork/tool.png
+        dest: img/tool.png
+      - source: img/artwork/binary.png
+        dest: img/binary.png
+      - source: img/artwork/application.png
+        dest: img/application.png
+      - source: img/artwork/Bearsampp.bmp
+        dest: core/resources/Bearsampp.bmp
+      - source: img/artwork/Bearsampp-logo-128x128.ico
+        dest: core/resources/Bearsampp.ico
+      - source: img/artwork/Bearsampp-logo-128x128.ico
+        dest: core/resources/icons/app.ico
+      - source: img/artwork/about.bmp
+        dest: core/resources/about.bmp
+    repos: |
+        Bearsampp/Bearsampp
+
+  # Prerequisites unique things
+  - files:
+      - source: img/artwork/Bearsampp-logo-128x128.ico
+        dest:  setup/Bearsampp.ico
+      - source: img/artwork/Bearsampp.bmp
+        dest: setup/Bearsampp.bmp
+      - source: img/artwork/prerequisites.bmp
+        dest: setup/prerequisites.bmp
+    repos: |
+      Bearsampp/prerequisites
+
+
+  # All COMMON items go here
+  - files:
+      - source: .github
+        dest: .github
+        deleteOrphaned: true # Removes deleted files
+        exclude: |
+          - sync.yml
+
+      - source: img/artwork/Bearsampp-with-text-stroked.svg
+        dest: img/Bearsampp-logo.svg
+        deleteOrphaned: true
+      - source: LICENSE
+        dest: LICENSE
+      - source: .gitignore
+        dest: .gitignore
+      - source: .editorconfig
+        dest: .editorconfig
+      - source: .gitattributes
+        dest: .gitattributes
+      - source: favicon.io
+        dest: favicon.io
+    repos: |
+        Bearsampp/Bearsampp
+        Bearsampp/dev
+        Bearsampp/login-servers-enhanced
+        Bearsampp/aetraymenu
+        Bearsampp/module-adminer
+        Bearsampp/module-apache
+        Bearsampp/module-composer
+        Bearsampp/module-consolez
+        Bearsampp/module-filezilla
+        Bearsampp/module-ghostscript
+        Bearsampp/module-git
+        Bearsampp/module-gitlist
+        Bearsampp/module-mailhog
+        Bearsampp/module-mariadb
+        Bearsampp/module-memcached
+        Bearsampp/module-mysql
+        Bearsampp/module-ngrok
+        Bearsampp/module-nodejs
+        Bearsampp/module-perl
+        Bearsampp/module-php
+        Bearsampp/module-phpmemadmin
+        Bearsampp/module-phpmyadmin
+        Bearsampp/module-phppgadmin
+        Bearsampp/module-postgresql
+        Bearsampp/module-python
+        Bearsampp/module-ruby
+        Bearsampp/module-svn
+        Bearsampp/module-webgrind
+        Bearsampp/module-websvn
+        Bearsampp/module-xdc
+        Bearsampp/module-yarn
+        Bearsampp/modules-untouched
+        Bearsampp/prerequisites
+        Bearsampp/.teams
