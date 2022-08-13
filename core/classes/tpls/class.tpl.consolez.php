@@ -8,7 +8,6 @@ class TplConsoleZ
     const ICON_DB = 'db.ico';
     const ICON_GHOSTSCRIPT = 'ghostscript.ico';
     const ICON_GIT = 'git.ico';
-    const ICON_SVN = 'svn.ico';
     const ICON_NODEJS = 'nodejs.ico';
     const ICON_COMPOSER = 'composer.ico';
     const ICON_PYTHON = 'python.ico';
@@ -224,7 +223,6 @@ class TplConsoleZ
                 self::getTabPostgresqlSection() .
                 self::getTabGhostscriptSection() .
                 self::getTabGitSection() .
-                self::getTabSvnSection() .
                 self::getTabNodejsSection() .
                 self::getTabComposerSection() .
                 self::getTabPerlSection() .
@@ -340,24 +338,7 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
-    private static function getTabSvnSection()
-    {
-        global $bearsamppBs, $bearsamppBins, $bearsamppTools;
-
-        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppBins->getSvn()->getExe() . '&quot; --version');
-        if (!file_exists($bearsamppBins->getSvn()->getExe())) {
-            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppBins->getSvn()->getExe() . ' not found...');
-        }
-
-        return self::getTab(
-            $bearsamppTools->getConsoleZ()->getTabTitleSvn(),
-            self::ICON_SVN,
-            $shell,
-            $bearsamppBs->getWwwPath()
-        ) . PHP_EOL;
-    }
-
-    private static function getTabGitSection()
+        private static function getTabGitSection()
     {
         global $bearsamppBs, $bearsamppTools;
 

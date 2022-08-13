@@ -48,7 +48,6 @@ ssl = "SSL"
 startup = "Elindítás"
 status = "Státusz"
 statusPage = "Státusz oldal"
-svnConsole = "SVN konzol"
 target = "Cél"
 tools = "Eszközök"
 verboseDebug = "Hibakeresés"
@@ -108,7 +107,6 @@ nodejs = "Node.js"
 pear = "PEAR"
 php = "PHP"
 postgresql = "PostgreSQL"
-svn = "SVN"
 
 ; Apps
 adminer = "Adminer"
@@ -117,7 +115,6 @@ phpmemadmin = "phpMemAdmin"
 phpmyadmin = "phpMyAdmin"
 phppgadmin = "phpPgAdmin"
 webgrind = "Webgrind"
-websvn = "WebSVN"
 
 ; Tools
 composer = "Composer"
@@ -305,9 +302,6 @@ debugMariadbSyntaxCheck = "Konfiguráció szintaktikai ellenörzése"
 
 ; Action Debug PostgreSQL
 debugPostgresqlVersion = "Verzió"
-
-; Action Debug SVN
-debugSvnVersion = "Verzió"
 
 ; Action others...
 registrySetErrorText = "Regisztri érték hiba : %s"

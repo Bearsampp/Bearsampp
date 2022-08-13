@@ -132,15 +132,6 @@ class ToolConsoleZ extends Module
         return $bearsamppLang->getValue(Lang::POSTGRESQL) . ' ' . $bearsamppBins->getPostgresql()->getVersion();
     }
 
-    public function getTabTitleSvn($repoPath = null) {
-        global $bearsamppLang, $bearsamppBins;
-        $result = $bearsamppLang->getValue(Lang::SVN) . ' ' . $bearsamppBins->getSvn()->getVersion();
-        if ($repoPath != null) {
-            $result .= ' - ' . basename($repoPath);
-        }
-        return $result;
-    }
-
     public function getTabTitleGit($repoPath = null) {
         global $bearsamppLang, $bearsamppTools;
         $result = $bearsamppLang->getValue(Lang::GIT) . ' ' . $bearsamppTools->getGit()->getVersion();

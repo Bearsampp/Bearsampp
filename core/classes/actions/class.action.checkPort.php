@@ -22,8 +22,6 @@ class ActionCheckPort
                 $bearsamppBins->getMailhog()->checkPort($args[1], true);
             } elseif ($args[0] == $bearsamppBins->getMemcached()->getName()) {
                 $bearsamppBins->getMemcached()->checkPort($args[1], true);
-            } elseif ($args[0] == $bearsamppBins->getSvn()->getName()) {
-                $bearsamppBins->getSvn()->checkPort($args[1], true);
             }
         }
     }

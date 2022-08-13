@@ -26,8 +26,6 @@ class ActionEnable
                 $bearsamppBins->getMailhog()->setEnable($args[1], true);
             } elseif ($args[0] == $bearsamppBins->getMemcached()->getName()) {
                 $bearsamppBins->getMemcached()->setEnable($args[1], true);
-            } elseif ($args[0] == $bearsamppBins->getSvn()->getName()) {
-                $bearsamppBins->getSvn()->setEnable($args[1], true);
             }
         }
     }

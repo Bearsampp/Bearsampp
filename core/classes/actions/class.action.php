@@ -15,7 +15,6 @@ class Action
     const DEBUG_MARIADB = 'debugMariadb';
     const DEBUG_MYSQL = 'debugMysql';
     const DEBUG_POSTGRESQL = 'debugPostgresql';
-    const DEBUG_SVN = 'debugSvn';
     const EDIT_ALIAS = 'editAlias';
     const EDIT_VHOST = 'editVhost';
     const ENABLE = 'enable';

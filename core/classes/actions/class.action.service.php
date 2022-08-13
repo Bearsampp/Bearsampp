@@ -48,9 +48,6 @@ class ActionService
             } elseif ($sName == BinFilezilla::SERVICE_NAME) {
                 $bin = $bearsamppBins->getFilezilla();
                 $port = $bin->getPort();
-            } elseif ($sName == BinSvn::SERVICE_NAME) {
-                $bin = $bearsamppBins->getSvn();
-                $port = $bin->getPort();
             }
 
             $name = $bin->getName();

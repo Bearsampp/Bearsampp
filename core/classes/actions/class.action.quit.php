@@ -44,8 +44,6 @@ class ActionQuit
                 $name = $bearsamppBins->getMemcached()->getName() . ' ' . $bearsamppBins->getMemcached()->getVersion();
             } elseif ($sName == BinFilezilla::SERVICE_NAME) {
                 $name = $bearsamppBins->getFilezilla()->getName() . ' ' . $bearsamppBins->getFilezilla()->getVersion();
-            } elseif ($sName == BinSvn::SERVICE_NAME) {
-                $name = $bearsamppBins->getSvn()->getName() . ' ' . $bearsamppBins->getSvn()->getVersion();
             }
             $name .= ' (' . $service->getName() . ')';
 

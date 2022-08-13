@@ -21,7 +21,6 @@
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/nodejs.js"></script>
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/php.js"></script>
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/postgresql.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/svn.js"></script>
     <link href="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/css/app.css" rel="stylesheet">

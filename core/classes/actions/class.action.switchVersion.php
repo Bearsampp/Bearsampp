@@ -123,11 +123,6 @@ class ActionSwitchVersion
                 $this->currentVersion = $bearsamppBins->getMemcached()->getVersion();
                 $this->service = $bearsamppBins->getMemcached()->getService();
                 $this->changePort = true;
-            } elseif ($args[0] == $bearsamppBins->getSvn()->getName()) {
-                $this->bin = $bearsamppBins->getSvn();
-                $this->currentVersion = $bearsamppBins->getSvn()->getVersion();
-                $this->service = $bearsamppBins->getSvn()->getService();
-                $this->changePort = true;
             }
 
             $this->boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->bin->getName(), $this->version);

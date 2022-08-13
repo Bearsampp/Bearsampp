@@ -31,9 +31,6 @@ class ActionReload
         // Process ConsoleZ config
         TplConsoleZ::process();
 
-        // Process Websvn config
-        TplWebsvn::process();
-
         // Process Gitlist config
         TplGitlist::process();
 

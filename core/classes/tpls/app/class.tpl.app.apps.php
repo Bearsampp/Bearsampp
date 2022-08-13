@@ -44,11 +44,6 @@ class TplAppApps
                 $bearsamppLang->getValue(Lang::WEBGRIND),
                 'webgrind/',
                 true
-            ) . PHP_EOL .
-            TplAestan::getItemLink(
-                $bearsamppLang->getValue(Lang::WEBSVN),
-                'websvn/',
-                true
             );
     }
 }
