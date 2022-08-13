@@ -32,7 +32,7 @@ class ActionReload
         TplConsoleZ::process();
 
         // Process Websvn config
-        TplWebsvn::process();
+       // TplWebsvn::process();
 
         // Process Gitlist config
         TplGitlist::process();
