@@ -45,7 +45,7 @@ For those who wish to contribute, have an issue or questions, read the [Document
 * ![](img/tool.png) [Ruby](https://bearsampp.com/module/ruby): a dynamic, reflective, object-oriented, general-purpose programming language.
 * ![](img/binary.png) [SVN](https://bearsampp.com/module/svn): a software versioning and revision control system.
 * ![](img/application.png) [Webgrind](https://bearsampp.com/module/webgrind): the Xdebug Profiling Web Frontend in PHP.
-* ![](img/application.png) [WebSVN](https://bearsampp.com/module/websvn): an Online subversion repository browser.
+<!--- * ![](img/application.png) [WebSVN](https://bearsampp.com/module/websvn): an Online subversion repository browser. --->
 * ![](img/tool.png) [XDebugClient](https://bearsampp.com/module/xdc): a simple frontend for XDebug.
 * ![](img/tool.png) [Yarn](https://bearsampp.com/module/yarn): a fast, reliable, and secure dependency management.
 

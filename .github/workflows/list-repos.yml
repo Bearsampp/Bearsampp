@@ -1,0 +1,56 @@
+name: Save repolist
+on: push
+jobs:
+  Repo-list:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - run: npm install -g bats
+      - run: bats -v
+
+      # Create raw list of ALL repos in comma delimited format
+      - name: Repo-List-Generator
+        id: repo
+        uses: yi-Xu-0100/repo-list-generator@v1.0.1
+
+      # Now that its saved we can use an action to replace .settings since we don't want that one in the list.
+      - name: Find-and-replace settings
+        uses: mad9000/actions-find-and-replace-string@2
+        id: settings
+        with:
+          source: ${{ steps.repo.outputs.repoList_PRIVATE }}
+          find: ".settings,"
+          replace: ''
+
+      - name: Write to file
+        uses: DamianReeves/write-file-action@master
+        with:
+          contents: ${{ steps.settings.outputs.value }}
+          path: current-repos.md
+          write-mode: overwrite
+
+      # Now that its saved replace put Bearsampp in front of aetray
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v2
+        id: gha
+        with:
+          find: "aetraymenu"
+          replace: ",aetraymenu"
+          include: current-repos.md
+
+      # Now that its saved replace , with eol
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v2
+        id: gha2
+        with:
+          find: ","
+          replace: "\nBearsampp/"
+          include: current-repos.md
+
+      # Now that everything is done lets actually physically create the file.
+      - uses: GuillaumeFalourd/git-commit-push@main
+        with:
+          files: current-repos.md
