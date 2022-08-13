@@ -167,7 +167,7 @@ class TplApp
                 array(ActionCheckVersion::DISPLAY_OK),
                 array($bearsamppLang->getValue(Lang::MENU_CHECK_UPDATE), TplAestan::GLYPH_UPDATE)
             ) . PHP_EOL .
-            TplAestan::getItemLink($bearsamppLang->getValue(Lang::HELP), Util::getWebsiteUrl('doc')) . PHP_EOL .
+            TplAestan::getItemLink($bearsamppLang->getValue(Lang::HELP), Util::getWebsiteUrl('faq')) . PHP_EOL .
 
             TplAestan::getItemSeparator() . PHP_EOL .
             $tplReload[self::SECTION_CALL] . PHP_EOL .
