@@ -177,11 +177,12 @@
             <span style="float:right;font-size:12px" class="label label-primary"><?php echo $bearsamppApps->getWebgrind()->getVersion(); ?></span>
             <a href="webgrind" target="_blank"><?php echo $bearsamppLang->getValue(Lang::WEBGRIND); ?></a>
           </span>
-          <span class="list-group-item">
+       <!--   <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/websvn', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
             <span style="float:right;font-size:12px" class="label label-primary"><?php echo $bearsamppApps->getWebsvn()->getVersion(); ?></span>
             <a href="websvn" target="_blank"><?php echo $bearsamppLang->getValue(Lang::WEBSVN); ?></a>
           </span>
+       -->
         </div>
       </div>
     </div>
