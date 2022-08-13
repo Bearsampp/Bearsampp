@@ -49,7 +49,6 @@ class Lang
     const STARTUP = 'startup';
     const STATUS = 'status';
     const STATUS_PAGE = 'statusPage';
-    const SVN_CONSOLE = 'svnConsole';
     const TARGET = 'target';
     const TOOLS = 'tools';
     const VERBOSE_DEBUG = 'verboseDebug';
@@ -109,13 +108,11 @@ class Lang
     const MYSQL = 'mysql';
     const NODEJS = 'nodejs';
     const POSTGRESQL = 'postgresql';
-    const SVN = 'svn';
 
     // Apps
     const GITLIST = 'gitlist';
     const PHPMYADMIN = 'phpmyadmin';
     const WEBGRIND = 'webgrind';
-    const WEBSVN = 'websvn';
     const ADMINER = 'adminer';
     const PHPMEMADMIN = 'phpmemadmin';
     const PHPPGADMIN = 'phppgadmin';
@@ -306,9 +303,6 @@ class Lang
     // Action Debug PostgreSQL
     const DEBUG_POSTGRESQL_VERSION = 'debugPostgresqlVersion';
 
-    // Action Debug SVN
-    const DEBUG_SVN_VERSION = 'debugSvnVersion';
-
     // Action others...
     const REGISTRY_SET_ERROR_TEXT = 'registrySetErrorText';
 
@@ -407,7 +401,6 @@ class Lang
             self::STARTUP,
             self::STATUS,
             self::STATUS_PAGE,
-            self::SVN_CONSOLE,
             self::TARGET,
             self::TOOLS,
             self::VERBOSE_DEBUG,
@@ -467,13 +460,11 @@ class Lang
             self::MYSQL,
             self::NODEJS,
             self::POSTGRESQL,
-            self::SVN,
 
             // Apps
             self::GITLIST,
             self::PHPMYADMIN,
             self::WEBGRIND,
-            self::WEBSVN,
             self::ADMINER,
             self::PHPMEMADMIN,
             self::PHPPGADMIN,
@@ -662,9 +653,6 @@ class Lang
 
             // Action Debug PostgreSQL
             self::DEBUG_POSTGRESQL_VERSION,
-
-            // Action Debug SVN
-            self::DEBUG_SVN_VERSION,
 
             // Action others...
             self::REGISTRY_SET_ERROR_TEXT,

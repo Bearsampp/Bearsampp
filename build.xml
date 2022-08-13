@@ -91,7 +91,6 @@
         <filter token="BIN_FILEZILLA_VERSION" value="${bin.filezilla.version}"/>
         <filter token="BIN_MAILHOG_VERSION" value="${bin.mailhog.version}"/>
         <filter token="BIN_MEMCACHED_VERSION" value="${bin.memcached.version}"/>
-        <filter token="BIN_SVN_VERSION" value="${bin.svn.version}"/>
 
         <filter token="TOOL_COMPOSER_VERSION" value="${tool.composer.version}"/>
         <filter token="TOOL_CONSOLEZ_VERSION" value="${tool.consolez.version}"/>
@@ -110,7 +109,6 @@
         <filter token="APP_PHPMYADMIN_VERSION" value="${app.phpmyadmin.version}"/>
         <filter token="APP_PHPPGADMIN_VERSION" value="${app.phppgadmin.version}"/>
         <filter token="APP_WEBGRIND_VERSION" value="${app.webgrind.version}"/>
-        <filter token="APP_WEBSVN_VERSION" value="${app.websvn.version}"/>
       </filterset>
     </copy>
 
@@ -162,7 +160,6 @@
         <filter token="BIN_FILEZILLA_ENABLE" value="1"/>
         <filter token="BIN_MAILHOG_ENABLE" value="1"/>
         <filter token="BIN_MEMCACHED_ENABLE" value="1"/>
-        <filter token="BIN_SVN_ENABLE" value="1"/>
       </filterset>
     </copy>
 
@@ -176,7 +173,6 @@
     <getmodule releasesurl="${bin.mysql.url}" version="${bin.mysql.version}" dest="${release.target}/bin/mysql"/>
     <getmodule releasesurl="${bin.nodejs.url}" version="${bin.nodejs.version}" dest="${release.target}/bin/nodejs"/>
     <getmodule releasesurl="${bin.php.url}" version="${bin.php.version}" dest="${release.target}/bin/php"/>
-    <getmodule releasesurl="${bin.svn.url}" version="${bin.svn.version}" dest="${release.target}/bin/svn"/>
 
     <!-- Get apps -->
     <getmodule releasesurl="${app.adminer.url}" version="${app.adminer.version}" dest="${release.target}/apps/adminer"/>
@@ -185,7 +181,6 @@
     <getmodule releasesurl="${app.phpmyadmin.url}" version="${app.phpmyadmin.version}" dest="${release.target}/apps/phpmyadmin"/>
     <getmodule releasesurl="${app.phppgadmin.url}" version="${app.phppgadmin.version}" dest="${release.target}/apps/phppgadmin"/>
     <getmodule releasesurl="${app.webgrind.url}" version="${app.webgrind.version}" dest="${release.target}/apps/webgrind"/>
-    <getmodule releasesurl="${app.websvn.url}" version="${app.websvn.version}" dest="${release.target}/apps/websvn"/>
 
     <!--  Get tools -->
     <getmodule releasesurl="${tool.composer.url}" version="${tool.composer.version}" dest="${release.target}/tools/composer"/>
@@ -274,7 +269,6 @@
         <filter token="BIN_FILEZILLA_ENABLE" value="0"/>
         <filter token="BIN_MAILHOG_ENABLE" value="1"/>
         <filter token="BIN_MEMCACHED_ENABLE" value="0"/>
-        <filter token="BIN_SVN_ENABLE" value="0"/>
       </filterset>
     </copy>
 
@@ -288,7 +282,6 @@
     <getmodule releasesurl="${bin.mysql.url}" version="${bin.mysql.version}" dest="${release.target}/bin/mysql"/>
     <getmodule releasesurl="${bin.nodejs.url}" version="${bin.nodejs.version}" dest="${release.target}/bin/nodejs"/>
     <getmodule releasesurl="${bin.php.url}" version="${bin.php.version}" dest="${release.target}/bin/php"/>
-    <!--getmodule releasesurl="${bin.svn.url}" version="${bin.svn.version}" dest="${release.target}/bin/svn"/-->
 
     <!--Get apps -->
     <getmodule releasesurl="${app.adminer.url}" version="${app.adminer.version}" dest="${release.target}/apps/adminer"/>
@@ -297,7 +290,6 @@
     <getmodule releasesurl="${app.phpmyadmin.url}" version="${app.phpmyadmin.version}" dest="${release.target}/apps/phpmyadmin"/>
     <!-- <getmodule releasesurl="${app.phppgadmin.url}" version="${app.phppgadmin.version}" dest="${release.target}/apps/phppgadmin"/ -->
     <getmodule releasesurl="${app.webgrind.url}" version="${app.webgrind.version}" dest="${release.target}/apps/webgrind"/>
-    <!-- <getmodule releasesurl="${app.websvn.url}" version="${app.websvn.version}" dest="${release.target}/apps/websvn"/ -->
 
     <!-- Get tools -->
     <getmodule releasesurl="${tool.composer.url}" version="${tool.composer.version}" dest="${release.target}/tools/composer"/>
@@ -386,7 +378,6 @@
         <filter token="BIN_FILEZILLA_ENABLE" value="0"/>
         <filter token="BIN_MAILHOG_ENABLE" value="1"/>
         <filter token="BIN_MEMCACHED_ENABLE" value="0"/>
-        <filter token="BIN_SVN_ENABLE" value="0"/>
       </filterset>
     </copy>
 
@@ -400,7 +391,6 @@
     <!--getmodule releasesurl="${bin.mysql.url}" version="${bin.mysql.version}" dest="${release.target}/bin/mysql"/-->
     <!--getmodule releasesurl="${bin.nodejs.url}" version="${bin.nodejs.version}" dest="${release.target}/bin/nodejs"/-->
     <getmodule releasesurl="${bin.php.url}" version="${bin.php.version}" dest="${release.target}/bin/php"/>
-    <!--getmodule releasesurl="${bin.svn.url}" version="${bin.svn.version}" dest="${release.target}/bin/svn"/-->
 
     <!--Get apps -->
     <getmodule releasesurl="${app.adminer.url}" version="${app.adminer.version}" dest="${release.target}/apps/adminer"/>
@@ -409,7 +399,6 @@
     <getmodule releasesurl="${app.phpmyadmin.url}" version="${app.phpmyadmin.version}" dest="${release.target}/apps/phpmyadmin"/>
     <!-- <getmodule releasesurl="${app.phppgadmin.url}" version="${app.phppgadmin.version}" dest="${release.target}/apps/phppgadmin"/ -->
     <getmodule releasesurl="${app.webgrind.url}" version="${app.webgrind.version}" dest="${release.target}/apps/webgrind"/>
-   <!-- <getmodule releasesurl="${app.websvn.url}" version="${app.websvn.version}" dest="${release.target}/apps/websvn"/ -->
 
     <!-- Get tools -->
     <getmodule releasesurl="${tool.composer.url}" version="${tool.composer.version}" dest="${release.target}/tools/composer"/>

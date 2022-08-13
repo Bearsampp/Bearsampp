@@ -204,7 +204,6 @@ class TplApp
         $tplMailhog = TplAppMailhog::process();
         $tplMemcached = TplAppMemcached::process();
         $tplFilezilla = TplAppFilezilla::process();
-        $tplSvn = TplAppSvn::process();
 
         $tplLogs = TplAppLogs::process();
         $tplApps = TplAppApps::process();
@@ -235,7 +234,6 @@ class TplApp
             $tplMailhog[self::SECTION_CALL] . PHP_EOL .
             $tplMemcached[self::SECTION_CALL] . PHP_EOL .
             $tplFilezilla[self::SECTION_CALL] . PHP_EOL .
-            $tplSvn[self::SECTION_CALL] . PHP_EOL .
 
             //// Stuff menus
             TplAestan::getItemSeparator() . PHP_EOL .
@@ -261,7 +259,6 @@ class TplApp
             PHP_EOL . $tplMailhog[self::SECTION_CONTENT] .
             PHP_EOL . $tplMemcached[self::SECTION_CONTENT] .
             PHP_EOL . $tplFilezilla[self::SECTION_CONTENT] .
-            PHP_EOL . $tplSvn[self::SECTION_CONTENT] .
             PHP_EOL . $tplLogs[self::SECTION_CONTENT] .
             PHP_EOL . $tplTools[self::SECTION_CONTENT] .
             PHP_EOL . $tplApps[self::SECTION_CONTENT] .

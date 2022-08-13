@@ -300,9 +300,6 @@ class Util
             if ($bearsamppBins->getNodejs()->isEnable()) {
                 $value .= $bearsamppBins->getNodejs()->getSymlinkPath() . ';';
             }
-            if ($bearsamppBins->getSvn()->isEnable()) {
-                $value .= $bearsamppBins->getSvn()->getSymlinkPath() . ';';
-            }
             if ($bearsamppTools->getComposer()->isEnable()) {
                 $value .= $bearsamppTools->getComposer()->getSymlinkPath() . ';';
                 $value .= $bearsamppTools->getComposer()->getSymlinkPath() . '/vendor/bin;';
@@ -715,16 +712,6 @@ class Util
                 'path' => $bearsamppBins->getFilezilla()->getRootPath() . '/' . $folder,
                 'includes' => array('.xml'),
                 'recursive' => true
-            );
-        }
-
-        // WebSVN
-        $folderList = self::getFolderList($bearsamppApps->getWebsvn()->getRootPath());
-        foreach ($folderList as $folder) {
-            $paths[] = array(
-                'path' => $bearsamppApps->getWebsvn()->getRootPath() . '/' . $folder . '/include',
-                'includes' => array('config.php'),
-                'recursive' => false
             );
         }
 

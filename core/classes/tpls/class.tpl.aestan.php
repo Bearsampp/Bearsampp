@@ -26,7 +26,6 @@ class TplAestan
     const GLYPH_SERVICES_START = 24;
     const GLYPH_LIGHT = 25;
     const GLYPH_GIT = 26;
-    const GLYPH_SVN = 27;
     const GLYPH_NODEJS = 28;
     const GLYPH_NETWORK = 29;
     const GLYPH_WEB_PAGE = 30;
@@ -48,7 +47,6 @@ class TplAestan
     const GLYPH_PYTHON = 50;
     const GLYPH_PYTHON_CP = 51;
     const GLYPH_RUBY = 52;
-    const GLYPH_SVN_BARE = 53;
     const GLYPH_YARN = 54;
     const GLYPH_PERL = 55;
     const GLYPH_GHOSTSCRIPT = 56;

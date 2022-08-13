@@ -549,9 +549,6 @@ class ActionStartup
                 } elseif ($sName == BinFilezilla::SERVICE_NAME) {
                     $bin = $bearsamppBins->getFilezilla();
                     $port = $bearsamppBins->getFilezilla()->getPort();
-                } elseif ($sName == BinSvn::SERVICE_NAME) {
-                    $bin = $bearsamppBins->getSvn();
-                    $port = $bearsamppBins->getSvn()->getPort();
                 }
 
                 $name = $bin->getName() . ' ' . $bin->getVersion() . ' (' . $service->getName() . ')';

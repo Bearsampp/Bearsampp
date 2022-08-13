@@ -8,7 +8,6 @@ $result = array(
     'binmysql' => '',
     'binpostgresql' => '',
     'binmemcached' => '',
-    'binsvn' => '',
     'binnodejs' => '',
     'binphp' => '',
 );
@@ -125,19 +124,6 @@ if ($bearsamppBins->getMemcached()->isEnable()) {
 $result['binmemcached'] = sprintf($dlMoreTpl, 'memcached');
 $result['binmemcached'] .= '<span style="float:right;font-size:12px" class="label ' . $memcachedLabel . '">' . $bearsamppBins->getMemcached()->getVersion() . '</span>';
 
-// Bin SVN
-$svnPort = $bearsamppBins->getSvn()->getPort();
-$svnLabel = 'label-default';
-
-if ($bearsamppBins->getSvn()->isEnable()) {
-    $svnLabel = 'label-danger';
-    if ($bearsamppBins->getSvn()->checkPort($svnPort)) {
-        $svnLabel = 'label-success';
-    }
-}
-
-$result['binsvn'] = sprintf($dlMoreTpl, 'svn');
-$result['binsvn'] .= '<span style="float:right;font-size:12px" class="label ' . $svnLabel . '">' . $bearsamppBins->getSvn()->getVersion() . '</span>';
 
 // Bin Node.js
 $nodejsLabel = 'label-default';
