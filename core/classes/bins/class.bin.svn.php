@@ -220,7 +220,7 @@ class BinSvn extends Module
         $this->setVersion($version);
 
         // websvn
-        $bearsamppApps->getWebsvn()->update($sub + 1);
+       // $bearsamppApps->getWebsvn()->update($sub + 1);
 
         return true;
     }

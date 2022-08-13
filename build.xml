@@ -110,7 +110,7 @@
         <filter token="APP_PHPMYADMIN_VERSION" value="${app.phpmyadmin.version}"/>
         <filter token="APP_PHPPGADMIN_VERSION" value="${app.phppgadmin.version}"/>
         <filter token="APP_WEBGRIND_VERSION" value="${app.webgrind.version}"/>
-        <filter token="APP_WEBSVN_VERSION" value="${app.websvn.version}"/>
+        <!--<filter token="APP_WEBSVN_VERSION" value="${app.websvn.version}"/ -->
       </filterset>
     </copy>
 
@@ -185,7 +185,7 @@
     <getmodule releasesurl="${app.phpmyadmin.url}" version="${app.phpmyadmin.version}" dest="${release.target}/apps/phpmyadmin"/>
     <getmodule releasesurl="${app.phppgadmin.url}" version="${app.phppgadmin.version}" dest="${release.target}/apps/phppgadmin"/>
     <getmodule releasesurl="${app.webgrind.url}" version="${app.webgrind.version}" dest="${release.target}/apps/webgrind"/>
-    <getmodule releasesurl="${app.websvn.url}" version="${app.websvn.version}" dest="${release.target}/apps/websvn"/>
+   <!--<getmodule releasesurl="${app.websvn.url}" version="${app.websvn.version}" dest="${release.target}/apps/websvn"/ -->
 
     <!--  Get tools -->
     <getmodule releasesurl="${tool.composer.url}" version="${tool.composer.version}" dest="${release.target}/tools/composer"/>
@@ -356,7 +356,7 @@
     <property name="release.target" value="${release.tmp.path}/${release.name}-lite-${release.fullversion}"/>
     <property name="release.destfile" value="${build.release.path}/${release.name}-lite-${release.fullversion}"/>
 
-    <echo message="*** Release (light)"/>
+    <echo message="*** Release (lite)"/>
     <echo message="* Name    : ${release.name} "/>
     <echo message="* Version : ${release.fullversion} "/>
     <echo message="* Format  : ${release.format} "/>

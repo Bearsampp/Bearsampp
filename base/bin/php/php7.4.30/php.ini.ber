@@ -966,8 +966,8 @@ extension=sodium
 ;extension=sqlite3
 ;extension=tidy
 ;extension=xsl
-extension=imagick
 extension=memcache
+extension=imagick
 
 
 ;zend_extension=opcache
