@@ -356,7 +356,7 @@
     <property name="release.target" value="${release.tmp.path}/${release.name}-lite-${release.fullversion}"/>
     <property name="release.destfile" value="${build.release.path}/${release.name}-lite-${release.fullversion}"/>
 
-    <echo message="*** Release (light)"/>
+    <echo message="*** Release (lite)"/>
     <echo message="* Name    : ${release.name} "/>
     <echo message="* Version : ${release.fullversion} "/>
     <echo message="* Format  : ${release.format} "/>
