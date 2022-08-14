@@ -2,6 +2,9 @@ group:
 
   # Bearsampp repo unique things
   - files:
+      - source: .git-sync/modules/.github
+        dest: .github
+        deleteOrphaned: true # Removes deleted files
       - source: img/artwork/tool.png
         dest: img/tool.png
       - source: img/artwork/binary.png
@@ -50,7 +53,7 @@ group:
         dest: .editorconfig
       - source: .gitattributes
         dest: .gitattributes
-      - source: /img/artwork/favicon.io
+      - source: favicon.io
         dest: favicon.io
     repos: |
         Bearsampp/Bearsampp
