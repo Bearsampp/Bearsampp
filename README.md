@@ -45,9 +45,7 @@ For those who wish to contribute, have an issue or questions, read the [Document
 | ![](img/binary.png) | [PostgreSQL](https://bearsampp.com/module/postgresql): an object-relational database management system (ORDBMS). |
 | ![](img/tool.png) | [Python](https://bearsampp.com/module/python): a widely used high-level, general-purpose, interpreted, dynamic programming language. |
 | ![](img/tool.png) | [Ruby](https://bearsampp.com/module/ruby): a dynamic, reflective, object-oriented, general-purpose programming language. |
-| ![](img/binary.png) | [SVN](https://bearsampp.com/module/svn): a software versioning and revision control system. |
 | ![](img/application.png) | [Webgrind](https://bearsampp.com/module/webgrind): the Xdebug Profiling Web Frontend in PHP. |
-| ![](img/application.png) | [WebSVN](https://bearsampp.com/module/websvn): an Online subversion repository browser. |
 | ![](img/tool.png) | [XDebugClient](https://bearsampp.com/module/xdc): a simple frontend for XDebug. |
 | ![](img/tool.png) | [Yarn](https://bearsampp.com/module/yarn): a fast, reliable, and secure dependency management. |
 
@@ -76,14 +74,5 @@ Thanks again for your support, it is much appreciated! :pray:
 ## License
 
 GPL-3.0. See `LICENSE` for more details.<br />
-
-## How to create release from dev
-If you are not familiar with pull request, you can create a new module like this :
-
-Increment the build.release in the build.properties file.
-If you want you can change the build.path (default C:\bearsampp-build).
-Open a command prompt in your module folder and call the Ant target release : ant release.
-Upload your release on a file hosting system like Sendspace.
-Create an issue on Bearsampp repository to integrate your release.
 
 <h6>Bearsampp was originally forked, in 2021, from neard.io</h6>

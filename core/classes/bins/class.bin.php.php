@@ -533,9 +533,7 @@ class BinPhp extends Module
         $phpVersion = $phpVersion == null ? $this->getVersion() : $phpVersion;
         $currentPath = str_replace('php' . $this->getVersion(), 'php' . $phpVersion, $this->getCurrentPath());
 
-        if (file_exists($currentPath . '/php5ts.dll')) {
-            return 'php5ts.dll';
-        } elseif (file_exists($currentPath . '/php7ts.dll')) {
+        if (file_exists($currentPath . '/php7ts.dll')) {
             return 'php7ts.dll';
         } elseif (file_exists($currentPath . '/php8ts.dll')) {
             return 'php8ts.dll';
