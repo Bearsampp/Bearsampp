@@ -1,5 +1,4 @@
-- name: Remove File
-  uses: JesseTG/rm@v1.0.3
-  with:
-    path: .github/workflows/sync.yml
-    path: .github/sync.yml
+name: Remove Files
+    uses: JesseTG/rm@v1.0.3
+    with:
+      path: .github/workflows/sync.yml
