@@ -1,4 +1,11 @@
 name: Remove Files
-    uses: JesseTG/rm@v1.0.3
-    with:
-      path: .github/workflows/sync.yml
+on:
+  workflow_dispatch:
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+- name: Remove File
+  uses: JesseTG/rm@v1.0.3
+  with:
+    path: .github/workflows/sync.yml
+    path: .github/sync.yml
