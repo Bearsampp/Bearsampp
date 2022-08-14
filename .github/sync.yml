@@ -50,7 +50,7 @@ group:
         dest: .editorconfig
       - source: .gitattributes
         dest: .gitattributes
-      - source: /img/artwork/favicon.io
+      - source: img/artwork/favicon.io
         dest: favicon.io
     repos: |
         Bearsampp/Bearsampp
