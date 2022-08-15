@@ -248,7 +248,7 @@ class ActionStartup
 
         $this->writeLog('Clean old behaviors');
 
-        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_CLEAN_OLD_BEAHAVIORS_TEXT));
+        $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_CLEAN_OLD_BEHAVIORS_TEXT));
         $this->splash->incrProgressBar();
 
         // App >= 1.0.13
