@@ -2,11 +2,11 @@
 - # bot
   name: ":robot: bot"
   color: "69cde9"
-  description: ""
+  description: "Used by bots"
 - # bug
   name: ":bug: bug"
   color: "b60205"
-  description: ""
+  description: "For known bugs"
   from_name: "bug"
 - # Urgent
   name: ":triangular_flag_on_post: Blocker"
@@ -15,7 +15,7 @@
 - # dependencies
   name: ":game_die: dependencies"
   color: "0366d6"
-  description: ""
+  description: "Dependencies need fixed"
 - # documentation
   name: ":books: documentation"
   color: "c5def5"
@@ -24,55 +24,44 @@
 - # duplicate
   name: ":busts_in_silhouette: duplicate"
   color: "cccccc"
-  description: ""
+  description: "Duplicate"
 - # enhancement
   name: ":sparkles: enhancement"
   color: "0054ca"
-  description: ""
+  description: "Improve program"
 - # feature request
   name: ":bulb: feature request"
   color: "0e8a16"
-  description: ""
+  description: "Feature Request"
 - # feedback
   name: ":mega: feedback"
   color: "03a9f4"
   description: ""
+  from: "question"
 - # future maybe
   name: ":rocket: future maybe"
   color: "fef2c0"
-  description: ""
+  description: "Something to consider"
 - # good first issue
   name: ":hatching_chick: good first issue"
   color: "7057ff"
-  description: ""
+  description: "Should be easy"
 - # help wanted
   name: ":pray: help wanted"
   color: "4caf50"
-  description: ""
+  description: "Need Help"
 - # hold
   name: ":hand: hold"
   color: "24292f"
-  description: ""
+  description: "Hold for later version"
 - # invalid
   name: ":no_entry_sign: invalid"
   color: "e6e6e6"
-  description: ""
-- # maybe bug
-  name: ":interrobang: maybe bug"
-  color: "ff5722"
-  description: ""
+  description: "Not a bug"
 - # needs more info
   name: ":thinking: needs more info"
   color: "795548"
-  description: ""
-- # question
-  name: ":question: question"
-  color: "3f51b5"
-  description: ""
-- # upstream
-  name: ":eyes: upstream"
-  color: "fbca04"
-  description: ""
+  description: "Need Info"
 - # wontfix
   name: ":coffin: wontfix"
   color: "ffffff"
@@ -81,7 +70,7 @@
 - # Blocker
   name: ":triangular_flag_on_post: Blocker"
   color: "ff0000"
-  description: "Urgent bug blocking release"
+  description: "Urgent bug, blocking release"
 - # Website
   name: ":technologist: Website"
   color: "FFFFFF"
@@ -94,3 +83,8 @@
   name: ":runner: RTC"
   color: "87ceeb"
   description: "Ready to commit"
+- # Sync
+  name: ":arrow_forward: Sync"
+  color: "87ceeb"
+  description: "Sync Action"
+  from_name: "sync"
