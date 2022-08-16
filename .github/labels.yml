@@ -3,6 +3,7 @@
   name: "bot :robot: "
   color: "69cde9"
   description: "Used by bots"
+  from_name: "bot"
 - # bug
   name: "bug :bug:"
   color: "b60205"
