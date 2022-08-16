@@ -33,7 +33,7 @@ class Config
         /*if (!$bearsamppBs->isBootstrap()) {
             $this->raw[self::CFG_LOGS_VERBOSE] = 0;
         }*/
-
+// TODO set to use TZ from config see https://github.com/Bearsampp/.teams/issues/24
         date_default_timezone_set($this->getTimezone());
     }
 

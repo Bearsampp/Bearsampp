@@ -244,7 +244,7 @@ class Lang
     const STARTUP_CHECK_BROWSER_TEXT = 'startupCheckBrowserText';
     const STARTUP_SYS_INFOS = 'startupSysInfos';
     const STARTUP_CLEAN_TMP_TEXT = 'startupCleanTmpText';
-    const STARTUP_CLEAN_OLD_BEAHAVIORS_TEXT = 'startupCleanOldBehaviorsText';
+    const STARTUP_CLEAN_OLD_BEHAVIORS_TEXT = 'startupCleanOldBehaviorsText';
     const STARTUP_REFRESH_ALIAS_TEXT = 'startupRefreshAliasText';
     const STARTUP_REFRESH_VHOSTS_TEXT = 'startupRefreshVhostsText';
     const STARTUP_CHECK_PATH_TEXT = 'startupCheckPathText';
@@ -595,7 +595,7 @@ class Lang
             self::STARTUP_CHECK_BROWSER_TEXT,
             self::STARTUP_SYS_INFOS,
             self::STARTUP_CLEAN_TMP_TEXT,
-            self::STARTUP_CLEAN_OLD_BEAHAVIORS_TEXT,
+            self::STARTUP_CLEAN_OLD_BEHAVIORS_TEXT,
             self::STARTUP_REFRESH_ALIAS_TEXT,
             self::STARTUP_REFRESH_VHOSTS_TEXT,
             self::STARTUP_CHECK_PATH_TEXT,
