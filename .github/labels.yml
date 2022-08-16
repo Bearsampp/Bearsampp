@@ -1,90 +1,90 @@
 ## more info https://github.com/crazy-max/ghaction-github-labeler
 - # bot
-  name: ":robot: bot"
+  name: "bot :robot: "
   color: "69cde9"
   description: "Used by bots"
 - # bug
-  name: ":bug: bug"
+  name: "bug :bug:"
   color: "b60205"
   description: "For known bugs"
   from_name: "bug"
 - # Urgent
-  name: ":triangular_flag_on_post: Blocker"
+  name: "Blocker :triangular_flag_on_post:"
   color: "FFFFFF"
   description: "Release blocker"
 - # dependencies
-  name: ":game_die: dependencies"
+  name: "dependencies :game_die:"
   color: "0366d6"
   description: "Dependencies need fixed"
 - # documentation
-  name: ":books: documentation"
+  name: "documentation :books:"
   color: "c5def5"
   description: ""
   from_name: "documentation"
 - # duplicate
-  name: ":busts_in_silhouette: duplicate"
+  name: "duplicate :busts_in_silhouette:"
   color: "cccccc"
   description: "Duplicate"
 - # enhancement
-  name: ":sparkles: enhancement"
+  name: "enhancement :sparkles:"
   color: "0054ca"
   description: "Improve program"
 - # feature request
-  name: ":bulb: feature request"
+  name: "feature request :bulb:"
   color: "0e8a16"
   description: "Feature Request"
 - # feedback
-  name: ":mega: feedback"
+  name: "feedback :mega:"
   color: "03a9f4"
   description: ""
   from: "question"
 - # future maybe
-  name: ":rocket: future maybe"
+  name: "future maybe :rocket:"
   color: "fef2c0"
   description: "Something to consider"
 - # good first issue
-  name: ":hatching_chick: good first issue"
+  name: "good first issue :hatching_chick:"
   color: "7057ff"
   description: "Should be easy"
 - # help wanted
-  name: ":pray: help wanted"
+  name: "help wanted :pray:"
   color: "4caf50"
   description: "Need Help"
 - # hold
-  name: ":hand: hold"
+  name: "hold :hand:"
   color: "24292f"
   description: "Hold for later version"
 - # invalid
-  name: ":no_entry_sign: invalid"
+  name: "invalid :no_entry_sign:"
   color: "e6e6e6"
   description: "Not a bug"
 - # needs more info
-  name: ":thinking: needs more info"
+  name: "needs more info :thinking:"
   color: "795548"
   description: "Need Info"
 - # wontfix
-  name: ":coffin: wontfix"
+  name: "wontfix :coffin:"
   color: "ffffff"
   description: ""
   from_name: "wontfix"
 - # Blocker
-  name: ":triangular_flag_on_post: Blocker"
+  name: "Blocker :triangular_flag_on_post:"
   color: "ff0000"
   description: "Urgent bug, blocking release"
 - # Website
-  name: ":technologist: Website"
+  name: "Website :technologist:"
   color: "FFFFFF"
   description: "Our website"
 - # Security
-  name: ":closed_lock_with_key: Security"
+  name: "Security :closed_lock_with_key:"
   color: "CD5C5C"
   description: "Security issue"
 - # RTC
-  name: ":runner: RTC"
+  name: "RTC :runner:"
   color: "87ceeb"
   description: "Ready to commit"
 - # Sync
-  name: ":arrow_forward: Sync"
+  name: "Sync :arrow_forward:"
   color: "87ceeb"
   description: "Sync Action"
   from_name: "sync"
