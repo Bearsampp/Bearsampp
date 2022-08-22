@@ -403,7 +403,7 @@ class WinBinder
         ));
 
         // Set window icon
-        //$this->setImage($messageBox, $bearsamppCore->getResourcesPath() . '/Bearsampp.ico');
+        $this->setImage($messageBox, $bearsamppCore->getResourcesPath() . '/Bearsampp.ico');
 
         return $messageBox;
     }

@@ -1,0 +1,14 @@
+# pack-refs with: peeled fully-peeled sorted 
+e2ad4287b17cc2872d75c85857306371f3de5514 refs/heads/joomla-backports
+ff381ed89bcfcb58c4ce333428c0cb6f6fed0539 refs/heads/master
+a0ddfe4f94f0d895d4212505e67ea8b1b939b4ba refs/heads/resource-interface
+5b9e8093821d77ecc5058f350b458953c4a02b37 refs/tags/v0.1.0
+bd316b03c63d6e2bbd56c0714eccc644f31881d4 refs/tags/v0.1.1
+8c4eba967a3c9f1b4466162b566717407a3f127c refs/tags/v0.2.0
+^78f02bd9b8720287fedfb4b79f4ab59db8edc61e
+1e5a14d368746d6c9bb769f63ada5a31c94c1d15 refs/tags/v0.2.1
+663d1c1299d4363758e8e440e5849134f218f45c refs/tags/v0.3.0
+fe3bb18da05f2a093ee8593038c14fa73f255f2b refs/tags/v0.4.0
+^25a62d3afcc9c2f0190e4d6ec98bc9fd202cef72
+331850587a144068a350d93431fc8c31aa41623e refs/tags/v0.4.1
+^d4ba8437977c33a5189d95d9ffa751997f13b104

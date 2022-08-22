@@ -1,0 +1,5 @@
+{
+    "config": {
+        "cache-dir": "~BEARSAMPP_LIN_PATH~/tmp/composer"
+    }
+}
