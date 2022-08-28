@@ -84,7 +84,7 @@ class WinBinder
         $window = $this->callWinBinder('wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params));
 
         // Set window icon
-        $this->setImage($window, $bearsamppCore->getResourcesPath() . '/Bearsampp.ico');
+        $this->setImage($window, $bearsamppCore->getResourcesPath() . '/bearsampp.ico');
 
         return $window;
     }
@@ -403,7 +403,7 @@ class WinBinder
         ));
 
         // Set window icon
-        $this->setImage($messageBox, $bearsamppCore->getResourcesPath() . '/Bearsampp.ico');
+        $this->setImage($messageBox, $bearsamppCore->getResourcesPath() . '/bearsampp.ico');
 
         return $messageBox;
     }
