@@ -1,0 +1,35 @@
+#------------------------------------------------------------------------------
+# FILE LOCATIONS
+#------------------------------------------------------------------------------
+data_directory = '~BEARSAMPP_LIN_PATH~/bin/postgresql/postgresql13.8/data'
+hba_file = '~BEARSAMPP_LIN_PATH~/bin/postgresql/postgresql13.8/data/pg_hba.conf'
+ident_file = '~BEARSAMPP_LIN_PATH~/bin/postgresql/postgresql13.8/data/pg_ident.conf'
+
+#------------------------------------------------------------------------------
+# CONNECTIONS AND AUTHENTICATION
+#------------------------------------------------------------------------------
+listen_addresses = '*'
+port = 5432
+max_connections = 100
+
+#------------------------------------------------------------------------------
+# RESOURCE USAGE (except WAL)
+#------------------------------------------------------------------------------
+shared_buffers = 32MB
+
+#------------------------------------------------------------------------------
+# ERROR REPORTING AND LOGGING
+#------------------------------------------------------------------------------
+log_destination = 'stderr'
+logging_collector = on
+log_directory = '~BEARSAMPP_LIN_PATH~/logs'
+log_filename = 'postgresql.log'
+log_file_mode = 0777
+log_truncate_on_rotation = off
+log_rotation_age = 0
+log_rotation_size = 0
+
+client_min_messages = notice
+log_min_messages = warning
+log_min_error_statement = error
+log_min_duration_statement = -1
