@@ -1,4 +1,4 @@
-name: test
+name: Changelog creator
 on: workflow_dispatch
 
 
