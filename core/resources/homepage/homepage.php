@@ -24,7 +24,7 @@
     <link href="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/css/app.css" rel="stylesheet">
-    <link href="<?php echo Util::imgToBase64($bearsamppCore->getResourcesPath() . '/Bearsampp.ico'); ?>" rel="icon" />
+    <link href="<?php echo Util::imgToBase64($bearsamppCore->getResourcesPath() . '/bearsampp.ico'); ?>" rel="icon" />
     <title><?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?></title>
   </head>
 
