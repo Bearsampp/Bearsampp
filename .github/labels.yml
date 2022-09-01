@@ -46,10 +46,12 @@
   name: "good first issue :hatching_chick:"
   color: "7057ff"
   description: "Should be easy"
+  from: ":hatching_chick: good first issue"
 - # help wanted
   name: "help wanted :pray:"
   color: "4caf50"
   description: "Need Help"
+  from: "help wanted"
 - # hold
   name: "hold :hand:"
   color: "24292f"
