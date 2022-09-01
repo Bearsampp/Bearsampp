@@ -1,16 +1,19 @@
 ## more info https://github.com/crazy-max/ghaction-github-labeler
 - # bot
-  name: "bot :robot: "
-  color: "69cde9"
+  name: "bot :robot:"
+  color: "69cd00"
   description: "Used by bots"
-  from_name: "bot"
 - # bug
   name: "bug :bug:"
   color: "b60205"
   description: "For known bugs"
   from_name: "bug"
+- # Urgent
+  name: "Blocker :triangular_flag_on_post:"
+  color: "FFFFFF"
+  description: "Release blocker"
 - # dependencies
-  name: "dependencies :game_die:"
+  name: "dependencies :man_cook:"
   color: "0366d6"
   description: "Dependencies need fixed"
 - # documentation
@@ -59,15 +62,10 @@
   name: "needs more info :thinking:"
   color: "795548"
   description: "Need Info"
-- # wontfix
-  name: "wontfix :coffin:"
-  color: "ffffff"
-  description: ""
-  from_name: "wontfix"
 - # Blocker
   name: "Blocker :triangular_flag_on_post:"
   color: "ff0000"
-  description: "Urgent Release Blocker"
+  description: "Urgent bug, blocking release"
 - # Website
   name: "Website :technologist:"
   color: "FFFFFF"
@@ -85,3 +83,9 @@
   color: "87ceeb"
   description: "Sync Action"
   from_name: "sync"
+- # Won't fix
+  name: "Wont_fix_it :man_mechanic:"
+  color: "b45f06"
+  description: "Won't fix"
+  from_name: "wontfix"
+
