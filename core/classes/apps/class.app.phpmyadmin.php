@@ -6,7 +6,7 @@ class AppPhpmyadmin extends Module
 
     const LOCAL_CFG_CONF = 'phpmyadminConf';
 
-    private $versions;
+    private $conf;
 
     public function __construct($id, $type) {
         Util::logInitClass($this);
@@ -22,7 +22,9 @@ class AppPhpmyadmin extends Module
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
-        $versions = array();
+        if ($this->bearsamppConfRaw !== false) {
+            $this->conf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
+        }
 
         if (!$this->enable) {
             Util::logInfo($this->name . ' is not enabled!');
@@ -38,6 +40,9 @@ class AppPhpmyadmin extends Module
         if (!is_file($this->bearsamppConf)) {
             Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
         }
+        if (!is_file($this->conf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
+        }
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
@@ -52,25 +57,23 @@ class AppPhpmyadmin extends Module
 
         $alias = $bearsamppBs->getAliasPath() . '/phpmyadmin.conf';
         if (is_file($alias)) {
-            $version = '';
             Util::replaceInFile($alias, array(
-                '/^Alias\s\/phpmyadmin\s.*/' => 'Alias /phpmyadmin "' . $this->getSymlinkPath() . '/' . $version . '/"',
-                '/^<Directory\s.*/' => '<Directory "' . $this->getSymlinkPath() . '/' . $version . '/">',
+                '/^Alias\s\/phpmyadmin\s.*/' => 'Alias /phpmyadmin "' . $this->getSymlinkPath() . '/"',
+                '/^<Directory\s.*/' => '<Directory "' . $this->getSymlinkPath() . '/">',
             ));
         } else {
             Util::logError($this->getName() . ' alias not found : ' . $alias);
         }
 
-        $pmaConf = $this->getConfs();
             if ($bearsamppBins->getMysql()->isEnable()) {
-                Util::replaceInFile($pmaConf, array(
+                Util::replaceInFile($this->getConf(), array(
                     '/^\$mysqlPort\s=\s(\d+)/' => '$mysqlPort = ' . $bearsamppBins->getMysql()->getPort() . ';',
                     '/^\$mysqlRootUser\s=\s/' => '$mysqlRootUser = \'' . $bearsamppBins->getMysql()->getRootUser() . '\';',
                     '/^\$mysqlRootPwd\s=\s/' => '$mysqlRootPwd = \'' . $bearsamppBins->getMysql()->getRootPwd() . '\';'
                 ));
             }
             if ($bearsamppBins->getMariadb()->isEnable()) {
-                Util::replaceInFile($pmaConf, array(
+                Util::replaceInFile($this->getConf(), array(
                     '/^\$mariadbPort\s=\s(\d+)/' => '$mariadbPort = ' . $bearsamppBins->getMariadb()->getPort() . ';',
                     '/^\$mariadbRootUser\s=\s/' => '$mariadbRootUser = \'' . $bearsamppBins->getMariadb()->getRootUser() . '\';',
                     '/^\$mariadbRootPwd\s=\s/' => '$mariadbRootPwd = \'' . $bearsamppBins->getMariadb()->getRootPwd() . '\';'
@@ -88,12 +91,7 @@ class AppPhpmyadmin extends Module
         $this->reload();
     }
 
-    // TODO How do we replace foreach with static value?
-    public function getConfs() {
-        $result = array();
-        foreach ($this->versions as $version => $data) {
-            $result[] = $data['conf'];
-        }
-        return $result;
+    public function getConf() {
+        return $this->conf;
     }
 }
