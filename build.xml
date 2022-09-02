@@ -388,8 +388,8 @@
     <!--getmodule releasesurl="${bin.mariadb.url}" version="${bin.mariadb.version}" dest="${release.target}/bin/mariadb"/ -->
     <!--getmodule releasesurl="${bin.postgresql.url}" version="${bin.postgresql.version}" dest="${release.target}/bin/postgresql"/-->
     <!--getmodule releasesurl="${bin.memcached.url}" version="${bin.memcached.version}" dest="${release.target}/bin/memcached"/-->
-    <!--getmodule releasesurl="${bin.mysql.url}" version="${bin.mysql.version}" dest="${release.target}/bin/mysql"/-->
-    <!--getmodule releasesurl="${bin.nodejs.url}" version="${bin.nodejs.version}" dest="${release.target}/bin/nodejs"/-->
+    <getmodule releasesurl="${bin.mysql.url}" version="${bin.mysql.version}" dest="${release.target}/bin/mysql"/>
+    <getmodule releasesurl="${bin.nodejs.url}" version="${bin.nodejs.version}" dest="${release.target}/bin/nodejs"/>
     <getmodule releasesurl="${bin.php.url}" version="${bin.php.version}" dest="${release.target}/bin/php"/>
 
     <!--Get apps -->
