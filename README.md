@@ -54,9 +54,9 @@ For those who wish to contribute, have an issue or questions, read the [Document
 * [Get started](https://bearsampp.com/get-started)
 * [Screenshots](https://bearsampp.com/screenshots)
 * [FAQ](https://bearsampp.com/faq)
-* [Upgrade notes](https://bearsampp.com/upgrade-notes)
-* [Reporting an issue](https://bearsampp.com/reporting-issue)
-* [Request a module](https://bearsampp.com/request-module)
+* [Upgrade notes](https://bearsampp.com/upgrade)
+* [Reporting an issue](https://github.com/Bearsampp/Bearsampp/issues)
+* [Request a module](https://bearsampp.com/request)
 * [Contribute](https://bearsampp.com/contribute)
 * [Translations](https://bearsampp.com/translations)
 
