@@ -1097,7 +1097,7 @@ class Util
     {
         return preg_match('/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i', $domainName)
             && preg_match('/^.{1,253}$/', $domainName)
-            && preg_match('/^[^\.]{1,63}(\.[^\.]{1,63})*$/', $domainName);
+            && preg_match('/^[^.]{1,63}(\.[^.]{1,63})*$/', $domainName);
     }
 
     public static function isAlphanumeric($string)
