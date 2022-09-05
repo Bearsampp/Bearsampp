@@ -160,7 +160,7 @@
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/phpmyadmin', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="label label-primary"><?php echo $bearsamppApps->getPhpmyadmin()->getVersion() . ' (' . $bearsamppApps->getPhpmyadmin()->getVersionsStr() . ')'; ?></span>
+            <span style="float:right;font-size:12px" class="label label-primary"><?php echo $bearsamppApps->getPhpmyadmin()->getVersion(); ?></span>
             <a href="phpmyadmin" target="_blank"><?php echo $bearsamppLang->getValue(Lang::PHPMYADMIN); ?></a>
           </span>
           <span class="list-group-item">
