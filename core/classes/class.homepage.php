@@ -37,11 +37,11 @@ class Homepage
         if (!empty($query) && in_array($query, $this->pageList) && $query != self::PAGE_INDEX) {
             $request = '?p=' . $query;
         }
-        if (!empty($query) && in_array($query, $this->pageStdl)) {
+        elseif (!empty($query) && in_array($query, $this->pageStdl)) {
             $request = $query;
         }
-        if (!empty($query) && self::PAGE_INDEX) {
-            $request = "index";
+        elseif (!empty($query) && self::PAGE_INDEX) {
+            $request = "index.php";
         }
         return $request;
     }
