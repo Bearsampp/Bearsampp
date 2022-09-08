@@ -8,7 +8,6 @@ class Apps
     private $gitlist;
     private $webgrind;
     private $adminer;
-    private $phpmemadmin;
     private $phppgadmin;
 
     public function __construct()
@@ -28,7 +27,6 @@ class Apps
         return array(
             $this->getAdminer(),
             $this->getGitlist(),
-            $this->getPhpmemadmin(),
             $this->getPhpmyadmin(),
             $this->getPhppgadmin(),
             $this->getWebgrind()
@@ -49,14 +47,6 @@ class Apps
             $this->gitlist = new AppGitlist('gitlist', self::TYPE);
         }
         return $this->gitlist;
-    }
-
-    public function getPhpmemadmin()
-    {
-        if ($this->phpmemadmin == null) {
-            $this->phpmemadmin = new AppPhpmemadmin('phpmemadmin', self::TYPE);
-        }
-        return $this->phpmemadmin;
     }
 
     public function getPhpmyadmin()
