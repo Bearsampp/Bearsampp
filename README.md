@@ -39,7 +39,6 @@ For those who wish to contribute, have an issue or questions, read the [Document
 | ![](img/binary.png) | [Node.js](https://bearsampp.com/module/nodejs): an open-source, cross-platform runtime environment for developing server-side web applications. 
 | ![](img/tool.png) | [Perl](https://bearsampp.com/module/perl): a family of high-level, general-purpose, interpreted, dynamic programming languages. |
 | ![](img/binary.png) | [PHP](https://bearsampp.com/module/php): a server-side scripting language designed for web development including PEAR and extra extensions. |
-| ![](img/application.png) | [phpMemAdmin](https://bearsampp.com/module/phpmemadmin): to handle the administration of Memcached over the web. |
 | ![](img/application.png) | [phpMyAdmin](https://bearsampp.com/module/phpmyadmin): to handle the administration of MySQL and MariaDB over the Web. |
 | ![](img/application.png) | [phpPgAdmin](https://bearsampp.com/module/phppgadmin): a web-based administration tool for PostgreSQL. |
 | ![](img/binary.png) | [PostgreSQL](https://bearsampp.com/module/postgresql): an object-relational database management system (ORDBMS). |

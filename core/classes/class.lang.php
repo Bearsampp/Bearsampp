@@ -115,7 +115,6 @@ class Lang
     const PHPMYADMIN = 'phpmyadmin';
     const WEBGRIND = 'webgrind';
     const ADMINER = 'adminer';
-    const PHPMEMADMIN = 'phpmemadmin';
     const PHPPGADMIN = 'phppgadmin';
 
     // Tools
@@ -467,7 +466,6 @@ class Lang
             self::PHPMYADMIN,
             self::WEBGRIND,
             self::ADMINER,
-            self::PHPMEMADMIN,
             self::PHPPGADMIN,
 
             // Tools

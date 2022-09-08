@@ -241,9 +241,6 @@ class BinMemcached extends Module
         // bearsampp.conf
         $this->setVersion($version);
 
-        // phpmemadmin
-        $bearsamppApps->getPhpmemadmin()->update($sub + 1);
-
         return true;
     }
 
