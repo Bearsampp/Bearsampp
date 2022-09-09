@@ -154,11 +154,6 @@
             <a href="gitlist" target="_blank"><?php echo $bearsamppLang->getValue(Lang::GITLIST); ?></a>
           </span>
           <span class="list-group-item">
-            <a href="<?php echo Util::getWebsiteUrl('module/phpmemadmin', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="label label-primary"><?php echo $bearsamppApps->getPhpmemadmin()->getVersion(); ?></span>
-            <a href="phpmemadmin" target="_blank"><?php echo $bearsamppLang->getValue(Lang::PHPMEMADMIN); ?></a>
-          </span>
-          <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/phpmyadmin', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
             <span style="float:right;font-size:12px" class="label label-primary"><?php echo $bearsamppApps->getPhpmyadmin()->getVersion(); ?></span>
             <a href="phpmyadmin" target="_blank"><?php echo $bearsamppLang->getValue(Lang::PHPMYADMIN); ?></a>

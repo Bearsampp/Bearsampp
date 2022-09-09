@@ -105,7 +105,6 @@
 
         <filter token="APP_ADMINER_VERSION" value="${app.adminer.version}"/>
         <filter token="APP_GITLIST_VERSION" value="${app.gitlist.version}"/>
-        <filter token="APP_PHPMEMADMIN_VERSION" value="${app.phpmemadmin.version}"/>
         <filter token="APP_PHPMYADMIN_VERSION" value="${app.phpmyadmin.version}"/>
         <filter token="APP_PHPPGADMIN_VERSION" value="${app.phppgadmin.version}"/>
         <filter token="APP_WEBGRIND_VERSION" value="${app.webgrind.version}"/>
@@ -177,7 +176,6 @@
     <!-- Get apps -->
     <getmodule releasesurl="${app.adminer.url}" version="${app.adminer.version}" dest="${release.target}/apps/adminer"/>
     <getmodule releasesurl="${app.gitlist.url}" version="${app.gitlist.version}" dest="${release.target}/apps/gitlist"/>
-    <getmodule releasesurl="${app.phpmemadmin.url}" version="${app.phpmemadmin.version}" dest="${release.target}/apps/phpmemadmin"/>
     <getmodule releasesurl="${app.phpmyadmin.url}" version="${app.phpmyadmin.version}" dest="${release.target}/apps/phpmyadmin"/>
     <getmodule releasesurl="${app.phppgadmin.url}" version="${app.phppgadmin.version}" dest="${release.target}/apps/phppgadmin"/>
     <getmodule releasesurl="${app.webgrind.url}" version="${app.webgrind.version}" dest="${release.target}/apps/webgrind"/>
@@ -286,7 +284,6 @@
     <!--Get apps -->
     <getmodule releasesurl="${app.adminer.url}" version="${app.adminer.version}" dest="${release.target}/apps/adminer"/>
     <getmodule releasesurl="${app.gitlist.url}" version="${app.gitlist.version}" dest="${release.target}/apps/gitlist"/>
-   <!-- <getmodule releasesurl="${app.phpmemadmin.url}" version="${app.phpmemadmin.version}" dest="${release.target}/apps/phpmemadmin"/ -->
     <getmodule releasesurl="${app.phpmyadmin.url}" version="${app.phpmyadmin.version}" dest="${release.target}/apps/phpmyadmin"/>
     <!-- <getmodule releasesurl="${app.phppgadmin.url}" version="${app.phppgadmin.version}" dest="${release.target}/apps/phppgadmin"/ -->
     <getmodule releasesurl="${app.webgrind.url}" version="${app.webgrind.version}" dest="${release.target}/apps/webgrind"/>
@@ -395,7 +392,6 @@
     <!--Get apps -->
     <getmodule releasesurl="${app.adminer.url}" version="${app.adminer.version}" dest="${release.target}/apps/adminer"/>
     <!-- <getmodule releasesurl="${app.gitlist.url}" version="${app.gitlist.version}" dest="${release.target}/apps/gitlist"/ -->
-    <!-- <getmodule releasesurl="${app.phpmemadmin.url}" version="${app.phpmemadmin.version}" dest="${release.target}/apps/phpmemadmin"/ -->
     <getmodule releasesurl="${app.phpmyadmin.url}" version="${app.phpmyadmin.version}" dest="${release.target}/apps/phpmyadmin"/>
     <!-- <getmodule releasesurl="${app.phppgadmin.url}" version="${app.phppgadmin.version}" dest="${release.target}/apps/phppgadmin"/ -->
     <getmodule releasesurl="${app.webgrind.url}" version="${app.webgrind.version}" dest="${release.target}/apps/webgrind"/>

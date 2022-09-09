@@ -26,11 +26,6 @@ class TplAppApps
                 true
             ) . PHP_EOL .
             TplAestan::getItemLink(
-                $bearsamppLang->getValue(Lang::PHPMEMADMIN),
-                'phpmemadmin/',
-                true
-            ) . PHP_EOL .
-            TplAestan::getItemLink(
                 $bearsamppLang->getValue(Lang::PHPMYADMIN),
                 'phpmyadmin/',
                 true
