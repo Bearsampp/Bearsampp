@@ -75,3 +75,8 @@ Thanks again for your support, it is much appreciated! :pray:
 GPL-3.0. See `LICENSE` for more details.<br />
 
 <h6>Bearsampp was originally forked, in 2021, from neard.io</h6>
+
+
+## Sponsors
+![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)
+[![Code Shelter](https://www.codeshelter.co/static/badges/badge-flat.svg)](https://www.codeshelter.co/)
