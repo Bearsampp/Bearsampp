@@ -75,7 +75,7 @@ Thanks again for your support, it is much appreciated! :pray:
 
 We would like to thank our sponsors to the project:
 [N6REJ](https://github.com/N6REJ)<br />
-![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)
+![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png | width=100)
 [![Code Shelter](https://www.codeshelter.co/static/badges/badge-flat.svg)](https://www.codeshelter.co/)
 
 ## License
