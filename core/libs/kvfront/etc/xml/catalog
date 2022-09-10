@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN" "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  <delegatePublic publicIdStartString="-//OASIS//ENTITIES DocBook XML" catalog="./docbook-xml"/>
+  <delegatePublic publicIdStartString="-//OASIS//DTD DocBook XML" catalog="./docbook-xml"/>
+  <delegateSystem systemIdStartString="http://www.oasis-open.org/docbook/" catalog="./docbook-xml"/>
+  <delegateURI uriStartString="http://www.oasis-open.org/docbook/" catalog="./docbook-xml"/>
+  <delegateSystem systemIdStartString="http://docbook.sourceforge.net/release/xsl/" catalog="./docbook-xsl"/>
+  <delegateSystem systemIdStartString="http://docbook.sourceforge.net/release/xsl-ns/" catalog="./docbook-xsl"/>
+  <delegateSystem systemIdStartString="http://cdn.docbook.org/release/xsl/" catalog="./docbook-xsl"/>
+  <delegateSystem systemIdStartString="http://cdn.docbook.org/release/xsl-nons/" catalog="./docbook-xsl"/>
+  <delegateURI uriStartString="http://docbook.sourceforge.net/release/xsl/" catalog="./docbook-xsl"/>
+  <delegateURI uriStartString="http://docbook.sourceforge.net/release/xsl-ns/" catalog="./docbook-xsl"/>
+  <delegateURI uriStartString="http://cdn.docbook.org/release/xsl/" catalog="./docbook-xsl"/>
+  <delegateURI uriStartString="http://cdn.docbook.org/release/xsl-nons/" catalog="./docbook-xsl"/>
+</catalog>

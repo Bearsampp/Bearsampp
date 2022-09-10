@@ -1,0 +1,8 @@
+cffi>=1.1
+six>=1.4.1
+
+[tests]
+pytest!=3.3.0,>=3.2.1
+
+[typecheck]
+mypy

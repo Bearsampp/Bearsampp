@@ -1,0 +1,152 @@
+Metadata-Version: 2.1
+Name: KvFront
+Version: 2.6.0
+Summary: KvFront is a gui tool for memcached & redis developed by GTK+3
+Home-page: https://github.com/wgalaxy/KvFront
+Author: Gavin W
+Author-email: qmongofront@live.com
+License: GPLv3
+Keywords: memcached,memcache,memcached GUI,memcached front,redis,redis GUI
+Platform: any
+Requires-Python: >=3.6
+Requires-Dist: configparser (>=3.5.0)
+Requires-Dist: python-memcached (>=1.58)
+Requires-Dist: redis (>=4.1.0)
+Requires-Dist: sshtunnel (>0.3.0)
+
+KvFront
+==============
+
+KvFront is a GTK+ 3.0 based Redis GUI and Memcached GUI .It is totally free and open source. KvFront features an easy-to -use and straightforward graphical user interface, allowing users to easily work with Redis and Memcached in Linux based GTK+ 3.0 desktop environment.
+
+Its highlights include the ability to manage Redis and Memcached. It supports the most of data structures of Redis and Memcached, as well as to view the status of Redis and Memcached instances. In additon, KvFront also provides the scan alility of Redis , which can scan all keys in Redis.
+
+## Installation
+
+KvFront is now available in PyPI. KvFront could be installed using pip:
+~~~
+pip install KvFront
+~~~
+
+## Features
+
+- Redis Standalone connection mode supported
+- Redis Cluster connection mode supported
+- Connect to memcached
+- Connect to Redis and Memcached over SSH supported
+- Add keys, delete keys, update value of memcached
+- Scan all Redis keys
+- String,List,Set,Hash,Sorted Set, Stream, Bitmap are supported
+- RedisJSON module is supported
+- Add keys to redis
+- Delete keys of redis
+- Delete data in redis data type
+- Update value by double clicking the value cell
+- Flush redis and memcached
+- View status of redis and memcached
+
+## Screenshots
+
+![image](https://a.fsdn.com/con/app/proj/memcachedfront/screenshots/ss1.png/max/max/1)
+
+![image2](https://a.fsdn.com/con/app/proj/memcachedfront/screenshots/ss2.png/max/max/1)
+
+![image3](https://a.fsdn.com/con/app/proj/memcachedfront/screenshots/ss4.png/max/max/1)
+
+![image4](https://a.fsdn.com/con/app/proj/memcachedfront/screenshots/ss3.png/max/max/1)
+
+
+Changelog
+==============
+
+
+
+V2.6.0(2022-05-22)
+
+    - RedisJSON module supported
+
+V2.5.0 & V2.5.1(2022-05-21)
+
+    - Connect to Memcached over SSH supported
+    - Fixed bug(Connnect to Redis Cluster over SSH failed)
+
+V2.4.0(2022-05-20)
+
+    - New Redis Bitmap key supported
+    - Connect to Redis over SSH supported
+    - Fixed the bug of redis UnicodeDecodeError
+
+V2.3.2(2022-05-14)
+
+    - fixed bug("json.loads" encoding problem when python > 3.8).
+    - fixed bug(ui icon problem in Fedora 36)
+
+V2.3.1(2022-05-12)
+
+    - fixed bug(removing connection failed).
+
+V2.3.0(2022-05-12)
+
+    - UI of Redis Scan improved.
+    - Delete key by clicking "Delete Key" button in headerbar.
+    - Delete selected row in Redis imporved.
+
+V2.2.0(2022-05-01)
+
+    - Update value by double clicking the value cell.
+    - Add key by clicking "New Key" button in headerbar
+      (String,List,Hash,Set,Zset,Stream are supported).
+    - Execute Redis commands in Console.
+
+V2.1.4 & V2.1.5(2022-04-23)
+
+    - delete data in Redis by clicking delete button in headerbar.
+    - delete data in Memcached by clicking delete button in headerbar.
+    - Redis Set,ZSet supported.
+    - UI bug fixed in Ubuntu 22.04LTS.
+
+V2.1.2 & V2.1.3(2022-04-15)
+
+    - Fixed an bug(missing ui icon in some of the Linux distributions).
+
+V2.1.1(2022-04-14)
+
+    - UI improved.
+    - Fixed an installation bug by using source package.
+
+V2.1.0(2022-04-11)
+
+    - Redis Stream supported.
+
+V2.0.1(2022-04-09)
+
+    - Fixed bug of wrong path of icon in About Dialog.
+
+V2.0.0(2022-03-29)
+
+    - Added support for Connecting to Redis, including standalone and cluster.
+    - Redis String, Redis Hash, Redis List supported.
+    - The project is renamed to KvFront.
+
+V1.1.0(2022-03-08)
+
+    - Made it run well on Ubuntu 20.04LTS.
+
+V1.0.2.1(2017-09-10)
+
+    - UI optimised under Adwaita theme.
+
+V1.0.2.0(2017-09-02)
+
+    - Added functionality to flush the memcached.
+
+V1.0.1.0(2017-07-04)
+
+    - added functionality to show the detail value of a key.
+    - showed the json string value with formatted json string.
+
+V1.0.0.0(2017-06-29)
+
+    - Added support for memcached.
+
+

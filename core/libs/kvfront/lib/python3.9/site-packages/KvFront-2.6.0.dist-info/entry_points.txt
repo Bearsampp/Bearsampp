@@ -1,0 +1,3 @@
+[console_scripts]
+KvFront = KvFront.kvfront:main
+
