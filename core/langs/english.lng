@@ -58,6 +58,7 @@ version = "Version"
 versions = "Versions"
 virtualHosts = "Virtual Hosts"
 website = "Website"
+kvfront = 'Kvfront';
 
 ; Menu
 menuAbout = "About..."

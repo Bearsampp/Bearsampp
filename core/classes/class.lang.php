@@ -59,6 +59,7 @@ class Lang
     const VERSIONS = 'versions';
     const VIRTUAL_HOSTS = 'virtualHosts';
     const WEBSITE = 'website';
+    const KVFRONT = 'Kvfront';
 
     // Menu
     const MENU_ABOUT = 'menuAbout';
