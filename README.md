@@ -71,9 +71,9 @@ making a [Paypal donation](https://www.paypal.me/BearLeeAble) to ensure this jou
 Your always welcome to join the [project team](https://github.com/orgs/Bearsampp/teams) to help insure the longevity of the project.
 Thanks again for your support, it is much appreciated! :pray:
 
-## Sponsors
+## Supporters
 
-We would like to thank our sponsors to the project:
+We would like to thank the following for supporting our project:
 
 [N6REJ](https://github.com/N6REJ)<br />
 
