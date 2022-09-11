@@ -173,6 +173,8 @@ class TplApp
             $tplReload[self::SECTION_CALL] . PHP_EOL .
             TplAppClearFolders::process() . PHP_EOL .
             $tplBrowser[self::SECTION_CALL] . PHP_EOL .
+            TplAppEditConf::process() . PHP_EOL .
+
 
         TplAestan::getItemSeparator() . PHP_EOL .
             $tplLang[self::SECTION_CALL] . PHP_EOL .
