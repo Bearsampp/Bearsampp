@@ -72,6 +72,7 @@ class Lang
     const MENU_CHECK_UPDATE = 'menuCheckUpdate';
     const MENU_CLEAR_FOLDERS = 'menuClearFolders';
     const MENU_EDIT_ALIAS = 'menuEditAlias';
+    const MENU_EDIT_CONF = 'menuEditConf';
     const MENU_EDIT_VHOST = 'menuEditVhost';
     const MENU_ENABLE = 'menuEnable';
     const MENU_ERROR_LOGS = 'menuErrorLogs';
