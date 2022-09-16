@@ -1,10 +1,10 @@
 <a class="anchor" name="php"></a>
-<div class="row">
+<div class="row-fluid">
   <div class="col-lg-12">
     <h1><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/php.png'; ?>" /> <?php echo $bearsamppLang->getValue(Lang::PHP); ?> <small></small></h1>
   </div>
 </div>
-<div class="row">
+<div class="row-fluid">
   <div class="col-lg-6">
     <div class="list-group">
       <span class="list-group-item php-status">
@@ -36,13 +36,13 @@
     </div>
   </div>
 </div>
-<div class="row">
+<div class="row-fluid">
   <div class="col-lg-12">
-    <h3><i class="fa fa-gear"></i> <?php echo $bearsamppLang->getValue(Lang::EXTENSIONS); ?> <small></small></h3>
+    <h3 clas="bg-dark text-light"><i class="fa fa-gear"></i> <?php echo $bearsamppLang->getValue(Lang::EXTENSIONS); ?> <small></small></h3>
   </div>
 </div>
-<div class="row">
-  <div class="col-lg-12 php-extslist">
+<div class="row-fluid">
+  <div class="col-lg-12 php-extslist d-flex flex-wrap">
     <span class="loader"><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
   </div>
 </div>
