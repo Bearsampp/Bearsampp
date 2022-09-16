@@ -35,8 +35,8 @@ $phpinfo = preg_replace('%^.*<body>(.*)</body>.*$%ms', '$1', $phpinfo);
 $phpinfo = str_replace('module_Zend Optimizer', 'module_Zend_Optimizer', $phpinfo);
 $phpinfo = str_replace('<br />', '', $phpinfo);
 $phpinfo = preg_replace('#<h2><a name="module_.*">(.*)</a></h2>#i', '<h2><div class="alert alert-info">$1</div></h2>', $phpinfo);
-$phpinfo = preg_replace('#(th|"v")>(on|enabled|active)#i', '$1><span class="label label-success">$2</span>', $phpinfo);
-$phpinfo = preg_replace('#(th|"v")>(off|disabled)#i', '$1><span class="label label-danger">$2</span>', $phpinfo);
+$phpinfo = preg_replace('#(th|"v")>(on|enabled|active)#i', '$1><span class="badge text-bg-success">$2</span>', $phpinfo);
+$phpinfo = preg_replace('#(th|"v")>(off|disabled)#i', '$1><span class="badge text-bg-danger">$2</span>', $phpinfo);
 echo $phpinfo;
 
 ?></div>

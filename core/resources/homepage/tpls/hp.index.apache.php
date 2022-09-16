@@ -1,10 +1,10 @@
 <a class="anchor" name="apache"></a>
-<div class="row">
+<div class="row-fluid">
   <div class="col-lg-12">
     <h1><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/apache.png'; ?>" /> <?php echo $bearsamppLang->getValue(Lang::APACHE); ?> <small></small></h1>
   </div>
 </div>
-<div class="row">
+<div class="row-fluid">
   <div class="col-lg-6">
     <div class="list-group">
       <span class="list-group-item apache-checkport">
@@ -30,43 +30,43 @@
     </div>
   </div>
 </div>
-<div class="row">
+<div class="row-fluid">
   <div class="col-lg-12">
-    <h3><i class="fa fa-gear"></i> <?php echo $bearsamppLang->getValue(Lang::MODULES); ?> <small></small></h3>
+    <h3 clas="bg-dark text-light"><i class="fa fa-gear"></i> <?php echo $bearsamppLang->getValue(Lang::MODULES); ?> <small></small></h3>
   </div>
 </div>
-<div class="row">
-  <div class="col-lg-12 apache-moduleslist">
+<div class="row-fluid">
+  <div class="col-lg-12 apache-moduleslist d-flex flex-wrap">
     <span class="loader"><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
   </div>
 </div>
-<div class="row">
+<div class="row-fluid">
   <div class="col-lg-12">
-    <h3><i class="fa fa-link"></i> <?php echo $bearsamppLang->getValue(Lang::ALIASES); ?> <small></small></h3>
+    <h3 clas="bg-dark text-light"><i class="fa fa-link"></i> <?php echo $bearsamppLang->getValue(Lang::ALIASES); ?> <small></small></h3>
   </div>
 </div>
-<div class="row">
-  <div class="col-lg-12 apache-aliaseslist">
+<div class="row-fluid">
+  <div class="col-lg-12 apache-aliaseslist d-flex flex-wrap">
     <span class="loader"><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
   </div>
 </div>
-<div class="row">
+<div class="row-fluid">
   <div class="col-lg-12">
-    <h3><i class="fa fa-folder"></i> <?php echo $bearsamppLang->getValue(Lang::MENU_WWW_DIRECTORY); ?> <small></small></h3>
+    <h3 clas="bg-dark text-light"><i class="fa fa-folder"></i> <?php echo $bearsamppLang->getValue(Lang::MENU_WWW_DIRECTORY); ?> <small></small></h3>
   </div>
 </div>
-<div class="row">
-  <div class="col-lg-12 apache-wwwdirectory">
+<div class="row-fluid">
+  <div class="col-lg-12 apache-wwwdirectory d-flex flex-wrap">
     <span class="loader"><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
   </div>
 </div>
-<div class="row">
+<div class="row-fluid">
   <div class="col-lg-12">
-    <h3><i class="fa fa-globe"></i> <?php echo $bearsamppLang->getValue(Lang::VIRTUAL_HOSTS); ?> <small></small></h3>
+    <h3 clas="bg-dark text-light"><i class="fa fa-globe"></i> <?php echo $bearsamppLang->getValue(Lang::VIRTUAL_HOSTS); ?> <small></small></h3>
   </div>
 </div>
-<div class="row">
-  <div class="col-lg-12 apache-vhostslist">
+<div class="row-fluid">
+  <div class="col-lg-12 apache-vhostslist d-flex flex-wrap">
     <span class="loader"><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
   </div>
 </div>

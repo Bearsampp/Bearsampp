@@ -10,26 +10,26 @@ $result = array(
 
 // Status
 if ($bearsamppBins->getPhp()->isEnable()) {
-    $result['status'] = '<span style="float:right;font-size:12px" class="label label-primary">' . $bearsamppLang->getValue(Lang::ENABLED) . '</span>';
+    $result['status'] = '<span style="float:right;font-size:12px" class="badge text-bg-primary">' . $bearsamppLang->getValue(Lang::ENABLED) . '</span>';
 } else {
-    $result['status'] = '<span style="float:right;font-size:12px" class="label label-default">' . $bearsamppLang->getValue(Lang::DISABLED) . '</span>';
+    $result['status'] = '<span style="float:right;font-size:12px" class="badge text-bg-secondary">' . $bearsamppLang->getValue(Lang::DISABLED) . '</span>';
 }
 
 // Versions
 foreach ($bearsamppBins->getPhp()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getPhp()->getVersion()) {
-        $result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-default">' . $version . '</span>';
+        $result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="badge text-bg-secondary">' . $version . '</span>';
     }
 }
-$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="label label-primary">' . $bearsamppBins->getPhp()->getVersion() . '</span>';
+$result['versions'] .= '<span style="float:right;font-size:12px;margin-left:2px;" class="badge text-bg-primary">' . $bearsamppBins->getPhp()->getVersion() . '</span>';
 
 // Extensions count
 $exts = count($bearsamppBins->getPhp()->getExtensions());
 $extsLoaded = count($bearsamppBins->getPhp()->getExtensionsLoaded());
-$result['extscount'] .= '<span style="float:right;font-size:12px" class="label label-primary">' . $extsLoaded . ' / ' . $exts . '</span>';
+$result['extscount'] .= '<span style="float:right;font-size:12px" class="badge text-bg-primary">' . $extsLoaded . ' / ' . $exts . '</span>';
 
 // PEAR version
-$result['pearversion'] .= '<span style="float:right;font-size:12px" class="label label-primary">' . $bearsamppBins->getPhp()->getPearVersion(true) . '</span>';
+$result['pearversion'] .= '<span style="float:right;font-size:12px" class="badge text-bg-primary">' . $bearsamppBins->getPhp()->getPearVersion(true) . '</span>';
 
 // Extensions list
 foreach ($bearsamppBins->getPhp()->getExtensionsFromConf() as $extName => $extStatus) {
