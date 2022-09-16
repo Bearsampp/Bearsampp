@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/jquery/jquery-1.10.2.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/jquery/jquery-migrate-1.2.1.js"></script>
+    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/jquery/jquery-3.6.1.min.js"></script>
+    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/jquery/jquery-migrate-3.4.0.min.js"></script>
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/bootstrap/bootstrap.min.js"></script>
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/_commons.js"></script>
     <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/latestversion.js"></script>
