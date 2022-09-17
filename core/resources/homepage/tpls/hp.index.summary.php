@@ -27,9 +27,9 @@
     </div>
   </div>
 </div>
-<div class="row" style="margin-top:1.25rem;">
+<div class="row">
   <div class="col-md-4">
-    <div style="min-height:16rem;" class="card card-primary">
+    <div style="min-height:18rem;" class="card">
       <div class="card-heading">
         <h3 class="card-title bg-dark text-light p-1"><i class="fa fa-gear"></i> <?php echo $bearsamppLang->getValue(Lang::BINS); ?></h3>
       </div>
@@ -76,7 +76,7 @@
     </div>
   </div>
   <div class="col-md-4">
-    <div style="min-height:16rem;" class="card card-primary">
+    <div style="min-height:18rem;" class="card">
       <div class="card-heading">
         <h3 class="card-title bg-dark text-light p-1"><i class="fa fa-wrench"></i> <?php echo $bearsamppLang->getValue(Lang::TOOLS); ?></h3>
       </div>
@@ -84,52 +84,52 @@
         <div class="list-group" style="margin-bottom:0;">
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/composer', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppTools->getComposer()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppTools->getComposer()->getVersion(); ?></span>
             <span><?php echo $bearsamppLang->getValue(Lang::COMPOSER); ?></span>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/consolez', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppTools->getConsoleZ()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppTools->getConsoleZ()->getVersion(); ?></span>
             <span><?php echo $bearsamppLang->getValue(Lang::CONSOLEZ); ?></span>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/ghostscript', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppTools->getGhostscript()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppTools->getGhostscript()->getVersion(); ?></span>
             <span><?php echo $bearsamppLang->getValue(Lang::GHOSTSCRIPT); ?></span>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/git', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppTools->getGit()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppTools->getGit()->getVersion(); ?></span>
             <span><?php echo $bearsamppLang->getValue(Lang::GIT); ?></span>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/ngrok', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppTools->getNgrok()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppTools->getNgrok()->getVersion(); ?></span>
             <span><?php echo $bearsamppLang->getValue(Lang::NGROK); ?></span>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/perl', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppTools->getPerl()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppTools->getPerl()->getVersion(); ?></span>
             <span><?php echo $bearsamppLang->getValue(Lang::PERL); ?></span>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/python', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppTools->getPython()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppTools->getPython()->getVersion(); ?></span>
             <span><?php echo $bearsamppLang->getValue(Lang::PYTHON); ?></span>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/ruby', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppTools->getRuby()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppTools->getRuby()->getVersion(); ?></span>
             <span><?php echo $bearsamppLang->getValue(Lang::RUBY); ?></span>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/xdc', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppTools->getXdc()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppTools->getXdc()->getVersion(); ?></span>
             <span><?php echo $bearsamppLang->getValue(Lang::XDC); ?></span>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/yarn', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppTools->getYarn()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppTools->getYarn()->getVersion(); ?></span>
             <span><?php echo $bearsamppLang->getValue(Lang::YARN); ?></span>
           </span>
         </div>
@@ -137,7 +137,7 @@
     </div>
   </div>
   <div class="col-md-4">
-    <div style="min-height:16rem;" class="card card-primary">
+    <div style="min-height:18rem;" class="card">
       <div class="card-heading">
         <h3 class="card-title bg-dark text-light p-1"><i class="fa fa-asterisk"></i> <?php echo $bearsamppLang->getValue(Lang::APPS); ?></h3>
       </div>
@@ -145,27 +145,27 @@
         <div class="list-group" style="margin-bottom:0;">
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/adminer', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppApps->getAdminer()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppApps->getAdminer()->getVersion(); ?></span>
             <a href="adminer" target="_blank"><?php echo $bearsamppLang->getValue(Lang::ADMINER); ?></a>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/gitlist', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppApps->getGitlist()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppApps->getGitlist()->getVersion(); ?></span>
             <a href="gitlist" target="_blank"><?php echo $bearsamppLang->getValue(Lang::GITLIST); ?></a>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/phpmyadmin', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppApps->getPhpmyadmin()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppApps->getPhpmyadmin()->getVersion(); ?></span>
             <a href="phpmyadmin" target="_blank"><?php echo $bearsamppLang->getValue(Lang::PHPMYADMIN); ?></a>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/phppgadmin', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppApps->getPhppgadmin()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppApps->getPhppgadmin()->getVersion(); ?></span>
             <a href="phppgadmin" target="_blank"><?php echo $bearsamppLang->getValue(Lang::PHPPGADMIN); ?></a>
           </span>
           <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/webgrind', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size:12px" class="badge text-bg-primary"><?php echo $bearsamppApps->getWebgrind()->getVersion(); ?></span>
+            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppApps->getWebgrind()->getVersion(); ?></span>
             <a href="webgrind" target="_blank"><?php echo $bearsamppLang->getValue(Lang::WEBGRIND); ?></a>
           </span>
         </div>
