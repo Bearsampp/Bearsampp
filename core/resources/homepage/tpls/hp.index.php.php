@@ -36,9 +36,9 @@
     </div>
   </div>
 </div>
-<div class="row-fluid">
-  <div class="col-lg-12">
-    <h3 clas="bg-dark text-light"><i class="fa fa-gear"></i> <?php echo $bearsamppLang->getValue(Lang::EXTENSIONS); ?> <small></small></h3>
+<div class="row-fluid mt-3">
+  <div class="col-lg-12 section-header">
+    <h3 class="bg-dark text-light"><i class="fa fa-gear"></i> <?php echo $bearsamppLang->getValue(Lang::EXTENSIONS); ?> <small></small></h3>
   </div>
 </div>
 <div class="row-fluid">
