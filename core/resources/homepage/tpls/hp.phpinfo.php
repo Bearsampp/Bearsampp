@@ -1,6 +1,6 @@
 <style type="text/css">
-  #phpinfo {font-size: 110%; font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; padding-top: 20px;}
-  #phpinfo .label {font-size: 90%;}
+  #phpinfo {font-size: 1em%; padding-top: 20px;}
+  #phpinfo .badge {font-size: .8rem;}
   #phpinfo pre {margin: 0; font-family: monospace;}
   #phpinfo a:link {color: #000099; text-decoration: none; background-color: #fff;}
   #phpinfo a:hover {text-decoration: underline;}
@@ -8,7 +8,7 @@
   #phpinfo .center {text-align: center;}
   #phpinfo .center table {margin-left: auto; margin-right: auto; text-align: left;}
   #phpinfo th {font-weight: bold; background: #eee;}
-  #phpinfo td, th {border: 1px solid #000; font-size: 85%; vertical-align: baseline; padding: 5px;}
+  #phpinfo td, th {border: 1px solid #000; font-size: .9em; vertical-align: baseline; padding: 5px;}
   #phpinfo td.v {word-wrap: break-word; word-break: break-all; }
   #phpinfo h1 {font-size: 150%;}
   #phpinfo h2 {text-align:center; font-size: 125%;}
@@ -22,7 +22,7 @@
   #phpinfo hr {width: 600px; background-color: #cccccc; border: 0; height: 1px; color: #000;}
 </style>
 
-<a href="<?php echo $bearsamppHomepage->getPageQuery(Homepage::PAGE_INDEX); ?>" class="btn btn-primary" role="button"><i class="fa fa-arrow-circle-left"></i> <?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_BACK_TEXT); ?></a>
+<a href="<?php echo $bearsamppHomepage->getPageQuery(Homepage::PAGE_INDEX); ?>" class="btn btn-dark" role="button"><i class="fa fa-arrow-circle-left"></i> <?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_BACK_TEXT); ?></a>
 
 <div id="phpinfo"><?php
 
