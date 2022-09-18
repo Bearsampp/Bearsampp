@@ -175,3 +175,8 @@ table.tablesorter thead tr th:hover {
     font-size: 1em;
     margin-left: .25em;
     }
+
+/* listing of extensions and modules */
+.grid-list {
+    padding: 0 .75em 0 .75em;
+    }
