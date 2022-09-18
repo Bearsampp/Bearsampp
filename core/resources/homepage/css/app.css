@@ -1,10 +1,11 @@
 body {
-  margin-top: 50px;
+  margin-top: 3.25rem;
+  font-size: 14px;
 }
 
 #page-wrapper {
   width: 100%;
-  padding: 60px 25px;
+  padding: 3.75rem 1.55rem;
 }
 
 .no-display {
@@ -12,15 +13,16 @@ body {
 }
 
 .anchor {
-  padding-top: 80px;
+  padding-top: .5rem;
 }
 
 .list-group {
   margin-bottom: 0;
 }
 
-.panel-elts {
-  padding: 0 20px 20px;
+.card-elts {
+  padding: 0 1.25rem 1.25rem;
+  margin-top: 1rem;
 }
 
 /* Nav Messages */
@@ -33,7 +35,7 @@ body {
 
 .messages-dropdown .dropdown-menu .message-preview .avatar {
   float: left;
-  margin-right: 15px;
+  margin-right: 1rem;
 }
 
 .messages-dropdown .dropdown-menu .message-preview .name {
@@ -41,16 +43,16 @@ body {
 }
 
 .messages-dropdown .dropdown-menu .message-preview .message {
-  font-size: 12px;
+  font-size: 1em;
 }
 
 .messages-dropdown .dropdown-menu .message-preview .time {
-  font-size: 12px;
+  font-size: 1em;
 }
 
 /* Nav Announcements */
 .announcement-heading {
-  font-size: 50px;
+  font-size: 3rem;
   margin: 0;
 }
 
@@ -84,13 +86,13 @@ table.tablesorter thead tr th:hover {
 }
 
 /* Summary panel body */
-.panel-summary {
-  height: 195px;
+.card-summary {
+  height: 12.25rem;
   overflow: auto;
 }
 
 /* Edit Below to Customize Widths > 768px */
-@media (min-width:768px) {
+@media (min-width: 768px) {
 
   /* Side Nav */
   .side-nav {
@@ -107,7 +109,7 @@ table.tablesorter thead tr th:hover {
   }
 
   /* Bootstrap Default Overrides - Customized Dropdowns for the Side Nav */
-  .side-nav>li.dropdown>ul.dropdown-menu {
+  .side-nav > li.dropdown > ul.dropdown-menu {
     position: relative;
     min-width: 225px;
     margin: 0;
@@ -119,33 +121,65 @@ table.tablesorter thead tr th:hover {
     -webkit-box-shadow: none;
   }
 
-  .side-nav>li.dropdown>ul.dropdown-menu>li>a {
+  .side-nav > li.dropdown > ul.dropdown-menu > li > a {
     color: #999999;
     padding: 15px 15px 15px 25px;
   }
 
-  .side-nav>li.dropdown>ul.dropdown-menu>li>a:hover,
-  .side-nav>li.dropdown>ul.dropdown-menu>li>a.active,
-  .side-nav>li.dropdown>ul.dropdown-menu>li>a:focus {
+  .side-nav > li.dropdown > ul.dropdown-menu > li > a:hover,
+  .side-nav > li.dropdown > ul.dropdown-menu > li > a.active,
+  .side-nav > li.dropdown > ul.dropdown-menu > li > a:focus {
     color: #fff;
     background-color: #080808;
   }
 
-  .side-nav>li>a {
+  .side-nav > li > a {
     width: 225px;
   }
 
-  .navbar-inverse .navbar-nav>li>a:hover,
-  .navbar-inverse .navbar-nav>li>a:focus {
+  .navbar-inverse .navbar-nav > li > a:hover,
+  .navbar-inverse .navbar-nav > li > a:focus {
     background-color: #080808;
   }
 
   /* Nav Messages */
   .messages-dropdown .dropdown-menu {
-    min-width: 300px;
+    min-width: 18.75rem;
   }
 
   .messages-dropdown .dropdown-menu li a {
     white-space: normal;
   }
+}
+
+/* Spacing for card-sub bodies */
+.section-header {
+  margin-top: .8rem;
+}
+
+/* span padding */
+.span-grid {
+  padding: 3px;
+}
+
+/* Card spacing */
+.card {
+  margin-top: 1rem;
+}
+
+/* span with float right */
+.span-right {
+  font-size: 1em;
+}
+
+.apache-span-right {
+  font-size: 1em;
+  margin-left: .25em;
+}
+
+/* listing of extensions and modules */
+.grid-list {
+  padding: 0 .75em 0 .75em;
+  border: var(--bs-list-group-border-width) solid var(--bs-list-group-border-color);
+  border-radius: 6px;
 }
