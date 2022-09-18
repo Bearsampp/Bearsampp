@@ -1,30 +1,31 @@
 <?php include __DIR__ . '\..\..\bootstrap.php'; ?>
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/jquery/jquery-1.10.2.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/jquery/jquery-migrate-1.2.1.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/bootstrap/bootstrap.min.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/_commons.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/latestversion.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/summary.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/apache.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/filezilla.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/mailhog.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/mariadb.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/memcached.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/mysql.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/nodejs.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/php.js"></script>
-    <script src="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/postgresql.js"></script>
-    <link href="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="<?php echo $bearsamppHomepage->getResourcesPath(); ?>/css/app.css" rel="stylesheet">
-    <link href="<?php echo Util::imgToBase64($bearsamppCore->getResourcesPath() . '/bearsampp.ico'); ?>" rel="icon" />
+<head>
+    <meta charset = "utf-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+    <meta name = "description" content = "">
+    <meta name = "author" content = "">
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/jquery/jquery-3.6.1.min.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/jquery/jquery-migrate-3.4.0.min.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/bootstrap/popper.min.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/bootstrap/bootstrap.min.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/_commons.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/latestversion.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/summary.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/apache.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/filezilla.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/mailhog.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/mariadb.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/memcached.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/mysql.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/nodejs.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/php.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/postgresql.js"></script>
+    <link href = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/bootstrap/bootstrap.min.css" rel = "stylesheet">
+    <link href = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/font-awesome/css/font-awesome.min.css" rel = "stylesheet">
+    <link href = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/css/app.css" rel = "stylesheet">
+    <link href = "<?php echo Util::imgToBase64( $bearsamppCore->getResourcesPath() . '/bearsampp.ico' ); ?>" rel = "icon" />
     <title><?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?></title>
 </head>
 
