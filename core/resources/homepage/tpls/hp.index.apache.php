@@ -30,10 +30,10 @@
         </div>
     </div>
 </div>
-<div class = "border border-secondary grid-list">
+<div class = "border grid-list mt-3">
     <div class = "row-fluid mt-3">
         <div class = "col-lg-12 section-top">
-            <h3 class = "bg-dark text-light"><i class = "fa fa-gear"></i> <?php echo $bearsamppLang->getValue( Lang::MODULES ); ?> <small></small></h3>
+            <h3><i class = "fa fa-gear"></i> <?php echo $bearsamppLang->getValue( Lang::MODULES ); ?> <small></small></h3>
         </div>
     </div>
     <div class = "row-fluid">
@@ -44,7 +44,7 @@
 </div>
 <div class = "row-fluid mt-3">
     <div class = "col-lg-12 section-top">
-        <h3 class = "bg-dark text-light"><i class = "fa fa-link"></i> <?php echo $bearsamppLang->getValue( Lang::ALIASES ); ?> <small></small></h3>
+        <h3><i class = "fa fa-link"></i> <?php echo $bearsamppLang->getValue( Lang::ALIASES ); ?> <small></small></h3>
     </div>
 </div>
 <div class = "row-fluid">
@@ -54,7 +54,7 @@
 </div>
 <div class = "row-fluid mt-3">
     <div class = "col-lg-12 section-top">
-        <h3 class = "bg-dark text-light"><i class = "fa fa-folder"></i> <?php echo $bearsamppLang->getValue( Lang::MENU_WWW_DIRECTORY ); ?> <small></small></h3>
+        <h3><i class = "fa fa-folder"></i> <?php echo $bearsamppLang->getValue( Lang::MENU_WWW_DIRECTORY ); ?> <small></small></h3>
     </div>
 </div>
 <div class = "row-fluid">
@@ -64,7 +64,7 @@
 </div>
 <div class = "row-fluid mt-3">
     <div class = "col-lg-12 section-top">
-        <h3 class = "bg-dark text-light"><i class = "fa fa-globe"></i> <?php echo $bearsamppLang->getValue( Lang::VIRTUAL_HOSTS ); ?> <small></small></h3>
+        <h3><i class = "fa fa-globe"></i> <?php echo $bearsamppLang->getValue( Lang::VIRTUAL_HOSTS ); ?> <small></small></h3>
     </div>
 </div>
 <div class = "row-fluid">
