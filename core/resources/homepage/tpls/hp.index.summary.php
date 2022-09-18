@@ -1,7 +1,7 @@
 <div class="row summary">
   <div class="col-md-4">
     <div class="list-group">
-      <div class="list-group-item" style="min-height: 10rem">
+      <div class="list-group-item" style="min-height: 8rem">
         <h4 class="list-group-item-heading"><?php echo $bearsamppLang->getValue(Lang::ABOUT); ?></h4>
         <div class="list-group-item-text"><?php echo sprintf($bearsamppLang->getValue(Lang::HOMEPAGE_ABOUT_HTML), Util::getWebsiteUrl(), Util::getGithubUrl()); ?></div>
       </div>
@@ -9,7 +9,7 @@
   </div>
   <div class="col-md-4">
     <div class="list-group">
-      <div class="list-group-item" style="min-height: 10rem">
+      <div class="list-group-item" style="min-height: 8rem">
         <h4 class="list-group-item-heading"><?php echo $bearsamppLang->getValue(Lang::LICENSE); ?></h4>
         <div class="list-group-item-text"><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_LICENSE_TEXT); ?></div>
       </div>
@@ -17,7 +17,7 @@
   </div>
   <div class="col-md-4">
     <div class="list-group">
-      <div class="list-group-item" style="min-height: 10rem">
+      <div class="list-group-item" style="min-height: 8rem">
         <h4 class="list-group-item-heading"><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_QUESTIONS_TITLE); ?></h4>
         <div class="list-group-item-text">
           <div><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_QUESTIONS_TEXT); ?></div>
