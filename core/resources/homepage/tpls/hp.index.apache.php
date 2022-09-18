@@ -42,33 +42,39 @@
         </div>
     </div>
 </div>
-<div class = "row-fluid mt-3">
-    <div class = "col-lg-12 section-top">
-        <h3><i class = "fa fa-link"></i> <?php echo $bearsamppLang->getValue( Lang::ALIASES ); ?> <small></small></h3>
+<div class = "border grid-list mt-3">
+    <div class = "row-fluid mt-3">
+        <div class = "col-lg-12 section-top">
+            <h3><i class = "fa fa-link"></i> <?php echo $bearsamppLang->getValue( Lang::ALIASES ); ?> <small></small></h3>
+        </div>
+    </div>
+    <div class = "row-fluid">
+        <div class = "col-lg-12 apache-aliaseslist d-flex flex-wrap">
+            <span class = "loader"><img src = "<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
+        </div>
     </div>
 </div>
-<div class = "row-fluid">
-    <div class = "col-lg-12 apache-aliaseslist d-flex flex-wrap">
-        <span class = "loader"><img src = "<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
+<div class = "border grid-list mt-3">
+    <div class = "row-fluid mt-3">
+        <div class = "col-lg-12 section-top">
+            <h3><i class = "fa fa-folder"></i> <?php echo $bearsamppLang->getValue( Lang::MENU_WWW_DIRECTORY ); ?> <small></small></h3>
+        </div>
+    </div>
+    <div class = "row-fluid">
+        <div class = "col-lg-12 apache-wwwdirectory d-flex flex-wrap">
+            <span class = "loader"><img src = "<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
+        </div>
     </div>
 </div>
-<div class = "row-fluid mt-3">
-    <div class = "col-lg-12 section-top">
-        <h3><i class = "fa fa-folder"></i> <?php echo $bearsamppLang->getValue( Lang::MENU_WWW_DIRECTORY ); ?> <small></small></h3>
+<div class = "border grid-list mt-3">
+    <div class = "row-fluid mt-3">
+        <div class = "col-lg-12 section-top">
+            <h3><i class = "fa fa-globe"></i> <?php echo $bearsamppLang->getValue( Lang::VIRTUAL_HOSTS ); ?> <small></small></h3>
+        </div>
     </div>
-</div>
-<div class = "row-fluid">
-    <div class = "col-lg-12 apache-wwwdirectory d-flex flex-wrap">
-        <span class = "loader"><img src = "<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
-    </div>
-</div>
-<div class = "row-fluid mt-3">
-    <div class = "col-lg-12 section-top">
-        <h3><i class = "fa fa-globe"></i> <?php echo $bearsamppLang->getValue( Lang::VIRTUAL_HOSTS ); ?> <small></small></h3>
-    </div>
-</div>
-<div class = "row-fluid">
-    <div class = "col-lg-12 apache-vhostslist d-flex flex-wrap">
-        <span class = "loader"><img src = "<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
+    <div class = "row-fluid">
+        <div class = "col-lg-12 apache-vhostslist d-flex flex-wrap">
+            <span class = "loader"><img src = "<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
+        </div>
     </div>
 </div>
