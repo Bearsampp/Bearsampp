@@ -92,7 +92,7 @@ table.tablesorter thead tr th:hover {
     }
 
 /* Edit Below to Customize Widths > 768px */
-@media (min-width:768px) {
+@media (min-width: 768px) {
 
     /* Side Nav */
     .side-nav {
@@ -109,7 +109,7 @@ table.tablesorter thead tr th:hover {
         }
 
     /* Bootstrap Default Overrides - Customized Dropdowns for the Side Nav */
-    .side-nav>li.dropdown>ul.dropdown-menu {
+    .side-nav > li.dropdown > ul.dropdown-menu {
         position: relative;
         min-width: 225px;
         margin: 0;
@@ -121,24 +121,24 @@ table.tablesorter thead tr th:hover {
         -webkit-box-shadow: none;
         }
 
-    .side-nav>li.dropdown>ul.dropdown-menu>li>a {
+    .side-nav > li.dropdown > ul.dropdown-menu > li > a {
         color: #999999;
         padding: 15px 15px 15px 25px;
         }
 
-    .side-nav>li.dropdown>ul.dropdown-menu>li>a:hover,
-    .side-nav>li.dropdown>ul.dropdown-menu>li>a.active,
-    .side-nav>li.dropdown>ul.dropdown-menu>li>a:focus {
+    .side-nav > li.dropdown > ul.dropdown-menu > li > a:hover,
+    .side-nav > li.dropdown > ul.dropdown-menu > li > a.active,
+    .side-nav > li.dropdown > ul.dropdown-menu > li > a:focus {
         color: #fff;
         background-color: #080808;
         }
 
-    .side-nav>li>a {
+    .side-nav > li > a {
         width: 225px;
         }
 
-    .navbar-inverse .navbar-nav>li>a:hover,
-    .navbar-inverse .navbar-nav>li>a:focus {
+    .navbar-inverse .navbar-nav > li > a:hover,
+    .navbar-inverse .navbar-nav > li > a:focus {
         background-color: #080808;
         }
 
@@ -152,17 +152,26 @@ table.tablesorter thead tr th:hover {
         }
     }
 
-    /* Spacing for card-sub bodies */
-    .section-header {
-        margin-top: .8rem;
-        }
+/* Spacing for card-sub bodies */
+.section-header {
+    margin-top: .8rem;
+    }
 
-    /* span padding */
-    .span-grid {
-        padding: 3px;
-        }
+/* span padding */
+.span-grid {
+    padding: 3px;
+    }
 
-    /* Card spacing */
-    .card {
-        margin-top: 1rem;
-        }
+/* Card spacing */
+.card {
+    margin-top: 1rem;
+    }
+
+/* span with float right */
+.span-right {
+    font-size: 1em;
+    }
+.apache-span-right {
+    font-size: 1em;
+    margin-left: .25em;
+    }
