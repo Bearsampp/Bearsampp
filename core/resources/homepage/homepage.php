@@ -34,7 +34,7 @@
     <div class = "container-fluid">
         <div class = "d-inline-block"
         <a class = "navbar-brand" href = "<?php echo Util::getWebsiteUrl(); ?>">
-            <img alt = "<?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?>"
+            <img class="p-1" alt = "<?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?>"
                  src = "<?php echo $bearsamppHomepage->getResourcesPath() . '/img/header-logo.png'; ?>" /></a>
         <button class = "navbar-toggler" type = "button" data-bs-toggle = "collapse" data-bs-target = "#navbarSupportedContent" aria-controls = "navbarSupportedContent"
                 aria-expanded = "false" aria-label = "Toggle navigation">
