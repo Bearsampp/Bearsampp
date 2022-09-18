@@ -40,13 +40,13 @@
     </div>
 </div>
 <div class = "border grid-list mt-3">
-    <div class = "row-fluid mt-3">
+    <div class = "row-fluid mt-2">
         <div class = "col-lg-12 section-header">
-            <h3 class = "bg-dark text-light"><i class = "fa fa-gear"></i> <?php echo $bearsamppLang->getValue( Lang::EXTENSIONS ); ?> <small></small></h3>
+            <h3><i class = "fa fa-gear"></i> <?php echo $bearsamppLang->getValue( Lang::EXTENSIONS ); ?> <small></small></h3>
         </div>
     </div>
     <div class = "row-fluid">
-        <div class = "col-lg-12 php-extslist d-flex flex-wrap">
+        <div class = "col-lg-12 php-extslist d-flex flex-wrap mb-2">
             <span class = "loader"><img src = "<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
         </div>
     </div>
