@@ -180,6 +180,6 @@ table.tablesorter thead tr th:hover {
 /* listing of extensions and modules */
 .grid-list {
   padding: 0 .75em 0 .75em;
-  boarder: var(--bs-list-group-border-width) solid var(--bs-list-group-border-color);
+  border: var(--bs-list-group-border-width) solid var(--bs-list-group-border-color);
   border-radius: 6px;
 }
