@@ -10,6 +10,8 @@
     <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/jquery/jquery-migrate-3.4.0.min.js"></script>
     <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/bootstrap/popper.min.js"></script>
     <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/bootstrap/bootstrap.min.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/fontawesome/js/all.js"></script>
+    <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/fontawesome/js/v4-shims.js"></script>
     <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/_commons.js"></script>
     <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/latestversion.js"></script>
     <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/summary.js"></script>
@@ -23,7 +25,8 @@
     <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/php.js"></script>
     <script src = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/js/postgresql.js"></script>
     <link href = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/bootstrap/bootstrap.min.css" rel = "stylesheet">
-    <link href = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/font-awesome/css/font-awesome.min.css" rel = "stylesheet">
+    <link href = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/fontawesome/css/all.css" rel = "stylesheet">
+    <link href = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/libs/fontawesome/css/v4-shims.css" rel = "stylesheet">
     <link href = "<?php echo $bearsamppHomepage->getResourcesPath(); ?>/css/app.css" rel = "stylesheet">
     <link href = "<?php echo Util::imgToBase64( $bearsamppCore->getResourcesPath() . '/bearsampp.ico' ); ?>" rel = "icon" />
     <title><?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?></title>
@@ -48,7 +51,7 @@
                         src = "<?php echo $bearsamppHomepage->getResourcesPath() . '/img/github.png'; ?>" /></a>
             </li>
             <li>
-                <a data-bs-toggle="tooltip"data-bs-placement="top" data-bs-title = "<?php echo $bearsamppLang->getValue( Lang::DONATE ); ?>" target = "_blank" href = "<?php echo Util::getWebsiteUrl( 'donate' ); ?>"><img
+                <a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title = "<?php echo $bearsamppLang->getValue( Lang::DONATE ); ?>" target = "_blank" href = "<?php echo Util::getWebsiteUrl( 'donate' ); ?>"><img
                         src = "<?php echo $bearsamppHomepage->getResourcesPath() . '/img/heart.png'; ?>" /></a>
             </li>
         </ul>
@@ -60,11 +63,6 @@
     <?php include 'tpls/hp.latestversion.php'; ?>
     <?php include 'tpls/hp.' . $bearsamppHomepage->getPage() . '.php'; ?>
 </div>
-
-<script type = "text/javascript">
-    $('.navbar-nav a.addtooltip[title]').tooltip({html: true, placement: 'bottom'});
-    $('a.addtooltip[title]').tooltip({html: true});
-</script>
 
 </body>
 </html>
