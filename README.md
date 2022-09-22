@@ -81,6 +81,9 @@ We would like to thank the following for supporting our project:
 
 [![Code Shelter](https://www.codeshelter.co/static/badges/badge-flat.svg)](https://www.codeshelter.co/)
 
+<img src="https://user-images.githubusercontent.com/1850089/191779113-6218a5df-d06d-41b5-92f9-86a9563b4d09.png" width="100" />
+
+
 ## License
 
 GPL-3.0. See `LICENSE` for more details.<br />
