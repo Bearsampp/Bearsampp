@@ -149,11 +149,6 @@
             <a href="adminer" target="_blank"><?php echo $bearsamppLang->getValue(Lang::ADMINER); ?></a>
           </span>
           <span class="list-group-item">
-            <a href="<?php echo Util::getWebsiteUrl('module/gitlist', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
-            <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppApps->getGitlist()->getVersion(); ?></span>
-            <a href="gitlist" target="_blank"><?php echo $bearsamppLang->getValue(Lang::GITLIST); ?></a>
-          </span>
-          <span class="list-group-item">
             <a href="<?php echo Util::getWebsiteUrl('module/phpmyadmin', '#releases'); ?>" target="_blank" title="<?php echo $bearsamppLang->getValue(Lang::DOWNLOAD_MORE); ?>"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>
             <span style="float:right;font-size: 1em" class="badge text-bg-primary"><?php echo $bearsamppApps->getPhpmyadmin()->getVersion(); ?></span>
             <a href="phpmyadmin" target="_blank"><?php echo $bearsamppLang->getValue(Lang::PHPMYADMIN); ?></a>

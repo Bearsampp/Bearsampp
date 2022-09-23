@@ -5,7 +5,6 @@ class Apps
     const TYPE = 'apps';
 
     private $phpmyadmin;
-    private $gitlist;
     private $webgrind;
     private $adminer;
     private $phppgadmin;
@@ -26,7 +25,6 @@ class Apps
     {
         return array(
             $this->getAdminer(),
-            $this->getGitlist(),
             $this->getPhpmyadmin(),
             $this->getPhppgadmin(),
             $this->getWebgrind()
@@ -39,14 +37,6 @@ class Apps
             $this->adminer = new AppAdminer('adminer', self::TYPE);
         }
         return $this->adminer;
-    }
-
-    public function getGitlist()
-    {
-        if ($this->gitlist == null) {
-            $this->gitlist = new AppGitlist('gitlist', self::TYPE);
-        }
-        return $this->gitlist;
     }
 
     public function getPhpmyadmin()

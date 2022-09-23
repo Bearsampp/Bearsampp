@@ -112,7 +112,6 @@ postgresql = "PostgreSQL"
 
 ; Apps
 adminer = "Adminer"
-gitlist = "GitList"
 phpmyadmin = "phpMyAdmin"
 phppgadmin = "phpPgAdmin"
 webgrind = "Webgrind"

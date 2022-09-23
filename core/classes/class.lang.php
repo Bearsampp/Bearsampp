@@ -112,7 +112,6 @@ class Lang
     const POSTGRESQL = 'postgresql';
 
     // Apps
-    const GITLIST = 'gitlist';
     const PHPMYADMIN = 'phpmyadmin';
     const WEBGRIND = 'webgrind';
     const ADMINER = 'adminer';
@@ -463,7 +462,6 @@ class Lang
             self::POSTGRESQL,
 
             // Apps
-            self::GITLIST,
             self::PHPMYADMIN,
             self::WEBGRIND,
             self::ADMINER,

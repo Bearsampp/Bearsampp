@@ -715,16 +715,6 @@ class Util
             );
         }
 
-        // GitList
-        $folderList = self::getFolderList($bearsamppApps->getGitlist()->getRootPath());
-        foreach ($folderList as $folder) {
-            $paths[] = array(
-                'path' => $bearsamppApps->getGitlist()->getRootPath() . '/' . $folder,
-                'includes' => array('config.ini'),
-                'recursive' => false
-            );
-        }
-
         // Composer
         $folderList = self::getFolderList($bearsamppTools->getComposer()->getRootPath());
         foreach ($folderList as $folder) {
