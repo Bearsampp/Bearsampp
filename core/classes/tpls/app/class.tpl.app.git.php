@@ -34,6 +34,9 @@ class TplAppGit
             false, get_called_class()
         );
 
+        /* get path for git gui */
+        $gitgui = $bearsamppTools->getGit()->getSymlinkPath() . '/cmd';
+
         return TplAestan::getItemConsoleZ(
                 $bearsamppLang->getValue(Lang::GIT_CONSOLE),
                 TplAestan::GLYPH_GIT,
