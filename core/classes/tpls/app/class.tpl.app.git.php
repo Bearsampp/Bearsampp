@@ -42,6 +42,11 @@ class TplAppGit
                 TplAestan::GLYPH_GIT,
                 $bearsamppTools->getConsoleZ()->getTabTitleGit()
             ) . PHP_EOL .
+            TplAestan::getItemExe(
+                    $bearsamppLang->getValue(Lang::GITGUI),
+                    $gitgui . '/git-gui',
+                    TplAestan::GLYPH_GIT
+                ) . PHP_EOL .
             TplAestan::getItemSeparator() . PHP_EOL .
 
             // Items
