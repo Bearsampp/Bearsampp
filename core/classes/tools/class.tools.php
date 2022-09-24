@@ -75,6 +75,14 @@ class Tools
         return $this->git;
     }
 
+    public function getGitGui()
+    {
+        if ($this->git == null) {
+            $this->git = new ToolGit('git-gui', self::TYPE);
+        }
+        return $this->git;
+    }
+
     public function getNgrok()
     {
         if ($this->ngrok == null) {

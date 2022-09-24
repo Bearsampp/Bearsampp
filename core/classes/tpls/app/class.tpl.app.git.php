@@ -34,11 +34,19 @@ class TplAppGit
             false, get_called_class()
         );
 
+        /* get path for git gui */
+        $gitgui = $bearsamppTools->getGit()->getSymlinkPath() . '/cmd';
+
         return TplAestan::getItemConsoleZ(
                 $bearsamppLang->getValue(Lang::GIT_CONSOLE),
                 TplAestan::GLYPH_GIT,
                 $bearsamppTools->getConsoleZ()->getTabTitleGit()
             ) . PHP_EOL .
+            TplAestan::getItemExe(
+                    $bearsamppLang->getValue(Lang::GITGUI),
+                    $gitgui . '/git-gui',
+                    TplAestan::GLYPH_GIT
+                ) . PHP_EOL .
             TplAestan::getItemSeparator() . PHP_EOL .
 
             // Items

@@ -26,6 +26,7 @@ class Lang
     const EXECUTABLE = 'executable';
     const EXTENSIONS = 'extensions';
     const GIT_CONSOLE = 'gitConsole';
+    const GITGUI = 'gitGui';
     const GITHUB = 'github';
     const HELP = 'help';
     const HOSTSEDITOR = 'hostseditor';
