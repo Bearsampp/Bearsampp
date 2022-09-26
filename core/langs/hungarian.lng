@@ -59,7 +59,6 @@ version = "Verzió"
 versions = "Verziók"
 virtualHosts = "Virtuális hosztok"
 website = "Weboldal"
-kvfront = 'Kvfront';
 
 ; Menu
 menuAbout = "Névjegy..."
