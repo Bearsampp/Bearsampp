@@ -265,6 +265,7 @@ class Util
         }
 
         closedir($handle);
+        natcasesort($result);
         return $result;
     }
 
