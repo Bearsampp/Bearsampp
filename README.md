@@ -30,7 +30,6 @@ For those who wish to contribute, have an issue or questions, read the [Document
 | ![](img/binary.png) | [Filezilla](https://bearsampp.com/module/filezilla): a FTP server application. |
 | ![](img/tool.png) | [Ghostscript](https://bearsampp.com/module/ghostscript): an interpreter for the PostScript language and for PDF. |
 | ![](img/tool.png) | [Git](https://bearsampp.com/module/git): a widely used version control system for software development. |
-| ![](img/application.png) | [GitList](https://bearsampp.com/module/gitlist): an elegant and modern git repository viewer. |
 | ![](img/binary.png) | [MailHog](https://bearsampp.com/module/mailhog): a Web and API based SMTP testing. |
 | ![](img/binary.png) | [MariaDB](https://bearsampp.com/module/mariadb): a community-developed fork of the MySQL relational database management system. |
 | ![](img/binary.png) | [Memcached](https://bearsampp.com/module/memcached): a distributed memory object caching system. |

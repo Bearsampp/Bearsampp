@@ -31,8 +31,6 @@ class ActionReload
         // Process ConsoleZ config
         TplConsoleZ::process();
 
-        // Process Gitlist config
-        TplGitlist::process();
 
         // Refresh PEAR version cache file
         $bearsamppBins->getPhp()->getPearVersion();

@@ -25,6 +25,7 @@ error = "Erreur"
 executable = "Exécutable"
 extensions = "Extensions"
 gitConsole = "Console Git"
+gitGui = "Git Gui"
 github = "Github"
 help = "Aide"
 hostseditor = "HostsEditor"
@@ -58,7 +59,6 @@ version = "Version"
 versions = "Versions"
 virtualHosts = "Hôtes virtuels"
 website = "Site web"
-kvfront = 'Kvfront';
 
 ; Menu
 menuAbout = "À propos..."
@@ -112,7 +112,6 @@ postgresql = "PostgreSQL"
 
 ; Apps
 adminer = "Adminer"
-gitlist = "GitList"
 phpmyadmin = "phpMyAdmin"
 phppgadmin = "phpPgAdmin"
 webgrind = "Webgrind"

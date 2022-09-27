@@ -265,6 +265,7 @@ class Util
         }
 
         closedir($handle);
+        natcasesort($result);
         return $result;
     }
 
@@ -712,16 +713,6 @@ class Util
                 'path' => $bearsamppBins->getFilezilla()->getRootPath() . '/' . $folder,
                 'includes' => array('.xml'),
                 'recursive' => true
-            );
-        }
-
-        // GitList
-        $folderList = self::getFolderList($bearsamppApps->getGitlist()->getRootPath());
-        foreach ($folderList as $folder) {
-            $paths[] = array(
-                'path' => $bearsamppApps->getGitlist()->getRootPath() . '/' . $folder,
-                'includes' => array('config.ini'),
-                'recursive' => false
             );
         }
 

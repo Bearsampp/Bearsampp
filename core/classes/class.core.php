@@ -23,9 +23,6 @@ class Core
     const HOSTSEDITOR_VERSION = '1.3';
     const HOSTSEDITOR_EXE = 'hEdit_x64.exe';
 
-    const KVFRONT_VERSION = '2.6';
-    const KVFRONT_EXE = 'KvFront.exe';
-
     const LN_VERSION = '2.928';
     const LN_EXE = 'ln.exe';
 
@@ -186,16 +183,6 @@ class Core
     public function getHostsEditorExe($aetrayPath = false)
     {
         return $this->getHostsEditorPath($aetrayPath) . '/' . self::HOSTSEDITOR_EXE;
-    }
-
-    public function getKvfrontPath($aetrayPath = false)
-    {
-        return $this->getLibsPath($aetrayPath) . '/Kvfront/bin';
-    }
-
-    public function getKvfrontExe($aetrayPath = false)
-    {
-        return $this->getKvfrontPath($aetrayPath) . '/' . self::KVFRONT_EXE;
     }
 
     public function getLnPath($aetrayPath = false)

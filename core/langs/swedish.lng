@@ -25,6 +25,7 @@ error = "Fel"
 executable = "Körbar"
 extensions = "Tilläggsprogram"
 gitConsole = "#Git console"
+gitGui = "Git Gui"
 github = "Github"
 help = "Hjälp"
 hostseditor = "HostsEditor"
@@ -58,7 +59,6 @@ version = "Version"
 versions = "Versioner"
 virtualHosts = "Virtuella Värdar"
 website = "Webbsajt"
-kvfront = 'Kvfront';
 
 ; Menu
 menuAbout = "Om..."
@@ -112,7 +112,6 @@ postgresql = "PostgreSQL"
 
 ; Apps
 adminer = "Adminer"
-gitlist = "GitList"
 phpmyadmin = "phpMyAdmin"
 phppgadmin = "phpPgAdmin"
 webgrind = "Webgrind"

@@ -25,6 +25,7 @@ error = "Hiba"
 executable = "Végrehajtható"
 extensions = "Bovítmény"
 gitConsole = "Git konzol"
+gitGui = "Git Gui"
 github = "Git-hub"
 help = "Segítség"
 hostseditor = "HostsEditor"
@@ -58,7 +59,6 @@ version = "Verzió"
 versions = "Verziók"
 virtualHosts = "Virtuális hosztok"
 website = "Weboldal"
-kvfront = 'Kvfront';
 
 ; Menu
 menuAbout = "Névjegy..."
@@ -112,7 +112,6 @@ postgresql = "PostgreSQL"
 
 ; Apps
 adminer = "Adminer"
-gitlist = "GitList"
 phpmyadmin = "phpMyAdmin"
 phppgadmin = "phpPgAdmin"
 webgrind = "Webgrind"

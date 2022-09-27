@@ -26,6 +26,7 @@ class Lang
     const EXECUTABLE = 'executable';
     const EXTENSIONS = 'extensions';
     const GIT_CONSOLE = 'gitConsole';
+    const GITGUI = 'gitGui';
     const GITHUB = 'github';
     const HELP = 'help';
     const HOSTSEDITOR = 'hostseditor';
@@ -59,7 +60,6 @@ class Lang
     const VERSIONS = 'versions';
     const VIRTUAL_HOSTS = 'virtualHosts';
     const WEBSITE = 'website';
-    const KVFRONT = 'Kvfront';
 
     // Menu
     const MENU_ABOUT = 'menuAbout';
@@ -112,7 +112,6 @@ class Lang
     const POSTGRESQL = 'postgresql';
 
     // Apps
-    const GITLIST = 'gitlist';
     const PHPMYADMIN = 'phpmyadmin';
     const WEBGRIND = 'webgrind';
     const ADMINER = 'adminer';
@@ -463,7 +462,6 @@ class Lang
             self::POSTGRESQL,
 
             // Apps
-            self::GITLIST,
             self::PHPMYADMIN,
             self::WEBGRIND,
             self::ADMINER,
