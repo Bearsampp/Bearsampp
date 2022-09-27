@@ -79,8 +79,8 @@ class Win32Service
 
     private function writeLog($log)
     {
-        global $bearsamppBs;
-        Util::logDebug($log, $bearsamppBs->getServicesLogFilePath());
+        global $bearsamppRoot;
+        Util::logDebug($log, $bearsamppRoot->getServicesLogFilePath());
     }
 
     public static function getVbsKeys()

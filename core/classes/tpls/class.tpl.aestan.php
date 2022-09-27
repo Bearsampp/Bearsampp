@@ -97,10 +97,10 @@ class TplAestan
 
     public static function getItemLink($caption, $link, $local = false, $glyph = self::GLYPH_WEB_PAGE)
     {
-        global $bearsamppBs, $bearsamppConfig;
+        global $bearsamppRoot, $bearsamppConfig;
 
         if ($local) {
-            $link = $bearsamppBs->getLocalUrl($link);
+            $link = $bearsamppRoot->getLocalUrl($link);
         }
 
         return self::getItemExe(

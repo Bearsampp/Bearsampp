@@ -25,7 +25,7 @@ class ToolGit extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $bearsamppBs, $bearsamppConfig, $bearsamppLang;
+        global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::GIT);
@@ -71,7 +71,7 @@ class ToolGit extends Module
             foreach ($this->repos as $repo) {
                 $repo = trim($repo);
                 if (stripos($repo, ':') === false) {
-                    $repo = $bearsamppBs->getRootPath() . '/' . $repo;
+                    $repo = $bearsamppRoot->getRootPath() . '/' . $repo;
                 }
                 if (is_dir($repo)) {
                     $rebuildRepos[] = Util::formatUnixPath($repo);

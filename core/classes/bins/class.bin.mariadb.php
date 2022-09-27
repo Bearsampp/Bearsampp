@@ -36,7 +36,7 @@ class BinMariadb extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $bearsamppBs, $bearsamppConfig, $bearsamppLang;
+        global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::MARIADB);
@@ -45,7 +45,7 @@ class BinMariadb extends Module
 
         $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
         $this->service = new Win32Service(self::SERVICE_NAME);
-        $this->errorLog = $bearsamppBs->getLogsPath() . '/mariadb.log';
+        $this->errorLog = $bearsamppRoot->getLogsPath() . '/mariadb.log';
 
         if ($this->bearsamppConfRaw !== false) {
             $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];

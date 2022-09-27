@@ -16,7 +16,7 @@
         <i class="fa fa-puzzle-piece"></i> <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
       </span>
       <span class="list-group-item">
-        <i class="fa fa-info-circle"></i> <a href="<?php echo $bearsamppBs->getLocalUrl() . ':' . $bearsamppBins->getMailhog()->getUiPort(); ?>" target="_blank"><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_MAILHOG_TEXT); ?></a>
+        <i class="fa fa-info-circle"></i> <a href="<?php echo $bearsamppRoot->getLocalUrl() . ':' . $bearsamppBins->getMailhog()->getUiPort(); ?>" target="_blank"><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_MAILHOG_TEXT); ?></a>
       </span>
     </div>
   </div>

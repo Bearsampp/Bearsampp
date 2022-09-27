@@ -21,7 +21,7 @@ class TplAppMailhog
 
     public static function getMenuMailhog()
     {
-        global $bearsamppBs, $bearsamppConfig, $bearsamppBins, $bearsamppLang;
+        global $bearsamppRoot, $bearsamppConfig, $bearsamppBins, $bearsamppLang;
         $resultItems = $resultActions = '';
 
         $isEnabled = $bearsamppBins->getMailhog()->isEnable();
@@ -61,7 +61,7 @@ class TplAppMailhog
                 $bearsamppLang->getValue(Lang::MAILHOG),
                 $bearsamppConfig->getBrowser(),
                 TplAestan::GLYPH_WEB_PAGE,
-                $bearsamppBs->getLocalUrl() . ':' . $bearsamppBins->getMailhog()->getUiPort()
+                $bearsamppRoot->getLocalUrl() . ':' . $bearsamppBins->getMailhog()->getUiPort()
             ) . PHP_EOL;
 
             // Log
@@ -112,7 +112,7 @@ class TplAppMailhog
 
     public static function getMenuMailhogService()
     {
-        global $bearsamppBs, $bearsamppLang, $bearsamppBins;
+        global $bearsamppRoot, $bearsamppLang, $bearsamppBins;
 
         $tplChangePort = TplApp::getActionMulti(
             self::ACTION_CHANGE_PORT, null,
@@ -131,7 +131,7 @@ class TplAppMailhog
                 array(sprintf($bearsamppLang->getValue(Lang::MENU_CHECK_PORT), $bearsamppBins->getMailhog()->getSmtpPort()), TplAestan::GLYPH_LIGHT)
             ) . PHP_EOL .
             $tplChangePort[TplApp::SECTION_CALL] . PHP_EOL .
-            TplAestan::getItemNotepad($bearsamppLang->getValue(Lang::MENU_UPDATE_ENV_PATH), $bearsamppBs->getRootPath() . '/nssmEnvPaths.dat') . PHP_EOL;
+            TplAestan::getItemNotepad($bearsamppLang->getValue(Lang::MENU_UPDATE_ENV_PATH), $bearsamppRoot->getRootPath() . '/nssmEnvPaths.dat') . PHP_EOL;
 
         if (!$isInstalled) {
             $tplInstallService = TplApp::getActionMulti(

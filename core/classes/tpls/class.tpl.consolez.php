@@ -37,7 +37,7 @@ class TplConsoleZ
 
     private static function getConsoleSection()
     {
-        global $bearsamppBs, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppTools;
 
         $sectionConsoleStart = self::getIncrStr(1) . '<console ' .
             'change_refresh="10" ' .
@@ -47,7 +47,7 @@ class TplConsoleZ
             'buffer_rows="2048" ' .
             'buffer_columns="0" ' .
             'shell="" ' .
-            'init_dir="' . $bearsamppBs->getRootPath() . '" ' .
+            'init_dir="' . $bearsamppRoot->getRootPath() . '" ' .
             'start_hidden="0" ' .
             'save_size="0">' . PHP_EOL;
 
@@ -235,19 +235,19 @@ class TplConsoleZ
 
     private static function getTabCmdSection()
     {
-        global $bearsamppBs, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppTools;
 
         return self::getTab(
             $bearsamppTools->getConsoleZ()->getTabTitleDefault(),
             self::ICON_APP,
             $bearsamppTools->getConsoleZ()->getShell(),
-            $bearsamppBs->getRootPath()
+            $bearsamppRoot->getRootPath()
         ) . PHP_EOL;
     }
 
     private static function getTabPowerShellSection()
     {
-        global $bearsamppBs, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppTools;
 
         $powerShellPath = Util::getPowerShellPath();
         if ($powerShellPath !== false) {
@@ -255,7 +255,7 @@ class TplConsoleZ
                 $bearsamppTools->getConsoleZ()->getTabTitlePowershell(),
                 self::ICON_POWERSHELL,
                 $powerShellPath,
-                $bearsamppBs->getRootPath()
+                $bearsamppRoot->getRootPath()
             ) . PHP_EOL;
         }
 
@@ -340,7 +340,7 @@ class TplConsoleZ
 
         private static function getTabGitSection()
     {
-        global $bearsamppBs, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppTools;
 
         $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getGit()->getExe() . '&quot; --version');
         if (!file_exists($bearsamppTools->getGit()->getExe())) {
@@ -351,13 +351,13 @@ class TplConsoleZ
             $bearsamppTools->getConsoleZ()->getTabTitleGit(),
             self::ICON_GIT,
             $shell,
-            $bearsamppBs->getWwwPath()
+            $bearsamppRoot->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabNodejsSection()
     {
-        global $bearsamppBs, $bearsamppBins, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppBins, $bearsamppTools;
 
         $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppBins->getNodejs()->getLaunch(). '&quot;');
         if (!file_exists($bearsamppBins->getNodejs()->getLaunch())) {
@@ -368,13 +368,13 @@ class TplConsoleZ
             $bearsamppTools->getConsoleZ()->getTabTitleNodejs(),
             self::ICON_NODEJS,
             $shell,
-            $bearsamppBs->getWwwPath()
+            $bearsamppRoot->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabComposerSection()
     {
-        global $bearsamppBs, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppTools;
 
         $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getComposer()->getExe() . '&quot; -V');
         if (!file_exists($bearsamppTools->getComposer()->getExe())) {
@@ -385,13 +385,13 @@ class TplConsoleZ
             $bearsamppTools->getConsoleZ()->getTabTitleComposer(),
             self::ICON_COMPOSER,
             $shell,
-            $bearsamppBs->getWwwPath()
+            $bearsamppRoot->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabPythonSection()
     {
-        global $bearsamppBs, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppTools;
 
         $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getPython()->getExe() . '&quot; -V');
         if (!file_exists($bearsamppTools->getPython()->getExe())) {
@@ -402,13 +402,13 @@ class TplConsoleZ
             $bearsamppTools->getConsoleZ()->getTabTitlePython(),
             self::ICON_PYTHON,
             $shell,
-            $bearsamppBs->getWwwPath()
+            $bearsamppRoot->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabRubySection()
     {
-        global $bearsamppBs, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppTools;
 
         $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getRuby()->getExe() . '&quot; -v');
         if (!file_exists($bearsamppTools->getRuby()->getExe())) {
@@ -419,13 +419,13 @@ class TplConsoleZ
             $bearsamppTools->getConsoleZ()->getTabTitleRuby(),
             self::ICON_RUBY,
             $shell,
-            $bearsamppBs->getWwwPath()
+            $bearsamppRoot->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabYarnSection()
     {
-        global $bearsamppBs, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppTools;
 
         $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getYarn()->getExe() . '&quot; --version');
         if (!file_exists($bearsamppTools->getYarn()->getExe())) {
@@ -436,13 +436,13 @@ class TplConsoleZ
             $bearsamppTools->getConsoleZ()->getTabTitleYarn(),
             self::ICON_YARN,
             $shell,
-            $bearsamppBs->getWwwPath()
+            $bearsamppRoot->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabPerlSection()
     {
-        global $bearsamppBs, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppTools;
 
         $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getPerl()->getExe() . '&quot; -v');
         if (!file_exists($bearsamppTools->getPerl()->getExe())) {
@@ -453,13 +453,13 @@ class TplConsoleZ
             $bearsamppTools->getConsoleZ()->getTabTitlePerl(),
             self::ICON_PERL,
             $shell,
-            $bearsamppBs->getWwwPath()
+            $bearsamppRoot->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabGhostscriptSection()
     {
-        global $bearsamppBs, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppTools;
 
         $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getGhostscript()->getExeConsole() . '&quot; -v');
         if (!file_exists($bearsamppTools->getGhostscript()->getExeConsole())) {
@@ -470,13 +470,13 @@ class TplConsoleZ
             $bearsamppTools->getConsoleZ()->getTabTitleGhostscript(),
             self::ICON_GHOSTSCRIPT,
             $shell,
-            $bearsamppBs->getWwwPath()
+            $bearsamppRoot->getWwwPath()
         ) . PHP_EOL;
     }
 
     private static function getTabNgrokSection()
     {
-        global $bearsamppBs, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppTools;
 
         $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getNgrok()->getExe() . '&quot; version');
         if (!file_exists($bearsamppTools->getNgrok()->getExe())) {
@@ -487,7 +487,7 @@ class TplConsoleZ
             $bearsamppTools->getConsoleZ()->getTabTitleNgrok(),
             self::ICON_NGROK,
             $shell,
-            $bearsamppBs->getWwwPath()
+            $bearsamppRoot->getWwwPath()
         ) . PHP_EOL;
     }
 

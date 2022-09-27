@@ -53,20 +53,20 @@ class Nssm
 
     private function writeLog($log)
     {
-        global $bearsamppBs;
-        Util::logDebug($log, $bearsamppBs->getNssmLogFilePath());
+        global $bearsamppRoot;
+        Util::logDebug($log, $bearsamppRoot->getNssmLogFilePath());
     }
 
     private function writeLogInfo($log)
     {
-        global $bearsamppBs;
-        Util::logInfo($log, $bearsamppBs->getNssmLogFilePath());
+        global $bearsamppRoot;
+        Util::logInfo($log, $bearsamppRoot->getNssmLogFilePath());
     }
 
     private function writeLogError($log)
     {
-        global $bearsamppBs;
-        Util::logError($log, $bearsamppBs->getNssmLogFilePath());
+        global $bearsamppRoot;
+        Util::logError($log, $bearsamppRoot->getNssmLogFilePath());
     }
 
     private function exec($args)

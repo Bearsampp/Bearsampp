@@ -65,12 +65,12 @@ foreach ($bearsamppBins->getApache()->getModulesFromConf() as $moduleName => $mo
 
 // Aliases list
 foreach ($bearsamppBins->getApache()->getAlias() as $alias) {
-    $result['aliaseslist'] .= '<div style="float:left;padding:3px;"><a class="btn btn-outline-dark" target="_blank" href="' . $bearsamppBs->getLocalUrl($alias) . '"><span class="fa fa-link"></span> ' . $alias . '</a></div>';
+    $result['aliaseslist'] .= '<div style="float:left;padding:3px;"><a class="btn btn-outline-dark" target="_blank" href="' . $bearsamppRoot->getLocalUrl($alias) . '"><span class="fa fa-link"></span> ' . $alias . '</a></div>';
 }
 
 // Www directory
 foreach ($bearsamppBins->getApache()->getWwwDirectories() as $wwwDirectory) {
-    $result['wwwdirectory'] .= '<div style="float:left;padding:3px;"><a class="btn btn-outline-dark" target="_blank" href="' . $bearsamppBs->getLocalUrl($wwwDirectory) . '"><span class="fa fa-link"></span> ' . $wwwDirectory . '</a></div>';
+    $result['wwwdirectory'] .= '<div style="float:left;padding:3px;"><a class="btn btn-outline-dark" target="_blank" href="' . $bearsamppRoot->getLocalUrl($wwwDirectory) . '"><span class="fa fa-link"></span> ' . $wwwDirectory . '</a></div>';
 }
 
 // Vhosts list

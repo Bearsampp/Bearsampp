@@ -1,4 +1,4 @@
-<?php include __DIR__ . '\..\..\bootstrap.php'; ?>
+<?php include __DIR__ . '\..\..\root.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>

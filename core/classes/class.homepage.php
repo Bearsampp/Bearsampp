@@ -48,8 +48,8 @@ class Homepage
 
     public function getPageUrl($query)
     {
-        global $bearsamppBs;
-        return $bearsamppBs->getLocalUrl($this->getPageQuery($query));
+        global $bearsamppRoot;
+        return $bearsamppRoot->getLocalUrl($this->getPageQuery($query));
     }
 
     public function getPath()
@@ -66,8 +66,8 @@ class Homepage
 
     public function getResourcesUrl()
     {
-        global $bearsamppBs;
-        return $bearsamppBs->getLocalUrl($this->getResourcesPath());
+        global $bearsamppRoot;
+        return $bearsamppRoot->getLocalUrl($this->getResourcesPath());
     }
 
     public function refreshAliasContent()

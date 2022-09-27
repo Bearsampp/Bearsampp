@@ -50,7 +50,7 @@ class ActionAddAlias
 
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
-        global $bearsamppBs, $bearsamppBins, $bearsamppLang, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppBins, $bearsamppLang, $bearsamppWinbinder;
 
         $apachePortUri = $bearsamppBins->getApache()->getPort() != 80 ? ':' . $bearsamppBins->getApache()->getPort() : '';
         $aliasName = $bearsamppWinbinder->getText($this->wbInputName[WinBinder::CTRL_OBJ]);
@@ -86,14 +86,14 @@ class ActionAddAlias
                     break;
                 }
 
-                if (is_file($bearsamppBs->getAliasPath() . '/' . $aliasName . '.conf')) {
+                if (is_file($bearsamppRoot->getAliasPath() . '/' . $aliasName . '.conf')) {
                     $bearsamppWinbinder->messageBoxError(
                         sprintf($bearsamppLang->getValue(Lang::ALIAS_ALREADY_EXISTS), $aliasName),
                         $bearsamppLang->getValue(Lang::ADD_ALIAS_TITLE));
                     $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                     break;
                 }
-                if (file_put_contents($bearsamppBs->getAliasPath() . '/' . $aliasName . '.conf', $bearsamppBins->getApache()->getAliasContent($aliasName, $aliasDest)) !== false) {
+                if (file_put_contents($bearsamppRoot->getAliasPath() . '/' . $aliasName . '.conf', $bearsamppBins->getApache()->getAliasContent($aliasName, $aliasDest)) !== false) {
                     $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
 
                     $bearsamppBins->getApache()->getService()->restart();

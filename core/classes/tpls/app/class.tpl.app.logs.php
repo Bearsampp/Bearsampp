@@ -13,11 +13,11 @@ class TplAppLogs
 
     public static function getMenuLogs()
     {
-        global $bearsamppBs;
+        global $bearsamppRoot;
 
         $files = array();
 
-        $handle = @opendir($bearsamppBs->getLogsPath());
+        $handle = @opendir($bearsamppRoot->getLogsPath());
         if (!$handle) {
             return '';
         }
@@ -33,7 +33,7 @@ class TplAppLogs
 
         $result = '';
         foreach ($files as $file) {
-            $result .= TplAestan::getItemNotepad(basename($file), $bearsamppBs->getLogsPath() . '/' . $file) . PHP_EOL;
+            $result .= TplAestan::getItemNotepad(basename($file), $bearsamppRoot->getLogsPath() . '/' . $file) . PHP_EOL;
         }
         return $result;
     }

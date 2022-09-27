@@ -15,7 +15,7 @@ class ActionStartup
 
     public function __construct($args)
     {
-        global $bearsamppBs, $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
         $this->writeLog('Starting ' . APP_TITLE . '...');
 
         // Init
@@ -24,7 +24,7 @@ class ActionStartup
         $this->startTime = Util::getMicrotime();
         $this->error = '';
 
-        $this->rootPath = $bearsamppBs->getRootPath();
+        $this->rootPath = $bearsamppRoot->getRootPath();
         $this->filesToScan = array();
 
         $gauge = self::GAUGE_SERVICES * count($bearsamppBins->getServices());
@@ -44,7 +44,7 @@ class ActionStartup
 
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
-        global $bearsamppBs, $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppTools, $bearsamppApps, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppTools, $bearsamppApps, $bearsamppWinbinder;
 
         // Rotation logs
         $this->rotationLogs();
@@ -54,10 +54,10 @@ class ActionStartup
         $this->cleanOldBehaviors();
 
         // List procs
-        if ($bearsamppBs->getProcs() !== false) {
+        if ($bearsamppRoot->getProcs() !== false) {
             $this->writeLog('List procs:');
             $listProcs = array();
-            foreach ($bearsamppBs->getProcs() as $proc) {
+            foreach ($bearsamppRoot->getProcs() as $proc) {
                 $unixExePath = Util::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]);
                 $listProcs[] = '-> ' . basename($unixExePath) . ' (PID ' . $proc[Win32Ps::PROCESS_ID] . ') in ' . $unixExePath;
             }
@@ -155,12 +155,12 @@ class ActionStartup
 
     private function rotationLogs()
     {
-        global $bearsamppBs, $bearsamppCore, $bearsamppConfig, $bearsamppLang, $bearsamppBins;
+        global $bearsamppRoot, $bearsamppCore, $bearsamppConfig, $bearsamppLang, $bearsamppBins;
 
         $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_ROTATION_LOGS_TEXT));
         $this->splash->incrProgressBar();
 
-        $archivesPath = $bearsamppBs->getLogsPath() . '/archives';
+        $archivesPath = $bearsamppRoot->getLogsPath() . '/archives';
         if (!is_dir($archivesPath)) {
             mkdir($archivesPath, 0777, true);
             return;
@@ -198,7 +198,7 @@ class ActionStartup
         }
 
         // Logs
-        $srcPath = $bearsamppBs->getLogsPath();
+        $srcPath = $bearsamppRoot->getLogsPath();
         $handle = @opendir($srcPath);
         if (!$handle) {
             return;
@@ -227,18 +227,18 @@ class ActionStartup
 
         // Purge logs
         Util::clearFolders($bearsamppBins->getLogsPath());
-        Util::clearFolder($bearsamppBs->getLogsPath(), array('archives'));
+        Util::clearFolder($bearsamppRoot->getLogsPath(), array('archives'));
     }
 
     private function cleanTmpFolders()
     {
-        global $bearsamppBs, $bearsamppLang, $bearsamppCore;
+        global $bearsamppRoot, $bearsamppLang, $bearsamppCore;
 
         $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_CLEAN_TMP_TEXT));
         $this->splash->incrProgressBar();
 
         $this->writeLog('Clear tmp folders');
-        Util::clearFolder($bearsamppBs->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'npm-cache', 'pip', 'yarn'));
+        Util::clearFolder($bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'npm-cache', 'pip', 'yarn'));
         Util::clearFolder($bearsamppCore->getTmpPath());
     }
 
@@ -405,13 +405,13 @@ class ActionStartup
 
     private function checkPathRegKey()
     {
-        global $bearsamppBs, $bearsamppLang, $bearsamppRegistry;
+        global $bearsamppRoot, $bearsamppLang, $bearsamppRegistry;
 
         $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_REGISTRY_TEXT), Registry::APP_PATH_REG_ENTRY));
         $this->splash->incrProgressBar();
 
         $currentAppPathRegKey = Util::getAppPathRegKey();
-        $genAppPathRegKey = Util::formatWindowsPath($bearsamppBs->getRootPath());
+        $genAppPathRegKey = Util::formatWindowsPath($bearsamppRoot->getRootPath());
         $this->writeLog('Current app path reg key: ' . $currentAppPathRegKey);
         $this->writeLog('Gen app path reg key: ' . $genAppPathRegKey);
         if ($currentAppPathRegKey != $genAppPathRegKey) {
@@ -645,7 +645,7 @@ class ActionStartup
 
     private function writeLog($log)
     {
-        global $bearsamppBs;
-        Util::logDebug($log, $bearsamppBs->getStartupLogFilePath());
+        global $bearsamppRoot;
+        Util::logDebug($log, $bearsamppRoot->getStartupLogFilePath());
     }
 }

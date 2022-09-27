@@ -25,10 +25,10 @@ class ActionEditVhost
 
     public function __construct($args)
     {
-        global $bearsamppBs, $bearsamppLang, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
 
         if (isset($args[0]) && !empty($args[0])) {
-            $filePath = $bearsamppBs->getVhostsPath() . '/' . $args[0] . '.conf';
+            $filePath = $bearsamppRoot->getVhostsPath() . '/' . $args[0] . '.conf';
             $fileContent = file_get_contents($filePath);
             if (preg_match('/ServerName\s+(.*)/', $fileContent, $matchServerName) && preg_match('/DocumentRoot\s+"(.*)"/', $fileContent, $matchDocumentRoot)) {
                 $this->initServerName = trim($matchServerName[1]);
@@ -60,7 +60,7 @@ class ActionEditVhost
 
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
-        global $bearsamppBs, $bearsamppBins, $bearsamppLang, $bearsamppOpenSsl, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppBins, $bearsamppLang, $bearsamppOpenSsl, $bearsamppWinbinder;
 
         $serverName = $bearsamppWinbinder->getText($this->wbInputServerName[WinBinder::CTRL_OBJ]);
         $documentRoot = $bearsamppWinbinder->getText($this->wbInputDocRoot[WinBinder::CTRL_OBJ]);
@@ -95,7 +95,7 @@ class ActionEditVhost
                     break;
                 }
 
-                if ($serverName != $this->initServerName && is_file($bearsamppBs->getVhostsPath() . '/' . $serverName . '.conf')) {
+                if ($serverName != $this->initServerName && is_file($bearsamppRoot->getVhostsPath() . '/' . $serverName . '.conf')) {
                     $bearsamppWinbinder->messageBoxError(
                         sprintf($bearsamppLang->getValue(Lang::VHOST_ALREADY_EXISTS), $serverName),
                         sprintf($bearsamppLang->getValue(Lang::EDIT_VHOST_TITLE), $this->initServerName));
@@ -105,9 +105,9 @@ class ActionEditVhost
 
                 // Remove old vhost
                 $bearsamppOpenSsl->removeCrt($this->initServerName);
-                @unlink($bearsamppBs->getVhostsPath() . '/' . $this->initServerName . '.conf');
+                @unlink($bearsamppRoot->getVhostsPath() . '/' . $this->initServerName . '.conf');
 
-                if ($bearsamppOpenSsl->createCrt($serverName) && file_put_contents($bearsamppBs->getVhostsPath() . '/' . $serverName . '.conf', $bearsamppBins->getApache()->getVhostContent($serverName, $documentRoot)) !== false) {
+                if ($bearsamppOpenSsl->createCrt($serverName) && file_put_contents($bearsamppRoot->getVhostsPath() . '/' . $serverName . '.conf', $bearsamppBins->getApache()->getVhostContent($serverName, $documentRoot)) !== false) {
                     $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
 
                     $bearsamppBins->getApache()->getService()->restart();
@@ -135,7 +135,7 @@ class ActionEditVhost
                 $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
 
                 if ($confirm) {
-                    if ($bearsamppOpenSsl->removeCrt($this->initServerName) && @unlink($bearsamppBs->getVhostsPath() . '/' . $this->initServerName . '.conf')) {
+                    if ($bearsamppOpenSsl->removeCrt($this->initServerName) && @unlink($bearsamppRoot->getVhostsPath() . '/' . $this->initServerName . '.conf')) {
                         $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
 
                         $bearsamppBins->getApache()->getService()->restart();
@@ -147,7 +147,7 @@ class ActionEditVhost
                         $bearsamppWinbinder->destroyWindow($window);
                     } else {
                         $bearsamppWinbinder->messageBoxError(
-                            sprintf($bearsamppLang->getValue(Lang::VHOST_REMOVE_ERROR), $bearsamppBs->getVhostsPath() . '/' . $this->initServerName . '.conf'),
+                            sprintf($bearsamppLang->getValue(Lang::VHOST_REMOVE_ERROR), $bearsamppRoot->getVhostsPath() . '/' . $this->initServerName . '.conf'),
                             $boxTitle);
                         $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                     }
