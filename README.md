@@ -53,9 +53,9 @@ For those who wish to contribute, have an issue or questions, read the [Document
 * [Get started](https://bearsampp.com/get-started)
 * [Screenshots](https://bearsampp.com/screenshots)
 * [FAQ](https://bearsampp.com/faq)
-* [Upgrade notes](https://bearsampp.com/upgrade-notes)
-* [Reporting an issue](https://bearsampp.com/reporting-issue)
-* [Request a module](https://bearsampp.com/request-module)
+* [Upgrade notes](https://bearsampp.com/upgrade)
+* [Reporting an issue](https://github.com/Bearsampp/Bearsampp/issues)
+* [Request a module](https://bearsampp.com/request)
 * [Contribute](https://bearsampp.com/contribute)
 * [Translations](https://bearsampp.com/translations)
 
@@ -69,6 +69,19 @@ making a [Paypal donation](https://www.paypal.me/BearLeeAble) to ensure this jou
 
 Your always welcome to join the [project team](https://github.com/orgs/Bearsampp/teams) to help insure the longevity of the project.
 Thanks again for your support, it is much appreciated! :pray:
+
+## Supporters
+
+We would like to thank the following for supporting our project:
+
+[N6REJ](https://github.com/N6REJ)
+
+<a href="https://www.jetbrains.com/"> <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="80"></a>
+
+[![Code Shelter](https://www.codeshelter.co/static/badges/badge-flat.svg)](https://www.codeshelter.co/)
+
+<a href="https://simplifyyourweb.com/" ><img src="https://user-images.githubusercontent.com/1850089/191779113-6218a5df-d06d-41b5-92f9-86a9563b4d09.png" width="100" /> </a>
+
 
 ## License
 
