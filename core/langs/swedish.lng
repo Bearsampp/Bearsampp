@@ -59,7 +59,6 @@ version = "Version"
 versions = "Versioner"
 virtualHosts = "Virtuella Värdar"
 website = "Webbsajt"
-kvfront = 'Kvfront';
 
 ; Menu
 menuAbout = "Om..."

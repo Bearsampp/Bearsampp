@@ -83,14 +83,6 @@ class TplAppTools
             TplAestan::GLYPH_YARN,
             $bearsamppTools->getConsoleZ()->getTabTitleYarn()
         ) . PHP_EOL;
-
-        // KvFront
-        $resultItems .= TplAestan::getItemExe(
-                $bearsamppLang->getValue(Lang::KVFRONT),
-                $bearsamppCore->getKvfrontExe(),
-                TplAestan::GLYPH_KVFRONT
-            ) . PHP_EOL;
-
         $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
         // Console

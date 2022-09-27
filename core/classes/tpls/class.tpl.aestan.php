@@ -38,7 +38,6 @@ class TplAestan
     const GLYPH_COMPOSER = 37;
     const GLYPH_PEAR = 38;
     const GLYPH_HOSTSEDITOR = 39;
-    const GLYPH_KVFRONT = 40;
     const GLYPH_IMAGEMAGICK = 41;
     const GLYPH_NOTEPAD2 = 42;
     const GLYPH_PASSWORD = 45;
