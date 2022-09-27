@@ -44,7 +44,7 @@ class BinApache extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $bearsamppBs, $bearsamppConfig, $bearsamppLang;
+        global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::APACHE);
@@ -55,9 +55,9 @@ class BinApache extends Module
         $this->service = new Win32Service(self::SERVICE_NAME);
         $this->modulesPath = $this->symlinkPath . '/modules';
         $this->sslConf = $this->symlinkPath . '/conf/extra/httpd-ssl.conf';
-        $this->accessLog = $bearsamppBs->getLogsPath() . '/apache_access.log';
-        $this->rewriteLog = $bearsamppBs->getLogsPath() . '/apache_rewrite.log';
-        $this->errorLog = $bearsamppBs->getLogsPath() . '/apache_error.log';
+        $this->accessLog = $bearsamppRoot->getLogsPath() . '/apache_access.log';
+        $this->rewriteLog = $bearsamppRoot->getLogsPath() . '/apache_rewrite.log';
+        $this->errorLog = $bearsamppRoot->getLogsPath() . '/apache_error.log';
 
         if ($this->bearsamppConfRaw !== false) {
             $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
@@ -212,7 +212,7 @@ class BinApache extends Module
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $bearsamppBs, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
 
         if (!$this->enable) {
             return true;
@@ -294,13 +294,13 @@ class BinApache extends Module
 
         // vhosts
         foreach ($this->getVhosts() as $vhost) {
-            Util::replaceInFile($bearsamppBs->getVhostsPath() . '/' . $vhost . '.conf', array(
+            Util::replaceInFile($bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf', array(
                 '/^<VirtualHost\s+([a-zA-Z0-9.*]+):(\d+)>$/' => '<VirtualHost {{1}}:' . $this->port . '>$'
             ));
         }
 
         // www .htaccess
-        Util::replaceInFile($bearsamppBs->getWwwPath() . '/.htaccess', array(
+        Util::replaceInFile($bearsamppRoot->getWwwPath() . '/.htaccess', array(
             '/(.*)http:\/\/localhost(.*)/' => '{{1}}http://localhost' . ($this->port != 80 ? ':' . $this->port : '') . '/$1 [QSA,R=301,L]',
         ));
 
@@ -377,10 +377,10 @@ class BinApache extends Module
     }
 
     public function getAlias() {
-        global $bearsamppBs;
+        global $bearsamppRoot;
         $result = array();
 
-        $handle = @opendir($bearsamppBs->getAliasPath());
+        $handle = @opendir($bearsamppRoot->getAliasPath());
         if (!$handle) {
             return $result;
         }
@@ -397,10 +397,10 @@ class BinApache extends Module
     }
 
     public function getVhosts() {
-        global $bearsamppBs;
+        global $bearsamppRoot;
         $result = array();
 
-        $handle = @opendir($bearsamppBs->getVhostsPath());
+        $handle = @opendir($bearsamppRoot->getVhostsPath());
         if (!$handle) {
             return $result;
         }
@@ -417,11 +417,11 @@ class BinApache extends Module
     }
 
     public function getVhostsUrl() {
-        global $bearsamppBs;
+        global $bearsamppRoot;
         $result = array();
 
         foreach ($this->getVhosts() as $vhost) {
-            $vhostContent = file($bearsamppBs->getVhostsPath() . '/' . $vhost . '.conf');
+            $vhostContent = file($bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf');
             foreach ($vhostContent as $vhostLine) {
                 $vhostLine = trim($vhostLine);
                 $enabled = !Util::startWith($vhostLine, '#');
@@ -441,16 +441,16 @@ class BinApache extends Module
     }
 
     public function getWwwDirectories() {
-        global $bearsamppBs;
+        global $bearsamppRoot;
         $result = array();
 
-        $handle = @opendir($bearsamppBs->getWwwPath());
+        $handle = @opendir($bearsamppRoot->getWwwPath());
         if (!$handle) {
             return $result;
         }
 
         while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && is_dir($bearsamppBs->getWwwPath() . '/' . $file)) {
+            if ($file != "." && $file != ".." && is_dir($bearsamppRoot->getWwwPath() . '/' . $file)) {
                 $result[] = $file;
             }
         }
@@ -525,15 +525,15 @@ class BinApache extends Module
     }
 
     public function getVhostContent($serverName, $documentRoot) {
-        global $bearsamppBs;
+        global $bearsamppRoot;
 
         $documentRoot = Util::formatUnixPath($documentRoot);
         return '<VirtualHost *:' . $this->getPort() . '>' . PHP_EOL .
             '    ServerAdmin webmaster@' . $serverName . PHP_EOL .
             '    DocumentRoot "' . $documentRoot . '"' . PHP_EOL .
             '    ServerName ' . $serverName . PHP_EOL .
-            '    ErrorLog "' . $bearsamppBs->getLogsPath() . '/' . $serverName . '_error.log"' . PHP_EOL .
-            '    CustomLog "' . $bearsamppBs->getLogsPath() . '/' . $serverName . '_access.log" combined' . PHP_EOL . PHP_EOL .
+            '    ErrorLog "' . $bearsamppRoot->getLogsPath() . '/' . $serverName . '_error.log"' . PHP_EOL .
+            '    CustomLog "' . $bearsamppRoot->getLogsPath() . '/' . $serverName . '_access.log" combined' . PHP_EOL . PHP_EOL .
             '    <Directory "' . $documentRoot . '">' . PHP_EOL .
             '        Options Indexes FollowSymLinks MultiViews' . PHP_EOL .
             '        AllowOverride all' . PHP_EOL .
@@ -545,15 +545,15 @@ class BinApache extends Module
             '    DocumentRoot "' . $documentRoot . '"' . PHP_EOL .
             '    ServerName ' . $serverName . PHP_EOL .
             '    ServerAdmin webmaster@' . $serverName . PHP_EOL .
-            '    ErrorLog "' . $bearsamppBs->getLogsPath() . '/' . $serverName . '_error.log"' . PHP_EOL .
-            '    TransferLog "' . $bearsamppBs->getLogsPath() . '/' . $serverName . '_access.log"' . PHP_EOL . PHP_EOL .
+            '    ErrorLog "' . $bearsamppRoot->getLogsPath() . '/' . $serverName . '_error.log"' . PHP_EOL .
+            '    TransferLog "' . $bearsamppRoot->getLogsPath() . '/' . $serverName . '_access.log"' . PHP_EOL . PHP_EOL .
             '    SSLEngine on' . PHP_EOL .
             '    SSLProtocol all -SSLv2' . PHP_EOL .
             '    SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5' . PHP_EOL .
-            '    SSLCertificateFile "' . $bearsamppBs->getSslPath() . '/' . $serverName . '.crt"' . PHP_EOL .
-            '    SSLCertificateKeyFile "' . $bearsamppBs->getSslPath() . '/' . $serverName . '.pub"' . PHP_EOL .
+            '    SSLCertificateFile "' . $bearsamppRoot->getSslPath() . '/' . $serverName . '.crt"' . PHP_EOL .
+            '    SSLCertificateKeyFile "' . $bearsamppRoot->getSslPath() . '/' . $serverName . '.pub"' . PHP_EOL .
             '    BrowserMatch "MSIE [2-5]" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0' . PHP_EOL .
-            '    CustomLog "' . $bearsamppBs->getLogsPath() . '/' . $serverName . '_sslreq.log" "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"' . PHP_EOL .PHP_EOL .
+            '    CustomLog "' . $bearsamppRoot->getLogsPath() . '/' . $serverName . '_sslreq.log" "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"' . PHP_EOL .PHP_EOL .
             '    <Directory "' . $documentRoot . '">' . PHP_EOL .
             '        SSLOptions +StdEnvVars' . PHP_EOL .
             '        Options Indexes FollowSymLinks MultiViews' . PHP_EOL .
@@ -600,7 +600,7 @@ class BinApache extends Module
     }
 
     public function refreshAlias($putOnline) {
-        global $bearsamppBs, $bearsamppHomepage;
+        global $bearsamppRoot, $bearsamppHomepage;
 
         if (!$this->enable) {
             return;
@@ -610,8 +610,8 @@ class BinApache extends Module
         $offlineContent = $this->getOfflineContent();
 
         foreach ($this->getAlias() as $alias) {
-            $aliasConf = file_get_contents($bearsamppBs->getAliasPath() . '/' . $alias . '.conf');
-            Util::logTrace('refreshAlias ' . $bearsamppBs->getAliasPath() . '/' . $alias . '.conf');
+            $aliasConf = file_get_contents($bearsamppRoot->getAliasPath() . '/' . $alias . '.conf');
+            Util::logTrace('refreshAlias ' . $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf');
             preg_match('/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $aliasConf, $matches);
             Util::logTrace(isset($matches[1]) ? print_r($matches[1], true) : 'N/A');
 
@@ -620,8 +620,8 @@ class BinApache extends Module
             } else {
                 $aliasConf= preg_replace('/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $offlineContent, $aliasConf, -1, $count);
             }
-            file_put_contents($bearsamppBs->getAliasPath() . '/' . $alias . '.conf', $aliasConf);
-            Util::logDebug('Refresh ' . $bearsamppBs->getAliasPath() . '/' . $alias . '.conf: ' . $count . ' occurrence(s) replaced');
+            file_put_contents($bearsamppRoot->getAliasPath() . '/' . $alias . '.conf', $aliasConf);
+            Util::logDebug('Refresh ' . $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf: ' . $count . ' occurrence(s) replaced');
         }
 
         // Homepage
@@ -629,7 +629,7 @@ class BinApache extends Module
     }
 
     public function refreshVhosts($putOnline) {
-        global $bearsamppBs;
+        global $bearsamppRoot;
 
         if (!$this->enable) {
             return;
@@ -639,8 +639,8 @@ class BinApache extends Module
         $offlineContent = $this->getOfflineContent();
 
         foreach ($this->getVhosts() as $vhost) {
-            $vhostConf = file_get_contents($bearsamppBs->getVhostsPath() . '/' . $vhost . '.conf');
-            Util::logTrace('refreshVhost ' . $bearsamppBs->getVhostsPath() . '/' . $vhost . '.conf');
+            $vhostConf = file_get_contents($bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf');
+            Util::logTrace('refreshVhost ' . $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf');
             preg_match('/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $vhostConf, $matches);
             Util::logTrace(isset($matches[1]) ? print_r($matches[1], true) : 'N/A');
 
@@ -649,8 +649,8 @@ class BinApache extends Module
             } else {
                 $vhostConf= preg_replace('/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $offlineContent, $vhostConf, -1, $count);
             }
-            file_put_contents($bearsamppBs->getVhostsPath() . '/' . $vhost . '.conf', $vhostConf);
-            Util::logDebug('Refresh ' . $bearsamppBs->getVhostsPath() . '/' . $vhost . '.conf: ' . $count . ' occurrence(s) replaced');
+            file_put_contents($bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf', $vhostConf);
+            Util::logDebug('Refresh ' . $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf: ' . $count . ' occurrence(s) replaced');
         }
     }
 

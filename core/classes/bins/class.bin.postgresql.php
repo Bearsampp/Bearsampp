@@ -43,7 +43,7 @@ class BinPostgresql extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $bearsamppBs, $bearsamppConfig, $bearsamppLang;
+        global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::POSTGRESQL);
@@ -52,7 +52,7 @@ class BinPostgresql extends Module
 
         $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
         $this->service = new Win32Service(self::SERVICE_NAME);
-        $this->errorLog = $bearsamppBs->getLogsPath() . '/postgresql.log';
+        $this->errorLog = $bearsamppRoot->getLogsPath() . '/postgresql.log';
 
         if ($this->bearsamppConfRaw !== false) {
             $this->ctlExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CTL_EXE];

@@ -27,10 +27,10 @@ class Config
 
     public function __construct()
     {
-        global $bearsamppBs;
+        global $bearsamppRoot;
 
-        $this->raw = parse_ini_file($bearsamppBs->getConfigFilePath());
-        /*if (!$bearsamppBs->isBootstrap()) {
+        $this->raw = parse_ini_file($bearsamppRoot->getConfigFilePath());
+        /*if (!$bearsamppRoot->isRoot()) {
             $this->raw[self::CFG_LOGS_VERBOSE] = 0;
         }*/
 // TODO set to use TZ from config see https://github.com/Bearsampp/.teams/issues/24
@@ -49,17 +49,17 @@ class Config
 
     public function replaceAll($params)
     {
-        global $bearsamppBs;
+        global $bearsamppRoot;
 
         Util::logTrace('Replace config:');
-        $content = file_get_contents($bearsamppBs->getConfigFilePath());
+        $content = file_get_contents($bearsamppRoot->getConfigFilePath());
         foreach ($params as $key => $value) {
             $content = preg_replace('/^' . $key . '\s=\s.*/m', $key . ' = ' . '"' . $value.'"', $content, -1, $count);
             Util::logTrace('## ' . $key . ': ' . $value . ' (' . $count . ' replacements done)');
             $this->raw[$key] = $value;
         }
 
-        file_put_contents($bearsamppBs->getConfigFilePath(), $content);
+        file_put_contents($bearsamppRoot->getConfigFilePath(), $content);
     }
 
     public function getLang()

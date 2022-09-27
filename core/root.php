@@ -9,16 +9,16 @@ define('APP_AUTHOR_NAME', '/N6REJ');
 
 define('RETURN_TAB', '	');
 
-// Bootstrap
-require_once dirname(__FILE__) . '/classes/class.bootstrap.php';
-$bearsamppBs = new Bootstrap(dirname(__FILE__));
-$bearsamppBs->register();
+// isRoot
+require_once dirname(__FILE__) . '/classes/class.root.php';
+$bearsamppRoot = new isRoot(dirname(__FILE__));
+$bearsamppRoot->register();
 
 // Process action
 $bearsamppAction = new Action();
 $bearsamppAction->process();
 
 // Stop loading
-if ($bearsamppBs->isBootstrap()) {
+if ($bearsamppRoot->isRoot()) {
     Util::stopLoading();
 }

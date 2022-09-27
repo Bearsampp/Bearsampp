@@ -92,7 +92,7 @@ class BinPhp extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $bearsamppBs, $bearsamppConfig, $bearsamppBins, $bearsamppLang;
+        global $bearsamppRoot, $bearsamppConfig, $bearsamppBins, $bearsamppLang;
         Util::logReloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::PHP);
@@ -101,7 +101,7 @@ class BinPhp extends Module
 
         $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
         $this->apacheConf = $bearsamppBins->getApache()->getCurrentPath() . '/' . $this->apacheConf; //FIXME: Useful ?
-        $this->errorLog = $bearsamppBs->getLogsPath() . '/php_error.log';
+        $this->errorLog = $bearsamppRoot->getLogsPath() . '/php_error.log';
 
         if ($this->bearsamppConfRaw !== false) {
             $this->cliExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CLI_EXE];

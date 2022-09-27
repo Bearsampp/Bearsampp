@@ -49,7 +49,7 @@ class TplApp
 
     public static function getActionRun($action, $args = array(), $item = array(), $waitUntilTerminated = true)
     {
-        global $bearsamppBs, $bearsamppCore;
+        global $bearsamppRoot, $bearsamppCore;
         $args = $args == null ? array() : $args;
 
         $argImp = '';
@@ -59,8 +59,8 @@ class TplApp
 
         $result = 'Action: run; ' .
             'FileName: "' . $bearsamppCore->getPhpExe(true) . '"; ' .
-            'Parameters: "' . Core::BOOTSTRAP_FILE . ' ' . $action . $argImp . '"; ' .
-            'WorkingDir: "' . $bearsamppBs->getCorePath(true) . '"';
+            'Parameters: "' . Core::isRoot_FILE . ' ' . $action . $argImp . '"; ' .
+            'WorkingDir: "' . $bearsamppRoot->getCorePath(true) . '"';
 
         if (!empty($item)) {
             $result = 'Type: item; ' . $result .
@@ -81,7 +81,7 @@ class TplApp
 
         //TODO: How managed disabled item??
         /*if ($disabled) {
-            $call = 'Action: run; FileName: "%AeTrayMenuPath%core/libs/php/php-win.exe"; Parameters: "bootstrap.php switchApacheVersion 2.2.22"; WorkingDir: "%AeTrayMenuPath%core"; ';
+            $call = 'Action: run; FileName: "%AeTrayMenuPath%core/libs/php/php-win.exe"; Parameters: "root.php switchApacheVersion 2.2.22"; WorkingDir: "%AeTrayMenuPath%core"; ';
         } else {*/
             $call = 'Action: multi; Actions: ' . $sectionName;
         //}
@@ -195,7 +195,7 @@ class TplApp
 
     private static function getSectionMenuLeft()
     {
-        global $bearsamppBs, $bearsamppBins, $bearsamppLang;
+        global $bearsamppRoot, $bearsamppBins, $bearsamppLang;
 
         $tplNodejs = TplAppNodejs::process();
         $tplApache = TplAppApache::process();
@@ -223,7 +223,7 @@ class TplApp
             '[Menu.Left]' . PHP_EOL .
             TplAestan::getItemLink($bearsamppLang->getValue(Lang::MENU_LOCALHOST), $httpUrl) . PHP_EOL .
             TplAestan::getItemLink($bearsamppLang->getValue(Lang::MENU_LOCALHOST) . ' (SSL)', $httpsUrl) . PHP_EOL .
-            TplAestan::getItemExplore($bearsamppLang->getValue(Lang::MENU_WWW_DIRECTORY), $bearsamppBs->getWwwPath()) . PHP_EOL .
+            TplAestan::getItemExplore($bearsamppLang->getValue(Lang::MENU_WWW_DIRECTORY), $bearsamppRoot->getWwwPath()) . PHP_EOL .
 
             //// Bins menus
             TplAestan::getItemSeparator() . PHP_EOL .

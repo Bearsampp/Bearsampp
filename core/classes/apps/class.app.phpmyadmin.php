@@ -46,7 +46,7 @@ class AppPhpmyadmin extends Module
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $bearsamppBs, $bearsamppBins;
+        global $bearsamppRoot, $bearsamppBins;
 
         if (!$this->enable) {
             return true;
@@ -55,7 +55,7 @@ class AppPhpmyadmin extends Module
         $version = $version == null ? $this->version : $version;
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
-        $alias = $bearsamppBs->getAliasPath() . '/phpmyadmin.conf';
+        $alias = $bearsamppRoot->getAliasPath() . '/phpmyadmin.conf';
         if (is_file($alias)) {
             Util::replaceInFile($alias, array(
                 '/^Alias\s\/phpmyadmin\s.*/' => 'Alias /phpmyadmin "' . $this->getSymlinkPath() . '/"',

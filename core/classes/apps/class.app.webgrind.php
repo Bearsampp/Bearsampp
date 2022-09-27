@@ -45,7 +45,7 @@ class AppWebgrind extends Module
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $bearsamppBs;
+        global $bearsamppRoot;
 
         if (!$this->enable) {
             return true;
@@ -54,7 +54,7 @@ class AppWebgrind extends Module
         $version = $version == null ? $this->version : $version;
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
-        $alias = $bearsamppBs->getAliasPath() . '/webgrind.conf';
+        $alias = $bearsamppRoot->getAliasPath() . '/webgrind.conf';
         if (is_file($alias)) {
             Util::replaceInFile($alias, array(
                 '/^Alias\s\/webgrind\s.*/' => 'Alias /webgrind "' . $this->getSymlinkPath() . '/"',

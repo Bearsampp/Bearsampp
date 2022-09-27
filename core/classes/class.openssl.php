@@ -4,8 +4,8 @@ class OpenSsl
 {
     public function createCrt($name, $destPath = null)
     {
-        global $bearsamppBs, $bearsamppCore;
-        $destPath = empty($destPath) ? $bearsamppBs->getSslPath() : $destPath;
+        global $bearsamppRoot, $bearsamppCore;
+        $destPath = empty($destPath) ? $bearsamppRoot->getSslPath() : $destPath;
 
         $subject = '"/C=FR/O=bearsampp/CN=' . $name . '"';
         $password = 'pass:bearsampp';
@@ -47,22 +47,22 @@ class OpenSsl
 
     public function existsCrt($name)
     {
-        global $bearsamppBs;
+        global $bearsamppRoot;
 
-        $ppkPath = $bearsamppBs->getSslPath() . '/' . $name . '.ppk';
-        $pubPath = $bearsamppBs->getSslPath() . '/' . $name . '.pub';
-        $crtPath = $bearsamppBs->getSslPath() . '/' . $name . '.crt';
+        $ppkPath = $bearsamppRoot->getSslPath() . '/' . $name . '.ppk';
+        $pubPath = $bearsamppRoot->getSslPath() . '/' . $name . '.pub';
+        $crtPath = $bearsamppRoot->getSslPath() . '/' . $name . '.crt';
 
         return is_file($ppkPath) && is_file($pubPath) && is_file($crtPath);
     }
 
     public function removeCrt($name)
     {
-        global $bearsamppBs;
+        global $bearsamppRoot;
 
-        $ppkPath = $bearsamppBs->getSslPath() . '/' . $name . '.ppk';
-        $pubPath = $bearsamppBs->getSslPath() . '/' . $name . '.pub';
-        $crtPath = $bearsamppBs->getSslPath() . '/' . $name . '.crt';
+        $ppkPath = $bearsamppRoot->getSslPath() . '/' . $name . '.ppk';
+        $pubPath = $bearsamppRoot->getSslPath() . '/' . $name . '.pub';
+        $crtPath = $bearsamppRoot->getSslPath() . '/' . $name . '.crt';
 
         return @unlink($ppkPath) && @unlink($pubPath) && @unlink($crtPath);
     }

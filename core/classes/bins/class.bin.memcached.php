@@ -25,7 +25,7 @@ class BinMemcached extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $bearsamppBs, $bearsamppConfig, $bearsamppLang;
+        global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::MEMCACHED);
@@ -34,7 +34,7 @@ class BinMemcached extends Module
 
         $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
         $this->service = new Win32Service(self::SERVICE_NAME);
-        $this->log = $bearsamppBs->getLogsPath() . '/memcached.log';
+        $this->log = $bearsamppRoot->getLogsPath() . '/memcached.log';
 
         if ($this->bearsamppConfRaw !== false) {
             $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
@@ -76,8 +76,8 @@ class BinMemcached extends Module
         $nssm->setBinPath($this->exe);
         $nssm->setParams(sprintf(self::SERVICE_PARAMS, $this->memory, $this->port));
         $nssm->setStart(Nssm::SERVICE_DEMAND_START);
-        $nssm->setStdout($bearsamppBs->getLogsPath() . '/memcached.out.log');
-        $nssm->setStderr($bearsamppBs->getLogsPath() . '/memcached.err.log');
+        $nssm->setStdout($bearsamppRoot->getLogsPath() . '/memcached.out.log');
+        $nssm->setStderr($bearsamppRoot->getLogsPath() . '/memcached.err.log');
 
         $this->service->setNssm($nssm);
     }

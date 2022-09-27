@@ -25,10 +25,10 @@ class ActionEditAlias
 
     public function __construct($args)
     {
-        global $bearsamppBs, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
 
         if (isset($args[0]) && !empty($args[0])) {
-            $filePath = $bearsamppBs->getAliasPath() . '/' . $args[0] . '.conf';
+            $filePath = $bearsamppRoot->getAliasPath() . '/' . $args[0] . '.conf';
             $fileContent = file_get_contents($filePath);
             if (preg_match('/^Alias \/' . $args[0] . ' "(.+)"/', $fileContent, $match)) {
                 $this->initName = $args[0];
@@ -61,7 +61,7 @@ class ActionEditAlias
 
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
-        global $bearsamppBs, $bearsamppBins, $bearsamppLang, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppBins, $bearsamppLang, $bearsamppWinbinder;
 
         $apachePortUri = $bearsamppBins->getApache()->getPort() != 80 ? ':' . $bearsamppBins->getApache()->getPort() : '';
         $aliasName = $bearsamppWinbinder->getText($this->wbInputName[WinBinder::CTRL_OBJ]);
@@ -97,14 +97,14 @@ class ActionEditAlias
                     break;
                 }
 
-                if ($aliasName != $this->initName && is_file($bearsamppBs->getAliasPath() . '/' . $aliasName . '.conf')) {
+                if ($aliasName != $this->initName && is_file($bearsamppRoot->getAliasPath() . '/' . $aliasName . '.conf')) {
                     $bearsamppWinbinder->messageBoxError(
                         sprintf($bearsamppLang->getValue(Lang::ALIAS_ALREADY_EXISTS), $aliasName),
                         $bearsamppLang->getValue(Lang::ADD_ALIAS_TITLE));
                     $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                     break;
                 }
-                if (file_put_contents($bearsamppBs->getAliasPath() . '/' . $aliasName . '.conf', $bearsamppBins->getApache()->getAliasContent($aliasName, $aliasDest)) !== false) {
+                if (file_put_contents($bearsamppRoot->getAliasPath() . '/' . $aliasName . '.conf', $bearsamppBins->getApache()->getAliasContent($aliasName, $aliasDest)) !== false) {
                     $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
 
                     $bearsamppBins->getApache()->getService()->restart();
@@ -130,7 +130,7 @@ class ActionEditAlias
                 $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
 
                 if ($confirm) {
-                    if (@unlink($bearsamppBs->getAliasPath() . '/' . $this->initName . '.conf')) {
+                    if (@unlink($bearsamppRoot->getAliasPath() . '/' . $this->initName . '.conf')) {
                         $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
 
                         $bearsamppBins->getApache()->getService()->restart();
@@ -142,7 +142,7 @@ class ActionEditAlias
                         $bearsamppWinbinder->destroyWindow($window);
                     } else {
                         $bearsamppWinbinder->messageBoxError(
-                            sprintf($bearsamppLang->getValue(Lang::ALIAS_REMOVE_ERROR), $bearsamppBs->getAliasPath() . '/' . $this->initName . '.conf'),
+                            sprintf($bearsamppLang->getValue(Lang::ALIAS_REMOVE_ERROR), $bearsamppRoot->getAliasPath() . '/' . $this->initName . '.conf'),
                             $boxTitle);
                         $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                     }

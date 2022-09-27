@@ -2,7 +2,7 @@
 
 class Core
 {
-    const BOOTSTRAP_FILE = 'bootstrap.php';
+    const isRoot_FILE = 'root.php';
     const PATH_WIN_PLACEHOLDER = '~BEARSAMPP_WIN_PATH~';
     const PATH_LIN_PLACEHOLDER = '~BEARSAMPP_LIN_PATH~';
 
@@ -42,20 +42,20 @@ class Core
 
     public function getLangsPath($aetrayPath = false)
     {
-        global $bearsamppBs;
-        return $bearsamppBs->getCorePath($aetrayPath) . '/langs';
+        global $bearsamppRoot;
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/langs';
     }
 
     public function getLibsPath($aetrayPath = false)
     {
-        global $bearsamppBs;
-        return $bearsamppBs->getCorePath($aetrayPath) . '/libs';
+        global $bearsamppRoot;
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/libs';
     }
 
     public function getResourcesPath($aetrayPath = false)
     {
-        global $bearsamppBs;
-        return $bearsamppBs->getCorePath($aetrayPath) . '/resources';
+        global $bearsamppRoot;
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/resources';
     }
 
     public function getIconsPath($aetrayPath = false)
@@ -66,8 +66,8 @@ class Core
 
     public function getScriptsPath($aetrayPath = false)
     {
-        global $bearsamppBs;
-        return $bearsamppBs->getCorePath($aetrayPath) . '/scripts';
+        global $bearsamppRoot;
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/scripts';
     }
 
     public function getScript($type)
@@ -77,14 +77,14 @@ class Core
 
     public function getTmpPath($aetrayPath = false)
     {
-        global $bearsamppBs;
-        return $bearsamppBs->getCorePath($aetrayPath) . '/tmp';
+        global $bearsamppRoot;
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/tmp';
     }
 
-    public function getBootstrapFilePath($aetrayPath = false)
+    public function getisRootFilePath($aetrayPath = false)
     {
-        global $bearsamppBs;
-        return $bearsamppBs->getCorePath($aetrayPath) . '/' . self::BOOTSTRAP_FILE;
+        global $bearsamppRoot;
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/' . self::isRoot_FILE;
     }
 
     public function getAppVersion()

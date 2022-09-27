@@ -4,7 +4,7 @@ class ActionReload
 {
     public function __construct($args)
     {
-        global $bearsamppBs, $bearsamppCore, $bearsamppConfig, $bearsamppBins, $bearsamppHomepage;
+        global $bearsamppRoot, $bearsamppCore, $bearsamppConfig, $bearsamppBins, $bearsamppHomepage;
 
         if (file_exists($bearsamppCore->getExec())) {
             return;
@@ -26,7 +26,7 @@ class ActionReload
         }
 
         // Process bearsampp.ini
-        file_put_contents($bearsamppBs->getIniFilePath(), Util::utf8ToCp1252(TplApp::process()));
+        file_put_contents($bearsamppRoot->getIniFilePath(), Util::utf8ToCp1252(TplApp::process()));
 
         // Process ConsoleZ config
         TplConsoleZ::process();

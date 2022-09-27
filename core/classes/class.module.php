@@ -23,7 +23,7 @@ abstract class Module
     }
 
     protected function reload($id = null, $type = null) {
-        global $bearsamppBs;
+        global $bearsamppRoot;
 
         $this->id = empty($id) ? $this->id : $id;
         $this->type = empty($type) ? $this->type : $type;
@@ -31,13 +31,13 @@ abstract class Module
 
         switch ($this->type) {
             case Apps::TYPE:
-                $mainPath = $bearsamppBs->getAppsPath();
+                $mainPath = $bearsamppRoot->getAppsPath();
                 break;
             case Bins::TYPE:
-                $mainPath = $bearsamppBs->getBinPath();
+                $mainPath = $bearsamppRoot->getBinPath();
                 break;
             case Tools::TYPE:
-                $mainPath = $bearsamppBs->getToolsPath();
+                $mainPath = $bearsamppRoot->getToolsPath();
                 break;
         }
 
@@ -48,7 +48,7 @@ abstract class Module
         $this->bearsamppConf = $this->currentPath . '/bearsampp.conf';
         $this->bearsamppConfRaw = @parse_ini_file($this->bearsamppConf);
 
-        if ($bearsamppBs->isBootstrap()) {
+        if ($bearsamppRoot->isRoot()) {
             $this->createSymlink();
         }
 

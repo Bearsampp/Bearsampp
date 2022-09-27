@@ -21,10 +21,10 @@ class ActionAddVhost
 
     public function __construct($args)
     {
-        global $bearsamppBs, $bearsamppLang, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
 
         $initServerName = 'test.local';
-        $initDocumentRoot = Util::formatWindowsPath($bearsamppBs->getWwwPath()) . '\\' . $initServerName;
+        $initDocumentRoot = Util::formatWindowsPath($bearsamppRoot->getWwwPath()) . '\\' . $initServerName;
 
         $bearsamppWinbinder->reset();
         $this->wbWindow = $bearsamppWinbinder->createAppWindow($bearsamppLang->getValue(Lang::ADD_VHOST_TITLE), 490, 200, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP);
@@ -49,7 +49,7 @@ class ActionAddVhost
 
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
-        global $bearsamppBs, $bearsamppBins, $bearsamppLang, $bearsamppOpenSsl, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppBins, $bearsamppLang, $bearsamppOpenSsl, $bearsamppWinbinder;
 
         $serverName = $bearsamppWinbinder->getText($this->wbInputServerName[WinBinder::CTRL_OBJ]);
         $documentRoot = $bearsamppWinbinder->getText($this->wbInputDocRoot[WinBinder::CTRL_OBJ]);
@@ -84,7 +84,7 @@ class ActionAddVhost
                     break;
                 }
 
-                if (is_file($bearsamppBs->getVhostsPath() . '/' . $serverName . '.conf')) {
+                if (is_file($bearsamppRoot->getVhostsPath() . '/' . $serverName . '.conf')) {
                     $bearsamppWinbinder->messageBoxError(
                         sprintf($bearsamppLang->getValue(Lang::VHOST_ALREADY_EXISTS), $serverName),
                         $bearsamppLang->getValue(Lang::ADD_VHOST_TITLE));
@@ -92,7 +92,7 @@ class ActionAddVhost
                     break;
                 }
 
-                if ($bearsamppOpenSsl->createCrt($serverName) && file_put_contents($bearsamppBs->getVhostsPath() . '/' . $serverName . '.conf', $bearsamppBins->getApache()->getVhostContent($serverName, $documentRoot)) !== false) {
+                if ($bearsamppOpenSsl->createCrt($serverName) && file_put_contents($bearsamppRoot->getVhostsPath() . '/' . $serverName . '.conf', $bearsamppBins->getApache()->getVhostContent($serverName, $documentRoot)) !== false) {
                     $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
 
                     $bearsamppBins->getApache()->getService()->restart();

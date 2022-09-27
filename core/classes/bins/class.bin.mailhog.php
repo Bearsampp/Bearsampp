@@ -28,7 +28,7 @@ class BinMailhog extends Module
     }
 
     public function reload($id = null, $type = null) {
-        global $bearsamppBs, $bearsamppConfig, $bearsamppLang;
+        global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::MAILHOG);
@@ -37,8 +37,8 @@ class BinMailhog extends Module
 
         $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
         $this->service = new Win32Service(self::SERVICE_NAME);
-        $this->mailPath = $bearsamppBs->getTmpPath() . '/mailhog';
-        $this->log = $bearsamppBs->getLogsPath() . '/mailhog.log';
+        $this->mailPath = $bearsamppRoot->getTmpPath() . '/mailhog';
+        $this->log = $bearsamppRoot->getLogsPath() . '/mailhog.log';
 
         if ($this->bearsamppConfRaw !== false) {
             $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
@@ -85,8 +85,8 @@ class BinMailhog extends Module
         $nssm->setBinPath($this->exe);
         $nssm->setParams(sprintf(self::SERVICE_PARAMS, $this->apiPort, $this->uiPort, $this->smtpPort, $this->mailPath));
         $nssm->setStart(Nssm::SERVICE_DEMAND_START);
-        $nssm->setStdout($bearsamppBs->getLogsPath() . '/mailhog.out.log');
-        $nssm->setStderr($bearsamppBs->getLogsPath() . '/mailhog.err.log');
+        $nssm->setStdout($bearsamppRoot->getLogsPath() . '/mailhog.out.log');
+        $nssm->setStderr($bearsamppRoot->getLogsPath() . '/mailhog.err.log');
 
         $this->service->setNssm($nssm);
     }
