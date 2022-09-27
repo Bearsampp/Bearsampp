@@ -20,8 +20,8 @@
  */
 //the space is needed for windows include paths with trailing backslash
 // http://pear.php.net/bugs/bug.php?id=19482
-if ('~BEARSAMPP_WIN_PATH~\bin\php\php8.0.23\pear\pear ' != '@'.'include_path'.'@ ') {
-    ini_set('include_path', trim('~BEARSAMPP_WIN_PATH~\bin\php\php8.0.23\pear\pear '). PATH_SEPARATOR .  get_include_path());
+if ('E:\Development\MY_PROJECTS\bearsampp-development\Bearsampp\bin\tmp\release\Bearsampp-2022.10.01\bin\php\php8.0.23\pear\pear ' != '@'.'include_path'.'@ ') {
+    ini_set('include_path', trim('E:\Development\MY_PROJECTS\bearsampp-development\Bearsampp\bin\tmp\release\Bearsampp-2022.10.01\bin\php\php8.0.23\pear\pear '). PATH_SEPARATOR .  get_include_path());
     $raw = false;
 } else {
     // this is a raw, uninstalled pear, either a cvs checkout, or php distro
