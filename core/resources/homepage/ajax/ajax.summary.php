@@ -33,7 +33,7 @@ if ($bearsamppBins->getApache()->isEnable()) {
 
 
 $result['binapache'] = sprintf($dlMoreTpl, 'apache');
-$result['binapache'] .= '<span class="span-right float-end badge ' . $apacheLabel . '">' . $bearsamppBins->getApache()->getVersion() . '</span>';
+$result['binapache'] .= '<span class = " float-end badge ' . $apacheLabel . '">' . $bearsamppBins->getApache()->getVersion() . '</span>';
 
 // Bin Filezilla
 $filezillaPort = $bearsamppBins->getFilezilla()->getPort();
@@ -52,7 +52,7 @@ if ($bearsamppBins->getFilezilla()->isEnable()) {
 }
 
 $result['binfilezilla'] = sprintf($dlMoreTpl, 'filezilla');
-$result['binfilezilla'] .= '<span class="span-right float-end badge ' . $filezillaLabel . '">' . $bearsamppBins->getFilezilla()->getVersion() . '</span>';
+$result['binfilezilla'] .= '<span class = " float-end badge ' . $filezillaLabel . '">' . $bearsamppBins->getFilezilla()->getVersion() . '</span>';
 
 // Bin MailHog
 $mailhogPort = $bearsamppBins->getMailhog()->getSmtpPort();
@@ -66,7 +66,7 @@ if ($bearsamppBins->getMailhog()->isEnable()) {
 }
 
 $result['binmailhog'] = sprintf($dlMoreTpl, 'mailhog');
-$result['binmailhog'] .= '<span class="span-right float-end badge ' . $mailhogLabel . '">' . $bearsamppBins->getMailhog()->getVersion() . '</span>';
+$result['binmailhog'] .= '<span class = " float-end badge ' . $mailhogLabel . '">' . $bearsamppBins->getMailhog()->getVersion() . '</span>';
 
 // Bin MariaDB
 $mariadbPort = $bearsamppBins->getMariadb()->getPort();
@@ -80,7 +80,7 @@ if ($bearsamppBins->getMariadb()->isEnable()) {
 }
 
 $result['binmariadb'] = sprintf($dlMoreTpl, 'mariadb');
-$result['binmariadb'] .= '<span class="span-right float-end badge ' . $mariadbLabel . '">' . $bearsamppBins->getMariadb()->getVersion() . '</span>';
+$result['binmariadb'] .= '<span class = " float-end badge ' . $mariadbLabel . '">' . $bearsamppBins->getMariadb()->getVersion() . '</span>';
 
 // Bin MySQL
 $mysqlPort = $bearsamppBins->getMysql()->getPort();
@@ -94,7 +94,7 @@ if ($bearsamppBins->getMysql()->isEnable()) {
 }
 
 $result['binmysql'] = sprintf($dlMoreTpl, 'mysql');
-$result['binmysql'] .= '<span class="span-right float-end badge ' . $mysqlLabel . '">' . $bearsamppBins->getMysql()->getVersion() . '</span>';
+$result['binmysql'] .= '<span class = " float-end badge ' . $mysqlLabel . '">' . $bearsamppBins->getMysql()->getVersion() . '</span>';
 
 // Bin PostgreSQL
 $postgresqlPort = $bearsamppBins->getPostgresql()->getPort();
@@ -108,7 +108,7 @@ if ($bearsamppBins->getPostgresql()->isEnable()) {
 }
 
 $result['binpostgresql'] = sprintf($dlMoreTpl, 'postgresql');
-$result['binpostgresql'] .= '<span class="span-right float-end badge ' . $postgresqlLabel . '">' . $bearsamppBins->getPostgresql()->getVersion() . '</span>';
+$result['binpostgresql'] .= '<span class = " float-end badge ' . $postgresqlLabel . '">' . $bearsamppBins->getPostgresql()->getVersion() . '</span>';
 
 // Bin Memcached
 $memcachedPort = $bearsamppBins->getMemcached()->getPort();
@@ -122,7 +122,7 @@ if ($bearsamppBins->getMemcached()->isEnable()) {
 }
 
 $result['binmemcached'] = sprintf($dlMoreTpl, 'memcached');
-$result['binmemcached'] .= '<span class="span-right float-end badge ' . $memcachedLabel . '">' . $bearsamppBins->getMemcached()->getVersion() . '</span>';
+$result['binmemcached'] .= '<span class = " float-end badge ' . $memcachedLabel . '">' . $bearsamppBins->getMemcached()->getVersion() . '</span>';
 
 
 // Bin Node.js
@@ -132,7 +132,7 @@ if ($bearsamppBins->getNodejs()->isEnable()) {
 }
 
 $result['binnodejs'] = sprintf($dlMoreTpl, 'nodejs');
-$result['binnodejs'] .= '<span class="span-right float-end badge ' . $nodejsLabel .'">' . $bearsamppBins->getNodejs()->getVersion() . '</span>';
+$result['binnodejs'] .= '<span class = " float-end badge ' . $nodejsLabel .'">' . $bearsamppBins->getNodejs()->getVersion() . '</span>';
 
 // Bin PHP
 $phpLabel = 'bg-secondary';
@@ -141,6 +141,6 @@ if ($bearsamppBins->getPhp()->isEnable()) {
 }
 
 $result['binphp'] = sprintf($dlMoreTpl, 'php');
-$result['binphp'] .= '<span class="span-right float-end badge ' . $phpLabel .'">' . $bearsamppBins->getPhp()->getVersion() . '</span>';
+$result['binphp'] .= '<span class = " float-end badge ' . $phpLabel .'">' . $bearsamppBins->getPhp()->getVersion() . '</span>';
 
 echo json_encode($result);
