@@ -11,7 +11,7 @@ define('RETURN_TAB', '	');
 
 // isRoot
 require_once dirname(__FILE__) . '/classes/class.root.php';
-$bearsamppRoot = new isRoot(dirname(__FILE__));
+$bearsamppRoot = new Root(dirname(__FILE__));
 $bearsamppRoot->register();
 
 // Process action
