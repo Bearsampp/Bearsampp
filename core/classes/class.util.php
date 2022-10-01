@@ -265,6 +265,7 @@ class Util
         }
 
         closedir($handle);
+        natcasesort($result);
         return $result;
     }
 
@@ -420,10 +421,10 @@ class Util
 
     private static function log($data, $type, $file = null)
     {
-        global $bearsamppBs, $bearsamppCore, $bearsamppConfig;
-        $file = $file == null ? ($type == self::LOG_ERROR ? $bearsamppBs->getErrorLogFilePath() : $bearsamppBs->getLogFilePath()) : $file;
-        if (!$bearsamppBs->isBootstrap()) {
-            $file = $bearsamppBs->getHomepageLogFilePath();
+        global $bearsamppRoot, $bearsamppCore, $bearsamppConfig;
+        $file = $file == null ? ($type == self::LOG_ERROR ? $bearsamppRoot->getErrorLogFilePath() : $bearsamppRoot->getLogFilePath()) : $file;
+        if (!$bearsamppRoot->isRoot()) {
+            $file = $bearsamppRoot->getHomepageLogFilePath();
         }
 
         $verbose = array();
@@ -454,17 +455,17 @@ class Util
 
     public static function logSeparator()
     {
-        global $bearsamppBs;
+        global $bearsamppRoot;
 
         $logs = array(
-            $bearsamppBs->getLogFilePath(),
-            $bearsamppBs->getErrorLogFilePath(),
-            $bearsamppBs->getServicesLogFilePath(),
-            $bearsamppBs->getRegistryLogFilePath(),
-            $bearsamppBs->getStartupLogFilePath(),
-            $bearsamppBs->getBatchLogFilePath(),
-            $bearsamppBs->getVbsLogFilePath(),
-            $bearsamppBs->getWinbinderLogFilePath(),
+            $bearsamppRoot->getLogFilePath(),
+            $bearsamppRoot->getErrorLogFilePath(),
+            $bearsamppRoot->getServicesLogFilePath(),
+            $bearsamppRoot->getRegistryLogFilePath(),
+            $bearsamppRoot->getStartupLogFilePath(),
+            $bearsamppRoot->getBatchLogFilePath(),
+            $bearsamppRoot->getVbsLogFilePath(),
+            $bearsamppRoot->getWinbinderLogFilePath(),
         );
 
         $separator = '========================================================================================' . PHP_EOL;
@@ -577,7 +578,7 @@ class Util
     public static function startLoading()
     {
         global $bearsamppCore, $bearsamppWinbinder;
-        $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), Core::BOOTSTRAP_FILE . ' ' . Action::LOADING);
+        $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), Core::isRoot_FILE . ' ' . Action::LOADING);
     }
 
     public static function stopLoading()
@@ -609,19 +610,19 @@ class Util
 
     private static function getPathsToScan()
     {
-        global $bearsamppBs, $bearsamppCore, $bearsamppBins, $bearsamppApps, $bearsamppTools;
+        global $bearsamppRoot, $bearsamppCore, $bearsamppBins, $bearsamppApps, $bearsamppTools;
         $paths = array();
 
         // Alias
         $paths[] = array(
-            'path' => $bearsamppBs->getAliasPath(),
+            'path' => $bearsamppRoot->getAliasPath(),
             'includes' => array(''),
             'recursive' => false
         );
 
         // Vhosts
         $paths[] = array(
-            'path' => $bearsamppBs->getVhostsPath(),
+            'path' => $bearsamppRoot->getVhostsPath(),
             'includes' => array(''),
             'recursive' => false
         );
@@ -712,16 +713,6 @@ class Util
                 'path' => $bearsamppBins->getFilezilla()->getRootPath() . '/' . $folder,
                 'includes' => array('.xml'),
                 'recursive' => true
-            );
-        }
-
-        // GitList
-        $folderList = self::getFolderList($bearsamppApps->getGitlist()->getRootPath());
-        foreach ($folderList as $folder) {
-            $paths[] = array(
-                'path' => $bearsamppApps->getGitlist()->getRootPath() . '/' . $folder,
-                'includes' => array('config.ini'),
-                'recursive' => false
             );
         }
 
@@ -838,14 +829,14 @@ class Util
 
     public static function changePath($filesToScan, $rootPath = null)
     {
-        global $bearsamppBs, $bearsamppCore;
+        global $bearsamppRoot, $bearsamppCore;
 
         $result = array(
             'countChangedOcc' => 0,
             'countChangedFiles' => 0
         );
 
-        $rootPath = $rootPath != null ? $rootPath : $bearsamppBs->getRootPath();
+        $rootPath = $rootPath != null ? $rootPath : $bearsamppRoot->getRootPath();
         $unixOldPath = self::formatUnixPath($bearsamppCore->getLastPathContent());
         $windowsOldPath = self::formatWindowsPath($bearsamppCore->getLastPathContent());
         $unixCurrentPath = self::formatUnixPath($rootPath);
@@ -1257,17 +1248,17 @@ class Util
     }
 
     public static function getNssmEnvPaths() {
-        global $bearsamppBs;
+        global $bearsamppRoot;
 
         $result = '';
-        $nssmEnvPathsFile = $bearsamppBs->getRootPath() . '/nssmEnvPaths.dat';
+        $nssmEnvPathsFile = $bearsamppRoot->getRootPath() . '/nssmEnvPaths.dat';
 
         if (is_file($nssmEnvPathsFile)) {
             $paths = explode(PHP_EOL, file_get_contents($nssmEnvPathsFile));
             foreach ($paths as $path) {
                 $path = trim($path);
                 if (stripos($path, ':') === false) {
-                    $path = $bearsamppBs->getRootPath() . '/' . $path;
+                    $path = $bearsamppRoot->getRootPath() . '/' . $path;
                 }
                 if (is_dir($path)) {
                     $result .= self::formatUnixPath($path) . ';';
@@ -1281,9 +1272,9 @@ class Util
     }
 
     public static function openFileContent($caption, $content) {
-        global $bearsamppBs, $bearsamppConfig, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppConfig, $bearsamppWinbinder;
 
-        $folderPath = $bearsamppBs->getTmpPath() . '/openFileContent-' . self::random();
+        $folderPath = $bearsamppRoot->getTmpPath() . '/openFileContent-' . self::random();
         if (!is_dir($folderPath)) {
             mkdir($folderPath, 0777, true);
         }

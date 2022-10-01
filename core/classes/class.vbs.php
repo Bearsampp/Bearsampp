@@ -16,8 +16,8 @@ class Vbs
 
     private static function writeLog($log)
     {
-        global $bearsamppBs;
-        Util::logDebug($log, $bearsamppBs->getVbsLogFilePath());
+        global $bearsamppRoot;
+        Util::logDebug($log, $bearsamppRoot->getVbsLogFilePath());
     }
 
     public static function countFilesFolders($path)
@@ -228,7 +228,7 @@ class Vbs
 
     public static function createShortcut($savePath)
     {
-        global $bearsamppBs, $bearsamppCore;
+        global $bearsamppRoot, $bearsamppCore;
         $basename = 'createShortcut';
         $resultFile = self::getResultFile($basename);
 
@@ -237,8 +237,8 @@ class Vbs
         $content .= 'Set objFso = CreateObject("scripting.filesystemobject")' . PHP_EOL;
         $content .= 'Set objResultFile = objFso.CreateTextFile("' . $resultFile . '", True)' . PHP_EOL . PHP_EOL;
         $content .= 'Set objShortcut = objShell.CreateShortcut("' . $savePath . '")' . PHP_EOL;
-        $content .= 'objShortCut.TargetPath = "' . $bearsamppBs->getExeFilePath() . '"' . PHP_EOL;
-        $content .= 'objShortCut.WorkingDirectory = "' . $bearsamppBs->getRootPath() . '"' . PHP_EOL;
+        $content .= 'objShortCut.TargetPath = "' . $bearsamppRoot->getExeFilePath() . '"' . PHP_EOL;
+        $content .= 'objShortCut.WorkingDirectory = "' . $bearsamppRoot->getRootPath() . '"' . PHP_EOL;
         $content .= 'objShortCut.Description = "' . APP_TITLE . ' ' . $bearsamppCore->getAppVersion() . '"' . PHP_EOL;
         $content .= 'objShortCut.IconLocation = "' .  $bearsamppCore->getResourcesPath() . '/bearsampp.ico' . '"' . PHP_EOL;
         $content .= 'objShortCut.Save' . PHP_EOL;

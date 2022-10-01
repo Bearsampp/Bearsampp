@@ -26,6 +26,7 @@ class Lang
     const EXECUTABLE = 'executable';
     const EXTENSIONS = 'extensions';
     const GIT_CONSOLE = 'gitConsole';
+    const GITGUI = 'gitGui';
     const GITHUB = 'github';
     const HELP = 'help';
     const HOSTSEDITOR = 'hostseditor';
@@ -71,6 +72,7 @@ class Lang
     const MENU_CHECK_UPDATE = 'menuCheckUpdate';
     const MENU_CLEAR_FOLDERS = 'menuClearFolders';
     const MENU_EDIT_ALIAS = 'menuEditAlias';
+    const MENU_EDIT_CONF = 'menuEditConf';
     const MENU_EDIT_VHOST = 'menuEditVhost';
     const MENU_ENABLE = 'menuEnable';
     const MENU_ERROR_LOGS = 'menuErrorLogs';
@@ -110,11 +112,9 @@ class Lang
     const POSTGRESQL = 'postgresql';
 
     // Apps
-    const GITLIST = 'gitlist';
     const PHPMYADMIN = 'phpmyadmin';
     const WEBGRIND = 'webgrind';
     const ADMINER = 'adminer';
-    const PHPMEMADMIN = 'phpmemadmin';
     const PHPPGADMIN = 'phppgadmin';
 
     // Tools
@@ -462,11 +462,9 @@ class Lang
             self::POSTGRESQL,
 
             // Apps
-            self::GITLIST,
             self::PHPMYADMIN,
             self::WEBGRIND,
             self::ADMINER,
-            self::PHPMEMADMIN,
             self::PHPPGADMIN,
 
             // Tools

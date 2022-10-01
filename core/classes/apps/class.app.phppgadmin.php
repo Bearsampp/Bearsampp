@@ -45,7 +45,7 @@ class AppPhppgadmin extends Module
     }
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
-        global $bearsamppBs, $bearsamppBins;
+        global $bearsamppRoot, $bearsamppBins;
 
         if (!$this->enable) {
             return true;
@@ -54,7 +54,7 @@ class AppPhppgadmin extends Module
         $version = $version == null ? $this->version : $version;
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
 
-        $alias = $bearsamppBs->getAliasPath() . '/phppgadmin.conf';
+        $alias = $bearsamppRoot->getAliasPath() . '/phppgadmin.conf';
         if (is_file($alias)) {
             Util::replaceInFile($alias, array(
                 '/^Alias\s\/phppgadmin\s.*/' => 'Alias /phppgadmin "' . $this->getSymlinkPath() . '/"',

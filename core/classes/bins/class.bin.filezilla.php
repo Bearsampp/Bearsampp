@@ -41,7 +41,7 @@ class BinFilezilla extends Module
 
     public function reload($id = null, $type = null)
     {
-        global $bearsamppBs, $bearsamppConfig, $bearsamppLang;
+        global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass( $this );
 
         $this->name    = $bearsamppLang->getValue( Lang::FILEZILLA );
@@ -51,7 +51,7 @@ class BinFilezilla extends Module
         $this->enable   = $this->enable && $bearsamppConfig->getRaw( self::ROOT_CFG_ENABLE );
         $this->service  = new Win32Service( self::SERVICE_NAME );
         $this->logsPath = $this->symlinkPath . '/Logs';
-        $this->log      = $bearsamppBs->getLogsPath() . '/filezilla.log';
+        $this->log      = $bearsamppRoot->getLogsPath() . '/filezilla.log';
 
         if ( $this->bearsamppConfRaw !== false )
         {

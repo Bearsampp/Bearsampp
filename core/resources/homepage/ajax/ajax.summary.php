@@ -12,20 +12,20 @@ $result = array(
     'binphp' => '',
 );
 
-$dlMoreTpl = '<a href="' . Util::getWebsiteUrl('module/%s', '#releases') . '" target="_blank" title="' . $bearsamppLang->getValue(Lang::DOWNLOAD_MORE) . '"><span style="float:right;margin-left:8px;"><i class="fa fa-download"></i></span></a>';
+$dlMoreTpl = '<a href="' . Util::getWebsiteUrl('module/%s', '#releases') . '" target="_blank" title="' . $bearsamppLang->getValue(Lang::DOWNLOAD_MORE) . '"><span class="float-end" style="margin-left:.5rem;"><i class="fa fa-download"></i></span></a>';
 
 // Bin Apache
 $apachePort = $bearsamppBins->getApache()->getPort();
 $apacheSslPort = $bearsamppBins->getApache()->getSslPort();
-$apacheLabel = 'label-default';
+$apacheLabel = 'bg-secondary';
 
 if ($bearsamppBins->getApache()->isEnable()) {
-    $apacheLabel = 'label-danger';
+    $apacheLabel = 'bg-danger';
     if ($bearsamppBins->getApache()->checkPort($apachePort)) {
         if ($bearsamppBins->getApache()->checkPort($apacheSslPort, true)) {
-            $apacheLabel = 'label-success';
+            $apacheLabel = 'bg-success';
         } else {
-            $apacheLabel = 'label-warning';
+            $apacheLabel = 'bg-warning';
         }
     }
 }
@@ -33,114 +33,114 @@ if ($bearsamppBins->getApache()->isEnable()) {
 
 
 $result['binapache'] = sprintf($dlMoreTpl, 'apache');
-$result['binapache'] .= '<span style="float:right;font-size:12px" class="label ' . $apacheLabel . '">' . $bearsamppBins->getApache()->getVersion() . '</span>';
+$result['binapache'] .= '<span class = " float-end badge ' . $apacheLabel . '">' . $bearsamppBins->getApache()->getVersion() . '</span>';
 
 // Bin Filezilla
 $filezillaPort = $bearsamppBins->getFilezilla()->getPort();
 $filezillaSslPort = $bearsamppBins->getFilezilla()->getSslPort();
-$filezillaLabel = 'label-default';
+$filezillaLabel = 'bg-secondary';
 
 if ($bearsamppBins->getFilezilla()->isEnable()) {
-    $filezillaLabel = 'label-danger';
+    $filezillaLabel = 'bg-danger';
     if ($bearsamppBins->getFilezilla()->checkPort($filezillaPort)) {
         if ($bearsamppBins->getFilezilla()->checkPort($filezillaSslPort, true)) {
-            $filezillaLabel = 'label-success';
+            $filezillaLabel = 'bg-success';
         } else {
-            $filezillaLabel = 'label-warning';
+            $filezillaLabel = 'bg-warning';
         }
     }
 }
 
 $result['binfilezilla'] = sprintf($dlMoreTpl, 'filezilla');
-$result['binfilezilla'] .= '<span style="float:right;font-size:12px" class="label ' . $filezillaLabel . '">' . $bearsamppBins->getFilezilla()->getVersion() . '</span>';
+$result['binfilezilla'] .= '<span class = " float-end badge ' . $filezillaLabel . '">' . $bearsamppBins->getFilezilla()->getVersion() . '</span>';
 
 // Bin MailHog
 $mailhogPort = $bearsamppBins->getMailhog()->getSmtpPort();
-$mailhogLabel = 'label-default';
+$mailhogLabel = 'bg-secondary';
 
 if ($bearsamppBins->getMailhog()->isEnable()) {
-    $mailhogLabel = 'label-danger';
+    $mailhogLabel = 'bg-danger';
     if ($bearsamppBins->getMailhog()->checkPort($mailhogPort)) {
-        $mailhogLabel = 'label-success';
+        $mailhogLabel = 'bg-success';
     }
 }
 
 $result['binmailhog'] = sprintf($dlMoreTpl, 'mailhog');
-$result['binmailhog'] .= '<span style="float:right;font-size:12px" class="label ' . $mailhogLabel . '">' . $bearsamppBins->getMailhog()->getVersion() . '</span>';
+$result['binmailhog'] .= '<span class = " float-end badge ' . $mailhogLabel . '">' . $bearsamppBins->getMailhog()->getVersion() . '</span>';
 
 // Bin MariaDB
 $mariadbPort = $bearsamppBins->getMariadb()->getPort();
-$mariadbLabel = 'label-default';
+$mariadbLabel = 'bg-secondary';
 
 if ($bearsamppBins->getMariadb()->isEnable()) {
-    $mariadbLabel = 'label-danger';
+    $mariadbLabel = 'bg-danger';
     if ($bearsamppBins->getMariadb()->checkPort($mariadbPort)) {
-        $mariadbLabel = 'label-success';
+        $mariadbLabel = 'bg-success';
     }
 }
 
 $result['binmariadb'] = sprintf($dlMoreTpl, 'mariadb');
-$result['binmariadb'] .= '<span style="float:right;font-size:12px" class="label ' . $mariadbLabel . '">' . $bearsamppBins->getMariadb()->getVersion() . '</span>';
+$result['binmariadb'] .= '<span class = " float-end badge ' . $mariadbLabel . '">' . $bearsamppBins->getMariadb()->getVersion() . '</span>';
 
 // Bin MySQL
 $mysqlPort = $bearsamppBins->getMysql()->getPort();
-$mysqlLabel = 'label-default';
+$mysqlLabel = 'bg-secondary';
 
 if ($bearsamppBins->getMysql()->isEnable()) {
-    $mysqlLabel = 'label-danger';
+    $mysqlLabel = 'bg-danger';
     if ($bearsamppBins->getMysql()->checkPort($mysqlPort)) {
-        $mysqlLabel = 'label-success';
+        $mysqlLabel = 'bg-success';
     }
 }
 
 $result['binmysql'] = sprintf($dlMoreTpl, 'mysql');
-$result['binmysql'] .= '<span style="float:right;font-size:12px" class="label ' . $mysqlLabel . '">' . $bearsamppBins->getMysql()->getVersion() . '</span>';
+$result['binmysql'] .= '<span class = " float-end badge ' . $mysqlLabel . '">' . $bearsamppBins->getMysql()->getVersion() . '</span>';
 
 // Bin PostgreSQL
 $postgresqlPort = $bearsamppBins->getPostgresql()->getPort();
-$postgresqlLabel = 'label-default';
+$postgresqlLabel = 'bg-secondary';
 
 if ($bearsamppBins->getPostgresql()->isEnable()) {
-    $postgresqlLabel = 'label-danger';
+    $postgresqlLabel = 'bg-danger';
     if ($bearsamppBins->getPostgresql()->checkPort($postgresqlPort)) {
-        $postgresqlLabel = 'label-success';
+        $postgresqlLabel = 'bg-success';
     }
 }
 
 $result['binpostgresql'] = sprintf($dlMoreTpl, 'postgresql');
-$result['binpostgresql'] .= '<span style="float:right;font-size:12px" class="label ' . $postgresqlLabel . '">' . $bearsamppBins->getPostgresql()->getVersion() . '</span>';
+$result['binpostgresql'] .= '<span class = " float-end badge ' . $postgresqlLabel . '">' . $bearsamppBins->getPostgresql()->getVersion() . '</span>';
 
 // Bin Memcached
 $memcachedPort = $bearsamppBins->getMemcached()->getPort();
-$memcachedLabel = 'label-default';
+$memcachedLabel = 'bg-secondary';
 
 if ($bearsamppBins->getMemcached()->isEnable()) {
-    $memcachedLabel = 'label-danger';
+    $memcachedLabel = 'bg-danger';
     if ($bearsamppBins->getMemcached()->checkPort($memcachedPort)) {
-        $memcachedLabel = 'label-success';
+        $memcachedLabel = 'bg-success';
     }
 }
 
 $result['binmemcached'] = sprintf($dlMoreTpl, 'memcached');
-$result['binmemcached'] .= '<span style="float:right;font-size:12px" class="label ' . $memcachedLabel . '">' . $bearsamppBins->getMemcached()->getVersion() . '</span>';
+$result['binmemcached'] .= '<span class = " float-end badge ' . $memcachedLabel . '">' . $bearsamppBins->getMemcached()->getVersion() . '</span>';
 
 
 // Bin Node.js
-$nodejsLabel = 'label-default';
+$nodejsLabel = 'bg-secondary';
 if ($bearsamppBins->getNodejs()->isEnable()) {
-    $nodejsLabel = 'label-primary';
+    $nodejsLabel = 'bg-primary';
 }
 
 $result['binnodejs'] = sprintf($dlMoreTpl, 'nodejs');
-$result['binnodejs'] .= '<span style="float:right;font-size:12px" class="label ' . $nodejsLabel .'">' . $bearsamppBins->getNodejs()->getVersion() . '</span>';
+$result['binnodejs'] .= '<span class = " float-end badge ' . $nodejsLabel .'">' . $bearsamppBins->getNodejs()->getVersion() . '</span>';
 
 // Bin PHP
-$phpLabel = 'label-default';
+$phpLabel = 'bg-secondary';
 if ($bearsamppBins->getPhp()->isEnable()) {
-    $phpLabel = 'label-primary';
+    $phpLabel = 'bg-primary';
 }
 
 $result['binphp'] = sprintf($dlMoreTpl, 'php');
-$result['binphp'] .= '<span style="float:right;font-size:12px" class="label ' . $phpLabel .'">' . $bearsamppBins->getPhp()->getVersion() . '</span>';
+$result['binphp'] .= '<span class = " float-end badge ' . $phpLabel .'">' . $bearsamppBins->getPhp()->getVersion() . '</span>';
 
 echo json_encode($result);

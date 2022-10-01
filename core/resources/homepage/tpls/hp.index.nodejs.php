@@ -1,10 +1,10 @@
 <a class="anchor" name="nodejs"></a>
-<div class="row">
+<div class="row-fluid">
   <div class="col-lg-12">
     <h1><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/nodejs.png'; ?>" /> <?php echo $bearsamppLang->getValue(Lang::NODEJS); ?> <small></small></h1>
   </div>
 </div>
-<div class="row">
+<div class="row-fluid">
   <div class="col-lg-6">
     <div class="list-group">
       <span class="list-group-item nodejs-status">

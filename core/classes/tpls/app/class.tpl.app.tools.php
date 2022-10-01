@@ -83,7 +83,6 @@ class TplAppTools
             TplAestan::GLYPH_YARN,
             $bearsamppTools->getConsoleZ()->getTabTitleYarn()
         ) . PHP_EOL;
-
         $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
         // Console

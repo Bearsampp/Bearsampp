@@ -30,7 +30,6 @@ For those who wish to contribute, have an issue or questions, read the [Document
 | ![](img/binary.png) | [Filezilla](https://bearsampp.com/module/filezilla): a FTP server application. |
 | ![](img/tool.png) | [Ghostscript](https://bearsampp.com/module/ghostscript): an interpreter for the PostScript language and for PDF. |
 | ![](img/tool.png) | [Git](https://bearsampp.com/module/git): a widely used version control system for software development. |
-| ![](img/application.png) | [GitList](https://bearsampp.com/module/gitlist): an elegant and modern git repository viewer. |
 | ![](img/binary.png) | [MailHog](https://bearsampp.com/module/mailhog): a Web and API based SMTP testing. |
 | ![](img/binary.png) | [MariaDB](https://bearsampp.com/module/mariadb): a community-developed fork of the MySQL relational database management system. |
 | ![](img/binary.png) | [Memcached](https://bearsampp.com/module/memcached): a distributed memory object caching system. |
@@ -39,7 +38,6 @@ For those who wish to contribute, have an issue or questions, read the [Document
 | ![](img/binary.png) | [Node.js](https://bearsampp.com/module/nodejs): an open-source, cross-platform runtime environment for developing server-side web applications. 
 | ![](img/tool.png) | [Perl](https://bearsampp.com/module/perl): a family of high-level, general-purpose, interpreted, dynamic programming languages. |
 | ![](img/binary.png) | [PHP](https://bearsampp.com/module/php): a server-side scripting language designed for web development including PEAR and extra extensions. |
-| ![](img/application.png) | [phpMemAdmin](https://bearsampp.com/module/phpmemadmin): to handle the administration of Memcached over the web. |
 | ![](img/application.png) | [phpMyAdmin](https://bearsampp.com/module/phpmyadmin): to handle the administration of MySQL and MariaDB over the Web. |
 | ![](img/application.png) | [phpPgAdmin](https://bearsampp.com/module/phppgadmin): a web-based administration tool for PostgreSQL. |
 | ![](img/binary.png) | [PostgreSQL](https://bearsampp.com/module/postgresql): an object-relational database management system (ORDBMS). |
@@ -89,3 +87,8 @@ We would like to thank the following for supporting our project:
 GPL-3.0. See `LICENSE` for more details.<br />
 
 <h6>Bearsampp was originally forked, in 2021, from neard.io</h6>
+
+
+## Sponsors
+![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)
+[![Code Shelter](https://www.codeshelter.co/static/badges/badge-flat.svg)](https://www.codeshelter.co/)

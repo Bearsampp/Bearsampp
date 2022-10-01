@@ -37,19 +37,19 @@ class Homepage
         if (!empty($query) && in_array($query, $this->pageList) && $query != self::PAGE_INDEX) {
             $request = '?p=' . $query;
         }
-        if (!empty($query) && in_array($query, $this->pageStdl)) {
+        elseif (!empty($query) && in_array($query, $this->pageStdl)) {
             $request = $query;
         }
-        if (!empty($query) && self::PAGE_INDEX) {
-            $request = "index";
+        elseif (!empty($query) && self::PAGE_INDEX) {
+            $request = "index.php";
         }
         return $request;
     }
 
     public function getPageUrl($query)
     {
-        global $bearsamppBs;
-        return $bearsamppBs->getLocalUrl($this->getPageQuery($query));
+        global $bearsamppRoot;
+        return $bearsamppRoot->getLocalUrl($this->getPageQuery($query));
     }
 
     public function getPath()
@@ -66,8 +66,8 @@ class Homepage
 
     public function getResourcesUrl()
     {
-        global $bearsamppBs;
-        return $bearsamppBs->getLocalUrl($this->getResourcesPath());
+        global $bearsamppRoot;
+        return $bearsamppRoot->getLocalUrl($this->getResourcesPath());
     }
 
     public function refreshAliasContent()

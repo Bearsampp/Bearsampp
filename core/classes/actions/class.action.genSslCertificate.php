@@ -19,10 +19,10 @@ class ActionGenSslCertificate
 
     public function __construct($args)
     {
-        global $bearsamppBs, $bearsamppLang, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
 
         $initServerName = 'test.local';
-        $initDocumentRoot = Util::formatWindowsPath($bearsamppBs->getSslPath());
+        $initDocumentRoot = Util::formatWindowsPath($bearsamppRoot->getSslPath());
 
         $bearsamppWinbinder->reset();
         $this->wbWindow = $bearsamppWinbinder->createAppWindow($bearsamppLang->getValue(Lang::GENSSL_TITLE), 490, 160, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP);

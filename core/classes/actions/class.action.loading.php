@@ -47,7 +47,7 @@ class ActionLoading
 
     public function processLoading($window, $id, $ctrl, $param1, $param2)
     {
-        global $bearsamppBs, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppWinbinder;
 
         switch ($id) {
             case IDCLOSE:
@@ -56,7 +56,7 @@ class ActionLoading
         }
 
         while (true) {
-            $bearsamppBs->removeErrorHandling();
+            $bearsamppRoot->removeErrorHandling();
             $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
             usleep(100000);
             for ($i = 0; $i < self::GAUGE; $i++) {

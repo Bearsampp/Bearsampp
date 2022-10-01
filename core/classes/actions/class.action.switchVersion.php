@@ -176,7 +176,7 @@ class ActionSwitchVersion
         // reload config
         $this->bearsamppSplash->setTextLoading($bearsamppLang->getValue(Lang::SWITCH_VERSION_RELOAD_CONFIG));
         $this->bearsamppSplash->incrProgressBar();
-        Bootstrap::loadConfig();
+        Root::loadConfig();
 
         // reload bins
         $this->bearsamppSplash->setTextLoading($bearsamppLang->getValue(Lang::SWITCH_VERSION_RELOAD_BINS));

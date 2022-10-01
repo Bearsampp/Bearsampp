@@ -48,8 +48,8 @@ class Registry
 
     private function writeLog($log)
     {
-        global $bearsamppBs;
-        Util::logDebug($log, $bearsamppBs->getRegistryLogFilePath());
+        global $bearsamppRoot;
+        Util::logDebug($log, $bearsamppRoot->getRegistryLogFilePath());
     }
 
     public function exists($key, $subkey, $entry = null)

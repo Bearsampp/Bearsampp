@@ -53,8 +53,8 @@ class WinBinder
 
     private static function writeLog($log)
     {
-        global $bearsamppBs;
-        Util::logDebug($log, $bearsamppBs->getWinbinderLogFilePath());
+        global $bearsamppRoot;
+        Util::logDebug($log, $bearsamppRoot->getWinbinderLogFilePath());
     }
 
     public function reset()

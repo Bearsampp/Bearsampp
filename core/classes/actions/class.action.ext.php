@@ -82,11 +82,11 @@ class ActionExt
 
     private function procStart($args)
     {
-        global $bearsamppBs, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppWinbinder;
 
         if (!Util::isLaunched()) {
             $this->addLog('Starting ' . APP_TITLE);
-            $bearsamppWinbinder->exec($bearsamppBs->getExeFilePath(), null, false);
+            $bearsamppWinbinder->exec($bearsamppRoot->getExeFilePath(), null, false);
         } else {
             $this->addLog(APP_TITLE . ' already started');
             $this->setStatus(self::STATUS_WARNING);
@@ -118,11 +118,11 @@ class ActionExt
 
     private function procReload($args)
     {
-        global $bearsamppBs, $bearsamppBins, $bearsamppWinbinder;
+        global $bearsamppRoot, $bearsamppBins, $bearsamppWinbinder;
 
         if (!Util::isLaunched()) {
             $this->addLog(APP_TITLE . ' is not started.');
-            $bearsamppWinbinder->exec($bearsamppBs->getExeFilePath(), null, false);
+            $bearsamppWinbinder->exec($bearsamppRoot->getExeFilePath(), null, false);
             $this->addLog('Start ' . APP_TITLE);
             $this->setStatus(self::STATUS_WARNING);
             return;

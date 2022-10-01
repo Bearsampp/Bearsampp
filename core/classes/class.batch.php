@@ -11,8 +11,8 @@ class Batch
 
     private static function writeLog($log)
     {
-        global $bearsamppBs;
-        Util::logDebug($log, $bearsamppBs->getBatchLogFilePath());
+        global $bearsamppRoot;
+        Util::logDebug($log, $bearsamppRoot->getBatchLogFilePath());
     }
 
     public static function findExeByPid($pid)
@@ -53,14 +53,14 @@ class Batch
 
     public static function exitApp($restart = false)
     {
-        global $bearsamppBs, $bearsamppCore;
+        global $bearsamppRoot, $bearsamppCore;
 
         $content = 'PING 1.1.1.1 -n 1 -w 2000 > nul' . PHP_EOL;
-        $content .= '"' . $bearsamppBs->getExeFilePath() . '" -quit -id={bearsampp}' . PHP_EOL;
+        $content .= '"' . $bearsamppRoot->getExeFilePath() . '" -quit -id={bearsampp}' . PHP_EOL;
         if ($restart) {
             $basename = 'restartApp';
             Util::logInfo('Restart App');
-            $content .= '"' . $bearsamppCore->getPhpExe() . '" "' . Core::BOOTSTRAP_FILE . '" "' . Action::RESTART . '"' . PHP_EOL;
+            $content .= '"' . $bearsamppCore->getPhpExe() . '" "' . Core::isRoot_FILE . '" "' . Action::RESTART . '"' . PHP_EOL;
         } else {
             $basename = 'exitApp';
             Util::logInfo('Exit App');
@@ -96,8 +96,8 @@ class Batch
 
     public static function refreshEnvVars()
     {
-        global $bearsamppBs, $bearsamppCore;
-        self::execStandalone('refreshEnvVars', '"' . $bearsamppCore->getSetEnvExe() . '" -a ' . Registry::APP_PATH_REG_ENTRY . ' "' . Util::formatWindowsPath($bearsamppBs->getRootPath()) . '"');
+        global $bearsamppRoot, $bearsamppCore;
+        self::execStandalone('refreshEnvVars', '"' . $bearsamppCore->getSetEnvExe() . '" -a ' . Registry::APP_PATH_REG_ENTRY . ' "' . Util::formatWindowsPath($bearsamppRoot->getRootPath()) . '"');
     }
 
     public static function installFilezillaService()

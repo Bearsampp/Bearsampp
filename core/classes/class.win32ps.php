@@ -108,10 +108,10 @@ class Win32Ps
 
     public static function killBins($refreshProcs = false)
     {
-        global $bearsamppBs;
+        global $bearsamppRoot;
         $killed = array();
 
-        $procs = $bearsamppBs->getProcs();
+        $procs = $bearsamppRoot->getProcs();
         if ($refreshProcs) {
             $procs = self::getListProcs();
         }
@@ -127,17 +127,17 @@ class Win32Ps
                 }
 
                 // Not kill bearsampp
-                if ($unixExePath == $bearsamppBs->getExeFilePath()) {
+                if ($unixExePath == $bearsamppRoot->getExeFilePath()) {
                     continue;
                 }
 
                 // Not kill inside www
-                if (Util::startWith($unixExePath, $bearsamppBs->getWwwPath() . '/') || Util::contains($unixCommandPath, $bearsamppBs->getWwwPath() . '/')) {
+                if (Util::startWith($unixExePath, $bearsamppRoot->getWwwPath() . '/') || Util::contains($unixCommandPath, $bearsamppRoot->getWwwPath() . '/')) {
                     continue;
                 }
 
                 // Not kill external process
-                if (!Util::startWith($unixExePath, $bearsamppBs->getRootPath() . '/') && !Util::contains($unixCommandPath, $bearsamppBs->getRootPath() . '/')) {
+                if (!Util::startWith($unixExePath, $bearsamppRoot->getRootPath() . '/') && !Util::contains($unixCommandPath, $bearsamppRoot->getRootPath() . '/')) {
                     continue;
                 }
 
