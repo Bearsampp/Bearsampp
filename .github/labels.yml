@@ -91,6 +91,7 @@
   description: "Won't fix"
   from_name: "wontfix"
 - # Hacktoberfest
-  name: "Hacktoberfest accepted :mending_heart:"
+  name: "Hacktoberfest-accepted :mending_heart:"
   description: "Accepted for Hacktoberfest"
+  from_name: "Hacktoberfest accepted"
   
