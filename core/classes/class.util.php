@@ -1070,7 +1070,7 @@ class Util
 
     public static function getRemoteFile($url)
     {
-         return file_get_contents($url);
+         return trim(file_get_contents($url));
     }
 
     public static function isPortInUse($port)
