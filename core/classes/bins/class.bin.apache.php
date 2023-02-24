@@ -277,6 +277,7 @@ class BinApache extends Module
         $this->setVersion($version);
 
         // conf
+        Util::logDebug('httpd.conf = ' . $conf);
         Util::replaceInFile($conf, array(
             // PHP module
             '/^#?PHPIniDir\s.*/' => ($bearsamppBins->getPhp()->isEnable() ? '' : '#') . 'PHPIniDir "' . $bearsamppBins->getPhp()->getSymlinkPath() . '"',
