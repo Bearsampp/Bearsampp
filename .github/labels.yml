@@ -76,6 +76,10 @@
   name: "Security :closed_lock_with_key:"
   color: "CD5C5C"
   description: "Security issue"
+- # Has PR
+  name: "PR :scientist:"
+  color: "FFFFFF"
+  description: "Has PR"
 - # RTC
   name: "RTC :runner:"
   color: "87ceeb"
@@ -94,4 +98,4 @@
   name: "Hacktoberfest-Accepted :mending_heart:"
   description: "Accepted for Hacktoberfest"
   from_name: "Hacktoberfest accepted"
-  
+
