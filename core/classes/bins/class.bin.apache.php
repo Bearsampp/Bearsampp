@@ -273,7 +273,7 @@ class BinApache extends Module
             return false;
         }
 
-        // bearsampp.conf
+        // httpd.conf
         $this->setVersion($version);
 
         // conf
