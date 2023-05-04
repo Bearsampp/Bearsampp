@@ -273,10 +273,11 @@ class BinApache extends Module
             return false;
         }
 
-        // bearsampp.conf
+        // httpd.conf
         $this->setVersion($version);
 
         // conf
+        Util::logDebug('httpd.conf = ' . $conf);
         Util::replaceInFile($conf, array(
             // PHP module
             '/^#?PHPIniDir\s.*/' => ($bearsamppBins->getPhp()->isEnable() ? '' : '#') . 'PHPIniDir "' . $bearsamppBins->getPhp()->getSymlinkPath() . '"',

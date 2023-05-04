@@ -1070,7 +1070,15 @@ class Util
 
     public static function getRemoteFile($url)
     {
-         return trim(file_get_contents($url));
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $data = curl_exec($ch);
+        curl_close($ch);
+         return trim($data);
     }
 
     public static function isPortInUse($port)
