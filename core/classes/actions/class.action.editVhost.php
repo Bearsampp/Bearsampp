@@ -81,6 +81,8 @@ class ActionEditVhost
                         $this->wbLabelExp[WinBinder::CTRL_OBJ],
                         sprintf($bearsamppLang->getValue(Lang::VHOST_EXP_LABEL), $serverName, $documentRoot . '\\')
                     );
+                    // Reload to add host
+                    TplService::getActionRestart(BinApache::SERVICE_NAME) . PHP_EOL;
                 }
                 break;
             case $this->wbBtnSave[WinBinder::CTRL_ID]:
@@ -123,6 +125,9 @@ class ActionEditVhost
                         sprintf($bearsamppLang->getValue(Lang::EDIT_VHOST_TITLE), $this->initServerName));
                     $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                 }
+                // Reload to remove host
+                TplService::getActionRestart(BinApache::SERVICE_NAME) . PHP_EOL;
+
                 break;
             case $this->wbBtnDelete[WinBinder::CTRL_ID]:
                 $bearsamppWinbinder->setProgressBarMax($this->wbProgressBar, self::GAUGE_DELETE + 1);
