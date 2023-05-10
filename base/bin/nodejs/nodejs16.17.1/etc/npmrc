@@ -1,5 +1,0 @@
-cache = ~BEARSAMPP_WIN_PATH~\tmp\npm-cache
-globalconfig = ~BEARSAMPP_WIN_PATH~\bin\nodejs\nodejs16.17.1\etc\npmrc
-globalignorefile = ~BEARSAMPP_WIN_PATH~\bin\nodejs\nodejs16.17.1\etc\.npmignore
-init-module = ~BEARSAMPP_WIN_PATH~\bin\nodejs\nodejs16.17.1\etc\.npm-init.js
-userconfig = ~BEARSAMPP_WIN_PATH~\bin\nodejs\nodejs16.17.1\etc\npmrc
