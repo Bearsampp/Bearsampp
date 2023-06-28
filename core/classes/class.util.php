@@ -917,7 +917,7 @@ class Util
 
     public static function getVersionUrl($version)
     {
-        return 'https://github.com/Bearsampp/Bearsampp/releases/tag/' . $version;
+        return LANG::VERSION_URL . $version;
     }
 
     public static function getChangelogUrl($utmSource = true)
