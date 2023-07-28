@@ -180,3 +180,19 @@ table.tablesorter thead tr th:hover {
     border: var(--bs-list-group-border-width) solid var(--bs-list-group-border-color);
     border-radius: 6px;
     }
+
+/* fix gap in module versions */
+.list-group-item.php-versions,
+.list-group-item.mysql-versions,
+.list-group-item.mariadb-versions,
+.list-group-item.postgresql-versions,
+.list-group-item.nodejs-versions,
+.list-group-item.mailhog-versions,
+.list-group-item.memcached-versions,
+.list-group-item.filezilla-versions  {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+}
