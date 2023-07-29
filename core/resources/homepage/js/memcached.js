@@ -5,11 +5,11 @@ $(document).ready(function() {
         proc: 'memcached'
       },
       success: function(data) {
-        $('.memcached-checkport').prepend(data.checkport);
+        $('.memcached-checkport').append(data.checkport);
         $('.memcached-checkport').find('.loader').remove();
-        
-        $('.memcached-versions').prepend(data.versions);
-        $('.memcached-versions').find('.loader').remove();
+
+        $('.memcached-version-list').append(data.versions);
+        $('.memcached-version-list').find('.loader').remove();
       }
     });
   }

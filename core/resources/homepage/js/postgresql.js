@@ -5,11 +5,11 @@ $(document).ready(function() {
         proc: 'postgresql'
       },
       success: function(data) {
-        $('.postgresql-checkport').prepend(data.checkport);
+        $('.postgresql-checkport').append(data.checkport);
         $('.postgresql-checkport').find('.loader').remove();
-        
-        $('.postgresql-versions').prepend(data.versions);
-        $('.postgresql-versions').find('.loader').remove();
+
+        $('.postgresql-version-list').append(data.versions);
+        $('.postgresql-version-list').find('.loader').remove();
       }
     });
   }

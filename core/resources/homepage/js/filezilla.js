@@ -5,11 +5,11 @@ $(document).ready(function() {
         proc: 'filezilla'
       },
       success: function(data) {
-        $('.filezilla-checkport').prepend(data.checkport);
+        $('.filezilla-checkport').append(data.checkport);
         $('.filezilla-checkport').find('.loader').remove();
-        
-        $('.filezilla-versions').prepend(data.versions);
-        $('.filezilla-versions').find('.loader').remove();
+
+        $('.filezilla-version-list').append(data.versions);
+        $('.filezilla-version-list').find('.loader').remove();
       }
     });
   }
