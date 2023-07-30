@@ -11,9 +11,15 @@
         <span class="loader" style="float:right"><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
         <i class="fa fa-bar-chart-o"></i> <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
       </span>
-      <span class="list-group-item filezilla-versions">
-        <span class="loader" style="float:right"><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>" /></span>
-        <i class="fa fa-puzzle-piece"></i> <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
+      <span class="list-group-item filezilla-versions col-12">
+              <span class="label-left col-1">
+                <i class="fa fa-puzzle-piece"></i> <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
+              </span>
+              <span class="filezilla-version-list float-right col-11">
+                <span class="loader" style="float:right">
+                  <img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/loader.gif'; ?>"/>
+                </span>
+              </span>
       </span>
     </div>
   </div>

@@ -15,9 +15,9 @@ if ($bearsamppBins->getNodejs()->isEnable()) {
 // Versions
 foreach ($bearsamppBins->getNodejs()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getNodejs()->getVersion()) {
-        $result['versions'] .= '<span class="float-right ms-1 badge text-bg-secondary">' . $version . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . $version . '</span>';
     }
 }
-$result['versions'] .= '<span class="float-right ms-1 badge text-bg-primary">' . $bearsamppBins->getNodejs()->getVersion() . '</span>';
+$result['versions'] .= '<span class="m-1 badge text-bg-primary">' . $bearsamppBins->getNodejs()->getVersion() . '</span>';
 
 echo json_encode($result);

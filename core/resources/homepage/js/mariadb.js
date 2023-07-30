@@ -5,11 +5,11 @@ $(document).ready(function() {
         proc: 'mariadb'
       },
       success: function(data) {
-        $('.mariadb-checkport').prepend(data.checkport);
+        $('.mariadb-checkport').append(data.checkport);
         $('.mariadb-checkport').find('.loader').remove();
-        
-        $('.mariadb-versions').prepend(data.versions);
-        $('.mariadb-versions').find('.loader').remove();
+
+        $('.mariadb-version-list').append(data.versions);
+        $('.mariadb-version-list').find('.loader').remove();
       }
     });
   }

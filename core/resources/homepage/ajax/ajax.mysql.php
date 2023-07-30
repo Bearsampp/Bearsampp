@@ -25,9 +25,9 @@ if ($bearsamppBins->getMysql()->isEnable()) {
 // Versions
 foreach ($bearsamppBins->getMysql()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getMysql()->getVersion()) {
-        $result['versions'] .= '<span class="float-right ms-1 badge text-bg-secondary">' . $version . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . $version . '</span>';
     }
 }
-$result['versions'] .= '<span class="float-right ms-1 badge text-bg-primary">' . $bearsamppBins->getMysql()->getVersion() . '</span>';
+$result['versions'] .= '<span class="m-1 badge text-bg-primary">' . $bearsamppBins->getMysql()->getVersion() . '</span>';
 
 echo json_encode($result);

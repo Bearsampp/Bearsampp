@@ -25,9 +25,9 @@ if ($bearsamppBins->getMariadb()->isEnable()) {
 // Versions
 foreach ($bearsamppBins->getMariadb()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getMariadb()->getVersion()) {
-        $result['versions'] .= '<span class="float-right ms-1 badge text-bg-secondary">' . $version . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . $version . '</span>';
     }
 }
-$result['versions'] .= '<span class="float-right ms-1 badge text-bg-primary">' . $bearsamppBins->getMariadb()->getVersion() . '</span>';
+$result['versions'] .= '<span class="m-1 badge text-bg-primary">' . $bearsamppBins->getMariadb()->getVersion() . '</span>';
 
 echo json_encode($result);

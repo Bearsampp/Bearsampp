@@ -5,11 +5,11 @@ $(document).ready(function() {
         proc: 'mailhog'
       },
       success: function(data) {
-        $('.mailhog-checkport').prepend(data.checkport);
+        $('.mailhog-checkport').append(data.checkport);
         $('.mailhog-checkport').find('.loader').remove();
-        
-        $('.mailhog-versions').prepend(data.versions);
-        $('.mailhog-versions').find('.loader').remove();
+
+        $('.mailhog-version-list').append(data.versions);
+        $('.mailhog-version-list').find('.loader').remove();
       }
     });
   }

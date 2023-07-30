@@ -18,10 +18,10 @@ if ($bearsamppBins->getPhp()->isEnable()) {
 // Versions
 foreach ($bearsamppBins->getPhp()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getPhp()->getVersion()) {
-        $result['versions'] .= '<span class="float-right ms-1 badge text-bg-secondary">' . $version . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . $version . '</span>';
     }
 }
-$result['versions'] .= '<span class="float-right ms-1 badge text-bg-primary">' . $bearsamppBins->getPhp()->getVersion() . '</span>';
+$result['versions'] .= '<span class="m-1 badge text-bg-primary">' . $bearsamppBins->getPhp()->getVersion() . '</span>';
 
 // Extensions count
 $exts = count($bearsamppBins->getPhp()->getExtensions());

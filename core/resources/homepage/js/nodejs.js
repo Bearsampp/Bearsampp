@@ -5,11 +5,11 @@ $(document).ready(function() {
         proc: 'nodejs'
       },
       success: function(data) {
-        $('.nodejs-status').prepend(data.status);
+        $('.nodejs-status').append(data.status);
         $('.nodejs-status').find('.loader').remove();
-        
-        $('.nodejs-versions').prepend(data.versions);
-        $('.nodejs-versions').find('.loader').remove();
+
+        $('.nodejs-version-list').append(data.versions);
+        $('.nodejs-version-list').find('.loader').remove();
       }
     });
   }
