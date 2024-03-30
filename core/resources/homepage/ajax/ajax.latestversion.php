@@ -1,4 +1,5 @@
 <?php
+global $bearsamppCore, $bearsamppLang;
 
 $result = array(
     'display' => false,
