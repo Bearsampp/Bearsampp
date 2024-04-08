@@ -73,13 +73,11 @@ Thanks again for your support, it is much appreciated! :pray:
 
 We would like to thank the following for supporting our project:
 
-[N6REJ](https://github.com/N6REJ)
 
-<a href="https://www.jetbrains.com/"> <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="80"></a>
+| <a href="https://github.n6rej.io">N6REJ<br><img src="https://avatars.githubusercontent.com/u/1850089?v=4" align="left" height="100px"/></a>                              | <a href="https://www.jetbrains.com/">Jetbrains<br> <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" align="left" height="100px"></a> | <a href="https://simplifyyourweb.com/" >Olivier Buisard<br><img src="https://user-images.githubusercontent.com/1850089/191779113-6218a5df-d06d-41b5-92f9-86a9563b4d09.png" width="100" /> </a> |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <a href="https://foss.abivia.com/">Abivia.com<br><img src="D:\Downloads\ABIVIA Logo Positive.png"/>" align="left" height="100px"/></a>|                                                                                                                                                                 |                                                                                                                                                                                                            |
 
-[![Code Shelter](https://www.codeshelter.co/static/badges/badge-flat.svg)](https://www.codeshelter.co/)
-
-<a href="https://simplifyyourweb.com/" ><img src="https://user-images.githubusercontent.com/1850089/191779113-6218a5df-d06d-41b5-92f9-86a9563b4d09.png" width="100" /> </a>
 
 
 ## License
