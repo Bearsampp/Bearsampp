@@ -9,9 +9,9 @@
   description: "For known bugs"
   from_name: "bug"
 - # Urgent
-  name: "Blocker :triangular_flag_on_post:"
-  color: "FFFFFF"
-  description: "Release blocker"
+  name: "Urgent :bomb:"
+  color: "ED7014"
+  description: "Urgent"
 - # dependencies
   name: "dependencies :man_cook:"
   color: "0366d6"
@@ -67,7 +67,7 @@
 - # Blocker
   name: "Blocker :triangular_flag_on_post:"
   color: "ff0000"
-  description: "Urgent bug, blocking release"
+  description: "Show Stopper"
 - # Website
   name: "Website :technologist:"
   color: "FFFFFF"
