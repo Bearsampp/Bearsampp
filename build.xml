@@ -41,7 +41,7 @@
     <mkdir dir="${release.base.target}"/>
 
     <!-- Copy core -->
-    <copy todir="${release.base.target}">
+    <copy todir="${release.base.target}" failonerror="true">
       <fileset dir="${project.basedir}" defaultexcludes="yes" excludes="
         .dev/**,
         .github/**,
@@ -66,9 +66,12 @@
         ssl/*,
         tmp/**,
         vhosts/*"
-      />
+      >
+        <present targetdir="${project.basedir}\base"/>
+      </fileset>
       <fileset dir="${project.basedir}\base" defaultexcludes="yes" includes="tmp/**">
         <type type="dir"/>
+        <present targetdir="${project.basedir}\base"/>
       </fileset>
     </copy>
 
