@@ -194,7 +194,10 @@
           <delete file="${release.destfile}.${release.format}"/>
           <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.${release.format}..."/>
           <sevenzip src="${release.target}\*" dest="${release.destfile}.${release.format}" format="${release.format}"/>
-          <hashfile file="${release.destfile}.${release.format}"/>
+          <checksum file="${release.destfile}.${release.format}" algorithm="MD5"/>
+          <checksum file="${release.destfile}.${release.format}" algorithm="SHA-1"/>
+          <checksum file="${release.destfile}.${release.format}" algorithm="SHA-256"/>
+          <checksum file="${release.destfile}.${release.format}" algorithm="SHA-512"/>
         </then>
         <else>
           <fail message="Unknown release format: ${release.format}"/>
@@ -263,7 +266,10 @@
         <delete file="${release.destfile}.${release.format}"/>
         <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.${release.format}..."/>
         <sevenzip src="${release.target}\*" dest="${release.destfile}.${release.format}" format="${release.format}"/>
-        <hashfile file="${release.destfile}.${release.format}"/>
+        <checksum file="${release.destfile}.${release.format}" algorithm="MD5"/>
+        <checksum file="${release.destfile}.${release.format}" algorithm="SHA-1"/>
+        <checksum file="${release.destfile}.${release.format}" algorithm="SHA-256"/>
+        <checksum file="${release.destfile}.${release.format}" algorithm="SHA-512"/>
       </then>
       <else>
         <fail message="Unknown release format: ${release.format}"/>
@@ -333,7 +339,10 @@
         <delete file="${release.destfile}.${release.format}"/>
         <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.${release.format}..."/>
         <sevenzip src="${release.target}\*" dest="${release.destfile}.${release.format}" format="${release.format}"/>
-        <hashfile file="${release.destfile}.${release.format}"/>
+        <checksum file="${release.destfile}.${release.format}" algorithm="MD5"/>
+        <checksum file="${release.destfile}.${release.format}" algorithm="SHA-1"/>
+        <checksum file="${release.destfile}.${release.format}" algorithm="SHA-256"/>
+        <checksum file="${release.destfile}.${release.format}" algorithm="SHA-512"/>
       </then>
       <else>
         <fail message="Unknown release format: ${release.format}"/>
