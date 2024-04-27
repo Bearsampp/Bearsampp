@@ -139,12 +139,12 @@
       <mkdir dir="${build.release.path}" includeEmptyDirs="true"/>
 
       <!-- Copy base -->
-      <copy todir="${release.target}">
-        <fileset dir="${release.base.target}" defaultexcludes="yes"/>
-        <fileset dir="${release.base.target}" defaultexcludes="yes" includes="tmp/**">
-          <type type="dir"/>
-        </fileset>
-      </copy>
+    <copy todir="${release.target}" failonerror="true" verbose="true">
+      <fileset dir="${release.base.target}" defaultexcludes="yes"/>
+      <fileset dir="${release.base.target}" defaultexcludes="yes" includes="tmp/**">
+        <type type="dir"/>
+      </fileset>
+    </copy>
 
       <!-- Replacements -->
       <replace file="${release.base.target}\bearsampp.conf" token="BIN_APACHE_ENABLE" value="1"/>
@@ -240,7 +240,7 @@
       <mkdir dir="${release.target}"/>
 
       <!-- Copy base -->
-      <copy todir="${release.target}">
+      <copy todir="${release.target}" failonerror="true" verbose="true">
         <fileset dir="${release.base.target}" defaultexcludes="yes"/>
         <fileset dir="${release.base.target}" defaultexcludes="yes" includes="tmp/**">
           <type type="dir"/>
@@ -335,7 +335,7 @@
     <mkdir dir="${release.target}"/>
 
     <!-- Copy base -->
-    <copy todir="${release.target}">
+    <copy todir="${release.target}" failonerror="true" verbose="true">
       <fileset dir="${release.base.target}" defaultexcludes="yes"/>
       <fileset dir="${release.base.target}" defaultexcludes="yes" includes="tmp/**">
         <type type="dir"/>
