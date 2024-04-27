@@ -226,103 +226,97 @@
   </target>
 
   <target name="build-basic" depends="init, load.lib, base">
-    <var name="release.target" unset="true"/>
-    <var name="release.destfile" unset="true"/>
-    <property name="release.target" value="${release.tmp.path}\${release.name}-basic-${release.fullversion}"/>
-    <property name="release.destfile" value="${build.release.path}\${release.name}-basic-${release.fullversion}"/>
+      <property name="release.target" value="${release.tmp.path}\${release.name}-basic-${release.fullversion}"/>
+      <property name="release.destfile" value="${build.release.path}\${release.name}-basic-${release.fullversion}"/>
 
-    <echo message="*** Release (basic)"/>
-    <echo message="* Name    : ${release.name} "/>
-    <echo message="* Version : ${release.fullversion} "/>
-    <echo message="* Format  : ${release.format} "/>
+      <echo message="*** Release (basic)"/>
+      <echo message="* Name    : ${release.name} "/>
+      <echo message="* Version : ${release.fullversion} "/>
+      <echo message="* Format  : ${release.format} "/>
 
-    <!-- Clean -->
-    <delete dir="${release.target}"/>
-    <mkdir dir="${build.release.path}"/>
-    <mkdir dir="${release.target}"/>
+      <!-- Clean -->
+      <delete dir="${release.target}"/>
+      <mkdir dir="${build.release.path}"/>
+      <mkdir dir="${release.target}"/>
 
-    <!-- Copy base -->
-    <copy todir="${release.target}">
-      <fileset dir="${release.base.target}" defaultexcludes="yes"/>
-      <fileset dir="${release.base.target}" defaultexcludes="yes" includes="tmp/**">
-        <type type="dir"/>
-      </fileset>
-    </copy>
+      <!-- Copy base -->
+      <copy todir="${release.target}">
+        <fileset dir="${release.base.target}" defaultexcludes="yes"/>
+        <fileset dir="${release.base.target}" defaultexcludes="yes" includes="tmp/**">
+          <type type="dir"/>
+        </fileset>
+      </copy>
 
-    <!-- Replacements -->
-    <copy file="${release.base.target}\bearsampp.conf" tofile="${release.target}\bearsampp.conf" overwrite="true">
-      <filterset>
-        <filter token="BIN_APACHE_ENABLE" value="1"/>
-        <filter token="BIN_PHP_ENABLE" value="1"/>
-        <filter token="BIN_MYSQL_ENABLE" value="1"/>
-        <filter token="BIN_MARIADB_ENABLE" value="1"/>
-        <filter token="BIN_POSTGRESQL_ENABLE" value="0"/>
-        <filter token="BIN_NODEJS_ENABLE" value="1"/>
-        <filter token="BIN_FILEZILLA_ENABLE" value="0"/>
-        <filter token="BIN_MAILHOG_ENABLE" value="1"/>
-        <filter token="BIN_MEMCACHED_ENABLE" value="0"/>
-      </filterset>
-    </copy>
+      <!-- Replacements -->
+      <replace file="${release.target}\bearsampp.conf" token="BIN_APACHE_ENABLE" value="1"/>
+      <replace file="${release.target}\bearsampp.conf" token="BIN_PHP_ENABLE" value="1"/>
+      <replace file="${release.target}\bearsampp.conf" token="BIN_MYSQL_ENABLE" value="1"/>
+      <replace file="${release.target}\bearsampp.conf" token="BIN_MARIADB_ENABLE" value="1"/>
+      <replace file="${release.target}\bearsampp.conf" token="BIN_POSTGRESQL_ENABLE" value="0"/>
+      <replace file="${release.target}\bearsampp.conf" token="BIN_NODEJS_ENABLE" value="1"/>
+      <replace file="${release.target}\bearsampp.conf" token="BIN_FILEZILLA_ENABLE" value="0"/>
+      <replace file="${release.target}\bearsampp.conf" token="BIN_MAILHOG_ENABLE" value="1"/>
+      <replace file="${release.target}\bearsampp.conf" token="BIN_MEMCACHED_ENABLE" value="0"/>
 
-    <!-- Get bins -->
-    <getmodule releasesurl="${bin.apache.url}" version="${bin.apache.version}" dest="${release.target}\bin\apache"/>
-    <getmodule releasesurl="${bin.mailhog.url}" version="${bin.mailhog.version}" dest="${release.target}\bin\mailhog"/>
-    <getmodule releasesurl="${bin.maria.url}" version="${bin.maria.version}" dest="${release.target}\bin\mariadb"/>
-    <getmodule releasesurl="${bin.mysql.url}" version="${bin.mysql.version}" dest="${release.target}\bin\mysql"/>
-    <getmodule releasesurl="${bin.nodejs.url}" version="${bin.nodejs.version}" dest="${release.target}\bin\nodejs"/>
-    <getmodule releasesurl="${bin.php.url}" version="${bin.php.version}" dest="${release.target}\bin\php"/>
+      <!-- Get bins -->
+      <getmodule releasesurl="${bin.apache.url}" version="${bin.apache.version}" dest="${release.target}\bin\apache"/>
+      <getmodule releasesurl="${bin.mailhog.url}" version="${bin.mailhog.version}" dest="${release.target}\bin\mailhog"/>
+      <getmodule releasesurl="${bin.maria.url}" version="${bin.maria.version}" dest="${release.target}\bin\mariadb"/>
+      <getmodule releasesurl="${bin.mysql.url}" version="${bin.mysql.version}" dest="${release.target}\bin\mysql"/>
+      <getmodule releasesurl="${bin.nodejs.url}" version="${bin.nodejs.version}" dest="${release.target}\bin\nodejs"/>
+      <getmodule releasesurl="${bin.php.url}" version="${bin.php.version}" dest="${release.target}\bin\php"/>
 
-    <!--Get apps -->
-    <getmodule releasesurl="${app.adminer.url}" version="${app.adminer.version}" dest="${release.target}\apps\adminer"/>
-    <getmodule releasesurl="${app.phpmyadmin.url}" version="${app.phpmyadmin.version}" dest="${release.target}\apps\phpmyadmin"/>
-    <getmodule releasesurl="${app.webgrind.url}" version="${app.webgrind.version}" dest="${release.target}\apps\webgrind"/>
+      <!--Get apps -->
+      <getmodule releasesurl="${app.adminer.url}" version="${app.adminer.version}" dest="${release.target}\apps\adminer"/>
+      <getmodule releasesurl="${app.phpmyadmin.url}" version="${app.phpmyadmin.version}" dest="${release.target}\apps\phpmyadmin"/>
+      <getmodule releasesurl="${app.webgrind.url}" version="${app.webgrind.version}" dest="${release.target}\apps\webgrind"/>
 
-    <!-- Get tools -->
-    <getmodule releasesurl="${tool.composer.url}" version="${tool.composer.version}" dest="${release.target}\tools\composer"/>
-    <getmodule releasesurl="${tool.consolez.url}" version="${tool.consolez.version}" dest="${release.target}\tools\consolez"/>
-    <getmodule releasesurl="${tool.git.url}" version="${tool.git.version}" dest="${release.target}\tools\git"/>
-    <getmodule releasesurl="${tool.ngrok.url}" version="${tool.ngrok.version}" dest="${release.target}\tools\ngrok"/>
-    <getmodule releasesurl="${tool.perl.url}" version="${tool.perl.version}" dest="${release.target}\tools\perl"/>
-    <getmodule releasesurl="${tool.xdc.url}" version="${tool.xdc.version}" dest="${release.target}\tools\xdc"/>
+      <!-- Get tools -->
+      <getmodule releasesurl="${tool.composer.url}" version="${tool.composer.version}" dest="${release.target}\tools\composer"/>
+      <getmodule releasesurl="${tool.consolez.url}" version="${tool.consolez.version}" dest="${release.target}\tools\consolez"/>
+      <getmodule releasesurl="${tool.git.url}" version="${tool.git.version}" dest="${release.target}\tools\git"/>
+      <getmodule releasesurl="${tool.ngrok.url}" version="${tool.ngrok.version}" dest="${release.target}\tools\ngrok"/>
+      <getmodule releasesurl="${tool.perl.url}" version="${tool.perl.version}" dest="${release.target}\tools\perl"/>
+      <getmodule releasesurl="${tool.xdc.url}" version="${tool.xdc.version}" dest="${release.target}\tools\xdc"/>
 
-    <!-- Compress -->
-    <assertdir dir="${release.target}"/>
-    <if>
-      <equals arg1="${release.format}" arg2="7z"/>
-      <then>
-        <delete file="${release.destfile}.7z"/>
-        <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.7z..."/>
-        <sevenzip src="${release.target}\*" dest="${release.destfile}.7z" format="7z"/>
-        <hashfile file="${release.destfile}.7z"/>
-      </then>
-      <elseif>
-        <equals arg1="${release.format}" arg2="zip"/>
-        <then>
-          <delete file="${release.destfile}.zip"/>
-          <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.zip..."/>
-          <sevenzip src="${release.target}\*" dest="${release.destfile}.zip" format="zip"/>
-          <hashfile file="${release.destfile}.zip"/>
-        </then>
-      </elseif>
-      <elseif>
-        <equals arg1="${release.format}" arg2="all"/>
+      <!-- Compress -->
+      <assertdir dir="${release.target}"/>
+      <if>
+        <equals arg1="${release.format}" arg2="7z"/>
         <then>
           <delete file="${release.destfile}.7z"/>
           <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.7z..."/>
           <sevenzip src="${release.target}\*" dest="${release.destfile}.7z" format="7z"/>
           <hashfile file="${release.destfile}.7z"/>
-
-          <delete file="${release.destfile}.zip"/>
-          <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.zip..."/>
-          <sevenzip src="${release.target}\*" dest="${release.destfile}.zip" format="zip"/>
-          <hashfile file="${release.destfile}.zip"/>
         </then>
-      </elseif>
-      <else>
-        <fail message="Unknown release format: ${release.format}"/>
-      </else>
-    </if>
-  </target>
+        <elseif>
+          <equals arg1="${release.format}" arg2="zip"/>
+          <then>
+            <delete file="${release.destfile}.zip"/>
+            <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.zip..."/>
+            <sevenzip src="${release.target}\*" dest="${release.destfile}.zip" format="zip"/>
+            <hashfile file="${release.destfile}.zip"/>
+          </then>
+        </elseif>
+        <elseif>
+          <equals arg1="${release.format}" arg2="all"/>
+          <then>
+            <delete file="${release.destfile}.7z"/>
+            <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.7z..."/>
+            <sevenzip src="${release.target}\*" dest="${release.destfile}.7z" format="7z"/>
+            <hashfile file="${release.destfile}.7z"/>
+
+            <delete file="${release.destfile}.zip"/>
+            <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.zip..."/>
+            <sevenzip src="${release.target}\*" dest="${release.destfile}.zip" format="zip"/>
+            <hashfile file="${release.destfile}.zip"/>
+          </then>
+        </elseif>
+        <else>
+          <fail message="Unknown release format: ${release.format}"/>
+        </else>
+      </if>
+    </target>
 
   <target name="build-lite" depends="init, load.lib, base">
     <var name="release.target" unset="true"/>
