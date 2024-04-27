@@ -136,7 +136,7 @@
 
       <!-- Clean -->
       <delete dir="${release.target}" includeEmptyDirs="true"/>
-      <mkdir dir="${build.release.path}" includeEmptyDirs="true"/>
+      <mkdir dir="${build.release.path}"/>
 
       <!-- Copy base -->
     <copy todir="${release.target}" failonerror="true" verbose="true">
@@ -235,9 +235,8 @@
       <echo message="* Format  : ${release.format} "/>
 
       <!-- Clean -->
-      <delete dir="${release.target}"/>
-      <mkdir dir="${build.release.path}"/>
-      <mkdir dir="${release.target}"/>
+    <delete dir="${release.target}" includeEmptyDirs="true"/>
+    <mkdir dir="${build.release.path}"/>
 
       <!-- Copy base -->
       <copy todir="${release.target}" failonerror="true" verbose="true">
@@ -330,9 +329,8 @@
     <echo message="* Format  : ${release.format} "/>
 
     <!-- Clean -->
-    <delete dir="${release.target}"/>
+    <delete dir="${release.target}" includeEmptyDirs="true"/>
     <mkdir dir="${build.release.path}"/>
-    <mkdir dir="${release.target}"/>
 
     <!-- Copy base -->
     <copy todir="${release.target}" failonerror="true" verbose="true">
