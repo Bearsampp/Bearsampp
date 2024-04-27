@@ -266,11 +266,8 @@
 
     <!-- Get bins -->
     <getmodule releasesurl="${bin.apache.url}" version="${bin.apache.version}" dest="${release.target}\bin\apache"/>
-    <!--getmodule releasesurl="${bin.filezilla.url}" version="${bin.filezilla.version}" dest="${release.target}\bin\filezilla"/-->
     <getmodule releasesurl="${bin.mailhog.url}" version="${bin.mailhog.version}" dest="${release.target}\bin\mailhog"/>
     <getmodule releasesurl="${bin.maria.url}" version="${bin.maria.version}" dest="${release.target}\bin\mariadb"/>
-    <!--getmodule releasesurl="${bin.postgresql.url}" version="${bin.postgresql.version}" dest="${release.target}\bin\postgresql"/-->
-    <!--getmodule releasesurl="${bin.memcached.url}" version="${bin.memcached.version}" dest="${release.target}\bin\memcached"/-->
     <getmodule releasesurl="${bin.mysql.url}" version="${bin.mysql.version}" dest="${release.target}\bin\mysql"/>
     <getmodule releasesurl="${bin.nodejs.url}" version="${bin.nodejs.version}" dest="${release.target}\bin\nodejs"/>
     <getmodule releasesurl="${bin.php.url}" version="${bin.php.version}" dest="${release.target}\bin\php"/>
@@ -278,20 +275,15 @@
     <!--Get apps -->
     <getmodule releasesurl="${app.adminer.url}" version="${app.adminer.version}" dest="${release.target}\apps\adminer"/>
     <getmodule releasesurl="${app.phpmyadmin.url}" version="${app.phpmyadmin.version}" dest="${release.target}\apps\phpmyadmin"/>
-    <!-- <getmodule releasesurl="${app.phppgadmin.url}" version="${app.phppgadmin.version}" dest="${release.target}\apps\phppgadmin"/ -->
     <getmodule releasesurl="${app.webgrind.url}" version="${app.webgrind.version}" dest="${release.target}\apps\webgrind"/>
 
     <!-- Get tools -->
     <getmodule releasesurl="${tool.composer.url}" version="${tool.composer.version}" dest="${release.target}\tools\composer"/>
     <getmodule releasesurl="${tool.consolez.url}" version="${tool.consolez.version}" dest="${release.target}\tools\consolez"/>
-   <!-- <getmodule releasesurl="${tool.ghostscript.url}" version="${tool.ghostscript.version}" dest="${release.target}\tools\ghostscript"/ -->
     <getmodule releasesurl="${tool.git.url}" version="${tool.git.version}" dest="${release.target}\tools\git"/>
     <getmodule releasesurl="${tool.ngrok.url}" version="${tool.ngrok.version}" dest="${release.target}\tools\ngrok"/>
     <getmodule releasesurl="${tool.perl.url}" version="${tool.perl.version}" dest="${release.target}\tools\perl"/>
-    <!--getmodule releasesurl="${tool.python.url}" version="${tool.python.version}" dest="${release.target}\tools\python"/-->
-    <!--getmodule releasesurl="${tool.ruby.url}" version="${tool.ruby.version}" dest="${release.target}\tools\ruby"/-->
     <getmodule releasesurl="${tool.xdc.url}" version="${tool.xdc.version}" dest="${release.target}\tools\xdc"/>
-    <!--getmodule releasesurl="${tool.yarn.url}" version="${tool.yarn.version}" dest="${release.target}\tools\yarn"/-->
 
     <!-- Compress -->
     <assertdir dir="${release.target}"/>
