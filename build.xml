@@ -189,36 +189,13 @@
       <!-- Compress -->
       <assertdir dir="${release.target}"/>
       <if>
-        <equals arg1="${release.format}" arg2="7z"/>
+        <matches pattern="^(7z|zip|all)$" string="${release.format}"/>
         <then>
-          <delete file="${release.destfile}.7z"/>
-          <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.7z..."/>
-          <sevenzip src="${release.target}\*" dest="${release.destfile}.7z" format="7z"/>
-          <hashfile file="${release.destfile}.7z"/>
+          <delete file="${release.destfile}.${release.format}"/>
+          <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.${release.format}..."/>
+          <sevenzip src="${release.target}\*" dest="${release.destfile}.${release.format}" format="${release.format}"/>
+          <hashfile file="${release.destfile}.${release.format}"/>
         </then>
-        <elseif>
-          <equals arg1="${release.format}" arg2="zip"/>
-          <then>
-            <delete file="${release.destfile}.zip"/>
-            <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.zip..."/>
-            <sevenzip src="${release.target}\*" dest="${release.destfile}.zip" format="zip"/>
-            <hashfile file="${release.destfile}.zip"/>
-          </then>
-        </elseif>
-        <elseif>
-          <equals arg1="${release.format}" arg2="all"/>
-          <then>
-            <delete file="${release.destfile}.7z"/>
-            <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.7z..."/>
-            <sevenzip src="${release.target}\*" dest="${release.destfile}.7z" format="7z"/>
-            <hashfile file="${release.destfile}.7z"/>
-
-            <delete file="${release.destfile}.zip"/>
-            <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.zip..."/>
-            <sevenzip src="${release.target}\*" dest="${release.destfile}.zip" format="zip"/>
-            <hashfile file="${release.destfile}.zip"/>
-          </then>
-        </elseif>
         <else>
           <fail message="Unknown release format: ${release.format}"/>
         </else>
@@ -279,42 +256,19 @@
       <getmodule releasesurl="${tool.xdc.url}" version="${tool.xdc.version}" dest="${release.target}\tools\xdc"/>
 
       <!-- Compress -->
-      <assertdir dir="${release.target}"/>
-      <if>
-        <equals arg1="${release.format}" arg2="7z"/>
-        <then>
-          <delete file="${release.destfile}.7z"/>
-          <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.7z..."/>
-          <sevenzip src="${release.target}\*" dest="${release.destfile}.7z" format="7z"/>
-          <hashfile file="${release.destfile}.7z"/>
-        </then>
-        <elseif>
-          <equals arg1="${release.format}" arg2="zip"/>
-          <then>
-            <delete file="${release.destfile}.zip"/>
-            <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.zip..."/>
-            <sevenzip src="${release.target}\*" dest="${release.destfile}.zip" format="zip"/>
-            <hashfile file="${release.destfile}.zip"/>
-          </then>
-        </elseif>
-        <elseif>
-          <equals arg1="${release.format}" arg2="all"/>
-          <then>
-            <delete file="${release.destfile}.7z"/>
-            <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.7z..."/>
-            <sevenzip src="${release.target}\*" dest="${release.destfile}.7z" format="7z"/>
-            <hashfile file="${release.destfile}.7z"/>
-
-            <delete file="${release.destfile}.zip"/>
-            <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.zip..."/>
-            <sevenzip src="${release.target}\*" dest="${release.destfile}.zip" format="zip"/>
-            <hashfile file="${release.destfile}.zip"/>
-          </then>
-        </elseif>
-        <else>
-          <fail message="Unknown release format: ${release.format}"/>
-        </else>
-      </if>
+    <assertdir dir="${release.target}"/>
+    <if>
+      <matches pattern="^(7z|zip|all)$" string="${release.format}"/>
+      <then>
+        <delete file="${release.destfile}.${release.format}"/>
+        <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.${release.format}..."/>
+        <sevenzip src="${release.target}\*" dest="${release.destfile}.${release.format}" format="${release.format}"/>
+        <hashfile file="${release.destfile}.${release.format}"/>
+      </then>
+      <else>
+        <fail message="Unknown release format: ${release.format}"/>
+      </else>
+    </if>
     </target>
 
   <target name="build-lite" depends="init, load.lib, base">
@@ -374,36 +328,13 @@
     <!-- Compress -->
     <assertdir dir="${release.target}"/>
     <if>
-      <equals arg1="${release.format}" arg2="7z"/>
+      <matches pattern="^(7z|zip|all)$" string="${release.format}"/>
       <then>
-        <delete file="${release.destfile}.7z"/>
-        <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.7z..."/>
-        <sevenzip src="${release.target}\*" dest="${release.destfile}.7z" format="7z"/>
-        <hashfile file="${release.destfile}.7z"/>
+        <delete file="${release.destfile}.${release.format}"/>
+        <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.${release.format}..."/>
+        <sevenzip src="${release.target}\*" dest="${release.destfile}.${release.format}" format="${release.format}"/>
+        <hashfile file="${release.destfile}.${release.format}"/>
       </then>
-      <elseif>
-        <equals arg1="${release.format}" arg2="zip"/>
-        <then>
-          <delete file="${release.destfile}.zip"/>
-          <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.zip..."/>
-          <sevenzip src="${release.target}\*" dest="${release.destfile}.zip" format="zip"/>
-          <hashfile file="${release.destfile}.zip"/>
-        </then>
-      </elseif>
-      <elseif>
-        <equals arg1="${release.format}" arg2="all"/>
-        <then>
-          <delete file="${release.destfile}.7z"/>
-          <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.7z..."/>
-          <sevenzip src="${release.target}\*" dest="${release.destfile}.7z" format="7z"/>
-          <hashfile file="${release.destfile}.7z"/>
-
-          <delete file="${release.destfile}.zip"/>
-          <echo message="Compressing ${release.name}${release.fullversion} to ${release.destfile}.zip..."/>
-          <sevenzip src="${release.target}\*" dest="${release.destfile}.zip" format="zip"/>
-          <hashfile file="${release.destfile}.zip"/>
-        </then>
-      </elseif>
       <else>
         <fail message="Unknown release format: ${release.format}"/>
       </else>
