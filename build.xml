@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Project Configuration for Bearsampp
+
+  This XML configuration sets up the environment for the Bearsampp project, defining essential paths, properties, and tasks required for development and build processes.
+
+  Key Components:
+  - `project.basedir`: Establishes the base directory for the project using the `ant.file.bearsampp` property.
+  - `build.properties`: Specifies the location of the build properties file relative to the base directory.
+  - `dev.path`: Defines the development path which is crucial for locating development-specific resources and scripts.
+  - Error Handling: Includes a fail-safe mechanism to ensure the `dev.path` exists, preventing build failures due to missing directories.
+  - `build.path` and `release.tmp.path`: Directories for build outputs and temporary release files are created to organize build artifacts.
+  - Import Statements: Includes external XML files (`build-commons.xml` and `build-release.xml`) that modularize the build script, promoting reusability and maintainability.
+
+  Usage:
+  This configuration is primarily used by the build automation tool (Ant) to initialize and prepare the environment for subsequent build and release tasks.
+-->
 <project name="Bearsampp" basedir=".">
 
   <dirname property="project.basedir" file="${ant.file.bearsampp}"/>
@@ -22,12 +38,41 @@
   <property name="release.tmp.path" value="${build.tmp.path}\release"/>
   <mkdir dir="${release.tmp.path}"/>
 
+  <!--
+    Target: check.lang
+    Description: This target checks the language files to ensure they meet the required specifications.
+    Dependencies: This task depends on 'init' and 'load.lib' to be executed beforehand, ensuring that the necessary initializations and library loads are completed.
+    Operation: Executes the 'checklang' action using the 'divhpdev' task.
+  -->
   <target name="check.lang" description="Check languages files" depends="init, load.lib">
     <divhpdev action="checklang"/>
   </target>
 
+  <!--
+    Target: release
+    Description: Aggregates all build types into a single release process.
+    Dependencies: This target depends on the successful completion of 'init', 'load.lib', 'build-full', 'build-basic', and 'build-lite' targets.
+    Usage: This target is used to compile all necessary components and variations of the build into a final release package. It ensures that all preliminary steps are completed before packaging.
+  -->
   <target name="release" depends="init, load.lib, build-full, build-basic, build-lite" description="Release Bearsampp"/>
 
+  <!--
+  Target: base
+  Description: Prepares the base environment for the Bearsampp project. This includes cleaning up the previous base directory, copying necessary files, applying configurations, and setting version information.
+  Dependencies: Depends on 'init' and 'load.lib' targets to ensure the environment is initialized and libraries are loaded.
+  Conditions: Executes only if 'is.base.prepared' is not set, ensuring that the base setup does not run multiple times unnecessarily.
+
+  Steps:
+  1. Unset and set the 'release.base.target' property to define the base directory.
+  2. Clean the existing base directory if it exists.
+  3. Copy essential project files while excluding specific directories and files to avoid unnecessary data.
+  4. Apply configuration changes to 'bearsampp.conf' using a filterset that injects current versions and settings.
+  5. Copy and update the 'bearsampp.ini' file with the current release version.
+  6. Record the release version in 'version.dat' within the base and temporary directories.
+  7. Set 'is.base.prepared' to true to indicate completion.
+
+  Usage: This target is crucial for setting up the base environment correctly before any builds or releases are attempted.
+-->
   <target name="base" depends="init, load.lib" unless="is.base.prepared">
     <var name="release.base.target" unset="true"/>
     <property name="release.base.target" value="${release.tmp.path}\base"/>
@@ -125,6 +170,23 @@
     <var name="is.base.prepared" value="true"/>
   </target>
 
+  <!--
+  Target: build-full
+  Description: Assembles a full release package for the Bearsampp project. This target handles the initialization, library loading, base setup, and the inclusion of all modules, applications, and tools necessary for a complete deployment.
+
+  Steps:
+  1. Set properties for the release target and destination file paths.
+  2. Display release details such as name, version, and format.
+  3. Clean the previous release directory and create a new directory for the release.
+  4. Copy the base configuration and files to the release directory.
+  5. Enable all necessary binaries in the configuration file.
+  6. Download and place all required binaries, applications, and tools into their respective directories within the release package.
+  7. Compress the assembled release into the specified format (7z, zip, or all) and calculate checksums for file integrity verification.
+
+  Dependencies: Depends on 'init', 'load.lib', and 'base' targets to ensure the environment is properly set up before building the full release.
+
+  Usage: This target is executed as part of a larger build process or manually to generate a complete release package of the Bearsampp project.
+-->
   <target name="build-full" depends="init, load.lib, base">
       <property name="release.target" value="${release.tmp.path}\${release.name}-${release.fullversion}"/>
       <property name="release.destfile" value="${build.release.path}\${release.name}-${release.fullversion}"/>
@@ -205,6 +267,23 @@
       </if>
   </target>
 
+  <!--
+  Target: build-basic
+  Description: Constructs a basic release package for the Bearsampp project. This target is designed to include essential components and configurations necessary for a minimal viable product.
+
+  Steps:
+  1. Set properties for the release target and destination file paths.
+  2. Display release details such as name, version, and format.
+  3. Clean the previous release directory and create a new directory for the release.
+  4. Copy the base configuration and files to the release directory.
+  5. Enable selected binaries and disable others as specified in the configuration.
+  6. Download and place essential binaries, applications, and tools into their respective directories within the release package.
+  7. Compress the assembled release into the specified format (7z, zip, or all) and calculate checksums for file integrity verification.
+
+  Dependencies: This target depends on 'init', 'load.lib', and 'base' targets to ensure the environment is properly set up before building the basic release.
+
+  Usage: This target is executed as part of a larger build process or manually to generate a basic release package of the Bearsampp project, which includes only the most crucial components.
+-->
   <target name="build-basic" depends="init, load.lib, base">
       <property name="release.target" value="${release.tmp.path}\${release.name}-basic-${release.fullversion}"/>
       <property name="release.destfile" value="${build.release.path}\${release.name}-basic-${release.fullversion}"/>
@@ -277,6 +356,23 @@
     </if>
     </target>
 
+  <!--
+  Target: build-lite
+  Description: Constructs a lightweight release package for the Bearsampp project. This target is optimized for minimal resource usage by including only essential binaries, applications, and tools.
+
+  Steps:
+  1. Unset and then set properties for the release target and destination file paths.
+  2. Display release details such as name, version, and format.
+  3. Clean the previous release directory and create a new directory for the release.
+  4. Copy the base configuration and files to the release directory, including temporary directories.
+  5. Apply configuration changes to enable selected binaries and disable others as specified.
+  6. Download and place essential binaries, applications, and tools into their respective directories within the release package.
+  7. Compress the assembled release into the specified format (7z, zip, or all) and calculate checksums for file integrity verification.
+
+  Dependencies: This target depends on 'init', 'load.lib', and 'base' targets to ensure the environment is properly set up before building the lite release.
+
+  Usage: This target is executed as part of a larger build process or manually to generate a lite release package of the Bearsampp project, which includes only the most crucial components for operation.
+-->
   <target name="build-lite" depends="init, load.lib, base">
     <var name="release.target" unset="true"/>
     <var name="release.destfile" unset="true"/>
@@ -350,6 +446,23 @@
     </if>
   </target>
 
+  <!--
+  Target: launch
+  Description: This target is responsible for launching the Bearsampp application after a full build. It ensures that the necessary directories are prepared and that the application is moved to the launch directory.
+
+  Steps:
+  1. Verify the existence of the directory specified by `${release.target}` to ensure the build was successful.
+  2. Set the property `build.launch.path` to define the path where the application will be launched.
+  3. Delete any existing content in the launch directory to prepare for a fresh setup.
+  4. Create the necessary directory structure in the launch path.
+  5. Move the built application files from `${release.target}\bearsampp` to the launch directory.
+  6. Execute the Bearsampp application, providing feedback to the user about the launch process.
+  7. Inform the user where the executable can be found and how to restart the application if necessary.
+
+  Dependencies: This target depends on the successful completion of the `build-full` target, ensuring that all necessary components are built before launching.
+
+  Usage: This target is executed as the final step in the deployment process to start the application directly from the build environment.
+-->
   <target name="launch" depends="build-full" description="Launch Bearsampp">
     <assertdir dir="${release.target}"/>
     <property name="build.launch.path" value="${build.path\launch"/>
