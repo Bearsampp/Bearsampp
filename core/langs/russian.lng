@@ -129,9 +129,9 @@ xdc = "XDebugClient"
 yarn = "Yarn"
 
 ; Errors
-errorConfNotFound = "Файл конфигурации %s не найдет в %s"
-errorExeNotFound = "Исполняемый файл %s не найдет в %s"
-errorFileNotFound = "%s не найдет в %s"
+errorConfNotFound = "Файл конфигурации %s не найден в %s"
+errorExeNotFound = "Исполняемый файл %s не найден в %s"
+errorFileNotFound = "%s не найден в %s"
 errorInvalidParameter = "Недопустимый параметр '%s' : %s"
 
 ; Action Switch version
@@ -316,7 +316,7 @@ checkVersionLatestText = "У вас установлена последняя в
 genSslTitle = "Генерация SSL-сертификата"
 genSslPath = "Выбор целевой папки :"
 genSslCreated = "SSL-сертификат '%s' успешно создан."
-genSslCreatedError = "Невозможно создать сертификат SSL."
+genSslCreatedError = "Невозможно создать SSL-сертификат."
 
 ; Action Restart
 restartTitle = "Перезапуск"
