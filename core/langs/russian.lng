@@ -1,0 +1,352 @@
+; Author: cosmopolityan
+;
+
+; General
+allRunningHint = "Все службы работают"
+someRunningHint = "%n из %t служб работают"
+noneRunningHint = "Ни одна из %t служб не работает"
+
+; Single
+about = "О программе"
+administration = "Администрирование"
+aliases = "Алиасы"
+apps = "Приложения"
+bins = "Бинарники (исполняемые файлы)"
+changelog = "Список изменений"
+console = "Консоль"
+debug = "Отладка"
+disabled = "Отключено"
+donate = "Поддержать"
+donateVia = "Поддержать через %s"
+download = "Загрузить"
+downloadMore = "Загрузить больше..."
+enabled = "Включено"
+error = "Ошибка"
+executable = "Исполняемый"
+extensions = "Расширения"
+gitConsole = "Git-консоль"
+gitGui = "Git Gui"
+github = "Github"
+help = "Помощь"
+hostseditor = "HostsEditor"
+lang = "Язык"
+license = "Лицензия"
+logs = "Логи"
+logsVerbose = "Подробные логи"
+modules = "Модули"
+name = "Имя"
+paypal = "Paypal"
+pythonConsole = "Python-консоль"
+pythonCp = "Панель управления Python"
+quit = "Выход"
+readChangelog = "Ознакомиться с %sпоследними изменениями%s."
+reload = "Перезагрузка"
+repos = "Репозитории"
+restart = "Рестарт"
+service = "Служба"
+settings = "Настройки"
+ssl = "SSL"
+startup = "Запуск"
+status = "Статус"
+statusPage = "Страница статуса"
+target = "Путь"
+tools = "Инструменты"
+verboseDebug = "Отладка"
+verboseReport = "Отчет"
+verboseSimple = "Обычно"
+verboseTrace = "Трассировка (отслеживание)"
+version = "Версия"
+versions = "Версии"
+virtualHosts = "Виртуальные хосты"
+website = "Веб-сайт"
+
+; Menu
+menuAbout = "Информация..."
+menuAccessLogs = "Логи доступа"
+menuAddAlias = "Добавить алиас"
+menuAddVhost = "Добавить виртуальный хост"
+menuChangePort = "Изменить порт"
+menuChangeRootPwd = "Изменить root-пароль"
+menuCheckPort = "Проверка порта %s"
+menuCheckUpdate = "Проверка обновлений"
+menuClearFolders = "Очистить временные папки"
+menuEditAlias = "Редактировать %s"
+menuEditConf = "Редактировать %s"
+menuEditVhost = "Редактировать %s"
+menuEnable = "Включить / Отключить"
+menuErrorLogs = "Логи ошибок"
+menuGenSslCertificate = "Генерация SSL-сертификата"
+menuInstallService = "Установить службу"
+menuLaunchStartup = "Запуск при старте Windows"
+menuLocalhost = "Localhost"
+menuLogs = "Логи"
+menuPutOffline = "Перевести в оффлайн"
+menuPutOnline = "Перевести в онлайн"
+menuRefreshRepos = "Обновить репозитории"
+menuRemoveService = "Удалить службу"
+menuRestartService = "Перезапустить службу"
+menuRestartServices = "Перезапустить все службы"
+menuRewriteLogs = "Переписать логи"
+menuScanReposStartup = "Сканирование репозиториев при запуске"
+menuSessionLogs = "Сессионные логи"
+menuStartService = "Запуск службы"
+menuStartServices = "Запуск всех служб"
+menuStatsLogs = "Логи статистики"
+menuStopService = "Остановка службы"
+menuStopServices = "Остановка всех служб"
+menuTransferLogs = "Трансфер-логи"
+menuUpdateEnvPath = "Обновление env. PATH"
+menuWwwDirectory = "www директория"
+
+; Bins
+apache = "Apache"
+filezilla = "Filezilla"
+mailhog = "MailHog"
+mariadb = "MariaDB"
+memcached = "Memcached"
+mysql = "MySQL"
+nodejs = "Node.js"
+pear = "PEAR"
+php = "PHP"
+postgresql = "PostgreSQL"
+
+; Apps
+adminer = "Adminer"
+phpmyadmin = "phpMyAdmin"
+phppgadmin = "phpPgAdmin"
+webgrind = "Webgrind"
+
+; Tools
+composer = "Composer"
+consolez = "ConsoleZ"
+ghostscript = "Ghostscript"
+git = "Git"
+ngrok = "ngrok"
+perl = "Perl"
+python = "Python"
+ruby = "Ruby"
+xdc = "XDebugClient"
+yarn = "Yarn"
+
+; Errors
+errorConfNotFound = "Файл конфигурации %s не найден в %s"
+errorExeNotFound = "Исполняемый файл %s не найден в %s"
+errorFileNotFound = "%s не найден в %s"
+errorInvalidParameter = "Недопустимый параметр '%s' : %s"
+
+; Action Switch version
+switchVersionTitle = "Переключиться на %s версию %s"
+switchVersionReloadConfig = "Перезагрузить конфигурацию"
+switchVersionReloadBins = "Перезагрузить бинарники (исполняемые файлы)"
+switchVersionRegistry = "Сброс ключа реестра %s"
+switchVersionResetServices = "Сброс всех служб"
+switchVersionSameError = "Вы уже в %s %s."
+switchVersionOk = "Версия %s успешно переключена на %s"
+switchVersionOkRestart = "Версия %s успешно переключена на %s"
+apacheIncpt = "Apache %s, похоже, не совместим с PHP %s."
+phpIncpt = "Похоже, что PHP %s не совместим с Apache %s."
+bearsamppConfNotFoundError = "Файлы конфигурации Bearsampp не найдены для %s."
+bearsamppConfMalformedError = "Файл конфигурации Bearsampp неправильно сформирован для %s."
+
+; Action Switch PHP setting
+switchPhpSettingTitle = "Переключение PHP настроек"
+switchPhpSettingNotFound = "Параметр PHP %s не найден в файле конфигурации PHP %s."
+
+; Action Check port
+checkPortTitle = "Проверка %s порта %s"
+portUsedBy = "Порт %s используется %s."
+portNotUsed = "Порт %s не используется."
+portNotUsedBy = "Порт %s используется другим приложением."
+portUsedByAnotherDbms = "Порт %s используется другой СУБД."
+portChanged = "%s порт успешно изменен на %s"
+
+; Action Install service
+installServiceTitle = "Install %s service"
+serviceAlreadyInstalled = "%s service already installed."
+serviceInstalled = "%s service successfully installed.@nl@Name: %s@nl@Port: %s"
+serviceInstallError = "Error during the installation of %s service."
+
+; Action Remove service
+removeServiceTitle = "Удалить службу %s"
+serviceNotExist = "Служба %s не существует."
+serviceRemoved = "Служба %s успешно удалена."
+serviceRemoveError = "Ошибка при удалении службы %s."
+
+; Action Start service
+startServiceTitle = "Запуск службы %s"
+startServiceError = "Ошибка при запуске службы %s."
+
+; Action Stop service
+stopServiceTitle = "Остановка службы %s"
+stopServiceError = "Ошибка при остановке службы %s."
+
+; Action Restart service
+restartServiceTitle = "Перезапуск службы %s"
+restartServiceError = "Ошибка при перезапуске службы %s."
+
+; Action Delete alias
+deleteAliasTitle = "Удалить алиас"
+deleteAlias = "Вы действительно хотите удалить алиас '%s' ?"
+aliasRemoved = "Алиас '%s' успешно удален."
+aliasRemoveError = "Невозможно удалить файл конфигурации алиасов в:@nl@%s"
+
+; Action Add/Edit alias
+addAliasTitle = "Добавить алиас"
+aliasNameLabel = "Имя"
+aliasDestLabel = "Путь"
+aliasExpLabel = "Алиас будет находиться по адресу http://localhost%s/%s/@nl@ и будет указывать на %s"
+aliasDestPath = "Выбор пути для вашего алиаса :"
+aliasNotValidAlpha = "Имя алиаса '%s' не является допустимой буквенно-цифровой строкой."
+aliasAlreadyExists = "Алиас '%s' уже существует."
+aliasCreated = "Алиас '%s' успешно создан.@nl@@nl@Url: http://localhost%s/%s/@nl@Path: %s"
+aliasCreatedError = "Невозможно создать файл конфигурации алиасов."
+editAliasTitle = "Редактировать алиас %s"
+
+; Action Delete vhost
+deleteVhostTitle = "Удалить виртуальный хост"
+deleteVhost = "Вы действительно хотите удалить виртуальный хост '%s' ?"
+vhostRemoved = "Virtual host '%s' successfully deleted."
+vhostRemoveError = "Unable to delete virtual host configuration file in:@nl@%s"
+
+; Action Add/Edit vhost
+addVhostTitle = "Добавить виртуальный хост"
+vhostServerNameLabel = "Имя сервера"
+vhostDocumentRootLabel = "Корневая директория"
+vhostExpLabel = "Виртуальный хост будет находиться по адресу http://%s/@nl@ и будет указывать на %s"
+vhostDocRootPath = "Выберите корневую директорию для вашего виртуального хоста :"
+vhostNotValidDomain = "Имя сервера '%s' не является допустимым доменным именем."
+vhostAlreadyExists = "Виртуальный хост '%s' уже существует."
+vhostCreated = "Виртуальный хост '%s' успешно создан.@nl@Не забудьте добавить доменное имя в файл hosts (с помощью инструмента HostsEditor)..@nl@@nl@Url: http://%s/@nl@Path: %s"
+vhostCreatedError = "Невозможно создать файл конфигурации виртуального хоста."
+editVhostTitle = "Редактирование виртуального хоста %s"
+
+; Action Change port
+changePortTitle = "Изменить %s порт"
+changePortCurrentLabel = "Порт, фактически используется %s : %s"
+changePortNewLabel = "Новый порт"
+changePortSameError = "Это тот же порт, который фактически используется."
+
+; Action Change database root password
+changeDbRootPwdTitle = "Изменить %s root-пароль"
+changeDbRootPwdCurrentpwdLabel = "Текущий пароль"
+changeDbRootPwdNewpwd1Label = "Новый пароль"
+changeDbRootPwdNewpwd2Label = "Подтвердить новый пароль"
+changeDbRootPwdNotsameError = "Введенные вами пароли не совпадают друг с другом"
+changeDbRootPwdIncorrectError = " Ошибка %s : %s"
+changeDbRootPwdText = "Root-пароль успешно изменен!"
+
+; Action Startup
+startupStartingText = "Запускается %s. Пожалуйста, подождите"
+startupRotationLogsText = "Архивация логов"
+startupKillOldProcsText = "Остановить старые инстансы"
+startupRefreshHostnameText = "Обновление имени хоста"
+startupCheckBrowserText = "Проверка браузера"
+startupSysInfos = "Получить информацию о системе"
+startupCleanTmpText = "Удаление временных файлов"
+startupCleanOldBehaviorsText = "Удаление устаревших функций"
+startupRefreshAliasText = "Обновление алиасов"
+startupRefreshVhostsText = "Обновление виртуальных хостов"
+startupCheckPathText = "Проверка текущего пути"
+startupScanFoldersText = "Сканирование папок"
+startupChangePathText = "Изменение пути %s"
+startupRegistryText = "Проверка ключа реестра %s"
+startupRegistryErrorText = "Ошибка настроек ключа реестра %s :"
+startupUpdateConfigText = "Обновление конфигурации"
+startupCheckServiceText = "Проверка службы %s"
+startupInstallServiceText = "Установка службы %s"
+startupStartServiceText = "Запуск службы %s"
+startupPrepareRestartText = "Подготовка к перезапуску %s"
+startupRestartingText = "Перезапуск %s. Пожалуйста, подождите"
+startupErrorTitle = "Ошибка запуска"
+startupServiceError = "Служба %s не может быть установлена :"
+startupServiceCreateError = "- Невозможно создать службу : %s"
+startupServiceStartError = "- Невозможно запустить службу : %s"
+startupServiceSyntaxError = "- Обнаружены ошибки конфигурации : %s"
+startupServicePortError = "- Порт %s используется другим приложением : %s."
+startupRefreshGitReposText = "Обновление Git-репозиториев"
+startupGenSslCrtText = "Генерация %s SSL-сертификата"
+
+; Action Quit
+exitLeavingText = "Покидаем %s"
+exitRemoveServiceText = "Удаление службы %s"
+exitStopOtherProcessText = "Остановка процессов сторонних приложений"
+
+; Action Change browser
+changeBrowserTitle = "Изменить браузер"
+changeBrowserExpLabel = "Выбрать браузер :"
+changeBrowserOtherLabel = "Другой :"
+changeBrowserOk = "Браузер успешно изменен на:@nl@%s"
+
+; Action About
+aboutTitle = "Информация..."
+aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@Bearsampp — это бесплатное программное обеспечение; вы можете распространять его и/или изменять@nl@в соответствии с условиями GNU LESSER GENERAL PUBLIC LICENSE."
+
+; Action Debug Apache
+debugApacheVersionNumber = "Номер версии"
+debugApacheCompileSettings = "Параметры компиляции"
+debugApacheCompiledModules = "Скомпилированные модули"
+debugApacheConfigDirectives = "Директивы конфигурации"
+debugApacheVhostsSettings = "Настройки виртуальных хостов"
+debugApacheLoadedModules = "Загруженные модули"
+debugApacheSyntaxCheck = "Проверка синтаксиса конфигурации"
+
+; Action Debug MySQL
+debugMysqlVersion = "Версия"
+debugMysqlVariables = "Переменные"
+debugMysqlSyntaxCheck = "Проверка синтаксиса конфигурации"
+
+; Action Debug MariaDB
+debugMariadbVersion = "Версия"
+debugMariadbVariables = "Переменные"
+debugMariadbSyntaxCheck = "Проверка синтаксиса конфигурации"
+
+; Action Debug PostgreSQL
+debugPostgresqlVersion = "Версия"
+
+; Action others...
+registrySetErrorText = "Неверное значение в регистре : %s"
+
+; Action check version
+checkVersionTitle = "Проверка версии"
+checkVersionAvailableText = "Доступна новая версия!"
+checkVersionChangelogText = "Перед обновлением, пожалуйста, прочитайте изменения : "
+checkVersionLatestText = "У вас установлена последняя версия Bearsampp..."
+
+; Action gen SSL certificate
+genSslTitle = "Генерация SSL-сертификата"
+genSslPath = "Выбор целевой папки :"
+genSslCreated = "SSL-сертификат '%s' успешно создан."
+genSslCreatedError = "Невозможно создать SSL-сертификат."
+
+; Action Restart
+restartTitle = "Перезапуск"
+restartText = "Пожалуйста, сделайте перезапуск %s, чтобы применить новые настройки..."
+
+; Action enable
+enableTitle = "Включить / Отключить %s"
+enableBundleNotExist = "%s не может быть включен, потому что пакет %s не существует в %s"
+
+; Windows forms
+buttonOk = "Ок"
+buttonDelete = "Удалить"
+buttonSave = "Сохранить"
+buttonFinish = "Завершить"
+buttonCancel = "Отмена"
+buttonNext = "Далее >"
+buttonBack = "< Назад"
+buttonBrowse = "Обзор..."
+loading = "Загрузка..."
+
+; Homepage
+homepageOfficialWebsite = "Официальный веб-сайт"
+homepageServiceStarted = "запущено на порту %s"
+homepageServiceStopped = "остановлено"
+homepageAboutHtml = "<div><strong>Bearsampp</strong> — это портативный стек программного обеспечения WAMP, включающий полезные исполняемые файлы, инструменты и приложения для вашей веб-разработки..<br/>Для тех, кто хочет внести свой вклад, у кого возникли проблемы или вопросы, прочитайте, пожалуйста <a target="_blank" href="http://bearsampp.com/documentation">Документацию</a>.<br/>Чтобы получать уведомления о новых релизах, вы можете поставить звезду <a target="_blank" href="%s">репозиторию на Github</a>.</div>"
+homepageLicenseText = "Bearsampp — это свободное программное обеспечение; вы можете распространять его и/или изменять на условиях Лицензии (GNU General Public License), опубликованной Фондом свободного программного обеспечения, либо версии 3 этой Лицензии, либо (по вашему выбору) любой более поздней версии."
+homepageQuestionsTitle = "Вопросы ?"
+homepageQuestionsText = "Если вы нашли какие-то проблемы или у вас есть идеи по развитию Bearsampp, просто создайте issue на GitHub!"
+homepagePostIssue = "Создать issue"
+homepagePhpinfoText = "Просмотр phpinfo()"
+homepageMailhogText = "Просмотр полученных эл. писем"
+homepageApcText = "APC Manager"
+homepageBackText = "Назад на домашнюю"
