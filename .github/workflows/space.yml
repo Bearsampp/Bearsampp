@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Clone JetBrains Space repository
         run: |
-          git clone https://your-company.jetbrains.space/git/your-project/sandbox sandbox
+          git clone https://git.jetbrains.space/bearsampp/main/sandbox.git sandbox
         env:
           SPACE_ACCESS_TOKEN: ${{ secrets.SPACE_ACCESS_TOKEN }}
 
