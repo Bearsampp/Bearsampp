@@ -24,7 +24,10 @@ jobs:
       - name: Rearrange files
         run: |
           mkdir -p base
-          rsync -av --exclude 'core/' sandbox/ base/
+          rsync -av --exclude 'core/' --exclude 'bearsampp.exe' --exclude 'favicon.ico' \
+                 --exclude 'core/resources/about.bmp' --exclude 'core/resources/bearsampp.bmp' \
+                 --exclude 'core/resources/bearsampp.ico' --exclude 'core/resources/icons/about.bmp' \
+                 --exclude 'core/resources/icons/app.ico' sandbox/ base/
           rsync -av sandbox/core/ core/
           rm -rf sandbox
 
