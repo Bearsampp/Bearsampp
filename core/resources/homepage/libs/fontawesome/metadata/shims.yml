@@ -168,7 +168,7 @@ eyedropper:
   name: eye-dropper
 fa:
   prefix: fab
-  name: fontawesome
+  name: font-awesome
 facebook:
   prefix: fab
   name: facebook-f
