@@ -1,6 +1,7 @@
 accessibility:
   icons:
     - accessible-icon
+    - address-card
     - audio-description
     - braille
     - circle-info
@@ -38,6 +39,7 @@ alert:
 alphabet:
   icons:
     - a
+    - address-card
     - b
     - c
     - circle-h
@@ -218,6 +220,7 @@ arrows:
   label: Arrows
 astronomy:
   icons:
+    - binoculars
     - globe
     - meteor
     - moon
@@ -506,6 +509,7 @@ charts-diagrams:
     - chart-line
     - chart-pie
     - chart-simple
+    - circle-half-stroke
     - diagram-next
     - diagram-predecessor
     - diagram-project
@@ -583,13 +587,15 @@ coding:
     - fire-extinguisher
     - folder
     - folder-open
-    - fontawesome
+    - font-awesome
+    - gear
     - gears
     - keyboard
     - laptop-code
     - microchip
     - mug-saucer
     - network-wired
+    - notdef
     - qrcode
     - rectangle-xmark
     - shield
@@ -597,6 +603,7 @@ coding:
     - sitemap
     - terminal
     - user-secret
+    - web-awesome
     - window-maximize
     - window-minimize
     - window-restore
@@ -663,6 +670,7 @@ connectivity:
     - cloud
     - cloud-arrow-down
     - cloud-arrow-up
+    - ethernet
     - globe
     - house-signal
     - rss
@@ -729,7 +737,7 @@ design:
     - fill
     - fill-drip
     - floppy-disk
-    - fontawesome
+    - font-awesome
     - highlighter
     - icons
     - layer-group
@@ -760,6 +768,7 @@ design:
     - vector-square
     - wand-magic
     - wand-magic-sparkles
+    - web-awesome
   label: Design
 devices-hardware:
   icons:
@@ -812,7 +821,7 @@ disaster:
     - biohazard
     - bugs
     - burst
-    - child-rifle
+    - child-combatant
     - circle-radiation
     - cloud-bolt
     - cloud-showers-heavy
@@ -866,6 +875,7 @@ editing:
     - ellipsis-vertical
     - eye-dropper
     - eye-slash
+    - gear
     - grip
     - grip-lines
     - grip-lines-vertical
@@ -1377,7 +1387,7 @@ humanitarian:
     - car
     - car-on
     - car-tunnel
-    - child-rifle
+    - child-combatant
     - children
     - church
     - circle-h
@@ -1779,6 +1789,7 @@ maps:
     - location-pin-lock
     - magnet
     - magnifying-glass
+    - magnifying-glass-location
     - magnifying-glass-minus
     - magnifying-glass-plus
     - map
@@ -1786,6 +1797,7 @@ maps:
     - martini-glass-empty
     - money-bill
     - money-bill-1
+    - monument
     - motorcycle
     - mountain-sun
     - mug-saucer
@@ -1982,6 +1994,8 @@ medical-health:
     - crutch
     - disease
     - dna
+    - droplet
+    - droplet-slash
     - eye
     - eye-dropper
     - file-medical
@@ -1991,6 +2005,7 @@ medical-health:
     - flask
     - flask-vial
     - hand-dots
+    - hand-holding-droplet
     - hand-holding-medical
     - head-side-cough
     - head-side-cough-slash
@@ -2054,6 +2069,7 @@ medical-health:
     - teeth-open
     - thermometer
     - tooth
+    - truck-droplet
     - truck-medical
     - user-doctor
     - user-nurse
@@ -2075,6 +2091,7 @@ money:
   icons:
     - austral-sign
     - baht-sign
+    - bangladeshi-taka-sign
     - bitcoin
     - bitcoin-sign
     - brazilian-real-sign
@@ -2189,6 +2206,7 @@ music-audio:
     - volume-low
     - volume-off
     - volume-xmark
+    - wave-square
   label: Music + Audio
 nature:
   icons:
@@ -2463,6 +2481,7 @@ shapes:
     - calendar
     - certificate
     - circle
+    - circle-half-stroke
     - cloud
     - clover
     - comment
@@ -2582,6 +2601,9 @@ social:
   label: Social
 spinners:
   icons:
+    - arrow-rotate-left
+    - arrow-rotate-right
+    - arrows-rotate
     - arrows-spin
     - asterisk
     - atom
@@ -2599,6 +2621,8 @@ spinners:
     - palette
     - ring
     - rotate
+    - rotate-left
+    - rotate-right
     - slash
     - snowflake
     - spinner
@@ -2677,7 +2701,9 @@ text-formatting:
     - superscript
     - table
     - table-cells
+    - table-cells-column-lock
     - table-cells-large
+    - table-cells-row-lock
     - table-columns
     - table-list
     - text-height
@@ -3032,6 +3058,7 @@ writing:
     - folder-open
     - keyboard
     - newspaper
+    - notdef
     - note-sticky
     - paper-plane
     - paperclip
