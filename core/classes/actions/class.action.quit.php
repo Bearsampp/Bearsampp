@@ -9,7 +9,7 @@ class ActionQuit
 
     public function __construct($args)
     {
-        global $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
+        global $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder, $arrayOfCurrents;
 
         // Start splash screen
         $this->splash = new Splash();
@@ -51,6 +51,9 @@ class ActionQuit
             $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::EXIT_REMOVE_SERVICE_TEXT), $name));
             $service->delete();
         }
+
+        // Purge "current" symlinks
+        Symlinks::deleteCurrentSymlinks();
 
         $this->splash->incrProgressBar();
         $this->splash->setTextLoading($bearsamppLang->getValue(Lang::EXIT_STOP_OTHER_PROCESS_TEXT));

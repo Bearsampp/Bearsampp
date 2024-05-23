@@ -2,5 +2,7 @@ $.ajaxSetup({
   type: "POST",
   cache: false,
   dataType: "json",
-  url: "9bc1e145ed65e1597936833dc199de04/ajax.php"
+  url: "1fd5bfc5c72323f1d019208088a6de21/ajax.php"
 });
+
+const ajax_url = "1fd5bfc5c72323f1d019208088a6de21/ajax.php"

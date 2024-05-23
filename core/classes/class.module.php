@@ -109,7 +109,7 @@ abstract class Module
 
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
         $version = $version == null ? $this->version : $version;
-        Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config...');
+        Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
     }
 
     public function __toString() {

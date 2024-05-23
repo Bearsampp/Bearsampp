@@ -28,7 +28,7 @@ class TplAppFilezilla
 
         // Download
         $resultItems .= TplAestan::getItemLink(
-        $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
+        $downloadTitle,
             Util::getWebsiteUrl('module/filezilla', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER

@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2022 - 2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 class Vbs
 {
@@ -240,7 +246,7 @@ class Vbs
         $content .= 'objShortCut.TargetPath = "' . $bearsamppRoot->getExeFilePath() . '"' . PHP_EOL;
         $content .= 'objShortCut.WorkingDirectory = "' . $bearsamppRoot->getRootPath() . '"' . PHP_EOL;
         $content .= 'objShortCut.Description = "' . APP_TITLE . ' ' . $bearsamppCore->getAppVersion() . '"' . PHP_EOL;
-        $content .= 'objShortCut.IconLocation = "' .  $bearsamppCore->getResourcesPath() . '/bearsampp.ico' . '"' . PHP_EOL;
+        $content .= 'objShortCut.IconLocation = "' .  $bearsamppCore->getResourcesPath() . '/homepage/img/icons/app.ico' . '"' . PHP_EOL;
         $content .= 'objShortCut.Save' . PHP_EOL;
         $content .= 'If Err.Number <> 0 Then' . PHP_EOL;
         $content .= '    objResultFile.Write Err.Number & ": " & Err.Description' . PHP_EOL;

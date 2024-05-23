@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2022 - 2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 $result = array(
     'status' => '',
@@ -34,9 +40,9 @@ $result['pearversion'] .= '<span class="float-right badge text-bg-primary">' . $
 // Extensions list
 foreach ($bearsamppBins->getPhp()->getExtensionsFromConf() as $extName => $extStatus) {
     if ($extStatus == ActionSwitchPhpExtension::SWITCH_ON) {
-        $result['extslist'] .= '<span class="span-grid col-xs-12 col-md-2"><i class="fa fa-check-square-o"></i> <strong>' . $extName . ' <sup>' . phpversion(substr($extName, 4)) . '</sup></strong></span>';
+        $result['extslist'] .= '<span class="span-grid col-xs-12 col-md-2"><i class="fa-regular fa-circle-check"></i> <strong>' . $extName . ' <sup>' . phpversion(substr($extName, 4)) . '</sup></strong></span>';
     } else {
-        $result['extslist'] .= '<span class="span-grid col-xs-12 col-md-2"><i class="fa fa-square-o"></i> ' . $extName . '</span>';
+        $result['extslist'] .= '<span class="span-grid col-xs-12 col-md-2"><i class="fa-regular fa-circle"></i> ' . $extName . '</span>';
     }
 }
 

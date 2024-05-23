@@ -1,7 +1,11 @@
 <?php
 
+/**
+ * Class Action handles the execution of various actions based on command line arguments.
+ */
 class Action
 {
+    // Constants for different actions
     const ABOUT = 'about';
     const ADD_ALIAS = 'addAlias';
     const ADD_VHOST = 'addVhost';
@@ -40,12 +44,22 @@ class Action
 
     const EXT = 'ext';
 
+    /**
+     * @var mixed Holds the current action instance.
+     */
     private $current;
 
+
+    /**
+     * Constructor for the Action class.
+     */
     public function __construct()
     {
     }
 
+    /**
+     * Processes the action based on command line arguments.
+     */
     public function process()
     {
         if ($this->exists()) {
@@ -67,6 +81,12 @@ class Action
         }
     }
 
+    /**
+     * Calls a specific action by name with optional arguments.
+     *
+     * @param string $actionName The name of the action to call.
+     * @param mixed $actionArgs Optional arguments for the action.
+     */
     public function call($actionName, $actionArgs = null)
     {
         $actionClass = 'Action' . ucfirst($actionName);
@@ -76,6 +96,11 @@ class Action
         }
     }
 
+    /**
+     * Checks if the action exists in the command line arguments.
+     *
+     * @return bool Returns true if the action exists, false otherwise.
+     */
     public function exists()
     {
         return isset($_SERVER['argv'])

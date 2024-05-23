@@ -1,5 +1,11 @@
 <?php
-
+/*
+ * Copyright (c) 2022 - 2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
+global $downloadTitle, $bearsamppBins;
 $result = array(
     'binapache' => '',
     'binfilezilla' => '',
@@ -12,7 +18,7 @@ $result = array(
     'binphp' => '',
 );
 
-$dlMoreTpl = '<a href="' . Util::getWebsiteUrl('module/%s', '#releases') . '" target="_blank" title="' . $bearsamppLang->getValue(Lang::DOWNLOAD_MORE) . '"><span class="float-end" style="margin-left:.5rem;"><i class="fa fa-download"></i></span></a>';
+$dlMoreTpl = '<a href="' . Util::getWebsiteUrl('module/%s', '#releases') . '" target="_blank" title="' . $downloadTitle . '"><span class="float-end" style="margin-left:.5rem;"><i class="fa-solid fa-cloud-arrow-down"></i></span></a>';
 
 // Bin Apache
 $apachePort = $bearsamppBins->getApache()->getPort();

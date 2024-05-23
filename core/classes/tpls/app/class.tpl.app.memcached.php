@@ -28,7 +28,7 @@ class TplAppMemcached
 
         // Download
         $resultItems .= TplAestan::getItemLink(
-            $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
+            $downloadTitle,
             Util::getWebsiteUrl('module/memcached', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER

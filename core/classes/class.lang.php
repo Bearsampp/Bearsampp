@@ -17,6 +17,7 @@ class Lang
     const CONSOLE = 'console';
     const DEBUG = 'debug';
     const DISABLED = 'disabled';
+    const DISCORD = 'discord';
     const DONATE = 'donate';
     const DONATE_VIA = 'donateVia';
     const DOWNLOAD = 'download';
@@ -25,6 +26,7 @@ class Lang
     const ERROR = 'error';
     const EXECUTABLE = 'executable';
     const EXTENSIONS = 'extensions';
+    const FACEBOOK = 'facebook';
     const GIT_CONSOLE = 'gitConsole';
     const GITGUI = 'gitGui';
     const GITHUB = 'github';

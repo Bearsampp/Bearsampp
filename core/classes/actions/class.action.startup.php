@@ -16,7 +16,7 @@ class ActionStartup
     public function __construct($args)
     {
         global $bearsamppRoot, $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
-        $this->writeLog('Starting ' . APP_TITLE . '...');
+        $this->writeLog('Starting ' . APP_TITLE);
 
         // Init
         $this->splash = new Splash();
@@ -227,7 +227,7 @@ class ActionStartup
 
         // Purge logs
         Util::clearFolders($bearsamppBins->getLogsPath());
-        Util::clearFolder($bearsamppRoot->getLogsPath(), array('archives'));
+        Util::clearFolder($bearsamppRoot->getLogsPath(), array('archives', '.gitignore'));
     }
 
     private function cleanTmpFolders()
@@ -238,8 +238,8 @@ class ActionStartup
         $this->splash->incrProgressBar();
 
         $this->writeLog('Clear tmp folders');
-        Util::clearFolder($bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'npm-cache', 'pip', 'yarn'));
-        Util::clearFolder($bearsamppCore->getTmpPath());
+        Util::clearFolder($bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'npm-cache', 'pip', 'yarn', '.gitignore'));
+        Util::clearFolder($bearsamppCore->getTmpPath(), array('.gitignore'));
     }
 
     private function cleanOldBehaviors()
@@ -512,9 +512,10 @@ class ActionStartup
 
     private function installServices()
     {
-        global $bearsamppLang, $bearsamppBins;
+        global $bearsamppLang, $bearsamppBins, $bearsamppRoot;
 
         if (!$this->restart) {
+
             foreach ($bearsamppBins->getServices() as $sName => $service) {
                 $serviceError = '';
                 $serviceRestart = false;
@@ -648,4 +649,5 @@ class ActionStartup
         global $bearsamppRoot;
         Util::logDebug($log, $bearsamppRoot->getStartupLogFilePath());
     }
+
 }

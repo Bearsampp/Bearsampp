@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2022 - 2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 class WinBinder
 {
@@ -83,8 +89,8 @@ class WinBinder
         $caption = empty($caption) ? $this->defaultTitle : $this->defaultTitle . ' - ' . $caption;
         $window = $this->callWinBinder('wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params));
 
-        // Set window icon
-        $this->setImage($window, $bearsamppCore->getResourcesPath() . '/bearsampp.ico');
+        // Set tiny window icon
+        // $this->setImage($window, $bearsamppCore->getResourcesPath() . '/img/icons/app.ico');
 
         return $window;
     }
@@ -404,8 +410,9 @@ class WinBinder
             $title == null ? $this->defaultTitle : $this->defaultTitle . ' - ' . $title, $type
         ));
 
-        // Set window icon
-        $this->setImage($messageBox, $bearsamppCore->getResourcesPath() . '/bearsampp.ico');
+        // TODO why does this create an error?
+        // Set tiny window icon
+        //$this->setImage($messageBox, $bearsamppCore->getResourcesPath() . '/img/icons/app.ico');
 
         return $messageBox;
     }

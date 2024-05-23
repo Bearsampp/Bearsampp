@@ -30,7 +30,7 @@ class TplAppMysql
 
         // Download
         $resultItems .= TplAestan::getItemLink(
-            $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
+            $downloadTitle,
             Util::getWebsiteUrl('module/mysql', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER

@@ -52,16 +52,26 @@ class Homepage
         return $bearsamppRoot->getLocalUrl($this->getPageQuery($query));
     }
 
-    public function getPath()
+    public function getHomepagePath()
     {
         global $bearsamppCore;
         return $bearsamppCore->getResourcesPath(false) . '/homepage';
     }
 
+    public function getImagesPath()
+    {
+        return $this->getResourcesPath(false) . '/img/';
+    }
+
+    public function getIconsPath()
+    {
+        return $this->getResourcesPath(false) . '/img/icons/';
+    }
+
     public function getResourcesPath()
     {
         global $bearsamppCore;
-        return md5(APP_TITLE . $bearsamppCore->getAppVersion());
+        return md5(APP_TITLE);
     }
 
     public function getResourcesUrl()
@@ -76,15 +86,16 @@ class Homepage
 
         $result = $bearsamppBins->getApache()->getAliasContent(
             $this->getResourcesPath(),
-            $this->getPath());
+            $this->getHomepagePath());
 
-        return file_put_contents($this->getPath() . '/alias.conf', $result) !== false;
+        return file_put_contents($this->getHomepagePath() . '/alias.conf', $result) !== false;
     }
 
     public function refreshCommonsJsContent()
     {
-        Util::replaceInFile($this->getPath() . '/js/_commons.js', array(
+        Util::replaceInFile($this->getHomepagePath() . '/js/_commons.js', array(
             '/^\s\surl:.*/' => '  url: "' . $this->getResourcesPath() . '/ajax.php"',
+            '/ajax_url.*=.*/' => 'const ajax_url = "' . $this->getResourcesPath() . '/ajax.php"',
         ));
     }
 }

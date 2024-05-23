@@ -1,9 +1,16 @@
 <?php
+/*
+ * Copyright (c) 2022 - 2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 class ActionLoading
 {
-    const WINDOW_WIDTH = 340;
-    const WINDOW_HEIGHT = 65;
+    /* This controls the progress bar window sizing */
+    const WINDOW_WIDTH = 360;
+    const WINDOW_HEIGHT = 90;
     const GAUGE = 20;
 
     private $wbWindow;
@@ -38,7 +45,7 @@ class ActionLoading
 
         for ($i = 0; $i < $nb; $i++) {
             $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
-            $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getResourcesPath() . '/bearsampp.bmp', 4, 2, 32, 32);
+            $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getResourcesPath() . '/homepage/img/bearsampp.bmp', 4, 2, 32, 32);
         }
 
         $bearsamppWinbinder->wait();
