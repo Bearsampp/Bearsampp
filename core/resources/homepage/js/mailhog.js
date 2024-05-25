@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
+
 /*$(document).ready(function() {
   if ($('a[name=mailhog]').length) {
     $.ajax({
@@ -14,7 +22,13 @@
     });
   }
 });*/
-
+/**
+ * Asynchronous function to fetch MailHog status using AJAX.
+ * It sends a POST request to the specified URL with 'proc' parameter as 'mailhog'.
+ * If the response is successful, it parses the JSON response and updates the DOM with the received data.
+ * It removes loader elements before inserting the data into the respective elements.
+ * This function is triggered when the document content is loaded and if there is an anchor element with name 'mailhog'.
+ */
 async function getMailHogStatus() {
   const url = ajax_url;
   let data = new URLSearchParams();
@@ -52,4 +66,3 @@ document.addEventListener("DOMContentLoaded", function() {
     getMailHogStatus();
   }
 })
-

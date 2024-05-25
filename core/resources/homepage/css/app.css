@@ -1,6 +1,7 @@
 /*
- * Copyright (c) 2022 - 2024 Bearsampp
+ * Copyright (c) 2021-2024 Bearsampp
  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
@@ -171,19 +172,9 @@ table.tablesorter thead tr th:hover {
 .section-header {
     margin-top: .8rem;
     }
-
-/* span padding */
-.span-grid {
-    padding: 3px;
-    }
-
 /* Card spacing */
 .card {
     margin-top: 1rem;
-    }
-
-.float-right {
-    float: right;
     }
 
 /* listing of extensions and modules */
@@ -194,6 +185,7 @@ table.tablesorter thead tr th:hover {
     }
 
 /* fix gap in module versions */
+.apache-version-list,
 .php-version-list,
 .mysql-version-list,
 .mariadb-version-list,
