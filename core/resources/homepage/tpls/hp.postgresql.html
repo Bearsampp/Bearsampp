@@ -1,24 +1,41 @@
-<a class="anchor" name="postgresql"></a>
-<div class="row-fluid">
-  <div class="col-lg-12">
-    <h1><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/postgresql.png'; ?>" /> <?php echo $bearsamppLang->getValue(Lang::POSTGRESQL); ?></h1>
-  </div>
+<!--
+  ~ Copyright (c) 2021-2024 Bearsampp
+  ~ License:  GNU General Public License version 3 or later; see LICENSE.txt
+  ~ Author: Bear
+  ~ Website: https://bearsampp.com
+  ~ Github: https://github.com/Bearsampp
+  -->
+
+<a class = "anchor" name = "postgresql"></a>
+<div class = "row-fluid">
+    <div class = "col-lg-12">
+        <?php
+            // Fetching the image path and label for PostgreSQL
+            $imagePath = htmlspecialchars($imagesPath . 'postgresql.png');
+            $postgresqlLabel = $bearsamppLang->getValue(Lang::POSTGRESQL);
+        ?>
+
+        <h1>
+            <img alt = "PostgresDB Logo" aria-hidden = "true" src = "<?php echo $imagePath; ?>">
+            <?php echo $postgresqlLabel; ?>
+        </h1>
+    </div>
 </div>
-<div class="row-fluid">
-  <div class="col-lg-6">
-    <div class="list-group">
-      <span class="list-group-item postgresql-checkport">
+<div class = "row-fluid">
+    <div class = "col-lg-6">
+        <div class = "list-group">
+      <span class = "list-group-item postgresql-checkport">
         <?php echo $getLoader; ?>
-        <i class="fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
+          <i class = "fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
       </span>
-      <span class="list-group-item postgresql-versions">
-              <span class="label-left col-1">
-                <i class="fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
+            <span class = "list-group-item postgresql-versions">
+              <span class = "label-left col-1">
+                <i class = "fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
               </span>
-              <span class="postgresql-version-list float-right col-11">
+              <span class = "postgresql-version-list float-end col-11">
                 <?php echo $getLoader; ?>
               </span>
       </span>
+        </div>
     </div>
-  </div>
 </div>

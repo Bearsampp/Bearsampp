@@ -1,5 +1,30 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class TplConsoleZ
+ *
+ * This class is responsible for generating and managing the configuration settings for ConsoleZ,
+ * a console emulator. It handles the creation of XML configuration files that define various
+ * aspects of the console's behavior, appearance, and functionality. The class utilizes constants
+ * to define default icon paths and employs static methods to construct the XML structure and write
+ * it to a configuration file.
+ *
+ * Usage:
+ * - The class is utilized by calling the `process()` method which orchestrates the generation of
+ *   the entire XML configuration and writes it to the appropriate file.
+ * - Individual sections of the configuration (console settings, appearance, behavior, etc.) are
+ *   handled by specific private static methods.
+ *
+ * Note:
+ * - This class is designed to be used without instantiating objects, hence the private constructor.
+ */
 class TplConsoleZ
 {
     const ICON_APP = 'app.ico';
@@ -16,10 +41,19 @@ class TplConsoleZ
     const ICON_PERL = 'perl.ico';
     const ICON_NGROK = 'ngrok.ico';
 
+    /**
+     * Private constructor to prevent instantiation of the class.
+     * This class is meant to be used statically.
+     */
     private function __construct()
     {
     }
 
+    /**
+     * Generates and writes the XML configuration for ConsoleZ.
+     * This method orchestrates the creation of the entire XML structure
+     * and writes it to the configuration file specified in the ConsoleZ tool settings.
+     */
     public static function process()
     {
         global $bearsamppTools;
@@ -35,6 +69,13 @@ class TplConsoleZ
         file_put_contents($bearsamppTools->getConsoleZ()->getConf(), $result);
     }
 
+    /**
+     * Constructs the console section of the XML configuration.
+     * This section includes settings related to the console's appearance and behavior,
+     * such as refresh rates, dimensions, and initial directory.
+     *
+     * @return string The XML string for the console section.
+     */
     private static function getConsoleSection()
     {
         global $bearsamppRoot, $bearsamppTools;
@@ -75,6 +116,13 @@ class TplConsoleZ
         return $sectionConsoleStart . $sectionColors . $sectionConsoleEnd;
     }
 
+    /**
+     * Constructs the console section of the XML configuration.
+     * This section includes settings related to the console's appearance and behavior,
+     * such as refresh rates, dimensions, and initial directory.
+     *
+     * @return string The XML string for the console section.
+     */
     private static function getAppearanceSection()
     {
         $sectionFont = self::getIncrStr(2) . '<font name="Courier New" size="10" bold="0" italic="0" smoothing="0">' . PHP_EOL .
@@ -132,6 +180,13 @@ class TplConsoleZ
             self::getIncrStr(1) . '</appearance>';
     }
 
+    /**
+     * Constructs the behavior section of the XML configuration.
+     * This section includes settings for copy-paste behavior, scroll behavior,
+     * and tab highlight behavior.
+     *
+     * @return string The XML string for the behavior section.
+     */
     private static function getBehaviorSection()
     {
         $sectionCopyPaste = self::getIncrStr(2) . '<copy_paste ' .
@@ -152,6 +207,13 @@ class TplConsoleZ
             self::getIncrStr(1) . '</behavior>';
     }
 
+    /**
+     * Constructs the hotkeys section of the XML configuration.
+     * This section defines various keyboard shortcuts for actions like opening new tabs,
+     * switching tabs, copying, pasting, and other commands.
+     *
+     * @return string The XML string for the hotkeys section.
+     */
     private static function getHotkeysSection()
     {
         return self::getIncrStr(1) . '<hotkeys use_scroll_lock="0">' . PHP_EOL .
@@ -199,6 +261,12 @@ class TplConsoleZ
             self::getIncrStr(1) . '</hotkeys>';
     }
 
+    /**
+     * Generates the XML configuration for the mouse actions in ConsoleZ.
+     * This includes defining actions like copy, paste, select, drag, and opening the menu.
+     *
+     * @return string The XML string configuration for mouse actions.
+     */
     private static function getMouseSection()
     {
         return self::getIncrStr(1) . '<mouse>' . PHP_EOL .
@@ -212,6 +280,12 @@ class TplConsoleZ
             self::getIncrStr(1) . '</mouse>';
     }
 
+    /**
+     * Generates the XML configuration for all the tabs in ConsoleZ.
+     * This includes tabs for CMD, PowerShell, Pear, MySQL, MariaDB, PostgreSQL, and others.
+     *
+     * @return string The XML string configuration for all tabs.
+     */
     private static function getTabsSection()
     {
         return self::getIncrStr(1) . '<tabs>' . PHP_EOL .
@@ -233,6 +307,12 @@ class TplConsoleZ
             self::getIncrStr(1) . '</tabs>';
     }
 
+    /**
+     * Generates the XML configuration for the CMD tab in ConsoleZ.
+     * Sets the default shell and root path for the CMD tab.
+     *
+     * @return string The XML string configuration for the CMD tab.
+     */
     private static function getTabCmdSection()
     {
         global $bearsamppRoot, $bearsamppTools;
@@ -245,6 +325,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the PowerShell tab in ConsoleZ.
+     * Sets the PowerShell path and root path for the PowerShell tab.
+     *
+     * @return string The XML string configuration for the PowerShell tab.
+     */
     private static function getTabPowerShellSection()
     {
         global $bearsamppRoot, $bearsamppTools;
@@ -262,6 +348,12 @@ class TplConsoleZ
         return "";
     }
 
+    /**
+     * Generates the XML configuration for the Pear tab in ConsoleZ.
+     * Sets the shell command for Pear and the path where Pear is located.
+     *
+     * @return string The XML string configuration for the Pear tab.
+     */
     private static function getTabPearSection()
     {
         global $bearsamppBins, $bearsamppTools;
@@ -279,6 +371,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the MySQL tab in ConsoleZ.
+     * Sets the shell command for MySQL CLI and the path where MySQL is located.
+     *
+     * @return string The XML string configuration for the MySQL tab.
+     */
     private static function getTabMysqlSection()
     {
         global $bearsamppBins, $bearsamppTools;
@@ -298,6 +396,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the MariaDB tab in ConsoleZ.
+     * This includes setting up the shell command for MariaDB and handling the case where the executable is not found.
+     *
+     * @return string The XML string configuration for the MariaDB tab.
+     */
     private static function getTabMariadbSection()
     {
         global $bearsamppBins, $bearsamppTools;
@@ -317,6 +421,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the PostgreSQL tab in ConsoleZ.
+     * This includes setting up the shell command for PostgreSQL and handling the case where the executable is not found.
+     *
+     * @return string The XML string configuration for the PostgreSQL tab.
+     */
     private static function getTabPostgresqlSection()
     {
         global $bearsamppBins, $bearsamppTools;
@@ -338,6 +448,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the Git tab in ConsoleZ.
+     * This includes setting up the shell command for Git and handling the case where the executable is not found.
+     *
+     * @return string The XML string configuration for the Git tab.
+     */
         private static function getTabGitSection()
     {
         global $bearsamppRoot, $bearsamppTools;
@@ -355,6 +471,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the Node.js tab in ConsoleZ.
+     * This includes setting up the shell command for Node.js and handling the case where the executable is not found.
+     *
+     * @return string The XML string configuration for the Node.js tab.
+     */
     private static function getTabNodejsSection()
     {
         global $bearsamppRoot, $bearsamppBins, $bearsamppTools;
@@ -372,6 +494,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the Composer tab in ConsoleZ.
+     * This includes setting up the shell command for Composer and handling the case where the executable is not found.
+     *
+     * @return string The XML string configuration for the Composer tab.
+     */
     private static function getTabComposerSection()
     {
         global $bearsamppRoot, $bearsamppTools;
@@ -389,6 +517,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the Python tab in ConsoleZ.
+     * This includes setting up the shell command for Python and handling the case where the executable is not found.
+     *
+     * @return string The XML string configuration for the Python tab.
+     */
     private static function getTabPythonSection()
     {
         global $bearsamppRoot, $bearsamppTools;
@@ -406,6 +540,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the Ruby tab in ConsoleZ.
+     * This includes setting up the shell command for Ruby and handling the case where the executable is not found.
+     *
+     * @return string The XML string configuration for the Ruby tab.
+     */
     private static function getTabRubySection()
     {
         global $bearsamppRoot, $bearsamppTools;
@@ -423,6 +563,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the Yarn tab in ConsoleZ.
+     * This includes setting up the shell command for Yarn and handling the case where the executable is not found.
+     *
+     * @return string The XML string configuration for the Yarn tab.
+     */
     private static function getTabYarnSection()
     {
         global $bearsamppRoot, $bearsamppTools;
@@ -440,6 +586,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the Ghostscript tab in ConsoleZ.
+     * This includes setting up the shell command for Ghostscript and handling the case where the executable is not found.
+     *
+     * @return string The XML string configuration for the Ghostscript tab.
+     */
     private static function getTabPerlSection()
     {
         global $bearsamppRoot, $bearsamppTools;
@@ -457,6 +609,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the Ngrok tab in ConsoleZ.
+     * This includes setting up the shell command for Ngrok and handling the case where the executable is not found.
+     *
+     * @return string The XML string configuration for the Ngrok tab.
+     */
     private static function getTabGhostscriptSection()
     {
         global $bearsamppRoot, $bearsamppTools;
@@ -474,6 +632,12 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the XML configuration for the Ngrok tab in ConsoleZ.
+     * This includes setting up the shell command for Ngrok and handling the case where the executable is not found.
+     *
+     * @return string The XML string configuration for the Ngrok tab.
+     */
     private static function getTabNgrokSection()
     {
         global $bearsamppRoot, $bearsamppTools;
@@ -491,6 +655,16 @@ class TplConsoleZ
         ) . PHP_EOL;
     }
 
+    /**
+     * Constructs an XML string for a tab configuration in ConsoleZ.
+     * This includes settings for the console, cursor, and background.
+     *
+     * @param string $title The title of the tab.
+     * @param string $icon The path to the icon for the tab.
+     * @param string $shell The shell command to execute in the console.
+     * @param string $initDir The initial directory for the console.
+     * @return string The constructed XML string for the tab.
+     */
     private static function getTab($title, $icon, $shell, $initDir)
     {
         global $bearsamppCore;
@@ -505,6 +679,13 @@ class TplConsoleZ
             self::getIncrStr(2) . '</tab>';
     }
 
+    /**
+     * Generates a string of tab characters to indent XML elements.
+     * The number of tabs is determined by the input size.
+     *
+     * @param int $size The number of tabs to generate.
+     * @return string A string containing the specified number of tab characters.
+     */
     private static function getIncrStr($size = 1)
     {
         $result = '';

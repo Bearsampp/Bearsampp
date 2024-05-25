@@ -1,5 +1,43 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class BinMariadb
+ * Extends the Module class to manage the MariaDB service within the Bearsampp environment.
+ * This class handles the configuration, management, and operations specific to the MariaDB service.
+ *
+ * Constants:
+ * - SERVICE_NAME: Defines the service name for MariaDB.
+ * - ROOT_CFG_ENABLE: Configuration key for enabling MariaDB.
+ * - ROOT_CFG_VERSION: Configuration key for the MariaDB version.
+ * - LOCAL_CFG_EXE: Configuration key for the executable path of MariaDB.
+ * - LOCAL_CFG_CLI_EXE: Configuration key for the command line interface executable path of MariaDB.
+ * - LOCAL_CFG_ADMIN: Configuration key for the admin executable path of MariaDB.
+ * - LOCAL_CFG_CONF: Configuration key for the configuration file path of MariaDB.
+ * - LOCAL_CFG_PORT: Configuration key for the port on which MariaDB runs.
+ * - LOCAL_CFG_ROOT_USER: Configuration key for the root username of MariaDB.
+ * - LOCAL_CFG_ROOT_PWD: Configuration key for the root password of MariaDB.
+ * - CMD_VERSION: Command line argument to get the version of MariaDB.
+ * - CMD_VARIABLES: Command line argument to get the variables from MariaDB.
+ * - CMD_SYNTAX_CHECK: Command line argument to check the syntax of the MariaDB configuration.
+ *
+ * Properties:
+ * - $service: Holds the instance of the service management utility.
+ * - $errorLog: Path to the error log file.
+ * - $exe: Path to the MariaDB executable.
+ * - $conf: Path to the MariaDB configuration file.
+ * - $port: Port number on which MariaDB is configured to run.
+ * - $rootUser: Username for the root user of MariaDB.
+ * - $rootPwd: Password for the root user of MariaDB.
+ * - $cliExe: Path to the command line interface executable of MariaDB.
+ * - $admin: Path to the admin executable of MariaDB.
+ */
 class BinMariadb extends Module
 {
     const SERVICE_NAME = 'bearsamppmariadb';
@@ -30,11 +68,29 @@ class BinMariadb extends Module
     private $cliExe;
     private $admin;
 
+    /**
+     * Constructor for the BinMariadb class.
+     * Initializes a new instance of the BinMariadb class, setting up the necessary properties and reloading configuration based on the provided identifiers.
+     *
+     * @param string $id The identifier for the specific instance of MariaDB.
+     * @param string $type The type of module, used to categorize this instance within the system.
+     */
     public function __construct($id, $type) {
         Util::logInitClass($this);
         $this->reload($id, $type);
     }
 
+    /**
+     * Reloads the configuration and updates the properties of the MariaDB instance.
+     * This method sets up the MariaDB service, checks the existence of necessary files and directories,
+     * and initializes the service settings.
+     *
+     * @param string|null $id Optional. The identifier for the specific instance of MariaDB.
+     * @param string|null $type Optional. The type of module, used to categorize this instance within the system.
+     * @global Root $bearsamppRoot Global instance for accessing the application's root functionalities.
+     * @global Config $bearsamppConfig Global configuration handler.
+     * @global LangProc $bearsamppLang Language processor for retrieving language-specific values.
+     */
     public function reload($id = null, $type = null) {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
@@ -105,6 +161,12 @@ class BinMariadb extends Module
         $this->service->setErrorControl(Win32Service::SERVER_ERROR_NORMAL);
     }
 
+    /**
+     * Replaces all specified parameters in the MariaDB configuration file.
+     * Updates the internal configuration array after modifying the file.
+     *
+     * @param array $params Associative array of parameters where key is the configuration key and value is the new value to set.
+     */
     protected function replaceAll($params) {
         $content = file_get_contents($this->bearsamppConf);
 
@@ -127,6 +189,16 @@ class BinMariadb extends Module
         file_put_contents($this->bearsamppConf, $content);
     }
 
+    /**
+     * Changes the port on which MariaDB is running. It checks if the new port is valid and not in use,
+     * updates the configuration, and applies the changes.
+     *
+     * @param int $port The new port number to set for MariaDB.
+     * @param bool $checkUsed Optional. Whether to check if the port is already in use. Defaults to false.
+     * @param mixed $wbProgressBar Optional. Progress bar object to update the UI during the process.
+     * @return bool True if the port was successfully changed, false otherwise.
+     * @global WinBinder $bearsamppWinbinder Global instance for handling WinBinder operations.
+     */
     public function changePort($port, $checkUsed = false, $wbProgressBar = null) {
         global $bearsamppWinbinder;
 
@@ -154,7 +226,16 @@ class BinMariadb extends Module
         Util::logDebug($this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse);
         return $isPortInUse;
     }
-
+    /**
+     * Checks if the specified port is being used by MariaDB or another application.
+     * Provides detailed information about the usage of the port.
+     *
+     * @param int $port The port number to check.
+     * @param bool $showWindow Optional. Whether to show a message box with the result. Defaults to false.
+     * @return bool True if the port is used by MariaDB, false if it's used by another application or not at all.
+     * @global LangProc $bearsamppLang Language processor for retrieving language-specific values.
+     * @global WinBinder $bearsamppWinbinder Global instance for handling WinBinder operations.
+     */
     public function checkPort($port, $showWindow = false) {
         global $bearsamppLang, $bearsamppWinbinder;
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
@@ -231,6 +312,16 @@ class BinMariadb extends Module
         return false;
     }
 
+    /**
+     * Changes the root password for MariaDB. Connects to the database to update the password,
+     * and updates the configuration file if the password change is successful.
+     *
+     * @param string $currentPwd The current root password.
+     * @param string $newPwd The new root password to set.
+     * @param mixed $wbProgressBar Optional. Progress bar object to update the UI during the process.
+     * @return mixed True if the password was successfully changed, an error message string otherwise.
+     * @global WinBinder $bearsamppWinbinder Global instance for handling WinBinder operations.
+     */
     public function changeRootPassword($currentPwd, $newPwd, $wbProgressBar = null) {
         global $bearsamppWinbinder;
         $error = null;
@@ -291,6 +382,14 @@ class BinMariadb extends Module
         return true;
     }
 
+    /**
+     * Checks if the provided root password can connect to the MariaDB database.
+     * If no password is provided, it uses the default root password from the class property.
+     *
+     * @param string|null $currentPwd The current root password to check. If null, uses the stored root password.
+     * @param mixed $wbProgressBar Optional progress bar object to update UI progress.
+     * @return mixed Returns true if the connection is successful, otherwise returns the error message.
+     */
     public function checkRootPassword($currentPwd = null, $wbProgressBar = null) {
         global $bearsamppWinbinder;
         $currentPwd = $currentPwd == null ? $this->rootPwd : $currentPwd;
@@ -318,11 +417,28 @@ class BinMariadb extends Module
         return true;
     }
 
+    /**
+     * Switches the MariaDB version to the specified version.
+     * This method updates the configuration to reflect the new version and handles UI updates if specified.
+     *
+     * @param string $version The new version to switch to.
+     * @param bool $showWindow Optional. If true, shows a window with the update process. Defaults to false.
+     * @return bool Returns true if the switch is successful, false otherwise.
+     */
     public function switchVersion($version, $showWindow = false) {
         Util::logDebug('Switch ' . $this->name . ' version to ' . $version);
         return $this->updateConfig($version, 0, $showWindow);
     }
 
+    /**
+     * Updates the configuration settings for the MariaDB instance to a new version.
+     * This involves updating paths in the configuration files and ensuring the new version's configuration is valid.
+     *
+     * @param string|null $version The new version to update the configuration to. If null, uses the current version.
+     * @param int $sub Level of indentation for logging, used for better readability in nested updates.
+     * @param bool $showWindow If true, displays a window with error messages during the update process.
+     * @return bool Returns true if the configuration update is successful, false if there are errors.
+     */
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
         global $bearsamppLang, $bearsamppApps, $bearsamppWinbinder;
 
@@ -377,7 +493,13 @@ class BinMariadb extends Module
 
         return true;
     }
-
+    /**
+     * Executes a command line operation for MariaDB and captures the output.
+     * This method is used to run MariaDB-specific commands and fetch their output for further processing.
+     *
+     * @param string $cmd The command to execute. This could be a version check, syntax check, or other MariaDB commands.
+     * @return array Returns an array with 'syntaxOk' indicating if the command was successful, and 'content' containing the command output.
+     */
     public function getCmdLineOutput($cmd) {
         $result = array(
             'syntaxOk' => false,
@@ -412,6 +534,12 @@ class BinMariadb extends Module
         return $result;
     }
 
+    /**
+     * Sets the version of MariaDB to be used.
+     * This method updates the configuration to reflect the specified version and reloads the module to apply changes.
+     *
+     * @param string $version The version to set.
+     */
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
@@ -419,11 +547,24 @@ class BinMariadb extends Module
         $this->reload();
     }
 
+    /**
+     * Retrieves the service management instance for MariaDB.
+     * This service instance can be used to control the MariaDB service, such as starting or stopping it.
+     *
+     * @return Win32Service Returns the service management instance.
+     */
     public function getService()
     {
         return $this->service;
     }
 
+    /**
+     * Sets the enable status of the module and optionally displays an error message if the module cannot be enabled.
+     *
+     * @param int $enabled The desired state of the module, where Config::ENABLED indicates enabling the module.
+     * @param bool $showWindow Whether to display an error message window if the module cannot be enabled.
+     * @return void
+     */
     public function setEnable($enabled, $showWindow = false) {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
@@ -450,46 +591,105 @@ class BinMariadb extends Module
         }
     }
 
+
+    /**
+     * Retrieves the error log path for the module.
+     *
+     * @return string The path to the error log file.
+     */
     public function getErrorLog() {
         return $this->errorLog;
     }
 
+    /**
+     * Retrieves the executable path for the module.
+     *
+     * @return string The path to the executable file.
+     */
     public function getExe() {
         return $this->exe;
     }
 
+    /**
+     * Retrieves the configuration file path for the module.
+     *
+     * @return string The path to the configuration file.
+     */
     public function getConf() {
         return $this->conf;
     }
 
+    /**
+     * Retrieves the port number used by the module.
+     *
+     * @return int The port number.
+     */
     public function getPort() {
         return $this->port;
     }
 
+    /**
+     * Sets the port number for the module.
+     *
+     * @param int $port The new port number to be set.
+     * @return void
+     */
     public function setPort($port) {
         $this->replace(self::LOCAL_CFG_PORT, $port);
     }
 
+    /**
+     * Retrieves the root user name for the module.
+     *
+     * @return string The root user name.
+     */
     public function getRootUser() {
         return $this->rootUser;
     }
 
+    /**
+     * Sets the root user name for the module.
+     *
+     * @param string $rootUser The new root user name to be set.
+     * @return void
+     */
     public function setRootUser($rootUser) {
         $this->replace(self::LOCAL_CFG_ROOT_USER, $rootUser);
     }
 
+    /**
+     * Retrieves the root password for the module.
+     *
+     * @return string The root password.
+     */
     public function getRootPwd() {
         return $this->rootPwd;
     }
 
+    /**
+     * Sets the root password for the module.
+     *
+     * @param string $rootPwd The new root password to be set.
+     * @return void
+     */
     public function setRootPwd($rootPwd) {
         $this->replace(self::LOCAL_CFG_ROOT_PWD, $rootPwd);
     }
 
+    /**
+     * Retrieves the command-line executable path for the module.
+     *
+     * @return string The path to the command-line executable.
+     */
     public function getCliExe() {
         return $this->cliExe;
     }
 
+    /**
+     * Retrieves the administration settings for the module.
+     *
+     * @return mixed The administration settings.
+     */
     public function getAdmin() {
         return $this->admin;
     }

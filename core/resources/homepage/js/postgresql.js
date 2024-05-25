@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
+
 /*$(document).ready(function() {
   if ($('a[name=postgresql]').length) {
     $.ajax({
@@ -14,7 +22,13 @@
     });
   }
 });*/
-
+/**
+ * Asynchronous function to fetch PostgreSQL status using AJAX.
+ * It sends a POST request to the specified URL with process 'postgresql'.
+ * If successful, it parses the response as JSON and updates the DOM with the received data.
+ * If there is an error in fetching or parsing the response, appropriate error messages are logged.
+ * This function is triggered on DOMContentLoaded event if an anchor tag with name 'postgresql' is present.
+ */
 async function getPostgresStatus() {
   const url = ajax_url;
   const proc = 'postgresql';

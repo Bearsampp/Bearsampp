@@ -1,5 +1,25 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class TplAppNodejs
+ *
+ * This class provides methods to generate menu items and actions related to the Node.js module in the Bearsampp application.
+ * It handles enabling/disabling Node.js, switching between different Node.js versions, and provides quick access to Node.js configuration and console.
+ *
+ * Methods:
+ * - process(): Main method to generate the Node.js menu item with enable/disable functionality based on current status.
+ * - getMenuNodejs(): Generates the submenu items for Node.js including options to download, enable/disable, switch versions, access the console, and edit the configuration file.
+ * - getMenuNodejsVersions(): Generates the submenu items for switching between different Node.js versions.
+ * - getActionEnableNodejs($enable): Returns the action string to enable or disable Node.js.
+ * - getActionSwitchNodejsVersion($version): Returns the action string to switch to a specific Node.js version.
+ */
 class TplAppNodejs
 {
     const MENU = 'nodejs';
@@ -8,6 +28,14 @@ class TplAppNodejs
     const ACTION_ENABLE = 'enableNodejs';
     const ACTION_SWITCH_VERSION = 'switchNodejsVersion';
 
+    /**
+     * Main processing method for the Node.js menu.
+     * This method constructs the menu item for Node.js in the application's UI, enabling or disabling it based on its current state.
+     *
+     * @global object $bearsamppLang Language handler object to fetch localized strings.
+     * @global object $bearsamppBins Binaries handler object to check if Node.js is enabled.
+     * @return string Returns the menu item for Node.js, formatted as a string.
+     */
     public static function process()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -15,6 +43,15 @@ class TplAppNodejs
         return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::NODEJS), self::MENU, get_called_class(), $bearsamppBins->getNodejs()->isEnable());
     }
 
+    /**
+     * Constructs the Node.js menu including options like download, enable/disable, versions, console, and configuration.
+     * This method dynamically builds the Node.js menu based on whether Node.js is enabled or disabled.
+     *
+     * @global object $bearsamppBins Binaries handler object to access Node.js functionalities.
+     * @global object $bearsamppLang Language handler object to fetch localized strings.
+     * @global object $bearsamppTools Tools handler object to access tool-specific functionalities.
+     * @return string Returns the complete Node.js menu as a string.
+     */
     public static function getMenuNodejs()
     {
         global $bearsamppBins, $bearsamppLang, $bearsamppTools;
@@ -24,7 +61,7 @@ class TplAppNodejs
 
         // Download
         $resultItems .= TplAestan::getItemLink(
-        $downloadTitle,
+        $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
             Util::getWebsiteUrl('module/nodejs', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
@@ -61,6 +98,13 @@ class TplAppNodejs
         return $resultItems . PHP_EOL . $resultActions;
     }
 
+    /**
+     * Constructs the submenu for switching between different Node.js versions.
+     * This method lists all available Node.js versions and allows the user to switch between them.
+     *
+     * @global object $bearsamppBins Binaries handler object to access Node.js functionalities.
+     * @return string Returns the submenu for Node.js versions, formatted as a string.
+     */
     public static function getMenuNodejsVersions()
     {
         global $bearsamppBins;
@@ -84,6 +128,14 @@ class TplAppNodejs
         return $items . $actions;
     }
 
+    /**
+     * Constructs the action to enable or disable Node.js.
+     * This method generates the command to toggle the enabled state of Node.js and triggers a UI reload.
+     *
+     * @param bool $enable Specifies whether to enable (true) or disable (false) Node.js.
+     * @global object $bearsamppBins Binaries handler object to access Node.js functionalities.
+     * @return string Returns the action command to enable/disable Node.js.
+     */
     public static function getActionEnableNodejs($enable)
     {
         global $bearsamppBins;
@@ -92,6 +144,14 @@ class TplAppNodejs
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Constructs the action to switch to a specific Node.js version.
+     * This method generates the command to change the Node.js version and triggers a UI reload.
+     *
+     * @param string $version The version of Node.js to switch to.
+     * @global object $bearsamppBins Binaries handler object to access Node.js functionalities.
+     * @return string Returns the action command to switch Node.js versions.
+     */
     public static function getActionSwitchNodejsVersion($version)
     {
         global $bearsamppBins;

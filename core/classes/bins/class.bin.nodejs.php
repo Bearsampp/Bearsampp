@@ -1,27 +1,78 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Manages the Node.js binary module within the Bearsampp environment.
+ *
+ * This class extends the Module class and provides specific functionalities
+ * for managing Node.js, including configuration loading, version switching,
+ * and enabling/disabling the module.
+ */
 class BinNodejs extends Module
 {
+    /**
+     * Configuration keys for root settings specific to Node.js.
+     */
     const ROOT_CFG_ENABLE = 'nodejsEnable';
     const ROOT_CFG_VERSION = 'nodejsVersion';
 
+    /**
+     * Configuration keys for local settings specific to Node.js.
+     */
     const LOCAL_CFG_EXE = 'nodejsExe';
     const LOCAL_CFG_VARS = 'nodejsVars';
     const LOCAL_CFG_NPM = 'nodejsNpm';
     const LOCAL_CFG_LAUNCH = 'nodejsLaunch';
     const LOCAL_CFG_CONF = 'nodejsConf';
 
+    /**
+     * Path to the Node.js executable.
+     */
     private $exe;
+
+    /**
+     * Path to the Node.js configuration file.
+     */
     private $conf;
+
+    /**
+     * Path to the Node.js environment variables.
+     */
     private $vars;
+
+    /**
+     * Path to the npm executable.
+     */
     private $npm;
+
+    /**
+     * Path to the launch script for Node.js.
+     */
     private $launch;
 
+    /**
+     * Constructor for the BinNodejs class.
+     *
+     * @param string $id The identifier for the module.
+     * @param string $type The type of the module.
+     */
     public function __construct($id, $type) {
         Util::logInitClass($this);
         $this->reload($id, $type);
     }
 
+    /**
+     * Reloads the configuration and updates paths based on the current settings.
+     *
+     * @param string|null $id Optional. The new identifier for the module.
+     * @param string|null $type Optional. The new type of the module.
+     */
     public function reload($id = null, $type = null) {
         global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
@@ -73,11 +124,26 @@ class BinNodejs extends Module
         }
     }
 
+    /**
+     * Switches the version of Node.js being used.
+     *
+     * @param string $version The version to switch to.
+     * @param bool $showWindow Whether to show a window with the result.
+     * @return bool Returns true if the switch was successful, false otherwise.
+     */
     public function switchVersion($version, $showWindow = false) {
         Util::logDebug('Switch ' . $this->name . ' version to ' . $version);
         return $this->updateConfig($version, 0, $showWindow);
     }
 
+    /**
+     * Updates the configuration for the specified version.
+     *
+     * @param string|null $version The version to update the configuration for.
+     * @param int $sub Level of sub-processing.
+     * @param bool $showWindow Whether to show a window with the result.
+     * @return bool Returns true if the update was successful, false otherwise.
+     */
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
         global $bearsamppLang, $bearsamppWinbinder;
 
@@ -122,6 +188,11 @@ class BinNodejs extends Module
         return true;
     }
 
+    /**
+     * Sets the version of Node.js.
+     *
+     * @param string $version The version to set.
+     */
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
@@ -129,6 +200,12 @@ class BinNodejs extends Module
         $this->reload();
     }
 
+    /**
+     * Enables or disables the Node.js module.
+     *
+     * @param bool $enabled Whether to enable or disable the module.
+     * @param bool $showWindow Whether to show a window with the result.
+     */
     public function setEnable($enabled, $showWindow = false) {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
@@ -148,22 +225,47 @@ class BinNodejs extends Module
         $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
     }
 
+    /**
+     * Gets the path to the Node.js executable.
+     *
+     * @return string The path to the executable.
+     */
     public function getExe() {
         return $this->exe;
     }
 
+    /**
+     * Gets the path to the Node.js configuration file.
+     *
+     * @return string The path to the configuration file.
+     */
     public function getConf() {
         return $this->conf;
     }
 
+    /**
+     * Gets the path to the Node.js environment variables.
+     *
+     * @return string The path to the environment variables.
+     */
     public function getVars() {
         return $this->vars;
     }
 
+    /**
+     * Gets the path to the npm executable.
+     *
+     * @return string The path to the npm executable.
+     */
     public function getNpm() {
         return $this->npm;
     }
 
+    /**
+     * Gets the path to the launch script for Node.js.
+     *
+     * @return string The path to the launch script.
+     */
     public function getLaunch() {
         return $this->launch;
     }

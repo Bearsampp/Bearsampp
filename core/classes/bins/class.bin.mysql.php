@@ -1,5 +1,18 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Represents the MySQL module in the Bearsampp application.
+ * This class manages MySQL service operations including initialization, configuration updates,
+ * version switching, and port management. It extends the Module class, inheriting its basic properties
+ * and functionalities.
+ */
 class BinMysql extends Module
 {
     const SERVICE_NAME = 'bearsamppmysql';
@@ -19,22 +32,70 @@ class BinMysql extends Module
     const CMD_VARIABLES = 'variables';
     const CMD_SYNTAX_CHECK = '--help --verbose 1>NUL';
 
+    /**
+     * @var Win32Service The service handler for MySQL.
+     */
     private $service;
+
+    /**
+     * @var string Path to the error log file.
+     */
     private $errorLog;
 
+    /**
+     * @var string Path to the MySQL executable.
+     */
     private $exe;
+
+    /**
+     * @var string Path to the MySQL configuration file.
+     */
     private $conf;
+
+    /**
+     * @var int MySQL port number.
+     */
     private $port;
+
+    /**
+     * @var string MySQL root username.
+     */
     private $rootUser;
+
+    /**
+     * @var string MySQL root password.
+     */
     private $rootPwd;
+
+    /**
+     * @var string Path to the MySQL CLI executable.
+     */
     private $cliExe;
+
+    /**
+     * @var string Path to the MySQL admin executable.
+     */
     private $admin;
 
+    /**
+     * Constructor for the MySQL module.
+     * Initializes the module by loading its configuration and setting up the service.
+     *
+     * @param string $id The identifier for the module.
+     * @param string $type The type of the module.
+     */
     public function __construct($id, $type) {
         Util::logInitClass($this);
         $this->reload($id, $type);
     }
 
+    /**
+     * Reloads the configuration and updates the service settings.
+     * This method is typically called after changes in configuration to reinitialize the module.
+     *
+     * @param string|null $id Optional. The new identifier for the module.
+     * @param string|null $type Optional. The new type of the module.
+     */
     public function reload($id = null, $type = null) {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
@@ -105,6 +166,11 @@ class BinMysql extends Module
         $this->service->setErrorControl(Win32Service::SERVER_ERROR_NORMAL);
     }
 
+    /**
+     * Replaces all specified configuration parameters in the MySQL configuration file.
+     *
+     * @param array $params Associative array of configuration parameters and their new values.
+     */
     protected function replaceAll($params) {
         $content = file_get_contents($this->bearsamppConf);
 
@@ -127,6 +193,15 @@ class BinMysql extends Module
         file_put_contents($this->bearsamppConf, $content);
     }
 
+    /**
+     * Changes the MySQL port.
+     * This method checks if the new port is valid and not in use before applying the change.
+     *
+     * @param int $port The new port number.
+     * @param bool $checkUsed Optional. Whether to check if the port is already in use.
+     * @param mixed $wbProgressBar Optional. Progress bar object from Winbinder.
+     * @return mixed Returns true if the port was successfully changed, an error message if the port is in use, or false if the port is invalid.
+     */
     public function changePort($port, $checkUsed = false, $wbProgressBar = null) {
         global $bearsamppWinbinder;
 
@@ -155,6 +230,14 @@ class BinMysql extends Module
         return $isPortInUse;
     }
 
+    /**
+     * Checks if a specific port is open and if it is being used by MySQL.
+     * Optionally displays a message box with the check result.
+     *
+     * @param int $port The port to check.
+     * @param bool $showWindow Optional. Whether to show a message box with the result.
+     * @return bool Returns true if the port is used by MySQL, false otherwise.
+     */
     public function checkPort($port, $showWindow = false) {
         global $bearsamppLang, $bearsamppWinbinder;
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
@@ -231,6 +314,15 @@ class BinMysql extends Module
         return false;
     }
 
+    /**
+     * Changes the root password for MySQL.
+     * This method connects to the MySQL server, updates the password, and flushes privileges.
+     *
+     * @param string $currentPwd The current root password.
+     * @param string $newPwd The new root password to set.
+     * @param mixed $wbProgressBar Optional. Progress bar object from Winbinder.
+     * @return mixed Returns true on success, or an error message on failure.
+     */
     public function changeRootPassword($currentPwd, $newPwd, $wbProgressBar = null) {
         global $bearsamppWinbinder;
         $error = null;
@@ -291,6 +383,13 @@ class BinMysql extends Module
         return true;
     }
 
+    /**
+     * Checks if the specified root password is correct by attempting to connect to the MySQL server.
+     *
+     * @param string|null $currentPwd Optional. The root password to check. If not provided, uses the stored root password.
+     * @param mixed $wbProgressBar Optional. Progress bar object from Winbinder.
+     * @return mixed Returns true if the password is correct, or an error message if incorrect.
+     */
     public function checkRootPassword($currentPwd = null, $wbProgressBar = null) {
         global $bearsamppWinbinder;
         $currentPwd = $currentPwd == null ? $this->rootPwd : $currentPwd;
@@ -318,11 +417,28 @@ class BinMysql extends Module
         return true;
     }
 
+    /**
+     * Switches the MySQL version by updating the configuration to point to the binaries of the specified version.
+     * Optionally displays a message box with the result.
+     *
+     * @param string $version The version to switch to.
+     * @param bool $showWindow Optional. Whether to show a message box with the result.
+     * @return bool Returns true if the switch was successful, false otherwise.
+     */
     public function switchVersion($version, $showWindow = false) {
         Util::logDebug('Switch ' . $this->name . ' version to ' . $version);
         return $this->updateConfig($version, 0, $showWindow);
     }
 
+    /**
+     * Updates the MySQL configuration based on the specified version.
+     * This method is called internally by switchVersion().
+     *
+     * @param string|null $version Optional. The version to update the configuration for. If not provided, uses the current version.
+     * @param int $sub Optional. Sub-level for logging purposes.
+     * @param bool $showWindow Optional. Whether to show a message box with the result.
+     * @return bool Returns true if the update was successful, false otherwise.
+     */
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
         global $bearsamppLang, $bearsamppBins, $bearsamppApps, $bearsamppWinbinder;
 
@@ -386,6 +502,12 @@ class BinMysql extends Module
         return true;
     }
 
+    /**
+     * Initializes data directories for MySQL if they do not exist, especially for versions 5.7.0 and above.
+     *
+     * @param string|null $path Optional. The path to initialize data in. If not provided, uses the current path.
+     * @param string|null $version Optional. The version to consider for initialization. If not provided, uses the current version.
+     */
     public function initData($path = null, $version = null) {
         $path = $path != null ? $path : $this->getCurrentPath();
         $version = $version != null ? $version : $this->getVersion();
@@ -401,6 +523,12 @@ class BinMysql extends Module
         Batch::initializeMysql($path);
     }
 
+    /**
+     * Executes a MySQL command line and returns the output.
+     *
+     * @param string $cmd The command to execute.
+     * @return array An array containing 'syntaxOk' (boolean) and 'content' (string) keys.
+     */
     public function getCmdLineOutput($cmd) {
         $result = array(
             'syntaxOk' => false,
@@ -435,6 +563,11 @@ class BinMysql extends Module
         return $result;
     }
 
+    /**
+     * Sets the MySQL version in the configuration.
+     *
+     * @param string $version The version to set.
+     */
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
@@ -442,10 +575,26 @@ class BinMysql extends Module
         $this->reload();
     }
 
+    /**
+     * Retrieves the service handler for MySQL.
+     *
+     * This method returns the Win32Service object that manages the MySQL service operations.
+     * It provides access to the service handler which can be used to control the MySQL service,
+     * such as starting, stopping, and managing service properties.
+     *
+     * @return Win32Service The service handler for MySQL.
+     */
     public function getService() {
         return $this->service;
     }
 
+    /**
+     * Enables or disables the MySQL module.
+     * This method updates the configuration and manages the service based on the enabled state.
+     *
+     * @param int $enabled Whether to enable (1) or disable (0) the module.
+     * @param bool $showWindow Optional. Whether to show a message box with the result.
+     */
     public function setEnable($enabled, $showWindow = false) {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
@@ -471,47 +620,138 @@ class BinMysql extends Module
             Util::removeService($this->service, $this->name);
         }
     }
-
+    /**
+     * Retrieves the path to the error log file.
+     *
+     * This method returns the full path to the error log file used by the MySQL module.
+     * The error log file is used to store error messages and other logging information
+     * related to MySQL operations.
+     *
+     * @return string The full path to the error log file.
+     */
     public function getErrorLog() {
         return $this->errorLog;
     }
 
+    /**
+     * Retrieves the path to the MySQL executable.
+     *
+     * This method returns the full path to the MySQL executable file. This executable
+     * is used to start the MySQL server and perform other MySQL operations.
+     *
+     * @return string The full path to the MySQL executable.
+     */
     public function getExe() {
         return $this->exe;
     }
 
+    /**
+     * Retrieves the path to the MySQL configuration file.
+     *
+     * This method returns the full path to the MySQL configuration file. This configuration
+     * file contains settings and parameters that configure the MySQL server behavior.
+     *
+     * @return string The full path to the MySQL configuration file.
+     */
     public function getConf() {
         return $this->conf;
     }
 
+    /**
+     * Retrieves the MySQL server port number.
+     *
+     * This method returns the port number on which the MySQL server is configured to listen.
+     * The port number is used by clients to connect to the MySQL server.
+     *
+     * @return int The port number used by the MySQL server.
+     */
     public function getPort() {
         return $this->port;
     }
 
+    /**
+     * Sets the MySQL server port number.
+     *
+     * This method updates the MySQL configuration to set a new port number for the server.
+     * It ensures that the new port number is updated in the configuration file and reflects
+     * in the server settings.
+     *
+     * @param int $port The new port number to set for the MySQL server.
+     */
     public function setPort($port) {
         $this->replace(self::LOCAL_CFG_PORT, $port);
     }
 
+    /**
+     * Retrieves the MySQL root username.
+     *
+     * This method returns the username of the MySQL root user. The root user has full
+     * administrative privileges over the MySQL server.
+     *
+     * @return string The username of the MySQL root user.
+     */
     public function getRootUser() {
         return $this->rootUser;
     }
 
+    /**
+     * Sets the MySQL root username.
+     *
+     * This method updates the MySQL configuration to set a new username for the root user.
+     * It ensures that the new username is updated in the configuration file and reflects
+     * in the server settings.
+     *
+     * @param string $rootUser The new username to set for the MySQL root user.
+     */
     public function setRootUser($rootUser) {
         $this->replace(self::LOCAL_CFG_ROOT_USER, $rootUser);
     }
 
+    /**
+     * Retrieves the MySQL root password.
+     *
+     * This method returns the password of the MySQL root user. The root password is used
+     * to authenticate the root user who has full administrative privileges over the MySQL server.
+     *
+     * @return string The password of the MySQL root user.
+     */
     public function getRootPwd() {
         return $this->rootPwd;
     }
 
+    /**
+     * Sets the MySQL root password.
+     *
+     * This method updates the MySQL configuration to set a new password for the root user.
+     * It ensures that the new password is updated in the configuration file and reflects
+     * in the server settings.
+     *
+     * @param string $rootPwd The new password to set for the MySQL root user.
+     */
     public function setRootPwd($rootPwd) {
         $this->replace(self::LOCAL_CFG_ROOT_PWD, $rootPwd);
     }
 
+    /**
+     * Retrieves the path to the MySQL CLI executable.
+     *
+     * This method returns the full path to the MySQL Command Line Interface (CLI) executable.
+     * The CLI executable is used to perform command-line operations on the MySQL server.
+     *
+     * @return string The full path to the MySQL CLI executable.
+     */
     public function getCliExe() {
         return $this->cliExe;
     }
 
+    /**
+     * Retrieves the path to the MySQL admin executable.
+     *
+     * This method returns the full path to the MySQL admin executable. This executable
+     * is used for administrative tasks on the MySQL server.
+     *
+     * @return string The full path to the MySQL admin executable.
+     */
     public function getAdmin() {
         return $this->admin;
     }

@@ -1,24 +1,39 @@
-<a class="anchor" name="mariadb"></a>
-<div class="row-fluid">
-  <div class="col-lg-12">
-    <h1><img src="<?php echo $bearsamppHomepage->getResourcesPath() . '/img/mariadb.png'; ?>" /> <?php echo $bearsamppLang->getValue(Lang::MARIADB); ?></h1>
-  </div>
+<!--
+  ~ Copyright (c) 2021-2024 Bearsampp
+  ~ License:  GNU General Public License version 3 or later; see LICENSE.txt
+  ~ Author: Bear
+  ~ Website: https://bearsampp.com
+  ~ Github: https://github.com/Bearsampp
+  -->
+<a class = "anchor" name = "mariadb"></a>
+<div class = "row-fluid">
+    <div class = "col-lg-12">
+        <?php
+            // Pre-process data
+            $mariadbLogoPath = htmlspecialchars($imagesPath . 'mariadb.png');
+            $mariadbTitle = $bearsamppLang->getValue(Lang::MARIADB);
+        ?>
+        <h1>
+            <img alt = "MariaDB logo" aria-hidden = "true" src = "<?= $mariadbLogoPath; ?>">
+            <?= $mariadbTitle; ?>
+        </h1>
+    </div>
 </div>
-<div class="row-fluid">
-  <div class="col-lg-6">
-    <div class="list-group">
-      <span class="list-group-item mariadb-checkport">
+<div class = "row-fluid">
+    <div class = "col-lg-6">
+        <div class = "list-group">
+      <span class = "list-group-item mariadb-checkport">
         <?php echo $getLoader; ?>
-        <i class="fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
+          <i class = "fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
       </span>
-      <span class="list-group-item mariadb-versions">
-              <span class="label-left col-1">
-                <i class="fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
+            <span class = "list-group-item mariadb-versions">
+              <span class = "label-left col-1">
+                <i class = "fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
               </span>
-              <span class="mariadb-version-list float-right col-11">
+              <span class = "mariadb-version-list float-end col-11">
                 <?php echo $getLoader; ?>
               </span>
       </span>
+        </div>
     </div>
-  </div>
 </div>

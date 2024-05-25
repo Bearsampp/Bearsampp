@@ -1,18 +1,51 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class AppWebgrind
+ * Manages the Webgrind module, handling configuration and version management.
+ */
 class AppWebgrind extends Module
 {
+    /**
+     * Configuration key for the Webgrind version.
+     */
     const ROOT_CFG_VERSION = 'webgrindVersion';
 
+    /**
+     * Configuration key for the Webgrind configuration file.
+     */
     const LOCAL_CFG_CONF = 'webgrindConf';
 
+    /**
+     * Path to the Webgrind configuration file.
+     * @var string
+     */
     private $conf;
 
+    /**
+     * Constructs the AppWebgrind object.
+     *
+     * @param string $id The module ID.
+     * @param string $type The module type.
+     */
     public function __construct($id, $type) {
         Util::logInitClass($this);
         $this->reload($id, $type);
     }
 
+    /**
+     * Reloads the module configuration and updates paths based on the current version.
+     *
+     * @param string|null $id Optional module ID to reload.
+     * @param string|null $type Optional module type to reload.
+     */
     public function reload($id = null, $type = null) {
         global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
@@ -44,6 +77,14 @@ class AppWebgrind extends Module
         }
     }
 
+    /**
+     * Updates the configuration for the specified version.
+     *
+     * @param string|null $version Optional version to update the configuration for.
+     * @param int $sub Sub level for logging indentation.
+     * @param bool $showWindow Whether to show a window during the update.
+     * @return bool Returns true if the update is successful.
+     */
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
         global $bearsamppRoot;
 
@@ -67,6 +108,11 @@ class AppWebgrind extends Module
         return true;
     }
 
+    /**
+     * Sets the version of the module and reloads the configuration.
+     *
+     * @param string $version The new version to set.
+     */
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
@@ -74,6 +120,11 @@ class AppWebgrind extends Module
         $this->reload();
     }
 
+    /**
+     * Gets the path to the configuration file.
+     *
+     * @return string The path to the configuration file.
+     */
     public function getConf() {
         return $this->conf;
     }

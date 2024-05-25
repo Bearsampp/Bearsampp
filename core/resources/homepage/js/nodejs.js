@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
+
 /*$(document).ready(function() {
   if ($('a[name=nodejs]').length) {
     $.ajax({
@@ -14,7 +22,11 @@
     });
   }
 });*/
-
+/**
+ * Asynchronous function to fetch NodeJS status and versions data from the specified URL using POST method.
+ * If successful, updates the DOM with the received data for NodeJS status and versions.
+ * If there is an error in fetching or parsing the response, appropriate error messages are logged.
+ */
 async function getNodeJSStatus() {
   const url = ajax_url;
   const proc = 'nodejs';
