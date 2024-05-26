@@ -78,9 +78,9 @@ We would like to thank the following for supporting our project:
 | <a href="https://github.n6rej.io">N6REJ<br><img src="https://avatars.githubusercontent.com/u/1850089?v=4" height="100px"/></a> | <a href="https://www.jetbrains.com/">Jetbrains<br> <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" height="100px"></a> | <a href="https://simplifyyourweb.com/" >Olivier Buisard<br><img src="https://user-images.githubusercontent.com/1850089/191779113-6218a5df-d06d-41b5-92f9-86a9563b4d09.png" height="100px" /> </a> |  <a href="https://codium.ai">Codium ai<br><img src="https://www.codium.ai/wp-content/uploads/2023/01/codium-logo.svg" height="100px" /></a> |
 |------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|  
 
-|<a href="https://foss.abivia.com/">Abivia.com<br><img src="https://github.com/Bearsampp/Bearsampp/assets/1850089/725323c2-8217-4a4c-ad20-a11225a696d6" height="100px"/></a>|<a href="https://www.am-graphix.com/">AMGraphix<br><img src="https://github.com/Bearsampp/Bearsampp/assets/1850089/189797db-4292-467d-9de0-898cde9338bc" height="100px"/></a> | <a href="https://tassos.gr">Tassos.gr<br><img src="https://github.com/Bearsampp/Bearsampp/assets/1850089/fe348886-356a-409a-a683-64d4268a74fa" height="100px"/></a> |  
-|:---:|:--:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------:|  
-https://www.tassos.gr/
+|<a href="https://foss.abivia.com/">Abivia.com<br><img src="https://github.com/Bearsampp/Bearsampp/assets/1850089/725323c2-8217-4a4c-ad20-a11225a696d6" height="100px"/></a>|<a href="https://www.am-graphix.com/">AMGraphix<br><img src="https://github.com/Bearsampp/Bearsampp/assets/1850089/189797db-4292-467d-9de0-898cde9338bc" height="100px"/></a>    |  
+|:---:|:--:|  
+
 
 ## License
 
