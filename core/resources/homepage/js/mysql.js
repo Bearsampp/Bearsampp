@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
-
 /*$(document).ready(function() {
   if ($('a[name=mysql]').length) {
     $.ajax({
@@ -22,14 +14,9 @@
     });
   }
 });*/
-/**
- * Asynchronous function to fetch MySQL status data from a specified URL using POST method.
- * If the response is successful, it parses the JSON response and updates the DOM with the received data.
- * It removes loaders and appends the checkport and versions data to respective elements in the DOM.
- * This function is triggered on DOMContentLoaded event if an anchor element with name 'mysql' is found.
- */
+
 async function getMySQLStatus() {
-  const url = ajax_url;
+  const url = AJAX_URL;
   const proc = 'mysql';
   const senddata = new URLSearchParams();
   senddata.append(`proc`, proc);
@@ -44,11 +31,10 @@ async function getMySQLStatus() {
     let myajaxresponse = await response.text();
     let data;
     try {
+            if(myajaxresponse.includes("Uncaught mysqli_sql_exception")) {
+                console.log("Error occured accessing MySQL - ");
+            } else {
       data = JSON.parse(myajaxresponse);
-    } catch (error) {
-      console.error('Failed to parse response:', error);
-    }
-
     let q = document.querySelector('.mysql-checkport');
     let ql = q.querySelector('.loader');
     ql.remove();
@@ -59,6 +45,10 @@ async function getMySQLStatus() {
     ql.remove();
     q.insertAdjacentHTML('beforeend', data.versions);
   }
+        } catch (error) {
+            console.error('Failed to parse response:', error);
+        }
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function () {

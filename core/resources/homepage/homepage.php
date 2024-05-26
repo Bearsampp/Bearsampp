@@ -69,7 +69,7 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
         "/libs/fontawesome/css/all.min.css",
     ];
     $jsFiles  = [
-        "/libs/jquery/jquery-3.7.1.min.js",
+
         "/libs/bootstrap/bootstrap.min.js",
         "/libs/fontawesome/js/all.min.js",
         "/js/_commons.js",

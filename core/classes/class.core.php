@@ -1,8 +1,7 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
+ * Copyright (c) 2022 - 2024 Bearsampp
  * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
@@ -13,7 +12,7 @@ class Core
     const PATH_WIN_PLACEHOLDER = '~BEARSAMPP_WIN_PATH~';
     const PATH_LIN_PLACEHOLDER = '~BEARSAMPP_LIN_PATH~';
 
-    const PHP_VERSION = '5.6.40';
+    const PHP_VERSION = '5.4.23';
     const PHP_EXE = 'php-win.exe';
     const PHP_CONF = 'php.ini';
 
@@ -50,30 +49,35 @@ class Core
     public function getLangsPath($aetrayPath = false)
     {
         global $bearsamppRoot;
+
         return $bearsamppRoot->getCorePath($aetrayPath) . '/langs';
     }
 
     public function getLibsPath($aetrayPath = false)
     {
         global $bearsamppRoot;
+
         return $bearsamppRoot->getCorePath($aetrayPath) . '/libs';
     }
 
     public function getResourcesPath($aetrayPath = false)
     {
         global $bearsamppRoot;
+
         return $bearsamppRoot->getCorePath($aetrayPath) . '/resources';
     }
 
     public function getIconsPath($aetrayPath = false)
     {
         global $bearsamppCore;
+
         return $bearsamppCore->getResourcesPath($aetrayPath) . '/icons';
     }
 
     public function getScriptsPath($aetrayPath = false)
     {
         global $bearsamppRoot;
+
         return $bearsamppRoot->getCorePath($aetrayPath) . '/scripts';
     }
 
@@ -85,12 +89,14 @@ class Core
     public function getTmpPath($aetrayPath = false)
     {
         global $bearsamppRoot;
+
         return $bearsamppRoot->getCorePath($aetrayPath) . '/tmp';
     }
 
     public function getisRootFilePath($aetrayPath = false)
     {
         global $bearsamppRoot;
+
         return $bearsamppRoot->getCorePath($aetrayPath) . '/' . self::isRoot_FILE;
     }
 
@@ -101,6 +107,7 @@ class Core
         $filePath = $this->getResourcesPath() . '/' . self::APP_VERSION;
         if (!is_file($filePath)) {
             Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), APP_TITLE, $filePath));
+
             return null;
         }
 
@@ -201,4 +208,41 @@ class Core
     {
         return $this->getLnPath($aetrayPath) . '/' . self::LN_EXE;
     }
+
+    /**
+     * Provides a string representation of the core object.
+     *
+     * @return string A string describing the core object.
+     */
+    public function __toString()
+    {
+        return 'core object';
+    }
+
+    /**
+     * Unzips a file to a specified destination.
+     *
+     * @param string $zipFilePath The path to the zip file.
+     * @param string $destinationPath The path where the contents should be extracted.
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function unzipFile($zipFilePath, $destinationPath)
+    {
+        $zip = new ZipArchive;
+        if ($zip->open($zipFilePath) === true) {
+            $zip->extractTo($destinationPath);
+            $zip->close();
+
+              Util::logError("source: {$zipFilePath}");
+              util::logError("destination: {$destinationPath}");
+
+            return true;
+        } else {
+            Util::logError('Failed to open zip file: ' . $zipFilePath);
+
+            return false;
+        }
+    }
+
 }

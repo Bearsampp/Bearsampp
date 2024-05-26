@@ -1,18 +1,5 @@
 <?php
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
 
-/**
- * Manages the MailHog service configuration and operations within the Bearsampp environment.
- *
- * This class handles the setup, configuration, and management of the MailHog service,
- * including service installation, version management, and port configuration.
- */
 class BinMailhog extends Module
 {
     const SERVICE_NAME = 'bearsamppmailhog';
@@ -35,23 +22,11 @@ class BinMailhog extends Module
     private $smtpPort;
     private $mailPath;
 
-    /**
-     * Constructs a new instance of the BinMailhog class.
-     *
-     * @param string $id The identifier for the MailHog instance.
-     * @param string $type The type of the module, typically related to its functionality.
-     */
     public function __construct($id, $type) {
         Util::logInitClass($this);
         $this->reload($id, $type);
     }
 
-    /**
-     * Reloads the configuration and updates the service settings based on current configuration values.
-     *
-     * @param string|null $id Optional. The identifier for the MailHog instance.
-     * @param string|null $type Optional. The type of the module.
-     */
     public function reload($id = null, $type = null) {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
@@ -116,11 +91,6 @@ class BinMailhog extends Module
         $this->service->setNssm($nssm);
     }
 
-    /**
-     * Replaces all specified configuration parameters in the MailHog configuration file.
-     *
-     * @param array $params An associative array of configuration parameters and their new values.
-     */
     protected function replaceAll($params) {
         $content = file_get_contents($this->bearsamppConf);
 
@@ -143,11 +113,6 @@ class BinMailhog extends Module
         file_put_contents($this->bearsamppConf, $content);
     }
 
-    /**
-     * Rebuilds the MailHog configuration based on current settings.
-     *
-     * @return bool Returns true if the configuration was successfully rebuilt, false otherwise.
-     */
     public function rebuildConf() {
         global $bearsamppRegistry;
 
@@ -168,14 +133,6 @@ class BinMailhog extends Module
         return false;
     }
 
-    /**
-     * Changes the SMTP port for the MailHog service.
-     *
-     * @param int $port The new port number to set.
-     * @param bool $checkUsed Optional. Whether to check if the port is already in use.
-     * @param mixed $wbProgressBar Optional. Progress bar object to update during the operation.
-     * @return mixed Returns true if the port was successfully changed, an error message if the port is in use, or false on failure.
-     */
     public function changePort($port, $checkUsed = false, $wbProgressBar = null) {
         global $bearsamppWinbinder;
 
@@ -204,13 +161,6 @@ class BinMailhog extends Module
         return $isPortInUse;
     }
 
-    /**
-     * Checks if the specified port is available for use by MailHog.
-     *
-     * @param int $port The port to check.
-     * @param bool $showWindow Optional. Whether to show a message box with the result.
-     * @return bool Returns true if the port is available, false otherwise.
-     */
     public function checkPort($port, $showWindow = false) {
         global $bearsamppLang, $bearsamppWinbinder;
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
@@ -252,26 +202,11 @@ class BinMailhog extends Module
         return false;
     }
 
-    /**
-     * Switches the MailHog version to the specified version.
-     *
-     * @param string $version The version to switch to.
-     * @param bool $showWindow Optional. Whether to show a message box with the result.
-     * @return bool Returns true if the version was successfully switched, false otherwise.
-     */
     public function switchVersion($version, $showWindow = false) {
         Util::logDebug('Switch ' . $this->name . ' version to ' . $version);
         return $this->updateConfig($version, 0, $showWindow);
     }
 
-    /**
-     * Updates the MailHog configuration to the specified version.
-     *
-     * @param string|null $version Optional. The version to update to. If not specified, uses the current version.
-     * @param int $sub Optional. Sub-level for logging depth.
-     * @param bool $showWindow Optional. Whether to show a message box with the result.
-     * @return bool Returns true if the configuration was successfully updated, false otherwise.
-     */
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
         global $bearsamppLang, $bearsamppWinbinder;
 
@@ -314,11 +249,6 @@ class BinMailhog extends Module
         return true;
     }
 
-    /**
-     * Sets the version of MailHog to use.
-     *
-     * @param string $version The version to set.
-     */
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
@@ -326,21 +256,10 @@ class BinMailhog extends Module
         $this->reload();
     }
 
-    /**
-     * Gets the current service configuration.
-     *
-     * @return Win32Service The service configuration object.
-     */
     public function getService() {
         return $this->service;
     }
 
-    /**
-     * Enables or disables the MailHog service.
-     *
-     * @param int $enabled Whether to enable (1) or disable (0) the service.
-     * @param bool $showWindow Optional. Whether to show a message box with the result.
-     */
     public function setEnable($enabled, $showWindow = false) {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
@@ -367,83 +286,38 @@ class BinMailhog extends Module
         }
     }
 
-    /**
-     * Gets the path to the MailHog log file.
-     *
-     * @return string The path to the log file.
-     */
     public function getLog() {
         return $this->log;
     }
 
-    /**
-     * Gets the executable path for MailHog.
-     *
-     * @return string The executable path.
-     */
     public function getExe() {
         return $this->exe;
     }
 
-    /**
-     * Gets the API port for MailHog.
-     *
-     * @return int The API port number.
-     */
     public function getApiPort() {
         return $this->apiPort;
     }
 
-    /**
-     * Sets the API port for MailHog.
-     *
-     * @param int $apiPort The API port number to set.
-     */
     public function setApiPort($apiPort) {
         $this->replace(self::LOCAL_CFG_API_PORT, $apiPort);
     }
 
-    /**
-     * Gets the UI port for MailHog.
-     *
-     * @return int The UI port number.
-     */
     public function getUiPort() {
         return $this->uiPort;
     }
 
-    /**
-     * Sets the UI port for MailHog.
-     *
-     * @param int $uiPort The UI port number to set.
-     */
     public function setUiPort($uiPort) {
         $this->replace(self::LOCAL_CFG_UI_PORT, $uiPort);
     }
 
-    /**
-     * Gets the SMTP port for MailHog.
-     *
-     * @return int The SMTP port number.
-     */
     public function getSmtpPort() {
         return $this->smtpPort;
     }
 
-    /**
-     * Sets the SMTP port for MailHog.
-     *
-     * @param int $smtpPort The SMTP port number to set.
-     */
     public function setSmtpPort($smtpPort) {
         $this->replace(self::LOCAL_CFG_SMTP_PORT, $smtpPort);
     }
 
-    /**
-     * Gets the path to the MailHog mail storage directory.
-     *
-     * @return string The path to the mail storage directory.
-     */
     public function getMailPath() {
         return $this->mailPath;
     }

@@ -1,12 +1,14 @@
 <?php
 
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
+/**
+* WINBINDER - The native Windows binding for PHP for PHP
+*
+* Copyright © Hypervisual - see LICENSE.TXT for details
+* Authors: Rubem Pechansky and Hans Rebel
+*
+* Database wrapper functions for WinBinder (SQLite-specific)
+* version 2b
+*/
 
 if(PHP_VERSION < "5")
 	if(!extension_loaded('sqlite'))

@@ -21,7 +21,7 @@ discord = "Discord"
 donate = "Donera"
 donateVia = "Donera via %s"
 download = "Hämta"
-downloadMore = "#Download more..."
+downloadMore = "#Download more"
 enabled = "#Enabled"
 error = "Fel"
 executable = "Körbar"
@@ -64,7 +64,7 @@ virtualHosts = "Virtuella Värdar"
 website = "Webbsajt"
 
 ; Menu
-menuAbout = "Om..."
+menuAbout = "Om"
 menuAccessLogs = "Åtkomstloggar"
 menuAddAlias = "Lägg till ett alias"
 menuAddVhost = "Lägg till en virtuell värd"
@@ -281,7 +281,7 @@ changeBrowserOtherLabel = "Annan :"
 changeBrowserOk = "Webbläsare byttes framgångsrikt till:@nl@%s"
 
 ; Action About
-aboutTitle = "Om..."
+aboutTitle = "Om"
 aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@Bearsampp is free software; you can redistribute it and/or modify it@nl@under the terms of the GNU LESSER GENERAL PUBLIC LICENSE."
 
 ; Action Debug Apache
@@ -306,14 +306,14 @@ debugMariadbSyntaxCheck = "Konfig syntax-verifiering"
 ; Action Debug PostgreSQL
 debugPostgresqlVersion = "Version"
 
-; Action others...
+; Action others
 registrySetErrorText = "Registreringsvärde inkorrekt : %s"
 
 ; Action check version
 checkVersionTitle = "Kontrollerar version"
 checkVersionAvailableText = "Ny version tillgänglig!"
 checkVersionChangelogText = "#Before updating please read the changelog : "
-checkVersionLatestText = "Du har hämtat den senaste versionen av Bearsampp..."
+checkVersionLatestText = "Du har hämtat den senaste versionen av Bearsampp"
 
 ; Action gen SSL certificate
 genSslTitle = "#Generate SSL certificate"
@@ -323,7 +323,7 @@ genSslCreatedError = "#Unable to create SSL certificate."
 
 ; Action Restart
 restartTitle = "#Restart"
-restartText = "#Please restart %s to apply new settings..."
+restartText = "#Please restart %s to apply new settings"
 
 ; Action enable
 enableTitle = "#Enable / Disable %s"
@@ -337,8 +337,8 @@ buttonFinish = "Slutför"
 buttonCancel = "Avbryt"
 buttonNext = "Nästa >"
 buttonBack = "< Tillbaka"
-buttonBrowse = "Sök..."
-loading = "Laddar..."
+buttonBrowse = "Sök"
+loading = "Laddar"
 
 ; Homepage
 homepageOfficialWebsite = "Officiell Webbplats"

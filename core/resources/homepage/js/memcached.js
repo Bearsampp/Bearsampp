@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
-
 /*$(document).ready(function() {
   if ($('a[name=memcached]').length) {
     $.ajax({
@@ -22,15 +14,9 @@
     });
   }
 });*/
-/**
- * Asynchronous function to get MemCached status by sending a POST request to the specified URL.
- * If the response is successful, it parses the JSON response and updates the DOM elements with the received data.
- * It removes loader elements after updating the content.
- *
- * This function is triggered on DOMContentLoaded event if an anchor element with name 'memcached' exists.
- */
+
 async function getMemCachedStatus() {
-  const url = ajax_url;
+  const url = AJAX_URL;
   const proc = 'memcached';
   const senddata = new URLSearchParams();
   senddata.append(`proc`, proc);

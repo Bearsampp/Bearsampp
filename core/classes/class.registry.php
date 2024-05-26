@@ -1,11 +1,4 @@
 <?php
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
 
 // StdRegProv class : http://msdn.microsoft.com/en-us/library/aa393664%28v=vs.85%29.aspx
 // Shell class : http://msdn.microsoft.com/en-us/library/2x3w20xf%28v=vs.84%29.aspx

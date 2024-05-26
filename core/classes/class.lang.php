@@ -314,7 +314,7 @@ class Lang
     // Action Debug PostgreSQL
     const DEBUG_POSTGRESQL_VERSION = 'debugPostgresqlVersion';
 
-    // Action others...
+    // Action others
     const REGISTRY_SET_ERROR_TEXT = 'registrySetErrorText';
 
     // Action check version
@@ -663,7 +663,7 @@ class Lang
             // Action Debug PostgreSQL
             self::DEBUG_POSTGRESQL_VERSION,
 
-            // Action others...
+            // Action others
             self::REGISTRY_SET_ERROR_TEXT,
 
             // Action check version

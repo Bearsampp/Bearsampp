@@ -52,7 +52,7 @@ class Splash
         global $bearsamppWinbinder;
 
         $bearsamppWinbinder->drawRect($this->wbWindow, 42, 0, self::WINDOW_WIDTH - 42, self::WINDOW_HEIGHT);
-        $this->wbTextLoading = $bearsamppWinbinder->drawText($this->wbWindow, $caption . ' ...', 42, 0, self::WINDOW_WIDTH - 44, 25);
+        $this->wbTextLoading = $bearsamppWinbinder->drawText($this->wbWindow, $caption, 42, 0, self::WINDOW_WIDTH - 44, 25);
     }
 
     public function incrProgressBar($nb = 1)

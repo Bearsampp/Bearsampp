@@ -1,13 +1,6 @@
 <?php
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
 
-include_once __DIR__ . '\..\..\root.php';
+include_once __DIR__ . '/../../root.php';
 
 $procs = array(
     'summary',
@@ -23,8 +16,11 @@ $procs = array(
     'postgresql'
 );
 
-$proc = Util::cleanPostVar('proc');
+$proc = Util::cleanPostVar('proc', 'text');  // Ensure 'proc' is cleaned and read correctly
 
 if (in_array($proc, $procs)) {
-    include 'ajax/ajax.' . $proc . '.php';
+    include 'ajax/ajax.' . $proc . '.php';  // This line should correctly include 'ajax.latestversion.php'
+} else {
+    // It's a good practice to handle the case where 'proc' is not valid
+    echo json_encode(['error' => 'Invalid proc parameter']);
 }

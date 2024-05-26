@@ -91,7 +91,7 @@ class WinBinder
         $window = $this->callWinBinder('wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params));
 
         // Set tiny window icon
-        // $this->setImage($window, $bearsamppCore->getResourcesPath() . '/img/icons/app.ico');
+        $this->setImage($window, $bearsamppCore->getResourcesPath() . '/homepage/img/icons/app.ico');
 
         return $window;
     }
@@ -413,7 +413,7 @@ class WinBinder
 
         // TODO why does this create an error?
         // Set tiny window icon
-        //$this->setImage($messageBox, $bearsamppCore->getResourcesPath() . '/img/icons/app.ico');
+        $this->setImage($messageBox, $bearsamppCore->getResourcesPath() . '/homepage/img/icons/app.ico');
 
         return $messageBox;
     }

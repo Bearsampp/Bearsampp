@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
-
 /*$(document).ready(function() {
   if ($('a[name=php]').length) {
     $.ajax({
@@ -31,14 +23,9 @@
     });
   }
 });*/
-/**
- * Asynchronous function to fetch PHP status data from the specified URL using POST method.
- * If the response is successful, it parses the JSON response and updates the HTML elements with the received data.
- * It removes loader elements before inserting the data into the respective HTML elements.
- * This function is triggered on DOMContentLoaded event if an anchor element with name 'php' is found.
- */
+
 async function getPHPStatus() {
-  const url = ajax_url;
+  const url = AJAX_URL;
   const proc = 'php';
   const senddata = new URLSearchParams();
   senddata.append(`proc`, proc);

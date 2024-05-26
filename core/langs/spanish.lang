@@ -1,0 +1,355 @@
+; Autor: /Bearsampp
+;
+
+; General
+allRunningHint = "Todos los servicios están funcionando"
+someRunningHint = "%n de %t servicios están funcionando"
+noneRunningHint = "Ninguno de %t servicios está funcionando"
+locale = "es-ES"
+
+; Individual
+about = "Acerca de"
+administration = "Administración"
+aliases = "Alias"
+apps = "Aplicaciones"
+bins = "Binarios"
+changelog = "Registro de cambios"
+console = "Consola"
+debug = "Depurar"
+disabled = "Deshabilitado"
+discord = "Discord"
+donate = "Donar"
+donateVia = "Donar vía %s"
+download = "Descargar"
+downloadMore = "Descargar más..."
+enabled = "Habilitado"
+error = "Error"
+executable = "Ejecutable"
+extensions = "Extensiones"
+facebook = "Facebook"
+gitConsole = "Consola de Git"
+gitGui = "Interfaz gráfica de Git"
+github = "Github"
+help = "Ayuda"
+hostseditor = "Editor de hosts"
+lang = "Idioma"
+license = "Licencia"
+logs = "Registros"
+logsVerbose = "Registros detallados"
+modules = "Módulos"
+name = "Nombre"
+paypal = "Paypal"
+pythonConsole = "Consola de Python"
+pythonCp = "Panel de control de Python"
+quit = "Salir"
+readChangelog = "Leer el %súltimo registro de cambios%s."
+reload = "Recargar"
+repos = "Repositorios"
+restart = "Reiniciar"
+service = "Servicio"
+settings = "Configuraciones"
+ssl = "SSL"
+startup = "Inicio"
+status = "Estado"
+statusPage = "Página de estado"
+target = "Objetivo"
+tools = "Herramientas"
+verboseDebug = "Depuración"
+verboseReport = "Informe"
+verboseSimple = "Simple"
+verboseTrace = "Rastreo"
+version = "Versión"
+versions = "Versiones"
+virtualHosts = "Hosts virtuales"
+website = "Sitio web"
+
+; Menú
+menuAbout = "Acerca de..."
+menuAccessLogs = "Registros de acceso"
+menuAddAlias = "Agregar un alias"
+menuAddVhost = "Agregar un host virtual"
+menuChangePort = "Cambiar puerto"
+menuChangeRootPwd = "Cambiar contraseña de root"
+menuCheckPort = "Verificar puerto %s"
+menuCheckUpdate = "Buscar actualizaciones"
+menuClearFolders = "Limpiar carpetas temporales"
+menuEditAlias = "Editar %s"
+menuEditConf = "Editar %s"
+menuEditVhost = "Editar %s"
+menuEnable = "Habilitar / Deshabilitar"
+menuErrorLogs = "Registros de errores"
+menuGenSslCertificate = "Generar certificado SSL"
+menuInstallService = "Instalar servicio"
+menuLaunchStartup = "Iniciar con Windows"
+menuLocalhost = "Localhost"
+menuLogs = "Registros"
+menuPutOffline = "Desconectar"
+menuPutOnline = "Conectar"
+menuRefreshRepos = "Actualizar repositorios"
+menuRemoveService = "Eliminar servicio"
+menuRestartService = "Reiniciar servicio"
+menuRestartServices = "Reiniciar todos los servicios"
+menuRewriteLogs = "Reescribir registros"
+menuScanReposStartup = "Escanear repositorios al iniciar"
+menuSessionLogs = "Registros de sesión"
+menuStartService = "Iniciar servicio"
+menuStartServices = "Iniciar todos los servicios"
+menuStatsLogs = "Registros de estadísticas"
+menuStopService = "Detener servicio"
+menuStopServices = "Detener todos los servicios"
+menuTransferLogs = "Transferir registros"
+menuUpdateEnvPath = "Actualizar ruta env. PATH"
+menuWwwDirectory = "Directorio www"
+
+; Binarios
+apache = "Apache"
+filezilla = "Filezilla"
+mailhog = "MailHog"
+mariadb = "MariaDB"
+memcached = "Memcached"
+mysql = "MySQL"
+nodejs = "Node.js"
+pear = "PEAR"
+php = "PHP"
+postgresql = "PostgreSQL"
+
+; Aplicaciones
+adminer = "Adminer"
+phpmyadmin = "phpMyAdmin"
+phppgadmin = "phpPgAdmin"
+webgrind = "Webgrind"
+
+; Herramientas
+composer = "Composer"
+consolez = "ConsoleZ"
+ghostscript = "Ghostscript"
+git = "Git"
+ngrok = "ngrok"
+perl = "Perl"
+python = "Python"
+ruby = "Ruby"
+xdc = "XDebugClient"
+yarn = "Yarn"
+
+; Errores
+errorConfNotFound = "Archivo de configuración %s no encontrado en %s"
+errorExeNotFound = "Archivo ejecutable %s no encontrado en %s"
+errorFileNotFound = "%s no encontrado en %s"
+errorInvalidParameter = "Parámetro inválido '%s' : %s"
+
+; Acción Cambiar versión
+switchVersionTitle = "Cambiar a la versión %s %s"
+switchVersionReloadConfig = "Recargar configuración"
+switchVersionReloadBins = "Recargar binarios"
+switchVersionRegistry = "Restablecer clave de registro %s"
+switchVersionResetServices = "Restablecer todos los servicios"
+switchVersionSameError = "Ya estás en %s %s."
+switchVersionOk = "Versión de %s cambiada exitosamente a %s"
+switchVersionOkRestart = "Versión de %s cambiada exitosamente a %s"
+apacheIncpt = "Apache %s no parece ser compatible con PHP %s."
+phpIncpt = "PHP %s no parece ser compatible con Apache %s."
+bearsamppConfNotFoundError = "Archivos de configuración de Bearsampp no encontrados para %s."
+bearsamppConfMalformedError = "Archivo de configuración de Bearsampp malformado para %s."
+
+; Acción Cambiar configuración de PHP
+switchPhpSettingTitle = "Cambiar configuración de PHP"
+switchPhpSettingNotFound = "Configuración de PHP %s no encontrada en el archivo de configuración de PHP %s."
+
+; Acción Verificar puerto
+checkPortTitle = "Verificar puerto %s %s"
+portUsedBy = "El puerto %s está siendo utilizado por %s."
+portNotUsed = "El puerto %s no está siendo utilizado."
+portNotUsedBy = "El puerto %s está siendo utilizado por otra aplicación."
+portUsedByAnotherDbms = "El puerto %s está siendo utilizado por otro DBMS."
+portChanged = "Puerto de %s cambiado exitosamente a %s"
+
+; Acción Instalar servicio
+installServiceTitle = "Instalar servicio de %s"
+serviceAlreadyInstalled = "Servicio de %s ya está instalado."
+serviceInstalled = "Servicio de %s instalado exitosamente.@nl@Nombre: %s@nl@Puerto: %s"
+serviceInstallError = "Error durante la instalación del servicio de %s."
+
+; Action Remove service
+removeServiceTitle = "Eliminar servicio de %s
+serviceNotExist = "El servicio de %s no existe."
+serviceRemoved = "Servicio de %s eliminado con éxito."
+serviceRemoveError = "Error durante la desinstalación del servicio de %s
+
+; Acción Iniciar servicio
+startServiceTitle = "Iniciar servicio %s"
+startServiceError = "Error al iniciar el servicio %s."
+
+; Detener servicio
+stopServiceTitle = "Detener servicio %s"
+stopServiceError = "Error al detener el servicio %s."
+
+; Reiniciar servicio
+restartServiceTitle = "Reiniciar servicio %s"
+restartServiceError = "Error al reiniciar el servicio %s."
+
+; Eliminar alias
+deleteAliasTitle = "Eliminar alias"
+deleteAlias = "¿Realmente desea eliminar el alias '%s'?"
+aliasRemoved = "Alias '%s' eliminado con éxito."
+aliasRemoveError = "No se puede eliminar el archivo de configuración del alias en:@nl@%s"
+
+; Agregar/Editar alias
+addAliasTitle = "Agregar alias"
+aliasNameLabel = "Nombre"
+aliasDestLabel = "Destino"
+aliasExpLabel = "El alias estaría en http://localhost%s/%s/@nl@y apuntaría a %s"
+aliasDestPath = "Seleccione la carpeta de destino para su alias:"
+aliasNotValidAlpha = "El nombre del alias '%s' no es una cadena alfanumérica válida."
+aliasAlreadyExists = "El alias '%s' ya existe."
+aliasCreated = "Alias '%s' creado con éxito.@nl@@nl@Url: http://localhost%s/%s/@nl@Path: %s"
+aliasCreatedError = "No se puede crear el archivo de configuración del alias."
+editAliasTitle = "Editar alias %s"
+
+; Eliminar host virtual
+deleteVhostTitle = "Eliminar host virtual"
+deleteVhost = "¿Realmente desea eliminar el host virtual '%s'?"
+vhostRemoved = "Host virtual '%s' eliminado con éxito."
+vhostRemoveError = "No se puede eliminar el archivo de configuración del host virtual en:@nl@%s"
+
+; Agregar/Editar host virtual
+addVhostTitle = "Agregar host virtual"
+vhostServerNameLabel = "Nombre del servidor"
+vhostDocumentRootLabel = "Raíz del documento"
+vhostExpLabel = "El host virtual estaría en http://%s/@nl@y apuntaría a %s"
+vhostDocRootPath = "Seleccione la raíz del documento para su host virtual:"
+vhostNotValidDomain = "El nombre del servidor '%s' no es un nombre de dominio válido."
+vhostAlreadyExists = "El host virtual '%s' ya existe."
+vhostCreated = "Host virtual '%s' creado con éxito.@nl@No olvide agregar el nombre del dominio a su archivo de hosts (a través de la herramienta HostsEditor).@nl@@nl@Url: http://%s/@nl@Path: %s"
+vhostCreatedError = "No se puede crear el archivo de configuración del host virtual."
+editVhostTitle = "Editar host virtual %s"
+
+; Cambiar puerto
+changePortTitle = "Cambiar puerto de %s"
+changePortCurrentLabel = "Puerto actualmente utilizado por %s: %s"
+changePortNewLabel = "Nuevo puerto"
+changePortSameError = "Este es el mismo puerto que se está utilizando actualmente."
+
+; Cambiar contraseña de root de la base de datos
+changeDbRootPwdTitle = "Cambiar contraseña de root de %s"
+changeDbRootPwdCurrentpwdLabel = "Contraseña actual"
+changeDbRootPwdNewpwd1Label = "Nueva contraseña"
+changeDbRootPwdNewpwd2Label = "Confirmar nueva contraseña"
+changeDbRootPwdNotsameError = "Las contraseñas que ingresó no son idénticas entre sí"
+changeDbRootPwdIncorrectError = "Error de %s: %s"
+changeDbRootPwdText = "¡Contraseña de root cambiada con éxito!"
+
+; Inicio
+startupStartingText = "Iniciando %s. Por favor espere"
+startupRotationLogsText = "Archivado de registros"
+startupKillOldProcsText = "Detener instancias antiguas"
+startupRefreshHostnameText = "Actualizar nombre de host"
+startupCheckBrowserText = "Verificar navegador"
+startupSysInfos = "Obtener información del sistema"
+startupCleanTmpText = "Eliminando archivos temporales"
+startupCleanOldBehaviorsText = "Eliminar características obsoletas"
+startupRefreshAliasText = "Actualizar alias"
+startupRefreshVhostsText = "Actualizar hosts virtuales"
+startupCheckPathText = "Verificar ruta actual"
+startupScanFoldersText = "Escanear carpetas"
+startupChangePathText = "Cambiar ruta con %s"
+startupRegistryText = "Verificar clave de registro de %s"
+startupRegistryErrorText = "Error al configurar la clave de registro de %s:"
+startupUpdateConfigText = "Actualizar configuración"
+startupCheckServiceText = "Verificando servicio de %s"
+startupInstallServiceText = "Instalar servicio de %s"
+startupStartServiceText = "Iniciar servicio de %s"
+startupPrepareRestartText = "Preparar reinicio de %s"
+startupRestartingText = "Reiniciando %s. Por favor espere"
+startupErrorTitle = "Error de inicio"
+startupServiceError = "El servicio de %s no puede ser instalado:"
+startupServiceCreateError = "- No se puede crear el servicio: %s"
+startupServiceStartError = "- No se puede iniciar el servicio: %s"
+startupServiceSyntaxError = "- Errores de configuración detectados: %s"
+startupServicePortError = "- El puerto %s está siendo utilizado por otra aplicación: %s."
+startupRefreshGitReposText = "Actualizar repositorios de Git"
+startupGenSslCrtText = "Generar certificado SSL de %s"
+
+; Salir
+exitLeavingText = "Saliendo de %s"
+exitRemoveServiceText = "Eliminar servicio de %s"
+exitStopOtherProcessText = "Detener proceso de terceros"
+
+; Cambiar navegador
+changeBrowserTitle = "Cambiar navegador"
+changeBrowserExpLabel = "Seleccione un navegador:"
+changeBrowserOtherLabel = "Otro:"
+changeBrowserOk = "Navegador cambiado con éxito a:@nl@%s"
+
+; Acerca de
+aboutTitle = "Acerca de..."
+aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@Bearsampp es un software libre; puede redistribuirlo y/o modificarlo@nl@bajo los términos de la LICENCIA PÚBLICA GENERAL MENOR DE GNU."
+
+; Depurar Apache
+debugApacheVersionNumber = "Número de versión"
+debugApacheCompileSettings = "Configuraciones de compilación"
+debugApacheCompiledModules = "Módulos compilados"
+debugApacheConfigDirectives = "Directivas de configuración"
+debugApacheVhostsSettings = "Configuraciones de hosts virtuales"
+debugApacheLoadedModules = "Módulos cargados"
+debugApacheSyntaxCheck = "Verificación de sintaxis de configuración"
+
+; Depurar MySQL
+debugMysqlVersion = "Versión"
+debugMysqlVariables = "Variables"
+debugMysqlSyntaxCheck = "Verificación de sintaxis de configuración"
+
+; Depurar MariaDB
+debugMariadbVersion = "Versión"
+debugMariadbVariables = "Variables"
+debugMariadbSyntaxCheck = "Verificación de sintaxis de configuración"
+
+; Depurar PostgreSQL
+debugPostgresqlVersion = "Versión"
+
+; Otras acciones...
+registrySetErrorText = "Valor de registro incorrecto: %s"
+
+; Verificar versión
+checkVersionTitle = "Verificar versión"
+checkVersionAvailableText = "¡Nueva versión disponible!"
+checkVersionChangelogText = "Antes de actualizar, por favor lea el registro de cambios: "
+checkVersionLatestText = "Tienes la última versión de Bearsampp..."
+
+; Generar certificado SSL
+genSslTitle = "Generar certificado SSL"
+genSslPath = "Seleccione la carpeta de destino:"
+genSslCreated = "Certificado SSL '%s' creado con éxito."
+genSslCreatedError = "No se puede crear el certificado SSL."
+
+; Reiniciar
+restartTitle = "Reiniciar"
+restartText = "Por favor, reinicie %s para aplicar los nuevos ajustes..."
+
+; Habilitar
+enableTitle = "Habilitar / Deshabilitar %s"
+enableBundleNotExist = "%s no se puede habilitar porque el paquete %s no existe en %s"
+
+; Formularios de Windows
+buttonOk = "OK"
+buttonDelete = "Eliminar"
+buttonSave = "Guardar"
+buttonFinish = "Finalizar"
+buttonCancel = "Cancelar"
+buttonNext = "Siguiente >"
+buttonBack = "< Atrás"
+buttonBrowse = "Explorar..."
+loading = "Cargando..."
+
+; Página de inicio
+homepageOfficialWebsite = "Sitio web oficial"
+homepageServiceStarted = "iniciado en el puerto %s"
+homepageServiceStopped = "detenido"
+homepageAboutHtml = "<div><strong>Bearsampp</strong> es un software WAMP portátil que incluye binarios útiles, herramientas y aplicaciones para su desarrollo web.<br/>Para aquellos que deseen contribuir, tengan problemas o preguntas, lean la <a target="_blank" href="http://bearsampp.com/documentation">Documentación</a>.<br/>Para ser notificado de nuevas versiones puede marcar la <a target="_blank" href="%s">repositorio en Github</a>.</div>"
+homepageLicenseText = "Bearsampp es un software libre; puede redistribuirlo y/o modificarlo bajo los términos de la Licencia Pública General de GNU publicada por la Free Software Foundation, ya sea la versión 3 de la Licencia, o (a su elección) cualquier versión posterior."
+homepageQuestionsTitle = "¿Preguntas?"
+homepageQuestionsText = "Si encontró algún problema o si tiene algunas ideas para evolucionar Bearsampp, simplemente publique un problema en GitHub!"
+homepagePostIssue = "Publicar un problema"
+homepagePhpinfoText = "Ver phpinfo()"
+homepageMailhogText = "Ver correos electrónicos recibidos"
+homepageApcText = "Administrador de APC"
+homepageBackText = "Volver a la página de inicio"

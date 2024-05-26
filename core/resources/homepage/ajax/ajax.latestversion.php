@@ -17,12 +17,12 @@
  * @param array $result Holds the display flag and download link HTML.
  *
  * @return void Modifies the $result array by reference.
- * @global string $latestVersionUrl The URL to download the latest version.
+ * @global string $githubLatestVersionUrl The URL to download the latest version.
  * @global object $bearsamppLang Language management object, used for retrieving language-specific values.
  * @global string $bearsamppCurrentVersion The current version of the application.
- * @global string $bearsamppLatestVersion The latest available version of the application.
+ * @global string $githubLatestVersion The latest available version of the application.
  */
-global $bearsamppLang, $bearsamppCore;
+global $bearsamppLang, $bearsamppCore, $githubVersionData;
 
 $result = array(
     'display' => false,
@@ -33,24 +33,32 @@ $result = array(
 $bearsamppCurrentVersion = $bearsamppCore->getAppVersion();
 
 // Assuming getLatestVersion now returns an array with version and URL
-$latestVersionData = Util::getLatestVersion(APP_GITHUB_LATEST_URL);
+$githubVersionData = Util::getLatestVersion(APP_GITHUB_LATEST_URL);
+Util::logDebug('GitHub Version Data: ' . print_r($githubVersionData, true));
 
+if (!empty($githubVersionData)) {
+    Util::logDebug('GitHub Version Data: ' . print_r($githubVersionData, true));
+} else {
+    Util::logError('No data available in $githubVersionData');
+}
 /* check to see if everything went sideways */
-if ($latestVersionData === null) {
+if ($githubVersionData === null) {
     Util::logError('Failed to retrieve version data from GitHub URL: ' . APP_GITHUB_LATEST_URL);
 
     return;
 }
 
 /* Strip array into individual relevant strings */
-$bearsamppLatestVersion = $latestVersionData['version'];
-$latestVersionUrl = $latestVersionData['url']; // URL of the latest version
+$githubLatestVersion = $githubVersionData['version'];
+$githubLatestVersionUrl = $githubVersionData['html_url']; // URL of the latest version
+$githubVersionName = $githubVersionData['name'];
+Util::logDebug($githubLatestVersion, $githubLatestVersionUrl);
 
 // Directly compare version strings
-if (version_compare($bearsamppCurrentVersion, $bearsamppLatestVersion, '<')) {
+if (version_compare($bearsamppCurrentVersion, $githubLatestVersion, '<')) {
     $result['display'] = true;
-    $result['download'] .= '<a role="button" class="btn btn-success fullversionurl" href="' . $latestVersionUrl . '" target="_blank"><i class="fa-solid fa-cloud-arrow-down"></i> ';
-    $result['download'] .= $bearsamppLang->getValue(Lang::DOWNLOAD) . ' <strong>' . APP_TITLE . ' ' . $bearsamppLatestVersion . '</strong><br />';
-    $result['download'] .= '<small>bearsampp-' . $bearsamppLatestVersion . '.7z</small></a>';
+    $result['download'] .= '<a role="button" class="btn btn-success fullversionurl" href="' . $githubLatestVersionUrl . '" target="_blank"><i class="fa-solid fa-cloud-arrow-down"></i> ';
+    $result['download'] .= $bearsamppLang->getValue(Lang::DOWNLOAD) . ' <strong>' . APP_TITLE . ' ' . $githubVersionName . '</strong><br />';
+    $result['changelog'] = '';
 }
 echo json_encode($result);

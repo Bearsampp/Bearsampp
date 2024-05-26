@@ -246,3 +246,10 @@ nav.navbar .svg-inline--fa.fa-discord {
     }
 
 /* ---- END ICONOGRAPHY ---- */
+
+.close-button {
+    border: none;
+    background: none;
+    margin-right: -40px;
+    margin-top: -10px;
+}

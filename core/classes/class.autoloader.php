@@ -1,44 +1,11 @@
 <?php
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
 
-/**
- * Autoloader class for dynamically loading class files based on their names.
- *
- * This class provides a mechanism to autoload PHP class files from specific directories
- * based on the class name prefixes. It supports different categories like bins, tools,
- * apps, actions, and templates. The class paths are constructed dynamically and classes
- * are included only if they exist.
- *
- * Usage:
- * - An instance of Autoloader should be created and registered with the SPL autoload stack.
- * - When a class is used in the code, this autoloader will attempt to find and load it
- *   from the appropriate directory.
- *
- * Example:
- * $autoloader = new Autoloader();
- * $autoloader->register();
- */
 class Autoloader
 {
-    /**
-     * Constructs the Autoloader object.
-     */
     public function __construct()
     {
     }
 
-    /**
-     * Attempts to load a class file based on the class name.
-     *
-     * @param string $class The name of the class to load.
-     * @return bool Returns true if the file exists and was included, false otherwise.
-     */
     public function load($class)
     {
         global $bearsamppRoot;
@@ -75,21 +42,11 @@ class Autoloader
         return true;
     }
 
-    /**
-     * Registers this autoloader with the SPL autoloader stack.
-     *
-     * @return bool Returns true on success, false on failure.
-     */
     public function register()
     {
         return spl_autoload_register(array($this, 'load'));
     }
 
-    /**
-     * Unregisters this autoloader from the SPL autoloader stack.
-     *
-     * @return bool Returns true on success, false on failure.
-     */
     public function unregister()
     {
         return spl_autoload_unregister(array($this, 'load'));

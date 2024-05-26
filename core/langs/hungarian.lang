@@ -64,7 +64,7 @@ virtualHosts = "Virtuális hosztok"
 website = "Weboldal"
 
 ; Menu
-menuAbout = "Névjegy..."
+menuAbout = "Névjegy"
 menuAccessLogs = "Forgalmi napló"
 menuAddAlias = "Új alias"
 menuAddVhost = "Új virtuális hoszt"
@@ -281,7 +281,7 @@ changeBrowserOtherLabel = "Más"
 changeBrowserOk = "Böngészo sikeresen beállítva:@nl@%s"
 
 ; Action About
-aboutTitle = "Névjegy..."
+aboutTitle = "Névjegy"
 aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@Bearsampp is free software; you can redistribute it and/or modify it@nl@under the terms of the GNU LESSER GENERAL PUBLIC LICENSE."
 
 ; Action Debug Apache
@@ -306,7 +306,7 @@ debugMariadbSyntaxCheck = "Konfiguráció szintaktikai ellenörzése"
 ; Action Debug PostgreSQL
 debugPostgresqlVersion = "Verzió"
 
-; Action others...
+; Action others
 registrySetErrorText = "Regisztri érték hiba : %s"
 
 ; Action check version

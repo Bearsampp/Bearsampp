@@ -1,11 +1,4 @@
 <?php
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
 
 class TplAppPhp
 {
@@ -34,8 +27,7 @@ class TplAppPhp
         $isEnabled = $bearsamppBins->getPhp()->isEnable();
 
         // Download
-        $resultItems .= TplAestan::getItemLink(
-            $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
+        $resultItems .= TplAestan::getItemLink( $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
             Util::getWebsiteUrl('module/php', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER

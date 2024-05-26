@@ -1,12 +1,14 @@
 <?php
 
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
+/**
+* WINBINDER - The native Windows binding for PHP for PHP
+*
+* Copyright © Hypervisual - see LICENSE.TXT for details
+* Authors: Rubem Pechansky and Hans Rebel
+*
+* Database wrapper functions for WinBinder
+* version 2b tested with SQLite and mySQL 7.mar
+*/
 // ------------------------------------------------------------ DATABASE-SPECIFIC
 // You may define APPPREFIX and DB_DATABASE in the application
 // APPPREFIX can be used to separate applications within one database

@@ -1,11 +1,4 @@
 <?php
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
 
 class Homepage
 {
@@ -102,7 +95,7 @@ class Homepage
     {
         Util::replaceInFile($this->getHomepagePath() . '/js/_commons.js', array(
             '/^\s\surl:.*/' => '  url: "' . $this->getResourcesPath() . '/ajax.php"',
-            '/ajax_url.*=.*/' => 'const ajax_url = "' . $this->getResourcesPath() . '/ajax.php"',
+            '/AJAX_URL.*=.*/' => 'const AJAX_URL = "' . $this->getResourcesPath() . '/ajax.php"',
         ));
     }
 }

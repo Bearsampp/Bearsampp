@@ -21,7 +21,7 @@ discord = "Discord"
 donate = "Donate"
 donateVia = "Donate via %s"
 download = "Download"
-downloadMore = "Download more..."
+downloadMore = "Download more"
 enabled = "Enabled"
 error = "Error"
 executable = "Executable"
@@ -64,7 +64,7 @@ virtualHosts = "Virtual Hosts"
 website = "Website"
 
 ; Menu
-menuAbout = "About..."
+menuAbout = "About"
 menuAccessLogs = "Access logs"
 menuAddAlias = "Add an alias"
 menuAddVhost = "Add a virtual host"
@@ -281,7 +281,7 @@ changeBrowserOtherLabel = "Other :"
 changeBrowserOk = "Browser changed successfully to:@nl@%s"
 
 ; Action About
-aboutTitle = "About..."
+aboutTitle = "About"
 aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@Bearsampp is free software; you can redistribute it and/or modify it@nl@under the terms of the GNU LESSER GENERAL PUBLIC LICENSE."
 
 ; Action Debug Apache
@@ -306,14 +306,14 @@ debugMariadbSyntaxCheck = "Config syntax check"
 ; Action Debug PostgreSQL
 debugPostgresqlVersion = "Version"
 
-; Action others...
+; Action others
 registrySetErrorText = "Registry value incorrect : %s"
 
 ; Action check version
 checkVersionTitle = "Check version"
 checkVersionAvailableText = "New version available!"
 checkVersionChangelogText = "Before updating please read the changelog : "
-checkVersionLatestText = "You've got the latest version of Bearsampp..."
+checkVersionLatestText = "You've got the latest version of Bearsampp"
 
 ; Action gen SSL certificate
 genSslTitle = "Generate SSL certificate"
@@ -323,7 +323,7 @@ genSslCreatedError = "Unable to create SSL certificate."
 
 ; Action Restart
 restartTitle = "Restart"
-restartText = "Please restart %s to apply new settings..."
+restartText = "Please restart %s to apply new settings"
 
 ; Action enable
 enableTitle = "Enable / Disable %s"
@@ -337,8 +337,8 @@ buttonFinish = "Finish"
 buttonCancel = "Cancel"
 buttonNext = "Next >"
 buttonBack = "< Back"
-buttonBrowse = "Browse..."
-loading = "Loading..."
+buttonBrowse = "Browse"
+loading = "Loading"
 
 ; Homepage
 homepageOfficialWebsite = "Official Website"

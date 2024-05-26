@@ -8,7 +8,7 @@ noneRunningHint = "Les %t services sont éteints"
 locale = "fr-FR"
 
 ; Single
-about = "À propos..."
+about = "À propos"
 administration = "Administration"
 aliases = "Alias"
 apps = "Applications"
@@ -21,7 +21,7 @@ discord = "Discord"
 donate = "Faire un don"
 donateVia = "Faire un don via %s"
 download = "Télécharger"
-downloadMore = "Télécharger plus..."
+downloadMore = "Télécharger plus"
 enabled = "Activé"
 error = "Erreur"
 executable = "Exécutable"
@@ -64,7 +64,7 @@ virtualHosts = "Hôtes virtuels"
 website = "Site web"
 
 ; Menu
-menuAbout = "À propos..."
+menuAbout = "À propos"
 menuAccessLogs = "Journaux d'accès"
 menuAddAlias = "Ajouter un alias"
 menuAddVhost = "Ajouter un hôte virtuel"
@@ -281,7 +281,7 @@ changeBrowserOtherLabel = "Autre :"
 changeBrowserOk = "Navigateur changé avec succès :@nl@%s"
 
 ; Action About
-aboutTitle = "À propos..."
+aboutTitle = "À propos"
 aboutText = "%s@nl@Copyright(C) 2014 - %s %s@nl@@nl@Bearsampp est un logiciel gratuit ; vous pouvez le redistribuer et/ou le modifier@nl@sous les termes de la GNU LESSER GENERAL PUBLIC LICENSE."
 
 ; Action Debug Apache
@@ -306,14 +306,14 @@ debugMariadbSyntaxCheck = "Vérifier la syntaxe de la configuration"
 ; Action Debug PostgreSQL
 debugPostgresqlVersion = "Version"
 
-; Action others...
+; Action others
 registrySetErrorText = "Valeur de clé de registre incorrecte : %s"
 
 ; Action check version
 checkVersionTitle = "Vérifier la version"
 checkVersionAvailableText = "Nouvelle version disponible !"
 checkVersionChangelogText = "Avant la mise à jour veuillez lire le journal des changements : "
-checkVersionLatestText = "Vous avez la dernière version de Bearsampp..."
+checkVersionLatestText = "Vous avez la dernière version de Bearsampp"
 
 ; Action gen SSL certificate
 genSslTitle = "Générer un certificat SSL"
@@ -323,7 +323,7 @@ genSslCreatedError = "Impossible de créer le certificat SSL."
 
 ; Action Restart
 restartTitle = "Redémarrer"
-restartText = "Veuillez redémarrez %s pour appliquer les nouveaux paramètres..."
+restartText = "Veuillez redémarrez %s pour appliquer les nouveaux paramètres"
 
 ; Action enable
 enableTitle = "Activer / Désactiver %s"
@@ -337,8 +337,8 @@ buttonFinish = "Fin"
 buttonCancel = "Annuler"
 buttonNext = "Suivant >"
 buttonBack = "< Précédent"
-buttonBrowse = "Parcourir..."
-loading = "Chargement..."
+buttonBrowse = "Parcourir"
+loading = "Chargement"
 
 ; Homepage
 homepageOfficialWebsite = "Site Web Officiel"
