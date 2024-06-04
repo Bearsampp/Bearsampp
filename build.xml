@@ -54,7 +54,7 @@
     Dependencies: This target depends on the successful completion of 'init', 'load.lib', 'build-full', 'build-basic', and 'build-lite' targets.
     Usage: This target is used to compile all necessary components and variations of the build into a final release package. It ensures that all preliminary steps are completed before packaging.
   -->
-  <target name="release" depends="init, load.lib, build-full, build-basic, build-lite" description="Release Bearsampp"/>
+  <target name="release" depends="init, load.lib, base, build-full, build-basic, build-lite" description="Release Bearsampp"/>
 
   <!--
   Target: base
@@ -187,7 +187,9 @@
 
   Usage: This target is executed as part of a larger build process or manually to generate a complete release package of the Bearsampp project.
 -->
-  <target name="build-full" depends="init, load.lib, base">
+    <target name="build-full" depends="init, load.lib, base">
+        <var name="release.target" unset="true"/>
+        <var name="release.destfile" unset="true"/>
       <property name="release.target" value="${release.tmp.path}\${release.name}-${release.fullversion}"/>
       <property name="release.destfile" value="${build.release.path}\${release.name}-${release.fullversion}"/>
 
@@ -209,15 +211,19 @@
     </copy>
 
       <!-- Replacements -->
-      <replace file="${release.base.target}\bearsampp.conf" token="BIN_APACHE_ENABLE" value="1"/>
-      <replace file="${release.base.target}\bearsampp.conf" token="BIN_PHP_ENABLE" value="1"/>
-      <replace file="${release.base.target}\bearsampp.conf" token="BIN_MYSQL_ENABLE" value="1"/>
-      <replace file="${release.base.target}\bearsampp.conf" token="BIN_MARIADB_ENABLE" value="1"/>
-      <replace file="${release.base.target}\bearsampp.conf" token="BIN_POSTGRESQL_ENABLE" value="1"/>
-      <replace file="${release.base.target}\bearsampp.conf" token="BIN_NODEJS_ENABLE" value="1"/>
-      <replace file="${release.base.target}\bearsampp.conf" token="BIN_FILEZILLA_ENABLE" value="1"/>
-      <replace file="${release.base.target}\bearsampp.conf" token="BIN_MAILHOG_ENABLE" value="1"/>
-      <replace file="${release.base.target}\bearsampp.conf" token="BIN_MEMCACHED_ENABLE" value="1"/>
+      <copy file="${release.base.target}\bearsampp.conf" tofile="${release.target}\bearsampp.conf" overwrite="true">
+          <filterset>
+              <filter token="BIN_APACHE_ENABLE" value="1"/>
+              <filter token="BIN_PHP_ENABLE" value="1"/>
+              <filter token="BIN_MYSQL_ENABLE" value="1"/>
+              <filter token="BIN_MARIADB_ENABLE" value="1"/>
+              <filter token="BIN_POSTGRESQL_ENABLE" value="1"/>
+              <filter token="BIN_NODEJS_ENABLE" value="1"/>
+              <filter token="BIN_FILEZILLA_ENABLE" value="1"/>
+              <filter token="BIN_MAILHOG_ENABLE" value="1"/>
+              <filter token="BIN_MEMCACHED_ENABLE" value="1"/>
+          </filterset>
+      </copy>
 
       <!-- Get bins -->
       <getmodule releasesurl="${bin.apache.url}" version="${bin.apache.version}" dest="${release.target}\bin\apache"/>
@@ -285,6 +291,8 @@
   Usage: This target is executed as part of a larger build process or manually to generate a basic release package of the Bearsampp project, which includes only the most crucial components.
 -->
   <target name="build-basic" depends="init, load.lib, base">
+      <var name="release.target" unset="true"/>
+      <var name="release.destfile" unset="true"/>
       <property name="release.target" value="${release.tmp.path}\${release.name}-basic-${release.fullversion}"/>
       <property name="release.destfile" value="${build.release.path}\${release.name}-basic-${release.fullversion}"/>
 
@@ -306,15 +314,19 @@
       </copy>
 
       <!-- Replacements -->
-      <replace file="${release.target}\bearsampp.conf" token="BIN_APACHE_ENABLE" value="1"/>
-      <replace file="${release.target}\bearsampp.conf" token="BIN_PHP_ENABLE" value="1"/>
-      <replace file="${release.target}\bearsampp.conf" token="BIN_MYSQL_ENABLE" value="1"/>
-      <replace file="${release.target}\bearsampp.conf" token="BIN_MARIADB_ENABLE" value="1"/>
-      <replace file="${release.target}\bearsampp.conf" token="BIN_POSTGRESQL_ENABLE" value="0"/>
-      <replace file="${release.target}\bearsampp.conf" token="BIN_NODEJS_ENABLE" value="1"/>
-      <replace file="${release.target}\bearsampp.conf" token="BIN_FILEZILLA_ENABLE" value="0"/>
-      <replace file="${release.target}\bearsampp.conf" token="BIN_MAILHOG_ENABLE" value="1"/>
-      <replace file="${release.target}\bearsampp.conf" token="BIN_MEMCACHED_ENABLE" value="0"/>
+      <copy file="${release.base.target}\bearsampp.conf" tofile="${release.target}\bearsampp.conf" overwrite="true">
+          <filterset>
+              <filter token="BIN_APACHE_ENABLE" value="1"/>
+              <filter token="BIN_PHP_ENABLE" value="1"/>
+              <filter token="BIN_MYSQL_ENABLE" value="1"/>
+              <filter token="BIN_MARIADB_ENABLE" value="1"/>
+              <filter token="BIN_POSTGRESQL_ENABLE" value="0"/>
+              <filter token="BIN_NODEJS_ENABLE" value="1"/>
+              <filter token="BIN_FILEZILLA_ENABLE" value="0"/>
+              <filter token="BIN_MAILHOG_ENABLE" value="1"/>
+              <filter token="BIN_MEMCACHED_ENABLE" value="0"/>
+          </filterset>
+      </copy>
 
       <!-- Get bins -->
       <getmodule releasesurl="${bin.apache.url}" version="${bin.apache.version}" dest="${release.target}\bin\apache"/>
