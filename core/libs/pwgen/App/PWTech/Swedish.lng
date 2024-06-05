@@ -1,0 +1,999 @@
+﻿[LANGUAGENAME]
+Swedish
+
+[LANGUAGEVERSION]
+2.9.0
+
+[LANGUAGEAUTHOR]
+Åke Engelbrektson\nwww.svenskasprakfiler.se
+
+[LANGUAGEHELPFILE]
+manual.pdf
+
+Info
+Info
+
+Warning
+Varning
+
+Question
+Fråga
+
+Error
+Fel
+
+Settings
+Inställningar
+
+Include Characters (Pass*words*)
+Inkludera tecken (Lösen*ord*)
+
+Length:
+Längd:
+
+Character Set:
+Teckenuppsättning:
+
+Show details
+Detaljerad info
+
+Include Words (Pass*phrases*)
+Inkludera ord (Lösenords*fraser*)
+
+Number:
+Antal:
+
+Word List File:
+Ordlista:
+
+Browse
+Bläddra
+
+Specify length*:
+Specificera längd*:
+
+Combine Words with Characters
+Kombinera ord och tecken
+
+Format password:
+Formatera lösenord:
+
+Multiple passwords:
+Multipla lösenord:
+
+Generate
+Generera
+
+Generate password list to file
+Generera lösenordslista till fil
+
+Advanced
+Avancerat
+
+Generated Password
+Genererat lösenord
+
+Click on "Generate"
+Klicka på "Generera"
+
+Hide/show password
+Dölj/Visa lösenord
+
+Hold left mouse button to drag & drop password
+Håll ner vänster musknapp för att dra & släppa lösenord
+
+Random Pool
+Slumptalspool
+
+Entropy Bits:
+Entropibitar:
+
+File
+Arkiv
+
+Profile
+Profil
+
+Profile Editor...
+Profilredigerare...
+
+Exit
+Avsluta
+
+Tools
+Verktyg
+
+Clear Clipboard
+Rensa urklipp
+
+Encrypt Clipboard...
+Kryptera urklipp...
+
+Decrypt Clipboard...
+Dekryptera urklipp...
+
+Create Random Data File...
+Skapa slumptalsfil...
+
+Create Trigram File...
+Skapa Trigram-fil...
+
+MP Password Generator...
+MP-lösenordsgenerator...
+
+Deterministic Random Generator
+Deterministisk slumptalsgenerator
+
+Reset
+Återställ
+
+Deactivate
+Inaktivera
+
+Provide Additional Entropy
+Tillhandahåll ytterligare entropi
+
+As Text...
+Som text...
+
+From File...
+Från fil...
+
+Options
+Alternativ
+
+Configuration...
+Konfiguration...
+
+Language
+Språk
+
+Always on Top
+Alltid överst
+
+Save Settings on Exit
+Spara inställningar vid avslut
+
+Save Settings Now
+Spara inställningar nu
+
+Help
+Hjälp
+
+Open Manual
+Öppna manualen
+
+Visit Website
+Besök hemsidan
+
+Donate...
+Donera...
+
+Check for Updates
+Sök efter uppdateringar
+
+Timer Info...
+Timer-info...
+
+About %s...
+Om %s...
+
+Restore PWGen
+Återställ PWGen
+
+Generate Password
+Generera lösenord
+
+Generate and Show Password...
+Generera och visa lösenord...
+
+Open user manual
+Öppna användarmanualen
+
+Hide/show entropy progress
+Dölj/visa entropiförlopp
+
+Clear clipboard (text contents only)
+Rensa urklipp (endast textinnehåll)
+
+Clipboard text encryption (left-click) or decryption (right-click)
+Textkryptering av urklipp (vänsterklick) eller dekryptering (högerklick)
+
+Load, create or delete profiles
+Läs in, skapa och ta bort profiler
+
+Generate passwords based on a master password
+Generera lösenord baserade på ett huvudlösenord
+
+Change main configuration of the program
+Ändra programmet huvudinställningar
+
+Reset Counters
+Återställ räknare
+
+All files (*.*)|*.*|Text files (*.txt)|*.txt|Trigram files (*.tgm)|*.tgm
+Alla filer (*.*)|*.*|Textfiler (*.txt)|*.txt|Trigram-filer (*.tgm)|*.tgm
+
+Undo
+Ångra
+
+Cut
+Klipp ut
+
+Copy
+Kopiera
+
+Encrypt && Copy
+Kryptera && kopiera
+
+Paste
+Klistra in
+
+Delete
+Ta bort
+
+Select All
+Markera alla
+
+Clear List
+Rensa listan
+
+Editable
+Redigerbar
+
+Enable Password Testing
+Aktivera lösenordstestning
+
+Change Font...
+Byt teckensnitt...
+
+Select high-entropy file
+Välj högentropifil
+
+/////////////// Main Window - Messages ///////////////
+
+Could not read random seed file\n\"%s\".
+Kunde inte läsa slumptalsfil\n\"%s\".
+
+Could not write to random seed file\n\"%s\".
+Kunde inte skriva till slumptalsfil\n\"%s\".
+
+Unknown command line switch(es):\n%s
+Okänt kommandoargument:\n%s
+
+Error while loading word list file\n\"%s\".
+Fel vid inläsning av ordlistfile\n"%s\".
+
+PWGen encountered %d error(s) during startup:
+PWGen stötte på %d fel vid uppstarten:
+
+Character set \"%s\" is invalid.
+Teckenuppsättningen \"%s\" är ogiltig.
+
+Error while writing to configuration file:\n%s.
+Fel vid skrivning till konfigurationsfil:\n%s.
+
+%d characters / %.1f bits per character
+%d tecken / %.1f bitar per tecken
+
+%d words / %.1f bits per word
+%d ord / %.1f bitar per ord
+
+Could not open trigram file.
+Kunde inte öppna Trigram-fil.
+
+Invalid trigram file.
+Ogiltig Trigram-fil.
+
+Text successfully encrypted.
+Textkryptering slutförd.
+
+Text successfully decrypted.
+Textdekryptering slutförd.
+
+Could not open clipboard.
+Kunde inte öppna urklipp.
+
+The text to be encrypted is too long.
+Texten som skall krypteras är för lång.
+
+No text available to process.
+Det finns ingen text att bearbeta.
+
+Not enough memory available to perform\nthe operation. Try to use a shorter text.
+Det saknas minnesutrymme för\natt genomföra åtgärden.\nFörsök med en kortare text.
+
+Decryption failed. This may be attributed\nto the following reasons:
+Dekrypteringen misslyckades.\nMöjligen på grund av följande skäl:
+
+- You entered a wrong password.
+- Du angav ett felaktigt lösenord.
+
+- The text is corrupted.\n- The text is not encrypted.
+- Texten är korrupt.\n- Texten är okrypterad.
+
+This should not have happened:\nDecryption successful, but decompression\nfailed.
+Detta borde inte hända:\nDekryptering slutförd, men\ndekomprimerng misslyckades.
+
+Could not register hot key %s.\nPlease try another key combination.
+Kunde inte registrera snabbtangenten %s.\nFörsök med annan tangentkombination.
+
+The selected file already exists. Do you\nwant to append passwords to this file\n(existing passwords will be preserved),\nor do you want to completely overwrite it?\n\nYes\t-> append passwords,\nNo\t-> overwrite file,\nCancel\t-> cancel process.
+Det valda filnamnet finns redan.\nVill du lägga till lösenord i denna fil (befintliga lösenord bevaras)\neller vill du skriva över den helt?\n\nJa\t-> Lägg till lösenord.\nNej\t-> Skriv över filen.\nAvbryt\t-> Avbryt åtgärden.
+
+Passphrase: Invalid length range.
+Lösenordsfras: Ogiltigt längdintervall.
+
+If the option \"Each character must occur\nonly once\" is activated, the password length\nis limited to the size of the character set (%d).
+Om alternativet \"Varje tecken får endast\nförekomma en gång\" är aktiverat, begränsas\nlängden på lösenordet av storleken på teckenuppsättningen (%d).
+
+If the option \"Each word must occur only\nonce\" is activated, the number of words\nis limited to the size of the word list (%d).
+Om alternativet \"Varje ord får endast förekomma\nen gång\" är aktiverat, begränsas\nantalet ord av storleken på ordlistan (%d).
+
+Generating password list ...
+Genererar lösenordslista ...
+
+%d of %d passwords generated.
+%d av %d lösenord genererade.
+
+Generating passphrase ...
+Genererar lösenordsfras ...
+
+%d of %d passphrases generated.
+%d av %d lösenordsfraser genererade.
+
+Format string produces empty password
+Formateringssträngen producerar tomma lösenord
+
+\"%P\" is not specified.
+\"%P\" är inte specificerat.
+
+Password not available.
+Lösenord ej tillgängligt.
+
+Password too long.
+För långt lösenord.
+
+Invalid format specifier \"%%%s\".
+Ogiltig formatspecificering \"%%%s\".
+
+The estimated list size will probably exceed\nthe internal memory limit.\nPlease reduce the number of passwords
+Den beräknade liststorleken kommer troligen\natt överskrida minneskapaciteten.\nReducera antalet lösenord!
+
+The memory limit of the password list has\nbeen reached.\n\nThe number of passwords has been\nreduced to %d.
+Minneskapaciteten för lösenordslistan har tangerats.\nAntalet lösenord har reducerats till %d.
+
+%d passwords generated.
+%d lösenord genererade.
+
+Copying password list ...
+Kopierar lösenordslista...
+
+%d passwords generated.\r\nSecurity of each password: %d bits.\r\nMaximum security of the entire list: %d bits.
+%d lösenord genererade.\r\nSäkerhet för varje lösenord: %d bitar.\r\nMaximal säkerhet för hela listan: %d bitar.
+
+File \"%s\" successfully created.\n\n%d passwords written.
+Filen \"%s\" skapades korrekt.\n\n%d lösenord skrivna.
+
+An error has occurred during password generation:\n%s.
+Ett fel uppstod vid lösenordsgenerering:\n%s.
+
+%d passwords written to file \"%s\".
+%d lösenord skrivna till filen \"%s\".
+
+%d bits / %d characters
+%d bitar / %d tecken
+
+Passwords: %d
+Lösenord: %d
+
+Invalid character set.
+Ogiltig teckenuppsättning.
+
+default (English) trigrams
+Standard-Trigram (Engelska)
+
+File \"%s\"
+Fil \"%s\"
+
+(phonetic, based on trigram frequencies\nfrom the following source:\n<%s>)
+(fonetik, baserad på Trigram-frekvenser\nfrån följande källa:\n<%s>)
+
+The character set you entered is invalid.\nIt must contain at least 2 different characters.
+Teckenuppsättningen du angav är ogiltig.\nDen måste innehålla minst två olika tecken.
+
+Currently loaded character set:
+Aktuell inläst teckenuppsättning:
+
+Could not open file.
+Kunde inte öppna filen.
+
+Not enough valid words.
+Otillräckligt antal giltiga ord.
+
+Select word list file
+Välj ordlistefil
+
+Error while loading the file\n\"%s\":\n%s
+Fel vid inläsning av filen\n\"%s\":\n%s
+
+default (English) word list
+Standardordlista (Engelska)
+
+Currently loaded word list:
+Aktuell inläst ordlista:
+
+First word:
+Första ordet:
+
+Random word:
+Slumpmässigt ord:
+
+Last word:
+Sista ordet:
+
+The version of this language (%s) is not\ncompatible with this program version.\nThis version of PWGen requires a language\nversion of at least %s.\n\nDo you want to use it anyway?
+Den här språkversionen (%s) är inte\nkompatibel med programversionen.\nDenna version av PWGen kräver en\språkversion motsvarande minst %s.\n\nVill du använda den ändå?
+
+The version of this language (%s) is higher\nthan the version of this program (%s).\nTherefore, version incompatibilities may occur.\n\nDo you want to use it anyway?
+Den här språkversionen (%s) är högre\nän programversionen (%s).\nDärför kan versionsinkompatibilitet uppstå.\n\nVill du använda den ändå?
+
+The language file will be loaded when you\nrestart the program.\n\nDo you want to save the settings and\nrestart the program now?
+Språkfilen kommer att läsas in\nnär du startar om programmet.\n\nVill du spara inställningarna och\nstarta om programmet nu?
+
+Password is too long to show it in a\nmessage box like this.\n\nIt has been copied to the clipboard.
+Lösenordet är för långt för att visas i\nett meddelandefält som det här.\n\nDet har kopierats till urklipp.
+
+The generated password is:\n\n%s\n\nThe estimated security is %d bits.\n\nYes\t-> copy password to clipboard,\nNo\t-> generate new password,\nCancel\t-> cancel process.
+Det genererade lösenordet är:\n\n%s\n\nBeräknad säkerhet är %d bitar.\n\nJa\t-> Kopiera lösenordet till urklipp.\nNej\t-> Generera nytt lösenord.\nAvbryt\t-> Avbryt åtgärden.
+
+All entries will be removed from the list.\nAre you sure?
+Alla poster tas bort från listan.\nVill du verkligen fortsätta?
+
+Total entropy bits: %d
+Antal entropibitar: %d
+
+High-resolution timer used:\n%s\n\nCurrent value: %s.
+Använd högupplösnings-timer:\n%s\n\nAktuellt värde: %s.
+
+Could not download version file
+Kunde inte ladda ner versionsfil
+
+URL not found, or unknown format of version file
+Adressen kunde inte hittas, eller okänt format på versionsfilen
+
+A new version (%s) of PWGen is available!\nDo you want to visit the download page now?
+Version (%s) av PWGen finns nu tillgänglig!\nVill du besöka nedladdningssidan nu?
+
+(NOTE: %s)
+(NOTERA: %s)
+
+Your version of PWGen is up-to-date.
+Din version av PWGen är uppdaterad.
+
+Error while checking for updates:\n%s.
+Fel vid uppdateringskontroll:\n%s.
+
+WARNING: Random generator is deterministic (press F7 to deactivate)!
+VARNING! Slumptalsgeneratorn är deterministisk (Inaktivera med F7)!
+
+Clipboard cleared.
+Urklipp rensat.
+
+Profile \"%s\" activated.
+Profil \"%s\" aktiverad.
+
+Deterministic random generator has been ACTIVATED.
+Deterministisk slumptalsgenerator AKTIVERAD.
+
+Deterministic random generator has been RESET.
+Deterministisk slumptalsgenerator ÅTERSTÄLLD.
+
+Deterministic random generator has been DEACTIVATED.
+Deterministisk slumptalsgenerator INAKTIVERAD.
+
+/////////////// ConfigurationDlg //////////
+
+Configuration
+Konfiguration
+
+General
+Allmänt
+
+Hot Key
+Snabbtangent
+
+Files
+Filer
+
+Updates
+Uppdateringar
+
+Change font for the GUI controls:
+Byt teckensnitt för användargränssnittet:
+
+Select font
+Teckensnitt
+
+Clear clipboard automatically after the following time (seconds):
+Rensa urklipp automatiskt efter följande tid (sekunder):
+
+Show system tray icon constantly
+Visa permanent ikon i meddelandefältet
+
+Minimize program to system tray
+Minimera till meddelandefältet
+
+Automatic check for updates:
+Sök automatiskt efter uppdateringar:
+
+Daily
+Varje dag
+
+Weekly
+Varje vecka
+
+Monthly
+Varje månad
+
+Disabled
+Inaktiverad
+
+Associate the following hot key with PWGen:
+Associera följande tangentbordskombination med PWGen:
+
+Actions
+Åtgärder
+
+Show/restore main window
+Visa/Återställ programfönstret
+
+No further action
+Ingen åtgärd
+
+Generate single password in main window
+Generera enskilt lösenord i programfönstret
+
+Generate multiple passwords
+Generera multipla lösenord
+
+Generate password and copy it to the clipboard
+Generera lösenord och kopiera det till urklipp
+
+Generate password and show it in a message box
+Generera lösenord och visa det i ett meddelandefönster
+
+Open MP password generator
+Öppna MP-lösenordsgenerator
+
+Please select a hot key action.
+Välj en snabbtangentåtgärd.
+
+Character encoding of text files:
+Teckenkodning för textfiler:
+
+/////////////// PasswDlg ///////////////
+
+Enter password:
+Ange lösenord:
+
+Confirm password:
+Bekräfta lösenord:
+
+Display password
+Visa lösenord
+
+OK
+OK
+
+Cancel
+Avbryt
+
+Passwords are not identical.
+Lösenorden är inte identiska.
+
+Encrypt
+Kryptera
+
+Decrypt
+Dekryptera
+
+/////////////// PasswList ///////////////
+
+Password List
+Lösenordslista
+
+Save As File...
+Spara som fil...
+
+Save password list
+Spara lösenordslista
+
+Error while creating file\n\"%s\":\n%s.
+Fel vid filskapande\n\"%s\":\n%s.
+
+File \"%s\" successfully created.
+Filen \"%s\" skapades korrekt.
+
+/////////////// PasswOptionsDlg ///////////////
+
+Advanced Password Options
+Avancerade lösenordsalternativ
+
+Exclude ambiguous characters
+Uteslut tvetydiga tecken
+
+First character must not be a lower-case letter
+Första tecknet får inte vara en gemen (liten bokstav)
+
+Don't separate words by a space
+Separera inte ord med blanksteg
+
+Don't separate words and characters by a '-' character
+Separera inte ord  och tecken med bindestreck (-)
+
+Reverse default order of character/word combinations
+Vänd på standardordningen för tecken-/ordkombinationer
+
+Include at least one upper-case letter (A-Z)
+Inkludera minst en versal (stor bokstav)
+
+Include at least one lower-case letter (a-z)
+Inkludera minst en gemen (liten bokstav)
+
+Include at least one digit (0-9)
+Inkludera minst en siffra (0-9)
+
+Include at least one special symbol (!"#$%...)
+Inkludera minst ett specialtecken (!"#$%...)
+
+Only include characters from custom character set
+Inkludera endast tecken från anpassad teckenuppsättning
+
+Exclude repeating consecutive characters (e.g. aa, 11)
+Uteslut upprepande, av på varandra följande tecken (ex. aa, 11)
+
+Exclude duplicate entries in password lists
+Uteslut dubblettposter i lösenordslistor
+
+Convert all words in word lists to lower-case
+Konvertera all ord i ordlistor till gemener
+
+Each character must occur only once
+Varje tecken får endast förekomma en gång
+
+Each word must occur only once
+Varje ord får endast förekomma en gång
+
+Redefine ambiguous characters:
+Byt ut tvetydiga tecken:
+
+Redefine special symbols:
+Byt ut specialsymboler:
+
+Maximum length of words in word lists (except default word list):
+Maximal längd på ord i ordlistor (undantaget standardordlistan):
+
+Trigram file for generating phonetic (pronounceable) passwords:
+Trigram-fil för generering av fonetiska (uttalbara) lösenord:
+
+Applies to pass_words_.
+Gäller för lösen_ord_.
+
+Applies to pass_phrases_.
+Gäller för lösenords_fraser_.
+
+Applies to formatted passwords.
+Gäller för formaterade lösenord.
+
+Applies to phonetic passwords.
+Gäller för fonetiska lösenord.
+
+Selecting one of these options might reduce the security of generated passwords.
+Vid val av dessa alternativ kan säkerheten för genererade lösenord reduceras.
+
+These options also apply to formatted passwords.
+Dessa alternativ gäller också för fonetiska lösenord.
+
+Deselect All
+Avmarkera alla
+
+Invert Selection
+Invertera markering
+
+/////////////// CreateRandDataFile ///////////////
+
+Create Random Data File
+Skapa slumptalsfil
+
+File name:
+Filnamn:
+
+File size:
+Filstorlek:
+
+Bytes
+Byte
+
+Kilobytes
+Kilobyte
+
+Megabytes
+Megabyte
+
+Close
+Stäng
+
+Create file
+Skapa fil
+
+Invalid file size.
+Ogiltig filstorlek.
+
+Not enough free disk space available\nto create the file.
+Det finns inte tillräckligt med ledigt\ndiskutrymme för att skapa filen.
+
+Creating random data file ...
+Skapar slumptalsfil...
+
+%d of %d KB written.
+%d av %d KB skrivet.
+
+File \"%s\" successfully created.\n\n%d bytes written.
+Filen \"%s\" skapades korrekt.\n\n%d byte skrivet.
+
+Error while creating file\n\"%s\":\n%s.\n\n%d bytes written.
+Fel vid skapande av filen\n\"%s\":\n%s.\n\n%d byte skrivet.
+
+//////////////// ProfileEditor ////////////////
+
+Profile Editor
+Profilredigerare
+
+Load
+Läs in
+
+Confirm
+Bekräfta
+
+Profile name:
+Profilnamn:
+
+Add
+Lägg till
+
+Save "advanced password options" for this profile
+Spara "avancerade lösenordsalternativ" för denna profil
+
+Are you sure you want to delete %d profile(s)?
+Vill du verkligen ta bort %d profil(er)?
+
+Maximum number of profiles (%d) reached.\nPlease delete or overwrite profiles.
+Maximalt antal profiler (%d) har tangerats.\nTa bort eller skriv över profiler.
+
+A profile with the name \"%s\" already exists.\nDo you want to overwrite it?
+En profil med namnet \"%s\" finns redan.\nVill du skriva över den?
+
+/////////////// CreateTrigramFile ///////////////
+
+Create Trigram File
+Skapa Trigram-fil
+
+Source file (e.g., dictionary, word list):
+Källfil (ex. ordbok, ordlista):
+
+Destination file (trigram file):
+Målfil (Trigram-fil):
+
+Trigram file \"%s\" successfully created.\n\n%d trigrams evaluated.\n%1.2f bits of entropy per letter.
+Trigram-filen \"%s\" skapades korrekt.\n\n%d Trigram utvärderade.\n%1.2f Entropibitar per bokstav.
+
+/////////////// Callback ///////////////
+
+Process was cancelled by the user
+Åtgärden avbröts av användaren
+
+/////////////// About ///////////////
+
+About %s
+Om %s
+
+Current language: %s\nTranslator: %s
+Aktuellt språk: %s\nÖversättare: %s
+
+This program is distributed under the terms and conditions of the GNU General Public License (GPL).
+Detta program distribueras under villkoren för GNU General Public License (GPL).
+
+View license
+Visa licens
+
+/////////////// QuickHelp ///////////////
+
+Quick help
+Snabbhjälp
+
+Position Automatically
+Positionera automatiskt
+
+You can use the following placeholders:
+Du kan använda följande platshållare:
+
+without ambiguous characters
+utan tvetydiga tecken
+
+special symbols
+specialsymboler
+
+brackets
+Paranteser
+
+punctuation marks
+skiljetecken
+
+higher ANSI characters
+högre ANSI-tecken
+
+generate phonetic password (only lower-case letters)
+generera fonetiskt lösenord (endast gemener)
+
+generate phonetic password (mixed-case letters)
+generera fonetiskt lösenord (gemener och VERSALER)
+
+Comments may be provided in square brackets \"[...]\"\nat the beginning of the sequence.
+Kommentarer kan tillhandahållas inom hakparenteser \"[...]\"\ni början av sekvensen.
+
+Format specifiers have the form \"%[*][N]x\" or \"%[*][M-N]x\", where the\noptional argument \"N\" specifies the number of repetitions (between 1 and\n99999), \"M-N\" specifies a random number of repetitions in the range\nfrom M to N, and \"x\" is the actual format specifier/placeholder. The\noptional asterisk (*) means that each character must occur only once in\nthe sequence. Example: \"%16u\" means \"Insert 16 random upper-case letters\ninto the password\".
+Formatspecifikatörer har formen \"%[*][N]x\" or \"%[*][M-N]x\", där argumentet\n\"N\" specificerar antalet repetitioner (mellan 1 och 99999), \"M-N\"\nspecificerar ett slumpartat antal repetitioner i intervallet M till N,\noch \"x\" är den egentliga formatspecifikatören/platshållaren.\nDen valbara asterisken (*) innebär att varje tecken endast får förekomma en\ngång i sekvensen. Exempel: \"%16u\" betyder \"Infoga 16 slumpartade\nversaler i lösenordet\".
+
+List of placeholders with optional argument \"N\":
+Lista över platshållare med tilläggsargument \"N\":
+
+custom character set
+anpassad teckenuppsättning
+
+vowels, lower-case
+vokaler, gemener
+
+vowels, mixed-case
+vokaler, gemener och VERSALER
+
+vowels, upper-case
+vokaler, VERSALER
+
+consonants, lower-case
+konsonanter, gemener
+
+consonants, mixed-case
+konsonanter, gemener och VERSALER
+
+consonants, upper-case
+konsonanter, VERSALER
+
+List of special format specifiers\n(possible usage of argument \"N\" is indicated by \"{N}\"):
+Lista över speciella formatspecificerare\n(möjlig användning av argument \"N\" indikeras av \"{N}\"):
+
+insert password generated via \"Include characters/words\"
+infoga lösenord genererade via \"Inkludera tecken/ord\"
+
+words from word list, multiple words are separated by spaces
+ord från ordlista, multipla ord separerade med blanksteg
+
+words, multiple words are not separated at all
+ord, multipla ord är inte separerade
+
+repeat input sequence in brackets N times
+upprepa indatasekvens i paranteser N gånger
+
+randomly permute formatted sequence in brackets, keep N characters
+kasta slumpvis om formaterad sekvens inom parenteser, bevara N tecken
+
+treat sequence as character set and insert N characters
+behandla sekvens som teckenuppsättning och infoga N tecken
+
+Additional notes:
+Tilläggsnotiser:
+
+Use the sequence \"%%\" to insert a percent sign.
+Använd sekvensen \"%%\", för att infoga procenttecken.
+
+/////////////// MPPasswGen ///////////////
+
+MP Password Generator
+MP-lösenordsgenerator
+
+Master password
+Huvudlösenord
+
+Enter password...
+Ange lösenord...
+
+Clear
+Rensa
+
+Status:
+Status:
+
+Expiry countdown:
+Utgångsnedräkning:
+
+Ask for password confirmation
+Fråga efter lösenordsbekräftelse
+
+Show 16-bit hash value of password
+Visa 16-bitars hash-värde för lösenord
+
+Key expires after the following time (seconds):
+Nyckel upphör att gälla efter följande tid (sekunder):
+
+Provide compatibility with "Hashapass"
+Tillhandahåll kompatibilitet med "Hashapass"
+
+Password generator
+Lösenordsgenerator
+
+Parameter:
+Parameter:
+
+%d ch. / %.1f bits per ch.
+%d kanaler / %.1f bitar per kanal
+
+Resulting password:
+Genererat lösenord:
+
+Use as default random generator
+Använd som standardslumpgenerator
+
+Alphanumeric
+Alfanumerisk
+
+Hexadecimal
+Hexadecimal
+
+Key has expired.
+Nyckeln har upphört att gälla.
+
+Key has been cleared.
+Nyckeln har tagits bort.
+
+New key generated.
+Ny nyckel genererad.
+
+/////////////// ProvideEntropyDlg ///////////////
+
+Enter or paste some text into the box below, press mouse buttons, or move your mouse within the window.
+Skriv eller klistra in text i textfältet nedan, tryck på musknappar eller flytta runt muspekaren inom fönstret.
+
+%d bits of entropy have been added to the random pool.
+%d entropibitar har lagts till i slumptalspoolen.
+
+/////////////// Other ///////////////
+
+Error while formatting string
+Fel vid strängformatering
+
+Invalid UTF-16 character encoding
+Ogiltig UTF-16 teckenkodning
+
+Error while converting string to UTF-8
+Fel vid konvertering av sträng till UTF-8
+
+Error while decoding UTF-8 string
+Fel vid avkodning av UTF-8-sträng
+
+Unicode string too long
+För lång Unicode-sträng
+
+Invalid ANSI or UTF-8 character encoding, or Unicode string too long
+Ogiltig ANSI- eller UTF-8-kodning, eller för lång Unicode-sträng
+
+Error while encoding Unicode string
+Fel vid Unicode-kodning
+
+Out of disk space
+Slut på diskutrymme
+
+Could not open file/execute operation\n\"%s\".
+Kunde inte starta fil-/exekveringsåtgärd\n\"%s\".
+
+Source file does not contain enough trigrams
+Källfilen innehåller inte tillräckligt med Trigram

@@ -1,0 +1,371 @@
+[LANGUAGENAME]
+Spanish-International
+[LANGUAGEVERSION]
+2.01
+[LANGUAGEAUTHOR]
+Mario Guillermo Macri	// Autor
+
+// Some notes on the format of this file:
+// - The original message in English and its translation must be
+//   separated by a line break.
+// - These "translation units" may be separated by several line breaks.
+// - The "//" sequence marks a comment; the comment begins with this
+//   pattern and applies to the end of the line
+// - The messages may contain so-called escape sequences beginning with a "\":
+//       \n  - marks a line break; mainly used in message boxes
+//       \"  - equal to a simple " (C++ syntax)
+//       \\  - equal to a simple \ (C++ syntax)
+
+/////////////// GUI strings & messages ///////////////
+
+Info
+Información
+
+Warning
+Advertencia
+
+Question
+Confirmación
+
+Error
+Error
+
+Settings
+Ajustes
+
+Include Characters (Pass*words*)
+Incluir Caracteres (Palabras*números)
+
+Length:
+Tamaño:
+
+Character Set:
+Caracteres:
+
+Accept
+Confirmar
+
+Include Words (Pass*phrases*)
+Incluir Palabras ( basada en frases)
+
+Number:
+Número:
+
+Word List File:
+Lista de Palabras:
+
+Browse...
+Buscar...
+
+Load
+Cargar
+
+Combine Words with Characters
+Combinar Palabras con Caracteres
+
+Number of Passwords:
+Numero de passwords:
+
+Generate
+Generar
+
+Generated Password
+Password generado
+
+Click on "Generate"
+Click en "Generar"
+
+Random Pool
+Combinación aleatoria
+
+Entropy Bits: %d/%d
+Bits de entropia: %d/%d
+
+Change Language
+Cambiar lenguaje
+
+Change Max. Word Length...
+Cambiar Máximo de Caracteres...
+
+System Tray Icon
+Icono en Bandeja del Sistema
+
+Show Constantly
+Mostrar Constantemente
+
+Minimize to System Tray
+Minimizar a Bandeja del sistema
+
+Save Settings on Exit
+Salvar ajustes al salir
+
+Save Settings Now
+Salvar ajustes ahora
+
+User Manual
+Manual del usuario
+
+About...
+Acerca del programa...
+
+Restore PWGen
+Restaurar PWGen
+
+Generate Password (%d characters)
+Generar password (%d caracteres)
+
+Generate and Show Password...
+Generar y Mostrar password...
+
+Clear Clipboard
+Limpar portapapeles
+
+Encrypt Clipboard...
+Encriptar portapapeles...
+
+Decrypt Clipboard...
+Desencriptar portapapeles...
+
+Create Random Data File...
+Crear archivo de datos aleatorio...
+
+Exit
+Salir
+
+Hide/show entropy progress
+Ocultar/mostrar barra de progresso
+
+Clear clipboard (text contents only)
+Limpar portapapeles (solamente contenido de texto)
+
+Create file containing purely random data
+Crear archivo con datos aleatorios
+
+Clipboard text encryption (left-click) or decryption (right-click)
+Copiar texto encriptado (boton izquierdo del ratón) o desencriptado (boton derecho del ratón)
+
+Options
+Opciones
+
+Open user manual
+Abrir manual del usuario
+
+Advanced
+Avanzado
+
+Reset Counters
+Resetear contadores
+
+All files (*.*)|*.*|Text files (*.txt)|*.txt
+Todos los Archivos (*.*)|*.*|Archivos de Texto (*.txt)|*.txt
+
+/////////////// Dynamically translated messages ///////////////
+
+PWGen encountered errors during startup:
+PWGen encontro errores durante la inicialización:
+
+Error while loading word list file\n\"%s\".
+Error al cargar archivo con lista de palabras\n\"%s\".
+
+Error while writing to configuration file:\n%s.
+Error durante escritura al archivo de configuración:\n%s.
+
+%d characters / %.1f bits per character
+%d caracteres / %.1f bits por caracter
+
+%d words / %.1f bits per word
+%d palabras / %.1f bits por palabra
+
+Clipboard successfully encrypted.
+Portapapeles encriptado con éxito.
+
+Clipboard successfully decrypted.
+Portapapeles desencriptado con éxito.
+
+No text available to process.
+Sin texto disponible para el proceso.
+
+Decryption failed. This may be attributed\nto the following reasons:
+Desencriptado falló\nPosible motivo:
+
+You entered a wrong password.
+Password incorrecto
+
+The text is corrupted.\n-The text is not encrypted.
+El texto está corrompido\n- El texto no está encriptado
+
+Not enough memory available to perform the operation\nTry to use a shorter text.
+Memoria disponible insuficientel para la operación\nreintentar con menos texto
+
+Invalid number of passwords.\nMinimum is 1 and maximum is %d.
+Número inválido de passwords\nMínimo é 1 e o máximo é %d.
+
+Invalid number of characters.\nMinimum is 1 and maximum is %d.
+Número de caracteres inválido.\nMínimo es 1 e o máximo %d.
+
+Invalid number of words.\nMinimum is 1 and maximum is %d.
+Número de palabras inválido.\nMínimo es1 e máximo %d.
+
+Settings for every password:
+Ajustes para cada password:
+
+Characters: %d, Words: %d
+Caracteres: %d, Palabras: %d
+
+Security: %d bits
+Seguridad: %d bits
+
+Reached the maximum number of bytes allowed\nin the password list.\n\nNumber of passwords has been reduced to %d.
+Máximo número de bytes permitidos alcanzado\nen lista de passwords.\n\nEl número de passwords fue reducido a %d.
+
+Length: %d characters / Security: %d bits
+Longitud: %d caracteres / Seguridad: %d bits
+
+Passwords: %d
+Passwords: %d
+
+Accepted the following %d characters:\n\n%s
+Aceptado los seguintes %d caracteres:\n\n%s
+
+The character set must contain at least\n2 different characters.
+El conjunto de caracteres debe contener al menos\n2 caracteres diferentes.
+
+Select word list file
+Selecione a lista de palavras
+
+Using internal word list now.
+Utilizando lista interna de palabras.
+
+This file has already been loaded.\nDo you want to reload it?
+Este archivo ya esta cargado\nDesea recaregarlo?
+
+Could not open word list file.
+No fue posible abrir la lista de palabras
+
+Word list does not contain enough valid words.\nIt must contain at least 2 different words.\nThe length of the words must not exceed %d.
+La lista de palavras no contiene suficientes palabras válidas\nDebe conter al menos 2 palabras diferentes.\nLa longitud de las palabras no debe exceder %d caracteres.
+
+Successfully loaded %d words.\n\nFirst word: \"%s\".\nRandom word: \"%s\".\nLast word: \"%s\".
+Cargadas con éxito %d palabras.\n\nPrimera palabra: \"%s\".\nPalabra aleatoria: \"%s\".\nÚltima palabra: \"%s\".
+
+Select file
+Seleccionar archivo
+
+File size
+Tamaño del archivo
+
+Enter file size (KB/MB allowed, e.g. 32kb):	// the translation should not be much longer than this message... try to shorten the text, if necessary
+Tamaño de archivo(permitido Kb/Mb, ex: 32kb):
+
+Invalid file size.
+Tamaño de archivo inválido.
+
+Not enough free disk space available\nto create the file.
+Espacio insuficiente en disco\npara crear archivo
+
+Out of disk space.
+Espacio de disco insuficiente
+
+Random data file successfully created.\n%d bytes written.
+Archivo de datos aleatorio creado con éxito\n%d bytes escritos
+
+Error while creating random data file:\n%s.\n\n%d bytes written.
+Error al crear archivo aleatorio:\n%s.\n\n%d bytes escrito.
+
+%s version %s\n%s\n\nHomepage: %s\n\nCurrent language: %s\nLanguage version: %s\nTranslator: %s\n\nThis program is distributed under the terms and conditions\nof the GNU General Public License (GPL).\n\nIf you like it, please let me know!
+%s versión %s\n%s\n\nHomepage: %s\n\nLinguaje actual: %s\nVersión de lenguaje: %s\nTraductor: %s\n\nEste programa es distribuido con terminos y condiciones\nde Licencia Publica GeneralGNU (GPL).\n\nSi le gusta, por favor aviseme!
+
+The language file will be loaded when you\nrestart the program.\n\nDo you want to save the settings and\nrestart the program now?
+El lenguaje se cargara al próximo\ninicio del programa\n\nDesea salvar los cambios y\nreiniciar o el programa ahora?
+
+Change maximum word length
+Cambiar máxima longitud de palabra
+
+Enter the new max. word length (max. %d):
+Número máximo de letras (máx. %d):
+
+Invalid word length.\nMinimum is 1 and maximum is %d.
+Longitud de palabra inválida\nMínimo es 1 y máximo %d.
+
+Password is too long to show it in a\nmessage box like this.
+Password muy largo para ser\nmostrado en esta ventana.
+
+The generated password is:\n\n%s\n\nThe estimated security is %d bits.\nDo you want to use this password?
+El password generado es:\n\n%s\n\nLa seguridad estimada %d bits.\nDesea usar este password?
+
+Could not open user manual.
+No es posible abrir el manual de usuario
+
+/////////////// PasswDlg ///////////////
+
+Enter password:
+Entrrar password:
+
+Confirm password:
+Confirmar password:
+
+Display password
+Mostrar password
+
+OK
+OK
+
+Cancel
+Cancelar
+
+Passwords are not identical.
+Password no son idénticos
+
+Encrypt
+Encriptar
+
+Decrypt
+Desencriptar
+
+/////////////// PasswList ///////////////
+
+Password List
+Lista de passwords
+
+Copy
+Copiar
+
+Select All
+Selecionar Todo
+
+Save As File...
+Salvar Como...
+
+Change Font...
+Cambiar Fuente...
+
+Save password list
+Salvar lista de passwords
+
+Error while creating file:\n%s.
+Error durante la creación del archivo:\n%s.
+
+Password list successfully saved.
+Lista de passwords salvada exitosamente
+
+/////////////// PasswOptionsDlg ///////////////
+
+Advanced Password Options
+Opciones Avanzadas de password
+
+Exclude ambiguous characters (B8G6I1l|0OQDS5Z2) *
+Excluir caracteres ambíguos (B8G6I1l|0OQDS5Z2) * 
+
+First character must not be a lower-case letter *
+El primer caracter no debe ser caracter en minuscula *
+
+Don't separate words by a space
+No separar palabras con espacio
+
+Don't separate words and characters by a '-' sign
+No separar palabras y caracteres con signo '-'
+
+* Selecting one of these options might reduce the security of the passwords. For the first option to take effect, you have to reload the character set first.
+* Selecionando una de estas opciones podrá reducir la seguridad de los passwords. Para tener efecto las modificaciones, debe confirmar los caracteres nuevamente.
+
+/// EOF ///

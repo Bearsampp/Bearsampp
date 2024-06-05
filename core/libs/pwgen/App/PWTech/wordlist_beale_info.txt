@@ -1,0 +1,4 @@
+LANGUAGE:         English
+NUMBER OF WORDS:  8192 (13.0 bits of entropy per word)
+ORIGINAL AUTHOR:  Alan Beale
+SOURCE:           http://world.std.com/%7Ereinhold/beale.wordlist.asc

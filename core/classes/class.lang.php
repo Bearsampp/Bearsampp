@@ -49,6 +49,7 @@ class Lang
     const PAYPAL = 'paypal';
     const PYTHON_CONSOLE = 'pythonConsole';
     const PYTHON_CP = 'pythonCp';
+    const PWGEN = 'pwgen';
     const QUIT = 'quit';
     const READ_CHANGELOG = 'readChangelog';
     const RELOAD = 'reload';
@@ -401,6 +402,7 @@ class Lang
             self::PAYPAL,
             self::PYTHON_CONSOLE,
             self::PYTHON_CP,
+            self::PWGEN,
             self::QUIT,
             self::READ_CHANGELOG,
             self::RELOAD,

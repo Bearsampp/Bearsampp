@@ -1,0 +1,441 @@
+[LANGUAGENAME]
+Українська
+
+[LANGUAGEVERSION]
+2.07
+
+[LANGUAGEAUTHOR]
+Spitsa Igor
+
+[LANGUAGEHELPFILE]
+manual.pdf
+
+Info
+Інформація
+
+Warning
+Увага
+
+Question
+Питання
+
+Error
+Помилка
+
+Settings
+Налаштування
+
+Include Characters (Pass*words*)
+Включати символи
+
+Length:
+Довжина:
+
+Character Set:
+Набір символів:
+
+Details
+Детальніше
+
+Include Words (Pass*phrases*)
+Включати слова (фрази)
+
+Number:
+Число:
+
+Word List File:
+Файл зі списком слів:
+
+Browse
+Огляд
+
+Load
+Завантажити
+
+Combine Words with Characters
+Комбінувати слова й символи
+
+Number of Passwords:
+Кількість паролів:
+
+Generate
+Генерація
+
+Advanced
+Додатково
+
+Generated Password
+Згенерований пароль
+
+Click on "Generate"
+Натисніть на кнопку "Генерація"
+
+Random Pool
+Випадковий пул
+
+Entropy Bits:
+Ентропія біт:
+
+File
+Файл
+
+Exit
+Вихід
+
+Tools
+Інструменти
+
+Clear Clipboard
+Очистити буфер обміну
+
+Encrypt Clipboard...
+Шифрувати дані в буфері обміну...
+
+Decrypt Clipboard...
+Розшифрувати дані в буфері обміну...
+
+Create Random Data File...
+Створення файлу з випадковими даними...
+
+Options
+Опції
+
+Change Language
+Змінити мову
+
+System Tray Icon
+Значок у системному треї
+
+Show Constantly
+Відображати постійно
+
+Minimize Program to System Tray
+Згорнути програму у трей
+
+Save Settings on Exit
+Зберегти налаштування при виході
+
+Save Settings Now
+Зберегти налаштування зараз
+
+Help
+Довідка
+
+Open Manual
+Відкрити керівництво користувача
+
+About...
+Про програму...
+
+Restore PWGen
+Відновити PWGen
+
+Generate Password (%d characters)
+Згенерувати пароль (%d символів)
+
+Generate and Show Password...
+Згенерувати й відобразити пароль...
+
+Open user manual
+Відкрити інструкцію користувача
+
+Hide/show entropy progress
+Сховати / Відобразити прогрес ентропії
+
+Clear clipboard (text contents only)
+Очистити буфер обміну\n(тільки текст)
+
+Create file containing purely random data
+Створити файл, що містить абсолютно випадкові дані
+
+Clipboard text encryption (left-click) or decryption (right-click)
+Зашифрувати буфер обміну (клацнути лівою кнопкою миші)\nчи розшифрувати (правою кнопкою)
+
+Reset Counters
+Скидання лічильників
+
+All files (*.*)|*.*|Text files (*.txt)|*.txt
+Всі файли (*.*)|*.*|Текстові файли (*. TXT) | *. TXT
+
+Undo
+Відмінити
+
+Cut
+Вирізати
+
+Copy
+Копіювати
+
+Paste
+Вставити
+
+Delete
+Видалити
+
+Select All
+Вибрати все
+
+Clear List
+Очистити список
+
+PWGen encountered %d error(s) during startup:
+У процесі запуску PWGen\nвиникло %d помилок(а):
+
+Character set \"%s\" is invalid.
+Набір символів \"%s\" невірний.
+
+Error while loading word list file\n\"%s\".
+Помилка при завантаженні файлу зі списком слів\n\"%s\".
+
+Error while writing to configuration file:\n%s.
+Помилка запису файлу конфігурації:\n%s.
+
+%d characters / %.1f bits per character
+ %d символа(ів) / %.1f біт на символ
+
+%d words / %.1f bits per word
+ %d слів (слова) / %.1f біт на слово
+
+Clipboard successfully encrypted.
+Буфер обміну успішно зашифрований.
+
+Clipboard successfully decrypted.
+Буфер обміну успішно розшифрований.
+
+No text available to process.
+Відсутній текст доступний для обробки.
+
+Decryption failed. This may be attributed\nto the following reasons:
+Не вдалося розшифрувати.\nМожливі причини:
+
+- You entered a wrong password.
+- Ви ввели невірний пароль.
+
+- The text is corrupted.\n- The text is not encrypted.
+- Текст пошкоджений.\n- Текст не зашифрований.
+
+Not enough memory available to perform\nthe operation. Try to use a shorter text.
+Недостатньо пам'яті для виконання операції.\nСпробуйте використати більш коротший текст.
+
+Invalid number of passwords.\nMinimum is 1 and maximum is %d.
+Невірна кількість паролів.\nмінімум 1, а максимум %d.
+
+Invalid number of characters.\nMinimum is 1 and maximum is %d.
+Невірне число символів.\nмінімум 1, а максимум %d.
+
+Invalid number of words.\nMinimum is 1 and maximum is %d.
+Невірна кількість слів.\nмінімум 1, а максимум %d.
+
+Creating password list ...
+Створення списку паролів...
+
+%d of %d passwords generated.
+Згенеровано %d з %d паролів.
+
+PWGen stops here in order to avoid an infinite loop.\nIt is probably not possible to create a list of %d\nunique entries with the current password settings.\n\nNevertheless, %d unique passwords could be\ngenerated successfully.
+PWGen вимушений припинити свою роботу для запобігання безкінечних повторень.\nШвидше всього, з поточними налаштуваннями неможливо створити список унікальних паролів.\n\nПроте, можливо створити\n%d унікальних паролів.
+
+Reached the maximum number of bytes allowed\nin the password list.\n\nNumber of passwords has been reduced to %d.
+Досягнуто максимальне число байт,\nдопустиме в списку паролів.\n\nКількість паролів було скорочено до %d.
+
+%s.\n%d passwords generated.
+%s.\n%d паролів згенеровано.
+
+Copying password list ...
+Копіювання списку паролів ...
+
+%d passwords generated.\r\nMaximum security of each password: %d bits.\r\nMaximum security of the entire list: %d bits.
+%d паролів згенеровано.\r\nМаксимальна надійність для кожного пароля: %d біт.\r\nМаксимальна надійність для вхідного списку: %d біт.
+
+An error has occurred during password generation:\n%s.
+В процесі генерування пароля\nвиникла наступна помилка:\n%s.
+
+Length: %d characters / Security: %d bits
+Довжина: %d символа(ів) / Надійність: %d біт
+
+Passwords: %d
+Паролів: %d
+
+Invalid character set.
+Недопустимій набір символів.
+
+The character set you entered is invalid.\nIt must contain at least 2 different characters.
+Введено невірний набір символів.\nВін повинен складатися принаймі з\n2 різних символів.
+
+Currently loaded character set:
+Завантажений набір символів:
+
+Select word list file
+Виберіть файл зі списком слів
+
+Using internal word list now.
+Зараз використається внутрішній список слів.
+
+This file has already been loaded.\nDo you want to reload it?
+Цей файл вже завантажений.\nПерезавантажити його?
+
+Could not open word list file.
+Неможливо відкрити файл, що містить список слів.
+
+Word list does not contain enough valid words.\nIt must contain at least 2 different words.\nThe length of the words must not exceed %d.
+Не достатня кількість дійсних слів у списку.\nсписок повинен складатися як мінімум з 2 різних слів.\nдовжина слова не повинна перевищувати %d символа(ів).
+
+Successfully loaded %d words.\n\nFirst word: \"%s\".\nRandom word: \"%s\".\nLast word: \"%s\".
+Успішно завантажено %d слів.\n\nПерше слово: \"%s\".\Випадкове слово: \"%s\".\Останнє слово: \"%s\".
+
+Select file
+Оберіть файл
+
+File size
+Розмір файлу
+
+Enter file size (KB/MB allowed, e.g. 32kb):
+Введіть розмір файлу (KB/MB, наприклад 32kb):
+
+Invalid file size.
+Невірний розмір файлу.
+
+Not enough free disk space available\nto create the file.
+Для запису файлу на диск\nне вистачає вільного місця.
+
+Creating random data file ...
+Створення файлу з випадковими данними ...
+
+%d of %d KB written.
+%d з %d KB було записано.
+
+Out of disk space.
+Недостатньо вільного місця.
+
+File \"%s\" successfully created.\n\n%d bytes written.
+Файл \"%s\" успішно створений.\nЗаписано %d байт.
+
+Error while creating file:\n%s.\n\n%d bytes written.
+Помилка при створенні файлу:\n%s.\n\n%d байт записано.
+
+The version of this language (%s) is not\ncompatible with this program version.\nThis version of PWGen requires a language\nversion of at least %s.\n\nDo you want to use it anyway?
+Версія донної мови (%s) не\nспівпадає з версією програми.\nДля PWGen необхідна\n версія не нижче ніж %s.\n\nВсе одно бажаєте її використати?
+
+The version of this language (%s) is higher\nthan the version of this program (%s).\nTherefore, version incompatibilities may occur.\n\nDo you want to use it anyway?
+Версія данної мови (%s) вище, а ніж версія програми (%s).\nТаким чином, може виникнути несумісність версій.\n\nВсе одно бажаєте її використати?
+
+The language file will be loaded when you\nrestart the program.\n\nDo you want to save the settings and\nrestart the program now?
+Обрана мова буде застосована\nпри наступному запуску програми.\n\nБажаєте зберегти зміни й\nперезавантажити програму зараз?
+
+Password is too long to show it in a\nmessage box like this.
+Пароль занадто довгий, щоб\nйого відобразити в такому вікні як це.
+
+The generated password is:\n\n%s\n\nThe estimated security is %d bits.\n\nYes\t-> copy password to clipboard,\nNo\t-> generate new password,\nCancel\t-> cancel process.
+Згенерований пароль:\n\n%s\n\nНадійність пароля: %d біт.\n\nТак\t -> Копіювати пароль у буфер обміну,\nНі\t -> Згенерувати новий пароль,\nВідмінити\t -> Скасувати процес.
+
+All entries will be removed from the list.\nAre you sure?
+Зі списку будуть вилучені всі записи.\nВи згодні?
+
+Could not open file/execute operation\n\"%s\".
+Неможливо відкрити файл/виконати операцію\n\"%s\".
+
+Enter password:
+Введіть пароль:
+
+Confirm password:
+Підтвердіть:
+
+Display password
+Відобразити пароль
+
+OK
+ОК
+
+Cancel
+Скасувати
+
+Passwords are not identical.
+Паролі не збігаються.
+
+Encrypt
+Шифрувати
+
+Decrypt
+Розшифрувати
+
+Password List
+Список паролів
+
+Save As File...
+Зберегти як...
+
+Change Font...
+Змінити шрифт...
+
+Save password list
+Зберегти список паролів
+
+Error while creating file:\n%s.
+Помилка створення файлу:\n%s.
+
+File \"%s\" successfully created.
+Файл \"%s\" успішно створено.
+
+Advanced Password Options
+Розширені опції пароля
+
+Exclude ambiguous characters (B8G6I1l|0OQDS5Z2)
+Виключити двозначні символи (B8G6I1l|0OQDS5Z2)
+
+First character must not be a lower-case letter
+Перший символ не повинен бути прописний
+
+Don't separate words by a space
+Не розділяти слова пробілами
+
+Don't separate words and characters by a '-' sign
+Не розділяти слова символом "-"
+
+Include at least one upper-case letter (A-Z)
+Включити хоча б один прописний символ (A-Z)
+
+Include at least one lower-case letter (a-z)
+Включити хоча б один рядковий символ (a-z)
+
+Include at least one digit (0-9)
+Включити хоча б одну цифру (0-9)
+
+Include at least one special symbol (!"#$%...)
+Включити хоча б один спеціальний символ (!"#$%...)
+
+Exclude repeating consecutive characters (e.g. aa, 11)
+Виключити повторення символів (наприклад, aa, 11)
+
+Exclude duplicate entries in password lists
+Виключити повторення в списку паролів
+
+Redefine ambiguous characters:
+Перевизначити двозначні символи:
+
+Redefine special symbols:
+Перевизначити спеціальні символи:
+
+Maximum length of words in word lists (except default word list):
+Максимальна довжина слів у списку (крім списку за замовчуванням):
+
+Selecting one of these options might reduce the security of the passwords.
+Вібір одного з цих варіантів може знизити надійність пароля.
+
+For this option to take effect, you have to reload the word list first.
+Для застосування необхідно перезавантажити список слів.
+
+Process was cancelled by the user
+Процес був скасований користувачем
+
+About %s
+Про програму %s
+
+Current language: %s\nTranslator: %s
+Поточна мова: %s\nЛокалізація: %s
+
+This program is distributed under the terms and conditions of the GNU General Public License (GPL).
+Ця програма поширюється відповідно до положень та умов GNU General Public License (GPL).
+
+View license
+Ознайомитися з ліцензією
+

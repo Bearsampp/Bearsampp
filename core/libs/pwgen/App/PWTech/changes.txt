@@ -1,0 +1,423 @@
+﻿                            Password Tech
+                            =============
+                Copyright (c) 2002-2024 by Christian Thöing
+
+
+Version 3.5.4
+
+NEW FEATURES:
+
+- "Include characters" option: New placeholder "<<...>>:N[+]" allows specifying
+  custom character set (enclosed within <<...>>) and assigning a frequency
+  value N to it (e.g., "<<abcd0123>>:1+" ensures that generated passwords
+  contain at least one character from the set "abcd0123")
+- Feature "Character Set Builder": New window for composing custom character
+  set strings, which can be copied to the "Character set" box in the main window
+  (press "Build" button below the "Character set" box)
+
+----------
+
+Version 3.5.3 (2023-12-03)
+
+NEW FEATURES:
+
+- Advanced Password Options: New option "Include at least one character from
+  each subset"
+- Advanced Password Options: Min./max. length of words in word lists; upper
+  limit increased to 100 (previously 30)
+- Advanced Password Options: Redefine separators in passphrases, i.e.,
+  separator between words and between words and characters (when combining
+  words with characters from password)
+- PassCube: New filter option "Entries with weak passwords" (View | Filter)
+- PassCube: Applied filter (via View | Filter) displayed in toolbar; can be
+  removed by pressing "(x)" button next to "Filtered" label
+
+CHANGES & IMPROVEMENTS:
+
+- Entropy values of passwords displayed with one decimal (e.g., "92.3")
+- Format password: More verbose information about invalid specifiers
+
+FIXES:
+
+- Encryption/decryption of text from clipboard not functional
+
+----------
+
+Version 3.5.2 (2023-10-01)
+
+NEW FEATURES:
+
+- Generate multiple passwords: "Generate" button redesigned; arrow button opens
+  context menu that allows generating passwords to the clipboard (new) as well
+  as generating passwords to a file
+
+CHANGES & IMPROVEMENTS:
+
+- Appropriate reaction to Windows "end session" event (e.g., system shutdown):
+  All tasks are canceled, configuration settings are saved, database is closed
+  gracefully if possible; otherwise, shutdown is blocked with a corresponding
+  message (e.g., if a database entry is being edited and the changes haven't
+  been confirmed yet)
+- "Advanced Password Option" button in main window displays number of enabled
+  (boolean) options and extended tooltip information
+- Clear clipboard automatically: Clipboard is only cleared if the SHA-256 hash
+  of its contents match the hash of the data that was copied originally
+- External Windows dialogs (e.g., file open/save dialogs) have the same style
+  as the selected user interface style (Configuration | General)
+- PassCube: Database settings: Changing "Number of key derivation rounds" can
+  be canceled in case the parameter has accidentally been set too large
+  
+FIXES:
+
+- "Clear password box automatically" settings not saved to configuration file
+- PassCube: Database not locked when minimizing window
+- PassCube: Wrong position of "Enter password" dialog when restoring window
+  and unlocking database
+- PassCube: "Save automatically" settings not saved to configuration file
+
+----------
+
+Version 3.5.1 (2023-08-01)
+
+NEW FEATURES:
+
+- New option "Load the following profile on startup" in Configuration | General
+
+CHANGES & IMPROVEMENTS:
+
+- Maximum number of passwords that can be generated at once extended to
+  1 trillion (1,000,000,000,000) (note that larger amounts >~10**8 can only be
+  stored in files since the number of Unicode characters displayed in the
+  password list window is limited to 500 million/2 billion in the 32/64-bit
+  version)
+- Suffixes "K", "M", "G"/"B" can be specified in the "Multiple passwords" box
+  to generate multiples of thousands, millions, and billions, respectively
+- Passwords are generated asynchronously in a separate thread, so that progress
+  window stays responsive
+- Include characters / character sets with different frequencies: Now compatible
+  with password option "Each character must occur only once"
+- Password manager: When changing number of KDF rounds via File | Database
+  Settings, the process can be canceled after 1 sec (in case the number of
+  rounds has accidentally been set too high)
+
+FIXES:
+
+- Launching PwTech on system startup caused an error (configuration file and/or
+  randseed.dat file not found)
+- Fixed potential buffer overflows
+
+----------
+
+Version 3.5.0 (2023-04-10)
+
+NEW FEATURES:
+
+- New high-resolution icons
+- Style of user interface can be customized, list of styles available in
+  Configuration | General, including dark styles
+- Password generator, Include characters: Specify (minimum or fixed) number of
+  characters for placeholders by using the syntax <placeholder>:N[+], e.g.
+  <symbols>:2+ (meaning "Include at least two special symbols") 
+- Advanced password options: New option "Assign entropy value to each entry in
+  password list"
+- PassCube: New field "Password changed" (date & time of last password change)
+- PassCube: New field "Password history" (history of up to 255 previous
+  passwords and associated date & time values)
+- PassCube: New option "For new entries, save the following number of previous
+  passwords" in Database Settings
+  
+CHANGES & IMPROVEMENTS:
+
+- Random pool: Cryptographic hash function HMAC-SHA-256 replaced with BLAKE2s
+  for enhanced security and speed
+  
+FIXES:
+
+- Fixed potential buffer overflows
+- Cannot generate passphrases if word list size is exactly 2**N with 17<=N<=20
+- PassCube: Various issues selecting database entries
+
+----------
+
+Version 3.4.5 (2023-01-22)
+
+NEW FEATURES:
+
+- PassCube password manager: Added option to compress database file using the
+  "Deflate" algorithm; available in File | Database Settings | Compression
+- PassCube: When editing a database entry, password needs to be confirmed in a
+  separate dialog if it has been changed manually and if it is hidden in the box
+- PassCube: "Quality bar" below the password box in the edit panel illustrates
+  the estimated quality/security of an entry's password
+- PassCube: Added button next to URL box for opening the specified URL
+- Advanced password strength estimation ("zxcvbn" algorithm) can be enabled in
+  Configuration | Security; it is applied for passwords entered by the user into
+  the password box in the main window, as well as for passwords of database
+  entries in PassCube
+
+CHANGES & IMPROVEMENTS:
+
+- Reworked password quality bar such that the color gradient ranges from 0 bits
+  (red/orange) to 64 bits (midpoint, yellow) to 128+ bits (green); the quality
+  rating is stricter now since the green color starts to become visible at
+  ~75 bits instead of ~55 bits
+- Translations: Changed custom LNG format to PO (GNU gettext) format, which is
+  widely supported by many applications and web services, allowing translators
+  to use dedicated editors such as "Poedit"
+  NOTE FOR TRANSLATORS: Existing translations in the LNG format (.lng file) can
+  be converted into the new PO format (.po file) by loading the translation in
+  PwTech, selecting the corresponding language in the drop-down box (Options |
+  Configuration | Language), and pressing the button "Convert to new PO file
+  format"
+- Format password: Made format specifier <<...>> compatible with options
+  "asterisk (*)" and "random number from range", so that format sequences such
+  as *1-26<<<az>>> ("Randomly permute letters a..z and insert a random number
+  between 1 and 26 of permuted characters into the password") are functional
+
+----------
+
+Version 3.4.4 (2022-10-03)
+
+NEW FEATURES:
+
+- PassCube password manager: Databases can be protected by key files in addition
+  to or in place of a regular password; password entry dialog allows selection
+  of key files and creation of new 256-bit key files
+- PassCube: Recovery password (and/or key file) can be configured to enable
+  recovery of the database in case the regular master password has been lost;
+  databases can then be opened using either password; alternatively, the
+  recovery password may function as an "administrator key" to allow individuals
+  with elevated rights to access all databases in an organization (provided that
+  all databases have been set up with the same recovery password)  
+- PassCube: Remember last selected entry and tag(s) when locking database
+
+CHANGES & IMPROVEMENTS:
+
+- PassCube: Changed HMAC algorithm (to protect data integrity and authenticity)
+  from SHA-256 to SHA-512 in new version of database format (1.3)
+- PassCube: Search options "Fuzzy" and "Case sensitive" moved to context menu,
+  which can be accessed by right-clicking on the search button in the toolbar
+- PassCube: "Notes" column in list view: Ignore line breaks, length limited to
+  200 characters
+- Added digital signatures to all executable files
+  
+FIXES:
+
+- Various minor bug fixes
+
+----------
+
+Version 3.4.3 (2022-06-19)
+
+NEW FEATURES:
+
+- Password manager: Filter entries that will expire soon ("soon" can be
+  specified in the configuration); these entries are marked by a warning
+  triangle symbol in the list view
+- Password manager: Open database as read-only via File | Open As Read-only
+- Configuration | Database: New parameters "Warn if database contains entries
+  that will expire soon" and "Number of days" to specify the term "soon"
+- Password option "Capitalize first letter of each word"
+
+CHANGES & IMPROVEMENTS:
+
+- Configuration | Database: Parameters "Clear clipboard on minimize" and "Clear
+  clipboard on exit" replaced with single parameter "Clear clipboard when
+  closing/locking database" ("Database" sheet)
+- List of advanced password options (checkboxes) rearranged
+  
+FIXES:
+
+- "Include at least one..." options not effective for phonetic passwords in some
+  cases
+- Lua stack overflow when generating large amounts of scripted passwords
+
+----------
+
+Version 3.4.2 (2022-02-27)
+
+NEW FEATURES:
+
+- Tray menu: In case that some windows of the applications are not properly
+  restored by the operating system when switching between multiple monitors,
+  all windows can be restored to the current primary monitor through the
+  "Reset All Window Positions" functionality (available in the tray menu)
+- Password manager: File/database properties dialog accessible via "File |
+  Properties..."
+- Autotype sequence: Command "{wait:N}" (time N in milliseconds between 10 and
+  10000) allows inserting custom delays into a sequence
+- Added random pool cipher "ChaCha8" as a reduced-round variant of the default
+  ChaCha20 stream cipher for performance-critical applications
+- Benchmark test for random pool ciphers
+
+CHANGES & IMPROVEMENTS:
+
+- Changed DPI awareness to "Per Monitor v2"
+  
+----------
+
+Version 3.4.1 (2021-10-30)
+
+NEW FEATURES:
+
+- Command line switch "opendb": Opens password database on startup
+- Command line switch "silent": Launches application in the background (i.e.,
+  without showing main window)
+- Configuration: Option "Launch application on system startup"
+- Password manager: Added "New Entry" button to toolbar
+- Password manager: Autocomplete functionality for "User name" field (suggests
+  user names that already exist in the database)
+
+CHANGES & IMPROVEMENTS:
+
+- Use hardware acceleration for AES if supported by processor
+- Display percentage of maximum entropy (256 bits) in status bar (e.g.,
+  "128 (50%)")
+- Password manager: Improved handling of write-protected files
+- Password manager: Additional icon in toolbar for adding new entry
+
+FIXES:
+
+- Autotype: Added delay of 250ms before sending first character to avoid
+  incomplete typing
+- Password manager: Fixed issues concerning "Expires" field
+- Password manager: Prevent other processes from writing to database file
+  while it is opened in PassCube
+
+----------
+
+Version 3.4.0 (2021-07-04)
+
+NEW FEATURES:
+
+- Password manager: New field "Expires" (including checkbox and calendar for
+  date selection) allows setting an expiry date for the password of a database
+  entry; expired entries are marked with a symbol on the left side of the first
+  column of the list view
+- Password manager: Option "By default, new entries expire after the following
+  number of days" allows setting a default password expiry date for new entries
+- Configuration: Option "Warn if database contains expired entries" displays
+  a message box that allows filtering expired entries in the list view
+
+CHANGES & IMPROVEMENTS:
+
+- Lua scripting language: Update to version 5.4.3
+- Password database format: Version 1.2
+
+FIXES:
+
+- Console output did not support Unicode
+
+----------
+
+Version 3.3.0 (2020-12-30)
+
+NEW FEATURES:
+
+- Password manager: Added global database settings "Generate passwords for new
+  entries using format sequence", "Encryption algorithm" (AES or ChaCha20), and
+  "Number of key derivation rounds"
+- Password manager: Key-value list can be edited in a dedicated window, field
+  in edit panel is read-only
+- Password manager: Added configuration parameter "Save automatically" (with
+  options "After adding/modifying an entry" and "After every change")
+
+CHANGES & IMPROVEMENTS:
+
+- Password manager: Changed scoring system for "fuzzy" search
+- Password manager: Automatically select first search entry
+- Password manager: Search for keyword via hot key: Search is not limited to a
+  single entry anymore (in case there are multiple entries having the same
+  keyword assigned)
+- Password manager: Changed backup feature to support timestamps and consecutive
+  numbering
+- Password entry window: "Remember password" feature only available for text
+  encryption and deterministic random generator (i.e., via Tools | Deterministic
+  Random Generator | Set up)
+- Reduced frequency of "Please donate" messages in "Community" edition
+- Lua scripting language: Update to version 5.4.2
+
+FIXES:
+
+- Password manager: Copy/paste via Ctrl+C and Ctrl+V within database fields
+  did not work
+- Password manager: "Run" command did not work with certain commands, including
+  more complex commands with arguments
+- Text encryption: Decrypted text encoded as UTF-8 instead of UTF-16
+
+----------
+
+Version 3.2.0 (2020-08-05)
+
+NEW FEATURES:
+
+- Native 64-bit version available
+- Password manager: New "Tags" field in password databases allows assigning
+  multiple tags to entries, which can be filtered via the tag list control on
+  top of the list of database entries
+- Option "Ask before exiting application" asks for confirmation via a message
+  box before exiting
+- Option "Clear password box automatically" automatically clears the password
+  box in the main window after a certain time
+  
+CHANGES & IMPROVEMENTS:
+
+- Create random data files: Allow file sizes up to 10 terabytes
+  
+FIXES:
+
+- Several placeholders for character sets ("Include characters" option) not
+  functional
+- File extension filters in open/save dialogs not available in English version
+- Password manager: Dropping dragged entry on "<New Entry>" item caused fatal
+  error
+- Missing translations in German.lng
+
+----------
+
+Version 3.1.0 (2020-06-14)
+
+NEW FEATURES:
+
+- Multilingual support (note: Translation Utility has also been relaunched)
+- Allow comments preceding the file name in file name lists ("Include words"
+  and "Run script"), e.g. "[My word list]C:\Users\user\Documents\mylist.txt"
+- Password manager: "Fuzzy" (approximate) search ("zZ" button in toolbar)
+- Password manager: Rearrange entries ("Edit" menu and context menu of list)
+- Password manager: Allow changing password font ("View" menu)
+
+CHANGES & IMPROVEMENTS:
+
+- "Specify length" option for passphrases: Length specification now refers
+  to the net length of the passphrase (i.e., only counting characters from
+  words and not from the previous "Include characters" option); an asterisk (*)
+  can be specified somewhere in the sequence to count all characters (e.g.,
+  "10-20*", "*>15")
+- Password manager: When creating or opening a database, wait until file name
+  has been selected and/or password has been entered before closing the
+  currently opened database
+- Password manager: Allow access to "File" menu when editing an entry
+- Password manager: "View | Sort Order" options moved to "View | Sort By" menu
+  
+FIXES:
+
+- Wait for running threads to finish upon exit
+- Fixed issues related to "Always on Top" feature
+- Password manager: Sort options not loaded from configuration on startup
+- Password manager: Key-value string not copied when duplicating entry
+
+----------
+
+Version 3.0.0 (2020-05-05)
+
+- Relaunched "PWGen for Windows" as "Password Tech" (PwTech) with lots of
+  new features, including password safe/manager and password generation with
+  Lua scripts
+
+NOTE: Multilingual support is currently not available. It will be added in a
+future release.
+
+----------
+
+Please refer to older versions of the predecessor "PWGen for Windows" for the
+changes in PWGen 1.x and 2.x!

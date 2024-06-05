@@ -1,0 +1,3 @@
+LANGUAGE:         Romanian
+NUMBER OF WORDS:  93008 (16.5 bits of entropy per word)
+AUTHOR:           Adrian Bisericanu

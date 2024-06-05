@@ -1,0 +1,774 @@
+﻿[LANGUAGENAME]
+Turkish
+
+[LANGUAGEVERSION]
+2.4.0
+
+[LANGUAGEAUTHOR]
+Bekir UÇARCI
+
+[LANGUAGEHELPFILE]
+manual.pdf
+
+Info
+Bilgi
+
+Warning
+Dikkat
+
+Question
+Soru
+
+Error
+Hata
+
+Settings
+Seçenekler
+
+Include Characters (Pass*words*)
+Karakter ekle
+
+Length:
+Uzunluk:
+
+Character Set:
+Karakter Seti:
+
+Show details
+Detayları Göster
+
+Include Words (Pass*phrases*)
+Kelime ekle
+
+Number:
+Numara:
+
+Word List File:
+Kelime listesi dosyası:
+
+Browse
+Gözat
+
+Combine Words with Characters
+Karakter ve sözcükleri birleştir
+
+Format password:
+Parola biçimi:
+
+Multiple passwords:
+Çoklu Parola:
+
+Generate
+Oluştur
+
+Generate password list to file
+Dosyaya parola listesi oluştur
+
+Advanced
+Gelişmiş
+
+Generated Password
+Oluşturulan Parolalar
+
+Click on "Generate"
+"Oluştur"a tıklayın
+
+Hide/show password
+Parolayı Göster/Gizle
+
+Random Pool
+Rastgele Oluştur
+
+Entropy Bits:
+Entropi bit
+
+File
+Dosya
+
+Profile
+Profil
+
+Profile Editor...
+Profil Editor
+
+File Encoding
+Dosya Kodlama Türü
+
+Exit
+Çıkış
+
+Tools
+Araçlar
+
+Clear Clipboard
+Panoyu Temizle
+
+Encrypt Clipboard...
+Panoyu şifrele..
+
+Decrypt Clipboard...
+Pano şifresini çöz..
+
+Create Random Data File...
+Rastgele Data Dosyası Oluştur..
+
+Create Trigram File...
+Trigram Dosyası Oluştur..
+
+Options
+Ayarlar
+
+Language
+Dil
+
+System Tray Icon
+Sistem Tepsisi İkonu
+
+Set Hot Key...
+Kısayol tuşu ata
+
+Show Constantly
+Sürekli Göster
+
+Minimize Program to System Tray
+Programı sistem tepsisine küçült
+
+Save Settings on Exit
+Ayarları Kapatırken Kaydet
+
+Save Settings Now
+Ayarları Şimdi Kaydet
+
+Help
+Yardım
+
+Open Manual
+Klavuzu Aç
+
+Visit Website
+Websitesini Ziyaret Edin
+
+Donate...
+Bağış Yapın...
+
+Check for Updates
+Güncellemeleri Kontrol Et
+
+Timer Info...
+Zamanlama Bilgisi...
+
+About %s...
+%s Hakkında
+
+Restore PWGen
+PWGen'i Geriyükle
+
+Generate Password
+Parola Oluştur
+
+Generate and Show Password...
+Parola Oluştur ve Göster...
+
+Open user manual
+Klavuzu Açın
+
+Hide/show entropy progress
+Entropi süreçlerini Gizle/Göster
+
+Clear clipboard (text contents only)
+Panoyuu Temizle (sadece textler)
+
+Create file containing purely random data
+Tamamen rastgele veri içeren dosya oluştur
+
+Clipboard text encryption (left-click) or decryption (right-click)
+Panoya metin şifreleme(sol-tık) ya da şifre çözme (sağ-tık)
+
+Load, create or delete profiles
+Profil yükle, oluştur ya da sil
+
+Reset Counters
+Sayaçları Sıfırla
+
+All files (*.*)|*.*|Text files (*.txt)|*.txt|Trigram files (*.tgm)|*.tgm
+Tüm dosyalar (*.*)|*.*|Metin dosyaları (*.txt)|*.txt|Trigram dosyaları (*.tgm)|*.tgm
+
+Undo
+Geri Al
+
+Cut
+Kes
+
+Copy
+Kopyala
+
+Paste
+Yapıştır
+
+Delete
+Sil
+
+Select All
+Hepsini Seç
+
+Clear List
+Listeyi Temizle
+
+Change Font...
+Yazı tipi değiştir..
+
+Enable Password Testing
+Parola-Testi etkinleştir
+
+Could not read random seed file\n\"%s\".
+Rastgele-tohum dosyası okunamadı\n\"%s\".
+
+Could not write to random seed file\n\"%s\".
+Rastgele-tohum dosyası yazılamadı\n\"%s\".
+
+Unknown command line switch(es):\n%s
+Bilinmeyen komut satırı anahtar(lar)ı:\n%s
+
+PWGen encountered %d error(s) during startup:
+PWGen açılırken %d hata(lar) oluştu:
+
+Character set \"%s\" is invalid.
+Karakter kümesi \"%s\" geçersiz.
+
+Error while writing to configuration file:\n%s.
+Yapılandırma dosyası yazılırken hata oluştu:\n%s.
+
+%d characters / %.1f bits per character
+%d karakterler / %.1f bit her karakter için
+
+%d words / %.1f bits per word
+%d kelimeler / %.1f bit her kelime için
+
+Could not open trigram file.
+Trigram dosyası açılamıyor
+
+Invalid trigram file.
+Geçersiz trigram dosyası
+
+Clipboard successfully encrypted.
+Pano başarı ile şifrelendi.
+
+Clipboard successfully decrypted.
+Pano şifresi başarıyla çözüldü.
+
+Could not open clipboard.
+Panoya açılamadı.
+
+The text to be encrypted is too long.
+Şifreleyebilmek için metin çok uzun.
+
+No text available to process.
+İşlemek için kullanılabilir metin yok.
+
+Not enough memory available to perform\nthe operation. Try to use a shorter text.
+Yeterli hafıza yok \nİşlemi gerçekleştirmek için kullanılabilir hafıza yok.Daha kısa bir metin deneyin.
+
+Decryption failed. This may be attributed\nto the following reasons:
+Şifre çözme başarısız oldu. Olası \n Bunun nedenleri şunlar:
+
+- You entered a wrong password.
+- Yanlış şifre girdiniz.
+
+- The text is corrupted.\n- The text is not encrypted.
+- Metin bozuk \n metin şifreli değil ..
+
+This should not have happened:\nDecryption successful, but decompression\nfailed.
+Şifre çözme başarılı oldu, ancak \n dekompresyon başarısız oldu: Bu ​​böyle olmaması gerekirdi.
+
+Could not register hot key %s.\nPlease try another key combination.
+Kısayol %s kaydedilemedi. \nLütfen farklı bir tuş kombinasyonu deneyin.
+
+The selected file already exists. Do you\nwant to append passwords to this file\n(existing passwords will be preserved),\nor do you want to completely overwrite it?\n\nYes\t-> append passwords,\nNo\t-> overwrite file,\nCancel\t-> cancel process.
+Seçilen dosya zaten var. Bu dosyaya şifre eklemek istiyorum \n(Mevcut şifreler korunacaktır), \yada Tamamen üzerine yazılmasını ister misiniz?\n\Evet\t->şifre ekle, \nNo\t->dosyanın üzerine yaz,\nİptal\t->İşlemi sonlandır.
+
+Creating password list ...
+Parola listesi oluşturuluyor..
+
+%d of %d passwords generated.
+%d & %d parola oluşturuldu.
+
+Format string produces empty password
+Biçimlendirme komutu boş parolalar oluşturuyor.
+
+\"%P\" is not specified.
+\"%P\" belirtilmemiş.
+
+Password not available.
+Parola mevcut değil.
+
+Password too long.
+Parola çok uzun.
+
+Invalid format specifier \"%%%s\".
+Geçersiz biçim belirteci \"%%%s\".
+
+The estimated list size will probably exceed\nthe internal memory limit.\nPlease reduce the number of passwords
+Listenin tahmini boyutu \ nAkışta dahili bellek sınırı aşması muhtemeldir. \nLütfen şifreleri sayısını azaltın
+
+The memory limit of the password list has\nbeen reached.\n\nThe number of passwords has been\nreduced to %d.
+Parola listesi ve\n bellek sınırı olağanı aştı.\nParola sayısı%d düşürülmüştür.
+
+%d passwords generated.
+%d Parola oluşturuldu.
+
+Copying password list ...
+Parola listesi oluşturuluyor...
+
+%d passwords generated.\r\nSecurity of each password: %d bits.\r\nMaximum security of the entire list: %d bits.
+%d Parola oluşturuldu.\r\nParola başına güvenlik seviyesi: %d Bit.\r\nMaksimum güvenlik: %d Bit.
+
+File \"%s\" successfully created.\n\n%d passwords written.
+Dosya \"%s\" başarıyla oluşturuldu.\n\n%d Parola yazıldı.
+
+An error has occurred during password generation:\n%s.
+Parola oluşturma sırasında buradaki hatalar oluştu:\n%s.
+
+%d passwords written to file \"%s\".
+%d kadar parola \"%s\" dosyaya yazıldı.
+
+%d bits / %d characters
+%d Bit / %d karakterler
+
+Passwords: %d
+Parolalar: %d
+
+Invalid character set.
+Geçersiz karakter seti.
+
+default (English) trigrams
+Standart Trigram (English)
+
+File \"%s\"
+Dosya \"%s\"
+
+(phonetic, based on trigram frequencies\nfrom the following source:\n<%s>)
+(fonetik, Aşağıdaki kaynaktan\n trigram frekanslara dayalı,:\n<%s>)
+
+The character set you entered is invalid.\nIt must contain at least 2 different characters.
+Girdiğiniz karakter set geçersiz.\nEn az 2 farklı karakter içermeli.
+
+Currently loaded character set:
+Yüklü karakter kümeleri:
+
+Could not open file.
+Dosya açılamadı.
+
+Not enough valid words.
+Geçerli kelimeler yetersiz.
+
+Select word list file
+Kelime seçmek için dosyayı seçin
+
+Error while loading the file\n\"%s\":\n%s
+Dosya yüklenirken hata oluştu\n\"%s\":\n%s
+
+default (English) word list
+Standart-Kelime Listesi (Englisch)
+
+Currently loaded word list:
+Yüklü kelime listeleri:
+
+First word:
+İlk Kelime:
+
+Random word:
+Rastgele Kelime:
+
+Last word:
+Son Kelime:
+
+The version of this language (%s) is not\ncompatible with this program version.\nThis version of PWGen requires a language\nversion of at least %s.\n\nDo you want to use it anyway?
+Bu dil paketi (%s) mevcut\n güncelleme ile uyumlu değil\nPWGen'in bu versiyonu için en az %s çeviri gerekli\n\nYinede kullanmak ister misiniz?
+
+The version of this language (%s) is higher\nthan the version of this program (%s).\nTherefore, version incompatibilities may occur.\n\nDo you want to use it anyway?
+Bu dil paketi (%s)\n mevcut programdan üst sürüm (%s)\nVersiyon uyumsuzlukları oluşabilir.\nYinede kullanmak ister misiniz?
+
+The language file will be loaded when you\nrestart the program.\n\nDo you want to save the settings and\nrestart the program now?
+Dil paketi, program yeniden başlatılınca\n etkin olacak.\n\nAyarları kaydedip\n şimdi yeniden başlatmak ister misiniz?
+
+Password is too long to show it in a\nmessage box like this.\n\nIt has been copied to the clipboard.
+Parola bu mesaj kutusunda gösterilemeyecek \nkadar uzun.\n\nBu panoya kopyalandı.
+
+The generated password is:\n\n%s\n\nThe estimated security is %d bits.\n\nYes\t-> copy password to clipboard,\nNo\t-> generate new password,\nCancel\t-> cancel process.
+Oluşturulan parola:\n\n%s\n\nTahmini güvenliği %d Bit.\n\nEvet\t-> Parolayı panoya kopyala\nHayır\t-> Yeni bir parola oluştur \nİptal.\t-> İşlemi sonlandır.
+
+All entries will be removed from the list.\nAre you sure?
+Tüm kayıtlar listeden kaldırılacak.\nEmin misiniz?
+
+Total entropy bits: %d
+Toplam Entropi-Biti: %d
+
+High-resolution timer used:\n%s\n\nCurrent value: %s.
+Kullanılan yüksek çözünürlüklü çekim:\n%s\n\nMevcut değeri: %s.
+
+Could not download version file
+Sürüm dosyası indirilemedi
+
+Unknown format of version file
+Bilinmeyen biçimde sürüm dosyası
+
+A new version (%s) of PWGen is available!\nDo you want to visit the download page now?
+PWGen'in yeni bir versiyonu (%s)mevcut!\nİndirme sayfasını ziyaret etmek ister misiniz?
+
+Your version of PWGen is up-to-date.
+PWGen şu anda güncel.
+
+Error while checking for updates:\n%s.
+Güncel sürüm aranırken hata oluştu:\n%s.
+
+Enter password:
+Parolayı girin:
+
+Confirm password:
+Parolayı onaylayın:
+
+Display password
+Parolayı göster
+
+OK
+Tamam
+
+Cancel
+İptal
+
+Passwords are not identical.
+Parolalar aynı değil.
+
+Encrypt
+Şifrele
+
+Decrypt
+Şifreyi Aç
+
+Password List
+Parola Listesi
+
+Save As File...
+Dosya olarak kaydet...
+
+Save password list
+Parola listesini kaydet
+
+Error while creating file\n\"%s\":\n%s.
+Dosya oluşturulurken hata oluştu\n\"%s\":\n%s.
+
+File \"%s\" successfully created.
+\"%s\" dosyası başarıyla oluşturuldu.
+
+Advanced Password Options
+Gelişmiş Parola Ayarları
+
+Exclude ambiguous characters
+Belirsiz karakterler hariç
+
+First character must not be a lower-case letter
+İlk harf küçük olamaz
+
+Don't separate words by a space
+Kelimelerin arasına boşluk koymayın
+
+Don't separate words and characters by a '-' character
+Kelimeleri "-" gibi karakterler kullanarak ayırmayın
+
+Reverse default order of character/word combinations
+Karakter/Kelime kombinasyonunun mevcut ayarını tersine çevir
+
+Include at least one upper-case letter (A-Z)
+En az bir tane büyük harf olmalı (A-Z)
+
+Include at least one lower-case letter (a-z)
+En az bir küçük harf olmalı (a-z)
+
+Include at least one digit (0-9)
+En az bir tane rakam olmalı (0-9)
+
+Include at least one special symbol (!"#$%...)
+En az bir özel karakter olmalı (!"#$%...)
+
+Exclude repeating consecutive characters (e.g. aa, 11)
+Tekrarlayan ardışık karakterlerden sakının (ör. aa,11)
+
+Exclude duplicate entries in password lists
+Parola listesinde aynı girişleri kullanmaktan kaçının
+
+Convert all words in word lists to lower-case
+Kelime listesindeki tüm kelimeleri küçük harfe çevir
+
+Redefine ambiguous characters:
+Belirsiz işaretleri yeniden tanımlayın:
+
+Redefine special symbols:
+Özel işaretleri yeniden tanımlayın:
+
+Maximum length of words in word lists (except default word list):
+Kelime listelerinin maksimum uzunluğu (varsayılan liste dışında):
+
+Trigram file for generating phonetic (pronounceable) passwords:
+Fonetik şifreler oluşturmak için(telafuz) trigram dosyası:
+
+Applies to pass_words_.
+pass_words_ için geçerlidir.
+
+Applies to pass_phrases_.
+Pass_phrases_ için geerlidir
+
+Applies to formatted passwords.
+Biçimlendirilmiş parolalar için geçerlidir.
+
+Applies to phonetic passwords.
+Fonetik parolalar için geçerlidir.
+
+Selecting one of these options might reduce the security of generated passwords.
+Bu seçeneklerden birini seçemek şifre güvenliğini azaltabilir.
+
+These options also apply to formatted passwords.
+Bu seçenekler aynı zamanda şifreleri için biçimlendirilir.
+
+Deselect All
+Tüm seçimleri kaldır
+
+Invert Selection
+Seçimleri tersine çevir
+
+Create Random Data File
+Rastgele veri dosyası oluştur
+
+File name:
+Dosya adı:
+
+File size:
+Dosya boyutu:
+
+Bytes
+Byte
+
+Kilobytes
+Kilobyte
+
+Megabytes
+Megabyte
+
+Close
+Kapat
+
+Create file
+Dosya oluştur
+
+Invalid file size.
+Geçersiz dosya boyutu
+
+Not enough free disk space available\nto create the file.
+Dosya oluşturmak için\n yetersiz disk alanı
+
+Creating random data file ...
+Rastgele veri dosyası oluşturuluyor...
+
+%d of %d KB written.
+%d of %d KB yazıldı.
+
+File \"%s\" successfully created.\n\n%d bytes written.
+\"%s\" dosyası başarıyla oluşturuldu.\n\n%d byte yazıldı.
+
+Error while creating file\n\"%s\":\n%s.\n\n%d bytes written.
+\"%s\" dosyası oluşturulurken hata:\n%s.\n\n%d Byte yazıldı.
+
+Profile Editor
+Kullanıcı Editorü
+
+Load
+Yükle
+
+Confirm
+Kabul
+
+Profile name:
+Kullanıcı adı:
+
+Add
+Ekle
+
+Save "advanced password options" for this profile
+Bu kullanıcı içi "gelişmiş parola ayarları" kaydet
+
+Are you sure you want to delete %d profile(s)?
+%d Kullanıcıyı(ları) silmek istediğinize emin misiniz?
+
+Maximum number of profiles (%d) reached.\nPlease delete or overwrite profiles.
+Maksimum kullanıcı sayısına (%d) ulaşıldı.\nLütfen silin ya da kullanıcıların üzerine yazın.
+
+A profile with the name \"%s\" already exists.\nDo you want to overwrite it?
+Ein Profil mit dem Namen \"%s\" existiert bereits.\nMöchten Sie es überschreiben?
+
+Set Hot Key
+Kısayol tuşu ayarla
+
+Activate hot key:
+Kısayolu etkinleştir:
+
+Actions
+Eylemler
+
+Show/restore main window
+Ana pencereyi Göster/Gizle
+
+No further action
+İleri aşama yok
+
+Generate single password in main window
+Ana pencere içinde tek parola oluştur
+
+Generate multiple passwords
+Birden çok parola oluştur
+
+Generate password and copy it to the clipboard
+Parola oluştur ve onu panoya kopyala
+
+Generate password and show it in a message box
+Parola oluştur ve göster
+
+Please select an action.
+Lütfen bir eylem seçin
+
+Create Trigram File
+Trigram dosyası oluştur
+
+Source file (e.g., dictionary, word list):
+Kaynak dosya (z.B. sözlük, kelime listesi):
+
+Destination file (trigram file):
+Hedef dosya (Trigram dosyası):
+
+Trigram file \"%s\" successfully created.\n\n%d trigrams evaluated.\n%1.2f bits of entropy per letter.
+\"%s\" trigram dosyası başarıyla oluşturuldu.\n\n%d Trigram değerlendirildi.\n%1.2f bit her entropi harf için.
+
+Process was cancelled by the user
+İşlem kullanıcı tarafından iptal edildi
+
+About %s
+%s Hakkında
+
+Current language: %s\nTranslator: %s
+Mevcut di: %s\nÇeviren: %s
+
+This program is distributed under the terms and conditions of the GNU General Public License (GPL).
+Bu program GNU Genel Kamu Lisansı (GPL) şartları altında dağıtılmaktadır.
+
+View license
+Lisansı görüntüle
+
+Quick help
+Hızlı yardım
+
+You can use the following placeholders:
+Aşağıdaki yer tutucuları kullanabilirsiniz:
+
+without ambiguous characters
+belirsiz olmayan karakterlerle
+
+special symbols
+özel semboller
+
+brackets
+parantezler
+
+punctuation marks
+noktalama işaretleri
+
+higher ANSI characters
+daha yüksek ANSI karakterler
+
+generate phonetic password
+fonetik parola oluştur
+
+Comments may be provided in square brackets \"[...]\"\nat the beginning of the sequence.
+Yorumlarda köşeli parantez sağlanabilir \"[...]\" \n dizisinin başında.
+
+Format specifiers have the form \"%Nx\", where the optional argument \"N\"\nspecifies the number of repetitions (between 1 and 99999), and \"x\" is\nthe actual format specifier/placeholder. Example: \"%100u\" means\n\"Insert 100 random upper-case letters into the password\".
+Biçim belirteçleri formu \"%Nx\", isteğe bağlı değişkende \"N\"\n tekrar sayısını belirtir ( 1 & 99999), ve \"x\" gerçek biçim belirteci. Örnek: \"%100u\" nın anlamı "şifre içine 100 tane büyük harf ekle"
+
+List of placeholders with optional argument \"N\":
+İsteğe bağlı argüman tutucuları listesi \"N\":
+
+custom character set
+özel karakter kümesi
+
+vowels, lower-case
+ünlüler, küçük harf
+
+vowels, mixed-case
+ünlüler, büyük ve küçük harf karışık
+
+vowels, upper-case
+ünlüler, büyük harf
+
+consonants, lower-case
+ünsüzler, küçük harf
+
+consonants, mixed-case
+ünsüzler, büyük ve küçük harf karışık
+
+consonants, upper-case
+ünsüzler, büyük harf
+
+List of special format specifiers\n(possible usage of argument \"N\" is indicated by \"{N}\"):
+özel format belirteçleri listesi\n(argüman olası kullanımı \"N\" \"{N}\" tarafından belirtilir):
+
+insert password generated via \"Include characters/words\"
+füge Passwort ein, das mit \"Zeichen/Wörter verwenden\" generiert wurde
+
+words from word list, multiple words are separated by spaces
+kelime listesinden kelimeler, birden fazla kelime boşluklarla ayrılır
+
+words, multiple words are not separated at all
+Kelimeler, birkaç kelime ayrılmış değildir
+
+repeat input sequence in brackets N times
+parantez içinde N kere giriş sırası tekrarla
+
+randomly permute formatted sequence in brackets
+parantez içinde rastgele permute biçimlendirilmiş dizi
+
+treat sequence as character set and insert N characters
+Karakter olarak dizi düzeltmesi için N tane karakter ekleyin ve ayarlayın
+
+Additional notes:
+Ek notlar:
+
+Use the sequence \"%%\" to insert a percent sign.
+Dizi kullanımı \"%%\", bir yüzde işareti ekleme için
+
+Error while formatting string
+Dizi biçimlendirilirken hata
+
+Invalid UTF-16 character encoding
+Geçersiz UTF-16 karakter kodlaması
+
+Error while converting string to UTF-8
+UTF-8 dize dönüştürme hatası
+
+Error while decoding UTF-8 string
+UTF-8 dizesi çözümü başarısız oldu
+
+Unicode string too long
+Unicode dizesi çok uzun
+
+Invalid ANSI or UTF-8 character encoding, or Unicode string too long
+Geçersiz ANSI veya UTF-8 karakter kodlaması veya Unicode dizesi çok uzun
+
+Error while encoding Unicode string
+Unicode dize kodlama başarısız oldu
+
+Out of disk space
+Yeterli bellek yok
+
+Could not open file/execute operation\n\"%s\".
+Dosya açılamıyor/yürütülen eylem\n\"%s\".
+
+Source file does not contain enough trigrams
+Kaynak dosya yeterli trigram içermiyor
+

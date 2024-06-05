@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 class TplAppTools
 {
@@ -106,6 +113,13 @@ class TplAppTools
         );
         $resultItems .= $tplGenSslCertificate[TplApp::SECTION_CALL] . PHP_EOL;
         $resultActions .= $tplGenSslCertificate[TplApp::SECTION_CONTENT];
+
+        // Pwgen password manager
+        $resultItems .= TplAestan::getItemExe(
+                $bearsamppLang->getValue(Lang::PWGEN),
+                $bearsamppCore->getPwgenExe(),
+                TplAestan::GLYPH_PWGEN
+            ) . PHP_EOL;
 
         return $resultItems . PHP_EOL . $resultActions;
     }

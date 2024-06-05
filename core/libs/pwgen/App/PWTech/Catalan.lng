@@ -1,0 +1,1006 @@
+﻿[LANGUAGENAME]
+Catalan
+[LANGUAGEVERSION]
+2.8.0
+[LANGUAGEAUTHOR]
+Hiro5 (groccat AT gmail)
+[LANGUAGEHELPFILE]
+manual.pdf
+
+// Some notes on the format of this file:
+// - The original message in English and its translation must be
+//   separated by a line break.
+// - These "translation units" may be separated by several line breaks.
+// - The "//" sequence marks a comment; the comment begins with this
+//   pattern and applies to the end of the line
+// - The messages may contain so-called escape sequences beginning with a "\":
+//       \n  - marks a line break; mainly used in message boxes
+//       \"  - equal to a simple " (C++ syntax)
+//       \\  - equal to a simple \ (C++ syntax)
+//
+// IMPORTANT: When saving the file, please select a Unicode encoding
+// (either UTF-8, UTF-16, or UTF-16 Big Endian) *with* BOM (Byte-Order Mark
+// at the beginning of the file), do NOT use ANSI!
+//
+// By the way: I wrote a small tool, "PWGen Translation Utility", especially
+// for making translations of the program. Visit:
+// http://sourceforge.net/projects/pwgen-win/files/Tools/Translation%20Utility/
+
+
+/////////////// Main Window - Captions etc. ///////////////
+
+Info
+Informació
+
+Warning
+Advertència
+
+Question
+Pregunta
+
+Error
+Error
+
+Settings
+Opcions
+
+Include Characters (Pass*words*)
+Afegeix caràcters (mots de pas)
+
+Length:
+Longitud:
+
+Character Set:
+Joc de caràcters:
+
+Show details
+Mostra detalls
+
+Include Words (Pass*phrases*)
+Afegeix mots (frases de pas)
+
+Number:
+Número:
+
+Word List File:
+Fitxer de llista de mots:
+
+Browse
+Navega
+
+Combine Words with Characters
+Combina mots amb caràcters
+
+Format password:
+Format de contrasenya:
+
+Multiple passwords:
+Múltiples contrasenyes:
+
+Generate
+Genera
+
+Generate password list to file
+Genera llista de contrasenyes a un fitxer
+
+Advanced
+Avançat
+
+Generated Password
+Contrasenya generada
+
+Click on "Generate"
+Feu clic a "Genera"
+
+Hide/show password
+Amaga/mostra contrasenya
+
+Hold left mouse button to drag & drop password
+Manté el botó esquerre del ratolí per arrossegar contrasenyes
+
+Random Pool
+Combinació aleatòria
+
+Entropy Bits:
+Bits d'entropia:
+
+File
+Fitxer
+
+Profile
+Perfil
+
+Profile Editor...
+Editor de perfils...
+
+Exit
+Surt
+
+Tools
+Eines
+
+Clear Clipboard
+Neteja el porta-retalls
+
+Encrypt Clipboard...
+Xifra el porta-retalls...
+
+Decrypt Clipboard...
+Desxifra el porta-retalls...
+
+Create Random Data File...
+Crea fitxer de dades aleatòries...
+
+Create Trigram File...
+Crea fitxer de trigrames...
+
+MP Password Generator...
+Generador de contrasenyes MP...
+
+Deterministic Random Generator
+Generador aleatori determinista
+
+Reset
+Reinicia
+
+Deactivate
+Desactiva
+
+Provide Additional Entropy
+Proporciona entropia addicional
+
+As Text...
+D'un Text...
+
+From File...
+D'un fitxer...
+
+Options
+Opcions
+
+Configuration...
+Configuració...
+
+Language
+Idioma
+
+Always on Top
+Sempre a sobre
+
+Save Settings on Exit
+Desa les opcions en sortir
+
+Save Settings Now
+Desa les opcions ara
+
+Help
+Ajuda
+
+Open Manual
+Obre el manual
+
+Visit Website
+Visita la pàgina web
+
+Donate...
+Feu una donació...
+
+Check for Updates
+Cerca actualitzacions...
+
+Timer Info...
+Informació de temporitzador...
+
+About %s...
+Quant a %s...
+
+Restore PWGen
+Restaura PWGen
+
+Generate Password
+Genera contrasenya
+
+Generate and Show Password...
+Genera i mostra contrasenya
+
+Open user manual
+Obre manual d'usuari
+
+Hide/show entropy progress
+Amaga/mostra progrés d'entropia
+
+Clear clipboard (text contents only)
+Buida el porta-retalls (si només té text)
+
+Clipboard text encryption (left-click) or decryption (right-click)
+Xifra (clic dret) o desxifra (clic esquerre) el text del porta-retalls
+
+Load, create or delete profiles
+Carrega, crea o esborra perfils
+
+Generate passwords based on a master password
+Genera contrasenyes segons una contrasenya mestra
+
+Change main configuration of the program
+Canvia la configuració principal del programa
+
+Reset Counters
+Reinicia els comptadors
+
+All files (*.*)|*.*|Text files (*.txt)|*.txt|Trigram files (*.tgm)|*.tgm
+Tots els fitxers (*.*)|*.*|Fitxers de text (*.txt)|*.txt|Fitxers de trigrames (*.tgm)|*.tgm
+
+Undo
+Desfés
+
+Cut
+Retalla
+
+Copy
+Copia
+
+Encrypt && Copy
+Encripta i copia
+
+Paste
+Enganxa
+
+Delete
+Esborra
+
+Select All
+Selecciona-ho tot
+
+Clear List
+Neteja la llista
+
+Editable
+Editable
+
+Enable Password Testing
+Activa prova de contrasenya
+
+Change Font...
+Canvia la lletra...
+
+Select high-entropy file
+Selecciona fitxer d'alta entropia
+
+/////////////// Main Window - Messages ///////////////
+
+Could not read random seed file\n\"%s\".
+No s'ha pogut llegir el fitxer de llavor aleatòria\n\"%s\".
+
+Could not write to random seed file\n\"%s\".
+No s'ha pogut escriure el fitxer de llavor aleatòria\n\"%s\".
+
+Unknown command line switch(es):\n%s
+Opcions desconegudes de la línia d'ordres:\n%s
+
+Error while loading word list file\n\"%s\".
+Error mentre es carregava el fitxer de llista de mots\n"%s\".
+
+PWGen encountered %d error(s) during startup:
+PWGen ha trobat %d error(s) durant la inicialització:
+
+Character set \"%s\" is invalid.
+El joc de caràcters \"%s\" no és vàlid.
+
+Error while writing to configuration file:\n%s.
+Error mentre s'escrivia el fitxer de configuració:\n%s.
+
+%d characters / %.1f bits per character
+%d caràcters / %.1f bits per caràcter
+
+%d words / %.1f bits per word
+%d mots / %.1f bits per mot
+
+Could not open trigram file.
+No s'ha pogut obrir el fitxer de trigrames.
+
+Invalid trigram file.
+El fitxer de trigrames no és vàlid.
+
+Text successfully encrypted.
+Text xifrat correctament.
+
+Text successfully decrypted.
+Text desxifrat correctament.
+
+Could not open clipboard.
+No s'ha pogut obrir el porta-retalls.
+
+The text to be encrypted is too long.
+El text a xifrar és massa llarg.
+
+No text available to process.
+Cap text disponible per processar.
+
+Not enough memory available to perform\nthe operation. Try to use a shorter text.
+No hi ha prou memòria disponible per fer\nl'operació. Prova utilitzar un text més curt.
+
+Decryption failed. This may be attributed\nto the following reasons:
+Ha fallat el desxifratge. Això\npot ser degut pels següents motius:
+
+- You entered a wrong password.
+- Heu introduït una contrasenya incorrecta.
+
+- The text is corrupted.\n- The text is not encrypted.
+- El text està malmès.\n- El text no està xifrat.
+
+This should not have happened:\nDecryption successful, but decompression\nfailed.
+Això no hauria d'haver passat:\nDesxifratge correcte,\nperò la descompressió ha fallat.
+
+Could not register hot key %s.\nPlease try another key combination.
+No s'ha pogut registrar la drecera de teclat %s.\nProveu amb una combinació diferent de tecles.
+
+The selected file already exists. Do you\nwant to append passwords to this file\n(existing passwords will be preserved),\nor do you want to completely overwrite it?\n\nYes\t-> append passwords,\nNo\t-> overwrite file,\nCancel\t-> cancel process.
+El fitxer seleccionat ja existeix. Voleu\nafegir les contrasenyes a aquest fitxer\n(les contrasenyes existents es conservaran),\no voleu sobreescriure'l completament?\n\nSí\t-> afegeix contrasenyes,\nNo\t-> sobreescriu el fitxer,\nCancel·la\t-> cancel·la el procés.
+
+If the option \"Each character must occur\nonly once\" is activated, the password length\nis limited to the size of the character set (%d).
+Si l'opció "Sense caràcters repetits"\n està activada, la mida de contrasenya\nes limita a la mida del joc de caràcters (%d).
+
+If the option \"Each word must occur only\nonce\" is activated, the number of words\nis limited to the size of the word list (%d).
+Si l'opció "Sense paraules repetides"\n està activada, la quantitat de paraules\nes limita a la mida de la llista de paraules (%d).
+
+Creating password list ...
+Creant llista de contrasenyes ...
+
+%d of %d passwords generated.
+S'han generat %d de %d contrasenyes.
+
+Format string produces empty password
+La cadena de format genera una contrasenya buida.
+
+\"%P\" is not specified.
+No s'ha especificat l'espai reservat \"%P\".
+
+Password not available.
+Contrasenya no disponible.
+
+Password too long.
+La contrasenya és massa gran.
+
+Invalid format specifier \"%%%s\".
+El format d'espai reservat \"%%%s\" no és vàlid.
+
+The estimated list size will probably exceed\nthe internal memory limit.\nPlease reduce the number of passwords
+La mida estimada de la llista probablement\nexcedirà el límit de memòria interna.\nReduïu la quantitat de contrasenyes, si us plau.
+
+The memory limit of the password list has\nbeen reached.\n\nThe number of passwords has been\nreduced to %d.
+S'ha arribat al límit de memòria\nper la llista de contrasenyes.\n\nEl nombre de contrasenyes\ns'ha reduït a %d.
+
+%d passwords generated.
+S'han generat %d contrasenyes.
+
+Copying password list ...
+Copiant la llista de contrasenyes ...
+
+%d passwords generated.\r\nSecurity of each password: %d bits.\r\nMaximum security of the entire list: %d bits.
+S'han generat %d contrasenyes.\r\nSeguretat de cada contrasenya: %d bits.\r\nSeguretat màxima de la llista completa: %d bits.
+
+File \"%s\" successfully created.\n\n%d passwords written.
+S'ha creat correctament el fitxer \"%s\".\n\nS'han escrit %d contrasenyes.
+
+An error has occurred during password generation:\n%s.
+S'ha produït un error mentre es generava la contrasenya:\n%s.
+
+%d passwords written to file \"%s\".
+S'han escrit %d contrasenyes al fitxer \"%s\".
+
+%d bits / %d characters
+%d bits / %d caràcters
+
+Passwords: %d
+Contrasenyes: %d
+
+Invalid character set.
+Joc de caràcters invàlid.
+
+default (English) trigrams
+trigrames per defecte (anglès)
+
+File \"%s\"
+Fitxer \"%s\"
+
+(phonetic, based on trigram frequencies\nfrom the following source:\n<%s>)
+(fonètic, basat en freqüències de trigrames\ndes de la següent font:\n<%s>)
+
+The character set you entered is invalid.\nIt must contain at least 2 different characters.
+El joc de caràcters introduït no és vàlid.\nHa de tindre com a mínim 2 caràcters diferents.
+
+Currently loaded character set:
+Joc de caràcters carregat actualment:
+
+Could not open file.
+No s'ha pogut obrir el fitxer.
+
+Not enough valid words.
+No hi ha prou mots vàlids.
+
+Select word list file
+Seleccioneu fitxer de llista de mots
+
+Error while loading the file\n\"%s\":\n%s
+Error mentre es carregava el fitxer\n\"%s\":\n%s
+
+default (English) word list
+llista de mots per defecte (anglès)
+
+Currently loaded word list:
+Llista de mots carregada actualment:
+
+First word:
+Primer mot:
+
+Random word:
+Mot aleatori:
+
+Last word:
+Últim mot:
+
+The version of this language (%s) is not\ncompatible with this program version.\nThis version of PWGen requires a language\nversion of at least %s.\n\nDo you want to use it anyway?
+La versió d'idioma del fitxer (%s) no és\ncompatible amb la versió del programa.\nLa versió de PWGen requereix mínim\nuna versió d'idioma %s.\n\nVoleu utilitzar-la igualment?
+
+The version of this language (%s) is higher\nthan the version of this program (%s).\nTherefore, version incompatibilities may occur.\n\nDo you want to use it anyway?
+La versió d'aquest idioma (%s) és superior\na la versió d'aquest programa (%s).\nPer tant, es poden produir incompatibilitats.\n\nVoleu utilitzar-la igualment?
+
+The language file will be loaded when you\nrestart the program.\n\nDo you want to save the settings and\nrestart the program now?
+El fitxer d'idioma es carregarà\nquan reinicieu el programa.\n\nVoleu desar les opcions i\nreiniciar el programa ara?
+
+Password is too long to show it in a\nmessage box like this.\n\nIt has been copied to the clipboard.
+La contrasenya és massa gran per mostrar-la\nen una caixa de missatges com aquesta.\n\nS'ha copiat al porta-retalls.
+
+The generated password is:\n\n%s\n\nThe estimated security is %d bits.\n\nYes\t-> copy password to clipboard,\nNo\t-> generate new password,\nCancel\t-> cancel process.
+La contrasenya generada és:\n\n%s\n\nLa seguretat estimada és de %d bits.\n\nSí\t-> copia contrasenya al porta-retalls,\nNo\t-> genera una nova contrasenya,\nCancel·la\t-> cancel·la el procés.
+
+All entries will be removed from the list.\nAre you sure?
+S'esborraran totes les entrades de la llista.\nEsteu segur?
+
+Total entropy bits: %d
+Total de bits d'entropia: %d
+
+High-resolution timer used:\n%s\n\nCurrent value: %s.
+Temporitzador d'alta resolució utilitzat:\n%s\n\nValor actual: %s.
+
+Could not download version file
+No s'ha pogut baixar el fitxer de versió
+
+URL not found, or unknown format of version file
+No s'ha trobat l'URL, o el fitxer de versió té un format desconegut
+
+A new version (%s) of PWGen is available!\nDo you want to visit the download page now?
+S'ha trobat una nova versió de PWGen (%s)!\nVoleu visitar la pàgina de baixades?
+
+(NOTE: %s)
+(NOTA: %s)
+
+Your version of PWGen is up-to-date.
+La versió de PWGen està actualitzada.
+
+Error while checking for updates:\n%s.
+Error durant la cerca d'actualitzacions:\n%s.
+
+WARNING: Random generator is deterministic (press F7 to deactivate)! // string shouldn't be much longer
+ADVERTÈNCIA: El generador aleatori és determinant (F7 per desactivar)!
+
+Clipboard cleared.
+Porta-retalls netejat.
+
+Profile \"%s\" activated.
+El perfil \"%s\" s'ha activat.
+
+Deterministic random generator has been ACTIVATED.
+El generador aleatori determinista s'ha ACTIVAT.
+
+Deterministic random generator has been RESET.
+El generador aleatori determinista s'ha REINICIAT.
+
+Deterministic random generator has been DEACTIVATED.
+El generador aleatori determinista s'ha DESACTIVAT.
+
+/////////////// ConfigurationDlg //////////
+
+Configuration
+Configuració
+
+General
+General
+
+Hot Key
+Drecera de teclat
+
+Files
+Fitxers
+
+Updates
+Actualitzacions
+
+Change font for the GUI controls:
+Canvia la lletra dels controls GUI:
+
+Select font
+Selecciona la lletra
+
+Clear clipboard automatically after the following time (seconds):
+Autoneteja el porta-retalls després d'aquest temps (segons):
+
+Show system tray icon constantly
+Mostra la icona de safata constantment
+
+Minimize program to system tray
+Minimitza el programa a la safata
+
+Automatic check for updates:
+Cerca d'actualitzacions automàtica:
+
+Daily
+Diàriament
+
+Weekly
+Setmanalment
+
+Monthly
+Mensualment
+
+Disabled
+Desactivat
+
+Associate the following hot key with PWGen:
+Associa la següent drecera de teclat amb PWGen:
+
+Actions
+Accions
+
+Show/restore main window
+Mostra/restaura la finestra principal
+
+No further action
+Cap altra acció
+
+Generate single password in main window
+Genera contrasenya única en la finestra principal
+
+Generate multiple passwords
+Genera múltiples contrasenyes
+
+Generate password and copy it to the clipboard
+Genera contrasenya i copia-la al porta-retalls
+
+Generate password and show it in a message box
+Genera contrasenya i mostra-la en una caixa de missatge
+
+Open MP password generator
+Obre generador de contrasenyes MP
+
+Please select a hot key action.
+Seleccioneu una acció per la drecera de teclat.
+
+Character encoding of text files:
+Codificació de caràcters dels fitxers de text:
+
+/////////////// PasswDlg ///////////////
+
+Enter password:
+Introdueix la contrasenya:
+
+Confirm password:
+Confirma la contrasenya:
+
+Display password
+Mostra la contrasenya
+
+OK
+D'acord
+
+Cancel
+Cancel·la
+
+Passwords are not identical.
+Les contrasenyes no són idèntiques.
+
+Encrypt
+Xifra
+
+Decrypt
+Desxifra
+
+/////////////// PasswList ///////////////
+
+Password List
+Llista de contrasenyes
+
+Save As File...
+Anomena i desa un fitxer...
+
+Save password list
+Desa la llista de contrasenyes
+
+Error while creating file\n\"%s\":\n%s.
+Error mentre es creava el fitxer\n\"%s\":\n%s.
+
+File \"%s\" successfully created.
+El fitxer \"%s\" s'ha creat correctament.
+
+/////////////// PasswOptionsDlg ///////////////
+
+Advanced Password Options
+Opcions avançades de contrasenya
+
+Exclude ambiguous characters
+Omet caràcters ambigus
+
+First character must not be a lower-case letter
+El primer caràcter no ha de ser minúscula
+
+Don't separate words by a space
+No separeu mots amb espai
+
+Don't separate words and characters by a '-' character
+No separeu mots i caràcters amb el caràcter '-'
+
+Reverse default order of character/word combinations
+Inverteix l'ordre per defecte de combinacions de caràcters/mots
+
+Include at least one upper-case letter (A-Z)
+Afegeix com a mínim una majúscula (A-Z)
+
+Include at least one lower-case letter (a-z)
+Afegeix com a mínim una minúscula (a-z)
+
+Include at least one digit (0-9)
+Afegeix com a mínim un dígit (0-9)
+
+Include at least one special symbol (!"#$%...)
+Afegeix com a mínim un dels símbols especials (!"#$%...)
+
+Only include characters from custom character set
+Inclou només caràcters del joc de caràcters personalitzat
+
+Exclude repeating consecutive characters (e.g. aa, 11)
+Omet caràcters repetits consecutius (p.ex. aa, 11)
+
+Exclude duplicate entries in password lists
+Omet contrasenyes duplicades a les llistes
+
+Convert all words in word lists to lower-case
+Converteix tots els mots de la llista a minúscules
+
+Each character must occur only once
+Sense caràcters repetits
+
+Each word must occur only once
+Sense paraules repetides
+
+Redefine ambiguous characters:
+Redefineix caràcters ambigus:
+
+Redefine special symbols:
+Redefineix símbols especials:
+
+Maximum length of words in word lists (except default word list):
+Longitud màxima per mot a la llista de mots (excepte la llista per defecte):
+
+Trigram file for generating phonetic (pronounceable) passwords:
+Fitxer de trigrames per generar contrasenyes fonètiques (pronunciables):
+
+Applies to pass_words_.
+Aplicat a mots de pas.
+
+Applies to pass_phrases_.
+Aplicat a frases de pas.
+
+Applies to formatted passwords.
+Aplicat a contrasenyes de format.
+
+Applies to phonetic passwords.
+Aplicat a contrasenyes fonètiques.
+
+Selecting one of these options might reduce the security of generated passwords.
+Seleccionant una d'aquestes opcions podria reduir la seguretat de les contrasenyes generades.
+
+These options also apply to formatted passwords.
+Aquestes opcions s'apliquen també a contrasenyes de format.
+
+Deselect All
+Desselecciona-ho tot
+
+Invert Selection
+Inverteix selecció
+
+/////////////// CreateRandDataFile ///////////////
+
+Create Random Data File
+Crea fitxer de dades aleatòries
+
+File name:
+Fitxer:
+
+File size:
+Mida:
+
+Bytes
+octets
+
+Kilobytes
+quilooctets
+
+Megabytes
+megaoctets
+
+Close
+Tanca
+
+Create file
+Crea fitxer
+
+Invalid file size.
+Mida de fitxer invàlida.
+
+Not enough free disk space available\nto create the file.
+No hi ha prou espai disponible al disc\nper crear el fitxer.
+
+Creating random data file ...
+Creant fitxer de dades aleatòries ...
+
+%d of %d KB written.
+%d de %d Ko escrits.
+
+File \"%s\" successfully created.\n\n%d bytes written.
+El fitxer \"%s\" s'ha creat correctament.\n\n%d octets escrits.
+
+Error while creating file\n\"%s\":\n%s.\n\n%d bytes written.
+Error mentre es creava el fitxer\n\"%s\":\n%s.\n\n%d octets escrits.
+
+//////////////// ProfileEditor ////////////////
+
+Profile Editor
+Editor de perfils
+
+Load
+Carrega
+
+Confirm
+Confirma
+
+Profile name:
+Nom de perfil:
+
+Add
+Afegeix
+
+Save "advanced password options" for this profile
+Desa les "Opcions de contr. avançades" per aquest perfil
+
+Are you sure you want to delete %d profile(s)?
+Segur que voleu esborrar %d perfil(s)?
+
+Maximum number of profiles (%d) reached.\nPlease delete or overwrite profiles.
+S'ha arribat al nombre màxim de perfils (%d).\nEsborreu o sobreescriviu perfils.
+
+A profile with the name \"%s\" already exists.\nDo you want to overwrite it?
+Ja existeix un perfil amb el nom \"%s\".\nEl voleu sobreescriure?
+
+/////////////// CreateTrigramFile ///////////////
+
+Create Trigram File
+Crea fitxer de trigrames
+
+Source file (e.g., dictionary, word list):
+Fitxer font (p.ex., diccionari, llista de mots):
+
+Destination file (trigram file):
+Fitxer de destinació (fitxer de trigrames)
+
+Trigram file \"%s\" successfully created.\n\n%d trigrams evaluated.\n%1.2f bits of entropy per letter.
+El fitxer de trigrames \"%s\" s'ha creat correctament.\n\n%d trigrames avaluats.\n%1.2f bits d'entropia per lletra.
+
+/////////////// Callback ///////////////
+
+Process was cancelled by the user
+El procés s'ha cancel·lat per l'usuari
+
+/////////////// About ///////////////
+
+About %s
+Quant a %s
+
+Current language: %s\nTranslator: %s
+Idioma actual: %s\nTraducció: %s
+
+This program is distributed under the terms and conditions of the GNU General Public License (GPL).
+Aquest programa es distribueix sota els termes i condicions de la Llicència Pública General GNU (GPL).
+
+View license
+Mostra la llicència
+
+/////////////// QuickHelp ///////////////
+
+Quick help
+Ajuda ràpida
+
+Position Automatically
+Posició automàtica
+
+You can use the following placeholders:
+Podeu utilitzar els següents espais reservats:
+
+without ambiguous characters
+sense caràcters ambigus
+
+special symbols
+símbols especials
+
+brackets
+parèntesis
+
+punctuation marks
+marques de puntuació
+
+higher ANSI characters
+caràcters ANSI superiors
+
+generate phonetic password (only lower-case letters)
+Genera contrasenya fonètica (només minúscules)
+
+generate phonetic password (mixed-case letters)
+Genera contrasenya fonètica (majúscules i minúscules)
+
+Comments may be provided in square brackets \"[...]\"\nat the beginning of the sequence.
+Es poden afegir comentaris amb claudàtors \"[...]\"\nal començament de la seqüència.
+
+Format specifiers have the form \"%[*][N]x\" or \"%[*][M-N]x\", where the\noptional argument \"N\" specifies the number of repetitions (between 1 and\n99999), \"M-N\" specifies a random number of repetitions in the range\nfrom M to N, and \"x\" is the actual format specifier/placeholder. The\noptional asterisk (*) means that each character must occur only once in\nthe sequence. Example: \"%16u\" means \"Insert 16 random upper-case letters\ninto the password\".
+Els espais reservats tenen la forma \"%[*][N]x\" o \"%[*][M-N]x\", on\nl'argument opcional \"N\" indica la quantitat de repeticions (entre 1 i\n99999), \"M-N\" especifica un nombre aleatori de repeticions en el rang\nd'M a N, i \"x\" és el tipus d'espai reservat. L'asterisc opcional (*)\nvol dir que cada caràcter només es pot afegir un cop en la seqüència.\nExemple: \"%16u\" vol dir \"Afegeix 16 lletres majúscules aleatòries\nen la contrasenya\".
+
+List of placeholders with optional argument \"N\":
+Llista d'espais reservats amb argument opcional \"N\":
+
+custom character set
+joc de caràcters personalitzat
+
+vowels, lower-case
+vocals minúscules
+
+vowels, mixed-case
+vocals majúscules i minúscules
+
+vowels, upper-case
+vocals majúscules
+
+consonants, lower-case
+consonants minúscules
+
+consonants, mixed-case
+consonants majúscules i minúscules
+
+consonants, upper-case
+consonants majúscules
+
+List of special format specifiers\n(possible usage of argument \"N\" is indicated by \"{N}\"):
+Llista d'espais reservats de format especial\n(l'ús possible de l'argument \"N\" s'indica com a \"{N}\"):
+
+insert password generated via \"Include characters/words\"
+afegeix contrasenya generada amb \"Afegeix caràcters/mots\"
+
+words from word list, multiple words are separated by spaces
+mots de la llista, els mots múltiples estan separats amb espais
+
+words, multiple words are not separated at all
+mots, els mots múltiples no tenen separació
+
+repeat input sequence in brackets N times
+repeteix N cops la seqüència d'entrada en parèntesi
+
+randomly permute formatted sequence in brackets, keep N characters
+permuta aleatòriament la seqüència de format en parèntesi, manté N caràcters
+
+treat sequence as character set and insert N characters
+tracta la seqüència com a joc de caràcters i afegeix N caràcters
+
+Additional notes:
+Notes addicionals:
+
+Use the sequence \"%%\" to insert a percent sign.
+Utilitzeu la seqüència \"%%\" per afegir el símbol de percentatge.
+
+/////////////// MPPasswGen ///////////////
+
+MP Password Generator
+Generador de contrasenyes MP
+
+Master password
+Contrasenya mestra
+
+Enter password...
+Introduïu la contrasenya...
+
+Clear
+Neteja
+
+Status:
+Estat:
+
+Expiry countdown:  // string must be as short as possible
+Compte d'expiració:
+
+Ask for password confirmation
+Demana confirmació de contrasenya
+
+Show 16-bit hash value of password
+Mostra valor hash 16-bit de la contrasenya
+
+Key expires after the following time (seconds):
+La clau expira després d'aquest temps (segons):
+
+Provide compatibility with "Hashapass"
+Proporciona compatibilitat amb "Hashapass"
+
+Password generator
+Generador de contrasenyes
+
+Parameter:
+Paràmetre:
+
+%d ch. / %.1f bits per ch. // use abbreviations to shorten the string
+%d car. / %.1f bits per c.
+
+Resulting password:
+Contrasenya resultant:
+
+Use as default random generator
+Empra com a generador aleatori per defecte
+
+Alphanumeric
+Alfanumèric
+
+Hexadecimal
+Hexadecimal
+
+Key has expired.
+La clau ha expirat.
+
+Key has been cleared.
+La clau s'ha netejat.
+
+New key generated.
+Nova clau generada.
+
+/////////////// ProvideEntropyDlg ///////////////
+
+Enter or paste some text into the box below, press mouse buttons, or move your mouse within the window.
+Introdueix o enganxa text dins la caixa de sota, prem els botons del ratolí, o mou el ratolí dins la finestra.
+
+%d bits of entropy have been added to the random pool.
+S'ha afegit %d bits d'entropia a la combinació aleatòria.
+
+/////////////// Other ///////////////
+
+Error while formatting string
+Error mentre es formatava la cadena
+
+Invalid UTF-16 character encoding
+Codificació de caràcter UTF-16 invàlida
+
+Error while converting string to UTF-8
+Error mentre es convertia la cadena a UTF-8
+
+Error while decoding UTF-8 string
+Error mentre es descodificava la cadena UTF-8
+
+Unicode string too long
+La cadena Unicode és massa gran
+
+Invalid ANSI or UTF-8 character encoding, or Unicode string too long
+Codificació de caràcter ANSI o UTF-8 invàlid, o cadena Unicode massa gran
+
+Error while encoding Unicode string
+Error mentre es codificava la cadena Unicode
+
+Out of disk space
+Sense espai al disc
+
+Could not open file/execute operation\n\"%s\".
+No s'ha pogut obrir el fitxer o executar l'operació\n\"%s\".
+
+Source file does not contain enough trigrams
+El fitxer font no té prou trigrames

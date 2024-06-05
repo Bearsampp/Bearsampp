@@ -1,0 +1,972 @@
+﻿[LANGUAGENAME]
+Nederlands
+
+[LANGUAGEVERSION]
+2.9.0
+
+[LANGUAGEAUTHOR]
+René 'sleez' Mohrmann
+
+[LANGUAGEHELPFILE]
+manual.pdf
+
+Info
+Info
+
+Warning
+Waarschuwing
+
+Question
+Vraag
+
+Error
+Error
+
+Settings
+Instellingen
+
+Include Characters (Pass*words*)
+Te gebruiken karakters (Wacht*woord*)
+
+Length:
+Lengte:
+
+Character Set:
+Karakter set:
+
+Show details
+Details weergeven
+
+Include Words (Pass*phrases*)
+Te gebruiken woorden (Wacht*zinnen*)
+
+Number:
+Aantal:
+
+Word List File:
+Woorden lijst:
+
+Browse
+Zoeken
+
+Specify length*:
+Lengte aangeven:
+
+Combine Words with Characters
+Woorden met tekens combineren
+
+Format password:
+Opmaak wachtwoord:
+
+Multiple passwords:
+Meerdere wachtwoorden:
+
+Generate
+Genereren
+
+Generate password list to file
+Gerereer wachtwoord lijst naar bestand
+
+Advanced
+Gevorderd
+
+Generated Password
+Gegenereerd wachtwoord
+
+Click on "Generate"
+Klik op "Genereren"
+
+Hide/show password
+Wachtwoord verbergen/zichtbaar
+
+Hold left mouse button to drag & drop password
+Linker muisknp drukken voor slepen/plakken
+
+Random Pool
+Random Pool
+
+Entropy Bits:
+Entropie-Bits:
+
+File
+Bestand
+
+Profile
+Profiel
+
+Profile Editor...
+Profiel-Editor...
+
+Exit
+Exit
+
+Tools
+Hulpmiddelen
+
+Clear Clipboard
+Klembord leegmaken
+
+Encrypt Clipboard...
+Klembord encrypten...
+
+Decrypt Clipboard...
+Klembord decrypten...
+
+Create Random Data File...
+Bestand met willekeurige data maken...
+
+Create Trigram File...
+Trigram-Bestand maken...
+
+MP Password Generator...
+MP-Wachtwoord-Generator...
+
+Deterministic Random Generator
+Deterministische Toevalsgenerator
+
+Reset
+Reset
+
+Deactivate
+Deactiveren
+
+Provide Additional Entropy
+Toevallige Entropie toevoegen
+
+As Text...
+Als Text...
+
+From File...
+Vanuit bestand...
+
+Options
+Opties
+
+Configuration...
+Instellingen...
+
+Language
+Taal
+
+Always on Top
+Altijd bovenaan
+
+Save Settings on Exit
+Instellingen bewaren bij Exit
+
+Save Settings Now
+Nu instellingen bewaren
+
+Help
+Help
+
+Open Manual
+Gebruikers handleiding openen
+
+Visit Website
+Website bezoeken
+
+Donate...
+Doneer...
+
+Check for Updates
+Zoek naar Updates
+
+Timer Info...
+Timer informatie...
+
+About %s...
+Over %s...
+
+Restore PWGen
+PWGen openen
+
+Generate Password
+Wachtwoord genereren
+
+Generate and Show Password...
+Genereer wachtwoord en laat zien
+
+Open user manual
+Open handleiding
+
+Hide/show entropy progress
+Laat entropie-proces zien
+
+Clear clipboard (text contents only)
+Klembord leegmaken (alleen tekst)
+
+Clipboard text encryption (left-click) or decryption (right-click)
+Klembord tekst encryptie (Linker muisknop) of decryptie (Rechter muisknop)
+
+Load, create or delete profiles
+Profiel laden, maken of verwijderen
+
+Generate passwords based on a master password
+Wachtwoorden genereren gebaseerd op Master Wachtwoord
+
+Change main configuration of the program
+Progamma instellingen wijzigen
+
+Reset Counters
+Tellers resetten
+
+All files (*.*)|*.*|Text files (*.txt)|*.txt|Trigram files (*.tgm)|*.tgm
+Alle bestanden (*.*)|*.*|Text bestanden (*.txt)|*.txt|Trigram bestanden (*.tgm)|*.tgm
+
+Undo
+Stap terug
+
+Cut
+Knippen
+
+Copy
+Kopiëren
+
+Encrypt && Copy
+Vereleutelen && Kopieer
+
+Paste
+Plakken
+
+Delete
+Verwijderen
+
+Select All
+Alles selecteren
+
+Clear List
+Lijst wissen
+
+Editable
+Bewerkbaar
+
+Enable Password Testing
+Wachtwoord Test aanzetten
+
+Change Font...
+Lettertype...
+
+Select high-entropy file
+Selecteer High-Entropy bestand
+
+Could not read random seed file\n\"%s\".
+Fout bij lezen willekeurig gegevens bestand\n\"%s\".
+
+Could not write to random seed file\n\"%s\".
+Fout bij schrijven naar willekeurig gegevens bestand\n\"%s\".
+
+Unknown command line switch(es):\n%s
+Onbekende Command Line schakeloptie(s):\n%s
+
+Error while loading word list file\n\"%s\".
+Error bij laden van Woordlijst-Data bestand \n"%s\".
+
+PWGen encountered %d error(s) during startup:
+Fout(en) bij starten van PWGen:
+
+Character set \"%s\" is invalid.
+Tekenset \"%s\" is ongeldig.
+
+Error while writing to configuration file:\n%s.
+Fout bij schrijven naar configuratiebestand:\n%s.
+
+%d characters / %.1f bits per character
+%d tekens / %.1f bits per teken
+
+%d words / %.1f bits per word
+%d woorden / %.1f bits per woord
+
+Could not open trigram file.
+Kon Trigram bestand niet openen.
+
+Invalid trigram file.
+Ongeldig Trigram bestand.
+
+Text successfully encrypted.
+Klembord succesvol versleuteld.
+
+Text successfully decrypted.
+Klembord succesvol ontsleuteld.
+
+Could not open clipboard.
+Kon klembord niet openen.
+
+The text to be encrypted is too long.
+De te versleutelen tekst is te lang.
+
+No text available to process.
+Geen tekst beschikbaar voor bewerking.
+
+Not enough memory available to perform\nthe operation. Try to use a shorter text.
+Geheugen onvoldoende om \n te verwerken. Gebruik een kortere tekst.
+
+Decryption failed. This may be attributed\nto the following reasons:
+Versleuteling gefaald. Oorzaak zou de volgende reden \n kunnen zijn:
+
+- You entered a wrong password.
+- Foutief wachtwoord ingegeven.
+
+- The text is corrupted.\n- The text is not encrypted.
+- De tekst is beschadigd.\n- De tekst is niet versleuteld.
+
+This should not have happened:\nDecryption successful, but decompression\nfailed.
+Dit had niet mogen gebeuren:\nOntsleuteling succesvol, maar decompressie\ngefaald.
+
+Could not register hot key %s.\nPlease try another key combination.
+Kon Hotkey %s niet registreren.\nProbeer andere toetscombinatie.
+
+The selected file already exists. Do you\nwant to append passwords to this file\n(existing passwords will be preserved),\nor do you want to completely overwrite it?\n\nYes\t-> append passwords,\nNo\t-> overwrite file,\nCancel\t-> cancel process.
+Geselecteerd bestand bestaat al. Wilt u\nde wachtwoorden toevoegen aan het bestand\n(bestaande wachtwoorden worden bewaard),\nof wilt u het compleet overschrijven?\n\nYes\t-> Wachtwoorden toevoegen,\nNo\t-> overschrijf bestand,\nCancel-> Annuleer.
+
+Passphrase: Invalid length range.
+Wachtwoordzin: Ongeldige lengtebereik.
+
+If the option \"Each character must occur\nonly once\" is activated, the password length\nis limited to the size of the character set (%d).
+Als de optie \"Elk karakter mag slechts\nenkel eenmaal gebruikt worden\" is geäctiveerd, is de wachtwoordlengte gelimiteerd door de grootte van de karakterset (%d).
+
+If the option \"Each word must occur only\nonce\" is activated, the number of words\nis limited to the size of the word list (%d).
+Als de optie \"Elk woord mag slechts\neenmaal gebruikt worden\" is geäctiveerd, is het aantal woorden gelimiteerd door de grootte van de woordenlijst (%d).
+
+Generating password list ...
+Genereer wachtwoordlijst...
+
+%d of %d passwords generated.
+%d van %d wachtwoorden gegenereerd.
+
+Generating passphrase ...
+Genereer wachtwoordzin...
+
+%d of %d passphrases generated.
+%d van %d wachtwoordzinnen gegenereerd.
+
+Format string produces empty password
+Format string levert blanco wachtwoord
+
+\"%P\" is not specified.
+\"%P\" is niet aangegeven.
+
+Password not available.
+Wachtwoord niet beschikbaar.
+
+Password too long.
+Wachtwoord te lang.
+
+Invalid format specifier \"%%%s\".
+Ongeldige format gespecifieerd \"%%%s\".
+
+The estimated list size will probably exceed\nthe internal memory limit.\nPlease reduce the number of passwords
+De geschatte lijst grootte zal de\ngeheugenlimiet overschrijden.\nGebruik kleiner aantal wachtwoorden
+
+The memory limit of the password list has\nbeen reached.\n\nThe number of passwords has been\nreduced to %d.
+De geheugenlimiet van de wachtwoorden lijst\nis bereikt.\n\nHet aantal wachtwoorden is verkleind naar %d.
+
+%d passwords generated.
+%d wachtwoorden gegenereerd.
+
+Copying password list ...
+Kopieer wachtwoord lijst ...
+
+%d passwords generated.\r\nSecurity of each password: %d bits.\r\nMaximum security of the entire list: %d bits.
+%d wachtwoorden gegenereerd.\r\nBeveiliging elk wachtwoord: %d bits.\r\nMaximum beveiliging gehele lijst: %d bits.
+
+File \"%s\" successfully created.\n\n%d passwords written.
+Bestand \"%s\" succesvol gegenereerd.\n\n%d wachtwoorden geschreven.
+
+An error has occurred during password generation:\n%s.
+Een fout is opgetreden tijdens wachtwoord generatie:\n%s.
+
+%d passwords written to file \"%s\".
+%d wachtwoorden naar bestand \"%s\" geschreven.
+
+%d bits / %d characters
+%d bits / %d karakters
+
+Passwords: %d
+Wachtwoorden: %d
+
+Invalid character set.
+Ongeldige karakterset.
+
+default (English) trigrams
+Standaard trigrammen (Englisch)
+
+File \"%s\"
+Bestand \"%s\"
+
+(phonetic, based on trigram frequencies\nfrom the following source:\n<%s>)
+(phoenetisch, gebaseerd op trigram frequenties\nvan de volgende bron:\n<%s>)
+
+The character set you entered is invalid.\nIt must contain at least 2 different characters.
+De karakterset aangegeven is ongeldig.\nHet dient minstens 2 verschillende karaters te bevatten.
+
+Currently loaded character set:
+Momenteel geladen karakterset:
+
+Could not open file.
+Kan bestand niet openen.
+
+Not enough valid words.
+Niet genoeg geldige woorden.
+
+Select word list file
+Selecteer woordlijst bestand
+
+Error while loading the file\n\"%s\":\n%s
+Fout bij laden van bestand\n\"%s\":\n%s
+
+default (English) word list
+Standaard woordlijst (Englisch)
+
+Currently loaded word list:
+Momenteel geladen woordlijst:
+
+First word:
+Eerste woord:
+
+Random word:
+Willekeurig woord:
+
+Last word:
+Laatste woord:
+
+The version of this language (%s) is not\ncompatible with this program version.\nThis version of PWGen requires a language\nversion of at least %s.\n\nDo you want to use it anyway?
+De versie van deze spraak (%s) is niet\ncompatible met deze programmaversie.\nDeze versie van PWGen gebruikt een\ntaal van minstens %s.\n\nWilt u deze toch gebruiken?
+
+The version of this language (%s) is higher\nthan the version of this program (%s).\nTherefore, version incompatibilities may occur.\n\nDo you want to use it anyway?
+Dee versie van deze taal (%s) is hoger\ndan de versie van dit programma (%s).\nEr kunnen incompabiliteits issues optreden.\n\n\nWilt u deze toch gebruiken?
+
+The language file will be loaded when you\nrestart the program.\n\nDo you want to save the settings and\nrestart the program now?
+Het taalbestand kan gebruikt worden wanneer u\nhet programma opnieuw start.\n\nWilt u deze instellingen bewaren en\nhet programma nu herstarten?
+
+Password is too long to show it in a\nmessage box like this.\n\nIt has been copied to the clipboard.
+Wachtwoord is te lang om weer te geven in \neen tekstvak zoals deze.\n\nHet wordt gekopieerd naar het klembord.
+
+The generated password is:\n\n%s\n\nThe estimated security is %d bits.\n\nYes\t-> copy password to clipboard,\nNo\t-> generate new password,\nCancel\t-> cancel process.
+Het gegenereerde wachtwoord is:\n\n%s\n\nDe geschatte beveiligingis %d bits.\n\nYes\t-> kopieer wachtwoord naar klembord,\nNo\t-> genereer nieuw wachtwoord,\nAnnuleren\t-> Annuleer voortgang.
+
+All entries will be removed from the list.\nAre you sure?
+Alles wordt verwijderd van de lijst.\nWeet u het zeker?
+
+Total entropy bits: %d
+Totaal entropie bits: %d
+
+High-resolution timer used:\n%s\n\nCurrent value: %s.
+Hoge resoltie timer gebruikt:\n%s\n\nMomentele waarde: %s.
+
+Could not download version file
+Kon geen versie bestand downloaden
+
+URL not found, or unknown format of version file
+URL niet gevonden of verkeerd bestandsformaat
+
+A new version (%s) of PWGen is available!\nDo you want to visit the download page now?
+Een nieuwe versie (%s) van PWGen is beschikbaar!\nWilt u de downloadpagina bezoeken?
+
+(NOTE: %s)
+(Let Op: %s)
+
+Your version of PWGen is up-to-date.
+Uw versie van PWGen is de laatste.
+
+Error while checking for updates:\n%s.
+Error bij controleren op updates:\n%s.
+
+WARNING: Random generator is deterministic (press F7 to deactivate)!
+WAARSCHUWING: Toevalsgenerator is deterministisch (F7 om te deactiveren)!
+
+Clipboard cleared.
+Klembord gewist.
+
+Profile \"%s\" activated.
+Profiel \"%s\" geactiveerd.
+
+Deterministic random generator has been ACTIVATED.
+Deterministische toevalsgenerator is ACTIEF.
+
+Deterministic random generator has been RESET.
+Deterministische toevalsgenerator is GERESET.
+
+Deterministic random generator has been DEACTIVATED.
+Deterministische toevalsgenerator is NIET ACTIEF.
+
+Configuration
+Instellingen
+
+General
+Algemeen
+
+Hot Key
+Hotkey
+
+Files
+Bestanden
+
+Updates
+Updates
+
+Change font for the GUI controls:
+Verander lettertype voor GUI controls:
+
+Select font
+Lettertype selecteren
+
+Clear clipboard automatically after the following time (seconds):
+Klembord automatisch leegmaken na aantal seconden:
+
+Show system tray icon constantly
+Menubalk icoon altijd laten zien
+
+Minimize program to system tray
+Minimaliseer programma naar menubalk
+
+Automatic check for updates:
+Automatisch zoeken naar updates:
+
+Daily
+Dagelijks
+
+Weekly
+Wekelijks
+
+Monthly
+Maandelijks
+
+Disabled
+Gedeactiveerd
+
+Associate the following hot key with PWGen:
+Associeer de volgende hotkey met PWGen:
+
+Actions
+Acties
+
+Show/restore main window
+Hoofdvenster openen/herstellen
+
+No further action
+Geen verdere actie
+
+Generate single password in main window
+Genereer enkel wachtwoord in hoofdvenster
+
+Generate multiple passwords
+Genereer meerdere wachtwoorden
+
+Generate password and copy it to the clipboard
+Gerereer wachtwoord en kopieer naar klembord
+
+Generate password and show it in a message box
+Genereer wachtwoord en laat zien in berichtenvenster
+
+Open MP password generator
+MP wachtwoordgenerator openen
+
+Please select a hot key action.
+Selecteer hotkey actie
+
+Character encoding of text files:
+Karaktercodering van text bestanden:
+
+Enter password:
+Wachtwoord ingeven:
+
+Confirm password:
+Wachtwoord bevestigen:
+
+Display password
+Wachtwoord laten zien
+
+OK
+OK
+
+Cancel
+Annuleer
+
+Passwords are not identical.
+Wachtwoorden komen niet overeen.
+
+Encrypt
+Versleutelen
+
+Decrypt
+Ontsleutelen
+
+Password List
+Wachtwoord lijst
+
+Save As File...
+Opslaan als bestand...
+
+Save password list
+Wachtwoordlijst opslaan
+
+Error while creating file\n\"%s\":\n%s.
+Fout bij maken van bestand\n\"%s\":\n%s.
+
+File \"%s\" successfully created.
+Bastand \"%s\" succesvol aangemaakt.
+
+Advanced Password Options
+Geavanceerde wachtwoord opties
+
+Exclude ambiguous characters
+Dubbelzinnige karakters uitsluiten
+
+First character must not be a lower-case letter
+Eerste karakter mag geen kleine letter zijn
+
+Don't separate words by a space
+Woorden niet scheiden door spaties
+
+Don't separate words and characters by a '-' character
+Woorden niet scheiden door een '-' karakter
+
+Reverse default order of character/word combinations
+Standaard orde van karakter/woord combinatie omkeren
+
+Include at least one upper-case letter (A-Z)
+Wachtwoord moet minstens één hoofdletter (A-Z) bevatten
+
+Include at least one lower-case letter (a-z)
+Wachtwoord moet minstens één kleine letter (a-z) bevatten
+
+Include at least one digit (0-9)
+Wachtwoord moet minstens één cijfer (0-9) bevatten
+
+Include at least one special symbol (!"#$%...)
+Wachtwoord moet minstens één symbool (!"#$%...) bevatten
+
+Only include characters from custom character set
+Alleen karakters van custom karakterset gebruiken
+
+Exclude repeating consecutive characters (e.g. aa, 11)
+Dubbele karakters uitsluiten (bijv. aa, 11)
+
+Exclude duplicate entries in password lists
+Dubbele wachtwoorden in wachtwoord lijst uitsluiten
+
+Convert all words in word lists to lower-case
+Alle wachtwoorden converteren naar kleine letters
+
+Each character must occur only once
+Elk karakter mag eenmaal voorkomen
+
+Each word must occur only once
+Elk woord mag eenmaal voorkomen
+
+Redefine ambiguous characters:
+Dubbelzinnige karakters definiëren:
+
+Redefine special symbols:
+Herdefinieer speciale symbolen:
+
+Maximum length of words in word lists (except default word list):
+Maximale lengte van woorden in woordlijsten (behalve standaard woordlijst):
+
+Trigram file for generating phonetic (pronounceable) passwords:
+Trigram bestand voor genereren van phoenetische wachtwoorden:
+
+Applies to pass_words_.
+Geldt voor wacht_woorden_.
+
+Applies to pass_phrases_.
+Geldt voor wacht_zinnen_.
+
+Applies to formatted passwords.
+Geldt voor geformatteerde wachtwoorden.
+
+Applies to phonetic passwords.
+Geldt voor phoenetische wachtwoorden.
+
+Selecting one of these options might reduce the security of generated passwords.
+Het selecteren van één van deze opties kan de beveiliging van wachtwoorden verminderen.
+
+These options also apply to formatted passwords.
+Deze opties gelden ook voor geformatteerde wachtwoorden.
+
+Deselect All
+Alles deselecteren
+
+Invert Selection
+Selectie omkeren
+
+Create Random Data File
+Bestand met willekeurige data maken
+
+File name:
+Bestandsnaam:
+
+File size:
+Bestands grootte:
+
+Bytes
+Bytes
+
+Kilobytes
+Kilobytes
+
+Megabytes
+Megabytes
+
+Close
+Sluiten
+
+Create file
+Bestand maken
+
+Invalid file size.
+Ongeldige bestands grootte.
+
+Not enough free disk space available\nto create the file.
+Niet genoeg schijfruimte om \nbestand te maken.
+
+Creating random data file ...
+Willekeurige data bestand creëren ...
+
+%d of %d KB written.
+%d van %d KB geschreven.
+
+File \"%s\" successfully created.\n\n%d bytes written.
+Bestand \"%s\" succesvol gemaakt.\n\n%d bytes geschreven.
+
+Error while creating file\n\"%s\":\n%s.\n\n%d bytes written.
+Fout bij maken bestand\n\"%s\":\n%s.\n\n%d bytes geschreven.
+
+Profile Editor
+Profiel-Editor
+
+Load
+Laden
+
+Confirm
+Bevestigen
+
+Profile name:
+Profielnaam:
+
+Add
+Toevoegen
+
+Save "advanced password options" for this profile
+Bewaar "geavanceerde wachtwoord opties" voor dit profiel
+
+Are you sure you want to delete %d profile(s)?
+Weet u zeker dat u %d profiel(en) wilt verwijderen?
+
+Maximum number of profiles (%d) reached.\nPlease delete or overwrite profiles.
+Maximum aantal profielen (%d) bereikt.\nVerwijder of vervang enkele profielen.
+
+A profile with the name \"%s\" already exists.\nDo you want to overwrite it?
+Een profiel met de naam \"%s\" bestaat reeds.\nWilt u het overschrijven?
+
+Create Trigram File
+Trigram bestand maken
+
+Source file (e.g., dictionary, word list):
+Bronbestand (bijv. woordenboek, woordlijst):
+
+Destination file (trigram file):
+Bestemming bestand (trigram bestand):
+
+Trigram file \"%s\" successfully created.\n\n%d trigrams evaluated.\n%1.2f bits of entropy per letter.
+Trigram bestand \"%s\" succesvol gemaakt.\n\n%d trigrammen geëvalueerd.\n%1.2f entropie bits per letter.
+
+Process was cancelled by the user
+Voortgang onderbroken door gebruiker
+
+About %s
+Over %s
+
+Current language: %s\nTranslator: %s
+Huidige taal: %s\nVertaler: %s
+
+This program is distributed under the terms and conditions of the GNU General Public License (GPL).
+Dit programma wordt gedistribueerd onder voorwaarden en condities van GNU General Public License (GPL).
+
+View license
+Licentie bekijken
+
+Quick help
+Snelhulp
+
+Position Automatically
+Automatisch positioneren
+
+You can use the following placeholders:
+U kunt de volgende plaatsaanduiders gebruiken:
+
+without ambiguous characters
+zonder dubbelzinnige karakters
+
+special symbols
+speciale symbolen
+
+brackets
+haakjes
+
+punctuation marks
+leestekens
+
+higher ANSI characters
+hogere ANSI karakters
+
+generate phonetic password (only lower-case letters)
+gereneer phoenetisch wachtwoord (alleen kleine letters)
+
+generate phonetic password (mixed-case letters)
+Genereer phoenetich wachtwoord (grote en kleine letters)
+
+Comments may be provided in square brackets \"[...]\"\nat the beginning of the sequence.
+Commentaar kan geplaatst zijn tussen vierkante haakjes \"[...]\"\nvanaf het begin van een sequentie (reeks).
+
+Format specifiers have the form \"%[*][N]x\" or \"%[*][M-N]x\", where the\noptional argument \"N\" specifies the number of repetitions (between 1 and\n99999), \"M-N\" specifies a random number of repetitions in the range\nfrom M to N, and \"x\" is the actual format specifier/placeholder. The\noptional asterisk (*) means that each character must occur only once in\nthe sequence. Example: \"%16u\" means \"Insert 16 random upper-case letters\ninto the password\".
+Format specificators hebben de vorm \"%[*][N]x\" of \"%[*]][M-N]x\", waarbij het optionele argument \"N\"\ het aantal herhalingen specificeert (tussen 1 en\n99999), \"M-N\ specificeerd het willekeurige aantal herhalingen in de range\nvan M tot N, en \"x\" is de actuele formaat specificeerder van de plaatshouder. De optionele asterisk (*) betekent dat elk karakter slechts eenmaal in de rij mag verschijnen. Voorbeeld: \"%16u\" betekent \"Voeg 16 willekeurige grote letters in het wachtwoord\".
+
+List of placeholders with optional argument \"N\":
+Lijst van plaatshouders met optioneel argument \"N\":
+
+custom character set
+custom karakter set
+
+vowels, lower-case
+klinkers, kleine letters
+
+vowels, mixed-case
+klinkers, groot-klein gemixt
+
+vowels, upper-case
+klinkers, grote letters
+
+consonants, lower-case
+medeklinkers, kleine letters
+
+consonants, mixed-case
+medeklinkers, groot-klein gemixt
+
+consonants, upper-case
+medeklinkers, grote letters
+
+List of special format specifiers\n(possible usage of argument \"N\" is indicated by \"{N}\"):
+Lijst van speciale format specifieerders\n(mogelijke gebruikmaking van argument \"N\" wordt door \"{N}\" aangegeven):
+
+insert password generated via \"Include characters/words\"
+voeg wachtwoord in dat via \"Inclusief karakters/woorden\" gegenereerd wordt
+
+words from word list, multiple words are separated by spaces
+woorden van woordlijst, meerdere woorden gescheiden door spaties
+
+words, multiple words are not separated at all
+woorden, meerdere woorden niet gescheiden van elkaar
+
+repeat input sequence in brackets N times
+herhaal ingave sequentie/reeks tussen haakjes N maal
+
+randomly permute formatted sequence in brackets, keep N characters
+verwissel de gevormde sequentie/reeks tussen haakjes willekeurig
+
+treat sequence as character set and insert N characters
+behandel de sequentie/reeks als karakterset en voeg N karaters in
+
+Additional notes:
+Toegevoegde noten:
+
+Use the sequence \"%%\" to insert a percent sign.
+Gebruik de sequentie/reeks \"%%\" om procent symbool in te voegen.
+
+MP Password Generator
+MP Wachtwoord Generator
+
+Master password
+Master Wachtwoord
+
+Enter password...
+Wachtwoord ingeven...
+
+Clear
+Wissen
+
+Status:
+Status:
+
+Expiry countdown:
+Houdbaar tot:
+
+Ask for password confirmation
+Wachtwoord bevestiging vragen
+
+Show 16-bit hash value of password
+16 bit Hashwaarde van wachtwoord tonen
+
+Key expires after the following time (seconds):
+Sleutel vervalt na de volgende tijd (seconden):
+
+Provide compatibility with "Hashapass"
+Compabiliteit met "Hashapass" verzekeren
+
+Password generator
+Wachtwoord Generator
+
+Parameter:
+Parameter:
+
+%d ch. / %.1f bits per ch.
+%d karakters / %.1f bits per karakter
+
+Resulting password:
+Resulterend wachtwoord:
+
+Use as default random generator
+Als standaard willekeurige generator gebruiken
+
+Alphanumeric
+Alfanummeriek
+
+Hexadecimal
+Hexadecimaal
+
+Key has expired.
+Sleutel is verlopen.
+
+Key has been cleared.
+Sleutel is gewist.
+
+New key generated.
+Nieuwe sleutel is gegenereerd.
+
+Enter or paste some text into the box below, press mouse buttons, or move your mouse within the window.
+Type of plak text in het venster hieronder, druk muisknoppen of verplaats uw muis binnen het venster.
+
+%d bits of entropy have been added to the random pool.
+%d Entropiebits zijn aan de randompool toegevoegd.
+
+Error while formatting string
+Fout bij vormen van string
+
+Invalid UTF-16 character encoding
+Ongeldige UTF-16 karakter encodering
+
+Error while converting string to UTF-8
+Fout bij omzetten van string naar UTF-8
+
+Error while decoding UTF-8 string
+Fout bij decoderen UTF-8 string
+
+Unicode string too long
+Unicode string te lang
+
+Invalid ANSI or UTF-8 character encoding, or Unicode string too long
+Ongeldige ANSI of UTF-8 karakter codering, of Unicode string te lang
+
+Error while encoding Unicode string
+Fout tijdens encoderen Unicode string
+
+Out of disk space
+Schijfruimte onvoldoende
+
+Could not open file/execute operation\n\"%s\".
+Kon bestand \n\"%s\"\nniet openen/uitvoeren.
+
+Source file does not contain enough trigrams
+Bronbestand bevat te weinig trigrams
+

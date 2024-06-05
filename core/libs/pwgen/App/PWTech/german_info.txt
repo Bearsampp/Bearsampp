@@ -1,0 +1,4 @@
+﻿LANGUAGE:           Deutsch (German)
+ENTROPY PER LETTER: 3.5
+SOURCE:             German dictionary containing 1,347,293 words;
+                    umlauts ä, ö, ü have been converted to ae, oe, ue; ß to ss

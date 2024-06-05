@@ -1,0 +1,1729 @@
+﻿[LANGUAGENAME]
+Polish
+[LANGUAGEVERSION]
+3.4.2
+[LANGUAGEAUTHOR]
+Christian Thöing	// your name could stand here! :-)
+[LANGUAGEHELPFILE]
+manual.pdf
+
+// Some notes on the format of this file:
+// - The original message in English and its translation must be
+//   separated by a line break.
+// - These "translation units" may be separated by several line breaks.
+// - The "//" sequence marks a comment; the comment begins with this
+//   pattern and applies to the end of the line
+// - Text enclosed with double brackets ((...)) serves to distinguish the
+//   message from another message with an equal text but a different meaning.
+//   For example: "copy ((verb: to copy))" and "copy ((noun: a copy))", which
+//   would be translated to "Kopieren" and "Kopie", respectively, in German.
+//   Do NOT translate the text within the brackets, simply omit this part!
+// - The messages may contain so-called escape sequences beginning with a "\":
+//       \n  - marks a line break; mainly used in message boxes
+//       \"  - equal to a simple " (C++ syntax)
+//       \\  - equal to a simple \ (C++ syntax)
+//
+// IMPORTANT: When saving the file, please select a Unicode encoding
+// (either UTF-8, UTF-16, or UTF-16 Big Endian) *with* BOM (Byte-Order Mark
+// at the beginning of the file), do NOT use ANSI!
+//
+// By the way: I wrote a small tool, "Password Tech Translation Utility",
+// especially for making translations of the program. Visit:
+// http://sourceforge.net/projects/pwgen-win/files/Tools/Translation%20Utility/
+
+
+/////////////// Main Window - GUI ///////////////
+
+Info
+Informacja
+
+Warning
+Ostrzeżenie
+
+Question
+Pytanie
+
+Error
+Błąd
+
+Profile:
+Profil:
+
+Settings
+Ustawienia
+
+Include Characters (pass*words*)
+Uwzględnij Znaki (pass*words*)
+
+Length:
+Długość:
+
+Character Set:
+Zestaw Znaków:
+
+Show details
+Pokaż Szczegóły
+
+Include Words (Pass*phrases*)
+Uwzględnij Słowa (Pass*phrases*)
+
+Number:
+Ilość:
+
+Word List File:
+Plik z Listą Słów:
+
+Browse
+Przeglądaj
+
+Specify length*:
+Określ długość*:
+
+Combine Words with Characters
+Łączenie Słów z Znakami
+
+Format password:
+Format hasła:
+
+Run script:
+Wykonaj skrypt:
+
+Reload script
+Przeładuj skrypt
+
+Multiple passwords:
+Wiele haseł:
+
+Generate
+Generuj
+
+Generate password list to file
+Wygeneruj listę haseł do pliku
+
+Advanced
+Zaawansowane
+
+Generated Password
+Wygenerowane hasło
+
+Click on "Generate"
+Kliknij "Generuj".
+
+Hide/show password
+Ukryj/pokaż hasło
+
+Hold left mouse button to drag & drop password
+Przytrzymaj lewy przycisk myszy do przeciągnij & upuść hasło
+
+File
+Plik
+
+Profile
+Profil
+
+Profile Editor...
+Profil-Edytor...
+
+Exit
+Wyjście
+
+Tools
+Narzędzia
+
+Clear Clipboard
+Wyczyść schowek
+
+Encrypt Clipboard...
+Zaszyfruj schowek...
+
+Decrypt Clipboard...
+Odszyfruj schowek...
+
+Create Random Data File...
+Utwórz losowo plik danych...
+
+Create Trigram File...
+Utwórz plik trygramu...
+
+MP Password Generator...
+MP Generator Hasła...
+
+Deterministic Random Generator
+Deterministyczny generator liczb losowych
+
+Reset
+Resetuj
+
+Deactivate
+Dezaktywuj
+
+Provide Additional Entropy
+Zapewnij Dodatkową Entropię
+
+As Text...
+Jako tekst...
+
+From File...
+Z pliku...
+
+Options
+Opcje
+
+Configuration...
+Konfiguracja...
+
+Language
+Język
+
+Always on Top
+Okna zawsze na górze
+
+Hide Entropy Progress
+Ukryj Postęp Entropii
+
+Save Settings on Exit
+Zapisz ustawienia przy wyjściu
+
+Save Settings Now
+Zapisz ustawienia teraz
+
+Help
+Pomoc
+
+Open Manual
+Otwórz Instrukcję
+
+Visit Website
+Odwiedź Stronę
+
+Get Translations...
+Pobierz Tłumaczenia...
+
+Donate...
+Darowizna...
+
+Check for Updates
+Sprawdź dostępność aktualizacji
+
+Timer Info...
+Informacje o timerach...
+
+About %s...
+O %s...
+
+Restore %s
+%s przywróć
+
+Generate Password
+Wygeneruj hasło
+
+Generate and Show Password...
+Generowanie i Wyświetlanie Haseł...
+
+Generate and Autotype Password
+Generowanie Hasła i Automatyczne Wpisywanie
+
+Open user manual
+Otwórz instrukcję obsługi
+
+Clear clipboard (text contents only)
+Wyczyść schowek (tylko treść tekstowa)
+
+Clipboard text encryption (left-click) or decryption (right-click)
+Szyfrowanie (kliknięcie lewym przyciskiem myszy) lub odszyfrowanie (kliknięcie prawym przyciskiem myszy) tekstu w schowku
+
+Load, create or delete profiles
+Ładowanie, tworzenie i usuwanie profili
+
+Generate passwords based on a master password
+Generowanie haseł na podstawie hasła głównego
+
+Main configuration of the program
+Główna konfiguracja programu
+
+Reset Counters
+Resetuj licznik
+
+All files
+Wszystkie pliki
+
+Text files
+Pliki tekstowe
+
+Trigram files
+Pliki trygramów
+
+Lua scripts
+Lua-Skripty
+
+Undo
+Rückgängig
+
+Cut
+Wytnij
+
+Copy
+Kopiuj
+
+Encrypt && Copy
+Szyfruj && Kopiuj
+
+Paste
+Wklej
+
+Perform Autotype
+Wykonywanie autotypu
+
+Add to Database
+Dodaj do bazy danych
+
+Delete
+Usuń
+
+Select All
+Zaznacz wszystko
+
+Clear List
+Wyczyść listę
+
+Remove Entry
+Usuń wpis
+
+Editable
+Pasek edycji
+
+Enable Password Testing
+Włącz testowanie haseł
+
+Change Font...
+Zmień czcionkę...
+
+Select high-entropy file
+Wybierz plik o wysokiej entropii
+
+Manage passwords in encrypted databases
+Menedżer haseł z zaszyfrowanymi bazami danych
+
+Reload profile
+Przeładuj profil
+
+Add profile
+Dodaj profil
+
+Set up...
+Konfiguracja...
+
+Password Manager...
+Menedżer Haseł...
+
+Enter Donor Key...
+Wprowadź Klucz Dawcy...
+
+Reset All Window Positions
+Zresetuj wszystkie pozycje okna
+
+/////////////// Main Window - Messages ///////////////
+
+Could not read random seed file\n\"%s\".
+Nie można odczytać losowego pliku źródłowego\n\"%s\".
+
+Could not write to random seed file\n\"%s\".
+Nie można zapisać do losowego pliku źródłowego\n\"%s\".
+
+Unknown command line switch(es):\n%s
+Nieznane przełączniki wiersza poleceń:\n%s
+
+Error while loading word list file\n\"%s\".
+Błąd ładowania pliku listy słów\n"%s\".
+
+Error while loading list of common passwords:\n%s.
+Błąd ładowania listy typowych haseł:\n%s.
+
+%s encountered %d error(s) during startup:
+Wystąpił błąd %d podczas uruchamiania %s:
+
+If you like %s, please consider\nmaking a donation. Thank you!
+Jeśli podoba Ci się %s\nrozważ dokonanie darowizny. Dzięki!
+
+Character set \"%s\" is invalid.
+Zestaw znaków \"%s\" jest nieprawidłowy.
+
+Error while writing to configuration file:\n%s.
+Błąd zapisu pliku konfiguracyjnego:\n%s.
+
+%d characters / %.1f bits per character
+%d znaków / %.1f bity na znak
+
+%d words / %.1f bits per word
+%d słowa / %.1f bity na słowo
+
+Could not open trigram file.
+Nie można otworzyć pliku trygramu.
+
+Invalid trigram file.
+Nieprawidłowy plik trygramu.
+
+Matches common password!
+Dopasuj do wspólnego hasła!
+
+Text successfully encrypted.
+Tekst został pomyślnie zaszyfrowany.
+
+Text successfully decrypted.
+Tekst został pomyślnie odszyfrowany.
+
+Could not open clipboard.
+Nie można otworzyć schowka.
+
+The text to be encrypted is too long.
+Tekst do zaszyfrowania jest zbyt długi.
+
+No text available to process.
+Brak tekstu dostępnego do przetworzenia.
+
+Not enough memory available to perform\nthe operation. Try to use a shorter text.
+Za mało pamięci dostępnej dla wykonania\noperacji. Spróbuj użyć krótszego tekstu.
+
+Decryption failed. This may be attributed\nto the following reasons:
+Odszyfrowanie nie powiodło się. Możliwe\nprzyczyny tego są następujące:
+
+- You entered a wrong password.
+- Wprowadziłeś nieprawidłowe hasło.
+
+- The text is corrupted.\n- The text is not encrypted.
+- Tekst jest niepoprawny.\n- Tekst nie jest zaszyfrowany.
+
+This should not have happened:\nDecryption successful, but decompression\nfailed.
+To nie powinno się zdarzyć:\nOdszyfrowanie powiodło się, ale\nDekompresja nie powiodła się.
+
+Could not register the following hot keys:
+Nie można zarejestrować następujących skrótów klawiszowych:
+
+The selected file already exists. Do you\nwant to append passwords to this file\n(existing passwords will be preserved),\nor do you want to completely overwrite it?\n\nYes\t-> append passwords,\nNo\t-> overwrite file,\nCancel\t-> cancel process.
+Wybrany plik już istnieje.\nCzy chcesz dodać hasła do pliku\n(istniejące hasła są zachowywane),\nczy chcesz całkowicie nadpisać plik?\n\nJa\t-> Dodaj hasła,\nNein\t-> Nadpisz plik,\nAnuluj\t-> anuluj proces.
+
+Passphrase: Invalid length range.
+Hasło: Nieprawidłowy zakres długości.
+
+If the option \"Each character must occur\nonly once\" is activated, the password length\nis limited to the size of the character set (%d).
+Jeśli opcja "Każdy znak może być użyty tylko raz"\njest aktywowany, długość hasła\nograniczone do rozmiaru zestawu znaków (%d).
+
+If the option \"Each word must occur only\nonce\" is activated, the number of words\nis limited to the size of the word list (%d).
+Jeśli opcja "Każde słowo może być użyte tylko raz”\njest aktywowany, jest liczbą\nsłowa ograniczone do rozmiaru listy słów (%d).
+
+Error while loading script:\n%s.
+Błąd podczas ładowania skryptu:\n%s.
+
+Generating password list ...
+Wygeneruj listę haseł ...
+
+%d of %d passwords generated.
+%d z %d wygenerowane hasła.
+
+Generating passphrase ...
+Generowanie hasła ...
+
+%d of %d passphrases generated.
+%d z %d wygenerowane hasła.
+
+\"P\" is not specified.
+"P" nie jest określony.
+
+Password not available.
+Hasło niedostępne.
+
+Password too long.
+Hasło zbyt długie.
+
+Invalid format specifier \"%s\".
+Specyfikator nieprawidłowego formatu \"%s\".
+
+Executing script
+Uruchom skrypt
+
+Waiting for script ...
+Oczekiwanie na skrypt ...
+
+Script thread was terminated forcibly.\nPlease check script for infinite loops.
+Wątek skryptu został przerwany siłą.\nSprawdź, czy w skrypcie nie ma nieskończonych pętli.
+
+The estimated list size will probably exceed\nthe internal memory limit.\nPlease reduce the number of passwords
+Szacowany rozmiar listy prawdopodobnie przekroczy\nlimit pamięci wewnętrznej.\nProszę zmniejszyć liczbę haseł
+
+The memory limit of the password list has\nbeen reached.\n\nThe number of passwords has been\nreduced to %d.
+Limit przechowywania listy haseł została\nprzekroczona.\n\nLiczba haseł została zredukowana do %d.
+
+%d passwords generated.
+%d wygenerowane hasła.
+
+%d passwords generated.\r\nSecurity of each password: %d bits.\r\nMaximum security of the entire list: %d bits.
+%d wygenerowane hasła.\r\nBezpieczeństwo dowolnego hasła: %d bity.\r\nMaksymalne bezpieczeństwo całej listy: %d bitów.
+
+Password copied to clipboard.
+Hasło skopiowane do schowka.
+
+Copying password list ...
+Kopiowanie listy haseł ...
+
+File \"%s\" successfully created.\n\n%d passwords written.
+Plik \"%s\" pomyślnie wygenerowane.\n\n%d hasła zapisane.
+
+An error has occurred during password generation:\n%s.
+Podczas generowania hasła\nwystąpił błąd:\n%s.
+
+%d passwords written to file \"%s\".
+%d hasła zapisane do pliku \"%s\".
+
+%d bits / %d characters
+%d bits / %d znaków
+
+Passwords: %d
+Hasła: %d
+
+Invalid character set.
+Nieprawidłowy zestaw znaków.
+
+default (English) trigrams
+Standardowy-Trigramme (English)
+
+File \"%s\"
+Plik \"%s\"
+
+(phonetic, based on trigram frequencies\nfrom the following source:\n<%s>)
+(fonetyczny, oparty na częstotliwościach \ntrygramu z następującego źródła:\n<%s>)
+
+The character set you entered is invalid.\nIt must contain at least 2 different characters.
+Wprowadzony zestaw znaków jest nieprawidłowy.\nMusi zawierać co najmniej 2 różne znaki.
+
+Currently loaded character set:
+Aktualnie załadowany zestaw znaków:
+
+Could not open file.
+Nie można otworzyć pliku.
+
+Not enough valid words.
+Za mało poprawnych słów.
+
+Select word list file
+Wybieranie pliku z listą wyrazów
+
+Error while loading the file\n\"%s\":\n%s
+Błąd ładowania pliku\n\"%s\":\n%s
+
+default (English) word list
+Domyślna lista słów (English)
+
+Currently loaded word list:
+Aktualnie załadowana lista słów:
+
+First word:
+Pierwsze słowo:
+
+Random word:
+Losowe słowo:
+
+Last word:
+Ostatnie słowo:
+
+The version of this language (%s) is not\ncompatible with this program version.\nThis version of %s requires a language\nversion of at least %s.\n\nDo you want to use it anyway?
+Wersja tego języka (%s) nie jest\nkompatybilna z tą wersją programu.\nTa wersja %s wymaga\njęzyka wersja co najmniej %s.\n\nCzy nadal chcesz z nich korzystać?
+
+The version of this language (%s) is higher\nthan the version of this program (%s).\nTherefore, version incompatibilities may occur.\n\nDo you want to use it anyway?
+Wersja tego języka (%s) jest wyższa\nniż wersja tego programu (%s).\nW związku z tym może to prowadzić do niezgodności wersji.\n\nCzy mimo to chcesz go użyć?
+
+The language file will be loaded when you\nrestart the program.\n\nDo you want to restart now?
+Plik językowy można załadować tylko,\npo ponownym uruchomieniu programu.\n\nCzy chcesz teraz zrestartować?
+
+Password is too long to show it in a\nmessage box like this.\n\nIt has been copied to the clipboard.
+Hasło jest za długie, aby wyświetlić\nw polu tekstowym takim jak to.\n\nZostał skopiowany do schowka.
+
+The generated password is:\n\n%s\n\nThe estimated security is %d bits.\n\nYes\t-> copy password to clipboard,\nNo\t-> generate new password,\nCancel\t-> cancel process.
+Wygenerowane hasło to:\n\n%s\n\nSzacowane bezpieczeństwo to %d bitów.\n\nTak\t-> Skopiuj hasło do schowka,\nNie\t-> generuj nowego hasła,\nAnuluj\t-> anuluj proces.
+
+All entries will be removed from the list.\nAre you sure?
+Wszystkie wpisy są usuwane z listy.\nJesteś pewny?
+
+Total Entropy Bits: %d
+Ogółem bitów Entropii: %d
+
+High-resolution timer used:\n%s.\n\nCurrent value: %s.
+Zastosowany timer o wysokiej rozdzielczości:\n%s\n\nWartość chwilowa: %s.
+
+Could not download version file
+Nie można pobrać pliku wersji
+
+URL not found, or unknown format of version file
+Nie znaleziono URL lub nieznany format pliku wersji pliku
+
+A new version (%s) of %s is available!\nDo you want to visit the download page now?
+Nowa wersja (%s) z %s jest dostępna!\nCzy chcesz teraz przejść do strony pobierania?
+
+(NOTE: %s)
+(UWAGA: %s)
+
+Your version of %s is up-to-date.
+Twoja wersja %s jest aktualna.
+
+Error while checking for updates:\n%s.
+Sprawdzanie błędów aktualizacji:\n%s.
+
+WARNING: Random generator is deterministic (press F7 to deactivate)! // string shouldn't be much longer
+OSTRZEŻENIE: Generator losowy jest deterministyczny (naciśnij F7, aby dezaktywować) // ciąg nie powinien być znacznie długi
+
+Clipboard cleared.
+Schowek wyczyszczony
+
+Profile \"%s\" activated.
+Profil \"%s\" aktywowano.
+
+Deterministic random generator has been ACTIVATED.
+Deterministyczny generator liczb losowych WŁĄCZONY.
+
+Deterministic random generator has been RESET.
+Deterministyczny generator liczb losowych RESET.
+
+Deterministic random generator has been DEACTIVATED.
+Deterministyczny generator liczb losowych WYŁĄCZONY.
+
+ERROR: Profile \"%s\" not found.
+BŁĄD: Profil \"%s\" nie znaleziono.
+
+Selected profile \"%s\".
+Profil "%s" wybrany.
+
+Generating %d password(s) ...
+Generowanie %d hasła ...
+
+Command line function \"gen\" is only effective\nwhen %s is run from the console.
+Funkcja wiersza poleceń \"gen\" jest tylko efektywny,\ngdy %s jest uruchamiany z konsoli.
+
+Your donor key has expired: The maximum\nnumber of updates has been reached.
+Twój klucz dawcy wygasł:\nOsiągnięto maksymalną liczbę aktualizacji.
+
+Donor key is invalid.
+Klucz dawcy jest nieprawidłowy.
+
+Donor Key
+Klucz Dawcy
+
+Enter donor key:
+Wpisz klucz dawcy:
+
+Your Donor ID is: %s\nSupported number of updates: %s
+Twój ID Dawcy to: %s\nObsługiwana liczba aktualizacji: %s
+
+Unlimited
+Bez limitu
+
+Thank you for your support!
+Dziękuję za Twoje wsparcie!
+
+Copy this information to the clipboard?
+Skopiować te informacje do schowka?
+
+Donor key has expired.
+Klucz dawcy wygasł.
+
+Settings saved.
+Ustawienia zapisane.
+
+Save password
+Zapisz hasło
+
+Clear Password Cache
+Wyczyść Pamięć Hasła
+
+Password cache cleared.
+Wyczyszczono pamięć haseł.
+
+Select Lua script file
+Wybierz plik skryptu Lua
+
+Waiting for active threads to finish ...
+Poczekaj na zatrzymanie aktywnych wątków ...
+
+Donate at least one of the following amounts\nto receive a Donor Key:\n\n%d EUR / %d USD:\tValid for current version and %d updates.\n%d EUR / %d USD:\tValid for the entire lifetime of version 3.\n\nDo you want to donate now?
+Przekaż darowiznę co najmniej jednej z następujących kwot\nKwoty potrzebne do uzyskania Klucza Dawcy:\n\n%d EUR / %d USD:\tObowiązuje dla bieżącej wersji i %d aktualizacji.\n%d EUR / %d USD:\tObowiązuje przez cały okres ważności Wersji 3.\n\nCzy chcesz przekazać darowiznę teraz?
+
+Could not access registry key\n%s.
+Odmowa dostępu do klucza rejestracyjnego:\n%s.
+
+/////////////// ConfigurationDlg //////////
+
+Configuration
+Konfiguracja
+
+General
+Ogólne
+
+Security
+Bezpieczeństwo
+
+Hot Keys
+Hot Keys
+
+Files
+Pliki
+
+Updates
+Aktualizacje
+
+Database
+Baza danych
+
+Change font for the GUI controls:
+Zmień czcionkę kontrolek GUI:
+
+Select font
+Wybierz czcionkę
+
+Show system tray icon constantly
+Stale pokazuj ikonę na pasku zadań
+
+Minimize program to system tray
+Zminimalizuj program do zasobnika systemowego
+
+Minimize before performing autotype
+Minimalizacja przed wykonaniem autozapisu
+
+Autotype delay between characters (ms):
+Opóźnienie autozapisu między znakami (ms):
+
+Ask before exiting application
+Zapytaj przed wyjściem z aplikacji
+
+Launch application on system startup (for current user)
+Uruchom aplikację podczas uruchamiania systemu (dla bież. użytkownika)
+
+Encryption algorithm for generating random data via random pool:
+Algorytm szyfrowania do generowania losowych danych za pomocą losowej puli:
+
+Benchmark...
+Test Prędkości...
+
+Test passwords against list of common passwords
+Testowanie haseł pod kątem listy popularnych haseł
+
+Clear clipboard automatically after the following time (seconds):
+Wyczyść schowek automatycznie po upływie następującego czasu (sekund):
+
+Clear password box automatically after the following time (seconds):
+Wyczyść pole hasła automatycznie po następującym czasie (sekundach):
+
+Automatic check for updates:
+Automatyczne sprawdzanie aktualizacji:
+
+Daily
+Codziennie
+
+Weekly
+Tygodniowo
+
+Monthly
+Miesięcznie
+
+Disabled
+Wyłączono
+
+Actions
+Działania
+
+Show/restore main window
+Pokaż/przywróć okno główne
+
+No further action
+Brak dalszych działań
+
+Generate single password in main window
+Generowanie pojedynczego hasła w oknie głównym
+
+Generate multiple passwords
+Generowanie wielu haseł
+
+Generate password and copy it to the clipboard
+Generuj hasło i skopiuj je do schowka
+
+Generate password and show it in a message box
+Generuj hasło i pokaż je w oknie komunikatu
+
+Generate password and perform autotype
+Generuj hasła i wykonywanie autozapisu
+
+Open MP password generator
+Otwórz generator haseł MP
+
+Show password manager
+Pokaż menedżera haseł
+
+Show MP password generator
+Pokaż generator haseł MP
+
+Search database for keyword in window title
+Przeszukaj bazę danych dla słowa kluczowego w tytule okna
+
+Search database for keyword and perform autotype
+Przeszukaj bazę danych dla słowa kluczowego i wykonaj autozapis
+
+Shortcut to assign:
+Przypisz skróty klawiaturowe:
+
+Add
+Dodaj
+
+Remove
+Usuń
+
+Shortcut
+Skrót klawiszowy
+
+Action
+Działanie
+
+Please select a hot key action.
+Wybierz czynność wykonywaną za pomocą klawisza skrótu.
+
+Character encoding of text files:
+Kodowanie znaków w plikach tekstowych:
+
+Newline character sequence:
+Sekwencja znaków nowej linii:
+
+Select language:
+Wybierz język:
+
+Clear clipboard on minimize
+Wyczyść schowek podczas minimalizowania
+
+Clear clipboard on exit
+Wyczyść schowek przy wyjściu
+
+Lock database when minimizing application or database window
+Blokuj bazę danych podczas minimalizowania okna aplikacji lub bazy danych
+
+Lock database after the following idle time (seconds):
+Blokuj bazę danych po upływie czasu bezczynności (sekundy):
+
+Save automatically
+Zapisz automatycznie
+
+Create backup of database before saving
+Przed zapisaniem utwórz kopię zapasową bazy danych
+
+Number backups consecutively - up to:
+Liczba kolejnych kopii zapasowych - do:
+
+Open window on startup
+Otwórz okno podczas uruchamiania
+
+Open last used database on startup
+Otwórz ostatnio używaną bazę danych podczas uruchamiania
+
+Warn if database contains expired entries
+Ostrzegaj, jeśli baza danych zawiera wygasłe wpisy
+
+Save automatically:
+Zapisz automatycznie:
+
+After adding/modifying an entry
+Po dodaniu/zmodyfikowaniu wpisu
+
+After every change
+Po każdej zmianie
+
+Default autotype sequence:
+Domyślna sekwencja autozapisów:
+
+Maximum number of hot keys (%d) reached.
+Osiągnięto maksymalną liczbę klawiszy szybkiego dostępu (%d).
+
+This hot key has already been assigned.
+Ten klawisz szybkiego dostępu został już przypisany.
+
+%s (%d-bit key, operates on %d-bit blocks)
+%s (%d-bitowy klucz, operuje na blokach %d-bit)
+
+Benchmark results (data size: %d MB):
+Wynik testu (rozmiar danych: %d MB):
+
+/////////////// PasswDlg ///////////////
+
+Enter password:
+Wprowadź hasło:
+
+Confirm password:
+Potwierdź hasło:
+
+Display password
+Pokaż hasło
+
+OK
+OK
+
+Cancel
+Anuluj
+
+Passwords are not identical.
+Hasła nie są identyczne.
+
+Encrypt
+Szyfruj
+
+Decrypt
+Odszyfruj
+
+Remember password (seconds):
+Zapamiętaj hasło (sekundy):
+
+/////////////// PasswList ///////////////
+
+Password List
+Lista Haseł
+
+Save As File...
+Zapisz jako plik...
+
+Save password list
+Zapisz listę haseł
+
+Error while creating file\n\"%s\":\n%s.
+Błąd podczas tworzenia pliku\n\"%s\":\n%s.
+
+File \"%s\" successfully created.
+Plik \"%s\" pomyślnie utworzony.
+
+/////////////// PasswOptionsDlg ///////////////
+
+Advanced Password Options
+Zaawansowane Opcje Haseł
+
+Exclude ambiguous characters
+Wyklucz dwuznaczne znaki
+
+First character must not be a lower-case letter
+Pierwszy znak nie może być małą literą
+
+Don't separate words by a space
+Nie oddzielaj słów spacją
+
+Don't separate words and characters by a '-' character
+Nie oddzielaj słów i znaków  '-' znakiem
+
+Reverse default order of character/word combinations
+Odwróć domyślnie kolejności kombinacji znaków i wyrazów
+
+Include at least one upper-case letter (A-Z)
+Uwzględnij co najmniej jedną wielką literę (A-Z)
+
+Include at least one lower-case letter (a-z)
+Uwzględnij co najmniej jedną małą literę (a-z)
+
+Include at least one digit (0-9)
+Uwzględnij co najmniej jedną cyfrę (0-9)
+
+Include at least one special symbol (!"#$%...)
+Uwzględnij co najmniej jeden specjalny symbol (!"#$%...)
+
+Only include characters from custom character set
+Uwzględnij tylko znaki z niestandardowego zestawu znaków
+
+Exclude repeating consecutive characters (e.g. aa, 11)
+Wyklucz powtarzające się kolejne znaki (np. aa, 11)
+
+Exclude duplicate entries in password lists
+Wyklucz zduplikowane wpisy w listach haseł
+
+Convert all words in word lists to lower-case
+Konwertuj wszystkie wyrazy na listach wyrazów na małe litery
+
+Each character must occur only once
+Każda postać musi wystąpić tylko raz
+
+Each word must occur only once
+Każde słowo musi wystąpić tylko raz
+
+Redefine ambiguous characters:
+Przedefiniuj niejednoznaczne znaki:
+
+Redefine special symbols:
+Przedefiniuj na nowo symbole specjalne:
+
+Maximum length of words in word lists (except default word list):
+Maksymalna długość słów na listach słów (z wyjątkiem domyślnej listy słów):
+
+Trigram file for generating phonetic (pronounceable) passwords:
+Plik trygramu do generowania haseł fonetycznych (wymawianych):
+
+Applies to pass_words_.
+Dotyczy hasło_słowa_.
+
+Applies to pass_phrases_.
+Dotyczy hasło_frazy_.
+
+Applies to formatted passwords.
+Dotyczy haseł sformatowanych.
+
+Applies to phonetic passwords.
+Dotyczy haseł fonetycznych.
+
+Selecting one of these options might reduce the security of generated passwords.
+Wybranie jednej z tych opcji może zmniejszyć bezpieczeństwo generowanych haseł.
+
+These options also apply to formatted passwords.
+Te opcje dotyczą również sformatowanych haseł.
+
+Deselect All
+Odznacz wszystko
+
+Invert Selection
+Odwróć wybór
+
+/////////////// CreateRandDataFile ///////////////
+
+Create Random Data File
+Utwórz Plik z Losowymi Danymi
+
+File name:
+Nazwa pliku:
+
+File size:
+Rozmiar pliku:
+
+Bytes
+Bytes
+
+Kilobytes
+Kilobytes
+
+Megabytes
+Megabytes
+
+Close
+Zamknij
+
+Create file
+Utwórz plik
+
+Invalid file size.
+Nieprawidłowy rozmiar pliku.
+
+Not enough free disk space available\nto create the file.
+Za mało wolnego miejsca na dysku\naby utworzyć plik.
+
+Creating random data file ...
+Tworzenie losowego pliku danych ...
+
+%d of %d KB written.
+%d z %d KB zapisany.
+
+File \"%s\" successfully created.\n\n%d bytes written.
+Plik \"%s\" pomyślnie utworzony.\n\n%d bytes zapisane.
+
+Error while creating file\n\"%s\":\n%s.\n\n%d bytes written.
+Błąd podczas tworzenia pliku\n\"%s\":\n%s.\n\n%d bytes zapisane.
+
+//////////////// ProfileEditor ////////////////
+
+Profile Editor
+Profil-Edytor
+
+Load
+Ładowanie
+
+Confirm
+Potwierdź
+
+Profile name:
+Nazwa profilu:
+
+Move up
+Przesuń w górę
+
+Move down
+Przesuń w dół
+
+Save "advanced password options" for this profile
+Zapisz "zaawansowane opcje hasła" dla tego profilu
+
+Delete profile \"%s\"?
+Profil \"%s\" usunąć?
+
+Delete %d profiles?
+Usuń %d profile?
+
+Maximum number of profiles (%d) reached.\nPlease delete or overwrite profiles.
+Osiągnięto maksymalną liczbę profili (%d).\nProszę usunąć lub nadpisać profile.
+
+A profile with the name \"%s\" already exists.\nDo you want to overwrite it?
+Profil o nazwie \"%s\" już istnieje. Czy chcesz go nadpisać?
+
+/////////////// CreateTrigramFile ///////////////
+
+Create Trigram File
+Utwórz Plik Trygramu
+
+Source file (e.g., dictionary, word list):
+Plik źródłowy (np. słownik, lista słów):
+
+Destination file (trigram file):
+Plik docelowy (plik trygramu):
+
+Trigram file \"%s\" successfully created.\n\n%d trigrams evaluated.\n%1.2f bits of entropy per letter.
+Plik trygramu \"%s\" pomyślnie utworzono.\n\n%d trygramy oceniane.\n%1.2f bitów entropii na literę.
+
+/////////////// Callback ///////////////
+
+Process was cancelled by the user
+Proces został anulowany przez użytkownika
+
+/////////////// About ///////////////
+
+About %s
+O %s
+
+Current language: %s\nTranslator: %s
+Aktualny język: %s\nTranslator: %s
+
+This program is distributed under the terms and conditions of the GNU General Public License (GPL).
+Ten program jest rozpowszechniany na warunkach Powszechnej Licencji Publicznej GNU (GPL).
+
+View license
+Wyświetl licencję
+
+Donor ID:
+ID Dawcy:
+
+/////////////// QuickHelp ///////////////
+
+Quick help
+Szybka pomoc
+
+Position Automatically
+Automatyczne pozycjonowanie
+
+You can use the following placeholders:
+Można użyć następujących symboli zastępczych:
+
+without ambiguous characters
+bez niejednoznacznych znaków
+
+special symbols
+symbole specjalne
+
+brackets
+nawiasy
+
+punctuation marks
+znaki interpunkcyjne
+
+higher ANSI characters
+wyższe znaki ANSI
+
+generate phonetic password (lower-case letters)
+generowanie hasła fonetycznego (małe litery)
+
+generate phonetic password (upper-case letters)
+generowanie hasła fonetycznego (wielkie litery)
+
+generate phonetic password (mixed-case letters)
+generowanie hasła fonetycznego (litery pisane wielką literą)
+
+Comments may be provided in square brackets \"[...]\"\nat the beginning of the sequence.
+Komentarze mogą być zamieszczane w nawiasach kwadratowych \"[...] \"\nna początku sekwencji.
+
+Format specifiers have the form \"[*][N]x\" or \"[*][M-N]x\", where the\noptional argument \"N\" specifies the number of repetitions (between 1 and\n99999), \"M-N\" specifies a random number of repetitions in the range\nfrom M to N, and \"x\" is the actual format specifier/placeholder. The\noptional asterisk (*) means that each character must occur only once in\nthe sequence. Example: \"16u\" means \"Insert 16 random upper-case letters\ninto the password\".
+Specyfikatory formatu mają postać \"[*][N]x\" lub \"[*][M-N]x\", gdzie the\nargument opcjonalny \"N\" określa liczbę powtórzeń (między 1 i\n99999), \"M-N\" określa losową liczbę powtórzeń w zakresie\nz M do N, i \"x\" jest rzeczywistym specyfikatorem/symbolem zastępczym formatu. Opcjonalna \ngwiazdka (*) oznacza, że każdy znak musi wystąpić tylko raz w sekwencji.\nPrzykład: \"16u\" oznacza \"Wstaw 16 losowe wielkie litery do hasła\".
+
+List of placeholders with optional argument \"N\":
+Lista symboli zastępczych z opcjonalnym argumentem \"N\":
+
+custom character set
+niestandardowy zestaw znaków
+
+vowels, lower-case
+samogłoski, małe litery
+
+vowels, mixed-case
+samogłoski, mieszane litery
+
+vowels, upper-case
+samogłoski, wielkie litery
+
+consonants, lower-case
+spółgłoski, małe litery
+
+consonants, mixed-case
+spółgłoski mieszane litery
+
+consonants, upper-case
+spółgłoski, wielkie litery
+
+List of special format specifiers\n(possible usage of argument \"N\" is indicated by \"{N}\"):
+Lista specyfikatorów formatu specjalnego\n(możliwe użycie argumentu \"N\" jest wskazany przez \"{N}\"):
+
+insert password generated via \"Include characters/words\"
+wstaw hasło wygenerowane przez \"Uwzględnij znaki/słowa\"
+
+words from word list, multiple words are separated by spaces
+słowa z listy słów, wiele słów jest oddzielonych spacjami
+
+words, multiple words are not separated at all
+słowa, wiele słów nie jest w ogóle rozdzielonych
+
+repeat input sequence in brackets N times
+powtórz sekwencję wejściową w nawiasach N razy
+
+randomly permute formatted sequence in brackets, keep N characters
+losowo permutuj sformatowaną sekwencję w nawiasach, zachowaj N znaków
+
+treat sequence as character set and insert N characters
+traktuj sekwencję jako zestaw znaków i wstaw N znaków
+
+Additional notes:
+Dodatkowe uwagi:
+
+Text enclosed with quotation marks \"...\" is copied verbatim\nto the password.
+Tekst ujęty w cudzysłów \"...\" jest kopiowany dosłownie\ndo hasła.
+
+/////////////// MPPasswGen ///////////////
+
+MP Password Generator
+MP Generator Haseł
+
+Master password
+Hasło Główne
+
+Enter password...
+Wprowadź hasło...
+
+Clear
+Wyczyść
+
+Status:
+Status:
+
+Expiry countdown:  // string must be as short as possible
+Odliczanie wygaśnięcia:
+
+Ask for password confirmation
+Pytaj o potwierdzenie hasła
+
+Show checksum of password:
+Pokaż sumę kontrolną hasła:
+
+Key expires after the following time (seconds):
+Klucz wygasa po następującym czasie (sek.):
+
+Provide compatibility with "Hashapass"
+Zapewnij kompatybilność z "Hashapass"
+
+Add password length to parameter
+Dodaj długość hasła do parametru
+
+Autotype sequence:
+Autozapis-sekwencji:
+
+Password generator
+Generator haseł
+
+Parameter:
+Parameter:
+
+%d ch. / %.1f bits per ch. // use abbreviations to shorten the string
+%d znak / %.1f bits na znak
+
+Resulting password:
+Powstałe Hasła:
+
+Use as default random generator
+Użyj jako domyślnego generatora losowego
+
+Alphanumeric
+Alfanumeryczny
+
+Hexadecimal
+Szesnastkowy
+
+Key has expired.
+Klucz wygasł.
+
+Key has been cleared.
+Klucz został wyczyszczony.
+
+New key generated.
+Wygenerowano nowy klucz.
+
+/////////////// ProvideEntropyDlg ///////////////
+
+Enter or paste some text into the box below, press mouse buttons, or move your mouse within the window.
+Wygenerowano nowy klucz.
+
+%d bits of entropy have been added to the random pool.
+%d bites z entropii zostało dodane do puli losowej.
+
+/////////////// PasswDatabase/Manager ///////////////
+
+Database not encrypted, or invalid key
+Baza danych niezaszyfrowana lub nieprawidłowy klucz
+
+File contents modified, or invalid key
+Zawartość pliku zmodyfikowana lub nieprawidłowy klucz
+
+Unknown file format
+Nieznany format pliku
+
+Invalid file format
+Nieprawidłowy format pliku
+
+Title
+Tytuł
+
+Title:
+Tytuł:
+
+User name
+Nazwa użytkownika
+
+User name:
+Nazwa użytkownika:
+
+Password
+Hasło
+
+Password:
+Hasło:
+
+URL
+URL
+
+URL:
+URL:
+
+Keyword
+Słowo kluczowe
+
+Keyword:
+Słowo kluczowe:
+
+Notes
+Notatki
+
+Notes:
+Notatki:
+
+Key-value list
+Klucz-lista wartości
+
+Key-value list:
+Klucz-lista wartości:
+
+Creation time
+Czas tworzenia
+
+Creation time:
+Czas tworzenia:
+
+Last modification
+Ostatnia modyfikacja
+
+Last modification:
+Ostatnia modyfikacja:
+
+Tags
+Tagi
+
+Tags:
+Tagi:
+
+Select and add existing tag
+Wybierz i dodaj istniejący tag
+
+All ((tags)) // do not translate the text enclosed with ((...))!
+Wszystkie
+
+All search results
+Wszystkie wyniki wyszukiwania
+
+Untagged
+Nieoznakowane
+
+Key
+Klucz
+
+Value
+Wartość
+
+Edit
+Edytuj
+
+View
+Zobacz
+
+New...
+Nowy...
+
+Open...
+Otwórz...
+
+Save
+Zapisz
+
+Save As...
+Zapisz jako...
+
+Lock
+Blokuj
+
+Unlock
+Odblokuj
+
+Export to
+Eksportuj do
+
+CSV File...
+Plik CSV...
+
+Database Settings...
+Ustawienia bazy danych...
+
+Properties...
+Właściwości...
+
+Change Master Password...
+Zmień hasło główne....
+
+Copy User Name
+Kopiuj nazwę użytkownika
+
+Copy Password
+Kopiuj hasło
+
+Open URL
+Otwórz URL
+
+Run
+Uruchom
+
+Add Entry
+Dodaj wpis
+
+Duplicate Entry
+Duplikat wpisu
+
+Delete Entry
+Usuń wpis
+
+Show Columns
+Pokaż kolumny
+
+Show Passwords in List
+Pokaż hasła na liście
+
+Sort Entries By
+Sortuj wpisy wg
+
+Unsorted
+Niesortowane
+
+Sort Order
+Kolejność sortowania
+
+Ascending
+Rosnąco
+
+Descending
+Malejąco
+
+Sort Tags By
+Sortuj Tagi wg
+
+Name
+Nazwa
+
+Frequency
+Częstotliwość
+
+Change List Font...
+Zmień czcionkę listy...
+
+Change Password Font...
+Zmień czcionkę hasła...
+
+Previous entry
+Poprzedni wpis
+
+Next entry
+Następny wpis
+
+Accept changes
+Akceptuj zmiany
+
+Undo changes
+Cofnij zmiany
+
+Search...
+Szukaj...
+
+Clear search
+Wyczyść wyszukiwanie
+
+Left-click: Perform search, right-click: Search options
+Lewe-kliknięcie: Wykonaj wyszukiwanie, prawy-klik: Opcje wyszukiwania
+
+Case-sensitive search
+Wyszukiwanie z uwzględnieniem wielkości liter
+
+Fuzzy search (approximate matching)
+Wyszukiwanie rozmyte (przybliżone dopasowanie)
+
+Lock/unlock database
+Zablokuj/odblokuj bazę danych
+
+Left-click: Hide/show password, right-click: Generate password
+Lewy-klik: Ukryj/pokaż hasło, prawy-klik: Wygeneruj hasło
+
+Unlock %s
+Odblokuj %s
+
+Open %s
+Otwórz %s
+
+Create new database
+Utwórz nową bazę danych
+
+Could not find database file:\n\"%s\".
+Nie można znaleźć pliku bazy danych:\n"%s".
+
+Error while opening database file:\n%s.
+Błąd podczas otwierania pliku bazy danych:\n%s.
+
+The currently selected entry has been changed.\nDo you want to save the changes?
+Aktualnie wybrana pozycja została zmieniona.\nCzy chcesz zapisać wprowadzone zmiany?
+
+The database has been changed.\nDo you want to save the changes?
+Baza danych została zmieniona.\nCzy chcesz zapisać wprowadzone zmiany?
+
+An untitled database cannot be locked.
+Baza danych bez tytułu nie może zostać zablokowana.
+
+Could not save backup file\n\"%s\".
+Nie można zapisać pliku kopii zapasowej:\n"%s".
+
+Error while saving database file:\n%s.
+Błąd podczas zapisywania pliku bazy danych:\n%s.
+
+Please finish editing the current entry\nbefore adding new entries.
+Proszę zakończyć edycję bieżącego wpisu\nprzed dodaniem nowych wpisów.
+
+%d entries with passwords have been added.
+%d dodano wpisy z hasłami.
+
+1 entry found.
+1 znaleziony wpis.
+
+%d entries found.
+%d znaleziono wpisów.
+
+Search via hot key.
+Wyszukiwanie za pomocą skrótu.
+
+No matching keyword found for window text\n\"%s\".
+Nie znaleziono pasującego słowa kluczowego dla tekstu okna\n"%s".
+
+New Entry
+Nowy Wpis
+
+Please specify at least a title or password.
+Podaj co najmniej tytuł lub hasło.
+
+Delete 1 entry?
+Usunąć 1 wpis?
+
+Delete %d entries?
+Usunąć wpisy %d?
+
+Enter OLD master password
+Wprowadź STARE hasło główne
+
+Enter NEW master password
+Wprowadź NOWE hasło główne
+
+Master password successfully changed.
+Hasło główne zostało pomyślnie zmienione.
+
+Old master password is invalid.
+Stare hasło główne jest nieprawidłowe.
+
+Untitled
+Bez tytułu
+
+Copy ((noun)) // do not translate the text enclosed with ((...))!
+Kopiuj
+
+Database successfully exported to CSV file.
+Baza danych została pomyślnie wyeksportowana do pliku CSV.
+
+Error while creating CSV file:\n%s.
+Błąd podczas tworzenia pliku CSV:\n%s.
+
+Password databases
+Bazy danych z hasłami
+
+CSV files
+Pliki CSV
+
+Autotype
+AutoZapis
+
+Format password
+Formatuj hasło
+
+Rearrange Entry
+Zmień układ wpisu
+
+Move to Top
+Przesuń do góry
+
+Move up by one
+Przesuń o jeden w górę
+
+Move down by one
+Przesuń o jeden w dół
+
+Move to Bottom
+Przesuń na dół
+
+The maximum tag length is %d characters.\nLonger tags have been shortened.
+Maksymalna długość tagu to %d znaków.\nDłuższe tagi zostały skrócone.
+
+Enter master password again
+Wprowadź ponownie hasło główne
+
+Master password is invalid.
+Hasło główne jest nieprawidłowe.
+
+Edit key-value list
+Edytuj listę klucz-wartość
+
+Profile "%s" not found.
+Profil "%s" nie znaleziono.
+
+Password expiry
+Wygaśnięcie hasła
+
+Expires:
+Wygasa:
+
+Change expiry date
+Zmień datę ważności
+
+Filter expired entries
+Filtrowanie wygasłych wpisów
+
+%d days
+%d dni
+
+The database contains expired entries.\nDo you want to filter these entries now?
+Baza danych zawiera wygasłe wpisy.\nCzy chcesz teraz filtrować te wpisy?
+
+/////////////// PasswMngColSelect ///////////////
+
+Select columns
+Wybierz kolumny
+
+Select at least one column.
+Wybierz co najmniej jedną kolumnę.
+
+/////////////// Other ///////////////
+
+Error while formatting string
+Błąd podczas formatowania ciągu
+
+Invalid UTF-16 character encoding
+Nieprawidłowe kodowanie znaków UTF-16
+
+Error while converting string to UTF-8
+Błąd podczas konwersji ciągu na UTF-8
+
+Error while decoding UTF-8 string
+Błąd podczas dekodowania ciągu UTF-8
+
+Unicode string too long
+Zbyt długi ciąg znaków Unicode
+
+Invalid ANSI or UTF-8 character encoding, or Unicode string too long
+Nieprawidłowe kodowanie znaków ANSI lub UTF-8 albo zbyt długi ciąg znaków Unicode
+
+Error while encoding Unicode string
+Błąd podczas kodowania ciągu Unicode
+
+Out of disk space
+Brak miejsca na dysku
+
+Could not open file/execute operation\n\"%s\".
+Nie można otworzyć pliku/wykonaj operację\n\"%s\".
+
+Source file does not contain enough trigrams
+Plik źródłowy nie zawiera wystarczającej liczby trygramów
+
+/////////////// PasswDbSettings ///////////////
+
+Database settings
+Ustawienia bazy danych
+
+Default user name for new entries:
+Domyślna nazwa użytkownika dla nowych wpisów:
+
+Generate passwords for new entries using format sequence:
+Generuj hasła dla nowych wpisów przy użyciu sekwencji formatów:
+
+Generate test password using format sequence
+Generowanie hasła testowego przy użyciu sekwencji formatów
+
+Encryption algorithm:
+Algorytm szyfrowania:
+
+%s with %d-bit key
+%s z %d-bit-klucz
+
+Number of key derivation rounds:
+Liczba rund wyprowadzania klucza:
+
+Calculate number of rounds for a 1 second delay
+Oblicz liczbę rund dla 1 sekundy opóźnienia
+
+Invalid number of key derivation rounds.
+Nieprawidłowa liczba rund wyprowadzenia klucza.
+
+By default, new entries expire after the following number of days:
+Domyślnie nowe wpisy wygasają po następującej liczbie dni:
+
+/////////////// PasswDbKeyValEdit ///////////////
+
+Key-value list editor
+Klucz-edytor listy wartości
+
+/////////////// PasswDbProp ///////////////
+
+Properties
+Właściwości
+
+Property
+Właściwość
+
+Location
+Lokalizacja
+
+Size
+Rozmiar
+
+Format version
+Format-wersja
+
+Number of entries
+Liczba wpisów
+
+Number of expired entries
+Liczba wygasłych wpisów
+
+Number of tags
+Liczba tagów

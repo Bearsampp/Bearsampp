@@ -1,0 +1,4 @@
+LANGUAGE:         German
+NUMBER OF WORDS:  8192 (13.0 bits of entropy per word)
+ORIGINAL AUTHOR:  Benjamin Tenne
+SOURCE:           http://world.std.com/%7Ereinhold/diceware_german.txt
