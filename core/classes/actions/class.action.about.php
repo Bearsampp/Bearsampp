@@ -7,10 +7,13 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class ActionAbout
+ * Handles the creation and management of the "About" window in the Bearsampp application.
+ */
 class ActionAbout
 {
     private $wbWindow;
-
     private $wbImage;
     private $wbLinkHomepage;
     private $wbLinkDonate;
@@ -19,6 +22,12 @@ class ActionAbout
 
     const GAUGE_SAVE = 2;
 
+    /**
+     * ActionAbout constructor.
+     * Initializes the "About" window and its components.
+     *
+     * @param array $args Arguments passed to the constructor.
+     */
     public function __construct($args)
     {
         global $bearsamppCore, $bearsamppLang, $bearsamppWinbinder;
@@ -47,6 +56,15 @@ class ActionAbout
         $bearsamppWinbinder->reset();
     }
 
+    /**
+     * Processes window events and handles user interactions.
+     *
+     * @param int $window The window identifier.
+     * @param int $id The control identifier.
+     * @param int $ctrl The control object.
+     * @param mixed $param1 Additional parameter 1.
+     * @param mixed $param2 Additional parameter 2.
+     */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppConfig, $bearsamppWinbinder;

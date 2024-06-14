@@ -1,9 +1,19 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ActionSwitchVersion
+ * Handles the switching of versions for various services and binaries in the Bearsampp application.
+ */
 class ActionSwitchVersion
 {
     private $bearsamppSplash;
-
     private $version;
     private $bin;
     private $currentVersion;
@@ -14,6 +24,12 @@ class ActionSwitchVersion
     const GAUGE_SERVICES = 1;
     const GAUGE_OTHERS = 7;
 
+    /**
+     * ActionSwitchVersion constructor.
+     * Initializes the class with the provided arguments and sets up the splash screen.
+     *
+     * @param array $args Command line arguments for switching versions.
+     */
     public function __construct($args)
     {
         global $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
@@ -141,6 +157,15 @@ class ActionSwitchVersion
         }
     }
 
+    /**
+     * Processes the window events for the splash screen.
+     *
+     * @param mixed $window The window handle.
+     * @param int $id The event ID.
+     * @param mixed $ctrl The control handle.
+     * @param mixed $param1 The first parameter.
+     * @param mixed $param2 The second parameter.
+     */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;

@@ -1,5 +1,16 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ActionChangePort
+ * Handles the process of changing the port for various services in the Bearsampp application.
+ */
 class ActionChangePort
 {
     private $bin;
@@ -17,6 +28,12 @@ class ActionChangePort
     private $wbBtnFinish;
     private $wbBtnCancel;
 
+    /**
+     * ActionChangePort constructor.
+     * Initializes the port change process for the specified service.
+     *
+     * @param array $args The arguments passed to the constructor, where the first element specifies the service name.
+     */
     public function __construct($args)
     {
         global $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
@@ -72,6 +89,15 @@ class ActionChangePort
         }
     }
 
+    /**
+     * Processes window events and handles user interactions.
+     *
+     * @param mixed $window The window object.
+     * @param int $id The control ID.
+     * @param mixed $ctrl The control object.
+     * @param mixed $param1 Additional parameter 1.
+     * @param mixed $param2 Additional parameter 2.
+     */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppLang, $bearsamppWinbinder;

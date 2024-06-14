@@ -1,20 +1,26 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ActionEditVhost
+ * Handles the editing of virtual hosts within the Bearsampp application.
+ */
 class ActionEditVhost
 {
     private $initServerName;
-
     private $wbWindow;
-
     private $wbLabelServerName;
     private $wbInputServerName;
-
     private $wbLabelDocRoot;
     private $wbInputDocRoot;
     private $wbBtnDocRoot;
-
     private $wbLabelExp;
-
     private $wbProgressBar;
     private $wbBtnSave;
     private $wbBtnDelete;
@@ -23,6 +29,12 @@ class ActionEditVhost
     const GAUGE_SAVE = 3;
     const GAUGE_DELETE = 2;
 
+    /**
+     * ActionEditVhost constructor.
+     * Initializes the virtual host editing window and its components.
+     *
+     * @param array $args Arguments passed to the constructor, typically containing the server name.
+     */
     public function __construct($args)
     {
         global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
@@ -58,6 +70,15 @@ class ActionEditVhost
         }
     }
 
+    /**
+     * Processes window events and handles user interactions.
+     *
+     * @param mixed $window The window object.
+     * @param int $id The ID of the control that triggered the event.
+     * @param mixed $ctrl The control object.
+     * @param mixed $param1 Additional parameter 1.
+     * @param mixed $param2 Additional parameter 2.
+     */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppRoot, $bearsamppBins, $bearsamppLang, $bearsamppOpenSsl, $bearsamppWinbinder;
@@ -68,8 +89,8 @@ class ActionEditVhost
         switch ($id) {
             case $this->wbInputServerName[WinBinder::CTRL_ID]:
                 $bearsamppWinbinder->setText(
-                $this->wbLabelExp[WinBinder::CTRL_OBJ],
-                sprintf($bearsamppLang->getValue(Lang::VHOST_EXP_LABEL), $serverName, $documentRoot)
+                    $this->wbLabelExp[WinBinder::CTRL_OBJ],
+                    sprintf($bearsamppLang->getValue(Lang::VHOST_EXP_LABEL), $serverName, $documentRoot)
                 );
                 $bearsamppWinbinder->setEnabled($this->wbBtnSave[WinBinder::CTRL_OBJ], empty($serverName) ? false : true);
                 break;

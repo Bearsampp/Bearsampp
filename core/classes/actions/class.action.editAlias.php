@@ -1,20 +1,26 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ActionEditAlias
+ * Handles the editing of Apache aliases within the Bearsampp application.
+ */
 class ActionEditAlias
 {
     private $initName;
-
     private $wbWindow;
-
     private $wbLabelName;
     private $wbInputName;
-
     private $wbLabelDest;
     private $wbInputDest;
     private $wbBtnDest;
-
     private $wbLabelExp;
-
     private $wbProgressBar;
     private $wbBtnSave;
     private $wbBtnDelete;
@@ -23,6 +29,12 @@ class ActionEditAlias
     const GAUGE_SAVE = 2;
     const GAUGE_DELETE = 2;
 
+    /**
+     * ActionEditAlias constructor.
+     * Initializes the alias editing window and its components.
+     *
+     * @param array $args Command line arguments passed to the script.
+     */
     public function __construct($args)
     {
         global $bearsamppRoot, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
@@ -59,6 +71,15 @@ class ActionEditAlias
         }
     }
 
+    /**
+     * Processes window events and handles user interactions.
+     *
+     * @param resource $window The window resource.
+     * @param int $id The control ID.
+     * @param resource $ctrl The control resource.
+     * @param mixed $param1 Additional parameter 1.
+     * @param mixed $param2 Additional parameter 2.
+     */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppRoot, $bearsamppBins, $bearsamppLang, $bearsamppWinbinder;
@@ -70,8 +91,8 @@ class ActionEditAlias
         switch ($id) {
             case $this->wbInputName[WinBinder::CTRL_ID]:
                 $bearsamppWinbinder->setText(
-                $this->wbLabelExp[WinBinder::CTRL_OBJ],
-                sprintf($bearsamppLang->getValue(Lang::ALIAS_EXP_LABEL), $apachePortUri, $aliasName, $aliasDest)
+                    $this->wbLabelExp[WinBinder::CTRL_OBJ],
+                    sprintf($bearsamppLang->getValue(Lang::ALIAS_EXP_LABEL), $apachePortUri, $aliasName, $aliasDest)
                 );
                 $bearsamppWinbinder->setEnabled($this->wbBtnSave[WinBinder::CTRL_OBJ], empty($aliasName) ? false : true);
                 break;

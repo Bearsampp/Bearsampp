@@ -1,7 +1,26 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ActionDebugApache
+ *
+ * This class handles the debugging of Apache configurations and settings.
+ * It retrieves various Apache debug information based on the provided arguments
+ * and displays the information in a message box or editor.
+ */
 class ActionDebugApache
 {
+    /**
+     * Constructor for ActionDebugApache.
+     *
+     * @param array $args An array of arguments specifying the type of Apache debug information to retrieve.
+     */
     public function __construct($args)
     {
         global $bearsamppLang, $bearsamppBins, $bearsamppTools, $bearsamppWinbinder;
@@ -10,6 +29,8 @@ class ActionDebugApache
             $editor = false;
             $msgBoxError = false;
             $caption = $bearsamppLang->getValue(Lang::DEBUG) . ' ' . $bearsamppLang->getValue(Lang::APACHE) . ' - ';
+
+            // Determine the type of debug information requested and set the caption accordingly
             if ($args[0] == BinApache::CMD_VERSION_NUMBER) {
                 $caption .= $bearsamppLang->getValue(Lang::DEBUG_APACHE_VERSION_NUMBER);
             } elseif ($args[0] == BinApache::CMD_COMPILE_SETTINGS) {
@@ -30,13 +51,16 @@ class ActionDebugApache
             }
             $caption .= ' (' . $args[0] . ')';
 
+            // Retrieve the debug output from Apache
             $debugOutput = $bearsamppBins->getApache()->getCmdLineOutput($args[0]);
 
+            // Handle syntax check specifically
             if ($args[0] == BinApache::CMD_SYNTAX_CHECK) {
                 $msgBoxError = !$debugOutput['syntaxOk'];
                 $debugOutput['content'] = $debugOutput['syntaxOk'] ? 'Syntax OK !' : $debugOutput['content'];
             }
 
+            // Display the debug output in an editor or message box
             if ($editor) {
                 Util::openFileContent($caption, $debugOutput['content']);
             } else {

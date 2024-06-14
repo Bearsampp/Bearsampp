@@ -1,10 +1,27 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ActionSwitchApacheModule
+ *
+ * This class is responsible for enabling or disabling Apache modules by modifying the Apache configuration file.
+ */
 class ActionSwitchApacheModule
 {
     const SWITCH_ON = 'on';
     const SWITCH_OFF = 'off';
 
+    /**
+     * ActionSwitchApacheModule constructor.
+     *
+     * @param array $args An array containing the module name and the action (either 'on' or 'off').
+     */
     public function __construct($args)
     {
         global $bearsamppBins;

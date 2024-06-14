@@ -1,19 +1,43 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ActionExt handles the execution of various extended actions.
+ */
 class ActionExt
 {
+    // Constants for different actions
     const START = 'start';
     const STOP = 'stop';
     const RELOAD = 'reload';
     const REFRESH = 'refresh';
 
+    // Constants for status codes
     const STATUS_ERROR = 2;
     const STATUS_WARNING = 1;
     const STATUS_SUCCESS = 0;
 
+    /**
+     * @var int Holds the current status of the action.
+     */
     private $status = self::STATUS_SUCCESS;
+
+    /**
+     * @var string Holds the logs generated during the action execution.
+     */
     private $logs = '';
 
+    /**
+     * Constructor for the ActionExt class.
+     *
+     * @param array $args The command line arguments passed to the action.
+     */
     public function __construct($args)
     {
         if (!isset($args[0]) || empty($args[0])) {
@@ -52,6 +76,11 @@ class ActionExt
         $this->sendLogs();
     }
 
+    /**
+     * Retrieves the list of available actions.
+     *
+     * @return array The list of available actions.
+     */
     private function getProcs()
     {
         return array(
@@ -62,16 +91,29 @@ class ActionExt
         );
     }
 
+    /**
+     * Adds a log entry to the logs.
+     *
+     * @param string $data The log entry to add.
+     */
     private function addLog($data)
     {
         $this->logs .= $data . "\n";
     }
 
+    /**
+     * Sets the status of the action.
+     *
+     * @param int $status The status code to set.
+     */
     private function setStatus($status)
     {
         $this->status = $status;
     }
 
+    /**
+     * Sends the logs as a JSON-encoded response.
+     */
     private function sendLogs()
     {
         echo json_encode(array(
@@ -80,6 +122,11 @@ class ActionExt
         ));
     }
 
+    /**
+     * Starts the application.
+     *
+     * @param array $args The command line arguments passed to the action.
+     */
     private function procStart($args)
     {
         global $bearsamppRoot, $bearsamppWinbinder;
@@ -93,6 +140,11 @@ class ActionExt
         }
     }
 
+    /**
+     * Stops the application and removes services.
+     *
+     * @param array $args The command line arguments passed to the action.
+     */
     private function procStop($args)
     {
         global $bearsamppBins;
@@ -116,6 +168,11 @@ class ActionExt
         }
     }
 
+    /**
+     * Reloads the application by stopping and starting services.
+     *
+     * @param array $args The command line arguments passed to the action.
+     */
     private function procReload($args)
     {
         global $bearsamppRoot, $bearsamppBins, $bearsamppWinbinder;
@@ -152,6 +209,11 @@ class ActionExt
         }
     }
 
+    /**
+     * Refreshes the application by calling the reload action.
+     *
+     * @param array $args The command line arguments passed to the action.
+     */
     private function procRefresh($args)
     {
         global $bearsamppAction;

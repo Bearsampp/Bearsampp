@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 /**
  * Class Action handles the execution of various actions based on command line arguments.
@@ -49,16 +56,23 @@ class Action
      */
     private $current;
 
-
     /**
      * Constructor for the Action class.
+     * Initializes the Action object.
      */
     public function __construct()
     {
+        // Initialization code can be added here if needed
     }
 
     /**
      * Processes the action based on command line arguments.
+     *
+     * This method checks if an action exists in the command line arguments,
+     * cleans the argument, constructs the action class name, and then
+     * initializes the action class with the provided arguments.
+     *
+     * @return void
      */
     public function process()
     {
@@ -84,8 +98,13 @@ class Action
     /**
      * Calls a specific action by name with optional arguments.
      *
+     * This method constructs the action class name from the provided action name,
+     * checks if the class exists, and then initializes the action class with the
+     * provided arguments.
+     *
      * @param string $actionName The name of the action to call.
      * @param mixed $actionArgs Optional arguments for the action.
+     * @return void
      */
     public function call($actionName, $actionArgs = null)
     {
@@ -98,6 +117,9 @@ class Action
 
     /**
      * Checks if the action exists in the command line arguments.
+     *
+     * This method verifies if the command line arguments contain an action
+     * by checking the presence and non-emptiness of the second argument.
      *
      * @return bool Returns true if the action exists, false otherwise.
      */

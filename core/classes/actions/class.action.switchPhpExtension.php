@@ -1,10 +1,27 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ActionSwitchPhpExtension
+ *
+ * This class is responsible for enabling or disabling PHP extensions by modifying the php.ini configuration file.
+ */
 class ActionSwitchPhpExtension
 {
     const SWITCH_ON = 'on';
     const SWITCH_OFF = 'off';
 
+    /**
+     * ActionSwitchPhpExtension constructor.
+     *
+     * @param array $args An array containing the extension name and the action (on/off).
+     */
     public function __construct($args)
     {
         global $bearsamppBins;

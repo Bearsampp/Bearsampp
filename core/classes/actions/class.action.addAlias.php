@@ -1,24 +1,37 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ActionAddAlias
+ * Handles the creation of a new alias in the Bearsampp application.
+ */
 class ActionAddAlias
 {
     private $wbWindow;
-
     private $wbLabelName;
     private $wbInputName;
-
     private $wbLabelDest;
     private $wbInputDest;
     private $wbBtnDest;
-
     private $wbLabelExp;
-
     private $wbProgressBar;
     private $wbBtnSave;
     private $wbBtnCancel;
 
     const GAUGE_SAVE = 2;
 
+    /**
+     * ActionAddAlias constructor.
+     * Initializes the window and its controls for adding a new alias.
+     *
+     * @param array $args Arguments passed to the constructor.
+     */
     public function __construct($args)
     {
         global $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
@@ -48,6 +61,15 @@ class ActionAddAlias
         $bearsamppWinbinder->reset();
     }
 
+    /**
+     * Processes window events and handles user interactions.
+     *
+     * @param resource $window The window resource.
+     * @param int $id The control ID.
+     * @param resource $ctrl The control resource.
+     * @param mixed $param1 Additional parameter 1.
+     * @param mixed $param2 Additional parameter 2.
+     */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppRoot, $bearsamppBins, $bearsamppLang, $bearsamppWinbinder;

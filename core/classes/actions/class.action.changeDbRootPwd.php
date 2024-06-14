@@ -1,25 +1,84 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ActionChangeDbRootPwd
+ * Handles the process of changing the root password for various database systems.
+ */
 class ActionChangeDbRootPwd
 {
+    /**
+     * @var object The database binary object (MySQL, MariaDB, PostgreSQL).
+     */
     private $bin;
+
+    /**
+     * @var int The count of process actions required for the progress bar.
+     */
     private $cntProcessActions;
 
+    /**
+     * @var object The main window object created by WinBinder.
+     */
     private $wbWindow;
 
+    /**
+     * @var object The label for the current password input field.
+     */
     private $wbLabelCurrentPwd;
+
+    /**
+     * @var object The input field for the current password.
+     */
     private $wbInputCurrentPwd;
 
+    /**
+     * @var object The label for the new password input field.
+     */
     private $wbLabelNewPwd1;
+
+    /**
+     * @var object The input field for the new password.
+     */
     private $wbInputNewPwd1;
 
+    /**
+     * @var object The label for the confirmation of the new password input field.
+     */
     private $wbLabelNewPwd2;
+
+    /**
+     * @var object The input field for the confirmation of the new password.
+     */
     private $wbInputNewPwd2;
 
+    /**
+     * @var object The progress bar to show the progress of the password change process.
+     */
     private $wbProgressBar;
+
+    /**
+     * @var object The finish button to submit the password change.
+     */
     private $wbBtnFinish;
+
+    /**
+     * @var object The cancel button to abort the password change process.
+     */
     private $wbBtnCancel;
 
+    /**
+     * ActionChangeDbRootPwd constructor.
+     * Initializes the window and controls for changing the database root password.
+     *
+     * @param array $args The arguments passed to the constructor, typically containing the database type.
+     */
     public function __construct($args)
     {
         global $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
@@ -58,6 +117,15 @@ class ActionChangeDbRootPwd
         }
     }
 
+    /**
+     * Processes the window events and handles the password change logic.
+     *
+     * @param object $window The window object.
+     * @param int $id The control ID that triggered the event.
+     * @param object $ctrl The control object that triggered the event.
+     * @param mixed $param1 Additional parameter 1.
+     * @param mixed $param2 Additional parameter 2.
+     */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppLang, $bearsamppWinbinder;

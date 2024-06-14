@@ -1,4 +1,12 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
+
 /**
  * Handles the action of clearing specific temporary folders within the application.
  *
@@ -20,10 +28,28 @@ class ActionClearFolders
     {
         global $bearsamppRoot, $bearsamppCore;
 
-        // Clear specific temporary folders in the root temporary path, excluding some essential items.
+        /**
+         * Clears specific temporary folders in the root temporary path.
+         *
+         * Util::clearFolder is used to clear the contents of the root temporary path, excluding
+         * certain essential items such as 'cachegrind', 'composer', 'openssl', 'mailhog', 'npm-cache',
+         * 'pip', 'yarn', and '.gitignore'. This ensures that important data and configurations are not lost.
+         *
+         * @param string $bearsamppRoot->getTmpPath() The root temporary path to be cleared.
+         * @param array $exclusions List of folders and files to be excluded from deletion.
+         */
         Util::clearFolder($bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'npm-cache', 'pip', 'yarn', '.gitignore'));
 
-        // Clear the core temporary path, excluding the .gitignore file.
+        /**
+         * Clears the core temporary path.
+         *
+         * Util::clearFolder is used to clear the contents of the core temporary path, excluding
+         * the '.gitignore' file. This ensures that the core temporary path is cleaned without
+         * removing the '.gitignore' file which might be necessary for version control.
+         *
+         * @param string $bearsamppCore->getTmpPath() The core temporary path to be cleared.
+         * @param array $exclusions List of folders and files to be excluded from deletion.
+         */
         Util::clearFolder($bearsamppCore->getTmpPath(), array('.gitignore'));
     }
 }
