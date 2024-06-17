@@ -1,5 +1,12 @@
+
 <?php
 
+/**
+ * Class Root
+ *
+ * This class represents the root of the Bearsampp application. It handles the initialization,
+ * configuration, and management of various components and settings within the application.
+ */
 class Root
 {
     const ERROR_HANDLER = 'errorHandler';
@@ -233,7 +240,6 @@ class Root
     {
         return $this->getRootPath($aetrayPath) . '/www';
     }
-
 
     /**
      * Gets the path to the executable file.

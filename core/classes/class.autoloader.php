@@ -1,11 +1,35 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class Autoloader
+ *
+ * This class handles the autoloading of classes within the Bearsampp application.
+ * It registers itself with the SPL autoload stack and loads classes based on naming conventions.
+ */
 class Autoloader
 {
+    /**
+     * Autoloader constructor.
+     *
+     * Initializes the Autoloader object.
+     */
     public function __construct()
     {
     }
 
+    /**
+     * Loads the specified class file based on the class name.
+     *
+     * @param string $class The name of the class to load.
+     * @return bool True if the class file was successfully loaded, false otherwise.
+     */
     public function load($class)
     {
         global $bearsamppRoot;
@@ -42,11 +66,21 @@ class Autoloader
         return true;
     }
 
+    /**
+     * Registers the autoloader with the SPL autoload stack.
+     *
+     * @return bool True on success, false on failure.
+     */
     public function register()
     {
         return spl_autoload_register(array($this, 'load'));
     }
 
+    /**
+     * Unregisters the autoloader from the SPL autoload stack.
+     *
+     * @return bool True on success, false on failure.
+     */
     public function unregister()
     {
         return spl_autoload_unregister(array($this, 'load'));

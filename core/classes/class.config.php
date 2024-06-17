@@ -1,5 +1,18 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class Config
+ *
+ * This class handles the configuration settings for the Bearsampp application.
+ * It reads the configuration from an INI file and provides methods to access and modify these settings.
+ */
 class Config
 {
     const CFG_MAX_LOGS_ARCHIVES = 'maxLogsArchives';
@@ -25,6 +38,10 @@ class Config
 
     private $raw;
 
+    /**
+     * Constructs a Config object and initializes the configuration settings.
+     * Reads the configuration from the INI file and sets the default timezone.
+     */
     public function __construct()
     {
         global $bearsamppRoot;
@@ -33,20 +50,37 @@ class Config
         /*if (!$bearsamppRoot->isRoot()) {
             $this->raw[self::CFG_LOGS_VERBOSE] = 0;
         }*/
-// TODO set to use TZ from config see https://github.com/Bearsampp/.teams/issues/24
+        // TODO set to use TZ from config see https://github.com/Bearsampp/.teams/issues/24
         date_default_timezone_set($this->getTimezone());
     }
 
+    /**
+     * Retrieves the raw configuration value for the specified key.
+     *
+     * @param string $key The configuration key.
+     * @return mixed The configuration value.
+     */
     public function getRaw($key)
     {
         return $this->raw[$key];
     }
 
+    /**
+     * Replaces a single configuration value with the specified key and value.
+     *
+     * @param string $key The configuration key.
+     * @param mixed $value The new configuration value.
+     */
     public function replace($key, $value)
     {
         $this->replaceAll(array($key => $value));
     }
 
+    /**
+     * Replaces multiple configuration values with the specified key-value pairs.
+     *
+     * @param array $params An associative array of key-value pairs to replace.
+     */
     public function replaceAll($params)
     {
         global $bearsamppRoot;
@@ -62,56 +96,111 @@ class Config
         file_put_contents($bearsamppRoot->getConfigFilePath(), $content);
     }
 
+    /**
+     * Retrieves the language setting from the configuration.
+     *
+     * @return string The language setting.
+     */
     public function getLang()
     {
         return $this->raw[self::CFG_LANG];
     }
 
+    /**
+     * Retrieves the default language setting from the configuration.
+     *
+     * @return string The default language setting.
+     */
     public function getDefaultLang()
     {
         return $this->raw[self::CFG_DEFAULT_LANG];
     }
 
+    /**
+     * Retrieves the timezone setting from the configuration.
+     *
+     * @return string The timezone setting.
+     */
     public function getTimezone()
     {
         return $this->raw[self::CFG_TIMEZONE];
     }
 
+    /**
+     * Checks if the application is set to be online.
+     *
+     * @return bool True if online, false otherwise.
+     */
     public function isOnline()
     {
         return $this->raw[self::CFG_ONLINE] == self::ENABLED;
     }
 
+    /**
+     * Checks if the application is set to launch at startup.
+     *
+     * @return bool True if set to launch at startup, false otherwise.
+     */
     public function isLaunchStartup()
     {
         return $this->raw[self::CFG_LAUNCH_STARTUP] == self::ENABLED;
     }
 
+    /**
+     * Retrieves the browser setting from the configuration.
+     *
+     * @return string The browser setting.
+     */
     public function getBrowser()
     {
         return $this->raw[self::CFG_BROWSER];
     }
 
+    /**
+     * Retrieves the hostname setting from the configuration.
+     *
+     * @return string The hostname setting.
+     */
     public function getHostname()
     {
         return $this->raw[self::CFG_HOSTNAME];
     }
 
+    /**
+     * Retrieves the scripts timeout setting from the configuration.
+     *
+     * @return int The scripts timeout setting.
+     */
     public function getScriptsTimeout()
     {
         return intval($this->raw[self::CFG_SCRIPTS_TIMEOUT]);
     }
 
+    /**
+     * Retrieves the notepad setting from the configuration.
+     *
+     * @return string The notepad setting.
+     */
     public function getNotepad()
     {
         return $this->raw[self::CFG_NOTEPAD];
     }
 
+    /**
+     * Retrieves the logs verbosity setting from the configuration.
+     *
+     * @return int The logs verbosity setting.
+     */
     public function getLogsVerbose()
     {
         return intval($this->raw[self::CFG_LOGS_VERBOSE]);
     }
 
+    /**
+     * Retrieves the maximum logs archives setting from the configuration.
+     *
+     * @return int The maximum logs archives setting.
+     */
     public function getMaxLogsArchives()
     {
         return intval($this->raw[self::CFG_MAX_LOGS_ARCHIVES]);

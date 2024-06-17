@@ -1,3 +1,4 @@
+
 <?php
 /*
  * Copyright (c) 2021-2024 Bearsampp
@@ -7,6 +8,15 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class Lang
+ *
+ * This class contains constants used for localization and internationalization
+ * within the Bearsampp application. The constants are categorized into various
+ * sections such as General, Single, Menu, Bins, Apps, Tools, Errors, Actions,
+ * Windows forms, and Homepage. Each constant represents a key that can be used
+ * to retrieve localized strings from a language file or database.
+ */
 class Lang
 {
     // General
@@ -363,6 +373,15 @@ class Lang
     const HOMEPAGE_MAILHOG_TEXT = 'homepageMailhogText';
     const HOMEPAGE_BACK_TEXT = 'homepageBackText';
 
+    /**
+     * Get all the keys defined in the Lang class.
+     *
+     * This method returns an array of all the constants defined in the Lang class.
+     * These constants are used as keys for localization and internationalization
+     * purposes within the Bearsampp application.
+     *
+     * @return array An array of all the localization keys.
+     */
     public static function getKeys()
     {
         return array(
