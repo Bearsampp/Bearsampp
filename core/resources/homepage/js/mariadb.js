@@ -1,19 +1,10 @@
-/*$(document).ready(function() {
-  if ($('a[name=mariadb]').length) {
-    $.ajax({
-      data: {
-        proc: 'mariadb'
-      },
-      success: function(data) {
-        $('.mariadb-checkport').append(data.checkport);
-        $('.mariadb-checkport').find('.loader').remove();
-
-        $('.mariadb-version-list').append(data.versions);
-        $('.mariadb-version-list').find('.loader').remove();
-      }
-    });
-  }
-});*/
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 async function getMariaDBStatus() {
   const url = AJAX_URL;

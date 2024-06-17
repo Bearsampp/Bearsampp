@@ -6,11 +6,16 @@
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
+
 /**
  * Generates a JSON output containing information about various bins such as Apache, Filezilla, MailHog, MariaDB, MySQL, PostgreSQL, Memcached, Node.js, and PHP.
  * The output includes download links, version numbers, and status labels for each bin.
  */
+
+// Declare global variables
 global $downloadTitle, $bearsamppBins;
+
+// Initialize result array
 $result = array(
     'binapache' => '',
     'binfilezilla' => '',
@@ -23,9 +28,15 @@ $result = array(
     'binphp' => '',
 );
 
+// Template for download link
 $dlMoreTpl = '<a href="' . Util::getWebsiteUrl('module/%s', '#releases') . '" target="_blank" title="' . $downloadTitle . '"><span class="float-end" style="margin-left:.5rem;"><i class="fa-solid fa-cloud-arrow-down"></i></span></a>';
 
-try {// Bin Apache
+try {
+    /**
+     * Apache Bin Information
+     * Retrieves the port and SSL port for Apache, checks if Apache is enabled and the ports are open.
+     * Sets the appropriate label based on the status and appends the version and download link to the result.
+     */
     $apachePort    = $bearsamppBins->getApache()->getPort();
     $apacheSslPort = $bearsamppBins->getApache()->getSslPort();
     $apacheLabel   = 'bg-secondary';
@@ -45,7 +56,12 @@ try {// Bin Apache
     $result['binapache'] = 'An error occurred getting the summary of Apache. '. $e->getMessage();
 }
 
-try {// Bin Filezilla
+try {
+    /**
+     * Filezilla Bin Information
+     * Retrieves the port and SSL port for Filezilla, checks if Filezilla is enabled and the ports are open.
+     * Sets the appropriate label based on the status and appends the version and download link to the result.
+     */
     $filezillaPort    = $bearsamppBins->getFilezilla()->getPort();
     $filezillaSslPort = $bearsamppBins->getFilezilla()->getSslPort();
     $filezillaLabel   = 'bg-secondary';
@@ -65,7 +81,12 @@ try {// Bin Filezilla
     $result['binfilezilla'] = 'An error occurred getting the summary of Filezilla. '. $e->getMessage();
 }
 
-try {// Bin MailHog
+try {
+    /**
+     * MailHog Bin Information
+     * Retrieves the SMTP port for MailHog, checks if MailHog is enabled and the port is open.
+     * Sets the appropriate label based on the status and appends the version and download link to the result.
+     */
     $mailhogPort  = $bearsamppBins->getMailhog()->getSmtpPort();
     $mailhogLabel = 'bg-secondary';
     if ($bearsamppBins->getMailhog()->isEnable()) {
@@ -80,7 +101,12 @@ try {// Bin MailHog
     $result['binmailhog'] = 'An error occurred getting the summary of Mailhog. '. $e->getMessage();
 }
 
-try {// Bin MariaDB
+try {
+    /**
+     * MariaDB Bin Information
+     * Retrieves the port for MariaDB, checks if MariaDB is enabled and the port is open.
+     * Sets the appropriate label based on the status and appends the version and download link to the result.
+     */
     $mariadbPort  = $bearsamppBins->getMariadb()->getPort();
     $mariadbLabel = 'bg-secondary';
     if ($bearsamppBins->getMariadb()->isEnable()) {
@@ -95,7 +121,12 @@ try {// Bin MariaDB
     $result['binmariadb'] = 'An error occurred getting the summary of MariaDB. '. $e->getMessage();
 }
 
-try {// Bin MySQL
+try {
+    /**
+     * MySQL Bin Information
+     * Retrieves the port for MySQL, checks if MySQL is enabled and the port is open.
+     * Sets the appropriate label based on the status and appends the version and download link to the result.
+     */
     $mysqlPort  = $bearsamppBins->getMysql()->getPort();
     $mysqlLabel = 'bg-secondary';
     if ($bearsamppBins->getMysql()->isEnable()) {
@@ -110,7 +141,12 @@ try {// Bin MySQL
     $result['binmysql'] = 'An error occurred getting the summary of MySql. '. $e->getMessage();
 }
 
-try {// Bin PostgreSQL
+try {
+    /**
+     * PostgreSQL Bin Information
+     * Retrieves the port for PostgreSQL, checks if PostgreSQL is enabled and the port is open.
+     * Sets the appropriate label based on the status and appends the version and download link to the result.
+     */
     $postgresqlPort  = $bearsamppBins->getPostgresql()->getPort();
     $postgresqlLabel = 'bg-secondary';
     if ($bearsamppBins->getPostgresql()->isEnable()) {
@@ -125,7 +161,12 @@ try {// Bin PostgreSQL
     $result['binpostgresql'] = 'An error occurred getting the summary of Postgresql. '. $e->getMessage();
 }
 
-try {// Bin Memcached
+try {
+    /**
+     * Memcached Bin Information
+     * Retrieves the port for Memcached, checks if Memcached is enabled and the port is open.
+     * Sets the appropriate label based on the status and appends the version and download link to the result.
+     */
     $memcachedPort  = $bearsamppBins->getMemcached()->getPort();
     $memcachedLabel = 'bg-secondary';
     if ($bearsamppBins->getMemcached()->isEnable()) {
@@ -140,8 +181,12 @@ try {// Bin Memcached
     $result['binmemcached'] = 'An error occurred getting the summary of Memchached. '. $e->getMessage();
 }
 
-
-try {// Bin Node.js
+try {
+    /**
+     * Node.js Bin Information
+     * Checks if Node.js is enabled.
+     * Sets the appropriate label based on the status and appends the version and download link to the result.
+     */
     $nodejsLabel = 'bg-secondary';
     if ($bearsamppBins->getNodejs()->isEnable()) {
         $nodejsLabel = 'bg-success';
@@ -152,7 +197,12 @@ try {// Bin Node.js
     $result['binnodejs'] = 'An error occurred getting the summary of NodeJS. '. $e->getMessage();
 }
 
-try {// Bin PHP
+try {
+    /**
+     * PHP Bin Information
+     * Checks if PHP is enabled.
+     * Sets the appropriate label based on the status and appends the version and download link to the result.
+     */
     $phpLabel = 'bg-secondary';
     if ($bearsamppBins->getPhp()->isEnable()) {
         $phpLabel = 'bg-success';
@@ -163,4 +213,5 @@ try {// Bin PHP
     $result['binphp'] = 'An error occurred getting the summary of PHP. '. $e->getMessage();
 }
 
+// Output the result as JSON
 echo json_encode($result);

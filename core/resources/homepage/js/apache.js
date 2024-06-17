@@ -1,41 +1,10 @@
-/*$(document).ready(function() {
-  if ($('a[name=apache]').length) {
-    $.ajax({
-      data: {
-        proc: 'apache'
-      },
-      success: function(data) {
-        console.log(data);
-        $('.apache-checkport').append(data.checkport);
-        $('.apache-checkport').find('.loader').remove();
-
-        $('.apache-version-list').append(data.versions);
-        $('.apache-version-list').find('.loader').remove();
-
-        $('.apache-modulescount').append(data.modulescount);
-        $('.apache-modulescount').find('.loader').remove();
-
-        $('.apache-aliasescount').append(data.aliasescount);
-        $('.apache-aliasescount').find('.loader').remove();
-
-        $('.apache-vhostscount').append(data.vhostscount);
-        $('.apache-vhostscount').find('.loader').remove();
-
-        $('.apache-moduleslist').append(data.moduleslist);
-        $('.apache-moduleslist').find('.loader').remove();
-
-        $('.apache-aliaseslist').append(data.aliaseslist);
-        $('.apache-aliaseslist').find('.loader').remove();
-
-        $('.apache-wwwdirectory').append(data.wwwdirectory);
-        $('.apache-wwwdirectory').find('.loader').remove();
-
-        $('.apache-vhostslist').append(data.vhostslist);
-        $('.apache-vhostslist').find('.loader').remove();
-      }
-    });
-  }
-}); */
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 async function getApacheStatus() {
   const url = AJAX_URL;

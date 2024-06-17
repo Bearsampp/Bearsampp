@@ -8,11 +8,17 @@
  */
 
 global $bearsamppBins, $bearsamppLang;
+
 /**
- * This code snippet generates information about the status of the MariaDB service and its versions.
+ * This script generates information about the status of the MariaDB service and its versions.
  * It checks if the MariaDB service is enabled, checks the port, and retrieves the list of versions.
  * The output is encoded in JSON format and includes the port status and versions information.
+ *
+ * @global object $bearsamppBins  Provides access to various binaries including MariaDB.
+ * @global object $bearsamppLang  Provides access to language-specific strings.
  */
+
+// Initialize result array to store port status and versions information
 $result = array(
     'checkport' => '',
     'versions' => '',
@@ -25,6 +31,11 @@ $textServiceStarted = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
 $textServiceStopped = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
 $textDisabled = $bearsamppLang->getValue(Lang::DISABLED);
 
+/**
+ * Check if the MariaDB service is enabled and update the port status accordingly.
+ * If the service is enabled, check if the port is open and update the status.
+ * If the service is disabled, set the status to disabled.
+ */
 if ($bearsamppBins->getMariadb()->isEnable()) {
     if ($bearsamppBins->getMariadb()->checkPort($port)) {
         $result['checkport'] .= '<span class="float-end badge text-bg-success">' . sprintf($textServiceStarted, $port) . '</span>';
@@ -35,7 +46,10 @@ if ($bearsamppBins->getMariadb()->isEnable()) {
     $result['checkport'] = '<span class="float-end badge text-bg-secondary">' . $textDisabled . '</span>';
 }
 
-// Versions
+/**
+ * Retrieve the list of available MariaDB versions and update the versions information.
+ * Highlight the current version with a primary badge and other versions with a secondary badge.
+ */
 foreach ($bearsamppBins->getMariadb()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getMariadb()->getVersion()) {
         $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . $version . '</span>';
@@ -44,4 +58,5 @@ foreach ($bearsamppBins->getMariadb()->getVersionList() as $version) {
     }
 }
 
+// Output the result as a JSON-encoded string
 echo json_encode($result);
