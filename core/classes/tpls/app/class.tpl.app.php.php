@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 class TplAppPhp
 {
@@ -12,6 +19,14 @@ class TplAppPhp
     const ACTION_SWITCH_SETTING = 'switchPhpSetting';
     const ACTION_SWITCH_EXTENSION = 'switchPhpExtension';
 
+    /**
+     * Processes the PHP menu and returns the menu items and actions.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return array The generated menu items and actions for the PHP menu.
+     */
     public static function process()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -19,6 +34,14 @@ class TplAppPhp
         return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::PHP), self::MENU, get_called_class(), $bearsamppBins->getPhp()->isEnable());
     }
 
+    /**
+     * Generates the PHP menu items and actions.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     *
+     * @return string The generated PHP menu items and actions.
+     */
     public static function getMenuPhp()
     {
         global $bearsamppBins, $bearsamppLang;
@@ -27,7 +50,7 @@ class TplAppPhp
         $isEnabled = $bearsamppBins->getPhp()->isEnable();
 
         // Download
-        $resultItems .= TplAestan::getItemLink( $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
+        $resultItems .= TplAestan::getItemLink($bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
             Util::getWebsiteUrl('module/php', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
@@ -70,6 +93,13 @@ class TplAppPhp
         return $resultItems . PHP_EOL . $resultActions;
     }
 
+    /**
+     * Generates the PHP versions menu items and actions.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated PHP versions menu items and actions.
+     */
     public static function getMenuPhpVersions()
     {
         global $bearsamppBins;
@@ -101,6 +131,15 @@ class TplAppPhp
         return $items . $actions;
     }
 
+    /**
+     * Generates the action to enable or disable PHP.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param int $enable The enable flag (1 to enable, 0 to disable).
+     *
+     * @return string The generated action string to enable or disable PHP.
+     */
     public static function getActionEnablePhp($enable)
     {
         global $bearsamppBins;
@@ -109,6 +148,15 @@ class TplAppPhp
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to switch the PHP version.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param string $version The PHP version to switch to.
+     *
+     * @return string The generated action string to switch the PHP version.
+     */
     public static function getActionSwitchPhpVersion($version)
     {
         global $bearsamppBins;
@@ -117,6 +165,13 @@ class TplAppPhp
             TplAppReload::getActionReload() . PHP_EOL;
     }
 
+    /**
+     * Generates the PHP settings menu items and actions.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated PHP settings menu items and actions.
+     */
     public static function getMenuPhpSettings()
     {
         global $bearsamppBins;
@@ -161,6 +216,18 @@ class TplAppPhp
         return $menuItems . $submenusItems . PHP_EOL . $menuActions . $submenusActions;
     }
 
+    /**
+     * Generates the submenu items and actions for PHP settings.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param array $passThr The pass-through array for nested settings.
+     * @param array $result The result array to store submenu items.
+     * @param array $settings The settings array to process.
+     * @param bool $sectionCall Whether to generate section calls or content.
+     *
+     * @return string The generated submenu items and actions for PHP settings.
+     */
     private static function getSubmenuPhpSettings($passThr = array(), $result = array(), $settings = array(), $sectionCall = true)
     {
         global $bearsamppBins;
@@ -211,6 +278,14 @@ class TplAppPhp
         return $result;
     }
 
+    /**
+     * Generates the action to switch a PHP setting.
+     *
+     * @param string $setting The PHP setting to switch.
+     * @param bool $enabled The current state of the setting (true if enabled, false otherwise).
+     *
+     * @return string The generated action string to switch the PHP setting.
+     */
     public static function getActionSwitchPhpSetting($setting, $enabled)
     {
         $switch = $enabled ? ActionSwitchPhpParam::SWITCH_OFF : ActionSwitchPhpParam::SWITCH_ON;
@@ -219,6 +294,13 @@ class TplAppPhp
             TplAppReload::getActionReload() . PHP_EOL;
     }
 
+    /**
+     * Generates the PHP extensions menu items and actions.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated PHP extensions menu items and actions.
+     */
     public static function getMenuPhpExtensions()
     {
         global $bearsamppBins;
@@ -242,6 +324,14 @@ class TplAppPhp
         return $items . $actions;
     }
 
+    /**
+     * Generates the action to switch a PHP extension.
+     *
+     * @param string $extension The PHP extension to switch.
+     * @param string $switch The current state of the extension (on or off).
+     *
+     * @return string The generated action string to switch the PHP extension.
+     */
     public static function getActionSwitchPhpExtension($extension, $switch)
     {
         $switch = $switch == ActionSwitchPhpExtension::SWITCH_OFF ? ActionSwitchPhpExtension::SWITCH_ON : ActionSwitchPhpExtension::SWITCH_OFF;

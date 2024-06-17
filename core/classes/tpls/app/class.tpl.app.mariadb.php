@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 class TplAppMariadb
 {
@@ -14,6 +21,17 @@ class TplAppMariadb
     const ACTION_INSTALL_SERVICE = 'installMariadbService';
     const ACTION_REMOVE_SERVICE = 'removeMariadbService';
 
+    /**
+     * Processes the MariaDB menu.
+     *
+     * This method generates the MariaDB menu and determines if MariaDB is enabled.
+     * It uses the global language and binaries objects to retrieve the necessary values.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return array The generated MariaDB menu.
+     */
     public static function process()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -21,6 +39,19 @@ class TplAppMariadb
         return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::MARIADB), self::MENU, get_called_class(), $bearsamppBins->getMariadb()->isEnable());
     }
 
+    /**
+     * Generates the MariaDB menu items and actions.
+     *
+     * This method creates menu items and actions for managing MariaDB, including enabling/disabling,
+     * switching versions, managing services, and debugging. It uses the global language, binaries,
+     * and tools objects to retrieve the necessary values.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppTools Provides access to various tools and utilities.
+     *
+     * @return string The generated MariaDB menu items and actions.
+     */
     public static function getMenuMariadb()
     {
         global $bearsamppBins, $bearsamppLang, $bearsamppTools;
@@ -79,6 +110,16 @@ class TplAppMariadb
         return $resultItems . PHP_EOL . $resultActions;
     }
 
+    /**
+     * Generates the MariaDB versions menu items and actions.
+     *
+     * This method creates menu items and actions for switching between different MariaDB versions.
+     * It uses the global binaries object to retrieve the available versions.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated MariaDB versions menu items and actions.
+     */
     public static function getMenuMariadbVersions()
     {
         global $bearsamppBins;
@@ -102,6 +143,18 @@ class TplAppMariadb
         return $items . $actions;
     }
 
+    /**
+     * Generates the action to enable or disable MariaDB.
+     *
+     * This method creates the action string for enabling or disabling MariaDB.
+     * It uses the global binaries object to retrieve the necessary values.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param int $enable The enable flag (1 for enable, 0 for disable).
+     *
+     * @return string The generated action string for enabling or disabling MariaDB.
+     */
     public static function getActionEnableMariadb($enable)
     {
         global $bearsamppBins;
@@ -110,6 +163,18 @@ class TplAppMariadb
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to switch the MariaDB version.
+     *
+     * This method creates the action string for switching the MariaDB version.
+     * It uses the global binaries object to retrieve the necessary values.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param string $version The version to switch to.
+     *
+     * @return string The generated action string for switching the MariaDB version.
+     */
     public static function getActionSwitchMariadbVersion($version)
     {
         global $bearsamppBins;
@@ -118,6 +183,18 @@ class TplAppMariadb
             TplAppReload::getActionReload() . PHP_EOL;
     }
 
+    /**
+     * Generates the MariaDB service menu items and actions.
+     *
+     * This method creates menu items and actions for managing the MariaDB service, including starting,
+     * stopping, restarting, changing the port, and changing the root password. It uses the global language
+     * and binaries objects to retrieve the necessary values.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated MariaDB service menu items and actions.
+     */
     public static function getMenuMariadbService()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -177,6 +254,16 @@ class TplAppMariadb
         return $result;
     }
 
+    /**
+     * Generates the MariaDB debug menu items and actions.
+     *
+     * This method creates menu items and actions for debugging MariaDB, including checking the version,
+     * variables, and syntax. It uses the global language object to retrieve the necessary values.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     *
+     * @return string The generated MariaDB debug menu items and actions.
+     */
     public static function getMenuMariadbDebug()
     {
         global $bearsamppLang;
@@ -195,6 +282,16 @@ class TplAppMariadb
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the action to change the MariaDB port.
+     *
+     * This method creates the action string for changing the MariaDB port.
+     * It uses the global binaries object to retrieve the necessary values.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated action string for changing the MariaDB port.
+     */
     public static function getActionChangeMariadbPort()
     {
         global $bearsamppBins;
@@ -203,6 +300,16 @@ class TplAppMariadb
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to change the MariaDB root password.
+     *
+     * This method creates the action string for changing the MariaDB root password.
+     * It uses the global binaries object to retrieve the necessary values.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated action string for changing the MariaDB root password.
+     */
     public static function getActionChangeMariadbRootPwd()
     {
         global $bearsamppBins;
@@ -211,12 +318,26 @@ class TplAppMariadb
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to install the MariaDB service.
+     *
+     * This method creates the action string for installing the MariaDB service.
+     *
+     * @return string The generated action string for installing the MariaDB service.
+     */
     public static function getActionInstallMariadbService()
     {
         return TplApp::getActionRun(Action::SERVICE, array(BinMariadb::SERVICE_NAME, ActionService::INSTALL)) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to remove the MariaDB service.
+     *
+     * This method creates the action string for removing the MariaDB service.
+     *
+     * @return string The generated action string for removing the MariaDB service.
+     */
     public static function getActionRemoveMariadbService()
     {
         return TplApp::getActionRun(Action::SERVICE, array(BinMariadb::SERVICE_NAME, ActionService::REMOVE)) . PHP_EOL .

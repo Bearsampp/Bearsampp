@@ -2,13 +2,14 @@
 /*
  * Copyright (c) 2021-2024 Bearsampp
  * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
+ * Author: bear
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
 
 class TplAestan
 {
+    // Glyph constants
     const GLYPH_CONSOLEZ = 0;
     const GLYPH_ADD = 1;
     const GLYPH_FOLDER_OPEN = 2;
@@ -60,23 +61,47 @@ class TplAestan
     const GLYPH_NGROK = 57;
     const GLYPH_PWGEN = 4;
 
+    // Service actions
     const SERVICE_START = 'startresume';
     const SERVICE_STOP = 'stop';
     const SERVICE_RESTART = 'restart';
     const SERVICES_CLOSE = 'closeservices';
 
+    // Image files
     const IMG_BAR_PICTURE = 'bar.dat';
     const IMG_GLYPH_SPRITES = 'sprites.dat';
 
+    /**
+     * Retrieves the glyph flag for a given language.
+     *
+     * @param string $lang The language code.
+     * @return void
+     */
     public static function getGlyphFlah($lang)
     {
     }
 
+    /**
+     * Returns a string representing a separator item.
+     *
+     * @return string The separator item string.
+     */
     public static function getItemSeparator()
     {
         return 'Type: separator';
     }
 
+    /**
+     * Returns a string representing a ConsoleZ item.
+     *
+     * @param string $caption The caption for the item.
+     * @param int $glyph The glyph index.
+     * @param string|null $id The ID for the item.
+     * @param string|null $title The title for the item.
+     * @param string|null $initDir The initial directory for the item.
+     * @param string|null $command The command to execute.
+     * @return string The ConsoleZ item string.
+     */
     public static function getItemConsoleZ($caption, $glyph, $id = null, $title = null, $initDir = null, $command = null)
     {
         global $bearsamppTools;
@@ -103,6 +128,15 @@ class TplAestan
         );
     }
 
+    /**
+     * Returns a string representing a link item.
+     *
+     * @param string $caption The caption for the item.
+     * @param string $link The URL for the link.
+     * @param bool $local Whether the link is local.
+     * @param int $glyph The glyph index.
+     * @return string The link item string.
+     */
     public static function getItemLink($caption, $link, $local = false, $glyph = self::GLYPH_WEB_PAGE)
     {
         global $bearsamppRoot, $bearsamppConfig;
@@ -119,6 +153,13 @@ class TplAestan
         );
     }
 
+    /**
+     * Returns a string representing a Notepad item.
+     *
+     * @param string $caption The caption for the item.
+     * @param string $path The path to the file.
+     * @return string The Notepad item string.
+     */
     public static function getItemNotepad($caption, $path)
     {
         global $bearsamppConfig;
@@ -131,6 +172,15 @@ class TplAestan
         );
     }
 
+    /**
+     * Returns a string representing an executable item.
+     *
+     * @param string $caption The caption for the item.
+     * @param string $exe The path to the executable.
+     * @param int $glyph The glyph index.
+     * @param string|null $params The parameters for the executable.
+     * @return string The executable item string.
+     */
     public static function getItemExe($caption, $exe, $glyph, $params = null)
     {
         return 'Type: item; ' .
@@ -141,6 +191,13 @@ class TplAestan
             'Glyph: ' . $glyph;
     }
 
+    /**
+     * Returns a string representing an explorer item.
+     *
+     * @param string $caption The caption for the item.
+     * @param string $path The path to explore.
+     * @return string The explorer item string.
+     */
     public static function getItemExplore($caption, $path)
     {
         return 'Type: item; ' .
@@ -150,6 +207,14 @@ class TplAestan
             'Glyph: ' . self::GLYPH_FOLDER_OPEN;
     }
 
+    /**
+     * Returns a string representing a service action.
+     *
+     * @param string|null $service The service name.
+     * @param string $action The action to perform.
+     * @param bool $item Whether to return as an item.
+     * @return string The service action string.
+     */
     private static function getActionService($service, $action, $item = false)
     {
         global $bearsamppLang;
@@ -180,46 +245,97 @@ class TplAestan
         return $result;
     }
 
+    /**
+     * Returns a string representing a service start action.
+     *
+     * @param string $service The service name.
+     * @return string The service start action string.
+     */
     public static function getActionServiceStart($service)
     {
         return self::getActionService($service, self::SERVICE_START, false);
     }
 
+    /**
+     * Returns a string representing a service start item.
+     *
+     * @param string $service The service name.
+     * @return string The service start item string.
+     */
     public static function getItemActionServiceStart($service)
     {
         return self::getActionService($service, self::SERVICE_STOP, true);
     }
 
+    /**
+     * Returns a string representing a service stop action.
+     *
+     * @param string $service The service name.
+     * @return string The service stop action string.
+     */
     public static function getActionServiceStop($service)
     {
         return self::getActionService($service, self::SERVICE_STOP, false);
     }
 
+    /**
+     * Returns a string representing a service stop item.
+     *
+     * @param string $service The service name.
+     * @return string The service stop item string.
+     */
     public static function getItemActionServiceStop($service)
     {
         return self::getActionService($service, self::SERVICE_START, true);
     }
 
+    /**
+     * Returns a string representing a service restart action.
+     *
+     * @param string $service The service name.
+     * @return string The service restart action string.
+     */
     public static function getActionServiceRestart($service)
     {
         return self::getActionService($service, self::SERVICE_RESTART, false);
     }
 
+    /**
+     * Returns a string representing a service restart item.
+     *
+     * @param string $service The service name.
+     * @return string The service restart item string.
+     */
     public static function getItemActionServiceRestart($service)
     {
         return self::getActionService($service, self::SERVICE_RESTART, true);
     }
 
+    /**
+     * Returns a string representing a close services action.
+     *
+     * @return string The close services action string.
+     */
     public static function getActionServicesClose()
     {
         return self::getActionService(null, self::SERVICES_CLOSE, false);
     }
 
+    /**
+     * Returns a string representing a close services item.
+     *
+     * @return string The close services item string.
+     */
     public static function getItemActionServicesClose()
     {
         return self::getActionService(null, self::SERVICES_CLOSE, true);
     }
 
+    /**
+     * Returns a string representing the messages section.
+     *
+     * @return string The messages section string.
+     */
     public static function getSectionMessages()
     {
         global $bearsamppLang;
@@ -230,6 +346,11 @@ class TplAestan
             'NoneRunningHint=' . $bearsamppLang->getValue(Lang::NONE_RUNNING_HINT) . PHP_EOL;
     }
 
+    /**
+     * Returns a string representing the config section.
+     *
+     * @return string The config section string.
+     */
     public static function getSectionConfig()
     {
         global $bearsamppCore;
@@ -244,6 +365,11 @@ class TplAestan
             'AboutVersion=Version ' . $bearsamppCore->getAppVersion() . PHP_EOL;
     }
 
+    /**
+     * Returns a string representing the right menu settings section.
+     *
+     * @return string The right menu settings section string.
+     */
     public static function getSectionMenuRightSettings()
     {
         return '[Menu.Right.Settings]' . PHP_EOL .
@@ -258,6 +384,12 @@ class TplAestan
             'SeparatorsSeparatorStyle=shortline' . PHP_EOL;
     }
 
+    /**
+     * Returns a string representing the left menu settings section.
+     *
+     * @param string $caption The caption for the left menu.
+     * @return string The left menu settings section string.
+     */
     public static function getSectionMenuLeftSettings($caption)
     {
         return '[Menu.Left.Settings]' . PHP_EOL .

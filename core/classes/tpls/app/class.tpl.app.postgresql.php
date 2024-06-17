@@ -1,5 +1,19 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class TplAppPostgresql
+ *
+ * This class provides methods to generate menu items and actions for managing PostgreSQL services
+ * within the Bearsampp application. It includes functionalities for enabling/disabling PostgreSQL,
+ * switching versions, changing ports, changing root passwords, and managing services.
+ */
 class TplAppPostgresql
 {
     const MENU = 'postgresql';
@@ -14,6 +28,14 @@ class TplAppPostgresql
     const ACTION_INSTALL_SERVICE = 'installPostgresqlService';
     const ACTION_REMOVE_SERVICE = 'removePostgresqlService';
 
+    /**
+     * Generates the main PostgreSQL menu with options to enable/disable PostgreSQL and access submenus.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return array The generated menu items and actions for PostgreSQL.
+     */
     public static function process()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -21,6 +43,15 @@ class TplAppPostgresql
         return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::POSTGRESQL), self::MENU, get_called_class(), $bearsamppBins->getPostgresql()->isEnable());
     }
 
+    /**
+     * Generates the PostgreSQL menu with options for versions, service, debug, and console access.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppTools Provides access to various tools and utilities.
+     *
+     * @return string The generated menu items and actions for PostgreSQL.
+     */
     public static function getMenuPostgresql()
     {
         global $bearsamppBins, $bearsamppLang, $bearsamppTools;
@@ -29,7 +60,8 @@ class TplAppPostgresql
         $isEnabled = $bearsamppBins->getPostgresql()->isEnable();
 
         // Download
-        $resultItems .= TplAestan::getItemLink( $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
+        $resultItems .= TplAestan::getItemLink(
+            $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
             Util::getWebsiteUrl('module/postgresql', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
@@ -79,6 +111,13 @@ class TplAppPostgresql
         return $resultItems . PHP_EOL . $resultActions;
     }
 
+    /**
+     * Generates the PostgreSQL versions menu with options to switch between different versions.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated menu items and actions for PostgreSQL versions.
+     */
     public static function getMenuPostgresqlVersions()
     {
         global $bearsamppBins;
@@ -102,6 +141,14 @@ class TplAppPostgresql
         return $items . $actions;
     }
 
+    /**
+     * Generates the action to enable or disable PostgreSQL.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param int $enable The flag to enable (1) or disable (0) PostgreSQL.
+     * @return string The generated action to enable or disable PostgreSQL.
+     */
     public static function getActionEnablePostgresql($enable)
     {
         global $bearsamppBins;
@@ -110,6 +157,14 @@ class TplAppPostgresql
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to switch the PostgreSQL version.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param string $version The version to switch to.
+     * @return string The generated action to switch the PostgreSQL version.
+     */
     public static function getActionSwitchPostgresqlVersion($version)
     {
         global $bearsamppBins;
@@ -118,6 +173,14 @@ class TplAppPostgresql
             TplAppReload::getActionReload() . PHP_EOL;
     }
 
+    /**
+     * Generates the PostgreSQL service menu with options to start, stop, restart, and manage the service.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated menu items and actions for PostgreSQL service.
+     */
     public static function getMenuPostgresqlService()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -177,6 +240,13 @@ class TplAppPostgresql
         return $result;
     }
 
+    /**
+     * Generates the PostgreSQL debug menu with options to run various debug commands.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     *
+     * @return string The generated menu items and actions for PostgreSQL debug.
+     */
     public static function getMenuPostgresqlDebug()
     {
         global $bearsamppLang;
@@ -187,6 +257,13 @@ class TplAppPostgresql
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the action to change the PostgreSQL port.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated action to change the PostgreSQL port.
+     */
     public static function getActionChangePostgresqlPort()
     {
         global $bearsamppBins;
@@ -195,6 +272,13 @@ class TplAppPostgresql
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to change the PostgreSQL root password.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated action to change the PostgreSQL root password.
+     */
     public static function getActionChangePostgresqlRootPwd()
     {
         global $bearsamppBins;
@@ -203,12 +287,22 @@ class TplAppPostgresql
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to install the PostgreSQL service.
+     *
+     * @return string The generated action to install the PostgreSQL service.
+     */
     public static function getActionInstallPostgresqlService()
     {
         return TplApp::getActionRun(Action::SERVICE, array(BinPostgresql::SERVICE_NAME, ActionService::INSTALL)) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to remove the PostgreSQL service.
+     *
+     * @return string The generated action to remove the PostgreSQL service.
+     */
     public static function getActionRemovePostgresqlService()
     {
         return TplApp::getActionRun(Action::SERVICE, array(BinPostgresql::SERVICE_NAME, ActionService::REMOVE)) . PHP_EOL .

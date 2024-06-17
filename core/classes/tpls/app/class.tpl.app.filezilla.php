@@ -2,11 +2,17 @@
 /*
  * Copyright (c) 2021-2024 Bearsampp
  * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
+ * Author: bear
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class TplAppFilezilla
+ *
+ * This class provides methods to generate actions and menu items for managing the Filezilla module in the Bearsampp application.
+ * It includes functionalities for enabling/disabling Filezilla, switching versions, changing ports, and managing services.
+ */
 class TplAppFilezilla
 {
     const MENU = 'filezilla';
@@ -19,6 +25,14 @@ class TplAppFilezilla
     const ACTION_INSTALL_SERVICE = 'installFilezillaService';
     const ACTION_REMOVE_SERVICE = 'removeFilezillaService';
 
+    /**
+     * Generates the menu item and associated actions for enabling/disabling Filezilla.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return array The generated menu item and actions for enabling/disabling Filezilla.
+     */
     public static function process()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -26,6 +40,17 @@ class TplAppFilezilla
         return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::FILEZILLA), self::MENU, get_called_class(), $bearsamppBins->getFilezilla()->isEnable());
     }
 
+    /**
+     * Generates the menu items and actions for managing Filezilla.
+     *
+     * This method creates menu items for downloading, enabling/disabling, switching versions, managing services,
+     * accessing the admin interface, and viewing logs for Filezilla.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     *
+     * @return string The generated menu items and actions for managing Filezilla.
+     */
     public static function getMenuFilezilla()
     {
         global $bearsamppBins, $bearsamppLang;
@@ -35,7 +60,7 @@ class TplAppFilezilla
 
         // Download
         $resultItems .= TplAestan::getItemLink(
-        $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
+            $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
             Util::getWebsiteUrl('module/filezilla', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
@@ -77,6 +102,15 @@ class TplAppFilezilla
         return $resultItems . PHP_EOL . $resultActions;
     }
 
+    /**
+     * Generates the menu items and actions for switching Filezilla versions.
+     *
+     * This method creates menu items for each available version of Filezilla, allowing the user to switch between them.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated menu items and actions for switching Filezilla versions.
+     */
     public static function getMenuFilezillaVersions()
     {
         global $bearsamppBins;
@@ -100,6 +134,16 @@ class TplAppFilezilla
         return $items . $actions;
     }
 
+    /**
+     * Generates the action to enable or disable Filezilla.
+     *
+     * This method creates the action string for enabling or disabling Filezilla, and includes a command to reload the application.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param int $enable The enable/disable flag (1 for enable, 0 for disable).
+     * @return string The generated action string for enabling/disabling Filezilla.
+     */
     public static function getActionEnableFilezilla($enable)
     {
         global $bearsamppBins;
@@ -108,6 +152,16 @@ class TplAppFilezilla
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to switch Filezilla versions.
+     *
+     * This method creates the action string for switching Filezilla versions, and includes a command to reload the application.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param string $version The version to switch to.
+     * @return string The generated action string for switching Filezilla versions.
+     */
     public static function getActionSwitchFilezillaVersion($version)
     {
         global $bearsamppBins;
@@ -116,6 +170,16 @@ class TplAppFilezilla
             TplAppReload::getActionReload() . PHP_EOL;
     }
 
+    /**
+     * Generates the menu items and actions for managing Filezilla services.
+     *
+     * This method creates menu items for starting, stopping, restarting, checking ports, changing ports, and installing/removing the Filezilla service.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated menu items and actions for managing Filezilla services.
+     */
     public static function getMenuFilezillaService()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -149,7 +213,7 @@ class TplAppFilezilla
             );
 
             $result .= $tplInstallService[TplApp::SECTION_CALL] . PHP_EOL . PHP_EOL .
-            $tplInstallService[TplApp::SECTION_CONTENT] . PHP_EOL;
+                $tplInstallService[TplApp::SECTION_CONTENT] . PHP_EOL;
         } else {
             $tplRemoveService = TplApp::getActionMulti(
                 self::ACTION_REMOVE_SERVICE, null,
@@ -158,7 +222,7 @@ class TplAppFilezilla
             );
 
             $result .= $tplRemoveService[TplApp::SECTION_CALL] . PHP_EOL . PHP_EOL .
-            $tplRemoveService[TplApp::SECTION_CONTENT] . PHP_EOL;
+                $tplRemoveService[TplApp::SECTION_CONTENT] . PHP_EOL;
         }
 
         $result .= $tplChangePort[TplApp::SECTION_CONTENT] . PHP_EOL;
@@ -166,6 +230,15 @@ class TplAppFilezilla
         return $result;
     }
 
+    /**
+     * Generates the action to change the Filezilla port.
+     *
+     * This method creates the action string for changing the Filezilla port, and includes a command to reload the application.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated action string for changing the Filezilla port.
+     */
     public static function getActionChangeFilezillaPort()
     {
         global $bearsamppBins;
@@ -174,12 +247,26 @@ class TplAppFilezilla
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to install the Filezilla service.
+     *
+     * This method creates the action string for installing the Filezilla service, and includes a command to reload the application.
+     *
+     * @return string The generated action string for installing the Filezilla service.
+     */
     public static function getActionInstallFilezillaService()
     {
         return TplApp::getActionRun(Action::SERVICE, array(BinFilezilla::SERVICE_NAME, ActionService::INSTALL)) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to remove the Filezilla service.
+     *
+     * This method creates the action string for removing the Filezilla service, and includes a command to reload the application.
+     *
+     * @return string The generated action string for removing the Filezilla service.
+     */
     public static function getActionRemoveFilezillaService()
     {
         return TplApp::getActionRun(Action::SERVICE, array(BinFilezilla::SERVICE_NAME, ActionService::REMOVE)) . PHP_EOL .

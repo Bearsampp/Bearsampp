@@ -2,17 +2,31 @@
 /*
  * Copyright (c) 2021-2024 Bearsampp
  * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
+ * Author: bear
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class TplAppTools
+ *
+ * This class provides methods to generate menu items and actions for managing various tools
+ * within the Bearsampp application. It includes functionalities for accessing tools like Git, Python,
+ * Composer, Ghostscript, Ngrok, Pear, Perl, Ruby, XDebugClient, Yarn, and more.
+ */
 class TplAppTools
 {
+    // Constants for menu and action identifiers
     const MENU = 'tools';
-
     const ACTION_GEN_SSL_CERTIFICATE = 'genSslCertificate';
 
+    /**
+     * Generates the main Tools menu with options to access various tools.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     *
+     * @return array The generated menu items and actions for Tools.
+     */
     public static function process()
     {
         global $bearsamppLang;
@@ -20,6 +34,15 @@ class TplAppTools
         return TplApp::getMenu($bearsamppLang->getValue(Lang::TOOLS), self::MENU, get_called_class());
     }
 
+    /**
+     * Generates the Tools menu with options for accessing various tools like Git, Python, Composer, etc.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppCore Provides access to core functionalities and configurations.
+     * @global object $bearsamppTools Provides access to various tools and their configurations.
+     *
+     * @return string The generated menu items and actions for Tools.
+     */
     public static function getMenuTools()
     {
         global $bearsamppLang, $bearsamppCore, $bearsamppTools;
@@ -116,14 +139,19 @@ class TplAppTools
 
         // Pwgen password manager
         $resultItems .= TplAestan::getItemExe(
-                $bearsamppLang->getValue(Lang::PWGEN),
-                $bearsamppCore->getPwgenExe(),
-                TplAestan::GLYPH_PWGEN
-            ) . PHP_EOL;
+            $bearsamppLang->getValue(Lang::PWGEN),
+            $bearsamppCore->getPwgenExe(),
+            TplAestan::GLYPH_PWGEN
+        ) . PHP_EOL;
 
         return $resultItems . PHP_EOL . $resultActions;
     }
 
+    /**
+     * Generates the action to generate an SSL certificate.
+     *
+     * @return string The generated action to generate an SSL certificate.
+     */
     public static function getActionGenSslCertificate()
     {
         return TplApp::getActionRun(Action::GEN_SSL_CERTIFICATE);

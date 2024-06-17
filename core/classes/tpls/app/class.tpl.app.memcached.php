@@ -1,7 +1,21 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class TplAppMemcached
+ *
+ * This class provides methods to generate menu items and actions for managing Memcached within the Bearsampp application.
+ * It includes functionalities for enabling/disabling Memcached, switching versions, changing ports, and managing services.
+ */
 class TplAppMemcached
 {
+    // Constants for menu and action identifiers
     const MENU = 'memcached';
     const MENU_VERSIONS = 'memcachedVersions';
     const MENU_SERVICE = 'memcachedService';
@@ -12,6 +26,17 @@ class TplAppMemcached
     const ACTION_INSTALL_SERVICE = 'installMemcachedService';
     const ACTION_REMOVE_SERVICE = 'removeMemcachedService';
 
+    /**
+     * Generates the menu item for enabling/disabling Memcached.
+     *
+     * This method creates a menu item for enabling or disabling Memcached and defines the actions to be taken
+     * when the menu item is selected. It uses the global language object to retrieve the localized string for Memcached.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return array The generated menu item for enabling/disabling Memcached.
+     */
     public static function process()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -19,6 +44,18 @@ class TplAppMemcached
         return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::MEMCACHED), self::MENU, get_called_class(), $bearsamppBins->getMemcached()->isEnable());
     }
 
+    /**
+     * Generates the menu items and actions for managing Memcached.
+     *
+     * This method creates menu items for downloading Memcached, enabling/disabling it, switching versions, managing services,
+     * updating the environment PATH, and viewing logs. It uses the global language object to retrieve localized strings.
+     *
+     * @global object $bearsamppRoot Provides access to the root path of the application.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     *
+     * @return string The generated menu items and actions for managing Memcached.
+     */
     public static function getMenuMemcached()
     {
         global $bearsamppRoot, $bearsamppBins, $bearsamppLang;
@@ -27,7 +64,7 @@ class TplAppMemcached
         $isEnabled = $bearsamppBins->getMemcached()->isEnable();
 
         // Download
-        $resultItems .= TplAestan::getItemLink( $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
+        $resultItems .= TplAestan::getItemLink($bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
             Util::getWebsiteUrl('module/memcached', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
@@ -65,6 +102,16 @@ class TplAppMemcached
         return $resultItems . PHP_EOL . $resultActions;
     }
 
+    /**
+     * Generates the menu items and actions for switching Memcached versions.
+     *
+     * This method creates menu items for each available Memcached version and defines the actions to be taken
+     * when a version is selected. It uses the global language object to retrieve localized strings.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated menu items and actions for switching Memcached versions.
+     */
     public static function getMenuMemcachedVersions()
     {
         global $bearsamppBins;
@@ -88,6 +135,17 @@ class TplAppMemcached
         return $items . $actions;
     }
 
+    /**
+     * Generates the action to enable or disable Memcached.
+     *
+     * This method creates the action string for enabling or disabling Memcached. It includes commands to reload
+     * the application after the action is performed.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param int $enable The value indicating whether to enable or disable Memcached.
+     * @return string The generated action string for enabling or disabling Memcached.
+     */
     public static function getActionEnableMemcached($enable)
     {
         global $bearsamppBins;
@@ -96,6 +154,17 @@ class TplAppMemcached
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to switch Memcached versions.
+     *
+     * This method creates the action string for switching Memcached versions. It includes commands to reload
+     * the application after the action is performed.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param string $version The version to switch to.
+     * @return string The generated action string for switching Memcached versions.
+     */
     public static function getActionSwitchMemcachedVersion($version)
     {
         global $bearsamppBins;
@@ -104,6 +173,18 @@ class TplAppMemcached
             TplAppReload::getActionReload() . PHP_EOL;
     }
 
+    /**
+     * Generates the menu items and actions for managing Memcached services.
+     *
+     * This method creates menu items for starting, stopping, and restarting the Memcached service, as well as
+     * checking and changing the port, and installing or removing the service. It uses the global language object
+     * to retrieve localized strings.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated menu items and actions for managing Memcached services.
+     */
     public static function getMenuMemcachedService()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -151,6 +232,16 @@ class TplAppMemcached
         return $result;
     }
 
+    /**
+     * Generates the action to change the Memcached port.
+     *
+     * This method creates the action string for changing the Memcached port. It includes commands to reload
+     * the application after the action is performed.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated action string for changing the Memcached port.
+     */
     public static function getActionChangeMemcachedPort()
     {
         global $bearsamppBins;
@@ -159,12 +250,28 @@ class TplAppMemcached
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to install the Memcached service.
+     *
+     * This method creates the action string for installing the Memcached service. It includes commands to reload
+     * the application after the action is performed.
+     *
+     * @return string The generated action string for installing the Memcached service.
+     */
     public static function getActionInstallMemcachedService()
     {
         return TplApp::getActionRun(Action::SERVICE, array(BinMemcached::SERVICE_NAME, ActionService::INSTALL)) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to remove the Memcached service.
+     *
+     * This method creates the action string for removing the Memcached service. It includes commands to reload
+     * the application after the action is performed.
+     *
+     * @return string The generated action string for removing the Memcached service.
+     */
     public static function getActionRemoveMemcachedService()
     {
         return TplApp::getActionRun(Action::SERVICE, array(BinMemcached::SERVICE_NAME, ActionService::REMOVE)) . PHP_EOL .

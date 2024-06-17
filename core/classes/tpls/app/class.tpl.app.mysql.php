@@ -1,7 +1,22 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class TplAppMysql
+ *
+ * This class provides methods to generate and manage menu items, actions, and sections
+ * related to MySQL within the Bearsampp application. It includes functionalities for
+ * enabling/disabling MySQL, switching versions, changing ports, managing services, and debugging.
+ */
 class TplAppMysql
 {
+    // Constants for menu and action identifiers
     const MENU = 'mysql';
     const MENU_VERSIONS = 'mysqlVersions';
     const MENU_SERVICE = 'mysqlService';
@@ -14,6 +29,16 @@ class TplAppMysql
     const ACTION_INSTALL_SERVICE = 'installMysqlService';
     const ACTION_REMOVE_SERVICE = 'removeMysqlService';
 
+    /**
+     * Processes and generates the MySQL menu.
+     *
+     * This method generates the MySQL menu and determines if MySQL is enabled.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return array The generated MySQL menu.
+     */
     public static function process()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -21,6 +46,18 @@ class TplAppMysql
         return TplApp::getMenuEnable($bearsamppLang->getValue(Lang::MYSQL), self::MENU, get_called_class(), $bearsamppBins->getMysql()->isEnable());
     }
 
+    /**
+     * Generates the MySQL menu items and actions.
+     *
+     * This method creates menu items and actions for MySQL, including download links, enabling/disabling,
+     * version switching, service management, debugging, and configuration file access.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppTools Provides access to various tools used in the application.
+     *
+     * @return string The generated MySQL menu items and actions.
+     */
     public static function getMenuMysql()
     {
         global $bearsamppBins, $bearsamppLang, $bearsamppTools;
@@ -79,6 +116,15 @@ class TplAppMysql
         return $resultItems . PHP_EOL . $resultActions;
     }
 
+    /**
+     * Generates the MySQL versions menu.
+     *
+     * This method creates menu items and actions for switching between different MySQL versions.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated MySQL versions menu items and actions.
+     */
     public static function getMenuMysqlVersions()
     {
         global $bearsamppBins;
@@ -102,6 +148,16 @@ class TplAppMysql
         return $items . $actions;
     }
 
+    /**
+     * Generates the action to enable or disable MySQL.
+     *
+     * This method creates the action string for enabling or disabling MySQL.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param int $enable The enable/disable flag (1 for enable, 0 for disable).
+     * @return string The generated action string for enabling/disabling MySQL.
+     */
     public static function getActionEnableMysql($enable)
     {
         global $bearsamppBins;
@@ -110,6 +166,16 @@ class TplAppMysql
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to switch MySQL version.
+     *
+     * This method creates the action string for switching to a different MySQL version.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @param string $version The version to switch to.
+     * @return string The generated action string for switching MySQL version.
+     */
     public static function getActionSwitchMysqlVersion($version)
     {
         global $bearsamppBins;
@@ -118,6 +184,17 @@ class TplAppMysql
             TplAppReload::getActionReload() . PHP_EOL;
     }
 
+    /**
+     * Generates the MySQL service menu.
+     *
+     * This method creates menu items and actions for managing MySQL services, including starting, stopping,
+     * restarting, changing ports, and managing root passwords.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated MySQL service menu items and actions.
+     */
     public static function getMenuMysqlService()
     {
         global $bearsamppLang, $bearsamppBins;
@@ -177,6 +254,16 @@ class TplAppMysql
         return $result;
     }
 
+    /**
+     * Generates the MySQL debug menu.
+     *
+     * This method creates menu items and actions for debugging MySQL, including checking version,
+     * variables, and syntax.
+     *
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     *
+     * @return string The generated MySQL debug menu items and actions.
+     */
     public static function getMenuMysqlDebug()
     {
         global $bearsamppLang;
@@ -195,6 +282,15 @@ class TplAppMysql
         ) . PHP_EOL;
     }
 
+    /**
+     * Generates the action to change MySQL port.
+     *
+     * This method creates the action string for changing the MySQL port.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated action string for changing MySQL port.
+     */
     public static function getActionChangeMysqlPort()
     {
         global $bearsamppBins;
@@ -203,6 +299,15 @@ class TplAppMysql
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to change MySQL root password.
+     *
+     * This method creates the action string for changing the MySQL root password.
+     *
+     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     *
+     * @return string The generated action string for changing MySQL root password.
+     */
     public static function getActionChangeMysqlRootPwd()
     {
         global $bearsamppBins;
@@ -211,12 +316,26 @@ class TplAppMysql
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to install MySQL service.
+     *
+     * This method creates the action string for installing the MySQL service.
+     *
+     * @return string The generated action string for installing MySQL service.
+     */
     public static function getActionInstallMysqlService()
     {
         return TplApp::getActionRun(Action::SERVICE, array(BinMysql::SERVICE_NAME, ActionService::INSTALL)) . PHP_EOL .
             TplAppReload::getActionReload();
     }
 
+    /**
+     * Generates the action to remove MySQL service.
+     *
+     * This method creates the action string for removing the MySQL service.
+     *
+     * @return string The generated action string for removing MySQL service.
+     */
     public static function getActionRemoveMysqlService()
     {
         return TplApp::getActionRun(Action::SERVICE, array(BinMysql::SERVICE_NAME, ActionService::REMOVE)) . PHP_EOL .
