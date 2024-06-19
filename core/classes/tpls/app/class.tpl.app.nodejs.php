@@ -2,7 +2,7 @@
 /*
  * Copyright (c) 2021-2024 Bearsampp
  * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: bear
+ * Author: Bear
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
@@ -66,7 +66,7 @@ class TplAppNodejs
         // Download
         $resultItems .= TplAestan::getItemLink(
             $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
-            Util::getWebsiteUrl('module/filezilla', '#releases'),
+            Util::getWebsiteUrl('module/nodejs', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
         ) . PHP_EOL;
