@@ -46,11 +46,8 @@ class Config
     {
         global $bearsamppRoot;
 
+        // Set current timezone to match whats in .conf
         $this->raw = parse_ini_file($bearsamppRoot->getConfigFilePath());
-        /*if (!$bearsamppRoot->isRoot()) {
-            $this->raw[self::CFG_LOGS_VERBOSE] = 0;
-        }*/
-        // TODO set to use TZ from config see https://github.com/Bearsampp/.teams/issues/24
         date_default_timezone_set($this->getTimezone());
     }
 
