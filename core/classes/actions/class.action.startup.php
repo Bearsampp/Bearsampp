@@ -278,7 +278,7 @@ class ActionStartup
         $this->splash->incrProgressBar();
 
         $this->writeLog( 'Clear tmp folders' );
-        Util::clearFolder( $bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'npm-cache', 'pip', 'yarn', '.gitignore') );
+        Util::clearFolder( $bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'xlight', 'npm-cache', 'pip', 'yarn', '.gitignore') );
         Util::clearFolder( $bearsamppCore->getTmpPath(), array('.gitignore') );
     }
 
@@ -667,6 +667,10 @@ class ActionStartup
                 elseif ( $sName == BinFilezilla::SERVICE_NAME ) {
                     $bin  = $bearsamppBins->getFilezilla();
                     $port = $bearsamppBins->getFilezilla()->getPort();
+                }
+                elseif ( $sName == BinXlight::SERVICE_NAME ) {
+                    $bin  = $bearsamppBins->getXlight();
+                    $port = $bearsamppBins->getXlight()->getPort();
                 }
 
                 $name = $bin->getName() . ' ' . $bin->getVersion() . ' (' . $service->getName() . ')';

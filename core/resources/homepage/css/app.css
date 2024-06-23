@@ -194,7 +194,9 @@ table.tablesorter thead tr th:hover {
 .mailhog-version-list,
 .memcached-version-list,
 .filezilla-version-list,
-.filezilla-checkport-list {
+.filezilla-checkport-list,
+.xlight-version-list,
+.xlight-checkport-list{
     display: inline-flex;
     flex-wrap: wrap;
     justify-content: flex-end;

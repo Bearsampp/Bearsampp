@@ -114,6 +114,7 @@ nodejs = "Node.js"
 pear = "PEAR"
 php = "PHP"
 postgresql = "PostgreSQL"
+xlight = "Xlight"
 
 ; Apps
 adminer = "Adminer"
@@ -355,3 +356,4 @@ homepagePhpinfoText = "phpinfo() megtekintése"
 homepageMailhogText = "Érkezett e-mail megtekintése"
 homepageApcText = "APC kezelo"
 homepageBackText = "Vissza a kezdolapra"
+homepageXlightText = "Nézet GUI"

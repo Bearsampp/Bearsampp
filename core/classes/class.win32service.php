@@ -318,6 +318,10 @@ class Win32Service
             $bearsamppBins->getPostgresql()->rebuildConf();
             $bearsamppBins->getPostgresql()->initData();
         }
+        elseif ( $this->getName() == BinXlight::SERVICE_NAME ) {
+            $bearsamppBins->getXlight()->rebuildConf();
+        }
+
 
         $start = dechex( $this->callWin32Service( 'win32_start_service', $this->getName(), true ) );
         $this->writeLog( 'Start service ' . $this->getName() . ': ' . $start . ' (status: ' . $this->status() . ')' );

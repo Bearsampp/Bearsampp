@@ -114,6 +114,7 @@ nodejs = "Node.js"
 pear = "PEAR"
 php = "PHP"
 postgresql = "PostgreSQL"
+xlight = "Xlight"
 
 ; Aplicaciones
 adminer = "Adminer"
@@ -355,3 +356,4 @@ homepagePhpinfoText = "Ver phpinfo()"
 homepageMailhogText = "Ver correos electrónicos recibidos"
 homepageApcText = "Administrador de APC"
 homepageBackText = "Volver a la página de inicio"
+homepageXlightText = "Ver GUI"

@@ -70,7 +70,8 @@ class Symlinks
             '20' => Util::formatWindowsPath($toolsPath . '/python/current'),
             '21' => Util::formatWindowsPath($toolsPath . '/ruby/current'),
             '22' => Util::formatWindowsPath($toolsPath . '/xdc/current'),
-            '23' => Util::formatWindowsPath($toolsPath . '/yarn/current')
+            '23' => Util::formatWindowsPath($toolsPath . '/yarn/current'),
+            '24'  => Util::formatWindowsPath($binPath . '/xlight/current')
         ];
 
         if (!is_array($array) || empty($array)) {

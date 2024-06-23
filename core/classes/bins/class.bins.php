@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 class Bins
 {
@@ -13,6 +20,7 @@ class Bins
     private $postgresql;
     private $nodejs;
     private $filezilla;
+    private $xlight;
 
     public function __construct()
     {
@@ -47,6 +55,7 @@ class Bins
             $this->getMysql(),
             $this->getPhp(),
             $this->getNodejs(),
+            $this->getXlight(),
         );
     }
 
@@ -122,6 +131,14 @@ class Bins
         return $this->filezilla;
     }
 
+    public function getXlight()
+    {
+        if ($this->xlight == null) {
+            $this->xlight = new BinXlight('xlight', self::TYPE);
+        }
+        return $this->xlight;
+    }
+
     public function getLogsPath()
     {
         return array(
@@ -153,6 +170,9 @@ class Bins
         }
         if ($this->getFilezilla()->isEnable()) {
             $result[BinFilezilla::SERVICE_NAME] = $this->getFilezilla()->getService();
+        }
+        if ($this->getXlight()->isEnable()) {
+            $result[BinXlight::SERVICE_NAME] = $this->getXlight()->getService();
         }
 
         return $result;

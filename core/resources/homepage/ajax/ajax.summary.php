@@ -17,19 +17,20 @@ global $downloadTitle, $bearsamppBins;
 
 // Initialize result array
 $result = array(
-    'binapache' => '',
-    'binfilezilla' => '',
-    'binmailhog' => '',
-    'binmariadb' => '',
-    'binmysql' => '',
+    'binapache'     => '',
+    'binfilezilla'  => '',
+    'binmailhog'    => '',
+    'binmariadb'    => '',
+    'binmysql'      => '',
     'binpostgresql' => '',
-    'binmemcached' => '',
-    'binnodejs' => '',
-    'binphp' => '',
+    'binmemcached'  => '',
+    'binnodejs'     => '',
+    'binphp'        => '',
+    'binxlight'     => '',
 );
 
 // Template for download link
-$dlMoreTpl = '<a href="' . Util::getWebsiteUrl('module/%s', '#releases') . '" target="_blank" title="' . $downloadTitle . '"><span class="float-end" style="margin-left:.5rem;"><i class="fa-solid fa-cloud-arrow-down"></i></span></a>';
+$dlMoreTpl = '<a href="' . Util::getWebsiteUrl( 'module/%s', '#releases' ) . '" target="_blank" title="' . $downloadTitle . '"><span class="float-end" style="margin-left:.5rem;"><i class="fa-solid fa-cloud-arrow-down"></i></span></a>';
 
 try {
     /**
@@ -40,20 +41,22 @@ try {
     $apachePort    = $bearsamppBins->getApache()->getPort();
     $apacheSslPort = $bearsamppBins->getApache()->getSslPort();
     $apacheLabel   = 'bg-secondary';
-    if ($bearsamppBins->getApache()->isEnable()) {
+    if ( $bearsamppBins->getApache()->isEnable() ) {
         $apacheLabel = 'bg-danger';
-        if ($bearsamppBins->getApache()->checkPort($apachePort)) {
-            if ($bearsamppBins->getApache()->checkPort($apacheSslPort, true)) {
+        if ( $bearsamppBins->getApache()->checkPort( $apachePort ) ) {
+            if ( $bearsamppBins->getApache()->checkPort( $apacheSslPort, true ) ) {
                 $apacheLabel = 'bg-success';
-            } else {
+            }
+            else {
                 $apacheLabel = 'bg-warning';
             }
         }
     }
-    $result['binapache'] = sprintf($dlMoreTpl, 'apache');
+    $result['binapache'] = sprintf( $dlMoreTpl, 'apache' );
     $result['binapache'] .= '<span class = " float-end badge ' . $apacheLabel . '">' . $bearsamppBins->getApache()->getVersion() . '</span>';
-} catch (Exception $e) {
-    $result['binapache'] = 'An error occurred getting the summary of Apache. '. $e->getMessage();
+}
+catch ( Exception $e ) {
+    $result['binapache'] = 'An error occurred getting the summary of Apache. ' . $e->getMessage();
 }
 
 try {
@@ -65,20 +68,22 @@ try {
     $filezillaPort    = $bearsamppBins->getFilezilla()->getPort();
     $filezillaSslPort = $bearsamppBins->getFilezilla()->getSslPort();
     $filezillaLabel   = 'bg-secondary';
-    if ($bearsamppBins->getFilezilla()->isEnable()) {
+    if ( $bearsamppBins->getFilezilla()->isEnable() ) {
         $filezillaLabel = 'bg-danger';
-        if ($bearsamppBins->getFilezilla()->checkPort($filezillaPort)) {
-            if ($bearsamppBins->getFilezilla()->checkPort($filezillaSslPort, true)) {
+        if ( $bearsamppBins->getFilezilla()->checkPort( $filezillaPort ) ) {
+            if ( $bearsamppBins->getFilezilla()->checkPort( $filezillaSslPort, true ) ) {
                 $filezillaLabel = 'bg-success';
-            } else {
+            }
+            else {
                 $filezillaLabel = 'bg-warning';
             }
         }
     }
-    $result['binfilezilla'] = sprintf($dlMoreTpl, 'filezilla');
+    $result['binfilezilla'] = sprintf( $dlMoreTpl, 'filezilla' );
     $result['binfilezilla'] .= '<span class = " float-end badge ' . $filezillaLabel . '">' . $bearsamppBins->getFilezilla()->getVersion() . '</span>';
-} catch (Exception $e) {
-    $result['binfilezilla'] = 'An error occurred getting the summary of Filezilla. '. $e->getMessage();
+}
+catch ( Exception $e ) {
+    $result['binfilezilla'] = 'An error occurred getting the summary of Filezilla. ' . $e->getMessage();
 }
 
 try {
@@ -89,16 +94,38 @@ try {
      */
     $mailhogPort  = $bearsamppBins->getMailhog()->getSmtpPort();
     $mailhogLabel = 'bg-secondary';
-    if ($bearsamppBins->getMailhog()->isEnable()) {
+    if ( $bearsamppBins->getMailhog()->isEnable() ) {
         $mailhogLabel = 'bg-danger';
-        if ($bearsamppBins->getMailhog()->checkPort($mailhogPort)) {
+        if ( $bearsamppBins->getMailhog()->checkPort( $mailhogPort ) ) {
             $mailhogLabel = 'bg-success';
         }
     }
-    $result['binmailhog'] = sprintf($dlMoreTpl, 'mailhog');
+    $result['binmailhog'] = sprintf( $dlMoreTpl, 'mailhog' );
     $result['binmailhog'] .= '<span class = " float-end badge ' . $mailhogLabel . '">' . $bearsamppBins->getMailhog()->getVersion() . '</span>';
-} catch (Exception $e) {
-    $result['binmailhog'] = 'An error occurred getting the summary of Mailhog. '. $e->getMessage();
+}
+catch ( Exception $e ) {
+    $result['binmailhog'] = 'An error occurred getting the summary of Mailhog. ' . $e->getMessage();
+}
+
+try {
+    /**
+     * Xlight Bin Information
+     * Retrieves the port for Xlight, checks if Xlight is enabled and the port is open.
+     * Sets the appropriate label based on the status and appends the version and download link to the result.
+     */
+    $xlightPort  = $bearsamppBins->getXlight()->getPort();
+    $xlightLabel = 'bg-secondary';
+    if ( $bearsamppBins->getXlight()->isEnable() ) {
+        $xlightLabel = 'bg-danger';
+        if ( $bearsamppBins->getXlight()->checkPort( $xlightPort ) ) {
+            $xlightLabel = 'bg-success';
+        }
+    }
+    $result['binxlight'] = sprintf( $dlMoreTpl, 'xlight' );
+    $result['binxlight'] .= '<span class = " float-end badge ' . $xlightLabel . '">' . $bearsamppBins->getXlight()->getVersion() . '</span>';
+}
+catch ( Exception $e ) {
+    $result['binxlight'] = 'An error occurred getting the summary of Xlight. ' . $e->getMessage();
 }
 
 try {
@@ -109,16 +136,17 @@ try {
      */
     $mariadbPort  = $bearsamppBins->getMariadb()->getPort();
     $mariadbLabel = 'bg-secondary';
-    if ($bearsamppBins->getMariadb()->isEnable()) {
+    if ( $bearsamppBins->getMariadb()->isEnable() ) {
         $mariadbLabel = 'bg-danger';
-        if ($bearsamppBins->getMariadb()->checkPort($mariadbPort)) {
+        if ( $bearsamppBins->getMariadb()->checkPort( $mariadbPort ) ) {
             $mariadbLabel = 'bg-success';
         }
     }
-    $result['binmariadb'] = sprintf($dlMoreTpl, 'mariadb');
+    $result['binmariadb'] = sprintf( $dlMoreTpl, 'mariadb' );
     $result['binmariadb'] .= '<span class = " float-end badge ' . $mariadbLabel . '">' . $bearsamppBins->getMariadb()->getVersion() . '</span>';
-} catch (Exception $e) {
-    $result['binmariadb'] = 'An error occurred getting the summary of MariaDB. '. $e->getMessage();
+}
+catch ( Exception $e ) {
+    $result['binmariadb'] = 'An error occurred getting the summary of MariaDB. ' . $e->getMessage();
 }
 
 try {
@@ -129,16 +157,17 @@ try {
      */
     $mysqlPort  = $bearsamppBins->getMysql()->getPort();
     $mysqlLabel = 'bg-secondary';
-    if ($bearsamppBins->getMysql()->isEnable()) {
+    if ( $bearsamppBins->getMysql()->isEnable() ) {
         $mysqlLabel = 'bg-danger';
-        if ($bearsamppBins->getMysql()->checkPort($mysqlPort)) {
+        if ( $bearsamppBins->getMysql()->checkPort( $mysqlPort ) ) {
             $mysqlLabel = 'bg-success';
         }
     }
-    $result['binmysql'] = sprintf($dlMoreTpl, 'mysql');
+    $result['binmysql'] = sprintf( $dlMoreTpl, 'mysql' );
     $result['binmysql'] .= '<span class = " float-end badge ' . $mysqlLabel . '">' . $bearsamppBins->getMysql()->getVersion() . '</span>';
-} catch (Exception $e) {
-    $result['binmysql'] = 'An error occurred getting the summary of MySql. '. $e->getMessage();
+}
+catch ( Exception $e ) {
+    $result['binmysql'] = 'An error occurred getting the summary of MySql. ' . $e->getMessage();
 }
 
 try {
@@ -149,16 +178,17 @@ try {
      */
     $postgresqlPort  = $bearsamppBins->getPostgresql()->getPort();
     $postgresqlLabel = 'bg-secondary';
-    if ($bearsamppBins->getPostgresql()->isEnable()) {
+    if ( $bearsamppBins->getPostgresql()->isEnable() ) {
         $postgresqlLabel = 'bg-danger';
-        if ($bearsamppBins->getPostgresql()->checkPort($postgresqlPort)) {
+        if ( $bearsamppBins->getPostgresql()->checkPort( $postgresqlPort ) ) {
             $postgresqlLabel = 'bg-success';
         }
     }
-    $result['binpostgresql'] = sprintf($dlMoreTpl, 'postgresql');
+    $result['binpostgresql'] = sprintf( $dlMoreTpl, 'postgresql' );
     $result['binpostgresql'] .= '<span class = " float-end badge ' . $postgresqlLabel . '">' . $bearsamppBins->getPostgresql()->getVersion() . '</span>';
-} catch (Exception $e) {
-    $result['binpostgresql'] = 'An error occurred getting the summary of Postgresql. '. $e->getMessage();
+}
+catch ( Exception $e ) {
+    $result['binpostgresql'] = 'An error occurred getting the summary of Postgresql. ' . $e->getMessage();
 }
 
 try {
@@ -169,16 +199,17 @@ try {
      */
     $memcachedPort  = $bearsamppBins->getMemcached()->getPort();
     $memcachedLabel = 'bg-secondary';
-    if ($bearsamppBins->getMemcached()->isEnable()) {
+    if ( $bearsamppBins->getMemcached()->isEnable() ) {
         $memcachedLabel = 'bg-danger';
-        if ($bearsamppBins->getMemcached()->checkPort($memcachedPort)) {
+        if ( $bearsamppBins->getMemcached()->checkPort( $memcachedPort ) ) {
             $memcachedLabel = 'bg-success';
         }
     }
-    $result['binmemcached'] = sprintf($dlMoreTpl, 'memcached');
+    $result['binmemcached'] = sprintf( $dlMoreTpl, 'memcached' );
     $result['binmemcached'] .= '<span class = " float-end badge ' . $memcachedLabel . '">' . $bearsamppBins->getMemcached()->getVersion() . '</span>';
-} catch (Exception $e) {
-    $result['binmemcached'] = 'An error occurred getting the summary of Memchached. '. $e->getMessage();
+}
+catch ( Exception $e ) {
+    $result['binmemcached'] = 'An error occurred getting the summary of Memchached. ' . $e->getMessage();
 }
 
 try {
@@ -188,13 +219,14 @@ try {
      * Sets the appropriate label based on the status and appends the version and download link to the result.
      */
     $nodejsLabel = 'bg-secondary';
-    if ($bearsamppBins->getNodejs()->isEnable()) {
+    if ( $bearsamppBins->getNodejs()->isEnable() ) {
         $nodejsLabel = 'bg-success';
     }
-    $result['binnodejs'] = sprintf($dlMoreTpl, 'nodejs');
+    $result['binnodejs'] = sprintf( $dlMoreTpl, 'nodejs' );
     $result['binnodejs'] .= '<span class = " float-end badge ' . $nodejsLabel . '">' . $bearsamppBins->getNodejs()->getVersion() . '</span>';
-} catch (Exception $e) {
-    $result['binnodejs'] = 'An error occurred getting the summary of NodeJS. '. $e->getMessage();
+}
+catch ( Exception $e ) {
+    $result['binnodejs'] = 'An error occurred getting the summary of NodeJS. ' . $e->getMessage();
 }
 
 try {
@@ -204,14 +236,15 @@ try {
      * Sets the appropriate label based on the status and appends the version and download link to the result.
      */
     $phpLabel = 'bg-secondary';
-    if ($bearsamppBins->getPhp()->isEnable()) {
+    if ( $bearsamppBins->getPhp()->isEnable() ) {
         $phpLabel = 'bg-success';
     }
-    $result['binphp'] = sprintf($dlMoreTpl, 'php');
+    $result['binphp'] = sprintf( $dlMoreTpl, 'php' );
     $result['binphp'] .= '<span class = " float-end badge ' . $phpLabel . '">' . $bearsamppBins->getPhp()->getVersion() . '</span>';
-} catch (Exception $e) {
-    $result['binphp'] = 'An error occurred getting the summary of PHP. '. $e->getMessage();
+}
+catch ( Exception $e ) {
+    $result['binphp'] = 'An error occurred getting the summary of PHP. ' . $e->getMessage();
 }
 
 // Output the result as JSON
-echo json_encode($result);
+echo json_encode( $result );

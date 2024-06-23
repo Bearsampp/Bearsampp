@@ -28,7 +28,8 @@ $procs = array(
     'mysql',
     'nodejs',
     'php',
-    'postgresql'
+    'postgresql',
+    'xlight'
 );
 
 /**

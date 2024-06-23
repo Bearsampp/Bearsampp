@@ -83,7 +83,8 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
         "/js/mysql.js",
         "/js/nodejs.js",
         "/js/php.js",
-        "/js/postgresql.js"
+        "/js/postgresql.js",
+        "/js/xlight.js"
     ];
 
     /**
