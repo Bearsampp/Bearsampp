@@ -35,6 +35,7 @@ class Action
     const MANUAL_RESTART = 'manualRestart';
     const LOADING = 'loading';
     const QUIT = 'quit';
+    const REBUILD_INI = 'rebuildIni';
     const REFRESH_REPOS = 'refreshRepos';
     const REFRESH_REPOS_STARTUP = 'refreshReposStartup';
     const RELOAD = 'reload';

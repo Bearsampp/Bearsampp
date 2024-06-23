@@ -2,7 +2,7 @@
 /*
  * Copyright (c) 2021-2024 Bearsampp
  * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: bear
+ * Author: Bear
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
@@ -286,6 +286,7 @@ class TplApp
             TplAestan::getItemSeparator() . PHP_EOL .
             $tplReload[self::SECTION_CALL] . PHP_EOL .
             TplAppClearFolders::process() . PHP_EOL .
+            TplAppRebuildIni::process() . PHP_EOL .
             $tplBrowser[self::SECTION_CALL] . PHP_EOL .
             TplAppEditConf::process() . PHP_EOL .
 

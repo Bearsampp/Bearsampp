@@ -105,6 +105,7 @@ class Lang
     const MENU_LOGS = 'menuLogs';
     const MENU_PUT_OFFLINE = 'menuPutOffline';
     const MENU_PUT_ONLINE = 'menuPutOnline';
+    const MENU_REBUILD_INI = 'menuRebuildIni';
     const MENU_REFRESH_REPOS = 'menuRefreshRepos';
     const MENU_REMOVE_SERVICE = 'menuRemoveService';
     const MENU_RESTART_SERVICE = 'menuRestartService';
@@ -465,6 +466,7 @@ class Lang
             self::MENU_LOGS,
             self::MENU_PUT_OFFLINE,
             self::MENU_PUT_ONLINE,
+            self::MENU_REBUILD_INI,
             self::MENU_REFRESH_REPOS,
             self::MENU_REMOVE_SERVICE,
             self::MENU_RESTART_SERVICE,

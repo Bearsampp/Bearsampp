@@ -1916,4 +1916,9 @@ class Util
             'X-GitHub-Api-Version: 2022-11-28'
         ];
     }
+
+    public static function rebuildIni()
+    {
+
+    }
 }

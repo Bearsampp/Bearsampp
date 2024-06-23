@@ -1,5 +1,5 @@
 ; Autor: / DM8DR
-; 
+;
 
 ; General
 allRunningHint = "Alle Dienste laufen"
@@ -86,6 +86,7 @@ menuLocalhost = "Localhost"
 menuLogs = "Protokolle"
 menuPutOffline = "Offline setzen"
 menuPutOnline = "Online setzen"
+menuRebuildIni = "bearsampp.ini neu erstellen"
 menuRefreshRepos = "Repositorys aktualisieren"
 menuRemoveService = "Dienst entfernen"
 menuRestartService = "Dienst neu starten"
@@ -353,4 +354,4 @@ homepagePostIssue = "Auf GitHub posten"
 homepagePhpinfoText = "phpinfo() anzeigen"
 homepageMailhogText = "Empfangene E-Mails anzeigen"
 homepageApcText = "APC Manager"
-homepageBackText = "Zurück zur Homepage"	  
+homepageBackText = "Zurück zur Homepage"
