@@ -129,6 +129,7 @@ class Lang
     const PEAR = 'pear';
     const MEMCACHED = 'memcached';
     const MAILHOG = 'mailhog';
+    const MAILPIT = 'mailpit';
     const MARIADB = 'mariadb';
     const MYSQL = 'mysql';
     const NODEJS = 'nodejs';
@@ -373,6 +374,7 @@ class Lang
     const HOMEPAGE_PHPINFO_TEXT = 'homepagePhpinfoText';
     const HOMEPAGE_APC_TEXT = 'homepageApcText';
     const HOMEPAGE_MAILHOG_TEXT = 'homepageMailhogText';
+    const HOMEPAGE_MAILPIT_TEXT = 'homepageMailpitText';
     const HOMEPAGE_XLIGHT_TEXT = 'homepageXlightText';
     const HOMEPAGE_BACK_TEXT = 'homepageBackText';
 
@@ -492,6 +494,7 @@ class Lang
             self::PEAR,
             self::MEMCACHED,
             self::MAILHOG,
+            self::MAILPIT,
             self::MARIADB,
             self::MYSQL,
             self::NODEJS,
@@ -735,6 +738,7 @@ class Lang
             self::HOMEPAGE_PHPINFO_TEXT,
             self::HOMEPAGE_APC_TEXT,
             self::HOMEPAGE_MAILHOG_TEXT,
+            self::HOMEPAGE_MAILPIT_TEXT,
             self::HOMEPAGE_XLIGHT_TEXT,
             self::HOMEPAGE_BACK_TEXT,
         );

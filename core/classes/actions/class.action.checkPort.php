@@ -10,7 +10,7 @@
 /**
  * Class ActionCheckPort
  *
- * This class is responsible for checking the port status of various services (Apache, MySQL, MariaDB, PostgreSQL, Filezilla, Mailhog, Memcached, Xlight)
+ * This class is responsible for checking the port status of various services (Apache, MySQL, MariaDB, PostgreSQL, Filezilla, Mailhog, Mailpit, Memcached, Xlight)
  * based on the provided arguments.
  */
 class ActionCheckPort
@@ -52,6 +52,9 @@ class ActionCheckPort
             }
             elseif ( $args[0] == $bearsamppBins->getMailhog()->getName() ) {
                 $bearsamppBins->getMailhog()->checkPort( $args[1], true );
+            }
+            elseif ( $args[0] == $bearsamppBins->getMailpit()->getName() ) {
+                $bearsamppBins->getMailpit()->checkPort( $args[1], true );
             }
             elseif ( $args[0] == $bearsamppBins->getMemcached()->getName() ) {
                 $bearsamppBins->getMemcached()->checkPort( $args[1], true );

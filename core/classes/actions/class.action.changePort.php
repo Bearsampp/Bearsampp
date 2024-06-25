@@ -67,6 +67,11 @@ class ActionChangePort
                 $this->currentPort       = $bearsamppBins->getMailhog()->getSmtpPort();
                 $this->cntProcessActions = 3;
             }
+            elseif ( $args[0] == $bearsamppBins->getMailpit()->getName() ) {
+                $this->bin               = $bearsamppBins->getMailpit();
+                $this->currentPort       = $bearsamppBins->getMailpit()->getSmtpPort();
+                $this->cntProcessActions = 3;
+            }
             elseif ( $args[0] == $bearsamppBins->getMemcached()->getName() ) {
                 $this->bin               = $bearsamppBins->getMemcached();
                 $this->currentPort       = $bearsamppBins->getMemcached()->getPort();

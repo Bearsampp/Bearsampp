@@ -45,6 +45,10 @@ class ActionService
                 $bin  = $bearsamppBins->getMailhog();
                 $port = $bin->getSmtpPort();
             }
+            elseif ( $sName == BinMailpit::SERVICE_NAME ) {
+                $bin  = $bearsamppBins->getMailpit();
+                $port = $bin->getSmtpPort();
+            }
             elseif ( $sName == BinMemcached::SERVICE_NAME ) {
                 $bin  = $bearsamppBins->getMemcached();
                 $port = $bin->getPort();

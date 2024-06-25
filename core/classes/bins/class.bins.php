@@ -12,6 +12,7 @@ class Bins
     const TYPE = 'bins';
 
     private $mailhog;
+    private $mailpit;
     private $memcached;
     private $apache;
     private $php;
@@ -47,6 +48,7 @@ class Bins
     {
         return array(
             $this->getMailhog(),
+            $this->getMailpit(),
             $this->getMemcached(),
             $this->getApache(),
             $this->getFilezilla(),
@@ -65,6 +67,14 @@ class Bins
             $this->mailhog = new BinMailhog('mailhog', self::TYPE);
         }
         return $this->mailhog;
+    }
+
+    public function getMailpit()
+    {
+        if ($this->mailpit == null) {
+            $this->mailpit = new BinMailpit('mailpit', self::TYPE);
+        }
+        return $this->mailpit;
     }
 
     public function getMemcached()
@@ -152,6 +162,9 @@ class Bins
 
         if ($this->getMailhog()->isEnable()) {
             $result[BinMailhog::SERVICE_NAME] = $this->getMailhog()->getService();
+        }
+        if ($this->getMailpit()->isEnable()) {
+            $result[BinMailpit::SERVICE_NAME] = $this->getMailpit()->getService();
         }
         if ($this->getMemcached()->isEnable()) {
             $result[BinMemcached::SERVICE_NAME] = $this->getMemcached()->getService();

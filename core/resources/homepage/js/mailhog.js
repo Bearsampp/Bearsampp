@@ -8,12 +8,12 @@
 
 async function getMailHogStatus() {
   const url = AJAX_URL;
-  let data = new URLSearchParams();
-  const proc = 'mailhog';
-  data.append(`proc`, proc);
+    const proc = 'mailhog';
+  const senddata = new URLSearchParams();
+  senddata.append(`proc`, proc);
   const options = {
     method: 'POST',
-    body: data
+    body: senddata
   }
   let response = await fetch(url, options);
   if (!response.ok) {

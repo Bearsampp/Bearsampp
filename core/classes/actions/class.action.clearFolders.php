@@ -38,7 +38,7 @@ class ActionClearFolders
          * @param string $bearsamppRoot->getTmpPath() The root temporary path to be cleared.
          * @param array $exclusions List of folders and files to be excluded from deletion.
          */
-        Util::clearFolder($bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'xlight', 'npm-cache', 'pip', 'yarn', '.gitignore'));
+        Util::clearFolder($bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', Mailpit, 'xlight', 'npm-cache', 'pip', 'yarn', '.gitignore'));
 
         /**
          * Clears the core temporary path.

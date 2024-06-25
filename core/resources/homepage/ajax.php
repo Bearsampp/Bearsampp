@@ -23,6 +23,7 @@ $procs = array(
     'apache',
     'filezilla',
     'mailhog',
+    'mailpit',
     'memcached',
     'mariadb',
     'mysql',

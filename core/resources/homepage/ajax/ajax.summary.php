@@ -8,7 +8,7 @@
  */
 
 /**
- * Generates a JSON output containing information about various bins such as Apache, Filezilla, MailHog, MariaDB, MySQL, PostgreSQL, Memcached, Node.js, and PHP.
+ * Generates a JSON output containing information about various bins such as Apache, Filezilla, MailHog, Mailpit, MariaDB, MySQL, PostgreSQL, Memcached, Node.js, and PHP.
  * The output includes download links, version numbers, and status labels for each bin.
  */
 
@@ -20,6 +20,7 @@ $result = array(
     'binapache'     => '',
     'binfilezilla'  => '',
     'binmailhog'    => '',
+    'binmailpit'    => '',
     'binmariadb'    => '',
     'binmysql'      => '',
     'binpostgresql' => '',
@@ -105,6 +106,27 @@ try {
 }
 catch ( Exception $e ) {
     $result['binmailhog'] = 'An error occurred getting the summary of Mailhog. ' . $e->getMessage();
+}
+
+try {
+    /**
+     * Mailpit Bin Information
+     * Retrieves the SMTP port for Mailpit, checks if Mailpit is enabled and the port is open.
+     * Sets the appropriate label based on the status and appends the version and download link to the result.
+     */
+    $mailpitPort  = $bearsamppBins->getMailpit()->getSmtpPort();
+    $mailpitLabel = 'bg-secondary';
+    if ( $bearsamppBins->getMailpit()->isEnable() ) {
+        $mailpitLabel = 'bg-danger';
+        if ( $bearsamppBins->getMailpit()->checkPort( $mailpitPort ) ) {
+            $mailpitLabel = 'bg-success';
+        }
+    }
+    $result['binmailpit'] = sprintf( $dlMoreTpl, 'mailpit' );
+    $result['binmailpit'] .= '<span class = " float-end badge ' . $mailpitLabel . '">' . $bearsamppBins->getMailpit()->getVersion() . '</span>';
+}
+catch ( Exception $e ) {
+    $result['binmailpit'] = 'An error occurred getting the summary of Mailpit. ' . $e->getMessage();
 }
 
 try {

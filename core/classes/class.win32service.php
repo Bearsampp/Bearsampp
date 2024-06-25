@@ -302,6 +302,8 @@ class Win32Service
     {
         global $bearsamppBins;
 
+        Util::logInfo('Attempting to start service: ' . $this->getName());
+
         if ( $this->getName() == BinFilezilla::SERVICE_NAME ) {
             $bearsamppBins->getFilezilla()->rebuildConf();
         }
@@ -310,6 +312,9 @@ class Win32Service
         }
         elseif ( $this->getName() == BinMailhog::SERVICE_NAME ) {
             $bearsamppBins->getMailhog()->rebuildConf();
+        }
+        elseif ( $this->getName() == BinMailpit::SERVICE_NAME ) {
+            $bearsamppBins->getMailpit()->rebuildConf();
         }
         elseif ( $this->getName() == BinMemcached::SERVICE_NAME ) {
             $bearsamppBins->getMemcached()->rebuildConf();
@@ -324,9 +329,13 @@ class Win32Service
 
 
         $start = dechex( $this->callWin32Service( 'win32_start_service', $this->getName(), true ) );
-        $this->writeLog( 'Start service ' . $this->getName() . ': ' . $start . ' (status: ' . $this->status() . ')' );
+        Util::logDebug( 'Start service ' . $this->getName() . ': ' . $start . ' (status: ' . $this->status() . ')' );
 
         if ( $start != self::WIN32_NO_ERROR && $start != self::WIN32_ERROR_SERVICE_ALREADY_RUNNING ) {
+
+            // Write error to log
+            Util::logError('Failed to start service: ' . $this->getName() . ' with error code: ' . $start);
+
             if ( $this->getName() == BinApache::SERVICE_NAME ) {
                 $cmdOutput = $bearsamppBins->getApache()->getCmdLineOutput( BinApache::CMD_SYNTAX_CHECK );
                 if ( !$cmdOutput['syntaxOk'] ) {
@@ -362,10 +371,12 @@ class Win32Service
         }
         elseif ( !$this->isRunning() ) {
             $this->latestError = self::WIN32_NO_ERROR;
-
+            Util::logError('Service ' . $this->getName() . ' is not running after start attempt.');
+            $this->latestError = null;
             return false;
         }
 
+        Util::logInfo('Service ' . $this->getName() . ' started successfully.');
         return true;
     }
 

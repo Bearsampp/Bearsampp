@@ -72,6 +72,9 @@ class ActionQuit
             elseif ( $sName == BinMailhog::SERVICE_NAME ) {
                 $name = $bearsamppBins->getMailhog()->getName() . ' ' . $bearsamppBins->getMailhog()->getVersion();
             }
+            elseif ( $sName == BinMailpit::SERVICE_NAME ) {
+                $name = $bearsamppBins->getMailpit()->getName() . ' ' . $bearsamppBins->getMailpit()->getVersion();
+            }
             elseif ( $sName == BinMariadb::SERVICE_NAME ) {
                 $name = $bearsamppBins->getMariadb()->getName() . ' ' . $bearsamppBins->getMariadb()->getVersion();
             }

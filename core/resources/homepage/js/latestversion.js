@@ -8,12 +8,12 @@
 
 async function getLatestVersionStatus() {
     const url = AJAX_URL; // Ensure this variable is defined and points to your server-side script handling the AJAX requests.
-    let data = new URLSearchParams();
-    data.append('proc', 'latestversion'); // Setting 'proc' to 'latestversion'
+    const senddata = new URLSearchParams();
+    senddata.append('proc', 'latestversion'); // Setting 'proc' to 'latestversion'
 
     const options = {
         method: 'POST',
-        body: data
+        body: senddata
     };
 
     try {

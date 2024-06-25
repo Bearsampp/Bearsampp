@@ -6,9 +6,9 @@
  * Github: https://github.com/Bearsampp
  */
 
-async function getXlightStatus() {
+async function getMailpitStatus() {
   const url = AJAX_URL;
-  const proc = 'xlight';
+  const proc = 'mailpit';
   const senddata = new URLSearchParams();
   senddata.append(`proc`, proc);
   const options = {
@@ -20,26 +20,27 @@ async function getXlightStatus() {
     console.log('Error receiving from ajax.php');
   } else {
     let myajaxresponse = await response.text();
+    console.log(myajaxresponse);
     let data;
-    try {
-      data = JSON.parse(myajaxresponse);
-    } catch (error) {
-      console.error('Failed to parse response:', error);
-    }
+try {
+  data = JSON.parse(myajaxresponse);
+} catch (error) {
+  console.error('Failed to parse response:', error);
+}
 
-    let q = document.querySelector('.xlight-checkport');
+    let q = document.querySelector('.mailpit-checkport');
     let ql = q.querySelector('.loader');
     ql.remove();
-    q.insertAdjacentHTML('beforeend', data.checkport);
+    q.insertAdjacentHTML('beforeend',data.checkport);
 
-    q = document.querySelector('.xlight-version-list');
+    q = document.querySelector('.mailpit-version-list');
     ql = q.querySelector('.loader');
     ql.remove();
-    q.insertAdjacentHTML('beforeend', data.versions);
+    q.insertAdjacentHTML('beforeend',data.versions);
   }
 }
 document.addEventListener("DOMContentLoaded", function() {
-  if (document.querySelector('a[name=xlight]').name === 'xlight') {
-    getXlightStatus();
+  if (document.querySelector('a[name=mailpit]').name === 'mailpit') {
+    getMailpitStatus();
   }
 })

@@ -46,6 +46,11 @@ async function getSummaryStatus() {
         ql.remove();
         q.insertAdjacentHTML('beforeend', data.binmailhog);
 
+        q = document.querySelector('.summary-binmailpit');
+        ql = q.querySelector('.loader');
+        ql.remove();
+        q.insertAdjacentHTML('beforeend', data.binmailpit);
+
         q = document.querySelector('.summary-binmariadb');
         ql = q.querySelector('.loader');
         ql.remove();

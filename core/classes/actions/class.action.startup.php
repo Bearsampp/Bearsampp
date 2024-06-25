@@ -278,7 +278,7 @@ class ActionStartup
         $this->splash->incrProgressBar();
 
         $this->writeLog( 'Clear tmp folders' );
-        Util::clearFolder( $bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'xlight', 'npm-cache', 'pip', 'yarn', '.gitignore') );
+        Util::clearFolder( $bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'mailpit', 'xlight', 'npm-cache', 'pip', 'yarn', '.gitignore') );
         Util::clearFolder( $bearsamppCore->getTmpPath(), array('.gitignore') );
     }
 
@@ -640,6 +640,10 @@ class ActionStartup
                 if ( $sName == BinMailhog::SERVICE_NAME ) {
                     $bin  = $bearsamppBins->getMailhog();
                     $port = $bearsamppBins->getMailhog()->getSmtpPort();
+                }
+                elseif ( $sName == BinMailpit::SERVICE_NAME ) {
+                    $bin  = $bearsamppBins->getMailpit();
+                    $port = $bearsamppBins->getMailpit()->getSmtpPort();
                 }
                 elseif ( $sName == BinMemcached::SERVICE_NAME ) {
                     $bin  = $bearsamppBins->getMemcached();

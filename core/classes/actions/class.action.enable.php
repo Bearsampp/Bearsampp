@@ -51,6 +51,9 @@ class ActionEnable
             elseif ( $args[0] == $bearsamppBins->getMailhog()->getName() ) {
                 $bearsamppBins->getMailhog()->setEnable( $args[1], true );
             }
+            elseif ( $args[0] == $bearsamppBins->getMailpit()->getName() ) {
+                $bearsamppBins->getMailpit()->setEnable( $args[1], true );
+            }
             elseif ( $args[0] == $bearsamppBins->getMemcached()->getName() ) {
                 $bearsamppBins->getMemcached()->setEnable( $args[1], true );
             }
