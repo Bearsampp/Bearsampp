@@ -38,7 +38,7 @@
       </span>
             <span class = "list-group-item">
                 <i class = 'fa-solid fa-circle-info'></i>
-                <a href = "<?php echo $bearsamppRoot->getLocalUrl() . ':' . $bearsamppBins->getMailpit()->getUiPort(); ?>"
+                <a href = "<?php echo $bearsamppRoot->getLocalUrl() . ':' . $bearsamppBins->getMailpit()->getUiPort() . '/' . $bearsamppBins->getMailpit()->getWebRoot(); ?>"
                    target = "_blank"><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_MAILPIT_TEXT); ?></a>
             </span>
         </div>
