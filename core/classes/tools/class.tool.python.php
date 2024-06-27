@@ -1,5 +1,19 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ToolPython
+ *
+ * This class represents a Python tool module in the Bearsampp application.
+ * It extends the abstract Module class and provides specific functionalities
+ * for managing Python executables and configurations.
+ */
 class ToolPython extends Module
 {
     const ROOT_CFG_VERSION = 'pythonVersion';
@@ -12,11 +26,23 @@ class ToolPython extends Module
     private $cpExe;
     private $idleExe;
 
+    /**
+     * Constructor for the ToolPython class.
+     *
+     * @param string $id The ID of the module.
+     * @param string $type The type of the module.
+     */
     public function __construct($id, $type) {
         Util::logInitClass($this);
         $this->reload($id, $type);
     }
 
+    /**
+     * Reloads the module configuration based on the provided ID and type.
+     *
+     * @param string|null $id The ID of the module. If null, the current ID is used.
+     * @param string|null $type The type of the module. If null, the current type is used.
+     */
     public function reload($id = null, $type = null) {
         global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
@@ -56,6 +82,11 @@ class ToolPython extends Module
         }
     }
 
+    /**
+     * Sets the version of the Python module and reloads the configuration.
+     *
+     * @param string $version The version to set.
+     */
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
@@ -63,14 +94,29 @@ class ToolPython extends Module
         $this->reload();
     }
 
+    /**
+     * Gets the path to the Python executable.
+     *
+     * @return string The path to the Python executable.
+     */
     public function getExe() {
         return $this->exe;
     }
 
+    /**
+     * Gets the path to the Python CP executable.
+     *
+     * @return string The path to the Python CP executable.
+     */
     public function getCpExe() {
         return $this->cpExe;
     }
 
+    /**
+     * Gets the path to the Python IDLE executable.
+     *
+     * @return string The path to the Python IDLE executable.
+     */
     public function getIdleExe() {
         return $this->idleExe;
     }

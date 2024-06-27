@@ -2,11 +2,17 @@
 /*
  * Copyright (c) 2021-2024 Bearsampp
  * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: bear
+ * Author: Bear
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class TplAppMailhog
+ *
+ * This class provides methods to generate menus and actions for managing Mailhog within the Bearsampp application.
+ * It includes functionalities for enabling/disabling Mailhog, switching versions, changing ports, and managing the service.
+ */
 class TplAppMailhog
 {
     const MENU = 'mailhog';

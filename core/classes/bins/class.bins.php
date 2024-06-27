@@ -23,11 +23,19 @@ class Bins
     private $filezilla;
     private $xlight;
 
+    /**
+     * Constructor for the Bins class.
+     * Initializes the Bins object and logs the initialization.
+     */
     public function __construct()
     {
         Util::logInitClass($this);
     }
 
+    /**
+     * Reloads the configuration for all bin modules.
+     * Logs the reload action and calls the reload method on each bin module.
+     */
     public function reload()
     {
         Util::logInfo('Reload bins');
@@ -36,6 +44,10 @@ class Bins
         }
     }
 
+    /**
+     * Updates the configuration for all bin modules.
+     * Logs the update action and calls the update method on each bin module.
+     */
     public function update()
     {
         Util::logInfo('Update bins config');
@@ -44,6 +56,11 @@ class Bins
         }
     }
 
+    /**
+     * Retrieves all bin modules.
+     *
+     * @return array An array of all bin modules.
+     */
     public function getAll()
     {
         return array(
@@ -61,6 +78,12 @@ class Bins
         );
     }
 
+    /**
+     * Retrieves the Mailhog bin module.
+     * If the Mailhog module is not initialized, it creates a new instance.
+     *
+     * @return BinMailhog The Mailhog bin module.
+     */
     public function getMailhog()
     {
         if ($this->mailhog == null) {
@@ -69,6 +92,12 @@ class Bins
         return $this->mailhog;
     }
 
+    /**
+     * Retrieves the Mailpit bin module.
+     * If the Mailpit module is not initialized, it creates a new instance.
+     *
+     * @return BinMailpit The Mailpit bin module.
+     */
     public function getMailpit()
     {
         if ($this->mailpit == null) {
@@ -77,6 +106,12 @@ class Bins
         return $this->mailpit;
     }
 
+    /**
+     * Retrieves the Memcached bin module.
+     * If the Memcached module is not initialized, it creates a new instance.
+     *
+     * @return BinMemcached The Memcached bin module.
+     */
     public function getMemcached()
     {
         if ($this->memcached == null) {
@@ -85,6 +120,12 @@ class Bins
         return $this->memcached;
     }
 
+    /**
+     * Retrieves the Apache bin module.
+     * If the Apache module is not initialized, it creates a new instance.
+     *
+     * @return BinApache The Apache bin module.
+     */
     public function getApache()
     {
         if ($this->apache == null) {
@@ -93,6 +134,12 @@ class Bins
         return $this->apache;
     }
 
+    /**
+     * Retrieves the PHP bin module.
+     * If the PHP module is not initialized, it creates a new instance.
+     *
+     * @return BinPhp The PHP bin module.
+     */
     public function getPhp()
     {
         if ($this->php == null) {
@@ -101,6 +148,12 @@ class Bins
         return $this->php;
     }
 
+    /**
+     * Retrieves the MySQL bin module.
+     * If the MySQL module is not initialized, it creates a new instance.
+     *
+     * @return BinMysql The MySQL bin module.
+     */
     public function getMysql()
     {
         if ($this->mysql == null) {
@@ -109,6 +162,12 @@ class Bins
         return $this->mysql;
     }
 
+    /**
+     * Retrieves the MariaDB bin module.
+     * If the MariaDB module is not initialized, it creates a new instance.
+     *
+     * @return BinMariadb The MariaDB bin module.
+     */
     public function getMariadb()
     {
         if ($this->mariadb == null) {
@@ -117,6 +176,12 @@ class Bins
         return $this->mariadb;
     }
 
+    /**
+     * Retrieves the PostgreSQL bin module.
+     * If the PostgreSQL module is not initialized, it creates a new instance.
+     *
+     * @return BinPostgresql The PostgreSQL bin module.
+     */
     public function getPostgresql()
     {
         if ($this->postgresql == null) {
@@ -125,6 +190,12 @@ class Bins
         return $this->postgresql;
     }
 
+    /**
+     * Retrieves the Node.js bin module.
+     * If the Node.js module is not initialized, it creates a new instance.
+     *
+     * @return BinNodejs The Node.js bin module.
+     */
     public function getNodejs()
     {
         if ($this->nodejs == null) {
@@ -133,6 +204,12 @@ class Bins
         return $this->nodejs;
     }
 
+    /**
+     * Retrieves the FileZilla bin module.
+     * If the FileZilla module is not initialized, it creates a new instance.
+     *
+     * @return BinFilezilla The FileZilla bin module.
+     */
     public function getFilezilla()
     {
         if ($this->filezilla == null) {
@@ -141,6 +218,12 @@ class Bins
         return $this->filezilla;
     }
 
+    /**
+     * Retrieves the Xlight bin module.
+     * If the Xlight module is not initialized, it creates a new instance.
+     *
+     * @return BinXlight The Xlight bin module.
+     */
     public function getXlight()
     {
         if ($this->xlight == null) {
@@ -149,6 +232,11 @@ class Bins
         return $this->xlight;
     }
 
+    /**
+     * Retrieves the log paths for all bin modules.
+     *
+     * @return array An array of log paths for all bin modules.
+     */
     public function getLogsPath()
     {
         return array(
@@ -156,6 +244,11 @@ class Bins
         );
     }
 
+    /**
+     * Retrieves the services for all enabled bin modules.
+     *
+     * @return array An associative array of service names and their corresponding service objects.
+     */
     public function getServices()
     {
         $result = array();

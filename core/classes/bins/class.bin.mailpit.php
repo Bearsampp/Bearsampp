@@ -7,6 +7,12 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class BinMailpit
+ *
+ * This class represents the Mailpit module in the Bearsampp application.
+ * It handles the configuration, initialization, and management of the Mailpit service.
+ */
 class BinMailpit extends Module
 {
     const SERVICE_NAME = 'bearsamppmailpit';
@@ -30,12 +36,24 @@ class BinMailpit extends Module
     private $smtpPort;
     private $listen;
 
+    /**
+     * Constructs a BinMailpit object and initializes the module.
+     *
+     * @param   string  $id    The ID of the module.
+     * @param   string  $type  The type of the module.
+     */
     public function __construct($id, $type)
     {
         Util::logInitClass( $this );
         $this->reload( $id, $type );
     }
 
+    /**
+     * Reloads the module configuration based on the provided ID and type.
+     *
+     * @param   string|null  $id    The ID of the module. If null, the current ID is used.
+     * @param   string|null  $type  The type of the module. If null, the current type is used.
+     */
     public function reload($id = null, $type = null)
     {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
@@ -45,16 +63,16 @@ class BinMailpit extends Module
         $this->version = $bearsamppConfig->getRaw( self::ROOT_CFG_VERSION );
         parent::reload( $id, $type );
 
-        $this->enable   = $this->enable && $bearsamppConfig->getRaw( self::ROOT_CFG_ENABLE );
-        $this->service  = new Win32Service( self::SERVICE_NAME );
-        $this->log      = $bearsamppRoot->getLogsPath() . '/mailpit.log';
+        $this->enable  = $this->enable && $bearsamppConfig->getRaw( self::ROOT_CFG_ENABLE );
+        $this->service = new Win32Service( self::SERVICE_NAME );
+        $this->log     = $bearsamppRoot->getLogsPath() . '/mailpit.log';
 
         if ( $this->bearsamppConfRaw !== false ) {
             $this->exe      = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->webRoot  = $this->bearsamppConfRaw[self::LOCAL_CFG_WEB_ROOT];
             $this->uiPort   = intval( $this->bearsamppConfRaw[self::LOCAL_CFG_UI_PORT] );
             $this->smtpPort = intval( $this->bearsamppConfRaw[self::LOCAL_CFG_SMTP_PORT] );
-            $this->listen = $this->bearsamppConfRaw[self::LOCAL_CFG_LISTEN];
+            $this->listen   = $this->bearsamppConfRaw[self::LOCAL_CFG_LISTEN];
         }
 
         if ( !$this->enable ) {
@@ -82,7 +100,7 @@ class BinMailpit extends Module
 
             return;
         }
-        if ( (empty($this->webRoot) && $this->webRoot !== '' || is_numeric($this->webRoot) ) ) {
+        if ( (empty( $this->webRoot ) && $this->webRoot !== '' || is_numeric( $this->webRoot )) ) {
             Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_WEB_ROOT, $this->webRoot ) );
 
             return;
@@ -114,12 +132,17 @@ class BinMailpit extends Module
         $this->service->setNssm( $nssm );
     }
 
+    /**
+     * Replaces multiple key-value pairs in the configuration file.
+     *
+     * @param   array  $params  An associative array of key-value pairs to replace.
+     */
     protected function replaceAll($params)
     {
         $content = file_get_contents( $this->bearsamppConf );
 
         foreach ( $params as $key => $value ) {
-            $content = preg_replace( '|' . $key . ' = .*|', $key . ' = ' . '"' . $value . '"', $content );
+            $content                      = preg_replace( '|' . $key . ' = .*|', $key . ' = ' . '"' . $value . '"', $content );
             $this->bearsamppConfRaw[$key] = $value;
             switch ( $key ) {
                 case self::LOCAL_CFG_UI_PORT:
@@ -134,6 +157,11 @@ class BinMailpit extends Module
         file_put_contents( $this->bearsamppConf, $content );
     }
 
+    /**
+     * Rebuilds the configuration for the Mailpit service in the Windows Registry.
+     *
+     * @return bool True if the configuration was successfully rebuilt, false otherwise.
+     */
     public function rebuildConf()
     {
         global $bearsamppRegistry;
@@ -155,6 +183,15 @@ class BinMailpit extends Module
         return false;
     }
 
+    /**
+     * Changes the SMTP port for the Mailpit service.
+     *
+     * @param   int    $port           The new port number.
+     * @param   bool   $checkUsed      Whether to check if the port is already in use.
+     * @param   mixed  $wbProgressBar  The progress bar object for UI updates.
+     *
+     * @return bool|int True if the port was successfully changed, or the process using the port if it is in use.
+     */
     public function changePort($port, $checkUsed = false, $wbProgressBar = null)
     {
         global $bearsamppWinbinder;
@@ -186,6 +223,14 @@ class BinMailpit extends Module
         return $isPortInUse;
     }
 
+    /**
+     * Checks if the specified port is used by the Mailpit service.
+     *
+     * @param   int   $port        The port number to check.
+     * @param   bool  $showWindow  Whether to show a message box with the result.
+     *
+     * @return bool True if the port is used by the Mailpit service, false otherwise.
+     */
     public function checkPort($port, $showWindow = false)
     {
         global $bearsamppLang, $bearsamppWinbinder;
@@ -231,6 +276,14 @@ class BinMailpit extends Module
         return false;
     }
 
+    /**
+     * Switches the version of the Mailpit service.
+     *
+     * @param   string  $version     The version to switch to.
+     * @param   bool    $showWindow  Whether to show a message box with the result.
+     *
+     * @return bool True if the version was successfully switched, false otherwise.
+     */
     public function switchVersion($version, $showWindow = false)
     {
         Util::logDebug( 'Switch ' . $this->name . ' version to ' . $version );
@@ -238,6 +291,15 @@ class BinMailpit extends Module
         return $this->updateConfig( $version, 0, $showWindow );
     }
 
+    /**
+     * Updates the configuration for the Mailpit service.
+     *
+     * @param   string|null  $version     The version to update to. If null, the current version is used.
+     * @param   int          $sub         The sub-level for logging indentation.
+     * @param   bool         $showWindow  Whether to show a message box with the result.
+     *
+     * @return bool True if the configuration was successfully updated, false otherwise.
+     */
     protected function updateConfig($version = null, $sub = 0, $showWindow = false)
     {
         global $bearsamppLang, $bearsamppWinbinder;
@@ -283,6 +345,11 @@ class BinMailpit extends Module
         return true;
     }
 
+    /**
+     * Sets the version of the Mailpit service.
+     *
+     * @param   string  $version  The version to set.
+     */
     public function setVersion($version)
     {
         global $bearsamppConfig;
@@ -291,11 +358,22 @@ class BinMailpit extends Module
         $this->reload();
     }
 
+    /**
+     * Retrieves the service object for the Mailpit service.
+     *
+     * @return Win32Service The service object.
+     */
     public function getService()
     {
         return $this->service;
     }
 
+    /**
+     * Enables or disables the Mailpit service.
+     *
+     * @param   bool  $enabled     Whether to enable or disable the service.
+     * @param   bool  $showWindow  Whether to show a message box with the result.
+     */
     public function setEnable($enabled, $showWindow = false)
     {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
@@ -324,51 +402,101 @@ class BinMailpit extends Module
         }
     }
 
+    /**
+     * Retrieves the log file path for the Mailpit service.
+     *
+     * @return string The log file path.
+     */
     public function getLog()
     {
         return $this->log;
     }
 
+    /**
+     * Retrieves the executable file path for the Mailpit service.
+     *
+     * @return string The executable file path.
+     */
     public function getExe()
     {
         return $this->exe;
     }
 
+    /**
+     * Retrieves the web root directory for the Mailpit service.
+     *
+     * @return string The web root directory.
+     */
     public function getWebRoot()
     {
         return $this->webRoot;
     }
 
+    /**
+     * Sets the web root directory for the Mailpit service.
+     *
+     * @param   string  $webRoot  The web root directory to set.
+     */
     public function setWebRoot($webRoot)
     {
         $this->replace( self::LOCAL_CFG_WEB_ROOT, $webRoot );
     }
 
+    /**
+     * Retrieves the UI port for the Mailpit service.
+     *
+     * @return int The UI port.
+     */
     public function getUiPort()
     {
         return $this->uiPort;
     }
 
+    /**
+     * Sets the UI port for the Mailpit service.
+     *
+     * @param   int  $uiPort  The UI port to set.
+     */
     public function setUiPort($uiPort)
     {
         $this->replace( self::LOCAL_CFG_UI_PORT, $uiPort );
     }
 
+    /**
+     * Retrieves the SMTP port for the Mailpit service.
+     *
+     * @return int The SMTP port.
+     */
     public function getSmtpPort()
     {
         return $this->smtpPort;
     }
 
+    /**
+     * Sets the SMTP port for the Mailpit service.
+     *
+     * @param   int  $smtpPort  The SMTP port to set.
+     */
     public function setSmtpPort($smtpPort)
     {
         $this->replace( self::LOCAL_CFG_SMTP_PORT, $smtpPort );
     }
 
+    /**
+     * Retrieves the listen address for the Mailpit service.
+     *
+     * @return string The listen address.
+     */
     public function getListen()
     {
         return $this->listen;
     }
 
+    /**
+     * Sets the listen address for the Mailpit service.
+     *
+     * @return bool True if the listen address was successfully set, false otherwise.
+     */
     public function setListen()
     {
         return $this->replace( self::LOCAL_CFG_LISTEN, $this->listen );

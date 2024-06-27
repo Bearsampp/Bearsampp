@@ -7,6 +7,13 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class TplAppMailpit
+ *
+ * This class provides methods to generate menus and actions for managing the Mailpit application.
+ * It includes functionalities for enabling/disabling Mailpit, switching versions, changing ports,
+ * and managing the Mailpit service.
+ */
 class TplAppMailpit
 {
     const MENU = 'mailpit';

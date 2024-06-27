@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
 class BinNodejs extends Module
 {
@@ -17,11 +24,23 @@ class BinNodejs extends Module
     private $npm;
     private $launch;
 
+    /**
+     * Constructs a BinNodejs object and initializes the module with the given ID and type.
+     *
+     * @param string $id The ID of the module.
+     * @param string $type The type of the module.
+     */
     public function __construct($id, $type) {
         Util::logInitClass($this);
         $this->reload($id, $type);
     }
 
+    /**
+     * Reloads the module configuration based on the provided ID and type.
+     *
+     * @param string|null $id The ID of the module. If null, the current ID is used.
+     * @param string|null $type The type of the module. If null, the current type is used.
+     */
     public function reload($id = null, $type = null) {
         global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
@@ -73,11 +92,26 @@ class BinNodejs extends Module
         }
     }
 
+    /**
+     * Switches the Node.js version to the specified version.
+     *
+     * @param string $version The version to switch to.
+     * @param bool $showWindow Whether to show a window during the switch process.
+     * @return bool True if the switch was successful, false otherwise.
+     */
     public function switchVersion($version, $showWindow = false) {
         Util::logDebug('Switch ' . $this->name . ' version to ' . $version);
         return $this->updateConfig($version, 0, $showWindow);
     }
 
+    /**
+     * Updates the module configuration with a specific version.
+     *
+     * @param string|null $version The version to update to. If null, the current version is used.
+     * @param int $sub The sub-level for logging indentation.
+     * @param bool $showWindow Whether to show a window during the update process.
+     * @return bool True if the update was successful, false otherwise.
+     */
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
         global $bearsamppLang, $bearsamppWinbinder;
 
@@ -122,6 +156,11 @@ class BinNodejs extends Module
         return true;
     }
 
+    /**
+     * Sets the version of the module.
+     *
+     * @param string $version The version to set.
+     */
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
@@ -129,6 +168,12 @@ class BinNodejs extends Module
         $this->reload();
     }
 
+    /**
+     * Enables or disables the module.
+     *
+     * @param int $enabled The enable status (1 for enabled, 0 for disabled).
+     * @param bool $showWindow Whether to show a window during the enable/disable process.
+     */
     public function setEnable($enabled, $showWindow = false) {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
@@ -148,22 +193,47 @@ class BinNodejs extends Module
         $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
     }
 
+    /**
+     * Retrieves the executable path for Node.js.
+     *
+     * @return string The executable path.
+     */
     public function getExe() {
         return $this->exe;
     }
 
+    /**
+     * Retrieves the configuration file path for Node.js.
+     *
+     * @return string The configuration file path.
+     */
     public function getConf() {
         return $this->conf;
     }
 
+    /**
+     * Retrieves the variables file path for Node.js.
+     *
+     * @return string The variables file path.
+     */
     public function getVars() {
         return $this->vars;
     }
 
+    /**
+     * Retrieves the npm executable path for Node.js.
+     *
+     * @return string The npm executable path.
+     */
     public function getNpm() {
         return $this->npm;
     }
 
+    /**
+     * Retrieves the launch script path for Node.js.
+     *
+     * @return string The launch script path.
+     */
     public function getLaunch() {
         return $this->launch;
     }

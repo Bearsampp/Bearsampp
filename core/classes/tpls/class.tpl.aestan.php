@@ -7,6 +7,41 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class TplAestan
+ *
+ * This class provides various methods to generate configuration strings for the Bearsampp application.
+ * It includes methods to create items for ConsoleZ, links, Notepad, executables, and explorer actions.
+ * Additionally, it handles service actions such as start, stop, and restart, and generates configuration
+ * sections for messages, config, and menu settings.
+ *
+ * Constants:
+ * - Glyph constants for various icons used in the application.
+ * - Service actions for starting, stopping, and restarting services.
+ * - Image files used in the application.
+ *
+ * Methods:
+ * - getGlyphFlah($lang): Retrieves the glyph flag for a given language.
+ * - getItemSeparator(): Returns a string representing a separator item.
+ * - getItemConsoleZ($caption, $glyph, $id, $title, $initDir, $command): Returns a string representing a ConsoleZ item.
+ * - getItemLink($caption, $link, $local, $glyph): Returns a string representing a link item.
+ * - getItemNotepad($caption, $path): Returns a string representing a Notepad item.
+ * - getItemExe($caption, $exe, $glyph, $params): Returns a string representing an executable item.
+ * - getItemExplore($caption, $path): Returns a string representing an explorer item.
+ * - getActionService($service, $action, $item): Returns a string representing a service action.
+ * - getActionServiceStart($service): Returns a string representing a service start action.
+ * - getItemActionServiceStart($service): Returns a string representing a service start item.
+ * - getActionServiceStop($service): Returns a string representing a service stop action.
+ * - getItemActionServiceStop($service): Returns a string representing a service stop item.
+ * - getActionServiceRestart($service): Returns a string representing a service restart action.
+ * - getItemActionServiceRestart($service): Returns a string representing a service restart item.
+ * - getActionServicesClose(): Returns a string representing a close services action.
+ * - getItemActionServicesClose(): Returns a string representing a close services item.
+ * - getSectionMessages(): Returns a string representing the messages section.
+ * - getSectionConfig(): Returns a string representing the config section.
+ * - getSectionMenuRightSettings(): Returns a string representing the right menu settings section.
+ * - getSectionMenuLeftSettings($caption): Returns a string representing the left menu settings section.
+ */
 class TplAestan
 {
     // Glyph constants

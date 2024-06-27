@@ -7,6 +7,12 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class BinXlight
+ *
+ * This class represents the Xlight FTP server module in the Bearsampp application.
+ * It handles the configuration, initialization, and management of the Xlight FTP server.
+ */
 class BinXlight extends Module
 {
     const SERVICE_NAME = 'bearsamppxlight';
@@ -26,11 +32,23 @@ class BinXlight extends Module
     private $port;
     private $SslPort;
 
+    /**
+     * Constructs a BinXlight object and initializes the module.
+     *
+     * @param string $id The ID of the module.
+     * @param string $type The type of the module.
+     */
     public function __construct($id, $type) {
         Util::logInitClass($this);
         $this->reload($id, $type);
     }
 
+    /**
+     * Reloads the module configuration based on the provided ID and type.
+     *
+     * @param string|null $id The ID of the module. If null, the current ID is used.
+     * @param string|null $type The type of the module. If null, the current type is used.
+     */
     public function reload($id = null, $type = null) {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
@@ -89,6 +107,11 @@ class BinXlight extends Module
         $this->service->setNssm($nssm);
     }
 
+    /**
+     * Replaces multiple key-value pairs in the configuration file.
+     *
+     * @param array $params An associative array of key-value pairs to replace.
+     */
     protected function replaceAll($params) {
         $content = file_get_contents($this->bearsamppConf);
 
@@ -108,6 +131,11 @@ class BinXlight extends Module
         file_put_contents($this->bearsamppConf, $content);
     }
 
+    /**
+     * Rebuilds the configuration in the Windows Registry.
+     *
+     * @return bool True if the configuration was successfully rebuilt, false otherwise.
+     */
     public function rebuildConf() {
         global $bearsamppRegistry;
 
@@ -128,6 +156,14 @@ class BinXlight extends Module
         return false;
     }
 
+    /**
+     * Changes the port used by the Xlight FTP server.
+     *
+     * @param int $port The new port number.
+     * @param bool $checkUsed Whether to check if the port is already in use.
+     * @param mixed|null $wbProgressBar The progress bar object for UI updates (optional).
+     * @return bool|int True if the port was successfully changed, false if invalid, or the process using the port.
+     */
     public function changePort($port, $checkUsed = false, $wbProgressBar = null) {
         global $bearsamppWinbinder;
 
@@ -156,6 +192,13 @@ class BinXlight extends Module
         return $isPortInUse;
     }
 
+    /**
+     * Checks if a port is used by the Xlight FTP server.
+     *
+     * @param int $port The port number to check.
+     * @param bool $showWindow Whether to show a message box with the result.
+     * @return bool True if the port is used by Xlight, false otherwise.
+     */
     public function checkPort($port, $showWindow = false) {
         global $bearsamppLang, $bearsamppWinbinder;
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
@@ -197,11 +240,26 @@ class BinXlight extends Module
         return false;
     }
 
+    /**
+     * Switches the version of the Xlight FTP server.
+     *
+     * @param string $version The version to switch to.
+     * @param bool $showWindow Whether to show a message box with the result.
+     * @return bool True if the version was successfully switched, false otherwise.
+     */
     public function switchVersion($version, $showWindow = false) {
         Util::logDebug('Switch ' . $this->name . ' version to ' . $version);
         return $this->updateConfig($version, 0, $showWindow);
     }
 
+    /**
+     * Updates the configuration of the Xlight FTP server.
+     *
+     * @param string|null $version The version to update to. If null, the current version is used.
+     * @param int $sub The sub-level for logging indentation.
+     * @param bool $showWindow Whether to show a message box with the result.
+     * @return bool True if the configuration was successfully updated, false otherwise.
+     */
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
         global $bearsamppLang, $bearsamppWinbinder;
 
@@ -244,6 +302,11 @@ class BinXlight extends Module
         return true;
     }
 
+    /**
+     * Sets the version of the Xlight FTP server.
+     *
+     * @param string $version The version to set.
+     */
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
@@ -251,10 +314,21 @@ class BinXlight extends Module
         $this->reload();
     }
 
+    /**
+     * Gets the service object for the Xlight FTP server.
+     *
+     * @return Win32Service The service object.
+     */
     public function getService() {
         return $this->service;
     }
 
+    /**
+     * Enables or disables the Xlight FTP server.
+     *
+     * @param bool $enabled Whether to enable or disable the server.
+     * @param bool $showWindow Whether to show a message box with the result.
+     */
     public function setEnable($enabled, $showWindow = false) {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
@@ -281,28 +355,57 @@ class BinXlight extends Module
         }
     }
 
+    /**
+     * Gets the log file path for the Xlight FTP server.
+     *
+     * @return string The log file path.
+     */
     public function getLog() {
         return $this->log;
     }
 
+    /**
+     * Gets the executable file path for the Xlight FTP server.
+     *
+     * @return string The executable file path.
+     */
     public function getExe() {
         return $this->exe;
     }
 
+    /**
+     * Gets the SSL port used by the Xlight FTP server.
+     *
+     * @return int The SSL port number.
+     */
     public function getUiPort() {
         return $this->SslPort;
     }
 
+    /**
+     * Sets the SSL port for the Xlight FTP server.
+     *
+     * @param int $SslPort The SSL port number.
+     */
     public function setSslPort($SslPort) {
         $this->replace(self::LOCAL_CFG_SSL_PORT, $SslPort);
     }
 
+    /**
+     * Gets the port used by the Xlight FTP server.
+     *
+     * @return int The port number.
+     */
     public function getPort() {
         return $this->port;
     }
 
+    /**
+     * Sets the port for the Xlight FTP server.
+     *
+     * @param int $port The port number.
+     */
     public function setPort($port) {
         $this->replace(self::LOCAL_CFG_PORT, $port);
     }
-
 }

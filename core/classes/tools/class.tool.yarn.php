@@ -1,18 +1,55 @@
 <?php
+/*
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
 
+/**
+ * Class ToolYarn
+ *
+ * This class represents the Yarn tool module in the Bearsampp application.
+ * It extends the abstract Module class and provides specific functionalities
+ * for managing the Yarn tool, including version management and executable path handling.
+ */
 class ToolYarn extends Module
 {
+    /**
+     * Configuration key for the Yarn version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'yarnVersion';
 
+    /**
+     * Configuration key for the Yarn executable in the local configuration.
+     */
     const LOCAL_CFG_EXE = 'yarnExe';
 
+    /**
+     * Path to the Yarn executable.
+     *
+     * @var string
+     */
     private $exe;
 
+    /**
+     * Constructor for the ToolYarn class.
+     *
+     * @param string $id The ID of the module.
+     * @param string $type The type of the module.
+     */
     public function __construct($id, $type) {
         Util::logInitClass($this);
         $this->reload($id, $type);
     }
 
+    /**
+     * Reloads the Yarn module configuration based on the provided ID and type.
+     *
+     * @param string|null $id The ID of the module. If null, the current ID is used.
+     * @param string|null $type The type of the module. If null, the current type is used.
+     */
     public function reload($id = null, $type = null) {
         global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
@@ -44,6 +81,11 @@ class ToolYarn extends Module
         }
     }
 
+    /**
+     * Sets the version of the Yarn module and updates the configuration.
+     *
+     * @param string $version The version to set.
+     */
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
@@ -51,6 +93,11 @@ class ToolYarn extends Module
         $this->reload();
     }
 
+    /**
+     * Gets the path to the Yarn executable.
+     *
+     * @return string The path to the Yarn executable.
+     */
     public function getExe() {
         return $this->exe;
     }
