@@ -1,5 +1,5 @@
 
-<p align="center"><a href="https://bearsampp.com" target="_blank"><img width="250" src="img/Bearsampp-logo.svg"></a></p>  
+<p align="center"><a href="https://bearsampp.com" target="_blank"><img width="250" src="https://bearsampp.com/images/logo/Bearsampp%20with%20text-stroked.png"></a></p>  
 
 <p align="center">  
   <a href="https://github.com/Bearsampp/Bearsampp/releases/latest"><img src="https://img.shields.io/github/release/bearsampp/bearsampp.svg?style=flat-square" alt="GitHub release"></a>  
@@ -10,10 +10,10 @@
 
 ## About
 
-**Bearsampp** is a portable WAMP software stack involving useful binaries, tools and applications for your web development.
+**Bearsampp** is a fully portable WAMP software stack involving useful binaries, tools and applications for your development projects.
 
-![image](img/screenshots/menu-left.jpg) ![image](img/screenshots/menu-right.jpg)  
-![image](img/screenshots/menu-tools.jpg)
+![image](http://bearsampp.com/images/Docs/screenshots/menu-left.png) ![image](http://bearsampp.com/images/Docs/screenshots/menu-right.png)  
+![image](http://bearsampp.com/images/Docs/screenshots/menu-tools.png)
 
 It also offers several versions of the various [modules](https://bearsampp.com/module) for download on the  
 [official website](https://bearsampp.com) and many other features.<br />
@@ -22,31 +22,40 @@ For those who wish to contribute, have an issue or questions, read the [Document
 
 ### Modules
 
-|  <h3>Type</h3> | <h3>Description</h3>|  
-| ------------------ | -----------------------------------------------------------------------------------------------------------------|  
-| ![](img/application.png) | [Adminer](https://bearsampp.com/module/adminer): a full-featured database management tool written in PHP. |  
-| ![](img/binary.png) | [Apache](https://bearsampp.com/module/apache): the world's most used web server software. |  
-| ![](img/tool.png) | [Composer](https://bearsampp.com/module/composer): a dependency manager for PHP. |  
-| ![](img/tool.png) | [ConsoleZ](https://bearsampp.com/module/consolez): modified version of Console 2 for a better experience. |  
-| ![](img/binary.png) | [Filezilla](https://bearsampp.com/module/filezilla): a FTP server application. |  
-| ![](img/tool.png) | [Ghostscript](https://bearsampp.com/module/ghostscript): an interpreter for the PostScript language and for PDF. |  
-| ![](img/tool.png) | [Git](https://bearsampp.com/module/git): a widely used version control system for software development. |  
-| ![](img/binary.png) | [MailHog](https://bearsampp.com/module/mailhog): a Web and API based SMTP testing. |  
-| ![](img/binary.png) | [MariaDB](https://bearsampp.com/module/mariadb): a community-developed fork of the MySQL relational database management system. |  
-| ![](img/binary.png) | [Memcached](https://bearsampp.com/module/memcached): a distributed memory object caching system. |  
-| ![](img/binary.png) | [MySQL](https://bearsampp.com/module/mysql): an open-source relational database management system. |  
-| ![](img/tool.png) | [ngrok](https://bearsampp.com/module/ngrok): secure tunnels to localhost. |  
-| ![](img/binary.png) | [Node.js](https://bearsampp.com/module/nodejs): an open-source, cross-platform runtime environment for developing server-side web applications.   
-| ![](img/tool.png) | [Perl](https://bearsampp.com/module/perl): a family of high-level, general-purpose, interpreted, dynamic programming languages. |  
-| ![](img/binary.png) | [PHP](https://bearsampp.com/module/php): a server-side scripting language designed for web development including PEAR and extra extensions. |  
-| ![](img/application.png) | [phpMyAdmin](https://bearsampp.com/module/phpmyadmin): to handle the administration of MySQL and MariaDB over the Web. |  
-| ![](img/application.png) | [phpPgAdmin](https://bearsampp.com/module/phppgadmin): a web-based administration tool for PostgreSQL. |  
-| ![](img/binary.png) | [PostgreSQL](https://bearsampp.com/module/postgresql): an object-relational database management system (ORDBMS). |  
-| ![](img/tool.png) | [Python](https://bearsampp.com/module/python): a widely used high-level, general-purpose, interpreted, dynamic programming language. |  
-| ![](img/tool.png) | [Ruby](https://bearsampp.com/module/ruby): a dynamic, reflective, object-oriented, general-purpose programming language. |  
-| ![](img/application.png) | [Webgrind](https://bearsampp.com/module/webgrind): the Xdebug Profiling Web Frontend in PHP. |  
-| ![](img/tool.png) | [XDebugClient](https://bearsampp.com/module/xdc): a simple frontend for XDebug. |  
-| ![](img/tool.png) | [Yarn](https://bearsampp.com/module/yarn): a fast, reliable, and secure dependency management. |  
+<!-- use
+![Deprecated](https://img.shields.io/badge/Deprecated-red?style=flat-square&color=red) for deprecated items
+![Application](https://img.shields.io/badge/Application-%23f89406?style=flat-square&color=%23f89406) for applications
+![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0) for binaries
+![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847) for tools
+-->
+
+| <h3>Type</h3>                                                                                        | <h3>Description</h3>                                                                                                                            |  
+|------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|  
+| ![Application](https://img.shields.io/badge/Application-%23f89406?style=flat-square&color=%23f89406) | [Adminer](https://bearsampp.com/module/adminer): a full-featured database management tool written in PHP.                                       |  
+| ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [Apache](https://bearsampp.com/module/apache): the world's most used web server software.                                                       |  
+| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Composer](https://bearsampp.com/module/composer): a dependency manager for PHP.                                                                |  
+| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [ConsoleZ](https://bearsampp.com/module/consolez): modified version of Console 2 for a better experience.                                       |  
+| ![Deprecated](https://img.shields.io/badge/Deprecated-red?style=flat-square&color=red)               | [Filezilla](https://bearsampp.com/module/filezilla): a FTP server application.                                                                  |  
+| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Ghostscript](https://bearsampp.com/module/ghostscript): an interpreter for the PostScript language and for PDF.                                |  
+| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Git](https://bearsampp.com/module/git): a widely used version control system for software development.                                         |  
+| ![Deprecated](https://img.shields.io/badge/Deprecated-red?style=flat-square&color=red)               | [MailHog](https://bearsampp.com/module/mailhog): a Web and API based SMTP testing.                                                              |
+| ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [MailPit](https://bearsampp.com/module/mailpit): a Web and API based SMTP testing.                                                              |
+| ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [MariaDB](https://bearsampp.com/module/mariadb): a community-developed fork of the MySQL relational database management system.                 |  
+| ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [Memcached](https://bearsampp.com/module/memcached): a distributed memory object caching system.                                                |  
+| ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [MySQL](https://bearsampp.com/module/mysql): an open-source relational database management system.                                              |  
+| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Ngrok](https://bearsampp.com/module/ngrok): secure tunnels to localhost.                                                                       |  
+| ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [Node.js](https://bearsampp.com/module/nodejs): an open-source, cross-platform runtime environment for developing server-side web applications. 
+| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Perl](https://bearsampp.com/module/perl): a family of high-level, general-purpose, interpreted, dynamic programming languages.                 |  
+| ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [PHP](https://bearsampp.com/module/php): a server-side scripting language designed for web development including PEAR and extra extensions.     |  
+| ![Application](https://img.shields.io/badge/Application-%23f89406?style=flat-square&color=%23f89406) | [phpMyAdmin](https://bearsampp.com/module/phpmyadmin): to handle the administration of MySQL and MariaDB over the Web.                          |  
+| ![Application](https://img.shields.io/badge/Application-%23f89406?style=flat-square&color=%23f89406) | [phpPgAdmin](https://bearsampp.com/module/phppgadmin): a web-based administration tool for PostgreSQL.                                          |  
+| ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [PostgreSQL](https://bearsampp.com/module/postgresql): an object-relational database management system (ORDBMS).                                |  
+| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Python](https://bearsampp.com/module/python): a widely used high-level, general-purpose, interpreted, dynamic programming language.            |  
+| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Ruby](https://bearsampp.com/module/ruby): a dynamic, reflective, object-oriented, general-purpose programming language.                        |  
+| ![Application](https://img.shields.io/badge/Application-%23f89406?style=flat-square&color=%23f89406) | [Webgrind](https://bearsampp.com/module/webgrind): the Xdebug Profiling Web Frontend in PHP.                                                    |
+| ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [Xlight](https://bearsampp.com/module/xlight): a lightweight & robust FTP server.                                                               |
+| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [XDebugClient](https://bearsampp.com/module/xdc): a simple frontend for XDebug.                                                                 |  
+| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Yarn](https://bearsampp.com/module/yarn): a fast, reliable, and secure dependency management.                                                  |  
 
 ## Documentation
 
