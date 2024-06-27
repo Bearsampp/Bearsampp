@@ -10,7 +10,7 @@
 class BinMailpit extends Module
 {
     const SERVICE_NAME = 'bearsamppmailpit';
-    const SERVICE_PARAMS = ' --listen "127.0.0.1:%d" --smtp "127.0.0.1:%d" --webroot "%s"';
+    const SERVICE_PARAMS = ' --listen "%s:%d" --smtp "%s:%d" --webroot "%s"';
 
     const ROOT_CFG_ENABLE = 'mailpitEnable';
     const ROOT_CFG_VERSION = 'mailpitVersion';
@@ -106,7 +106,7 @@ class BinMailpit extends Module
         $nssm = new Nssm( self::SERVICE_NAME );
         $nssm->setDisplayName( APP_TITLE . ' ' . $this->getName() );
         $nssm->setBinPath( $this->exe );
-        $nssm->setParams( sprintf( self::SERVICE_PARAMS, $this->uiPort, $this->smtpPort, $this->webRoot ) );
+        $nssm->setParams( sprintf( self::SERVICE_PARAMS, $this->listen, $this->uiPort, $this->listen, $this->smtpPort, $this->webRoot ) );
         $nssm->setStart( Nssm::SERVICE_DEMAND_START );
         $nssm->setStdout( $bearsamppRoot->getLogsPath() . '/mailpit.out.log' );
         $nssm->setStderr( $bearsamppRoot->getLogsPath() . '/mailpit.err.log' );
@@ -148,7 +148,7 @@ class BinMailpit extends Module
                 Registry::HKEY_LOCAL_MACHINE,
                 'SYSTEM\CurrentControlSet\Services\\' . self::SERVICE_NAME . '\Parameters',
                 Nssm::INFO_APP_PARAMETERS,
-                sprintf( self::SERVICE_PARAMS, $this->uiPort, $this->smtpPort, $this->webRoot )
+                sprintf( self::SERVICE_PARAMS, $this->listen, $this->uiPort, $this->listen, $this->smtpPort, $this->webRoot )
                 );
         }
 
