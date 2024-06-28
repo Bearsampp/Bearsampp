@@ -168,7 +168,7 @@
         </copy>
         <echo file = "${release.base.target}\core\resources\version.dat" append = "false">${release.fullversion}</echo>
         <echo file = "${release.tmp.path}\version.dat" append = "false">${release.fullversion}</echo>
-
+        <echo file = "${project.basedir}\core\resources\version.dat" append = "false">${release.fullversion}</echo>
         <var name = "is.base.prepared" value = "true" />
     </target>
 
