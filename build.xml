@@ -81,6 +81,15 @@
         <echo message = "* Name    : ${release.name} " />
         <echo message = "* Version : ${release.fullversion} " />
 
+        <!-- Add the exec task to run rcedit-x64.exe to update version # -->
+        <exec executable="rcedit-x64.exe">
+            <arg value="${project.basedir}\base\bearsampp.exe" />
+            <arg value="--set-product-version" />
+            <arg value="${release.fullversion}" />
+        </exec>
+        <!-- Echo success message -->
+        <echo message="Successfully set product version to ${release.fullversion} using rcedit-x64.exe" />
+
         <!-- Clean -->
         <delete dir = "${release.base.target}" />
         <mkdir dir = "${release.base.target}" />
@@ -170,6 +179,7 @@
         <echo file = "${release.tmp.path}\version.dat" append = "false">${release.fullversion}</echo>
         <echo file = "${project.basedir}\core\resources\version.dat" append = "false">${release.fullversion}</echo>
         <var name = "is.base.prepared" value = "true" />
+
     </target>
 
     <!--
