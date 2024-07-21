@@ -74,8 +74,10 @@ jobs:
                     fi
                   done
 
-                  echo "Contents of combined file:"
-                  cat $combined_file  # Debug: Display the contents of the combined file
+            - name: Clean up repository
+              run: |
+                  find . -mindepth 1 -not -path "./core/resources/quickpick.releases" -delete
+                  echo "Cleaned up repository, only keeping core/resources/quickpick.releases"
 
             - name: Commit and push changes
               env:
