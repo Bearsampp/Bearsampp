@@ -1,0 +1,108 @@
+name: Combine releases.properties
+
+on:
+  workflow_dispatch: # Allows manual triggering
+  schedule:
+    - cron: '0 */8 * * *' # Runs every 8 hours
+
+jobs:
+  combine-json:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref: main # Ensure you are checking out the main branch
+
+    - name: Install jq
+      run: sudo apt-get install -y jq
+
+    - name: Fetch and combine JSON files
+      run: |
+        urls=(
+          "https://raw.githubusercontent.com/Bearsampp/module-adminer/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-apache/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-composer/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-consolez/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-filezilla/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-ghostscript/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-git/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-gitlist/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-mailhog/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-mariadb/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-memcached/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-mysql/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-ngrok/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-nodejs/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-perl/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-php/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-phpmemadmin/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-phpmyadmin/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-phppgadmin/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-postgresql/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-python/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-ruby/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-webgrind/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-xdc/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-xlight/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-yarn/main/releases.properties"
+        )
+
+        combined_json="core/resources/quickpick-releases.json"
+        mkdir -p $(dirname $combined_json)
+        echo "[]" > $combined_json
+
+        for url in "${urls[@]}"; do
+          echo "Fetching $url"
+          content=$(curl -s $url)
+          if [ $? -ne 0 ]; then
+            echo "Failed to fetch $url"
+            continue
+          fi
+
+          module_name=$(echo "$url" | sed -n 's#.*/module-\(.*\)/main/releases.properties#\1#p')
+          json_object=$(echo "$content" | jq -R -s --arg module_name "$module_name" 'split("\n") | map(select(length > 0)) | map(split("=")) | map({(.[0]): .[1]}) | add | .module_name = $module_name')
+          
+          if ! jq -e . >/dev/null 2>&1 <<<"$json_object"; then
+            echo "Invalid JSON from $url"
+            continue
+          fi
+
+          jq --argjson obj "$json_object" '. += [$obj]' $combined_json > temp.json && mv temp.json $combined_json
+        done
+
+    - name: Print combined JSON
+      run: cat core/resources/quickpick-releases.json
+
+    - name: Resolve merge conflicts
+      run: |
+        git merge --abort || true
+        git reset --hard
+
+    - name: Commit and push changes
+      env:
+        GH_TOKEN: ${{ secrets.GH_ACTIONS }}
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git checkout -b update-combined-json || git checkout update-combined-json
+        git add core/resources/quickpick-releases.json
+        git commit -m 'Combined releases.properties files' || echo "No changes to commit"
+        git pull --rebase origin main || true
+        git push --set-upstream origin update-combined-json || git push --set-upstream origin update-combined-json --force
+
+    - name: Debug Git Status
+      run: |
+        git status
+        git log -1
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v6
+      with:
+        token: ${{ secrets.GH_ACTIONS }}
+        commit-message: 'Combined releases.properties files'
+        branch: update-combined-json
+        base: main # Specify the base branch for the pull request
+        title: 'Update combined JSON'
+        body: 'This PR updates the combined JSON file with the latest data from the releases.properties files.'
