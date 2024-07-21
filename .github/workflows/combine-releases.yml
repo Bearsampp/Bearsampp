@@ -75,10 +75,9 @@ jobs:
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
                   branch_name="update-quickpick-releases-$(date +%s)"
-                  echo "::set-output name=branch_name::$branch_name"
+                  echo "branch_name=$branch_name" >> $GITHUB_ENV
                   git checkout -b $branch_name
                   git add core/resources/quickpick.releases
-                  git add .
                   git commit -m "Update quickpick.releases"
                   git pull --rebase origin main
                   git push origin $branch_name
@@ -88,7 +87,7 @@ jobs:
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   commit-message: "Update quickpick.releases"
-                  branch: ${{ steps.commit-and-push.outputs.branch_name }}
+                  branch: ${{ env.branch_name }}
                   title: "Update quickpick.releases"
                   body: "This PR updates the quickpick.releases file with the latest versions from the repositories."
 
