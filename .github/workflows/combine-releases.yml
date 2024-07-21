@@ -76,8 +76,8 @@ jobs:
 
             - name: Clean up repository
               run: |
-                  find . -mindepth 1 -not -path "./core/resources/quickpick.releases" -delete
-                  echo "Cleaned up repository, only keeping core/resources/quickpick.releases"
+                  find . -mindepth 1 -not -path "./core" -delete
+                  echo "Cleaned up repository, only keeping core directory"
 
             - name: Commit and push changes
               env:
@@ -90,7 +90,6 @@ jobs:
                   echo "branch_name=$branch_name" >> $GITHUB_ENV
                   git checkout -b $branch_name
                   git add core/resources/quickpick.releases
-                  git status  # Debug: Display the git status to ensure the file is added
                   git commit -m "Update quickpick.releases"
                   git push origin $branch_name
 
