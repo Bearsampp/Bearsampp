@@ -77,4 +77,4 @@ jobs:
         commit-message: 'Combined releases.properties files'
         branch: update-combined-json
         title: 'Update combined JSON'
-        body: 'This PR updates the combined JSON file with the latest data from the releases.properties files.'
+        base: main # Ensure the base branch is specified
