@@ -78,6 +78,7 @@ jobs:
                   echo "branch_name=$branch_name" >> $GITHUB_ENV
                   git checkout -b $branch_name
                   git add core/resources/quickpick.releases
+                  git add .  # Add all changes, including the cloned repositories
                   git commit -m "Update quickpick.releases"
                   git push origin $branch_name
 
