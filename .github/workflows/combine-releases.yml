@@ -65,7 +65,8 @@ jobs:
         git checkout -b update-combined-json
         git add core/resources/quickpick-releases.json
         git commit -m 'Combined releases.properties files'
-        git push --set-upstream origin update-combined-json || git pull --rebase origin update-combined-json && git push --set-upstream origin update-combined-json
+        git pull --rebase origin update-combined-json || true
+        git push --set-upstream origin update-combined-json || git push --set-upstream origin update-combined-json --force
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v6
