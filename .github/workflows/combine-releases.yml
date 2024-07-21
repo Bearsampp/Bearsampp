@@ -72,7 +72,7 @@ jobs:
                     fi
                   done
 
-            - name: Debug: Display contents of quickpick.releases
+            - name: Display contents of quickpick.releases
               run: |
                   echo "Contents of quickpick.releases:"
                   cat core/resources/quickpick.releases
