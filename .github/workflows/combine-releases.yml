@@ -44,7 +44,8 @@ jobs:
                     "module-yarn"
                   )
                   for repo in "${repos[@]}"; do
-                    git clone "https://github.com/Bearsampp/$repo.git"
+                    echo "Cloning repository: $repo"
+                    git clone "https://github.com/Bearsampp/$repo.git" || { echo "Failed to clone repository: $repo"; exit 1; }
                   done
 
             - name: Retrieve releases.properties and combine into a single properties file
@@ -62,6 +63,8 @@ jobs:
                           echo "$repo.url=$repo_url/releases/tag/$version" >> $combined_file
                         fi
                       done < "$repo/releases.properties"
+                    else
+                      echo "No releases.properties file found for repository: $repo"
                     fi
                   done
 
@@ -73,10 +76,8 @@ jobs:
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
                   git checkout -b update-quickpick-releases
                   git add core/resources/quickpick.releases
-                  git add .
                   git commit -m "Update quickpick.releases"
-                  git pull --rebase origin main
-                  git push origin update-quickpick-releases
+                  git push origin update-quickpick-releases || { echo "Failed to push changes"; exit 1; }
 
             - name: Create Pull Request
               uses: peter-evans/create-pull-request@v3
@@ -85,7 +86,7 @@ jobs:
                   commit-message: "Update quickpick.releases"
                   branch: update-quickpick-releases
                   title: "Update quickpick.releases"
-                  body: "This PR updates the quickpick.releases file with the latest versions from the repositories."
+                  body: "Automated update of quickpick.releases file."
 
             - name: Upload combined properties file as artifact
               uses: actions/upload-artifact@v2
