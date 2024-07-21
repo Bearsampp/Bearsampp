@@ -21,6 +21,9 @@ jobs:
       with:
         node-version: '20'
 
+    - name: Install properties module
+      run: npm install properties
+
     - name: Fetch release properties files
       run: |
         mkdir -p releases
@@ -67,12 +70,8 @@ jobs:
           const moduleName = path.basename(file, '.properties');
           result[moduleName] = {};
 
-          for (const [section, values] of Object.entries(jsonContent)) {
-            for (const [key, value] of Object.entries(values)) {
-              if (key === 'url') {
-                result[moduleName][section] = value;
-              }
-            }
+          for (const [key, value] of Object.entries(jsonContent)) {
+            result[moduleName][key] = value.url;
           }
         });
 
