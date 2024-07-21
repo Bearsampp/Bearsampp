@@ -76,5 +76,6 @@ jobs:
         token: ${{ secrets.GH_ACTIONS }}
         commit-message: 'Combined releases.properties files'
         branch: update-combined-json
+        base: main # Specify the base branch for the pull request
         title: 'Update combined JSON'
         body: 'This PR updates the combined JSON file with the latest data from the releases.properties files.'
