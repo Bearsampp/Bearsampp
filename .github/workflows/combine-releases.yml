@@ -2,7 +2,7 @@ name: Combine Releases Properties
 
 on:
     schedule:
-        -   cron: '0 */6 * * *'  # Runs every 6 hours
+        - cron: '0 */6 * * *'  # Runs every 6 hours
     workflow_dispatch:  # Allows manual triggering
 
 jobs:
@@ -10,67 +10,73 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            -   name: Checkout this repository
-                uses: actions/checkout@v4
+            - name: Checkout this repository
+              uses: actions/checkout@v4
 
-            -   name: Checkout other repositories
-                run: |
-                    git clone https://github.com/Bearsampp/module-adminer.git
-                    git clone https://github.com/Bearsampp/module-apache.git
-                    git clone https://github.com/Bearsampp/module-composer.git
-                    git clone https://github.com/Bearsampp/module-consolez.git
-                    git clone https://github.com/Bearsampp/module-filezilla.git
-                    git clone https://github.com/Bearsampp/module-ghostscript.git
-                    git clone https://github.com/Bearsampp/module-git.git
-                    git clone https://github.com/Bearsampp/module-gitlist.git
-                    git clone https://github.com/Bearsampp/module-mailhog.git
-                    git clone https://github.com/Bearsampp/module-mariadb.git
-                    git clone https://github.com/Bearsampp/module-memcached.git
-                    git clone https://github.com/Bearsampp/module-mysql.git
-                    git clone https://github.com/Bearsampp/module-ngrok.git
-                    git clone https://github.com/Bearsampp/module-nodejs.git
-                    git clone https://github.com/Bearsampp/module-perl.git
-                    git clone https://github.com/Bearsampp/module-php.git
-                    git clone https://github.com/Bearsampp/module-phpmemadmin.git
-                    git clone https://github.com/Bearsampp/module-phpmyadmin.git
-                    git clone https://github.com/Bearsampp/module-phppgadmin.git
-                    git clone https://github.com/Bearsampp/module-postgresql.git
-                    git clone https://github.com/Bearsampp/module-python.git
-                    git clone https://github.com/Bearsampp/module-ruby.git
-                    git clone https://github.com/Bearsampp/module-webgrind.git
-                    git clone https://github.com/Bearsampp/module-xdc.git
-                    git clone https://github.com/Bearsampp/module-xlight.git
-                    git clone https://github.com/Bearsampp/module-yarn.git
+            - name: Checkout other repositories
+              run: |
+                  repos=(
+                    "module-adminer"
+                    "module-apache"
+                    "module-composer"
+                    "module-consolez"
+                    "module-filezilla"
+                    "module-ghostscript"
+                    "module-git"
+                    "module-gitlist"
+                    "module-mailhog"
+                    "module-mariadb"
+                    "module-memcached"
+                    "module-mysql"
+                    "module-ngrok"
+                    "module-nodejs"
+                    "module-perl"
+                    "module-php"
+                    "module-phpmemadmin"
+                    "module-phpmyadmin"
+                    "module-phppgadmin"
+                    "module-postgresql"
+                    "module-python"
+                    "module-ruby"
+                    "module-webgrind"
+                    "module-xdc"
+                    "module-xlight"
+                    "module-yarn"
+                  )
+                  for repo in "${repos[@]}"; do
+                    git clone "https://github.com/Bearsampp/$repo.git"
+                  done
 
-            -   name: Retrieve releases.properties and combine into a single properties file
-                run: |
-                    combined_file="/core/resources/quickpick.releases"
+            - name: Retrieve releases.properties and combine into a single properties file
+              run: |
+                  combined_file="core/resources/quickpick.releases"
+                  touch $combined_file
 
-                    for repo in module-php; do
-                      repo_url="https://github.com/Bearsampp/$repo"
-                      if [ -f "$repo/releases.properties" ]; then
-                        while IFS='=' read -r key value; do
-                          if [ "$key" == "version" ]; then
-                            version=$value
-                            echo "$repo.version=$value" >> $combined_file
-                            echo "$repo.url=$repo_url/releases/tag/$version" >> $combined_file
-                          fi
-                        done < "$repo/releases.properties"
-                      fi
-                    done
+                  for repo in "${repos[@]}"; do
+                    repo_url="https://github.com/Bearsampp/$repo"
+                    if [ -f "$repo/releases.properties" ]; then
+                      while IFS='=' read -r key value; do
+                        if [ "$key" == "version" ]; then
+                          version=$value
+                          echo "$repo.version=$value" >> $combined_file
+                          echo "$repo.url=$repo_url/releases/tag/$version" >> $combined_file
+                        fi
+                      done < "$repo/releases.properties"
+                    fi
+                  done
 
-            -   name: Commit and push changes
-                env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                run: |
-                    git config --global user.name "github-actions[bot]"
-                    git config --global user.email "github-actions[bot]@users.noreply.github.com"
-                    git add core/resources/quickpick.releases
-                    git commit -m "Update quickpick.releases"
-                    git push origin main
+            - name: Commit and push changes
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  git config --global user.name "github-actions[bot]"
+                  git config --global user.email "github-actions[bot]@users.noreply.github.com"
+                  git add core/resources/quickpick.releases
+                  git commit -m "Update quickpick.releases"
+                  git push origin main
 
-            -   name: Upload combined properties file as artifact
-                uses: actions/upload-artifact@v2
-                with:
-                    name: combined-releases
-                    path: /core/resources/quickpick.releases
+            - name: Upload combined properties file as artifact
+              uses: actions/upload-artifact@v2
+              with:
+                  name: combined-releases
+                  path: core/resources/quickpick.releases
