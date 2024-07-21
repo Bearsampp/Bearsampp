@@ -72,6 +72,11 @@ jobs:
                     fi
                   done
 
+            - name: Debug: Display contents of quickpick.releases
+              run: |
+                  echo "Contents of quickpick.releases:"
+                  cat core/resources/quickpick.releases
+
             - name: Commit and push changes
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -85,7 +90,7 @@ jobs:
                   git add core/resources/quickpick.releases
                   git add .  # Add all untracked files
                   git commit -m "Update quickpick.releases"
-                  git push origin $branch_name || (git pull origin $branch_name --rebase && git push origin $branch_name)
+                  git push origin $branch_name
 
             - name: Create Pull Request
               uses: peter-evans/create-pull-request@v6
