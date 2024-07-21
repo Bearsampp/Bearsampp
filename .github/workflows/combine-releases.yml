@@ -61,6 +61,7 @@ jobs:
         done
 
     - name: Commit and push changes
+      id: commit-and-push
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -70,6 +71,7 @@ jobs:
         git commit -m 'Combined releases.properties files'
         git pull --rebase origin main || true
         git push --set-upstream origin $branch_name || git push --set-upstream origin $branch_name --force
+        echo "::set-output name=branch_name::$branch_name"
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v6
