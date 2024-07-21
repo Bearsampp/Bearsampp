@@ -18,6 +18,14 @@ jobs:
     - name: Install jq
       run: sudo apt-get install -y jq
 
+    - name: Ensure quickpick-releases.json exists
+      run: |
+        combined_json="core/resources/quickpick-releases.json"
+        if [ ! -f "$combined_json" ]; then
+          mkdir -p $(dirname $combined_json)
+          echo "[]" > $combined_json
+        fi
+
     - name: Fetch and combine JSON files
       run: |
         urls=(
@@ -50,9 +58,6 @@ jobs:
         )
 
         combined_json="core/resources/quickpick-releases.json"
-        mkdir -p $(dirname $combined_json)
-        echo "[]" > $combined_json
-
         for url in "${urls[@]}"; do
           content=$(curl -s $url)
           module_name=$(echo "$url" | sed -n 's#.*/module-\(.*\)/main/releases.properties#\1#p')
