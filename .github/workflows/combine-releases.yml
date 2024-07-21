@@ -78,8 +78,9 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v6
       with:
-        token: ${{ secrets.GH_PAT }}
+        token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: 'Combined releases.properties files'
         branch: update-combined-json
+        base: main # Ensure the base branch is specified
         title: 'Update combined JSON'
         body: 'This PR updates the combined JSON file with the latest data from the releases.properties files.'
