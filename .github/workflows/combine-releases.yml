@@ -77,7 +77,7 @@ jobs:
                   git add core/resources/quickpick.releases
                   git add .
                   git commit -m "Update quickpick.releases"
-                  git pull --rebase origin update-quickpick-releases
+                  git pull --rebase --strategy-option=theirs origin main
                   git push origin update-quickpick-releases
 
             - name: Create Pull Request
