@@ -72,13 +72,6 @@ abstract class Module
         if ($bearsamppRoot->isRoot()) {
             $this->createSymlink();
         }
-
-        // TODO Can we replace this or remove it since we dont use bundles?
-        if ($this->bearsamppConfRaw !== false) {
-            if (isset($this->bearsamppConfRaw[self::BUNDLE_RELEASE])) {
-                $this->release = $this->bearsamppConfRaw[self::BUNDLE_RELEASE];
-            }
-        }
     }
 
     /**
