@@ -1,104 +1,66 @@
-name: Combine Releases Properties
+name: Combine JSON Files
 
 on:
-    schedule:
-        - cron: '0 */6 * * *'  # Runs every 6 hours
-    workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch: # Allows manual triggering
+  schedule:
+    - cron: '0 */8 * * *' # Runs every 8 hours
 
 jobs:
-    combine-releases:
-        runs-on: ubuntu-latest
+  combine-json:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout this repository
-              uses: actions/checkout@v4
-              with:
-                submodules: true  # Initialize and update submodules
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-            - name: Checkout other repositories
-              run: |
-                  repos=(
-                    "module-adminer"
-                    "module-apache"
-                    "module-composer"
-                    "module-consolez"
-                    "module-filezilla"
-                    "module-ghostscript"
-                    "module-git"
-                    "module-gitlist"
-                    "module-mailhog"
-                    "module-mariadb"
-                    "module-memcached"
-                    "module-mysql"
-                    "module-ngrok"
-                    "module-nodejs"
-                    "module-perl"
-                    "module-php"
-                    "module-phpmemadmin"
-                    "module-phpmyadmin"
-                    "module-phppgadmin"
-                    "module-postgresql"
-                    "module-python"
-                    "module-ruby"
-                    "module-webgrind"
-                    "module-xdc"
-                    "module-xlight"
-                    "module-yarn"
-                  )
-                  for repo in "${repos[@]}"; do
-                    echo "Cloning repository: $repo"
-                    git clone "https://github.com/Bearsampp/$repo.git"
-                  done
+    - name: Install jq
+      run: sudo apt-get install -y jq
 
-            - name: Retrieve releases.properties and combine into a single properties file
-              run: |
-                  combined_file="core/resources/quickpick.releases"
-                  mkdir -p core/resources  # Ensure the directory exists
-                  touch $combined_file
-                  echo "Created combined file: $combined_file"
+    - name: Fetch and combine JSON files
+      run: |
+        urls=(
+          "https://raw.githubusercontent.com/Bearsampp/module-adminer/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-apache/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-composer/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-consolez/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-filezilla/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-ghostscript/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-git/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-gitlist/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-mailhog/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-mariadb/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-memcached/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-mysql/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-ngrok/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-nodejs/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-perl/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-php/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-phpmemadmin/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-phpmyadmin/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-phppgadmin/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-postgresql/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-python/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-ruby/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-webgrind/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-xdc/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-xlight/main/releases.properties"
+          "https://raw.githubusercontent.com/Bearsampp/module-yarn/main/releases.properties"
+        )
 
-                  for repo in "${repos[@]}"; do
-                    repo_url="https://github.com/Bearsampp/$repo"
-                    echo "Processing repository: $repo"
-                    if [ -f "$repo/releases.properties" ]; then
-                      echo "Found releases.properties in $repo"
-                      while IFS='=' read -r key value; do
-                        if [ "$key" == "version" ]; then
-                          version=$value
-                          echo "$repo.version=$value" >> $combined_file
-                          echo "$repo.url=$repo_url/releases/tag/$version" >> $combined_file
-                        fi
-                      done < "$repo/releases.properties"
-                    else
-                      echo "No releases.properties found in $repo"
-                    fi
-                  done
+        combined_json="combined.json"
+        echo "[]" > $combined_json
 
-            - name: Commit and push changes
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GH_ACTIONS }}
-              run: |
-                  # Ensure we are in the repository directory
-                  if [ ! -d ".git" ]; then
-                    echo "Not a git repository. Exiting."
-                    exit 1
-                  fi
-                  git config --global user.name "github-actions[bot]"
-                  git config --global user.email "github-actions[bot]@users.noreply.github.com"
-                  git checkout main  # Ensure we are on the main branch
-                  branch_name="update-quickpick-releases-$(date +%s)"
-                  echo "branch_name=$branch_name" >> $GITHUB_ENV
-                  git checkout -b $branch_name
-                  git add core/resources/quickpick.releases
-                  git commit -m "Update quickpick.releases"
-                  git push origin $branch_name
+        for url in "${urls[@]}"; do
+          content=$(curl -s $url)
+          module_name=$(echo "$url" | sed -n 's#.*/module-\(.*\)/main/releases.properties#\1#p')
+          json_object=$(echo "$content" | jq -R -s --arg module_name "$module_name" 'split("\n") | map(select(length > 0)) | map(split("=")) | map({(.[0]): .[1]}) | add | .module_name = $module_name')
+          jq --argjson obj "$json_object" '. += [$obj]' $combined_json > temp.json && mv temp.json $combined_json
+        done
 
-            - name: Create Pull Request
-              uses: peter-evans/create-pull-request@v6
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  commit-message: "Update quickpick.releases"
-                  branch: ${{ env.branch_name }}
-                  base: main  # Ensure the base branch is main
-                  title: "Update quickpick.releases"
-                  body: "This PR updates the quickpick.releases file with the latest versions from the repositories."
+    - name: Commit combined JSON file
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add combined.json
+        git commit -m 'Combine JSON files'
+        git push
