@@ -63,6 +63,11 @@ jobs:
     - name: Print combined JSON
       run: cat core/resources/quickpick-releases.json
 
+    - name: Resolve merge conflicts
+      run: |
+        git merge --abort || true
+        git reset --hard
+
     - name: Commit and push changes
       env:
         GH_TOKEN: ${{ secrets.GH_ACTIONS }}
