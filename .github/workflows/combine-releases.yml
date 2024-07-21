@@ -14,7 +14,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         ref: main # Ensure you are checking out the main branch
-        token: ${{ secrets.GHORG_GITHUB_TOKEN }} # Use the token for authentication
+        token: ${{ secrets.GH_PAT }} # Use the token for authentication
 
     - name: Install jq
       run: sudo apt-get install -y jq
@@ -63,7 +63,7 @@ jobs:
 
     - name: Commit and push changes
       env:
-        GITHUB_TOKEN: ${{ secrets.GHORG_GITHUB_TOKEN }} # Use the token for authentication
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }} # Use the token for authentication
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -76,7 +76,7 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v6
       with:
-        token: ${{ secrets.GHORG_GITHUB_TOKEN }}
+        token: ${{ secrets.GH_PAT }}
         commit-message: 'Combined releases.properties files'
         branch: update-combined-json
         title: 'Update combined JSON'
