@@ -12,6 +12,8 @@ jobs:
         steps:
             - name: Checkout this repository
               uses: actions/checkout@v4
+              with:
+                submodules: true  # Initialize and update submodules
 
             - name: Checkout other repositories
               run: |
