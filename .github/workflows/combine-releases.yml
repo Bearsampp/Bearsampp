@@ -79,13 +79,13 @@ jobs:
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
                   git checkout main  # Ensure we are on the main branch
-                  branch_name="update-quickpick-releases"
+                  branch_name="update-quickpick-releases-$(date +%s)"
                   echo "branch_name=$branch_name" >> $GITHUB_ENV
                   git checkout -b $branch_name
                   git add core/resources/quickpick.releases
                   git add .  # Add all untracked files
                   git commit -m "Update quickpick.releases"
-                  git push origin $branch_name
+                  git push origin $branch_name || (git pull origin $branch_name --rebase && git push origin $branch_name)
 
             - name: Create Pull Request
               uses: peter-evans/create-pull-request@v6
