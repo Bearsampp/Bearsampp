@@ -12,6 +12,8 @@ jobs:
         steps:
             - name: Checkout this repository
               uses: actions/checkout@v4
+              with:
+                submodules: true  # Initialize and update submodules
 
             - name: Checkout other repositories
               run: |
@@ -73,6 +75,7 @@ jobs:
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
                   git checkout -b update-quickpick-releases
                   git add core/resources/quickpick.releases
+                  git add .  # Add all untracked files
                   git commit -m "Update quickpick.releases"
                   git pull --rebase origin main
                   git push origin update-quickpick-releases
