@@ -51,7 +51,7 @@ jobs:
 
             - name: Retrieve releases.properties and combine into a single properties file
               run: |
-                  combined_file="core/resources/quickpick.releases"
+                  combined_file="/core/resources/quickpick.releases"
                   touch $combined_file
 
                   for repo in "${repos[@]}"; do
@@ -76,7 +76,7 @@ jobs:
               run: |
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
-                  git add core/resources/quickpick.releases
+                  git add /core/resources/quickpick.releases
                   git commit -m "Update quickpick.releases"
                   git push origin main
 
@@ -84,4 +84,4 @@ jobs:
               uses: actions/upload-artifact@v2
               with:
                   name: combined-releases
-                  path: core/resources/quickpick.releases
+                  path: /core/resources/quickpick.releases
