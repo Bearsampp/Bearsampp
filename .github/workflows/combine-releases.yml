@@ -46,6 +46,7 @@ jobs:
                     "module-yarn"
                   )
                   for repo in "${repos[@]}"; do
+                    echo "Cloning repository: $repo"
                     git clone "https://github.com/Bearsampp/$repo.git"
                   done
 
@@ -56,7 +57,9 @@ jobs:
 
                   for repo in "${repos[@]}"; do
                     repo_url="https://github.com/Bearsampp/$repo"
+                    echo "Processing repository: $repo"
                     if [ -f "$repo/releases.properties" ]; then
+                      echo "Found releases.properties in $repo"
                       while IFS='=' read -r key value; do
                         if [ "$key" == "version" ]; then
                           version=$value
@@ -64,6 +67,8 @@ jobs:
                           echo "$repo.url=$repo_url/releases/tag/$version" >> $combined_file
                         fi
                       done < "$repo/releases.properties"
+                    else
+                      echo "No releases.properties found in $repo"
                     fi
                   done
 
