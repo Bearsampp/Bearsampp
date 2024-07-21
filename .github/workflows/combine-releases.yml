@@ -16,37 +16,35 @@ jobs:
             - name: Checkout other repositories
               run: |
                   repos=(
-                    "module-adminer/releases.properties"
-                    "module-apache/releases.properties"
-                    "module-composer/releases.properties"
-                    "module-consolez/releases.properties"
-                    "module-filezilla/releases.properties"
-                    "module-ghostscript/releases.properties"
-                    "module-git/releases.properties"
-                    "module-gitlist/releases.properties"
-                    "module-mailhog/releases.properties"
-                    "module-mariadb/releases.properties"
-                    "module-memcached/releases.properties"
-                    "module-mysql/releases.properties"
-                    "module-ngrok/releases.properties"
-                    "module-nodejs/releases.properties"
-                    "module-perl/releases.properties"
-                    "module-php/releases.properties"
-                    "module-phpmemadmin/releases.properties"
-                    "module-phpmyadmin/releases.properties"
-                    "module-phppgadmin/releases.properties"
-                    "module-postgresql/releases.properties"
-                    "module-python/releases.properties"
-                    "module-ruby/releases.properties"
-                    "module-webgrind/releases.properties"
-                    "module-xdc/releases.properties"
-                    "module-xlight/releases.properties"
-                    "module-yarn/releases.properties"
+                    "module-adminer"
+                    "module-apache"
+                    "module-composer"
+                    "module-consolez"
+                    "module-filezilla"
+                    "module-ghostscript"
+                    "module-git"
+                    "module-gitlist"
+                    "module-mailhog"
+                    "module-mariadb"
+                    "module-memcached"
+                    "module-mysql"
+                    "module-ngrok"
+                    "module-nodejs"
+                    "module-perl"
+                    "module-php"
+                    "module-phpmemadmin"
+                    "module-phpmyadmin"
+                    "module-phppgadmin"
+                    "module-postgresql"
+                    "module-python"
+                    "module-ruby"
+                    "module-webgrind"
+                    "module-xdc"
+                    "module-xlight"
+                    "module-yarn"
                   )
                   for repo in "${repos[@]}"; do
-                    repo_name=$(echo $repo | cut -d'/' -f1)
-                    echo "Cloning repository: $repo_name"
-                    git clone "https://github.com/Bearsampp/$repo_name.git" || { echo "Failed to clone repository: $repo_name"; exit 1; }
+                    git clone "https://github.com/Bearsampp/$repo.git"
                   done
 
             - name: Retrieve releases.properties and combine into a single properties file
@@ -55,18 +53,15 @@ jobs:
                   touch $combined_file
 
                   for repo in "${repos[@]}"; do
-                    repo_name=$(echo $repo | cut -d'/' -f1)
-                    repo_url="https://github.com/Bearsampp/$repo_name"
-                    if [ -f "$repo_name/releases.properties" ]; then
+                    repo_url="https://github.com/Bearsampp/$repo"
+                    if [ -f "$repo/releases.properties" ]; then
                       while IFS='=' read -r key value; do
                         if [ "$key" == "version" ]; then
                           version=$value
-                          echo "$repo_name.version=$value" >> $combined_file
-                          echo "$repo_name.url=$repo_url/releases/tag/$version" >> $combined_file
+                          echo "$repo.version=$value" >> $combined_file
+                          echo "$repo.url=$repo_url/releases/tag/$version" >> $combined_file
                         fi
-                      done < "$repo_name/releases.properties"
-                    else
-                      echo "No releases.properties file found for repository: $repo_name"
+                      done < "$repo/releases.properties"
                     fi
                   done
 
@@ -76,9 +71,20 @@ jobs:
               run: |
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
+                  git checkout -b update-quickpick-releases
                   git add core/resources/quickpick.releases
                   git commit -m "Update quickpick.releases"
-                  git push origin main
+                  git push origin update-quickpick-releases
+
+            - name: Create Pull Request
+              uses: peter-evans/create-pull-request@v4
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  commit-message: "Update quickpick.releases"
+                  branch: update-quickpick-releases
+                  title: "Update quickpick.releases"
+                  body: "This PR updates the quickpick.releases file with the latest versions."
+                  base: main
 
             - name: Upload combined properties file as artifact
               uses: actions/upload-artifact@v2
