@@ -54,9 +54,21 @@ jobs:
         echo "[]" > $combined_json
 
         for url in "${urls[@]}"; do
+          echo "Fetching $url"
           content=$(curl -s $url)
+          if [ $? -ne 0 ]; then
+            echo "Failed to fetch $url"
+            continue
+          fi
+
           module_name=$(echo "$url" | sed -n 's#.*/module-\(.*\)/main/releases.properties#\1#p')
           json_object=$(echo "$content" | jq -R -s --arg module_name "$module_name" 'split("\n") | map(select(length > 0)) | map(split("=")) | map({(.[0]): .[1]}) | add | .module_name = $module_name')
+          
+          if ! jq -e . >/dev/null 2>&1 <<<"$json_object"; then
+            echo "Invalid JSON from $url"
+            continue
+          fi
+
           jq --argjson obj "$json_object" '. += [$obj]' $combined_json > temp.json && mv temp.json $combined_json
         done
 
