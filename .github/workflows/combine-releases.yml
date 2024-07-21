@@ -78,7 +78,7 @@ jobs:
                   git push origin update-quickpick-releases
 
             - name: Create Pull Request
-              uses: peter-evans/create-pull-request@v3
+              uses: peter-evans/create-pull-request@v6
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   commit-message: "Update quickpick.releases"
@@ -87,7 +87,7 @@ jobs:
                   body: "Automated update of quickpick.releases file."
 
             - name: Upload combined properties file as artifact
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: combined-releases
                   path: core/resources/quickpick.releases
