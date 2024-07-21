@@ -15,6 +15,11 @@ jobs:
       with:
         ref: main # Ensure you are checking out the main branch
 
+    - name: Ensure clean working directory
+      run: |
+        git reset --hard
+        git clean -fdx
+
     - name: Install jq
       run: sudo apt-get install -y jq
 
@@ -77,4 +82,4 @@ jobs:
         commit-message: 'Combined releases.properties files'
         branch: update-combined-json
         title: 'Update combined JSON'
-        base: main # Ensure the base branch is specified
+        body: 'This PR updates the combined JSON file with the latest data from the releases.properties files.'
