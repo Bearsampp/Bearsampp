@@ -53,16 +53,16 @@ jobs:
             - name: Retrieve releases.properties and combine into a single properties file
               run: |
                   combined_file="core/resources/quickpick.releases"
+                  mkdir -p core/resources  # Ensure the directory exists
                   touch $combined_file
+                  echo "Created combined file: $combined_file"
 
                   for repo in "${repos[@]}"; do
                     repo_url="https://github.com/Bearsampp/$repo"
                     echo "Processing repository: $repo"
                     if [ -f "$repo/releases.properties" ]; then
                       echo "Found releases.properties in $repo"
-                      cat "$repo/releases.properties"  # Debug: Display the contents of releases.properties
                       while IFS='=' read -r key value; do
-                        echo "Read key: $key, value: $value"  # Debug: Display the key-value pairs
                         if [ "$key" == "version" ]; then
                           version=$value
                           echo "$repo.version=$value" >> $combined_file
@@ -74,10 +74,8 @@ jobs:
                     fi
                   done
 
-            - name: Display contents of quickpick.releases
-              run: |
-                  echo "Contents of quickpick.releases:"
-                  cat core/resources/quickpick.releases
+                  echo "Contents of combined file:"
+                  cat $combined_file  # Debug: Display the contents of the combined file
 
             - name: Commit and push changes
               env:
@@ -90,7 +88,7 @@ jobs:
                   echo "branch_name=$branch_name" >> $GITHUB_ENV
                   git checkout -b $branch_name
                   git add core/resources/quickpick.releases
-                  git add .  # Add all untracked files
+                  git status  # Debug: Display the git status to ensure the file is added
                   git commit -m "Update quickpick.releases"
                   git push origin $branch_name
 
