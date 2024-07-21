@@ -77,6 +77,15 @@ jobs:
                   git pull --rebase origin main
                   git push origin update-quickpick-releases
 
+            - name: Create Pull Request
+              uses: peter-evans/create-pull-request@v3
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  branch: update-quickpick-releases
+                  title: "Update quickpick.releases"
+                  body: "Automated update of quickpick.releases file."
+                  base: main
+
             - name: Upload combined properties file as artifact
               uses: actions/upload-artifact@v2
               with:
