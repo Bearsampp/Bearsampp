@@ -68,12 +68,14 @@ jobs:
                   done
 
             - name: Commit and push changes
+              id: commit-and-push
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
                   branch_name="update-quickpick-releases-$(date +%s)"
+                  echo "::set-output name=branch_name::$branch_name"
                   git checkout -b $branch_name
                   git add core/resources/quickpick.releases
                   git add .
