@@ -44,8 +44,7 @@ jobs:
                     "module-yarn"
                   )
                   for repo in "${repos[@]}"; do
-                    echo "Cloning repository: $repo"
-                    git clone "https://github.com/Bearsampp/$repo.git" || { echo "Failed to clone $repo"; exit 1; }
+                    git clone "https://github.com/Bearsampp/$repo.git"
                   done
 
             - name: Retrieve releases.properties and combine into a single properties file
@@ -56,7 +55,6 @@ jobs:
                   for repo in "${repos[@]}"; do
                     repo_url="https://github.com/Bearsampp/$repo"
                     if [ -f "$repo/releases.properties" ]; then
-                      echo "Processing $repo/releases.properties"
                       while IFS='=' read -r key value; do
                         if [ "$key" == "version" ]; then
                           version=$value
@@ -64,8 +62,6 @@ jobs:
                           echo "$repo.url=$repo_url/releases/tag/$version" >> $combined_file
                         fi
                       done < "$repo/releases.properties"
-                    else
-                      echo "No releases.properties found for $repo"
                     fi
                   done
 
@@ -76,11 +72,23 @@ jobs:
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
                   git add core/resources/quickpick.releases
-                  git commit -m "Update quickpick.releases" || { echo "No changes to commit"; exit 0; }
-                  git push origin main || { echo "Failed to push changes"; exit 1; }
+                  git commit -m "Update quickpick.releases"
+                  git push origin main
 
             - name: Upload combined properties file as artifact
               uses: actions/upload-artifact@v2
               with:
                   name: combined-releases
                   path: core/resources/quickpick.releases
+
+            - name: Merge PR
+              if: github.event_name == 'pull_request'
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+                  curl -s -X PUT \
+                    -H "Authorization: token $GITHUB_TOKEN" \
+                    -H "Accept: application/vnd.github.v3+json" \
+                    "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/merge" \
+                    -d '{"commit_title":"Auto-merge PR","merge_method":"merge"}'
