@@ -75,7 +75,9 @@ jobs:
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
                   git checkout -b update-quickpick-releases
                   git add core/resources/quickpick.releases
+                  git add .  # Add all untracked files
                   git commit -m "Update quickpick.releases"
+                  git pull --rebase origin main
                   git push origin update-quickpick-releases --force
 
             - name: Create Pull Request
