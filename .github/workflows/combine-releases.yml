@@ -73,13 +73,12 @@ jobs:
               run: |
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
+                  git checkout main  # Ensure we are on the main branch
                   branch_name="update-quickpick-releases-$(date +%s)"
                   echo "branch_name=$branch_name" >> $GITHUB_ENV
                   git checkout -b $branch_name
                   git add core/resources/quickpick.releases
-                  git add .  # Add all untracked files
                   git commit -m "Update quickpick.releases"
-                  git pull --rebase origin main
                   git push origin $branch_name
 
             - name: Create Pull Request
@@ -88,6 +87,7 @@ jobs:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   commit-message: "Update quickpick.releases"
                   branch: ${{ env.branch_name }}
+                  base: main  # Ensure the base branch is main
                   title: "Update quickpick.releases"
                   body: "This PR updates the quickpick.releases file with the latest versions from the repositories."
 
