@@ -74,14 +74,11 @@ jobs:
                   git checkout -b update-quickpick-releases
                   git add core/resources/quickpick.releases
                   git commit -m "Update quickpick.releases"
+                  git pull --rebase origin main
                   git push origin update-quickpick-releases
 
-            - name: Create Pull Request
-              uses: peter-evans/create-pull-request@v5
+            - name: Upload combined properties file as artifact
+              uses: actions/upload-artifact@v2
               with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  commit-message: "Update quickpick.releases"
-                  branch: update-quickpick-releases
-                  base: main
-                  title: "Update quickpick.releases"
-                  body: "This PR updates the quickpick.releases file with the latest versions."
+                  name: combined-releases
+                  path: core/resources/quickpick.releases
