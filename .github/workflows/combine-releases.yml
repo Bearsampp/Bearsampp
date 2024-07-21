@@ -74,15 +74,15 @@ jobs:
                     fi
                   done
 
-            - name: Clean up repository
-              run: |
-                  find . -mindepth 1 -not -path "./core" -delete
-                  echo "Cleaned up repository, only keeping core directory"
-
             - name: Commit and push changes
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GH_ACTIONS }}
               run: |
+                  # Ensure we are in the repository directory
+                  if [ ! -d ".git" ]; then
+                    echo "Not a git repository. Exiting."
+                    exit 1
+                  fi
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
                   git checkout main  # Ensure we are on the main branch
