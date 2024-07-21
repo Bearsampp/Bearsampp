@@ -21,6 +21,10 @@ jobs:
       with:
         node-version: '20'
 
+    - name: Install dependencies
+      run: |
+        npm install properties
+
     - name: Fetch release properties files
       run: |
         mkdir -p releases
@@ -68,9 +72,7 @@ jobs:
           result[moduleName] = {};
 
           for (const [key, value] of Object.entries(jsonContent)) {
-            if (typeof value === 'object' && value.url) {
-              result[moduleName][key] = value.url;
-            }
+            result[moduleName][key] = value.url;
           }
         });
 
