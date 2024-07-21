@@ -53,6 +53,10 @@ jobs:
         mkdir -p $(dirname $combined_json)
         echo "[]" > $combined_json
 
+        # Debug step to check if the file is created
+        ls -l core/resources
+        cat $combined_json
+
         for url in "${urls[@]}"; do
           content=$(curl -s $url)
           module_name=$(echo "$url" | sed -n 's#.*/module-\(.*\)/main/releases.properties#\1#p')
@@ -60,9 +64,12 @@ jobs:
           jq --argjson obj "$json_object" '. += [$obj]' $combined_json > temp.json && mv temp.json $combined_json
         done
 
+        # Debug step to check the final content of the file
+        cat $combined_json
+
     - name: Commit and push changes
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_ACTIONS }}
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -75,7 +82,7 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v6
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GH_ACTIONS }}
         commit-message: 'Combined releases.properties files'
         branch: update-combined-json
         base: main # Specify the base branch for the pull request
