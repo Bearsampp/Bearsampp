@@ -47,7 +47,7 @@ jobs:
           "https://raw.githubusercontent.com/Bearsampp/module-yarn/main/releases.properties"
         )
 
-        combined_json="core/resources/quickpick.releases"
+        combined_json="core/resources/quickpick.releases.json"
         echo "[]" > $combined_json
 
         for url in "${urls[@]}"; do
@@ -61,6 +61,6 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add core/resources/quickpick.releases
+        git add core/resources/quickpick.releases.json
         git commit -m 'Combined releases.properties files'
         git push
