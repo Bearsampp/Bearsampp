@@ -60,7 +60,9 @@ jobs:
                     echo "Processing repository: $repo"
                     if [ -f "$repo/releases.properties" ]; then
                       echo "Found releases.properties in $repo"
+                      cat "$repo/releases.properties"  # Debug: Display the contents of releases.properties
                       while IFS='=' read -r key value; do
+                        echo "Read key: $key, value: $value"  # Debug: Display the key-value pairs
                         if [ "$key" == "version" ]; then
                           version=$value
                           echo "$repo.version=$value" >> $combined_file
