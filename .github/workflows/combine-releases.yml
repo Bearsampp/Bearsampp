@@ -71,24 +71,16 @@ jobs:
               run: |
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
+                  git checkout -b update-quickpick-releases
                   git add core/resources/quickpick.releases
                   git commit -m "Update quickpick.releases"
-                  git push origin main
+                  git push origin update-quickpick-releases
 
-            - name: Upload combined properties file as artifact
-              uses: actions/upload-artifact@v2
+            - name: Create Pull Request
+              uses: peter-evans/create-pull-request@v3
               with:
-                  name: combined-releases
-                  path: core/resources/quickpick.releases
-
-            - name: Merge PR
-              if: github.event_name == 'pull_request'
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: |
-                  PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-                  curl -s -X PUT \
-                    -H "Authorization: token $GITHUB_TOKEN" \
-                    -H "Accept: application/vnd.github.v3+json" \
-                    "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/merge" \
-                    -d '{"commit_title":"Auto-merge PR","merge_method":"merge"}'
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  commit-message: "Update quickpick.releases"
+                  branch: update-quickpick-releases
+                  title: "Update quickpick.releases"
+                  body: "This PR updates the quickpick.releases file with the latest versions from the repositories."
