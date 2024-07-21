@@ -73,19 +73,20 @@ jobs:
               run: |
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
-                  git checkout -b update-quickpick-releases
+                  branch_name="update-quickpick-releases-$(date +%s)"
+                  git checkout -b $branch_name
                   git add core/resources/quickpick.releases
-                  git add .  # Add all untracked files
+                  git add .
                   git commit -m "Update quickpick.releases"
                   git pull --rebase origin main
-                  git push origin update-quickpick-releases --force
+                  git push origin $branch_name
 
             - name: Create Pull Request
               uses: peter-evans/create-pull-request@v6
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   commit-message: "Update quickpick.releases"
-                  branch: update-quickpick-releases
+                  branch: ${{ steps.commit-and-push.outputs.branch_name }}
                   title: "Update quickpick.releases"
                   body: "This PR updates the quickpick.releases file with the latest versions from the repositories."
 
