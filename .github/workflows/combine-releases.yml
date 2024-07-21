@@ -64,17 +64,18 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git checkout -b update-combined-json-$(date +%s)
+        branch_name="update-combined-json-$(date +%s)"
+        git checkout -b $branch_name
         git add core/resources/quickpick-releases.json
         git commit -m 'Combined releases.properties files'
         git pull --rebase origin main || true
-        git push --set-upstream origin update-combined-json-$(date +%s) || git push --set-upstream origin update-combined-json-$(date +%s) --force
+        git push --set-upstream origin $branch_name || git push --set-upstream origin $branch_name --force
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: 'Combined releases.properties files'
-        branch: update-combined-json-$(date +%s)
+        branch: ${{ steps.commit-and-push.outputs.branch_name }}
         title: 'Update combined JSON'
         body: 'This PR updates the combined JSON file with the latest data from the releases.properties files.'
