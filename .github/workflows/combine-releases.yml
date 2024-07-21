@@ -75,10 +75,8 @@ jobs:
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
                   git checkout -b update-quickpick-releases
                   git add core/resources/quickpick.releases
-                  git add .
                   git commit -m "Update quickpick.releases"
-                  git pull --rebase origin update-quickpick-releases
-                  git push origin update-quickpick-releases
+                  git push origin update-quickpick-releases --force
 
             - name: Create Pull Request
               uses: peter-evans/create-pull-request@v6
