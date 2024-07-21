@@ -40,6 +40,9 @@ class ActionClearFolders
          */
         Util::clearFolder($bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', Mailpit, 'xlight', 'npm-cache', 'pip', 'yarn', '.gitignore'));
 
+        // Clear logs
+        Util::clearFolder($bearsamppRoot->getLogsPath(), array('mailpit.err.log', 'mailpit.out.log', 'memcached.err.log', 'memcached.out.log', 'xlight.err.log', 'xlight.log', '.gitignore') );
+
         /**
          * Clears the core temporary path.
          *
