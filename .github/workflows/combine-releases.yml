@@ -93,5 +93,6 @@ jobs:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   commit-message: "Update quickpick.releases"
                   branch: ${{ env.branch_name }}
+                  base: main  # Ensure the base branch is main
                   title: "Update quickpick.releases"
                   body: "This PR updates the quickpick.releases file with the latest versions from the repositories."
