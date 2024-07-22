@@ -41,9 +41,20 @@ jobs:
           "https://raw.githubusercontent.com/Bearsampp/module-perl/main/releases.properties"
           "https://raw.githubusercontent.com/Bearsampp/module-php/main/releases.properties"
         )
-        combined_json="{}"
+        combined_json='{"modules": []}'
         for url in "${urls[@]}"; do
-          json=$(curl -s "$url")
-          combined_json=$(echo "$combined_json" | jq --argjson new "$json" '. * $new')
+          properties=$(curl -s "$url")
+          module_name=$(basename $(dirname "$url"))
+          module_json='{"name": "'"$module_name"'", "versions": []}'
+          while IFS= read -r line; do
+            if [[ "$line" == *"="* ]]; then
+              version=$(echo "$line" | cut -d'=' -f1 | xargs)
+              version_url=$(echo "$line" | cut -d'=' -f2 | xargs)
+              release_date=$(echo "$version_url" | grep -oP '\d{4}\.\d{1,2}\.\d{1,2}')
+              version_json='{"version": "'"$version"'", "url": "'"$version_url"'", "release_date": "'"$release_date"'"}'
+              module_json=$(echo "$module_json" | jq --argjson new "$version_json" '.versions += [$new]')
+            fi
+          done <<< "$properties"
+          combined_json=$(echo "$combined_json" | jq --argjson new "$module_json" '.modules += [$new]')
         done
-        echo "$combined_json" > combined-releases.json
+        echo "$combined_json" | jq '.' > combined-releases.json
