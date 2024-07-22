@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2  # Checkout the repository
+      uses: actions/checkout@v4  # Checkout the repository
 
     - name: Set up PHP
       uses: shivammathur/setup-php@v2  # Set up PHP
@@ -37,5 +37,4 @@ jobs:
         git push --set-upstream origin update-releases-branch  # Push the new branch to the remote repository
 
     - name: Pull remote changes
-      run: git pull --rebase origin update-releases-branch  # Pull remote changes with rebase
-      continue-on-error: true  # Continue even if this step fails
+      run: git pull origin main  # Pull the latest changes from the main branch
