@@ -61,7 +61,7 @@ jobs:
                 version=$(echo "$line" | cut -d'=' -f1 | xargs)
                 versionUrl=$(echo "$line" | cut -d'=' -f2 | xargs)
                 releaseDate=$(echo "$versionUrl" | grep -oP '\d{4}\.\d{1,2}\.\d{1,2}')
-                versionData='{"version": "'"$version"'", "url": "'"$versionUrl"'", "release_date": "'"$releaseDate"'"}'
+                versionData=$(jq -n --arg version "$version" --arg url "$versionUrl" --arg release_date "$releaseDate" '{version: $version, url: $url, release_date: $release_date}')
                 moduleData=$(echo "$moduleData" | jq --argjson versionData "$versionData" '.versions += [$versionData]')
               fi
             done <<< "$response"
@@ -75,17 +75,6 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git checkout -b update-quickpick-releases
         git add core/resources/quickpick-releases.json
         git commit -m 'Update quickpick-releases.json'
-        git push origin update-quickpick-releases
-
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: 'Update quickpick-releases.json'
-        branch: update-quickpick-releases
-        title: 'Update quickpick-releases.json'
-        body: 'Automated update of quickpick-releases.json'
-        base: main
+        git push
