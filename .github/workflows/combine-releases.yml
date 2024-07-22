@@ -1,38 +1,36 @@
-name: Combine JSON Files
+name: Combine Properties to JSON
 
 on:
   push:
     branches:
       - main
   schedule:
-    - cron: '0 */8 * * *' # Runs every 8 hours
-  workflow_dispatch: # Allows manual triggering
+    - cron: '0 */8 * * *'
+  workflow_dispatch:
 
 jobs:
-  combine-json:
+  combine-properties:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
-          npm install properties
+    - name: Install dependencies
+      run: |
+        python -m pip install requests
 
-      - name: Fetch release properties files
-        run: |
-          node -e "
-          const https = require('https');
-          const fs = require('fs');
-          const path = require('path');
+    - name: Fetch and combine properties files
+      run: |
+        import requests
+        import json
 
-          const urls = [
+        urls = [
             'https://raw.githubusercontent.com/Bearsampp/module-adminer/main/releases.properties',
             'https://raw.githubusercontent.com/Bearsampp/module-apache/main/releases.properties',
             'https://raw.githubusercontent.com/Bearsampp/module-composer/main/releases.properties',
@@ -59,59 +57,36 @@ jobs:
             'https://raw.githubusercontent.com/Bearsampp/module-xdc/main/releases.properties',
             'https://raw.githubusercontent.com/Bearsampp/module-xlight/main/releases.properties',
             'https://raw.githubusercontent.com/Bearsampp/module-yarn/main/releases.properties'
-          ];
+        ]
 
-          const dir = 'releases';
-          if (!fs.existsSync(dir)){
-            fs.mkdirSync(dir);
-          }
+        combined_data = {}
 
-          urls.forEach(url => {
-            const fileName = path.basename(url);
-            const filePath = path.join(dir, fileName);
-            const file = fs.createWriteStream(filePath);
-            https.get(url, response => {
-              response.pipe(file);
-              file.on('finish', () => {
-                file.close();
-                console.log('Downloaded:', fileName);
-              });
-            }).on('error', err => {
-              fs.unlink(filePath);
-              console.error('Error downloading:', fileName, err.message);
-            });
-          });
-          "
+        for url in urls:
+            response = requests.get(url)
+            if response.status_code == 200:
+                properties = response.text.splitlines()
+                module_name = url.split('/')[4]
+                combined_data[module_name] = {
+                    "versions": [],
+                    "url": url
+                }
+                version_info = {}
+                for prop in properties:
+                    if '=' in prop:
+                        key, value = prop.split('=', 1)
+                        version_info[key.strip()] = value.strip()
+                    if key.strip() == 'version':
+                        combined_data[module_name]["versions"].append(version_info)
+                        version_info = {}
 
-      - name: Combine properties into JSON
-        run: |
-          node -e "
-          const fs = require('fs');
-          const path = require('path');
-          const properties = require('properties');
+        with open('core/resources/quickpick-releases.json', 'w') as json_file:
+            json.dump(combined_data, json_file, indent=4)
 
-          const dir = 'releases';
-          const result = {};
-
-          fs.readdirSync(dir).forEach(file => {
-            const content = fs.readFileSync(path.join(dir, file), 'utf8');
-            properties.parse(content, { sections: true }, (err, parsed) => {
-              if (err) throw err;
-              const moduleName = path.basename(file, '.properties');
-              result[moduleName] = parsed;
-            });
-          });
-
-          fs.writeFileSync('core/resources/quickpick-releases.json', JSON.stringify(result, null, 2));
-          "
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git checkout -b updated-combined-json
-          git add core/resources/quickpick-releases.json
-          git commit -m 'Update combined JSON file'
-          git push --force --set-upstream origin updated-combined-json
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git checkout -b updated-combined-json
+        git add core/resources/quickpick-releases.json
+        git commit -m 'Update combined JSON file'
+        git push --set-upstream origin updated-combined-json
