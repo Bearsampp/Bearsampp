@@ -59,25 +59,25 @@ jobs:
             'https://raw.githubusercontent.com/Bearsampp/module-yarn/main/releases.properties'
         ]
 
-        combined_data = {}
+        combined_data = {"modules": []}
 
         for url in urls:
             response = requests.get(url)
             if response.status_code == 200:
                 properties = response.text.splitlines()
                 module_name = url.split('/')[4]
-                combined_data[module_name] = {
-                    "versions": [],
-                    "url": url
+                module_data = {
+                    "name": module_name,
+                    "versions": []
                 }
-                version_info = {}
                 for prop in properties:
                     if '=' in prop:
-                        key, value = prop.split('=', 1)
-                        version_info[key.strip()] = value.strip()
-                    if key.strip() == 'version':
-                        combined_data[module_name]["versions"].append(version_info)
-                        version_info = {}
+                        version, version_url = prop.split('=', 1)
+                        module_data["versions"].append({
+                            "version": version.strip(),
+                            "url": version_url.strip()
+                        })
+                combined_data["modules"].append(module_data)
 
         with open('core/resources/quickpick-releases.json', 'w') as json_file:
             json.dump(combined_data, json_file, indent=4)
