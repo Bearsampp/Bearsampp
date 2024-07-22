@@ -49,7 +49,7 @@ for url in urls:
             'versions': version_data
         })
 
-output_path = '/core/resources/quickpick-releases.json'
+output_path = 'core/resources/quickpick-releases.json'
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 with open(output_path, 'w') as f:
     json.dump(combined_data, f, indent=2)

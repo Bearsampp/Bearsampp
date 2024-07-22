@@ -36,7 +36,7 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git checkout -b update-releases
-        git add /core/resources/quickpick-releases.json
+        git add core/resources/quickpick-releases.json
         git commit -m 'Update combined releases JSON'
         git push origin update-releases
 
