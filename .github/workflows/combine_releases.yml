@@ -32,7 +32,6 @@ jobs:
       run: python .github/combine_releases.py
 
     - name: Create Pull Request
-      if: env.changes == 'true'
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GH_ACTIONS }}
