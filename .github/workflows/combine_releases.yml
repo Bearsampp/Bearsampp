@@ -40,3 +40,8 @@ jobs:
         title: 'Update combined releases JSON'
         body: 'This PR updates the combined releases JSON file.'
         commit-message: 'Update combined releases JSON'
+
+    - name: Enable Pull Request Automerge
+      run: gh pr merge --merge --auto "1"
+      env:
+        GH_TOKEN: ${{ secrets.GH_ACTIONS }}
