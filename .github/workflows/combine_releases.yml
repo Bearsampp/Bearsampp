@@ -41,13 +41,13 @@ jobs:
       id: set-output
       run: |
         if git diff --exit-code core/resources/quickpick-releases.json; then
-          echo "::set-output name=changes::false"
+          echo "changes=false" >> $GITHUB_ENV
         else
-          echo "::set-output name=changes::true"
+          echo "changes=true" >> $GITHUB_ENV
         fi
 
     - name: Commit and push changes
-      if: steps.set-output.outputs.changes == 'true'
+      if: env.changes == 'true'
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -57,7 +57,7 @@ jobs:
         git push origin update-releases
 
     - name: Create Pull Request
-      if: steps.set-output.outputs.changes == 'true'
+      if: env.changes == 'true'
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GH_ACTIONS }}
