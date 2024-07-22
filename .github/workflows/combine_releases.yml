@@ -59,6 +59,7 @@ jobs:
         fi
         git add core/resources/quickpick-releases.json
         git commit -m 'Update combined releases JSON'
+        git pull --rebase origin update-releases
         git push origin update-releases
 
     - name: Create Pull Request
