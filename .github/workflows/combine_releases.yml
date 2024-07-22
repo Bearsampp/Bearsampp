@@ -34,20 +34,30 @@ jobs:
     - name: Check for changes
       id: changes
       run: |
-        git diff --exit-code .github/resources/quickpick-releases.json || echo "changes"
+        git diff --exit-code core/resources/quickpick-releases.json || echo "changes"
+      continue-on-error: true
+
+    - name: Set output if changes detected
+      id: set-output
+      run: |
+        if git diff --exit-code core/resources/quickpick-releases.json; then
+          echo "::set-output name=changes::false"
+        else
+          echo "::set-output name=changes::true"
+        fi
 
     - name: Commit and push changes
-      if: steps.changes.outputs.result == 'changes'
+      if: steps.set-output.outputs.changes == 'true'
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git checkout -b update-releases
-        git add .github/resources/quickpick-releases.json
+        git add core/resources/quickpick-releases.json
         git commit -m 'Update combined releases JSON'
         git push origin update-releases
 
     - name: Create Pull Request
-      if: steps.changes.outputs.result == 'changes'
+      if: steps.set-output.outputs.changes == 'true'
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GH_ACTIONS }}
