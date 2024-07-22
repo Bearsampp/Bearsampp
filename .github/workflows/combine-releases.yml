@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4  # Checkout the repository
+      uses: actions/checkout@v2  # Checkout the repository
 
     - name: Set up PHP
       uses: shivammathur/setup-php@v2  # Set up PHP
