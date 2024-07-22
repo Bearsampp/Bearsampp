@@ -31,20 +31,28 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GH_ACTIONS }}
       run: python .github/combine_releases.py
 
+    - name: Check for changes
+      id: changes
+      run: |
+        git diff --exit-code .github/resources/quickpick-releases.json || echo "changes"
+
     - name: Commit and push changes
+      if: steps.changes.outputs.result == 'changes'
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git checkout -b update-releases
-        git add core/resources/quickpick-releases.json
+        git add .github/resources/quickpick-releases.json
         git commit -m 'Update combined releases JSON'
         git push origin update-releases
 
     - name: Create Pull Request
+      if: steps.changes.outputs.result == 'changes'
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GH_ACTIONS }}
         commit-message: Update combined releases JSON
         branch: update-releases
+        base: main
         title: 'Update combined releases JSON'
         body: 'This PR updates the combined releases JSON file.'
