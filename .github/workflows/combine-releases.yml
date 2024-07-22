@@ -3,36 +3,36 @@ name: Update Releases
 on:
   push:
     branches:
-      - main
+      - main  # Trigger on push to the main branch
   schedule:
-    - cron: '0 */8 * * *'
-  workflow_dispatch:
+    - cron: '0 */8 * * *'  # Trigger every 8 hours
+  workflow_dispatch:  # Allow manual triggering of the workflow
 
 jobs:
   update-releases:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4  # Checkout the repository
 
     - name: Set up PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@v2  # Set up PHP
       with:
-        php-version: '8.3'
+        php-version: '8.3'  # Specify PHP version 8.3
 
     - name: Install dependencies
-      run: sudo apt-get install -y php-cli
+      run: sudo apt-get install -y php-cli  # Install PHP CLI
 
     - name: Run update script
-      run: php core/scripts/update-releases.php
+      run: php core/scripts/update-releases.php  # Run the update script
 
     - name: Commit and push changes
       run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add core/resources/quickpick-releases.json
-        git commit -m 'Update quickpick-releases.json'
-        git push
+        git config --global user.name 'github-actions[bot]'  # Set Git user name
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'  # Set Git user email
+        git add core/resources/quickpick-releases.json  # Add the updated file
+        git commit -m 'Update quickpick-releases.json'  # Commit the changes
+        git push  # Push the changes
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_ACTIONS }}  # Use the GH_ACTIONS token for authentication
