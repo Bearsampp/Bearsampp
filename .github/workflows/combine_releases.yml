@@ -1,47 +1,56 @@
 name: Combine Releases
 
 on:
-  push:
-    branches:
-      - main
-  schedule:
-    - cron: '0 */8 * * *'
-  workflow_dispatch:
+    push:
+        branches:
+            - main
+    schedule:
+        -   cron: '0 */8 * * *'
+    workflow_dispatch:
 
 jobs:
-  combine-releases:
-    runs-on: ubuntu-latest
+    combine-releases:
+        runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+        steps:
+            -   name: Checkout repository
+                uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
+            -   name: Set up Python
+                uses: actions/setup-python@v5
+                with:
+                    python-version: '3.x'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install requests
+            -   name: Install dependencies
+                run: |
+                    python -m pip install --upgrade pip
+                    pip install requests
 
-    - name: Combine releases into JSON
-      env:
-        GH_ACTIONS: ${{ secrets.GH_ACTIONS }}
-      run: python .github/combine_releases.py
+            -   name: Combine releases into JSON
+                env:
+                    GH_ACTIONS: ${{ secrets.GH_ACTIONS }}
+                run: python .github/combine_releases.py
 
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v6
-      with:
-        token: ${{ secrets.GH_ACTIONS }}
-        branch: update-releases
-        base: main
-        title: 'Update combined releases JSON'
-        body: 'This PR updates the combined releases JSON file.'
-        commit-message: 'Update combined releases JSON'
+            -   name: Create Pull Request
+                uses: peter-evans/create-pull-request@v6
+                with:
+                    token: ${{ secrets.GH_ACTIONS }}
+                    branch: update-releases
+                    base: main
+                    title: 'Update combined releases JSON'
+                    body: 'This PR updates the combined releases JSON file.'
+                    commit-message: 'Update combined releases JSON'
 
-    - name: Enable Pull Request Automerge
-      run: gh pr merge --merge --auto "1"
-      env:
-        GH_TOKEN: ${{ secrets.GH_ACTIONS }}
+            -   name: Enable Pull Request Automerge
+                if: steps.cpr.outputs.pull-request-operation == 'created'
+                uses: peter-evans/enable-pull-request-automerge@v3
+                with:
+                   token: ${{ secrets.PAT }}
+                   pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+                   merge-method: squash
+
+            -   name: Auto approve
+                if: steps.cpr.outputs.pull-request-operation == 'created'
+                run: gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
+                env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
