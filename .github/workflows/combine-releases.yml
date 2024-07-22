@@ -58,13 +58,14 @@ jobs:
           response=$(curl -s "$url")
           if [[ -n "$response" ]]; then
             moduleName=$(basename "$(dirname "$url")")
-            moduleData='{"name": "'"$moduleName"'", "versions": []}'
+            moduleData=$(jq -n --arg name "$moduleName" '{"name": $name, "versions": []}')
             while IFS= read -r line; do
               if [[ "$line" == *"="* ]]; then
                 version=$(echo "$line" | cut -d'=' -f1 | xargs)
                 versionUrl=$(echo "$line" | cut -d'=' -f2 | xargs)
                 releaseDate=$(echo "$versionUrl" | grep -oP '\d{4}\.\d{1,2}\.\d{1,2}')
-                versionData='{"version": "'"$version"'", "url": "'"$versionUrl"'", "release_date": "'"$releaseDate"'"}'
+                versionData=$(jq -n --arg version "$version" --arg url "$versionUrl" --arg release_date "$releaseDate" \
+                              '{"version": $version, "url": $url, "release_date": $release_date}')
                 moduleData=$(echo "$moduleData" | jq --argjson versionData "$versionData" '.versions += [$versionData]')
               fi
             done <<< "$response"
