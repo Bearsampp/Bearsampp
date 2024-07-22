@@ -51,7 +51,12 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git checkout -b update-releases
+        git fetch origin
+        if git show-ref --verify --quiet refs/heads/update-releases; then
+          git checkout update-releases
+        else
+          git checkout -b update-releases
+        fi
         git add core/resources/quickpick-releases.json
         git commit -m 'Update combined releases JSON'
         git push origin update-releases
