@@ -28,7 +28,7 @@ jobs:
 
     - name: Combine releases into JSON
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_ACTIONS: ${{ secrets.GH_ACTIONS }}
       run: python .github/combine_releases.py
 
     - name: Check for changes
@@ -74,7 +74,7 @@ jobs:
       if: env.changes == 'true'
       uses: peter-evans/create-pull-request@v6
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GH_ACTIONS }}
         branch: update-releases
         base: main
         title: 'Update combined releases JSON'
