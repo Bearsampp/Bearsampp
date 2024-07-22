@@ -27,33 +27,61 @@ jobs:
 
       - name: Fetch release properties files
         run: |
-          mkdir -p releases
-          curl -o releases/adminer.properties https://raw.githubusercontent.com/Bearsampp/module-adminer/main/releases.properties
-          curl -o releases/apache.properties https://raw.githubusercontent.com/Bearsampp/module-apache/main/releases.properties
-          curl -o releases/composer.properties https://raw.githubusercontent.com/Bearsampp/module-composer/main/releases.properties
-          curl -o releases/consolez.properties https://raw.githubusercontent.com/Bearsampp/module-consolez/main/releases.properties
-          curl -o releases/filezilla.properties https://raw.githubusercontent.com/Bearsampp/module-filezilla/main/releases.properties
-          curl -o releases/ghostscript.properties https://raw.githubusercontent.com/Bearsampp/module-ghostscript/main/releases.properties
-          curl -o releases/git.properties https://raw.githubusercontent.com/Bearsampp/module-git/main/releases.properties
-          curl -o releases/gitlist.properties https://raw.githubusercontent.com/Bearsampp/module-gitlist/main/releases.properties
-          curl -o releases/mailhog.properties https://raw.githubusercontent.com/Bearsampp/module-mailhog/main/releases.properties
-          curl -o releases/mariadb.properties https://raw.githubusercontent.com/Bearsampp/module-mariadb/main/releases.properties
-          curl -o releases/memcached.properties https://raw.githubusercontent.com/Bearsampp/module-memcached/main/releases.properties
-          curl -o releases/mysql.properties https://raw.githubusercontent.com/Bearsampp/module-mysql/main/releases.properties
-          curl -o releases/ngrok.properties https://raw.githubusercontent.com/Bearsampp/module-ngrok/main/releases.properties
-          curl -o releases/nodejs.properties https://raw.githubusercontent.com/Bearsampp/module-nodejs/main/releases.properties
-          curl -o releases/perl.properties https://raw.githubusercontent.com/Bearsampp/module-perl/main/releases.properties
-          curl -o releases/php.properties https://raw.githubusercontent.com/Bearsampp/module-php/main/releases.properties
-          curl -o releases/phpmemadmin.properties https://raw.githubusercontent.com/Bearsampp/module-phpmemadmin/main/releases.properties
-          curl -o releases/phpmyadmin.properties https://raw.githubusercontent.com/Bearsampp/module-phpmyadmin/main/releases.properties
-          curl -o releases/phppgadmin.properties https://raw.githubusercontent.com/Bearsampp/module-phppgadmin/main/releases.properties
-          curl -o releases/postgresql.properties https://raw.githubusercontent.com/Bearsampp/module-postgresql/main/releases.properties
-          curl -o releases/python.properties https://raw.githubusercontent.com/Bearsampp/module-python/main/releases.properties
-          curl -o releases/ruby.properties https://raw.githubusercontent.com/Bearsampp/module-ruby/main/releases.properties
-          curl -o releases/webgrind.properties https://raw.githubusercontent.com/Bearsampp/module-webgrind/main/releases.properties
-          curl -o releases/xdc.properties https://raw.githubusercontent.com/Bearsampp/module-xdc/main/releases.properties
-          curl -o releases/xlight.properties https://raw.githubusercontent.com/Bearsampp/module-xlight/main/releases.properties
-          curl -o releases/yarn.properties https://raw.githubusercontent.com/Bearsampp/module-yarn/main/releases.properties
+          node -e "
+          const https = require('https');
+          const fs = require('fs');
+          const path = require('path');
+
+          const urls = [
+            'https://raw.githubusercontent.com/Bearsampp/module-adminer/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-apache/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-composer/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-consolez/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-filezilla/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-ghostscript/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-git/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-gitlist/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-mailhog/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-mariadb/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-memcached/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-mysql/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-ngrok/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-nodejs/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-perl/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-php/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-phpmemadmin/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-phpmyadmin/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-phppgadmin/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-postgresql/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-python/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-ruby/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-webgrind/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-xdc/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-xlight/main/releases.properties',
+            'https://raw.githubusercontent.com/Bearsampp/module-yarn/main/releases.properties'
+          ];
+
+          const dir = 'releases';
+          if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir);
+          }
+
+          urls.forEach(url => {
+            const fileName = path.basename(url);
+            const filePath = path.join(dir, fileName);
+            const file = fs.createWriteStream(filePath);
+            https.get(url, response => {
+              response.pipe(file);
+              file.on('finish', () => {
+                file.close();
+                console.log('Downloaded:', fileName);
+              });
+            }).on('error', err => {
+              fs.unlink(filePath);
+              console.error('Error downloading:', fileName, err.message);
+            });
+          });
+          "
 
       - name: Combine properties into JSON
         run: |
