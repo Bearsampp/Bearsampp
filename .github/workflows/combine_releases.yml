@@ -36,7 +36,7 @@ jobs:
       with:
         token: ${{ secrets.GH_ACTIONS }}
         branch: update-releases
-        base: test
+        base: main
         title: 'Update combined releases JSON'
         body: 'This PR updates the combined releases JSON file.'
         commit-message: 'Update combined releases JSON'
