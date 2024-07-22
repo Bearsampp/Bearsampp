@@ -69,11 +69,10 @@ jobs:
 
     - name: Create Pull Request
       if: env.changes == 'true'
-      uses: peter-evans/create-pull-request@v6
+      uses: peter-evans/create-pull-request@v4
       with:
         token: ${{ secrets.GH_ACTIONS }}
-        commit-message: Update combined releases JSON
         branch: update-releases
-        base: main
         title: 'Update combined releases JSON'
         body: 'This PR updates the combined releases JSON file.'
+        base: main
