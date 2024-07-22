@@ -35,4 +35,5 @@ jobs:
         git checkout -b updated-combined-json
         git add core/resources/quickpick-releases.json
         git commit -m 'Update combined JSON file'
+        git pull --rebase origin updated-combined-json  # Pull the latest changes
         git push --set-upstream origin updated-combined-json
