@@ -31,29 +31,6 @@ jobs:
         GH_ACTIONS: ${{ secrets.GH_ACTIONS }}
       run: python .github/combine_releases.py
 
-    - name: Check for changes
-      id: changes
-      run: |
-        if [ -f core/resources/quickpick-releases.json ]; then
-          git diff --exit-code core/resources/quickpick-releases.json || echo "changes"
-        else
-          echo "changes"
-        fi
-      continue-on-error: true
-
-    - name: Set output if changes detected
-      id: set-output
-      run: |
-        if [ -f core/resources/quickpick-releases.json ]; then
-          if git diff --exit-code core/resources/quickpick-releases.json; then
-            echo "changes=false" >> $GITHUB_ENV
-          else
-            echo "changes=true" >> $GITHUB_ENV
-          fi
-        else
-          echo "changes=true" >> $GITHUB_ENV
-        fi
-
     - name: Create Pull Request
       if: env.changes == 'true'
       uses: peter-evans/create-pull-request@v6
