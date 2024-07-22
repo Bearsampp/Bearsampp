@@ -1,4 +1,4 @@
-name: Combine Properties to JSON
+name: Update Releases
 
 on:
   push:
@@ -9,32 +9,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  combine-properties:
+  update-releases:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4  # Updated to v4
+      uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v5  # Updated to v5
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
       with:
-        python-version: '3.x'
+        php-version: '8.3'
 
     - name: Install dependencies
-      run: |
-        python -m pip install requests
+      run: sudo apt-get install -y php-cli
 
-    - name: Fetch and combine properties files
-      run: python .github/combine_properties.py
+    - name: Run update script
+      run: php core/scripts/update-releases.php
 
     - name: Commit and push changes
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git checkout -b updated-combined-json
         git add core/resources/quickpick-releases.json
-        git commit -m 'Update combined JSON file'
-        git fetch origin updated-combined-json
-        git merge -X ours origin/updated-combined-json  # Merge with the 'ours' strategy
-        git push --set-upstream origin updated-combined-json
+        git commit -m 'Update quickpick-releases.json'
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
