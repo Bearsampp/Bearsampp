@@ -54,29 +54,13 @@ jobs:
           echo "changes=true" >> $GITHUB_ENV
         fi
 
-    - name: Commit and push changes
-      if: env.changes == 'true'
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git fetch origin
-        if git show-ref --verify --quiet refs/heads/update-releases; then
-          git checkout update-releases
-        else
-          git checkout -b update-releases
-        fi
-        git add core/resources/quickpick-releases.json
-        git commit -m 'Update combined releases JSON'
-        git pull --rebase origin update-releases
-        git push origin update-releases
-
     - name: Create Pull Request
       if: env.changes == 'true'
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GH_ACTIONS }}
         branch: update-releases
-        base: main
+        base: test
         title: 'Update combined releases JSON'
         body: 'This PR updates the combined releases JSON file.'
         commit-message: 'Update combined releases JSON'
