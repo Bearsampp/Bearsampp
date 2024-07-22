@@ -4,6 +4,9 @@ on:
   workflow_dispatch: # Allows manual triggering
   schedule:
     - cron: '0 */8 * * *' # Runs every 8 hours
+  push:
+    branches:
+      - main # Runs on push to main branch
 
 jobs:
   combine-json:
@@ -61,7 +64,7 @@ jobs:
                 version=$(echo "$line" | cut -d'=' -f1 | xargs)
                 versionUrl=$(echo "$line" | cut -d'=' -f2 | xargs)
                 releaseDate=$(echo "$versionUrl" | grep -oP '\d{4}\.\d{1,2}\.\d{1,2}')
-                versionData=$(jq -n --arg version "$version" --arg url "$versionUrl" --arg release_date "$releaseDate" '{version: $version, url: $url, release_date: $release_date}')
+                versionData='{"version": "'"$version"'", "url": "'"$versionUrl"'", "release_date": "'"$releaseDate"'"}'
                 moduleData=$(echo "$moduleData" | jq --argjson versionData "$versionData" '.versions += [$versionData]')
               fi
             done <<< "$response"
