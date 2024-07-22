@@ -49,60 +49,43 @@ jobs:
           "https://raw.githubusercontent.com/Bearsampp/module-yarn/main/releases.properties"
         )
 
-        combined_json="core/resources/quickpick-releases.json"
-        mkdir -p $(dirname $combined_json)
-        echo "[]" > $combined_json
+        combinedData='{"modules": []}'
 
         for url in "${urls[@]}"; do
-          echo "Fetching $url"
-          content=$(curl -s $url)
-          if [ $? -ne 0 ]; then
-            echo "Failed to fetch $url"
-            continue
+          response=$(curl -s "$url")
+          if [[ -n "$response" ]]; then
+            moduleName=$(basename "$(dirname "$url")")
+            moduleData='{"name": "'"$moduleName"'", "versions": []}'
+            while IFS= read -r line; do
+              if [[ "$line" == *"="* ]]; then
+                version=$(echo "$line" | cut -d'=' -f1 | xargs)
+                versionUrl=$(echo "$line" | cut -d'=' -f2 | xargs)
+                releaseDate=$(echo "$versionUrl" | grep -oP '\d{4}\.\d{1,2}\.\d{1,2}')
+                versionData='{"version": "'"$version"'", "url": "'"$versionUrl"'", "release_date": "'"$releaseDate"'"}'
+                moduleData=$(echo "$moduleData" | jq --argjson versionData "$versionData" '.versions += [$versionData]')
+              fi
+            done <<< "$response"
+            combinedData=$(echo "$combinedData" | jq --argjson moduleData "$moduleData" '.modules += [$moduleData]')
           fi
-
-          module_name=$(echo "$url" | sed -n 's#.*/module-\(.*\)/main/releases.properties#\1#p')
-          json_object=$(echo "$content" | jq -R -s --arg module_name "$module_name" 'split("\n") | map(select(length > 0)) | map(split("=")) | map({(.[0]): .[1]}) | add | .module_name = $module_name')
-          
-          if ! jq -e . >/dev/null 2>&1 <<<"$json_object"; then
-            echo "Invalid JSON from $url"
-            continue
-          fi
-
-          jq --argjson obj "$json_object" '. += [$obj]' $combined_json > temp.json && mv temp.json $combined_json
         done
 
-    - name: Print combined JSON
-      run: cat core/resources/quickpick-releases.json
-
-    - name: Resolve merge conflicts
-      run: |
-        git merge --abort || true
-        git reset --hard
+        echo "$combinedData" | jq '.' > core/resources/quickpick-releases.json
 
     - name: Commit and push changes
-      env:
-        GH_TOKEN: ${{ secrets.GH_ACTIONS }}
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git checkout -b update-combined-json || git checkout update-combined-json
+        git checkout -b update-quickpick-releases
         git add core/resources/quickpick-releases.json
-        git commit -m 'Combined releases.properties files' || echo "No changes to commit"
-        git pull --rebase origin main || true
-        git push --set-upstream origin update-combined-json || git push --set-upstream origin update-combined-json --force
-
-    - name: Debug Git Status
-      run: |
-        git status
-        git log -1
+        git commit -m 'Update quickpick-releases.json'
+        git push origin update-quickpick-releases
 
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v6
+      uses: peter-evans/create-pull-request@v4
       with:
-        token: ${{ secrets.GH_ACTIONS }}
-        commit-message: 'Combined releases.properties files'
-        branch: update-combined-json
-        base: main # Specify the base branch for the pull request
-        title: 'Update combined JSON'
-        body: 'This PR updates the combined JSON file with the latest data from the releases.properties files.'
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: 'Update quickpick-releases.json'
+        branch: update-quickpick-releases
+        title: 'Update quickpick-releases.json'
+        body: 'Automated update of quickpick-releases.json'
+        base: main
