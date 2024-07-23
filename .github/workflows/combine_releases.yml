@@ -45,4 +45,4 @@ jobs:
             - name: Enable Pull Request Automerge
               run: gh pr merge --merge --auto ${{ steps.cpr.outputs.pull-request-number }}
               env:
-                GH_TOKEN: ${{ secrets.PAT }}
+                GH_TOKEN: ${{ secrets.GH_ACTIONS }}
