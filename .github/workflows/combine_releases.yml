@@ -32,6 +32,7 @@ jobs:
                 run: python .github/combine_releases.py
 
             -   name: Create Pull Request
+                id: cpr
                 uses: peter-evans/create-pull-request@v6
                 with:
                     token: ${{ secrets.GH_ACTIONS }}
