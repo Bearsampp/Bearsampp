@@ -1,8 +1,11 @@
+#  Copyright (c) 2024 Bearsampp
+#  License:  GNU General Public License version 3 or later; see LICENSE.txt
+#  Website: https://bearsampp.com
+#  Github: https://github.com/Bearsampp
+
 import requests
 import json
 import os
-
-combined_data = []
 
 urls = [
     'https://raw.githubusercontent.com/Bearsampp/module-adminer/main/releases.properties',
@@ -33,6 +36,8 @@ urls = [
     'https://raw.githubusercontent.com/Bearsampp/module-yarn/main/releases.properties'
 ]
 
+combined_data = []
+
 for url in urls:
     response = requests.get(url)
     if response.status_code == 200:
@@ -50,8 +55,6 @@ for url in urls:
         })
 
 output_path = 'core/resources/quickpick-releases.json'
-
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
-
 with open(output_path, 'w') as f:
     json.dump(combined_data, f, indent=2)
