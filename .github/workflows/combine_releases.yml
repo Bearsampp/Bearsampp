@@ -41,7 +41,7 @@ jobs:
                     body: 'This PR updates the combined releases JSON file.'
                     commit-message: 'Update combined releases JSON'
                     delete-branch: true
-                    author: cpr-bot
+                    author: 'dependabot[bot]'
 
             -   name: Enable automerge on dependabot PRs
                 uses: daneden/enable-automerge-action@v1
@@ -52,7 +52,7 @@ jobs:
 
                     # The name of the PR author to enable automerge for
                     # Defaults to dependabot[bot]
-                    allowed-author: "cpr-bot"
+                    allowed-author: "dependabot[bot]"
 
                     # Allowed values: MERGE | SQUASH | REBASE
                     # Defaults to MERGE
