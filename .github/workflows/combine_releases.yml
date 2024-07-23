@@ -8,10 +8,6 @@ on:
         -   cron: '0 */24 * * *'
     workflow_dispatch:
 
-permissions:
-    pull-requests: write
-    contents: write
-
 jobs:
     combine-releases:
         runs-on: ubuntu-latest
