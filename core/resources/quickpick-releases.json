@@ -46,6 +46,10 @@
       {
         "version": "2.4.59 = https://github.com/Bearsampp/module-apache/releases/download/2024.4.7/bearsampp-apache-2.4.59-2024.4.7.7z",
         "url": "https://raw.githubusercontent.com/Bearsampp/module-apache/main/releases.properties#2.4.59 = https://github.com/Bearsampp/module-apache/releases/download/2024.4.7/bearsampp-apache-2.4.59-2024.4.7.7z"
+      },
+      {
+        "version": "2.4.62 = https://github.com/Bearsampp/module-apache/releases/download/2024.7.20/bearsampp-apache-2.4.62-2024.7.20.7z",
+        "url": "https://raw.githubusercontent.com/Bearsampp/module-apache/main/releases.properties#2.4.62 = https://github.com/Bearsampp/module-apache/releases/download/2024.7.20/bearsampp-apache-2.4.62-2024.7.20.7z"
       }
     ]
   },
