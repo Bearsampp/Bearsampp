@@ -45,6 +45,6 @@ jobs:
                     delete-branch: true
 
             - name: Enable Pull Request Automerge
-              run: gh pr merge --merge --admin ${{ github.event.pull_request.number }}
+              run: gh pr merge --merge --admin ${{ steps.cpr.outputs.pull-request-number }}
               env:
                 GH_TOKEN: ${{ secrets.GH_PAT }}
