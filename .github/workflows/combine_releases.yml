@@ -42,7 +42,16 @@ jobs:
                     commit-message: 'Update combined releases JSON'
                     delete-branch: true
 
-            - name: Enable Pull Request Automerge
-              run: gh pr merge --merge --auto ${{ steps.cpr.outputs.pull-request-number }}
-              env:
-                GH_TOKEN: ${{ secrets.GH_ACTIONS }}
+            -   name: Enable Pull Request Automerge
+                if: steps.cpr.outputs.pull-request-operation == 'created'
+                uses: peter-evans/enable-pull-request-automerge@v3
+                with:
+                    token: ${{ secrets.PAT }}
+                    pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+                    merge-method: squash
+
+            -   name: Auto approve
+                if: steps.cpr.outputs.pull-request-operation == 'created'
+                run: gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
