@@ -1,8 +1,3 @@
-#  Copyright (c) 2024 Bearsampp
-#  License:  GNU General Public License version 3 or later; see LICENSE.txt
-#  Website: https://bearsampp.com
-#  Github: https://github.com/Bearsampp
-
 import requests
 import json
 import os
@@ -50,8 +45,7 @@ for url in urls:
                 version_data.append({'version': version_number, 'url': version_url})
         combined_data.append({
             'module': module_name,
-            'versions': version_data,
-            'url': url
+            'versions': version_data
         })
 
 output_path = 'core/resources/quickpick-releases.json'
