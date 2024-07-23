@@ -36,6 +36,7 @@ jobs:
                 uses: peter-evans/create-pull-request@v6
                 with:
                     token: ${{ secrets.GH_PAT }}
+                    author: Bearsampp <support@bearsampp.com>
                     branch: update-releases
                     base: main
                     title: 'Update combined releases JSON'
