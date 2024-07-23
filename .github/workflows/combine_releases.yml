@@ -42,7 +42,6 @@ jobs:
                     commit-message: 'Update combined releases JSON'
 
             -   name: Enable Pull Request Automerge
-                if: steps.cpr.outputs.pull-request-operation == 'created'
                 uses: peter-evans/enable-pull-request-automerge@v3
                 with:
                    token: ${{ secrets.GH_ACTIONS }}
@@ -50,7 +49,6 @@ jobs:
                    merge-method: squash
 
             -   name: Auto approve
-                if: steps.cpr.outputs.pull-request-operation == 'created'
                 run: gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
                 env:
                   GH_TOKEN: ${{ secrets.GH_ACTIONS }}
