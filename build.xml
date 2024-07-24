@@ -138,7 +138,7 @@
                 <filter token = "APPCONF_MAX_LOGS_ARCHIVES" value = "${appconf.maxLogsArchives}" />
                 <filter token = "APPCONF_LOGS_VERBOSE" value = "${appconf.logsVerbose}" />
                 <filter token = "APPCONF_SCRIPTS_TIMEOUT" value = "${appconf.scriptsTimeout}" />
-                <filter token = "APPCONF_USERNAME_KEY" value = "${appconf.usernameKey}" />
+                <filter token = "APPCONF_DOWNLOAD_ID" value = "${appconf.downloadId}" />
 
                 <filter token = "BIN_APACHE_VERSION" value = "${bin.apache.version}" />
                 <filter token = "BIN_PHP_VERSION" value = "${bin.php.version}" />
