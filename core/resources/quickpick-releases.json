@@ -49,7 +49,7 @@
       },
       {
         "version": "2.4.62 ",
-        "url": " https://github.com/Bearsampp/module-apache/releases/download/2024.7.20/bearsampp-apache-2.4.62-2024.7.20.7z"
+        "url": " https://github.com/Bearsampp/module-apache/releases/download/2024.7.23/bearsampp-apache-2.4.62-2024.7.23.7z"
       }
     ]
   },
@@ -116,15 +116,6 @@
       {
         "version": "1.19.0.19104 ",
         "url": " https://github.com/Bearsampp/module-consolez/releases/download/r1/bearsampp-consolez-1.19.0.19104-r1.7z"
-      }
-    ]
-  },
-  {
-    "module": "module-filezilla",
-    "versions": [
-      {
-        "version": "0.9.60.2 ",
-        "url": " https://github.com/Bearsampp/module-filezilla/releases/download/2022.08.04/bearsampp-filezilla-0.9.60.2-2022.08.04.7z"
       }
     ]
   },
@@ -224,19 +215,6 @@
       {
         "version": "2.0.0 ",
         "url": " https://github.com/Bearsampp/module-gitlist/releases/download/2.0.0/bearsampp-gitlist-2.0.0-2022.07.11.7z"
-      }
-    ]
-  },
-  {
-    "module": "module-mailhog",
-    "versions": [
-      {
-        "version": "1.0.1-386 ",
-        "url": " https://github.com/Bearsampp/module-mailhog/releases/download/mailhog-2020/bearsampp-mailhog-1.0.1-386-2020.7z"
-      },
-      {
-        "version": "1.0.1-amd ",
-        "url": " https://github.com/Bearsampp/module-mailhog/releases/download/mailhog-2020/bearsampp-mailhog-1.0.1-amd-2020.7z"
       }
     ]
   },
