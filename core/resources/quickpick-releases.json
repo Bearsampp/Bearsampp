@@ -206,15 +206,11 @@
     ]
   },
   {
-    "module": "module-gitlist",
+    "module": "module-mailpit",
     "versions": [
       {
-        "version": "0.6.0 ",
-        "url": " https://github.com/Bearsampp/module-gitlist/releases/download/0.6.0/bearsampp-gitlist0.6.0.zip"
-      },
-      {
-        "version": "2.0.0 ",
-        "url": " https://github.com/Bearsampp/module-gitlist/releases/download/2.0.0/bearsampp-gitlist-2.0.0-2022.07.11.7z"
+        "version": "1.18.7 ",
+        "url": " https://github.com/Bearsampp/module-mailpit/releases/download/2024.6.25/bearsampp-mailpit-1.18.7-2024.6.25.7z"
       }
     ]
   },
@@ -762,15 +758,6 @@
       {
         "version": "8.3.9 ",
         "url": " https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.3.9-2024.7.12.7z"
-      }
-    ]
-  },
-  {
-    "module": "module-phpmemadmin",
-    "versions": [
-      {
-        "version": "0.1.0.41 ",
-        "url": " https://github.com/Bearsampp/module-phpmemadmin/releases/download/r1/bearsampp-phpmemadmin-0.1.0.41-r1.7z"
       }
     ]
   },
