@@ -1,6 +1,9 @@
-name: Sync Files
+name: Build and Deploy on Release
+
 on:
-  workflow_dispatch:
+    release:
+        types: [published]
+
 jobs:
   sync:
     runs-on: ubuntu-latest
