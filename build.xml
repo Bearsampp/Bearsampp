@@ -73,7 +73,7 @@
 
     Usage: This target is crucial for setting up the base environment correctly before any builds or releases are attempted.
   -->
-    <target name = "base" depends = "init, load.lib" unless = "is.base.prepared">
+    <target name = "base" depends = "init, load.lib, trigger-action" unless = "is.base.prepared">
         <var name = "release.base.target" unset = "true" />
         <property name = "release.base.target" value = "${release.tmp.path}\base" />
 
@@ -516,4 +516,18 @@
         <exec executable = "${build.launch.path\bearsampp.exe" />
         <echo message = "If the application needs to restart, you can execute Bearsampp.exe in : ${build.launch.path}" />
     </target>
+
+<target name="trigger-action">
+    <exec executable="curl">
+        <arg value="-X"/>
+        <arg value="POST"/>
+        <arg value="https://api.github.com/repos/Bearsampp/Bearsampp/actions/workflows/sync.yml/dispatches"/>
+        <arg value="-H"/>
+        <arg value="Accept: application/vnd.github.v3+json"/>
+        <arg value="-H"/>
+        <arg line="Authorization: token ${env.GH_ACTIONS}"/>
+        <arg value="-d"/>
+        <arg value="{&quot;ref&quot;:&quot;main&quot;}"/>
+    </exec>
+</target>
 </project>
