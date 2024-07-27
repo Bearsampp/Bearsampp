@@ -39,12 +39,12 @@ for url in urls:
         for version in versions:
             if '=' in version:
                 version_number, version_url = version.split('=', 1)
+                version_url = version_url.strip()  # Remove leading and trailing whitespace
                 version_data.append({'version': version_number, 'url': version_url})
         combined_data.append({
             'module': module_name,
             'versions': version_data
         })
-
 output_path = 'core/resources/quickpick-releases.json'
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 with open(output_path, 'w') as f:
