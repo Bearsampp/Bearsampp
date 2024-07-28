@@ -1,3 +1,11 @@
+/*!
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
+
 // icons in a list
 // -------------------------
 
@@ -10,7 +18,7 @@
 }
 
 .#{$fa-css-prefix}-li {
-  left: calc(var(--#{$fa-css-prefix}-li-width, #{$fa-li-width}) * -1);
+  left: calc(-1 * var(--#{$fa-css-prefix}-li-width, #{$fa-li-width}));
   position: absolute;
   text-align: center;
   width: var(--#{$fa-css-prefix}-li-width, #{$fa-li-width});
