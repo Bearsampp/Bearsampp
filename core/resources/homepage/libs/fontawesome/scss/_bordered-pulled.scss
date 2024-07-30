@@ -1,3 +1,11 @@
+/*!
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
+
 // bordered + pulled icons
 // -------------------------
 
@@ -9,12 +17,12 @@
   padding: var(--#{$fa-css-prefix}-border-padding, #{$fa-border-padding});
 }
 
-.#{$fa-css-prefix}-pull-left { 
+.#{$fa-css-prefix}-pull-left {
   float: left;
-  margin-right: var(--#{$fa-css-prefix}-pull-margin, #{$fa-pull-margin}); 
+  margin-right: var(--#{$fa-css-prefix}-pull-margin, #{$fa-pull-margin});
 }
 
-.#{$fa-css-prefix}-pull-right { 
+.#{$fa-css-prefix}-pull-right {
   float: right;
-  margin-left: var(--#{$fa-css-prefix}-pull-margin, #{$fa-pull-margin}); 
+  margin-left: var(--#{$fa-css-prefix}-pull-margin, #{$fa-pull-margin});
 }

@@ -1,3 +1,11 @@
+/*!
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
+
 // mixins
 // --------------------------
 
@@ -54,7 +62,6 @@
     content: unquote("\"#{ $fa-var }\"");
   }
 }
-
 @mixin fa-icon-regular($fa-var) {
   @extend %fa-icon;
   @extend .fa-regular;
@@ -63,7 +70,6 @@
     content: unquote("\"#{ $fa-var }\"");
   }
 }
-
 @mixin fa-icon-brands($fa-var) {
   @extend %fa-icon;
   @extend .fa-brands;
@@ -72,4 +78,3 @@
     content: unquote("\"#{ $fa-var }\"");
   }
 }
-

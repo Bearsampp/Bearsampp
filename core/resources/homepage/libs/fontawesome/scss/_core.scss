@@ -1,3 +1,11 @@
+/*!
+ * Copyright (c) 2021-2024 Bearsampp
+ * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ * Author: Bear
+ * Website: https://bearsampp.com
+ * Github: https://github.com/Bearsampp
+ */
+
 // base icon class definition
 // -------------------------
 
@@ -6,15 +14,15 @@
   font-weight: var(--#{$fa-css-prefix}-style, #{$fa-style});
 }
 
-.#{$fa-css-prefix},
-.#{$fa-css-prefix}-classic,
-.#{$fa-css-prefix}-sharp,
-.fas,
 .#{$fa-css-prefix}-solid,
-.far,
 .#{$fa-css-prefix}-regular,
+.#{$fa-css-prefix}-brands,
+.fas,
+.far,
 .fab,
-.#{$fa-css-prefix}-brands {
+.#{$fa-css-prefix}-sharp-solid,
+.#{$fa-css-prefix}-classic,
+.#{$fa-css-prefix} {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   display: var(--#{$fa-css-prefix}-display, #{$fa-display});
