@@ -40,6 +40,7 @@ for url in urls:
             if '=' in version:
                 version_number, version_url = version.split('=', 1)
                 version_url = version_url.strip()  # Remove leading and trailing whitespace
+                version_number = version_number.strip()  # Remove leading and trailing whitespace
                 version_data.append({'version': version_number, 'url': version_url})
         combined_data.append({
             'module': module_name,
