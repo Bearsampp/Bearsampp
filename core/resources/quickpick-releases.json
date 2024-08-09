@@ -202,6 +202,10 @@
       {
         "version": "2.45.2 ",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.6.17/bearsampp-git-2.45.2-2024.6.17.7z"
+      },
+      {
+        "version": "2.46.0 ",
+        "url": "https://github.com/Bearsampp/module-git/releases/download/2024.8.9/bearsampp-git-2.46.0-2024.8.9.7z"
       }
     ]
   },
@@ -494,6 +498,14 @@
       {
         "version": "8.4 ",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.6.14/bearsampp-mysql-8.4-2024.6.14.7z"
+      },
+      {
+        "version": "8.4.2 ",
+        "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.7.28/bearsampp-mysql-8.4.2-2024.7.28.7z"
+      },
+      {
+        "version": "9.0.1 ",
+        "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.7.28/bearsampp-mysql-9.0.1-2024.8.7.7z"
       }
     ]
   },
@@ -570,8 +582,16 @@
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.4.11/bearsampp-nodejs-20.12.2-2024.4.11.7z"
       },
       {
+        "version": "20.16.0 ",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.7.28/bearsampp-nodejs-20.16.0-2024.7.28.7z"
+      },
+      {
         "version": "21.7.3 ",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.4.11/bearsampp-nodejs-21.7.3-2024.4.11.7z"
+      },
+      {
+        "version": "22.5.1 ",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.7.28/bearsampp-nodejs-22.5.1-2024.7.28.7z"
       }
     ]
   },
