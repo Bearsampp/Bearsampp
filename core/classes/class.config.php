@@ -21,6 +21,7 @@ class Config
     const CFG_TIMEZONE = 'timezone';
     const CFG_NOTEPAD = 'notepad';
     const CFG_SCRIPTS_TIMEOUT = 'scriptsTimeout';
+    const DOWNLOAD_ID = 'DownloadId';
 
     const CFG_DEFAULT_LANG = 'defaultLang';
     const CFG_HOSTNAME = 'hostname';
@@ -121,6 +122,16 @@ class Config
     public function getTimezone()
     {
         return $this->raw[self::CFG_TIMEZONE];
+    }
+
+    /**
+     * Retrieves the license key from the configuration.
+     *
+     * @return string The license key.
+     */
+    public function getDownloadId()
+    {
+        return $this->raw[self::DOWNLOAD_ID];
     }
 
     /**

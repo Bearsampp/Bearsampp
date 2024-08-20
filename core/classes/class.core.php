@@ -58,7 +58,7 @@ class Core
      */
     public function __construct()
     {
-        if (extension_loaded('winbinder')) {
+        if ( extension_loaded( 'winbinder' ) ) {
             require_once $this->getLibsPath() . '/winbinder/winbinder.php';
         }
     }
@@ -66,72 +66,88 @@ class Core
     /**
      * Retrieves the path to the language files.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the language files.
      */
     public function getLangsPath($aetrayPath = false)
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath($aetrayPath) . '/langs';
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/langs';
     }
 
     /**
      * Retrieves the path to the libraries.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the libraries.
      */
     public function getLibsPath($aetrayPath = false)
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath($aetrayPath) . '/libs';
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/libs';
     }
 
     /**
      * Retrieves the path to the resources.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the resources.
      */
     public function getResourcesPath($aetrayPath = false)
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath($aetrayPath) . '/resources';
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/resources';
     }
 
     /**
      * Retrieves the path to the icons.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the icons.
      */
     public function getIconsPath($aetrayPath = false)
     {
         global $bearsamppCore;
 
-        return $bearsamppCore->getResourcesPath($aetrayPath) . '/icons';
+        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/img/icons';
     }
 
     /**
      * Retrieves the path to the scripts.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the scripts.
      */
     public function getScriptsPath($aetrayPath = false)
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath($aetrayPath) . '/scripts';
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/scripts';
+    }
+
+    public function getHomepagePath($aetrayPath = false)
+    {
+        return $this->getResourcesPath( $aetrayPath ) . '/homepage';
+    }
+
+    public function getAjaxPath($aetrayPath = false)
+    {
+        return $this->getHomepagePath( $aetrayPath ) . '/ajax';
     }
 
     /**
      * Retrieves the path to a specific script.
      *
-     * @param string $type The type of script.
+     * @param   string  $type  The type of script.
+     *
      * @return string The path to the script.
      */
     public function getScript($type)
@@ -142,27 +158,29 @@ class Core
     /**
      * Retrieves the path to the temporary directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the temporary directory.
      */
     public function getTmpPath($aetrayPath = false)
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath($aetrayPath) . '/tmp';
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/tmp';
     }
 
     /**
      * Retrieves the path to the root file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the root file.
      */
     public function getisRootFilePath($aetrayPath = false)
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath($aetrayPath) . '/' . self::isRoot_FILE;
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/' . self::isRoot_FILE;
     }
 
     /**
@@ -175,24 +193,25 @@ class Core
         global $bearsamppLang;
 
         $filePath = $this->getResourcesPath() . '/' . self::APP_VERSION;
-        if (!is_file($filePath)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), APP_TITLE, $filePath));
+        if ( !is_file( $filePath ) ) {
+            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), APP_TITLE, $filePath ) );
 
             return null;
         }
 
-        return trim(file_get_contents($filePath));
+        return trim( file_get_contents( $filePath ) );
     }
 
     /**
      * Retrieves the path to the last path file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the last path file.
      */
     public function getLastPath($aetrayPath = false)
     {
-        return $this->getResourcesPath($aetrayPath) . '/' . self::LAST_PATH;
+        return $this->getResourcesPath( $aetrayPath ) . '/' . self::LAST_PATH;
     }
 
     /**
@@ -202,214 +221,231 @@ class Core
      */
     public function getLastPathContent()
     {
-        return @file_get_contents($this->getLastPath());
+        return @file_get_contents( $this->getLastPath() );
     }
 
     /**
      * Retrieves the path to the exec file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the exec file.
      */
     public function getExec($aetrayPath = false)
     {
-        return $this->getTmpPath($aetrayPath) . '/' . self::EXEC;
+        return $this->getTmpPath( $aetrayPath ) . '/' . self::EXEC;
     }
 
     /**
      * Sets the content of the exec file.
      *
-     * @param string $action The content to set in the exec file.
+     * @param   string  $action  The content to set in the exec file.
      */
     public function setExec($action)
     {
-        file_put_contents($this->getExec(), $action);
+        file_put_contents( $this->getExec(), $action );
     }
 
     /**
      * Retrieves the path to the loading PID file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the loading PID file.
      */
     public function getLoadingPid($aetrayPath = false)
     {
-        return $this->getResourcesPath($aetrayPath) . '/' . self::LOADING_PID;
+        return $this->getResourcesPath( $aetrayPath ) . '/' . self::LOADING_PID;
     }
 
     /**
      * Adds a PID to the loading PID file.
      *
-     * @param int $pid The PID to add.
+     * @param   int  $pid  The PID to add.
      */
     public function addLoadingPid($pid)
     {
-        file_put_contents($this->getLoadingPid(), $pid . PHP_EOL, FILE_APPEND);
+        file_put_contents( $this->getLoadingPid(), $pid . PHP_EOL, FILE_APPEND );
     }
 
     /**
      * Retrieves the path to the PHP directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the PHP directory.
      */
     public function getPhpPath($aetrayPath = false)
     {
-        return $this->getLibsPath($aetrayPath) . '/php';
+        return $this->getLibsPath( $aetrayPath ) . '/php';
     }
 
     /**
      * Retrieves the path to the PHP executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the PHP executable.
      */
     public function getPhpExe($aetrayPath = false)
     {
-        return $this->getPhpPath($aetrayPath) . '/' . self::PHP_EXE;
+        return $this->getPhpPath( $aetrayPath ) . '/' . self::PHP_EXE;
     }
 
     /**
      * Retrieves the path to the SetEnv directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the SetEnv directory.
      */
     public function getSetEnvPath($aetrayPath = false)
     {
-        return $this->getLibsPath($aetrayPath) . '/setenv';
+        return $this->getLibsPath( $aetrayPath ) . '/setenv';
     }
 
     /**
      * Retrieves the path to the SetEnv executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the SetEnv executable.
      */
     public function getSetEnvExe($aetrayPath = false)
     {
-        return $this->getSetEnvPath($aetrayPath) . '/' . self::SETENV_EXE;
+        return $this->getSetEnvPath( $aetrayPath ) . '/' . self::SETENV_EXE;
     }
 
     /**
      * Retrieves the path to the NSSM directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the NSSM directory.
      */
     public function getNssmPath($aetrayPath = false)
     {
-        return $this->getLibsPath($aetrayPath) . '/nssm';
+        return $this->getLibsPath( $aetrayPath ) . '/nssm';
     }
 
     /**
      * Retrieves the path to the NSSM executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the NSSM executable.
      */
     public function getNssmExe($aetrayPath = false)
     {
-        return $this->getNssmPath($aetrayPath) . '/' . self::NSSM_EXE;
+        return $this->getNssmPath( $aetrayPath ) . '/' . self::NSSM_EXE;
     }
 
     /**
      * Retrieves the path to the OpenSSL directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the OpenSSL directory.
      */
     public function getOpenSslPath($aetrayPath = false)
     {
-        return $this->getLibsPath($aetrayPath) . '/openssl';
+        return $this->getLibsPath( $aetrayPath ) . '/openssl';
     }
 
     /**
      * Retrieves the path to the OpenSSL executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the OpenSSL executable.
      */
     public function getOpenSslExe($aetrayPath = false)
     {
-        return $this->getOpenSslPath($aetrayPath) . '/' . self::OPENSSL_EXE;
+        return $this->getOpenSslPath( $aetrayPath ) . '/' . self::OPENSSL_EXE;
     }
 
     /**
      * Retrieves the path to the OpenSSL configuration file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the OpenSSL configuration file.
      */
     public function getOpenSslConf($aetrayPath = false)
     {
-        return $this->getOpenSslPath($aetrayPath) . '/' . self::OPENSSL_CONF;
+        return $this->getOpenSslPath( $aetrayPath ) . '/' . self::OPENSSL_CONF;
     }
 
     /**
      * Retrieves the path to the HostsEditor directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the HostsEditor directory.
      */
     public function getHostsEditorPath($aetrayPath = false)
     {
-        return $this->getLibsPath($aetrayPath) . '/hostseditor';
+        return $this->getLibsPath( $aetrayPath ) . '/hostseditor';
     }
 
     /**
      * Retrieves the path to the HostsEditor executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the HostsEditor executable.
      */
     public function getHostsEditorExe($aetrayPath = false)
     {
-        return $this->getHostsEditorPath($aetrayPath) . '/' . self::HOSTSEDITOR_EXE;
+        return $this->getHostsEditorPath( $aetrayPath ) . '/' . self::HOSTSEDITOR_EXE;
     }
 
     /**
      * Retrieves the path to the LN directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the LN directory.
      */
     public function getLnPath($aetrayPath = false)
     {
-        return $this->getLibsPath($aetrayPath) . '/ln';
+        return $this->getLibsPath( $aetrayPath ) . '/ln';
     }
 
     /**
      * Retrieves the path to the LN executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the LN executable.
      */
     public function getLnExe($aetrayPath = false)
     {
-        return $this->getLnPath($aetrayPath) . '/' . self::LN_EXE;
+        return $this->getLnPath( $aetrayPath ) . '/' . self::LN_EXE;
     }
 
     /**
      * Retrieves the path to the PWGen directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the PWGen directory.
      */
     public function getPwgenPath($aetrayPath = false)
     {
-        return $this->getLibsPath($aetrayPath) . '/pwgen';
+        return $this->getLibsPath( $aetrayPath ) . '/pwgen';
     }
 
     /**
      * Retrieves the path to the PWGen executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the PWGen executable.
      */
     public function getPwgenExe($aetrayPath = false)
     {
-        return $this->getPwgenPath($aetrayPath) . '/' . self::PWGEN_EXE;
+        return $this->getPwgenPath( $aetrayPath ) . '/' . self::PWGEN_EXE;
     }
 
     /**
@@ -423,28 +459,158 @@ class Core
     }
 
     /**
-     * Unzips a file to a specified destination.
+     * Unzips a file to the specified directory and provides progress updates.
      *
-     * @param string $zipFilePath The path to the zip file.
-     * @param string $destinationPath The path where the contents should be extracted.
+     * This method uses the 7-Zip command-line tool to extract the contents of a zip file.
+     * It first tests the archive to determine the number of files to be extracted, then
+     * proceeds with the extraction while providing progress updates via a callback function.
      *
-     * @return bool True on success, false on failure.
+     * @param   string         $filePath          The path to the zip file.
+     * @param   string         $destination       The directory to extract the files to.
+     * @param   callable|null  $progressCallback  A callback function to report progress. The callback receives two parameters:
+     *                                            - int $currentFile: The current file number being extracted.
+     *                                            - int $totalFiles: The total number of files to be extracted.
+     *
+     * @return array An array containing the result of the extraction:
+     *               - 'success' => true and 'numFiles' => int on success.
+     *               - 'error' => string and 'numFiles' => int on failure.
      */
-    public function unzipFile($zipFilePath, $destinationPath)
+    public function unzipFile($filePath, $destination, $progressCallback = null)
     {
-        $zip = new ZipArchive;
-        if ($zip->open($zipFilePath) === true) {
-            $zip->extractTo($destinationPath);
-            $zip->close();
+        global $bearsamppRoot;
 
-            Util::logError("source: {$zipFilePath}");
-            Util::logError("destination: {$destinationPath}");
+        $sevenZipPath = $this->getLibsPath() . '/7zip/7za.exe';
 
-            return true;
-        } else {
-            Util::logError('Failed to open zip file: ' . $zipFilePath);
+        if ( !file_exists( $sevenZipPath ) ) {
+            Util::logError( '7za.exe not found at: ' . $sevenZipPath );
 
             return false;
         }
+
+        // Command to test the archive and get the number of files
+        $testCommand = escapeshellarg( $sevenZipPath ) . " t " . escapeshellarg( $filePath ) . " -y -bsp1";
+        $testOutput  = shell_exec( $testCommand );
+
+        // Extract the number of files from the test command output
+        preg_match( '/Files: (\d+)/', $testOutput, $matches );
+        $numFiles = isset( $matches[1] ) ? (int) $matches[1] : 0;
+        Util::logDebug( 'Number of files to be extracted: ' . $numFiles );
+
+        // Command to extract the archive
+        $command = escapeshellarg( $sevenZipPath ) . " x " . escapeshellarg( $filePath ) . " -y -bb1 -o" . escapeshellarg( $destination );
+        Util::logTrace( 'Executing command: ' . $command );
+
+        $process = popen( $command, 'r' );
+
+        if ( $process ) {
+            $filesExtracted = 0;
+            $buffer         = '';
+
+            while ( !feof( $process ) ) {
+                $buffer .= fread( $process, 262144 ); // Read in smaller chunks of 64KB
+
+                while ( ($newlinePos = strpos( $buffer, "\n" )) !== false ) {
+                    $line   = substr( $buffer, 0, $newlinePos + 1 );
+                    $buffer = substr( $buffer, $newlinePos + 1 );
+
+                    if ( $progressCallback && preg_match( '/^- (.+)$/', $line, $matches ) ) {
+                        $fileName = trim( $matches[1] );
+
+                        // Check if the extracted item is a file and not a directory
+                        if ( substr( $fileName, -1 ) !== '\\' ) {
+                            $filesExtracted++;
+                            if ( $filesExtracted <= $numFiles ) {
+                                call_user_func( $progressCallback, $filesExtracted, $numFiles );
+                            }
+                        }
+                    }
+                }
+
+                // Clear the buffer periodically to release memory ( 128k chunks )
+                if ( strlen( $buffer ) > 524288 ) {
+                    $buffer = '';
+                }
+            }
+
+            $returnVar = pclose( $process );
+            Util::logDebug( 'Command return value: ' . $returnVar );
+
+            if ( $returnVar === 0 ) {
+                Util::logDebug( 'Successfully unzipped file to: ' . $destination );
+
+                return ['success' => true, 'numFiles' => $numFiles];
+            }
+            else {
+                Util::logError( 'Failed to unzip file. Command return value: ' . $returnVar );
+
+                return ['error' => 'Failed to unzip file', 'numFiles' => $numFiles];
+            }
+        }
+        else {
+            Util::logError( 'Failed to open process for command: ' . $command );
+
+            return ['error' => 'Failed to open process', 'numFiles' => $numFiles];
+        }
+    }
+
+    /**
+     * Fetches a file from a given URL and saves it to a specified file path.
+     *
+     * This method attempts to retrieve the content from the provided URL and save it to the specified file path.
+     * If any error occurs during fetching or saving, it logs the error and returns an error message.
+     * If the operation is successful, it returns the file path.
+     * The method also logs the file size if the input stream is a valid resource.
+     *
+     * @param   string  $moduleUrl    The URL from which to fetch the file content.
+     * @param   string  $filePath     The path where the file content should be saved.
+     * @param   bool    $progressBar  Optional. Whether to display a progress bar during the download process. Default is false.
+     *
+     * @return array Returns the file path if successful, or an array with an error message if an error occurs.
+     */
+    public function getFileFromUrl(string $moduleUrl, string $filePath, $progressBar = false)
+    {
+        // Open the URL for reading
+        $inputStream = @fopen( $moduleUrl, 'rb' );
+        if ( $inputStream === false ) {
+            Util::logError( 'Error fetching content from URL: ' . $moduleUrl );
+
+            return ['error' => 'Error fetching module'];
+        }
+
+        // Open the file for writing
+        $outputStream = @fopen( $filePath, 'wb' );
+        if ( $outputStream === false ) {
+            Util::logError( 'Error opening file for writing: ' . $filePath );
+            fclose( $inputStream );
+
+            return ['error' => 'Error saving module'];
+        }
+
+        // Read and write in chunks to avoid memory overload
+        $bufferSize = 8096; // 8KB
+        $chunksRead = 0;
+
+        while ( !feof( $inputStream ) ) {
+            $buffer = fread( $inputStream, $bufferSize );
+            fwrite( $outputStream, $buffer );
+            $chunksRead++;
+
+            // Send progress update
+            if ( $progressBar ) {
+                $progress = $chunksRead;
+                echo json_encode( ['progress' => $progress] );
+
+                // Check if output buffering is active before calling ob_flush()
+                if ( ob_get_length() !== false ) {
+                    ob_flush();
+                }
+                flush();
+            }
+        }
+
+        fclose( $inputStream );
+        fclose( $outputStream );
+
+        return ['success' => true];
     }
 }

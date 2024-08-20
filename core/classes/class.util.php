@@ -1645,6 +1645,7 @@ class Util
         $localIP = getHostByName( getHostName() );
 
         $connection = @fsockopen( $localIP, $port );
+
         if ( is_resource( $connection ) ) {
             fclose( $connection );
             $process = Batch::getProcessUsingPort( $port );
@@ -2046,8 +2047,24 @@ class Util
         ];
     }
 
-    public static function rebuildIni()
+    /**
+     * Checks the current state of the internet connection.
+     *
+     * This method attempts to reach a well-known website (e.g., www.google.com) to determine the state of the internet connection.
+     * It returns `true` if the connection is successful, otherwise it returns `false`.
+     *
+     * @return bool True if the internet connection is active, false otherwise.
+     */
+    public static function checkInternetState()
     {
+        $connected = @fsockopen( "www.google.com", 80 );
+        if ( $connected ) {
+            fclose( $connected );
 
+            return true; // Internet connection is active
+        }
+        else {
+            return false; // Internet connection is not active
+        }
     }
 }
