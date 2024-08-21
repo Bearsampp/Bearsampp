@@ -6,6 +6,7 @@
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
+
 /**
  * This script sets up the homepage for the Bearsampp application, including loading necessary resources,
  * setting up the navigation bar, and including dynamic content based on the application's state.
@@ -16,6 +17,7 @@
  * Include the main root.php file which initializes the application environment.
  */
 include __DIR__ . '/../../root.php';
+include __DIR__ . '/../../classes/actions/class.action.quickPick.php';
 
 /**
  * Declare global variables to access various parts of the application such as language settings,
@@ -34,6 +36,12 @@ $resourcesPath = rtrim( $bearsamppHomepage->getResourcesPath(), '/' ) . '/';
 $iconsPath  = $bearsamppHomepage->getIconsPath();
 $imagesPath = $bearsamppHomepage->getImagesPath();
 
+// Instantiate the QuickPick class
+$quickPick = new QuickPick();
+
+$ajaxUrl = $bearsamppCore->getAjaxPath() . '/ajax.getmodule_versions.php';
+
+
 /**
  * Retrieve and store the localized string for the 'Download More' label.
  */
@@ -49,7 +57,6 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
  * and the document title.
  */
 ?>
-
 <!DOCTYPE html>
 <html lang = "<?php echo $bearsamppLang->getValue( Lang::LOCALE ) ?>">
 
@@ -65,12 +72,12 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
      */
     $cssFiles = [
         "/css/app.css",
-        "/libs/bootstrap/bootstrap.min.css",
+        "/libs/bootstrap/css/bootstrap.min.css",
         "/libs/fontawesome/css/all.min.css",
     ];
     $jsFiles  = [
 
-        "/libs/bootstrap/bootstrap.min.js",
+        "/libs/bootstrap/js/bootstrap.bundle.min.js",
         "/libs/fontawesome/js/all.min.js",
         "/js/_commons.js",
         "/js/latestversion.js",
@@ -85,7 +92,8 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
         "/js/nodejs.js",
         "/js/php.js",
         "/js/postgresql.js",
-        "/js/xlight.js"
+        "/js/xlight.js",
+        "/js/quickpick.js"
     ];
 
     /**
@@ -121,6 +129,8 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
             </button>
         </div>
     </div>
+    <?php echo $quickPick->loadQuickpick($imagesPath ); ?>
+
     <div class = "collapse navbar-collapse icons" id = "navbarSupportedContent">
         <div class = "d-flex flex-row justify-content-space-between align-items-center flex-fill mb-0">
             <a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php echo $bearsamppLang->getValue( Lang::DISCORD ); ?>" target = "_blank"

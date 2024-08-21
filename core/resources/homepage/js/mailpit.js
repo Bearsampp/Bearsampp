@@ -20,7 +20,6 @@ async function getMailpitStatus() {
     console.log('Error receiving from ajax.php');
   } else {
     let myajaxresponse = await response.text();
-    console.log(myajaxresponse);
     let data;
 try {
   data = JSON.parse(myajaxresponse);

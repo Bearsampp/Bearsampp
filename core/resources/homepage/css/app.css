@@ -247,7 +247,6 @@ nav.navbar .svg-inline--fa.fa-discord {
 .svg-inline--fa {
     height: 1.125em;
     }
-
 /* ---- END ICONOGRAPHY ---- */
 
 .close-button {
@@ -256,3 +255,163 @@ nav.navbar .svg-inline--fa.fa-discord {
     margin-right: -40px;
     margin-top: -10px;
 }
+
+/*
+*  ---- QUICKPICK ----
+*/
+.quickpick {
+    background-color: #212529;
+    color: white;
+    min-width: 165px;
+    }
+div#InternetState {
+    color: white;
+    display: inline-flex;
+    margin-right: 50px;
+    padding: 0;
+    }
+#InternetState img.me-2 {
+    margin-top: -14px;
+    }
+#InternetState span {
+    margin-top: -9px;
+    }
+.custom-select {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    font-size: 1.15rem;
+    color: #000;
+    }
+
+.custom-select .select-button {
+    width: 100%;
+    font-size: 16px;
+    background-color: #fff;
+    padding: 0.675em 1em;
+    border: 1px solid #caced1;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    white-space: nowrap;
+    font-weight: normal !important;
+    }
+
+.custom-select .selected-value {
+    text-align: left;
+    padding-right: 5px;
+    font-weight: bold
+    }
+
+.custom-select .arrow {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #000;
+    transition: transform ease-in-out 0.3s;
+
+    }
+
+.custom-select.active .select-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: scaleY(1);
+    }
+
+.select-dropdown {
+    position: absolute;
+    list-style: none;
+    width: 100%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    background-color: #fff;
+    border: 1px solid #caced1;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    transition: 0.5s ease;
+    transform: scaleY(0);
+    opacity: 0;
+    visibility: hidden;
+    }
+
+.select-dropdown:focus-within {
+    box-shadow: 0 10px 25px rgba(94, 108, 233, 0.6);
+    }
+
+.select-dropdown li {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    }
+
+.select-dropdown li label {
+    width: 100%;
+    padding: 8px 10px;
+    cursor: pointer;
+    }
+
+.select-dropdown::-webkit-scrollbar {
+    width: 7px;
+    }
+
+.select-dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 25px;
+    }
+
+.select-dropdown::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 25px;
+    }
+
+.select-dropdown li:hover,
+.select-dropdown input:checked ~ label,
+.select-dropdown input:focus ~ label {
+    background-color: var(--bs-gray-200);
+    }
+
+.select-dropdown input[type="radio"] {
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    }
+
+.moduleheader {
+    font-weight: bold
+    }
+
+.waitloader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid blue;
+    border-right: 16px solid green;
+    border-bottom: 16px solid red;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    }
+
+#progress-bar {
+    position: relative;
+    color: white; /* Ensure text color contrasts with background */
+    text-align: center; /* Center the text */
+    line-height: 1rem; /* Adjust based on your progress bar height */
+    font-weight: bold;
+}
+
+/* Keyframes for the striped animation */
+@keyframes progress-bar-stripes {
+    from {
+        background-position: 40px 0;
+        }
+    to {
+        background-position: 0 0;
+        }
+    }
