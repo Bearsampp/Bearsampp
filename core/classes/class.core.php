@@ -488,7 +488,7 @@ class Core
         }
 
         // Command to test the archive and get the number of files
-        $testCommand = escapeshellarg( $sevenZipPath ) . " t " . escapeshellarg( $filePath ) . " -y -bsp1";
+        $testCommand = escapeshellarg( $sevenZipPath ) . ' t ' . escapeshellarg( $filePath ) . ' -y -bsp1';
         $testOutput  = shell_exec( $testCommand );
 
         // Extract the number of files from the test command output
@@ -497,17 +497,17 @@ class Core
         Util::logDebug( 'Number of files to be extracted: ' . $numFiles );
 
         // Command to extract the archive
-        $command = escapeshellarg( $sevenZipPath ) . " x " . escapeshellarg( $filePath ) . " -y -bb1 -o" . escapeshellarg( $destination );
+        $command = escapeshellarg( $sevenZipPath ) . ' x ' . escapeshellarg( $filePath ) . ' -y -bb1 -o' . escapeshellarg( $destination );
         Util::logTrace( 'Executing command: ' . $command );
 
-        $process = popen( $command, 'r' );
+        $process = popen( $command, 'rb' );
 
         if ( $process ) {
             $filesExtracted = 0;
             $buffer         = '';
 
             while ( !feof( $process ) ) {
-                $buffer .= fread( $process, 262144 ); // Read in smaller chunks of 64KB
+                $buffer .= fread( $process, 8192 ); // Read in smaller chunks of 4KB
 
                 while ( ($newlinePos = strpos( $buffer, "\n" )) !== false ) {
                     $line   = substr( $buffer, 0, $newlinePos + 1 );
@@ -524,11 +524,6 @@ class Core
                             }
                         }
                     }
-                }
-
-                // Clear the buffer periodically to release memory ( 128k chunks )
-                if ( strlen( $buffer ) > 524288 ) {
-                    $buffer = '';
                 }
             }
 
