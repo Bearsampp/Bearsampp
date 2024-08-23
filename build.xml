@@ -109,7 +109,8 @@
         build.properties,
         build.xml,
         *.iml,
-        *.launch"
+        *.launch,
+        rcedit-x64.exe"
             />
         </copy>
 
