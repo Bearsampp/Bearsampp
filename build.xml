@@ -97,30 +97,46 @@
         <!-- Copy core -->
         <copy todir = "${release.base.target}" failonerror = "true">
             <fileset dir = "${project.basedir}" defaultexcludes = "yes" excludes = "
-        .dev/**,
-        .github/**,
-        .idea/**,
-        .settings/**,
-        giscus.json,
-        base/**,
-        bin/**,
-        core/tmp/*,
-        core/.editorconfig,
-        build.properties,
-        build.xml,
-        *.iml,
-        *.launch,
-        rcedit-x64.exe"
+    .dev/**,
+    .github/**,
+    .idea/**,
+    .settings/**,
+    giscus.json,
+    base/**,
+    bin/**,
+    core/tmp/*,
+    core/.editorconfig,
+    build.properties,
+    build.xml,
+    *.iml,
+    *.launch,
+    rcedit-x64.exe"
             />
         </copy>
+
+        <!-- Check for openssl.cfg and fetch if not present -->
+        <available file = "${project.basedir}/core/libs/openssl/openssl.cfg" property = "openssl.cfg.exists" />
+        <if>
+            <not>
+                <isset property = "openssl.cfg.exists" />
+            </not>
+            <then>
+                <mkdir dir = "${project.basedir}/core/libs/openssl" />
+                <get src = "https://github.com/Bearsampp/sandbox/releases/download/2024.8.23/openssl.cfg" dest = "${project.basedir}/core/libs/openssl/openssl.cfg" />
+                <echo message = "openssl.cfg recovered from sandbox" />
+            </then>
+            <else>
+                <echo message = "openssl.cfg already exists." />
+            </else>
+        </if>
 
         <!-- Copy base -->
         <copy todir = "${release.base.target}">
             <fileset dir = "${project.basedir}\base" defaultexcludes = "yes" excludes = "
-        logs/*,
-        ssl/*,
-        tmp/**,
-        vhosts/*"
+    logs/*,
+    ssl/*,
+    tmp/**,
+    vhosts/*"
             >
                 <present targetdir = "${project.basedir}\base" />
             </fileset>
