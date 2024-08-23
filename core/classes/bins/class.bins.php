@@ -1,12 +1,18 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
+/**
+ * The `Bins` class manages various bin modules such as Mailhog, Mailpit, Memcached, Apache, PHP, MySQL, MariaDB, PostgreSQL, Node.js, FileZilla, and Xlight.
+ * It provides methods to initialize, reload, update, and retrieve these modules.
+ * The class also handles logging and service management for the enabled bin modules.
+ */
 class Bins
 {
     const TYPE = 'bins';

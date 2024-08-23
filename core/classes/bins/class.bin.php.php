@@ -1,5 +1,19 @@
 <?php
+/*
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
+ */
 
+/**
+ * Class BinPhp
+ *
+ * This class extends the Module class and provides functionalities specific to managing PHP binaries within the Bearsampp application.
+ * It includes methods for reloading configurations, switching versions, updating configurations, and retrieving various PHP settings and extensions.
+ */
 class BinPhp extends Module
 {
     const ROOT_CFG_ENABLE = 'phpEnable';
@@ -86,11 +100,23 @@ class BinPhp extends Module
     private $conf;
     private $pearExe;
 
+    /**
+     * Constructor for the BinPhp class.
+     *
+     * @param string $id The ID of the module.
+     * @param string $type The type of the module.
+     */
     public function __construct($id, $type) {
         Util::logInitClass($this);
         $this->reload($id, $type);
     }
 
+    /**
+     * Reloads the module configuration based on the provided ID and type.
+     *
+     * @param string|null $id The ID of the module. If null, the current ID is used.
+     * @param string|null $type The type of the module. If null, the current type is used.
+     */
     public function reload($id = null, $type = null) {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppBins, $bearsamppLang;
         Util::logReloadClass($this);
@@ -140,11 +166,26 @@ class BinPhp extends Module
         }
     }
 
+    /**
+     * Switches the PHP version to the specified version.
+     *
+     * @param string $version The version to switch to.
+     * @param bool $showWindow Whether to show a window during the switch process.
+     * @return bool True if the switch was successful, false otherwise.
+     */
     public function switchVersion($version, $showWindow = false) {
         Util::logDebug('Switch ' . $this->name . ' version to ' . $version);
         return $this->updateConfig($version, 0, $showWindow);
     }
 
+    /**
+     * Updates the PHP configuration to the specified version.
+     *
+     * @param string|null $version The version to update to. If null, the current version is used.
+     * @param int $sub The sub-level for logging indentation.
+     * @param bool $showWindow Whether to show a window during the update process.
+     * @return bool True if the update was successful, false otherwise.
+     */
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
         global $bearsamppLang, $bearsamppBins, $bearsamppApps, $bearsamppWinbinder;
 
@@ -157,13 +198,10 @@ class BinPhp extends Module
 
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
-        //$phpPath = str_replace('php' . $this->getVersion(), 'php' . $version, $this->getCurrentPath());
         $conf = str_replace('php' . $this->getVersion(), 'php' . $version, $this->getConf());
         $bearsamppConf = str_replace('php' . $this->getVersion(), 'php' . $version, $this->bearsamppConf);
 
         $tsDll = $this->getTsDll($version);
-        //$apacheShortVersion = substr(str_replace('.', '', $bearsamppBins->getApache()->getVersion()), 0, 2);
-        //$apachePhpModuleName = $tsDll !== false ? substr($tsDll, 0, 4) . '_module' : null;
         $apachePhpModulePath = $this->getApacheModule($bearsamppBins->getApache()->getVersion(), $version);
 
         Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'PHP TsDll found: ' . $tsDll);
@@ -221,6 +259,11 @@ class BinPhp extends Module
         return true;
     }
 
+    /**
+     * Retrieves the PHP settings.
+     *
+     * @return array An associative array of PHP settings.
+     */
     public function getSettings() {
         return array(
             'Language options' => array(
@@ -341,6 +384,11 @@ class BinPhp extends Module
         );
     }
 
+    /**
+     * Retrieves the default, off, and current values for various PHP settings.
+     *
+     * @return array An associative array where the key is the setting name and the value is an array containing the default, off, and current values.
+     */
     public function getSettingsValues() {
         return array(
             self::INI_SHORT_OPEN_TAG => array('On', 'Off', 'On'),
@@ -410,6 +458,12 @@ class BinPhp extends Module
         );
     }
 
+    /**
+     * Checks if a specific PHP setting is active.
+     *
+     * @param string $name The name of the setting to check.
+     * @return bool True if the setting is active, false otherwise.
+     */
     public function isSettingActive($name) {
         $settingsValues = $this->getSettingsValues();
 
@@ -424,6 +478,12 @@ class BinPhp extends Module
         return false;
     }
 
+    /**
+     * Checks if a specific PHP setting exists in the configuration file.
+     *
+     * @param string $name The name of the setting to check.
+     * @return bool True if the setting exists, false otherwise.
+     */
     public function isSettingExists($name) {
         $confContent = file($this->getConf());
         foreach ($confContent as $row) {
@@ -435,6 +495,11 @@ class BinPhp extends Module
         return false;
     }
 
+    /**
+     * Retrieves the list of PHP extensions from both the configuration file and the extensions folder.
+     *
+     * @return array An associative array where the key is the extension name and the value is the status (on/off).
+     */
     public function getExtensions() {
         $fromFolder = $this->getExtensionsFromConf();
         $fromConf = $this->getExtensionsFromFolder();
@@ -443,6 +508,12 @@ class BinPhp extends Module
         return $result;
     }
 
+    /**
+     * Checks if a specific PHP extension is excluded from the list.
+     *
+     * @param string $ext The name of the extension to check.
+     * @return bool True if the extension is excluded, false otherwise.
+     */
     private function isExtensionExcluded($ext) {
         return in_array($ext, array(
             'opcache',
@@ -450,6 +521,11 @@ class BinPhp extends Module
         ));
     }
 
+    /**
+     * Retrieves the list of PHP extensions from the configuration file.
+     *
+     * @return array An associative array where the key is the extension name and the value is the status (on/off).
+     */
     public function getExtensionsFromConf() {
         $result = array();
 
@@ -473,6 +549,11 @@ class BinPhp extends Module
         return $result;
     }
 
+    /**
+     * Retrieves the list of currently loaded PHP extensions.
+     *
+     * @return array An array of extension names that are currently loaded.
+     */
     public function getExtensionsLoaded() {
         $result = array();
         foreach ($this->getExtensionsFromConf() as $name => $status) {
@@ -483,6 +564,11 @@ class BinPhp extends Module
         return $result;
     }
 
+    /**
+     * Retrieves the list of PHP extensions from the extensions folder.
+     *
+     * @return array An associative array where the key is the extension name and the value is the status (off).
+     */
     public function getExtensionsFromFolder() {
         $result = array();
 
@@ -506,6 +592,13 @@ class BinPhp extends Module
         return $result;
     }
 
+    /**
+     * Retrieves the path to the Apache module for the specified Apache and PHP versions.
+     *
+     * @param string $apacheVersion The version of Apache.
+     * @param string|null $phpVersion The version of PHP. If null, the current PHP version is used.
+     * @return string|false The path to the Apache module, or false if not found.
+     */
     public function getApacheModule($apacheVersion, $phpVersion = null) {
         $apacheVersion = substr(str_replace('.', '', $apacheVersion), 0, 2);
         $phpVersion = $phpVersion == null ? $this->getVersion() : $phpVersion;
@@ -529,6 +622,12 @@ class BinPhp extends Module
         return false;
     }
 
+    /**
+     * Retrieves the name of the PHP Thread Safe (TS) DLL for the specified PHP version.
+     *
+     * @param string|null $phpVersion The version of PHP. If null, the current PHP version is used.
+     * @return string|false The name of the PHP TS DLL, or false if not found.
+     */
     public function getTsDll($phpVersion = null) {
         $phpVersion = $phpVersion == null ? $this->getVersion() : $phpVersion;
         $currentPath = str_replace('php' . $this->getVersion(), 'php' . $phpVersion, $this->getCurrentPath());
@@ -542,6 +641,11 @@ class BinPhp extends Module
         return false;
     }
 
+    /**
+     * Sets the PHP version and updates the configuration.
+     *
+     * @param string $version The version to set.
+     */
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
@@ -549,6 +653,12 @@ class BinPhp extends Module
         $this->reload();
     }
 
+    /**
+     * Enables or disables the module and updates the configuration.
+     *
+     * @param int $enabled The enable status (Config::ENABLED or Config::DISABLED).
+     * @param bool $showWindow Whether to show a window during the process.
+     */
     public function setEnable($enabled, $showWindow = false) {
         global $bearsamppConfig, $bearsamppBins, $bearsamppLang, $bearsamppWinbinder;
 
@@ -575,31 +685,61 @@ class BinPhp extends Module
         }
     }
 
+    /**
+     * Retrieves the path to the PHP error log file.
+     *
+     * @return string The path to the PHP error log file.
+     */
     public function getErrorLog() {
         return $this->errorLog;
     }
 
+    /**
+     * Retrieves the path to the PHP CLI executable.
+     *
+     * @return string The path to the PHP CLI executable.
+     */
     public function getCliExe() {
         return $this->cliExe;
     }
 
+    /**
+     * Retrieves the path to the PHP CLI silent executable.
+     *
+     * @return string The path to the PHP CLI silent executable.
+     */
     public function getCliSilentExe() {
         return $this->cliSilentExe;
     }
 
+    /**
+     * Retrieves the path to the PHP configuration file.
+     *
+     * @return string The path to the PHP configuration file.
+     */
     public function getConf() {
         return $this->conf;
     }
 
+    /**
+     * Retrieves the path to the PHP PEAR executable.
+     *
+     * @return string The path to the PHP PEAR executable.
+     */
     public function getPearExe() {
         return $this->pearExe;
     }
 
+    /**
+     * Retrieves the version of PEAR.
+     *
+     * @param bool $cache Whether to use the cached version.
+     * @return string|null The PEAR version, or null if not found.
+     */
     public function getPearVersion($cache = false) {
         $cacheFile = $this->getCurrentPath() . '/pear/version';
         if (!$cache) {
             file_put_contents($cacheFile, Batch::getPearVersion());
         }
         return file_exists($cacheFile) ? file_get_contents($cacheFile) : null;
-    }
-}
+    }}

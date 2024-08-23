@@ -1,12 +1,50 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
+/**
+ * Class BinNodejs
+ *
+ * The `BinNodejs` class extends the `Module` class and provides functionalities specific to managing
+ * the Node.js module within the Bearsampp application. It includes methods for reloading the module
+ * configuration, switching versions, enabling/disabling the module, and retrieving various configuration
+ * paths such as the executable, configuration file, variables file, npm executable, and launch script.
+ *
+ * Constants:
+ * - `ROOT_CFG_ENABLE`: Configuration key for enabling the Node.js module.
+ * - `ROOT_CFG_VERSION`: Configuration key for the Node.js version.
+ * - `LOCAL_CFG_EXE`: Configuration key for the Node.js executable.
+ * - `LOCAL_CFG_VARS`: Configuration key for the Node.js variables.
+ * - `LOCAL_CFG_NPM`: Configuration key for the npm executable.
+ * - `LOCAL_CFG_LAUNCH`: Configuration key for the Node.js launch script.
+ * - `LOCAL_CFG_CONF`: Configuration key for the Node.js configuration file.
+ *
+ * Properties:
+ * - `exe`: Path to the Node.js executable.
+ * - `conf`: Path to the Node.js configuration file.
+ * - `vars`: Path to the Node.js variables file.
+ * - `npm`: Path to the npm executable.
+ * - `launch`: Path to the Node.js launch script.
+ *
+ * Methods:
+ * - `__construct($id, $type)`: Constructs a `BinNodejs` object and initializes the module with the given ID and type.
+ * - `reload($id = null, $type = null)`: Reloads the module configuration based on the provided ID and type.
+ * - `switchVersion($version, $showWindow = false)`: Switches the Node.js version to the specified version.
+ * - `updateConfig($version = null, $sub = 0, $showWindow = false)`: Updates the module configuration with a specific version.
+ * - `setVersion($version)`: Sets the version of the module.
+ * - `setEnable($enabled, $showWindow = false)`: Enables or disables the module.
+ * - `getExe()`: Retrieves the executable path for Node.js.
+ * - `getConf()`: Retrieves the configuration file path for Node.js.
+ * - `getVars()`: Retrieves the variables file path for Node.js.
+ * - `getNpm()`: Retrieves the npm executable path for Node.js.
+ * - `getLaunch()`: Retrieves the launch script path for Node.js.
+ */
 class BinNodejs extends Module
 {
     const ROOT_CFG_ENABLE = 'nodejsEnable';
