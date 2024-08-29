@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
+ */
+
 /**
  * Initializes event listeners and handles the UI interactions for the custom select dropdown.
  * This function is executed when the DOM content is fully loaded.
@@ -117,6 +126,7 @@ function hideall() {
  *
  * @param {string} moduleName - The name of the module to install.
  * @param {string} version - The version of the module to install.
+ * @returns {Promise<void>} - A promise that resolves when the installation is complete.
  */
 async function installModule(moduleName, version) {
     const url = AJAX_URL;
@@ -174,19 +184,14 @@ async function installModule(moduleName, version) {
                         const progressValue = data.progress;
                         progressbar.style.width = '100%';
                         if (isDownloading) {
-                            progressbar.setAttribute('aria-valuenow', progressValue);
                             progressbar.innerText = `${progressValue} KBytes Downloaded`;
                         } else {
-                            progressbar.setAttribute('aria-valuenow', progressValue);
                             progressbar.innerText = `${progressValue} Extracted`;
                         }
                     } else if (data.success) {
-
                         console.log(data);
                         isCompleted = true;
                         messageData = data.message;
-//                        window.alert(data.message);
-
                     } else if (data.error) {
                         console.error('Error:', data.error);
                         window.alert(`Error: ${data.error}`);
@@ -197,13 +202,15 @@ async function installModule(moduleName, version) {
                     // Ignore JSON parse errors for incomplete parts
                 }
             }
+
+            // Clear responseText to keep only the unprocessed part
+            responseText = parts[parts.length - 1].startsWith('{') ? parts[parts.length - 1] : '';
         }
     } catch (error) {
         console.error('Failed to install module:', error);
         window.alert('Failed to install module: ' + error.message);
     } finally {
-        if (isCompleted === true)
-        {
+        if (isCompleted === true) {
             confirm(messageData);
         }
         setTimeout(() => {

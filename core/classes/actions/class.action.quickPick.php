@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -405,72 +406,69 @@ class QuickPick
      * @return array An array containing the status and message.
      */
     public function fetchAndUnzipModule(string $moduleUrl, string $module): array
-    {
-        Util::logDebug( "$module is: " . $module );
+{
+    Util::logDebug("$module is: " . $module);
 
-        global $bearsamppRoot, $bearsamppCore;
-        $tmpDir = $bearsamppRoot->getTmpPath();
-        Util::logDebug( 'Temporary Directory: ' . $tmpDir );
+    global $bearsamppRoot, $bearsamppCore;
+    $tmpDir = $bearsamppRoot->getTmpPath();
+    Util::logDebug('Temporary Directory: ' . $tmpDir);
 
-        $fileName = basename( $moduleUrl );
-        Util::logDebug( 'File Name: ' . $fileName );
+    $fileName = basename($moduleUrl);
+    Util::logDebug('File Name: ' . $fileName);
 
-        $tmpFilePath = $tmpDir . '/' . $fileName;
-        Util::logDebug( 'File Path: ' . $tmpFilePath );
+    $tmpFilePath = $tmpDir . '/' . $fileName;
+    Util::logDebug('File Path: ' . $tmpFilePath);
 
-        $moduleName = str_replace( 'module-', '', $module );
-        Util::logDebug( 'Module Name: ' . $moduleName );
+    $moduleName = str_replace('module-', '', $module);
+    Util::logDebug('Module Name: ' . $moduleName);
 
-        $moduleType = $this->modules[$module]['type'];
-        Util::logDebug( 'Module Type: ' . $moduleType );
+    $moduleType = $this->modules[$module]['type'];
+    Util::logDebug('Module Type: ' . $moduleType);
 
-        // Get module type
-        $destination = $this->getModuleDestinationPath( $moduleType, $moduleName );
-        Util::logDebug( 'Destination: ' . $destination );
+    // Get module type
+    $destination = $this->getModuleDestinationPath($moduleType, $moduleName);
+    Util::logDebug('Destination: ' . $destination);
 
-        // Retrieve the file path from the URL using the bearsamppCore module,
-        // passing the module URL and temporary file path, with the use Progress Bar parameter set to true.
-        $result = $bearsamppCore->getFileFromUrl( $moduleUrl, $tmpFilePath, true );
+    // Retrieve the file path from the URL using the bearsamppCore module,
+    // passing the module URL and temporary file path, with the use Progress Bar parameter set to true.
+    $result = $bearsamppCore->getFileFromUrl($moduleUrl, $tmpFilePath, true);
 
-        // Check if $result is false
-        if ( $result === false ) {
-            Util::logError( 'Failed to retrieve file from URL: ' . $moduleUrl );
+    // Check if $result is false
+    if ($result === false) {
+        Util::logError('Failed to retrieve file from URL: ' . $moduleUrl);
+        return ['error' => 'Failed to retrieve file from URL'];
+    }
 
-            return ['error' => 'Failed to retrieve file from URL'];
+    // Determine the file extension and call the appropriate unzipping function
+    $fileExtension = pathinfo($tmpFilePath, PATHINFO_EXTENSION);
+    Util::logDebug('File extension: ' . $fileExtension);
+
+    if ($fileExtension === '7z' || $fileExtension === 'zip') {
+        // Send phase indicator for extraction
+        echo json_encode(['phase' => 'extracting']);
+        if (ob_get_length()) {
+            ob_flush();
         }
+        flush();
 
-        // Determine the file extension and call the appropriate unzipping function
-        $fileExtension = pathinfo( $tmpFilePath, PATHINFO_EXTENSION );
-        Util::logDebug( 'File extension: ' . $fileExtension );
-
-        if ( $fileExtension === '7z' || $fileExtension === 'zip' ) {
-            // Send phase indicator for extraction
-            echo json_encode( ['phase' => 'extracting'] );
-            if ( ob_get_length() ) {
+        $unzipResult = $bearsamppCore->unzipFile($tmpFilePath, $destination, function ($currentPercentage) {
+            echo json_encode(['progress' => "$currentPercentage%"]);
+            if (ob_get_length()) {
                 ob_flush();
             }
             flush();
+        });
 
-            $unzipResult = $bearsamppCore->unzipFile( $tmpFilePath, $destination, function ($currentFile, $totalFiles) {
-                echo json_encode( ['progress' => "$currentFile of $totalFiles"] );
-                if ( ob_get_length() ) {
-                    ob_flush();
-                }
-                flush();
-            } );
-
-            if ( $unzipResult === false ) {
-                return ['error' => 'Failed to unzip file. File: ' . $tmpFilePath . ' could not be unzipped', 'Destination: ' . $destination];
-            }
+        if ($unzipResult === false) {
+            return ['error' => 'Failed to unzip file. File: ' . $tmpFilePath . ' could not be unzipped', 'Destination: ' . $destination];
         }
-        else {
-            Util::logError( 'Unsupported file extension: ' . $fileExtension );
-
-            return ['error' => 'Unsupported file extension'];
-        }
-
-        return ['success' => 'Module installed successfully'];
+    } else {
+        Util::logError('Unsupported file extension: ' . $fileExtension);
+        return ['error' => 'Unsupported file extension'];
     }
+
+    return ['success' => 'Module installed successfully'];
+}
 
     /**
      * Get the destination path for a given module type and name.
