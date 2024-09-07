@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -24,6 +25,7 @@ class WinBinder
     const INCR_PROGRESS_BAR = '++';
     const NEW_LINE = '@nl@';
 
+    // TODO why does it say we have undelcared constants
     // Constants for message box types
     const BOX_INFO = WBC_INFO;
     const BOX_OK = WBC_OK;
@@ -142,7 +144,7 @@ class WinBinder
         $window  = $this->callWinBinder( 'wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params) );
 
         // Set tiny window icon
-        $this->setImage( $window, $bearsamppCore->getResourcesPath() . '/homepage/img/icons/app.ico' );
+        $this->setImage( $window, $bearsamppCore->getIconsPath() . '/app.ico' );
 
         return $window;
     }
@@ -913,7 +915,7 @@ class WinBinder
 
         // TODO why does this create an error sometimes.
         // Set tiny window icon
-        $this->setImage( $messageBox, $bearsamppCore->getResourcesPath() . '/homepage/img/icons/app.ico' );
+        $this->setImage( $messageBox, $bearsamppCore->getIconsPath() . '/app.ico' );
 
         return $messageBox;
     }

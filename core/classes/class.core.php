@@ -117,7 +117,21 @@ class Core
     {
         global $bearsamppCore;
 
-        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/img/icons';
+        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/homepage/img/icons';
+    }
+
+    /**
+     * Retrieves the path to the images.
+     *
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
+     * @return string The path to the icons.
+     */
+    public function getImagesPath($aetrayPath = false)
+    {
+        global $bearsamppCore;
+
+        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/homepage/img';
     }
 
     /**
