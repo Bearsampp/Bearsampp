@@ -36,6 +36,7 @@ class QuickPick
     public $modules = [
         'Adminer'     => ['type' => 'application'],
         'Apache'      => ['type' => 'binary'],
+        'Bruno'       => ['type' => 'tools'],
         'Composer'    => ['type' => 'tools'],
         'ConsoleZ'    => ['type' => 'tools'],
         'Ghostscript' => ['type' => 'tools'],

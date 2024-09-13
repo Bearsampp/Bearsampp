@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -72,7 +73,8 @@ class Symlinks
             '22' => Util::formatWindowsPath($toolsPath . '/xdc/current'),
             '23' => Util::formatWindowsPath($toolsPath . '/yarn/current'),
             '24'  => Util::formatWindowsPath($binPath . '/xlight/current'),
-            '25'  => Util::formatWindowsPath($binPath . '/mailpit/current')
+            '25'  => Util::formatWindowsPath($binPath . '/mailpit/current'),
+            '26'  => Util::formatWindowsPath($binPath . '/bruno/current')
         ];
 
         if (!is_array($array) || empty($array)) {

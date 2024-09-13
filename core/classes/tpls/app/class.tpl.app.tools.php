@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -57,6 +58,13 @@ class TplAppTools
         $tplPython = TplAppPython::process();
         $resultItems .= $tplPython[TplApp::SECTION_CALL] . PHP_EOL;
         $resultActions .= $tplPython[TplApp::SECTION_CONTENT] . PHP_EOL;
+
+        // Bruno postman IDE
+        $resultItems .= TplAestan::getItemExe(
+                $bearsamppLang->getValue(Lang::BRUNO),
+                $bearsamppTools->getBruno()->getExe(),
+                TplAestan::GLYPH_BRUNO
+            ) . PHP_EOL;
 
         // Composer
         $resultItems .= TplAestan::getItemConsoleZ(
@@ -128,6 +136,13 @@ class TplAppTools
             TplAestan::GLYPH_HOSTSEDITOR
         ) . PHP_EOL;
 
+        // Pwgen password manager
+        $resultItems .= TplAestan::getItemExe(
+                $bearsamppLang->getValue(Lang::PWGEN),
+                $bearsamppCore->getPwgenExe(),
+                TplAestan::GLYPH_PWGEN
+            ) . PHP_EOL;
+
         // Generate SSL Certificate
         $tplGenSslCertificate = TplApp::getActionMulti(
             self::ACTION_GEN_SSL_CERTIFICATE, null,
@@ -136,13 +151,6 @@ class TplAppTools
         );
         $resultItems .= $tplGenSslCertificate[TplApp::SECTION_CALL] . PHP_EOL;
         $resultActions .= $tplGenSslCertificate[TplApp::SECTION_CONTENT];
-
-        // Pwgen password manager
-        $resultItems .= TplAestan::getItemExe(
-            $bearsamppLang->getValue(Lang::PWGEN),
-            $bearsamppCore->getPwgenExe(),
-            TplAestan::GLYPH_PWGEN
-        ) . PHP_EOL;
 
         return $resultItems . PHP_EOL . $resultActions;
     }

@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -24,6 +25,11 @@ class Tools
      * @var ToolComposer|null The Composer tool instance.
      */
     private $composer;
+
+    /**
+     * @var ToolBruno|null The Bruno tool instance.
+     */
+    private $bruno;
 
     /**
      * @var ToolConsoleZ|null The ConsoleZ tool instance.
@@ -96,6 +102,7 @@ class Tools
     public function getAll()
     {
         return array(
+            $this->getBruno(),
             $this->getComposer(),
             $this->getConsoleZ(),
             $this->getGhostscript(),
@@ -107,6 +114,19 @@ class Tools
             $this->getXdc(),
             $this->getYarn(),
         );
+    }
+
+    /**
+     * Retrieves the Bruno tool instance.
+     *
+     * @return ToolBruno The Bruno tool instance.
+     */
+    public function getBruno()
+    {
+        if ($this->bruno == null) {
+            $this->bruno = new ToolBruno('bruno', self::TYPE);
+        }
+        return $this->bruno;
     }
 
     /**
