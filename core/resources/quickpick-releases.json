@@ -54,6 +54,15 @@
     ]
   },
   {
+    "module": "module-bruno",
+    "versions": [
+      {
+        "version": "1.28.0",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.9.13/bearsampp-bruno-1.28.0-2024.9.13.7z"
+      }
+    ]
+  },
+  {
     "module": "module-composer",
     "versions": [
       {
