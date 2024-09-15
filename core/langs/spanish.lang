@@ -124,6 +124,7 @@ phppgadmin = "phpPgAdmin"
 webgrind = "Webgrind"
 
 ; Herramientas
+bruno = "Bruno"
 composer = "Composer"
 consolez = "ConsoleZ"
 ghostscript = "Ghostscript"

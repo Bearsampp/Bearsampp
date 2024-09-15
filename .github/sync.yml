@@ -1,8 +1,0 @@
-group:
-
-  # Sandbox repo unique things
-  - files:
-      - source: core/resources/version.dat
-        dest: core/resources/version.dat
-    repos: |
-        Bearsampp/Sandbox

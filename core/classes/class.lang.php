@@ -143,6 +143,7 @@ class Lang
     const PHPPGADMIN = 'phppgadmin';
 
     // Tools
+    const BRUNO = 'bruno';
     const COMPOSER = 'composer';
     const CONSOLEZ = 'consolez';
     const GHOSTSCRIPT = 'ghostscript';
@@ -508,6 +509,7 @@ class Lang
             self::PHPPGADMIN,
 
             // Tools
+            self::BRUNO,
             self::COMPOSER,
             self::CONSOLEZ,
             self::GIT,
