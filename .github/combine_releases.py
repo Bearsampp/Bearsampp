@@ -5,6 +5,7 @@ import os
 urls = [
     'https://raw.githubusercontent.com/Bearsampp/module-adminer/main/releases.properties',
     'https://raw.githubusercontent.com/Bearsampp/module-apache/main/releases.properties',
+    'https://raw.githubusercontent.com/Bearsampp/module-bruno/main/releases.properties',
     'https://raw.githubusercontent.com/Bearsampp/module-composer/main/releases.properties',
     'https://raw.githubusercontent.com/Bearsampp/module-consolez/main/releases.properties',
     'https://raw.githubusercontent.com/Bearsampp/module-ghostscript/main/releases.properties',
