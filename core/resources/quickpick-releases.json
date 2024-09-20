@@ -994,6 +994,14 @@
       {
         "version": "16.2",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.4.16/bearsampp-postgresql-16.2-2024.4.16.7z"
+      },
+      {
+        "version": "16.4",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.9.18/bearsampp-postgresql-16.4-2024.9.18.7z"
+      },
+      {
+        "version": "17.0-RC1",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.9.18/bearsampp-postgresql-17.0-RC1-2024.9.18.7z"
       }
     ]
   },
