@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -17,7 +18,6 @@ class Homepage
 {
     const PAGE_INDEX = 'index';
     const PAGE_PHPINFO = 'phpinfo';
-    const PAGE_STDL_APC = 'apc.php';
 
     private $page;
 
@@ -27,13 +27,6 @@ class Homepage
     private $pageList = array(
         self::PAGE_INDEX,
         self::PAGE_PHPINFO,
-    );
-
-    /**
-     * @var array List of standard pages for the homepage.
-     */
-    private $pageStdl = array(
-        self::PAGE_STDL_APC
     );
 
     /**

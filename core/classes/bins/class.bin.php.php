@@ -87,10 +87,6 @@ class BinPhp extends Module
     const INI_XDEBUG_REMOTE_ENABLE = 'xdebug.remote_enable';
     const INI_XDEBUG_PROFILER_ENABLE = 'xdebug.profiler_enable';
     const INI_XDEBUG_PROFILER_ENABLE_TRIGGER = 'xdebug.profiler_enable_trigger';
-    const INI_APC_ENABLED = 'apc.enabled';
-    const INI_APC_INCLUDE_ONCE_OVERRIDE = 'apc.include_once_override';
-    const INI_APC_CANONICALIZE = 'apc.canonicalize';
-    const INI_APC_STAT = 'apc.stat';
 
     private $apacheConf;
     private $errorLog;
@@ -374,12 +370,6 @@ class BinPhp extends Module
                     'Profiler enable' => self::INI_XDEBUG_PROFILER_ENABLE,
                     'Profiler enable trigger' => self::INI_XDEBUG_PROFILER_ENABLE_TRIGGER,
                 ),
-                'APC' => array(
-                    'Enabled' => self::INI_APC_ENABLED,
-                    'Include once override' => self::INI_APC_INCLUDE_ONCE_OVERRIDE,
-                    'Canonicalize' => self::INI_APC_CANONICALIZE,
-                    'Stat' => self::INI_APC_STAT,
-                ),
             ),
         );
     }
@@ -451,10 +441,6 @@ class BinPhp extends Module
             self::INI_XDEBUG_REMOTE_ENABLE => array('On', 'Off', 'On'),
             self::INI_XDEBUG_PROFILER_ENABLE => array('On', 'Off', 'Off'),
             self::INI_XDEBUG_PROFILER_ENABLE_TRIGGER => array('On', 'Off', 'Off'),
-            self::INI_APC_ENABLED => array('1', '0', '1'),
-            self::INI_APC_INCLUDE_ONCE_OVERRIDE => array('1', '0', '1'),
-            self::INI_APC_CANONICALIZE => array('1', '0', '1'),
-            self::INI_APC_STAT => array('1', '0', '1'),
         );
     }
 
