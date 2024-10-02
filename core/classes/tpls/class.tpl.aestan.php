@@ -89,7 +89,6 @@ class TplAestan
     const GLYPH_FOLDER_DISABLED = 48;
     const GLYPH_FOLDER_ENABLED = 49;
     const GLYPH_PYTHON = 50;
-    const GLYPH_PYTHON_CP = 51;
     const GLYPH_RUBY = 52;
     const GLYPH_YARN = 54;
     const GLYPH_PERL = 55;

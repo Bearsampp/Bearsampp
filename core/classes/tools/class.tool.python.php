@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -19,11 +20,9 @@ class ToolPython extends Module
     const ROOT_CFG_VERSION = 'pythonVersion';
 
     const LOCAL_CFG_EXE = 'pythonExe';
-    const LOCAL_CFG_CP_EXE = 'pythonCpExe';
     const LOCAL_CFG_IDLE_EXE = 'pythonIdleExe';
 
     private $exe;
-    private $cpExe;
     private $idleExe;
 
     /**
@@ -53,7 +52,6 @@ class ToolPython extends Module
 
         if ($this->bearsamppConfRaw !== false) {
             $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
-            $this->cpExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CP_EXE];
             $this->idleExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_IDLE_EXE];
         }
 
@@ -73,9 +71,6 @@ class ToolPython extends Module
         }
         if (!is_file($this->exe)) {
             Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
-        }
-        if (!is_file($this->cpExe)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cpExe));
         }
         if (!is_file($this->idleExe)) {
             Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->idleExe));
@@ -101,15 +96,6 @@ class ToolPython extends Module
      */
     public function getExe() {
         return $this->exe;
-    }
-
-    /**
-     * Gets the path to the Python CP executable.
-     *
-     * @return string The path to the Python CP executable.
-     */
-    public function getCpExe() {
-        return $this->cpExe;
     }
 
     /**

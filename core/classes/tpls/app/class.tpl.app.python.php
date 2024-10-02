@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2021-2024 Bearsampp
+ *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -57,13 +58,6 @@ class TplAppPython
             $bearsamppLang->getValue(Lang::PYTHON) . ' IDLE',
             $bearsamppTools->getPython()->getIdleExe(),
             TplAestan::GLYPH_PYTHON
-        ) . PHP_EOL;
-
-        // Generate menu item for Python command prompt
-        $resultItems .= TplAestan::getItemExe(
-            $bearsamppLang->getValue(Lang::PYTHON_CP),
-            $bearsamppTools->getPython()->getCpExe(),
-            TplAestan::GLYPH_PYTHON_CP
         ) . PHP_EOL;
 
         return $resultItems;
