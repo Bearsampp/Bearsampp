@@ -59,6 +59,26 @@
       {
         "version": "1.28.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.9.13/bearsampp-bruno-1.28.0-2024.9.13.7z"
+      },
+      {
+        "version": "1.29.1",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.9.18/bearsampp-bruno-1.29.1-2024.9.18.7z"
+      },
+      {
+        "version": "1.30.0",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.9.21/bearsampp-bruno-1.30.0-2024.9.21.7z"
+      },
+      {
+        "version": "1.30.1",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.9.22/bearsampp-bruno-1.30.1-2024.9.22.7z"
+      },
+      {
+        "version": "1.31.0",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.9.30/bearsampp-bruno-1.31.0-2024.9.30.7z"
+      },
+      {
+        "version": "1.32.0",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.10.1/bearsampp-bruno-1.32.0-2024.10.1.7z"
       }
     ]
   },
