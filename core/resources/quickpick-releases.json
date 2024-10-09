@@ -239,6 +239,10 @@
       {
         "version": "2.46.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.8.9/bearsampp-git-2.46.0-2024.8.9.7z"
+      },
+      {
+        "version": "2.47.0-RC1",
+        "url": "https://github.com/Bearsampp/module-git/releases/download/2024.10.7/bearsampp-git-2.47.0-2024.10.7.7z"
       }
     ]
   },
