@@ -286,7 +286,7 @@ changeBrowserOk = "Webbläsare byttes framgångsrikt till:@nl@%s"
 
 ; Action About
 aboutTitle = "Om"
-aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@Bearsampp is free software; you can redistribute it and/or modify it@nl@under the terms of the GNU LESSER GENERAL PUBLIC LICENSE."
+aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@Bearsampp är fri programvara; du kan distribuera och/eller modifiera@nl@det under villkoren i GNU LESSER GENERAL PUBLIC LICENSE."
 
 ; Action Debug Apache
 debugApacheVersionNumber = "Versions-nummer"

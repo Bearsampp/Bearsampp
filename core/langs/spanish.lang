@@ -174,10 +174,10 @@ serviceInstalled = "Servicio de %s instalado exitosamente.@nl@Nombre: %s@nl@Puer
 serviceInstallError = "Error durante la instalación del servicio de %s."
 
 ; Action Remove service
-removeServiceTitle = "Eliminar servicio de %s
+removeServiceTitle = "Eliminar servicio de %s"
 serviceNotExist = "El servicio de %s no existe."
 serviceRemoved = "Servicio de %s eliminado con éxito."
-serviceRemoveError = "Error durante la desinstalación del servicio de %s
+serviceRemoveError = "Error durante la desinstalación del servicio de %s"
 
 ; Acción Iniciar servicio
 startServiceTitle = "Iniciar servicio %s"

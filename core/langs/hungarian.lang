@@ -155,7 +155,7 @@ phpIncpt = "Úgy tunik aPHP %s verzió nem fér össze az Apache %s verzióval"
 bearsamppConfNotFoundError = "Near konfig file nincs meg a %s részére"
 bearsamppConfMalformedError = "Bearsampp konfig formátum hibás a %s részére"
 
-; Action Switch version
+; Action Switch PHP setting
 switchPhpSettingTitle = "PHP beállítás váltás"
 switchPhpSettingNotFound = "PHP %s beállítás nincs a PHP %s konfig file-ban"
 
@@ -286,7 +286,7 @@ changeBrowserOk = "Böngészo sikeresen beállítva:@nl@%s"
 
 ; Action About
 aboutTitle = "Névjegy"
-aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@Bearsampp is free software; you can redistribute it and/or modify it@nl@under the terms of the GNU LESSER GENERAL PUBLIC LICENSE."
+aboutText = "%s@nl@Copyright(C) 2014-%s %s@nl@@nl@A Bearsampp szabad szoftver; szabadon terjesztheti és/vagy módosíthatja@nl@a GNU KISEBB ÁLTALÁNOS NYILVÁNOS LICENC feltételei szerint."
 
 ; Action Debug Apache
 debugApacheVersionNumber = "Verzió szám:"
