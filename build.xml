@@ -169,6 +169,7 @@
                 <filter token = "BIN_MAILPIT_VERSION" value = "${bin.mailpit.version}" />
                 <filter token = "BIN_MEMCACHED_VERSION" value = "${bin.memcached.version}" />
 
+                <filter token = "TOOL_BRUNO_VERSION" value = "${tool.bruno.version}" />
                 <filter token = "TOOL_COMPOSER_VERSION" value = "${tool.composer.version}" />
                 <filter token = "TOOL_CONSOLEZ_VERSION" value = "${tool.consolez.version}" />
                 <filter token = "TOOL_GHOSTSCRIPT_VERSION" value = "${tool.ghostscript.version}" />
@@ -277,6 +278,7 @@
         <getmodule releasesurl = "${app.webgrind.url}" version = "${app.webgrind.version}" dest = "${release.target}\apps\webgrind" />
 
         <!--  Get tools -->
+        <getmodule releasesurl = "${tool.bruno.url}" version = "${tool.bruno.version}" dest = "${release.target}\tools\bruno" />
         <getmodule releasesurl = "${tool.composer.url}" version = "${tool.composer.version}" dest = "${release.target}\tools\composer" />
         <getmodule releasesurl = "${tool.consolez.url}" version = "${tool.consolez.version}" dest = "${release.target}\tools\consolez" />
         <getmodule releasesurl = "${tool.ghostscript.url}" version = "${tool.ghostscript.version}" dest = "${release.target}\tools\ghostscript" />
@@ -381,6 +383,7 @@
         <getmodule releasesurl = "${app.webgrind.url}" version = "${app.webgrind.version}" dest = "${release.target}\apps\webgrind" />
 
         <!-- Get tools -->
+        <getmodule releasesurl = "${tool.bruno.url}" version = "${tool.bruno.version}" dest = "${release.target}\tools\bruno" />
         <getmodule releasesurl = "${tool.composer.url}" version = "${tool.composer.version}" dest = "${release.target}\tools\composer" />
         <getmodule releasesurl = "${tool.consolez.url}" version = "${tool.consolez.version}" dest = "${release.target}\tools\consolez" />
         <getmodule releasesurl = "${tool.git.url}" version = "${tool.git.version}" dest = "${release.target}\tools\git" />
@@ -478,6 +481,7 @@
         <getmodule releasesurl = "${app.webgrind.url}" version = "${app.webgrind.version}" dest = "${release.target}\apps\webgrind" />
 
         <!-- Get tools -->
+        <getmodule releasesurl = "${tool.bruno.url}" version = "${tool.bruno.version}" dest = "${release.target}\tools\bruno" />
         <getmodule releasesurl = "${tool.composer.url}" version = "${tool.composer.version}" dest = "${release.target}\tools\composer" />
         <getmodule releasesurl = "${tool.consolez.url}" version = "${tool.consolez.version}" dest = "${release.target}\tools\consolez" />
 
