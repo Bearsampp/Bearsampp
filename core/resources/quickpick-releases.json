@@ -241,8 +241,12 @@
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.8.9/bearsampp-git-2.46.0-2024.8.9.7z"
       },
       {
-        "version": "2.47.0-RC1",
+        "version": "2.47.0-rc1",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.10.7/bearsampp-git-2.47.0-2024.10.7.7z"
+      },
+      {
+        "version": "2.47.0",
+        "url": "https://github.com/Bearsampp/module-git/releases/download/2024.10.9/bearsampp-git-2.47.0-2024.10.9.7z"
       }
     ]
   },
@@ -529,11 +533,11 @@
       },
       {
         "version": "1.6.29",
-        "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.7.29/bearsampp-memcached-1.6.29-2024.7.29.7z"
+        "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.7.29/bearsampp-memcached-1.6.29-2024.10.7.7z"
       },
       {
         "version": "1.6.31",
-        "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.7.29/bearsampp-memcached-1.6.29-2024.7.29.7z"
+        "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.10.7/bearsampp-memcached-1.6.31-2024.10.7.7z"
       }
     ]
   },
