@@ -178,6 +178,10 @@
       {
         "version": "10.03.1",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2024.6.18/bearsampp-ghostscript-10.03.1-2024.06.18.7z"
+      },
+      {
+        "version": "10.04.0",
+        "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2024.10.31/bearsampp-ghostscript-10.04.0-2024.10.31.7z"
       }
     ]
   },
