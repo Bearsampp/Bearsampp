@@ -597,6 +597,10 @@
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.7.28/bearsampp-mysql-8.4.2-2024.7.28.7z"
       },
       {
+        "version": "8.4.3",
+        "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.10.31/bearsampp-mysql-8.4.3-2024.10.31.7z"
+      },
+      {
         "version": "9.0.1",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.7.28/bearsampp-mysql-9.0.1-2024.8.7.7z"
       }
