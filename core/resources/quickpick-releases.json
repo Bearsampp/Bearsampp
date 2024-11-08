@@ -140,6 +140,10 @@
       {
         "version": "2.7.9",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.9.13/bearsampp-composer-2.7.9-2024.9.13.7z"
+      },
+      {
+        "version": "2.8.2",
+        "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.11.2/bearsampp-composer-2.8.2-2024.11.2.7z"
       }
     ]
   },
