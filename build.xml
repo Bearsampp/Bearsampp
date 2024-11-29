@@ -87,6 +87,10 @@
             <arg value = "--set-product-version" />
             <arg value = "${release.fullversion}" />
         </exec>
+
+        <!-- Cleanup: Delete the sandbox directory -->
+        <delete dir="${project.basedir}/bin/tmp/sandbox"/>
+
         <!-- Echo success message -->
         <echo message = "Successfully set product version to ${release.fullversion} using rcedit-x64.exe" />
 
@@ -110,6 +114,7 @@
     build.xml,
     *.iml,
     *.launch,
+    icon-sync.bat,
     rcedit-x64.exe"
             />
         </copy>
@@ -199,6 +204,12 @@
         <echo file = "${project.basedir}\core\resources\version.dat" append = "false">${release.fullversion}</echo>
         <var name = "is.base.prepared" value = "true" />
 
+        <!-- temporary ignore
+        <exec executable="cmd" failonerror="true">
+            <arg value="/c"/>
+            <arg value="icon-sync.bat"/>
+        </exec>
+        -->
     </target>
 
     <!--
