@@ -148,6 +148,10 @@
       {
         "version": "2.8.2",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.11.2/bearsampp-composer-2.8.2-2024.11.2.7z"
+      },
+      {
+        "version": "2.8.3",
+        "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.12.1/bearsampp-composer-2.8.3-2024.12.1.7z"
       }
     ]
   },
@@ -623,6 +627,10 @@
       {
         "version": "9.0.1",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.7.28/bearsampp-mysql-9.0.1-2024.8.7.7z"
+      },
+      {
+        "version": "9.1.0",
+        "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.12.1/bearsampp-mysql-9.1.0-2024.12.1.7z"
       }
     ]
   },
@@ -725,6 +733,10 @@
       {
         "version": "23.1.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.11.1/bearsampp-nodejs-23.1.0-2024.11.1.7z"
+      },
+      {
+        "version": "23.3.0",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.12.1/bearsampp-nodejs-23.3.0-2024.12.1.7z"
       }
     ]
   },
@@ -1082,6 +1094,10 @@
       {
         "version": "17.0-RC1",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.9.18/bearsampp-postgresql-17.0-RC1-2024.9.18.7z"
+      },
+      {
+        "version": "17.2.1",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.12.1/bearsampp-postgresql-17.2.1-2024.12.1.7z"
       }
     ]
   },
