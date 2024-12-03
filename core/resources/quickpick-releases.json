@@ -79,6 +79,14 @@
       {
         "version": "1.32.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.10.1/bearsampp-bruno-1.32.0-2024.10.1.7z"
+      },
+      {
+        "version": "1.34.1",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.11.2/bearsampp-bruno-1.34.1-2024.11.2.7z"
+      },
+      {
+        "version": "1.35.0",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.12.1/bearsampp-bruno-1.35.0-2024.12.1.7z"
       }
     ]
   },
@@ -140,6 +148,14 @@
       {
         "version": "2.7.9",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.9.13/bearsampp-composer-2.7.9-2024.9.13.7z"
+      },
+      {
+        "version": "2.8.2",
+        "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.11.2/bearsampp-composer-2.8.2-2024.11.2.7z"
+      },
+      {
+        "version": "2.8.3",
+        "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.12.1/bearsampp-composer-2.8.3-2024.12.1.7z"
       }
     ]
   },
@@ -178,6 +194,10 @@
       {
         "version": "10.03.1",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2024.6.18/bearsampp-ghostscript-10.03.1-2024.06.18.7z"
+      },
+      {
+        "version": "10.04.0",
+        "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2024.10.31/bearsampp-ghostscript-10.04.0-2024.10.31.7z"
       }
     ]
   },
@@ -247,6 +267,10 @@
       {
         "version": "2.47.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.10.9/bearsampp-git-2.47.0-2024.10.9.7z"
+      },
+      {
+        "version": "2.47.0.2",
+        "url": "https://github.com/Bearsampp/module-git/releases/download/2024.11.1/bearsampp-git-2.47.0.2-2024.11.1.7z"
       }
     ]
   },
@@ -272,6 +296,10 @@
       {
         "version": "1.20.6",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2024.10.16/bearsampp-mailpit-1.20.6-2024.10.16.7z"
+      },
+      {
+        "version": "1.21.1",
+        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2024.11.2/bearsampp-mailpit-1.21.1-2024.11.2.7z"
       }
     ]
   },
@@ -597,8 +625,16 @@
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.7.28/bearsampp-mysql-8.4.2-2024.7.28.7z"
       },
       {
+        "version": "8.4.3",
+        "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.10.31/bearsampp-mysql-8.4.3-2024.10.31.7z"
+      },
+      {
         "version": "9.0.1",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.7.28/bearsampp-mysql-9.0.1-2024.8.7.7z"
+      },
+      {
+        "version": "9.1.0",
+        "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.12.1/bearsampp-mysql-9.1.0-2024.12.1.7z"
       }
     ]
   },
@@ -693,6 +729,18 @@
       {
         "version": "22.8.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.9.13/bearsampp-nodejs-22.8.0-2024.9.13.7z"
+      },
+      {
+        "version": "22.11.0",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.11.1/bearsampp-nodejs-22.11.0-2024.11.1.7z"
+      },
+      {
+        "version": "23.1.0",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.11.1/bearsampp-nodejs-23.1.0-2024.11.1.7z"
+      },
+      {
+        "version": "23.3.0",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.12.1/bearsampp-nodejs-23.3.0-2024.12.1.7z"
       }
     ]
   },
@@ -1050,6 +1098,10 @@
       {
         "version": "17.0-RC1",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.9.18/bearsampp-postgresql-17.0-RC1-2024.9.18.7z"
+      },
+      {
+        "version": "17.2.1",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.12.1/bearsampp-postgresql-17.2.1-2024.12.1.7z"
       }
     ]
   },
