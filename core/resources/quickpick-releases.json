@@ -300,6 +300,14 @@
       {
         "version": "1.21.1",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2024.11.2/bearsampp-mailpit-1.21.1-2024.11.2.7z"
+      },
+      {
+        "version": "1.21.5",
+        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2024.12.1/bearsampp-mailpit-1.21.5-2024.12.1.7z"
+      },
+      {
+        "version": "1.21.6",
+        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2024.12.9/bearsampp-mailpit-1.21.6-2024.12.9.7z"
       }
     ]
   },
@@ -1164,6 +1172,10 @@
       {
         "version": "3.3.0-1",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2024.4.14/bearsampp-ruby-3.3.0-1-2024.4.14.7z"
+      },
+      {
+        "version": "3.3.6-2",
+        "url": "https://github.com/Bearsampp/module-ruby/releases/download/2024.12.3/bearsampp-ruby-3.3.6-2-2024.12.3.7z"
       }
     ]
   },
