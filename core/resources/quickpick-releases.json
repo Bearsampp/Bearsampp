@@ -308,6 +308,10 @@
       {
         "version": "1.21.6",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2024.12.9/bearsampp-mailpit-1.21.6-2024.12.9.7z"
+      },
+      {
+        "version": "1.21.7",
+        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2024.12.14/bearsampp-mailpit-1.21.7-2024.12.14.7z"
       }
     ]
   },
