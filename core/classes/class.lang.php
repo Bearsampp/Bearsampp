@@ -372,6 +372,7 @@ class Lang
     const HOMEPAGE_QUESTIONS_TEXT = 'homepageQuestionsText';
     const HOMEPAGE_POST_ISSUE = 'homepagePostIssue';
     const HOMEPAGE_PHPINFO_TEXT = 'homepagePhpinfoText';
+    const HOMEPAGE_APC_TEXT = 'homepageApcText';
     const HOMEPAGE_MAILHOG_TEXT = 'homepageMailhogText';
     const HOMEPAGE_MAILPIT_TEXT = 'homepageMailpitText';
     const HOMEPAGE_XLIGHT_TEXT = 'homepageXlightText';
@@ -735,6 +736,7 @@ class Lang
             self::HOMEPAGE_QUESTIONS_TEXT,
             self::HOMEPAGE_POST_ISSUE,
             self::HOMEPAGE_PHPINFO_TEXT,
+            self::HOMEPAGE_APC_TEXT,
             self::HOMEPAGE_MAILHOG_TEXT,
             self::HOMEPAGE_MAILPIT_TEXT,
             self::HOMEPAGE_XLIGHT_TEXT,
