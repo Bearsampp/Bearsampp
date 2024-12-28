@@ -594,6 +594,10 @@
       {
         "version": "1.6.32",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.12.1/bearsampp-memcached-1.6.32-2024.12.1.7z"
+      },
+      {
+        "version": "1.6.33",
+        "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.12.23/bearsampp-memcached-1.6.33-2024.12.23.7z"
       }
     ]
   },
@@ -790,151 +794,155 @@
       },
       {
         "version": "7.4.30",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-7.4.30-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-7.4.30-2024.11.30.7z"
       },
       {
         "version": "7.4.32",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-7.4.32-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-7.4.32-2024.11.30.7z"
       },
       {
         "version": "7.4.33",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-7.4.33-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-7.4.33-2024.11.30.7z"
       },
       {
         "version": "8.0.21",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.0.21-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.21-2024.11.30.7z"
       },
       {
         "version": "8.0.22",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.0.22-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.22-2024.11.30.7z"
       },
       {
         "version": "8.0.23",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.0.23-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.23-2024.11.30.7z"
       },
       {
         "version": "8.0.24",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.0.24-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.24-2024.11.30.7z"
       },
       {
         "version": "8.0.25",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.0.25-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.25-2024.11.30.7z"
       },
       {
         "version": "8.0.26",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.0.26-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.26-2024.11.30.7z"
       },
       {
         "version": "8.0.27",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.0.27-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.27-2024.11.30.7z"
       },
       {
         "version": "8.0.28",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.0.28-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.28-2024.11.30.7z"
       },
       {
         "version": "8.0.29",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.0.29-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.29-2024.11.30.7z"
       },
       {
         "version": "8.0.30",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.0.30-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.30-2024.11.30.7z"
       },
       {
         "version": "8.1.8",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.8-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.8-2024.11.30.7z"
       },
       {
         "version": "8.1.9",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.9-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.9-2024.11.30.7z"
       },
       {
         "version": "8.1.10",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.10-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.10-2024.11.30.7z"
       },
       {
         "version": "8.1.11",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.11-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.11-2024.11.30.7z"
       },
       {
         "version": "8.1.12",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.12-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.12-2024.11.30.7z"
       },
       {
         "version": "8.1.13",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.13-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.13-2024.11.30.7z"
       },
       {
         "version": "8.1.14",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.14-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.14-2024.11.30.7z"
       },
       {
         "version": "8.1.16",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.16-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.16-2024.11.30.7z"
       },
       {
         "version": "8.1.17",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.17-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.17-2024.11.30.7z"
       },
       {
         "version": "8.1.21",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.21-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.21-2024.11.30.7z"
       },
       {
         "version": "8.1.23",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.23-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.23-2024.11.30.7z"
       },
       {
         "version": "8.1.27",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.27-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.27-2024.11.30.7z"
       },
       {
         "version": "8.1.28",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.1.28-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.28-2024.11.30.7z"
       },
       {
         "version": "8.1.30",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.10.2/bearsampp-php-8.1.30-2024.10.2.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.30-2024.11.30.7z"
+      },
+      {
+        "version": "8.1.31",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.12.15/bearsampp-php-8.1.31-2024.12.15.7z"
       },
       {
         "version": "8.2.0",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.2.0-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.0-2024.11.30.7z"
       },
       {
         "version": "8.2.1",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.2.1-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.1-2024.11.30.7z"
       },
       {
         "version": "8.2.3",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.2.3-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.3-2024.11.30.7z"
       },
       {
         "version": "8.2.4",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.2.4-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.4-2024.11.30.7z"
       },
       {
         "version": "8.2.8",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.2.8-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.8-2024.11.30.7z"
       },
       {
         "version": "8.2.10",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.2.10-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.10-2024.11.30.7z"
       },
       {
         "version": "8.2.14",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.2.14-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.14-2024.11.30.7z"
       },
       {
         "version": "8.2.17",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.2.17-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.17-2024.11.30.7z"
       },
       {
         "version": "8.2.18",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.2.18-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.18-2024.11.30.7z"
       },
       {
         "version": "8.2.19",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.2.19-2024.7.12.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.19-2024.11.30.7z"
       },
       {
         "version": "8.2.21",
@@ -945,32 +953,48 @@
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.9.14/bearsampp-php-8.2.23-2024.9.14.7z"
       },
       {
+        "version": "8.2.24",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.4-2024.11.30.7z"
+      },
+      {
+        "version": "8.2.26",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.12.15/bearsampp-php-8.2.26-2024.12.15.7z"
+      },
+      {
         "version": "8.3.1",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.29/bearsampp-php-8.3.1-2024.7.29.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.1-2024.11.30.7z"
       },
       {
         "version": "8.3.4",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.29/bearsampp-php-8.3.4-2024.7.29.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.4-2024.11.30.7z"
       },
       {
         "version": "8.3.6",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.29/bearsampp-php-8.3.6-2024.7.29.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.6-2024.11.30.7z"
       },
       {
         "version": "8.3.7",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.29/bearsampp-php-8.3.7-2024.7.29.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.7-2024.11.30.7z"
       },
       {
         "version": "8.3.9",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.29/bearsampp-php-8.3.9-2024.7.29.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.9-2024.11.30.7z"
       },
       {
         "version": "8.3.11",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.9.14/bearsampp-php-8.3.11-2024.9.14.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.11-2024.11.30.7z"
       },
       {
         "version": "8.3.12",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.10.2/bearsampp-php-8.3.12-2024.10.2.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.12-2024.11.30.7z"
+      },
+      {
+        "version": "8.3.14",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.12.15/bearsampp-php-8.3.14-2024.12.15.7z"
+      },
+      {
+        "version": "8.4.1",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.12.15/bearsampp-php-8.4.1-2024.12.15.7z"
       }
     ]
   },
