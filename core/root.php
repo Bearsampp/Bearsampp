@@ -5,18 +5,26 @@
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
+
 /**
  * Defines constants used throughout the Bearsampp application.
  */
-define('APP_AUTHOR_NAME', 'N6REJ');
-define('APP_TITLE', 'Bearsampp');
-define('APP_WEBSITE', 'https://bearsampp.com');
-define('APP_LICENSE', 'GPL3 License');
-define('APP_GITHUB_USER', 'Bearsampp');
-define('APP_GITHUB_REPO', 'Bearsampp');
-define('APP_GITHUB_USERAGENT', 'Bearsampp');
-define('APP_GITHUB_LATEST_URL', 'https://api.github.com/repos/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . '/releases/latest');
-define('RETURN_TAB', '	');
+const APP_AUTHOR_NAME = 'N6REJ';
+const APP_TITLE = 'Bearsampp';
+const APP_WEBSITE = 'https://bearsampp.com';
+const APP_LICENSE = 'GPL3 License';
+const APP_GITHUB_USER = 'Bearsampp';
+const APP_GITHUB_REPO = 'Bearsampp';
+const APP_GITHUB_USERAGENT = 'Bearsampp';
+const APP_GITHUB_LATEST_URL = 'https://api.github.com/repos/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . '/releases/latest';
+const RETURN_TAB = '	';
+
+// Membership Pro API key & URL
+const QUICKPICK_API_KEY = '4abe15e5-95f2-4663-ad12-eadb245b28b4';
+const QUICKPICK_API_URL = 'https://bearsampp.com/index.php?option=com_osmembership&task=api.get_active_plan_ids&api_key=';
+
+// URL where quickpick-releases.json lives
+const QUICKPICK_JSON_URL = 'https://raw.githubusercontent.com/Bearsampp/Bearsampp/main/core/resources/quickpick-releases.json';
 
 /**
  * Includes the Root class file and creates an instance of Root.

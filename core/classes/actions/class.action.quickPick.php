@@ -17,13 +17,6 @@
  */
 class QuickPick
 {
-    // Membership Pro api key & url
-    const API_KEY = '4abe15e5-95f2-4663-ad12-eadb245b28b4';
-    const API_URL = 'https://bearsampp.com/index.php?option=com_osmembership&task=api.get_active_plan_ids&api_key=';
-
-    // URL where quickpick-releases.json lives.
-    const JSON_URL = 'https://raw.githubusercontent.com/Bearsampp/Bearsampp/main/core/resources/quickpick-releases.json';
-
     /**
      * @var array $modules
      *
@@ -136,7 +129,7 @@ class QuickPick
         }
 
         // Get the creation time of the remote file
-        $headers = get_headers( self::JSON_URL, 1 );
+        $headers = get_headers( QUICKPICK_JSON_URL, 1 );
         if ( $headers === false || !isset( $headers['Last-Modified'] ) ) {
             // If we cannot get the headers or Last-Modified is not set, assume no update is needed
             return false;
@@ -186,11 +179,8 @@ class QuickPick
     {
         Util::logDebug( 'Fetching JSON file: ' . $this->jsonFilePath );
 
-        // Define the URL of the remote JSON file
-        $url = self::JSON_URL;
-
         // Fetch the JSON content from the URL
-        $jsonContent = file_get_contents( $url );
+        $jsonContent = file_get_contents( QUICKPICK_JSON_URL );
 
         if ( $jsonContent === false ) {
             // Handle error if the file could not be fetched
@@ -317,7 +307,7 @@ class QuickPick
             return false;
         }
 
-        $url = self::API_URL . self::API_KEY . '&download_id=' . $DownloadId;
+        $url = QUICKPICK_API_URL . QUICKPICK_API_KEY . '&download_id=' . $DownloadId;
         Util::logDebug( 'API URL: ' . $url );
 
         $response = @file_get_contents( $url );
