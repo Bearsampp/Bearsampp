@@ -143,7 +143,7 @@ class WinBinder
         $window  = $this->callWinBinder('wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params));
 
         // Set tiny window icon
-        $this->setImage($window, $bearsamppCore->getIconsPath() . '/app.ico');
+        $this->setImage($window, $bearsamppCore->getIconsPath() . 'app.ico');
 
         return $window;
     }
@@ -934,26 +934,6 @@ class WinBinder
             $title == null ? $this->defaultTitle : $this->defaultTitle . ' - ' . $title,
             $type
         ));
-
-        // TODO why does this create an error sometimes.
-        // Set tiny window icon
-        // Ensure $messageBox is not null
-        if ($messageBox === null) {
-            error_log('Error: $messageBox is null.');
-
-            return;
-        }
-
-        // Ensure the icon path is correct and the file exists
-        $iconPath = $bearsamppCore->getIconsPath() . '/app.ico';
-        if (!file_exists($iconPath)) {
-            error_log('Error: Icon file does not exist at path: ' . $iconPath);
-
-            return;
-        }
-
-        // Call the setImage method
-        $this->setImage($messageBox, $iconPath);
 
         return $messageBox;
     }

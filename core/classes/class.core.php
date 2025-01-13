@@ -117,7 +117,7 @@ class Core
     {
         global $bearsamppCore;
 
-        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/homepage/img/icons';
+        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/homepage/img/icons/';
     }
 
     /**
@@ -131,7 +131,7 @@ class Core
     {
         global $bearsamppCore;
 
-        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/homepage/img';
+        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/homepage/img/';
     }
 
     /**
