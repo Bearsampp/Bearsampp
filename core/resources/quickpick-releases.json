@@ -1020,6 +1020,10 @@
       {
         "version": "5.2.1",
         "url": "https://github.com/Bearsampp/module-phpmyadmin/releases/download/2023.3.5/bearsampp-phpmyadmin-5.2.1-2023.3.5.7z"
+      },
+      {
+        "version": "5.2.2",
+        "url": "https://github.com/Bearsampp/module-phpmyadmin/releases/download/2025.1.23/bearsampp-phpmyadmin-5.2.2-2025.1.23.7z"
       }
     ]
   },
