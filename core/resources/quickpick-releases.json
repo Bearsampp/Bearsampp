@@ -312,6 +312,10 @@
       {
         "version": "1.21.7",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2024.12.14/bearsampp-mailpit-1.21.7-2024.12.14.7z"
+      },
+      {
+        "version": "1.22.0",
+        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.1.30/bearsampp-mailpit-1.22.0-2025.1.30.7z"
       }
     ]
   },
@@ -769,6 +773,10 @@
       {
         "version": "23.3.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.12.1/bearsampp-nodejs-23.3.0-2024.12.1.7z"
+      },
+      {
+        "version": "23.6.1",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.1.23/bearsampp-nodejs-23.6.1-2025.1.23.7z"
       }
     ]
   },
