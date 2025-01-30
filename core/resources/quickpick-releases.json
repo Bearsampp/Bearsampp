@@ -645,6 +645,10 @@
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.5.9/bearsampp-mysql-8.0.37-2024.5.9.7z"
       },
       {
+        "version": "8.0.41",
+        "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.1.23/bearsampp-mysql-8.0.41-2025.1.23.7z"
+      },
+      {
         "version": "8.3.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.6.14/bearsampp-mysql-8.3.0-2024.6.14.7z"
       },
@@ -661,12 +665,20 @@
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.10.31/bearsampp-mysql-8.4.3-2024.10.31.7z"
       },
       {
+        "version": "8.4.4",
+        "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.1.23/bearsampp-mysql-8.4.4-2025.1.23.7z"
+      },
+      {
         "version": "9.0.1",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.7.28/bearsampp-mysql-9.0.1-2024.8.7.7z"
       },
       {
         "version": "9.1.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.12.1/bearsampp-mysql-9.1.0-2024.12.1.7z"
+      },
+      {
+        "version": "9.2.0",
+        "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.1.23/bearsampp-mysql-9.2.0-2025.1.23.7z"
       }
     ]
   },
