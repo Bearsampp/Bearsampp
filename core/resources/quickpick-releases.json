@@ -50,6 +50,10 @@
       {
         "version": "2.4.62",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2024.7.23/bearsampp-apache-2.4.62-2024.7.23.7z"
+      },
+      {
+        "version": "2.4.63",
+        "url": "https://github.com/Bearsampp/module-apache/releases/download/2025.2.9/bearsampp-apache-2.4.63-2025.2.9.7z"
       }
     ]
   },
