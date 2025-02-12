@@ -107,7 +107,7 @@ class QuickPick
     /**
      * Checks if the local `quickpick-releases.json` file is up-to-date with the remote version.
      *
-     * This method compares the creation time of the local JSON file with the remote file's last modified time.
+     * Compares the creation time of the local JSON file with the remote file's last modified time.
      * If the remote file is newer or the local file does not exist, it fetches the latest JSON data by calling
      * the `rebuildQuickpickJson` method.
      *
@@ -117,32 +117,71 @@ class QuickPick
      */
     public function checkQuickpickJson()
     {
-        // Initialize variables
-        $localFileCreationTime = 0;
+        global $bearsamppConfig;
 
-        // Get the creation time of the local file if it exists
-        if ( file_exists( $this->jsonFilePath ) ) {
-            $localFileCreationTime = filectime( $this->jsonFilePath );
-        }
-        else {
-            $result = $this->rebuildQuickpickJson();
-        }
+        // Determine local file creation time or rebuild if missing
+        $localFileCreationTime = $this->getLocalFileCreationTime();
 
-        // Get the creation time of the remote file
-        $headers = get_headers( QUICKPICK_JSON_URL, 1 );
-        if ( $headers === false || !isset( $headers['Last-Modified'] ) ) {
-            // If we cannot get the headers or Last-Modified is not set, assume no update is needed
+        // Attempt to retrieve remote file headers
+        $headers = get_headers(QUICKPICK_JSON_URL, 1);
+        if (!$this->isValidHeaderResponse($headers)) {
+            // If headers or Date are invalid, assume no update needed
             return false;
         }
-        $remoteFileCreationTime = strtotime( $headers['Last-Modified'] );
 
-        // Compare the creation times
-        if ( $remoteFileCreationTime > $localFileCreationTime || $localFileCreationTime === 0 ) {
-            return $this->rebuildQuickpickJson();
-        }
+        // Optionally log headers for verbose output
+        $this->logHeaders($headers);
 
-        // Return false if the local file is up-to-date
+        // Compare the creation times (remote vs. local)
+        $remoteFileCreationTime = strtotime(isset($headers['Date']) ? $headers['Date'] : '');
+		if ($remoteFileCreationTime > $localFileCreationTime) { return $this->rebuildQuickpickJson(); }
+
+        // Return false if local file is already up-to-date
         return false;
+    }
+
+    /**
+     * Returns the local file's creation time, or triggers and returns 0 if file does not exist.
+     *
+     * @return int Local file's creation time or 0 if the file doesn't exist.
+     */
+    private function getLocalFileCreationTime()
+    {
+        if (!file_exists($this->jsonFilePath)) {
+            // If local file is missing, rebuild it immediately
+            $this->rebuildQuickpickJson();
+            return 0;
+        }
+        return filectime($this->jsonFilePath);
+    }
+
+    /**
+     * Determines whether the header response is valid and includes a 'Date' key.
+     *
+     * @param mixed $headers Headers retrieved from get_headers().
+     * @return bool True if headers are valid and contain 'Date', false otherwise.
+     */
+    private function isValidHeaderResponse($headers): bool
+    {
+        // If headers retrieval failed or Date is not set, return false
+        if ($headers === false || !isset($headers['Date'])) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Logs the headers in debug mode if logsVerbose is set to 2.
+     *
+     * @param array $headers The headers returned by get_headers().
+     */
+    private function logHeaders(array $headers): void
+    {
+        global $bearsamppConfig;
+
+        if ($bearsamppConfig->getLogsVerbose() === 2) {
+            Util::logDebug('Headers: ' . print_r($headers, true));
+        }
     }
 
     /**
