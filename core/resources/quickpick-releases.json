@@ -387,6 +387,10 @@
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-10.5.26-2024.9.13.7z"
       },
       {
+        "version": "10.5.28",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.2.11/bearsampp-mariadb-10.5.28-2025.2.11.7z"
+      },
+      {
         "version": "10.6.8",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.05.21/bearsampp-mariadb-10.6.8-2022.05.21.7z"
       },
@@ -417,6 +421,10 @@
       {
         "version": "10.6.19",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-10.6.19-2024.9.13.7z"
+      },
+      {
+        "version": "10.6.21",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.2.11/bearsampp-mariadb-10.6.21-2025.2.11.7z"
       },
       {
         "version": "10.7.6",
@@ -507,6 +515,10 @@
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-10.11.9-2024.9.13.7z"
       },
       {
+        "version": "10.11.11",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.2.11/bearsampp-mariadb-10.11.11-2025.2.11.7z"
+      },
+      {
         "version": "11.0.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.7.23/bearsampp-mariadb-11.0.2-2022.7.23.7z"
       },
@@ -565,6 +577,10 @@
       {
         "version": "11.4.3",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-11.4.3-2024.9.13.7z"
+      },
+      {
+        "version": "11.4.5",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.2.11/bearsampp-mariadb-11.4.5-2025.2.11.7z"
       },
       {
         "version": "11.5.1-RC",
@@ -626,6 +642,10 @@
       {
         "version": "1.6.33",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.12.23/bearsampp-memcached-1.6.33-2024.12.23.7z"
+      },
+      {
+        "version": "1.6.36",
+        "url": "https://github.com/Bearsampp/module-memcached/releases/download/2025.2.11/bearsampp-memcached-1.6.36-2025.2.11.7z"
       }
     ]
   },
