@@ -38,7 +38,6 @@ For those who wish to contribute, have an issue or questions, read the [Document
 | ![Deprecated](https://img.shields.io/badge/Deprecated-red?style=flat-square&color=red)               | [Filezilla](https://bearsampp.com/module/filezilla): a FTP server application.                                                                  |  
 | ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Ghostscript](https://bearsampp.com/module/ghostscript): an interpreter for the PostScript language and for PDF.                                |  
 | ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Git](https://bearsampp.com/module/git): a widely used version control system for software development.                                         |  
-| ![Deprecated](https://img.shields.io/badge/Deprecated-red?style=flat-square&color=red)               | [MailHog](https://bearsampp.com/module/mailhog): a Web and API based SMTP testing.                                                              |
 | ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [MailPit](https://bearsampp.com/module/mailpit): a Web and API based SMTP testing.                                                              |
 | ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [MariaDB](https://bearsampp.com/module/mariadb): a community-developed fork of the MySQL relational database management system.                 |  
 | ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [Memcached](https://bearsampp.com/module/memcached): a distributed memory object caching system.                                                |  
@@ -51,11 +50,9 @@ For those who wish to contribute, have an issue or questions, read the [Document
 | ![Application](https://img.shields.io/badge/Application-%23f89406?style=flat-square&color=%23f89406) | [phpPgAdmin](https://bearsampp.com/module/phppgadmin): a web-based administration tool for PostgreSQL.                                          |  
 | ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [PostgreSQL](https://bearsampp.com/module/postgresql): an object-relational database management system (ORDBMS).                                |  
 | ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Python](https://bearsampp.com/module/python): a widely used high-level, general-purpose, interpreted, dynamic programming language.            |  
-| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Ruby](https://bearsampp.com/module/ruby): a dynamic, reflective, object-oriented, general-purpose programming language.                        |  
-| ![Application](https://img.shields.io/badge/Application-%23f89406?style=flat-square&color=%23f89406) | [Webgrind](https://bearsampp.com/module/webgrind): the Xdebug Profiling Web Frontend in PHP.                                                    |
+| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Ruby](https://bearsampp.com/module/ruby): a dynamic, reflective, object-oriented, general-purpose programming language.                        |
 | ![Binary](https://img.shields.io/badge/Binary-%234078c0?style=flat-square&color=%234078c0)           | [Xlight](https://bearsampp.com/module/xlight): a lightweight & robust FTP server.                                                               |
-| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [XDebugClient](https://bearsampp.com/module/xdc): a simple frontend for XDebug.                                                                 |  
-| ![Tool](https://img.shields.io/badge/Tool-%23468847?style=flat-square&color=%23468847)               | [Yarn](https://bearsampp.com/module/yarn): a fast, reliable, and secure dependency management.                                                  |  
+  
 
 ## Documentation
 
