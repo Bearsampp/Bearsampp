@@ -1297,15 +1297,6 @@
     ]
   },
   {
-    "module": "module-xdc",
-    "versions": [
-      {
-        "version": "1.0b5",
-        "url": "https://github.com/Bearsampp/module-xdc/releases/download/r2/bearsampp-xdc-1.0b5-r2.7z"
-      }
-    ]
-  },
-  {
     "module": "module-xlight",
     "versions": [
       {
@@ -1319,15 +1310,6 @@
       {
         "version": "3.9.4.4",
         "url": "https://github.com/Bearsampp/module-xlight/releases/download/2024.12.8/bearsampp-xlight-3.9.4.4-2024.12.8.7z"
-      }
-    ]
-  },
-  {
-    "module": "module-yarn",
-    "versions": [
-      {
-        "version": "1.22.19",
-        "url": "https://github.com/Bearsampp/module-yarn/releases/download/2022.07.17/bearsampp-yarn-1.22.19-2022.07.17.7z"
       }
     ]
   }
