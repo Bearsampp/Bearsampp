@@ -24,9 +24,7 @@ urls = [
     'https://raw.githubusercontent.com/Bearsampp/module-python/main/releases.properties',
     'https://raw.githubusercontent.com/Bearsampp/module-ruby/main/releases.properties',
     'https://raw.githubusercontent.com/Bearsampp/module-webgrind/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-xdc/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-xlight/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-yarn/main/releases.properties'
+    'https://raw.githubusercontent.com/Bearsampp/module-xlight/main/releases.properties'
 ]
 
 combined_data = []
