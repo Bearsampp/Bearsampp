@@ -284,26 +284,26 @@ class TplApp
             TplAestan::getItemLink($bearsamppLang->getValue(Lang::HELP), Util::getWebsiteUrl('faq')) . PHP_EOL .
 
             TplAestan::getItemSeparator() . PHP_EOL .
-            $tplReload[self::SECTION_CALL] . PHP_EOL .
             TplAppClearFolders::process() . PHP_EOL .
             TplAppRebuildIni::process() . PHP_EOL .
+            $tplReload[self::SECTION_CALL] . PHP_EOL .
+
+            TplAestan::getItemSeparator() . PHP_EOL .
             $tplBrowser[self::SECTION_CALL] . PHP_EOL .
             TplAppEditConf::process() . PHP_EOL .
-
-            TplAestan::getItemSeparator() . PHP_EOL .
             $tplLang[self::SECTION_CALL] . PHP_EOL .
             $tplLogsVerbose[self::SECTION_CALL] . PHP_EOL .
-            $tplLaunchStartup[self::SECTION_CALL] . PHP_EOL .
 
             TplAestan::getItemSeparator() . PHP_EOL .
+            $tplLaunchStartup[self::SECTION_CALL] . PHP_EOL .
             $tplExit[self::SECTION_CALL] . PHP_EOL .
 
             // Actions
-            PHP_EOL . $tplReload[self::SECTION_CONTENT] . PHP_EOL .
             PHP_EOL . $tplBrowser[self::SECTION_CONTENT] . PHP_EOL .
             PHP_EOL . $tplLang[self::SECTION_CONTENT] .
-            PHP_EOL . $tplLogsVerbose[self::SECTION_CONTENT] .
             PHP_EOL . $tplLaunchStartup[self::SECTION_CONTENT] .
+            PHP_EOL . $tplLogsVerbose[self::SECTION_CONTENT] .
+            PHP_EOL . $tplReload[self::SECTION_CONTENT] . PHP_EOL .
             PHP_EOL . $tplExit[self::SECTION_CONTENT] . PHP_EOL;
     }
 
@@ -320,20 +320,20 @@ class TplApp
     {
         global $bearsamppRoot, $bearsamppBins, $bearsamppLang;
 
-        $tplNodejs = TplAppNodejs::process();
         $tplApache = TplAppApache::process();
-        $tplPhp = TplAppPhp::process();
-        $tplMysql = TplAppMysql::process();
-        $tplMariadb = TplAppMariadb::process();
-        $tplPostgresql = TplAppPostgresql::process();
+        $tplFilezilla = TplAppFilezilla::process();
         $tplMailhog = TplAppMailhog::process();
         $tplMailpit = TplAppMailpit::process();
+        $tplMariadb = TplAppMariadb::process();
         $tplMemcached = TplAppMemcached::process();
-        $tplFilezilla = TplAppFilezilla::process();
+        $tplMysql = TplAppMysql::process();
+        $tplNodejs = TplAppNodejs::process();
+        $tplPhp = TplAppPhp::process();
+        $tplPostgresql = TplAppPostgresql::process();
         $tplXlight = TplAppXlight::process();
 
-        $tplLogs = TplAppLogs::process();
         $tplApps = TplAppApps::process();
+        $tplLogs = TplAppLogs::process();
         $tplTools = TplAppTools::process();
 
         $tplServices = TplAppServices::process();
@@ -352,23 +352,23 @@ class TplApp
 
             //// Bins menus
             TplAestan::getItemSeparator() . PHP_EOL .
-            $tplNodejs[self::SECTION_CALL] . PHP_EOL .
             $tplApache[self::SECTION_CALL] . PHP_EOL .
-            $tplPhp[self::SECTION_CALL] . PHP_EOL .
-            $tplMysql[self::SECTION_CALL] . PHP_EOL .
-            $tplMariadb[self::SECTION_CALL] . PHP_EOL .
-            $tplPostgresql[self::SECTION_CALL] . PHP_EOL .
+            $tplFilezilla[self::SECTION_CALL] . PHP_EOL .
             $tplMailhog[self::SECTION_CALL] . PHP_EOL .
             $tplMailpit[self::SECTION_CALL] . PHP_EOL .
+            $tplMariadb[self::SECTION_CALL] . PHP_EOL .
             $tplMemcached[self::SECTION_CALL] . PHP_EOL .
+            $tplMysql[self::SECTION_CALL] . PHP_EOL .
+            $tplNodejs[self::SECTION_CALL] . PHP_EOL .
+            $tplPhp[self::SECTION_CALL] . PHP_EOL .
+            $tplPostgresql[self::SECTION_CALL] . PHP_EOL .
             $tplXlight[self::SECTION_CALL] . PHP_EOL .
-            $tplFilezilla[self::SECTION_CALL] . PHP_EOL .
 
             //// Stuff menus
             TplAestan::getItemSeparator() . PHP_EOL .
+            $tplApps[self::SECTION_CALL] . PHP_EOL .
             $tplLogs[self::SECTION_CALL] . PHP_EOL .
             $tplTools[self::SECTION_CALL] . PHP_EOL .
-            $tplApps[self::SECTION_CALL] . PHP_EOL .
 
             //// Services
             TplAestan::getItemSeparator() . PHP_EOL .
@@ -379,20 +379,20 @@ class TplApp
             $tplOnline[self::SECTION_CALL] . PHP_EOL .
 
             // Actions
-            PHP_EOL . $tplNodejs[self::SECTION_CONTENT] .
             PHP_EOL . $tplApache[self::SECTION_CONTENT] .
-            PHP_EOL . $tplPhp[self::SECTION_CONTENT] .
-            PHP_EOL . $tplMysql[self::SECTION_CONTENT] .
-            PHP_EOL . $tplMariadb[self::SECTION_CONTENT] .
-            PHP_EOL . $tplPostgresql[self::SECTION_CONTENT] .
+            PHP_EOL . $tplFilezilla[self::SECTION_CONTENT] .
             PHP_EOL . $tplMailhog[self::SECTION_CONTENT] .
             PHP_EOL . $tplMailpit[self::SECTION_CONTENT] .
+            PHP_EOL . $tplMariadb[self::SECTION_CONTENT] .
             PHP_EOL . $tplMemcached[self::SECTION_CONTENT] .
-            PHP_EOL . $tplFilezilla[self::SECTION_CONTENT] .
+            PHP_EOL . $tplMysql[self::SECTION_CONTENT] .
+            PHP_EOL . $tplNodejs[self::SECTION_CONTENT] .
+            PHP_EOL . $tplPhp[self::SECTION_CONTENT] .
+            PHP_EOL . $tplPostgresql[self::SECTION_CONTENT] .
             PHP_EOL . $tplXlight[self::SECTION_CONTENT] .
+            PHP_EOL . $tplApps[self::SECTION_CONTENT] .
             PHP_EOL . $tplLogs[self::SECTION_CONTENT] .
             PHP_EOL . $tplTools[self::SECTION_CONTENT] .
-            PHP_EOL . $tplApps[self::SECTION_CONTENT] .
             PHP_EOL . $tplServices[self::SECTION_CONTENT] .
             PHP_EOL . $tplOnline[self::SECTION_CONTENT];
     }

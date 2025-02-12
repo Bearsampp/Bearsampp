@@ -17,16 +17,16 @@ class Bins
 {
     const TYPE = 'bins';
 
+    private $apache;
+    private $filezilla;
     private $mailhog;
     private $mailpit;
-    private $memcached;
-    private $apache;
-    private $php;
-    private $mysql;
     private $mariadb;
-    private $postgresql;
+    private $memcached;
+    private $mysql;
     private $nodejs;
-    private $filezilla;
+    private $php;
+    private $postgresql;
     private $xlight;
 
     /**
@@ -70,16 +70,16 @@ class Bins
     public function getAll()
     {
         return array(
+            $this->getApache(),
+            $this->getFilezilla(),
             $this->getMailhog(),
             $this->getMailpit(),
             $this->getMemcached(),
-            $this->getApache(),
-            $this->getFilezilla(),
             $this->getMariadb(),
-            $this->getPostgresql(),
             $this->getMysql(),
-            $this->getPhp(),
             $this->getNodejs(),
+            $this->getPhp(),
+            $this->getPostgresql(),
             $this->getXlight(),
         );
     }
