@@ -45,12 +45,6 @@ class ActionEnable
             elseif ( $args[0] == $bearsamppBins->getPostgresql()->getName() ) {
                 $bearsamppBins->getPostgresql()->setEnable( $args[1], true );
             }
-            elseif ( $args[0] == $bearsamppBins->getFilezilla()->getName() ) {
-                $bearsamppBins->getFilezilla()->setEnable( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getMailhog()->getName() ) {
-                $bearsamppBins->getMailhog()->setEnable( $args[1], true );
-            }
             elseif ( $args[0] == $bearsamppBins->getMailpit()->getName() ) {
                 $bearsamppBins->getMailpit()->setEnable( $args[1], true );
             }

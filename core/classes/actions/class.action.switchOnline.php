@@ -30,7 +30,6 @@ class ActionSwitchOnline
             $this->switchApache($putOnline);
             $this->switchAlias($putOnline);
             $this->switchVhosts($putOnline);
-            $this->switchFilezilla($putOnline);
             $bearsamppConfig->replace(Config::CFG_ONLINE, $args[0]);
         }
     }
@@ -66,27 +65,5 @@ class ActionSwitchOnline
     {
         global $bearsamppBins;
         $bearsamppBins->getApache()->refreshVhosts($putOnline);
-    }
-
-    /**
-     * Switches the Filezilla configuration based on the online/offline state.
-     *
-     * @param bool $putOnline True to put online, false to put offline.
-     */
-    private function switchFilezilla($putOnline)
-    {
-        global $bearsamppBins;
-
-        if ($putOnline) {
-            $bearsamppBins->getFilezilla()->setConf(array(
-                BinFilezilla::CFG_IP_FILTER_ALLOWED => '*',
-                BinFilezilla::CFG_IP_FILTER_DISALLOWED => '',
-            ));
-        } else {
-            $bearsamppBins->getFilezilla()->setConf(array(
-                BinFilezilla::CFG_IP_FILTER_ALLOWED => '127.0.0.1 ::1',
-                BinFilezilla::CFG_IP_FILTER_DISALLOWED => '*',
-            ));
-        }
     }
 }

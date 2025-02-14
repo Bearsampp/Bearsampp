@@ -8,7 +8,7 @@
  */
 
 /**
- * Generates a JSON output containing information about various bins such as Apache, Filezilla, MailHog, Mailpit, MariaDB, MySQL, PostgreSQL, Memcached, Node.js, and PHP.
+ * Generates a JSON output containing information about various bins such as Apache, Mailpit, MariaDB, MySQL, PostgreSQL, Memcached, Node.js, and PHP.
  * The output includes download links, version numbers, and status labels for each bin.
  */
 
@@ -18,8 +18,6 @@ global $downloadTitle, $bearsamppBins;
 // Initialize result array
 $result = array(
     'binapache'     => '',
-    'binfilezilla'  => '',
-    'binmailhog'    => '',
     'binmailpit'    => '',
     'binmariadb'    => '',
     'binmysql'      => '',
@@ -58,54 +56,6 @@ try {
 }
 catch ( Exception $e ) {
     $result['binapache'] = 'An error occurred getting the summary of Apache. ' . $e->getMessage();
-}
-
-try {
-    /**
-     * Filezilla Bin Information
-     * Retrieves the port and SSL port for Filezilla, checks if Filezilla is enabled and the ports are open.
-     * Sets the appropriate label based on the status and appends the version and download link to the result.
-     */
-    $filezillaPort    = $bearsamppBins->getFilezilla()->getPort();
-    $filezillaSslPort = $bearsamppBins->getFilezilla()->getSslPort();
-    $filezillaLabel   = 'bg-secondary';
-    if ( $bearsamppBins->getFilezilla()->isEnable() ) {
-        $filezillaLabel = 'bg-danger';
-        if ( $bearsamppBins->getFilezilla()->checkPort( $filezillaPort ) ) {
-            if ( $bearsamppBins->getFilezilla()->checkPort( $filezillaSslPort, true ) ) {
-                $filezillaLabel = 'bg-success';
-            }
-            else {
-                $filezillaLabel = 'bg-warning';
-            }
-        }
-    }
-    $result['binfilezilla'] = sprintf( $dlMoreTpl, 'filezilla' );
-    $result['binfilezilla'] .= '<span class = " float-end badge ' . $filezillaLabel . '">' . $bearsamppBins->getFilezilla()->getVersion() . '</span>';
-}
-catch ( Exception $e ) {
-    $result['binfilezilla'] = 'An error occurred getting the summary of Filezilla. ' . $e->getMessage();
-}
-
-try {
-    /**
-     * MailHog Bin Information
-     * Retrieves the SMTP port for MailHog, checks if MailHog is enabled and the port is open.
-     * Sets the appropriate label based on the status and appends the version and download link to the result.
-     */
-    $mailhogPort  = $bearsamppBins->getMailhog()->getSmtpPort();
-    $mailhogLabel = 'bg-secondary';
-    if ( $bearsamppBins->getMailhog()->isEnable() ) {
-        $mailhogLabel = 'bg-danger';
-        if ( $bearsamppBins->getMailhog()->checkPort( $mailhogPort ) ) {
-            $mailhogLabel = 'bg-success';
-        }
-    }
-    $result['binmailhog'] = sprintf( $dlMoreTpl, 'mailhog' );
-    $result['binmailhog'] .= '<span class = " float-end badge ' . $mailhogLabel . '">' . $bearsamppBins->getMailhog()->getVersion() . '</span>';
-}
-catch ( Exception $e ) {
-    $result['binmailhog'] = 'An error occurred getting the summary of Mailhog. ' . $e->getMessage();
 }
 
 try {

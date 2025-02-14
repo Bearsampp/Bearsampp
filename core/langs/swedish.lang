@@ -104,8 +104,6 @@ menuWwwDirectory = "www filkatalog"
 
 ; Bins
 apache = "Apache"
-filezilla = "Filezilla"
-mailhog = "MailHog"
 mailpit = "Mailpit"
 mariadb = "MariaDB"
 memcached = "Memcached"
@@ -120,7 +118,6 @@ xlight = "Xlight"
 adminer = "Adminer"
 phpmyadmin = "phpMyAdmin"
 phppgadmin = "phpPgAdmin"
-webgrind = "Webgrind"
 
 ; Tools
 bruno = "Bruno"
@@ -132,8 +129,6 @@ ngrok = "ngrok"
 perl = "Perl"
 python = "Python"
 ruby = "Ruby"
-xdc = "XDebugClient"
-yarn = "Yarn"
 
 ; Errors
 errorConfNotFound = "%s konfigurationsfil hittades inte i %s"
@@ -354,7 +349,6 @@ homepageQuestionsTitle = "Frågor ?"
 homepageQuestionsText = "Om du upptäcker problem eller om du har idéer kring utvecklandet av Bearsampp, publicera då frågan på GitHub!"
 homepagePostIssue = "Publicera ett problem"
 homepagePhpinfoText = "Visa phpinfo()"
-homepageMailhogText = "#View received emails"
 homepageMailpitText = "#View received emails"
 homepageApcText = "#APC Manager"
 homepageBackText = "Tillbaka till webbplats"

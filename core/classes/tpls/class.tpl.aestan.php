@@ -85,12 +85,10 @@ class TplAestan
     const GLYPH_IMAGEMAGICK = 41;
     const GLYPH_NOTEPAD2 = 42;
     const GLYPH_PASSWORD = 45;
-    const GLYPH_FILEZILLA = 47;
     const GLYPH_FOLDER_DISABLED = 48;
     const GLYPH_FOLDER_ENABLED = 49;
     const GLYPH_PYTHON = 50;
     const GLYPH_RUBY = 52;
-    const GLYPH_YARN = 54;
     const GLYPH_PERL = 55;
     const GLYPH_GHOSTSCRIPT = 56;
     const GLYPH_NGROK = 57;

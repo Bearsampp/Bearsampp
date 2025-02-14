@@ -122,20 +122,7 @@ class ActionSwitchVersion
                         'recursive' => false
                     );
                 }
-            } elseif ($args[0] == $bearsamppBins->getFilezilla()->getName()) {
-                $this->bin            = $bearsamppBins->getFilezilla();
-                $this->currentVersion = $bearsamppBins->getFilezilla()->getVersion();
-                $this->service        = $bearsamppBins->getFilezilla()->getService();
-                $this->changePort     = true;
-                $folderList           = Util::getFolderList($bearsamppBins->getFilezilla()->getRootPath());
-                foreach ($folderList as $folder) {
-                    $this->pathsToScan[] = array(
-                        'path'      => $bearsamppBins->getFilezilla()->getRootPath() . '/' . $folder,
-                        'includes'  => array('.xml'),
-                        'recursive' => true
-                    );
-                }
-            } elseif ($args[0] == $bearsamppBins->getMemcached()->getName()) {
+            }  elseif ($args[0] == $bearsamppBins->getMemcached()->getName()) {
                 $this->bin            = $bearsamppBins->getMemcached();
                 $this->currentVersion = $bearsamppBins->getMemcached()->getVersion();
                 $this->service        = $bearsamppBins->getMemcached()->getService();

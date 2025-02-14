@@ -123,11 +123,9 @@ class Lang
 
     // Bins
     const APACHE = 'apache';
-    const FILEZILLA = 'filezilla';
     const PHP = 'php';
     const PEAR = 'pear';
     const MEMCACHED = 'memcached';
-    const MAILHOG = 'mailhog';
     const MAILPIT = 'mailpit';
     const MARIADB = 'mariadb';
     const MYSQL = 'mysql';
@@ -137,7 +135,6 @@ class Lang
 
     // Apps
     const PHPMYADMIN = 'phpmyadmin';
-    const WEBGRIND = 'webgrind';
     const ADMINER = 'adminer';
     const PHPPGADMIN = 'phppgadmin';
 
@@ -151,8 +148,6 @@ class Lang
     const PERL = 'perl';
     const PYTHON = 'python';
     const RUBY = 'ruby';
-    const XDC = 'xdc';
-    const YARN = 'yarn';
 
     // Errors
     const ERROR_CONF_NOT_FOUND = 'errorConfNotFound';
@@ -373,7 +368,6 @@ class Lang
     const HOMEPAGE_POST_ISSUE = 'homepagePostIssue';
     const HOMEPAGE_PHPINFO_TEXT = 'homepagePhpinfoText';
     const HOMEPAGE_APC_TEXT = 'homepageApcText';
-    const HOMEPAGE_MAILHOG_TEXT = 'homepageMailhogText';
     const HOMEPAGE_MAILPIT_TEXT = 'homepageMailpitText';
     const HOMEPAGE_XLIGHT_TEXT = 'homepageXlightText';
     const HOMEPAGE_BACK_TEXT = 'homepageBackText';
@@ -488,11 +482,9 @@ class Lang
 
             // Bins
             self::APACHE,
-            self::FILEZILLA,
             self::PHP,
             self::PEAR,
             self::MEMCACHED,
-            self::MAILHOG,
             self::MAILPIT,
             self::MARIADB,
             self::MYSQL,
@@ -502,7 +494,6 @@ class Lang
 
             // Apps
             self::PHPMYADMIN,
-            self::WEBGRIND,
             self::ADMINER,
             self::PHPPGADMIN,
 
@@ -515,8 +506,6 @@ class Lang
             self::PERL,
             self::PYTHON,
             self::RUBY,
-            self::XDC,
-            self::YARN,
 
             // Errors
             self::ERROR_CONF_NOT_FOUND,
@@ -737,7 +726,6 @@ class Lang
             self::HOMEPAGE_POST_ISSUE,
             self::HOMEPAGE_PHPINFO_TEXT,
             self::HOMEPAGE_APC_TEXT,
-            self::HOMEPAGE_MAILHOG_TEXT,
             self::HOMEPAGE_MAILPIT_TEXT,
             self::HOMEPAGE_XLIGHT_TEXT,
             self::HOMEPAGE_BACK_TEXT,

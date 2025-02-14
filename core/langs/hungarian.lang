@@ -104,8 +104,6 @@ menuWwwDirectory = "www mappa"
 
 ; Bins
 apache = "Apache"
-filezilla = "Filezilla"
-mailhog = "MailHog"
 mailpit = "Mailpit"
 mariadb = "MariaDB"
 memcached = "Memcached"
@@ -120,7 +118,6 @@ xlight = "Xlight"
 adminer = "Adminer"
 phpmyadmin = "phpMyAdmin"
 phppgadmin = "phpPgAdmin"
-webgrind = "Webgrind"
 
 ; Tools
 bruno = "Bruno"
@@ -132,8 +129,6 @@ ngrok = "ngrok"
 perl = "Perl"
 python = "Python"
 ruby = "Ruby"
-xdc = "XDebugClient"
-yarn = "Yarn"
 
 ; Errors
 errorConfNotFound = "A %s konfiguraciós file nincs a %s -ban"
@@ -354,7 +349,6 @@ homepageQuestionsTitle = "Kérdések ?"
 homepageQuestionsText = "Ha hibát talál, vagy ötlete van a Bearsampp-del kapcsolatban, a GitHubon kéretik jelezni"
 homepagePostIssue = "Probléma jelzése"
 homepagePhpinfoText = "phpinfo() megtekintése"
-homepageMailhogText = "Érkezett e-mail megtekintése"
 homepageMailpitText = "Érkezett e-mail megtekintése"
 homepageApcText = "APC kezelo"
 homepageBackText = "Vissza a kezdolapra"

@@ -69,9 +69,6 @@ class ActionQuit
             if ( $sName == BinMysql::SERVICE_NAME ) {
                 $name = $bearsamppBins->getMysql()->getName() . ' ' . $bearsamppBins->getMysql()->getVersion();
             }
-            elseif ( $sName == BinMailhog::SERVICE_NAME ) {
-                $name = $bearsamppBins->getMailhog()->getName() . ' ' . $bearsamppBins->getMailhog()->getVersion();
-            }
             elseif ( $sName == BinMailpit::SERVICE_NAME ) {
                 $name = $bearsamppBins->getMailpit()->getName() . ' ' . $bearsamppBins->getMailpit()->getVersion();
             }
@@ -81,18 +78,10 @@ class ActionQuit
             elseif ( $sName == BinPostgresql::SERVICE_NAME ) {
                 $name = $bearsamppBins->getPostgresql()->getName() . ' ' . $bearsamppBins->getPostgresql()->getVersion();
             }
-            elseif ( $sName == BinMailhog::SERVICE_NAME ) {
-                $name = $bearsamppBins->getPostgresql()->getName() . ' ' . $bearsamppBins->getPostgresql()->getVersion();
-            }
             elseif ( $sName == BinMemcached::SERVICE_NAME ) {
                 $name = $bearsamppBins->getMemcached()->getName() . ' ' . $bearsamppBins->getMemcached()->getVersion();
             }
-            elseif ( $sName == BinFilezilla::SERVICE_NAME ) {
-                $name = $bearsamppBins->getFilezilla()->getName() . ' ' . $bearsamppBins->getFilezilla()->getVersion();
-            } elseif ($sName == BinXlight::SERVICE_NAME) {
-                $name = $bearsamppBins->getXlight()->getName() . ' ' . $bearsamppBins->getXlight()->getVersion();
-            }
-            elseif ( $sName == BinXlight::SERVICE_NAME ) {
+            elseif ($sName == BinXlight::SERVICE_NAME) {
                 $name = $bearsamppBins->getXlight()->getName() . ' ' . $bearsamppBins->getXlight()->getVersion();
             }
             $name .= ' (' . $service->getName() . ')';

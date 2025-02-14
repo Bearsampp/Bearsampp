@@ -20,8 +20,6 @@ $procs = array(
     'summary',
     'latestversion',
     'apache',
-    'filezilla',
-    'mailhog',
     'mailpit',
     'memcached',
     'mariadb',

@@ -188,12 +188,7 @@ class Win32Service
     {
         global $bearsamppBins;
 
-        if ( $this->getName() == BinFilezilla::SERVICE_NAME ) {
-            $bearsamppBins->getFilezilla()->rebuildConf();
-
-            return Batch::installFilezillaService();
-        }
-        elseif ( $this->getName() == BinPostgresql::SERVICE_NAME ) {
+        if ( $this->getName() == BinPostgresql::SERVICE_NAME ) {
             $bearsamppBins->getPostgresql()->rebuildConf();
             $bearsamppBins->getPostgresql()->initData();
 
@@ -255,10 +250,7 @@ class Win32Service
 
         $this->stop();
 
-        if ( $this->getName() == BinFilezilla::SERVICE_NAME ) {
-            return Batch::uninstallFilezillaService();
-        }
-        elseif ( $this->getName() == BinPostgresql::SERVICE_NAME ) {
+        if ( $this->getName() == BinPostgresql::SERVICE_NAME ) {
             return Batch::uninstallPostgresqlService();
         }
 
@@ -304,14 +296,8 @@ class Win32Service
 
         Util::logInfo('Attempting to start service: ' . $this->getName());
 
-        if ( $this->getName() == BinFilezilla::SERVICE_NAME ) {
-            $bearsamppBins->getFilezilla()->rebuildConf();
-        }
-        elseif ( $this->getName() == BinMysql::SERVICE_NAME ) {
+        if ( $this->getName() == BinMysql::SERVICE_NAME ) {
             $bearsamppBins->getMysql()->initData();
-        }
-        elseif ( $this->getName() == BinMailhog::SERVICE_NAME ) {
-            $bearsamppBins->getMailhog()->rebuildConf();
         }
         elseif ( $this->getName() == BinMailpit::SERVICE_NAME ) {
             $bearsamppBins->getMailpit()->rebuildConf();

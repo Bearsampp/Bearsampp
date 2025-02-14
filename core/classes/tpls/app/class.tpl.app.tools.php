@@ -13,7 +13,7 @@
  *
  * This class provides methods to generate menu items and actions for managing various tools
  * within the Bearsampp application. It includes functionalities for accessing tools like Git, Python,
- * Composer, Ghostscript, Ngrok, Pear, Perl, Ruby, XDebugClient, Yarn, and more.
+ * Composer, Ghostscript, Ngrok, Pear, Perl, Ruby and more.
  */
 class TplAppTools
 {
@@ -108,19 +108,7 @@ class TplAppTools
             $bearsamppTools->getConsoleZ()->getTabTitleRuby()
         ) . PHP_EOL;
 
-        // XDebugClient
-        $resultItems .= TplAestan::getItemExe(
-            $bearsamppLang->getValue(Lang::XDC),
-            $bearsamppTools->getXdc()->getExe(),
-            TplAestan::GLYPH_DEBUG
-        ) . PHP_EOL;
-
-        // Yarn
-        $resultItems .= TplAestan::getItemConsoleZ(
-            $bearsamppLang->getValue(Lang::YARN),
-            TplAestan::GLYPH_YARN,
-            $bearsamppTools->getConsoleZ()->getTabTitleYarn()
-        ) . PHP_EOL;
+        // Line Separator
         $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
         // Console

@@ -31,20 +31,10 @@ async function getSummaryStatus() {
         ql.remove();
         q.insertAdjacentHTML('beforeend', data.binapache);
 
-        q = document.querySelector('.summary-binfilezilla');
-        ql = q.querySelector('.loader');
-        ql.remove();
-        q.insertAdjacentHTML('beforeend', data.binfilezilla);
-
         q = document.querySelector('.summary-binxlight');
         ql = q.querySelector('.loader');
         ql.remove();
         q.insertAdjacentHTML('beforeend', data.binxlight);
-
-        q = document.querySelector('.summary-binmailhog');
-        ql = q.querySelector('.loader');
-        ql.remove();
-        q.insertAdjacentHTML('beforeend', data.binmailhog);
 
         q = document.querySelector('.summary-binmailpit');
         ql = q.querySelector('.loader');

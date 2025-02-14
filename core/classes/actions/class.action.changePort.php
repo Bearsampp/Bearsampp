@@ -57,16 +57,6 @@ class ActionChangePort
                 $this->currentPort       = $bearsamppBins->getPostgresql()->getPort();
                 $this->cntProcessActions = 3;
             }
-            elseif ( $args[0] == $bearsamppBins->getFilezilla()->getName() ) {
-                $this->bin               = $bearsamppBins->getFilezilla();
-                $this->currentPort       = $bearsamppBins->getFilezilla()->getPort();
-                $this->cntProcessActions = 3;
-            }
-            elseif ( $args[0] == $bearsamppBins->getMailhog()->getName() ) {
-                $this->bin               = $bearsamppBins->getMailhog();
-                $this->currentPort       = $bearsamppBins->getMailhog()->getSmtpPort();
-                $this->cntProcessActions = 3;
-            }
             elseif ( $args[0] == $bearsamppBins->getMailpit()->getName() ) {
                 $this->bin               = $bearsamppBins->getMailpit();
                 $this->currentPort       = $bearsamppBins->getMailpit()->getSmtpPort();
