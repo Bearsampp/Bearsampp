@@ -263,7 +263,6 @@ class ActionStartup
         closedir( $handle );
 
         // Purge logs
-        Util::clearFolders( $bearsamppBins->getLogsPath() );
         Util::clearFolder( $bearsamppRoot->getLogsPath(), array('archives', '.gitignore') );
     }
 
@@ -278,7 +277,7 @@ class ActionStartup
         $this->splash->incrProgressBar();
 
         $this->writeLog( 'Clear tmp folders' );
-        Util::clearFolder( $bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailhog', 'mailpit', 'xlight', 'npm-cache', 'pip', 'yarn', '.gitignore') );
+        Util::clearFolder( $bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', '.gitignore') );
         Util::clearFolder( $bearsamppCore->getTmpPath(), array('.gitignore') );
     }
 
@@ -637,11 +636,7 @@ class ActionStartup
                 $syntaxCheckCmd = null;
                 $bin            = null;
                 $port           = 0;
-                if ( $sName == BinMailhog::SERVICE_NAME ) {
-                    $bin  = $bearsamppBins->getMailhog();
-                    $port = $bearsamppBins->getMailhog()->getSmtpPort();
-                }
-                elseif ( $sName == BinMailpit::SERVICE_NAME ) {
+                if ( $sName == BinMailpit::SERVICE_NAME ) {
                     $bin  = $bearsamppBins->getMailpit();
                     $port = $bearsamppBins->getMailpit()->getSmtpPort();
                 }
@@ -667,10 +662,6 @@ class ActionStartup
                 elseif ( $sName == BinPostgresql::SERVICE_NAME ) {
                     $bin  = $bearsamppBins->getPostgresql();
                     $port = $bearsamppBins->getPostgresql()->getPort();
-                }
-                elseif ( $sName == BinFilezilla::SERVICE_NAME ) {
-                    $bin  = $bearsamppBins->getFilezilla();
-                    $port = $bearsamppBins->getFilezilla()->getPort();
                 }
                 elseif ( $sName == BinXlight::SERVICE_NAME ) {
                     $bin  = $bearsamppBins->getXlight();

@@ -47,9 +47,7 @@ class QuickPick
         'PostgreSQL'  => ['type' => 'binary'],
         'Python'      => ['type' => 'tools'],
         'Ruby'        => ['type' => 'tools'],
-        'Webgrind'    => ['type' => 'application'],
-        'Xlight'      => ['type' => 'binary'],
-        'Yarn'        => ['type' => 'tools']
+        'Xlight'      => ['type' => 'binary']
     ];
 
     /**

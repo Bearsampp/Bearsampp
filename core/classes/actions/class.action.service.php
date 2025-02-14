@@ -41,11 +41,7 @@ class ActionService
             $port           = 0;
             $syntaxCheckCmd = null;
 
-            if ( $sName == BinMailhog::SERVICE_NAME ) {
-                $bin  = $bearsamppBins->getMailhog();
-                $port = $bin->getSmtpPort();
-            }
-            elseif ( $sName == BinMailpit::SERVICE_NAME ) {
+            if ( $sName == BinMailpit::SERVICE_NAME ) {
                 $bin  = $bearsamppBins->getMailpit();
                 $port = $bin->getSmtpPort();
             }
@@ -70,10 +66,6 @@ class ActionService
             }
             elseif ( $sName == BinPostgresql::SERVICE_NAME ) {
                 $bin  = $bearsamppBins->getPostgresql();
-                $port = $bin->getPort();
-            }
-            elseif ( $sName == BinFilezilla::SERVICE_NAME ) {
-                $bin  = $bearsamppBins->getFilezilla();
                 $port = $bin->getPort();
             }
             elseif ( $sName == BinXlight::SERVICE_NAME ) {

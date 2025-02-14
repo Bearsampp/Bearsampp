@@ -53,7 +53,6 @@ class Symlinks
             '2'  => Util::formatWindowsPath($appsPath . '/phpmyadmin/current'),
             '3'  => Util::formatWindowsPath($appsPath . '/phppgadmin/current'),
             '5'  => Util::formatWindowsPath($binPath . '/apache/current'),
-            '6'  => Util::formatWindowsPath($binPath . '/filezilla/current'),
             '8'  => Util::formatWindowsPath($binPath . '/mariadb/current'),
             '9'  => Util::formatWindowsPath($binPath . '/memcached/current'),
             '10' => Util::formatWindowsPath($binPath . '/mysql/current'),

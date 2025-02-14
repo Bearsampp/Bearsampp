@@ -83,8 +83,6 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
         "/js/latestversion.js",
         "/js/summary.js",
         "/js/apache.js",
-        "/js/filezilla.js",
-        "/js/mailhog.js",
         '/js/mailpit.js',
         "/js/mariadb.js",
         "/js/memcached.js",

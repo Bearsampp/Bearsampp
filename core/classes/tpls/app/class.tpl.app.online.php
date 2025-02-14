@@ -57,7 +57,6 @@ class TplAppOnline
     {
         return TplApp::getActionRun(Action::SWITCH_ONLINE, array($status)) . PHP_EOL .
             TplService::getActionRestart(BinApache::SERVICE_NAME) . PHP_EOL .
-            TplService::getActionRestart(BinFilezilla::SERVICE_NAME) . PHP_EOL .
             TplAppReload::getActionReload() . PHP_EOL;
     }
 }

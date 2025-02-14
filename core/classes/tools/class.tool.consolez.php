@@ -279,16 +279,6 @@ class ToolConsoleZ extends Module
     }
 
     /**
-     * Gets the tab title for Yarn.
-     *
-     * @return string The tab title for Yarn.
-     */
-    public function getTabTitleYarn() {
-        global $bearsamppLang, $bearsamppTools;
-        return $bearsamppLang->getValue(Lang::YARN) . ' ' . $bearsamppTools->getYarn()->getVersion();
-    }
-
-    /**
      * Gets the tab title for Perl.
      *
      * @return string The tab title for Perl.

@@ -11,7 +11,7 @@
  * Class Apps
  *
  * This class manages various application modules within the Bearsampp application.
- * It provides methods to retrieve and update configurations for different tools such as Adminer, PhpMyAdmin, PhpPgAdmin, and Webgrind.
+ * It provides methods to retrieve and update configurations for different tools such as Adminer, PhpMyAdmin and PhpPgAdmin.
  */
 class Apps
 {
@@ -24,11 +24,6 @@ class Apps
      * @var AppPhpmyadmin|null Instance of the PhpMyAdmin module.
      */
     private $phpmyadmin;
-
-    /**
-     * @var AppWebgrind|null Instance of the Webgrind module.
-     */
-    private $webgrind;
 
     /**
      * @var AppAdminer|null Instance of the Adminer module.
@@ -70,8 +65,7 @@ class Apps
         return array(
             $this->getAdminer(),
             $this->getPhpmyadmin(),
-            $this->getPhppgadmin(),
-            $this->getWebgrind()
+            $this->getPhppgadmin()
         );
     }
 
@@ -118,20 +112,5 @@ class Apps
             $this->phppgadmin = new AppPhppgadmin('phppgadmin', self::TYPE);
         }
         return $this->phppgadmin;
-    }
-
-    /**
-     * Retrieves the Webgrind module instance.
-     *
-     * If the instance is not already created, it initializes a new AppWebgrind object.
-     *
-     * @return AppWebgrind The instance of the Webgrind module.
-     */
-    public function getWebgrind()
-    {
-        if ($this->webgrind == null) {
-            $this->webgrind = new AppWebgrind('webgrind', self::TYPE);
-        }
-        return $this->webgrind;
     }
 }

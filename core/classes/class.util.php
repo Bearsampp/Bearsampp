@@ -511,10 +511,6 @@ class Util
             if ( $bearsamppTools->getRuby()->isEnable() ) {
                 $value .= $bearsamppTools->getRuby()->getSymlinkPath() . '/bin;';
             }
-            if ( $bearsamppTools->getYarn()->isEnable() ) {
-                $value .= $bearsamppTools->getYarn()->getSymlinkPath() . ';';
-                $value .= $bearsamppTools->getYarn()->getSymlinkPath() . '/global/bin;';
-            }
             $value = self::formatWindowsPath( $value );
             self::logDebug( 'Generated app bins reg key: ' . $value );
         }
@@ -992,8 +988,8 @@ class Util
      * Retrieves a list of directories and file types to scan within the BEARSAMPP environment.
      *
      * This method compiles an array of paths from various components of the BEARSAMPP stack,
-     * including Apache, PHP, MySQL, MariaDB, PostgreSQL, Node.js, Filezilla, Composer, ConsoleZ,
-     * Python, Ruby, and Yarn. Each path entry includes the directory path, file types to include
+     * including Apache, PHP, MySQL, MariaDB, PostgreSQL, Node.js, Composer, ConsoleZ,
+     * Python and Ruby. Each path entry includes the directory path, file types to include
      * in the scan, and whether the scan should be recursive.
      *
      * The method uses global variables to access the root paths of each component. It then
@@ -1110,16 +1106,6 @@ class Util
             );
         }
 
-        // Filezilla
-        $folderList = self::getFolderList( $bearsamppBins->getFilezilla()->getRootPath() );
-        foreach ( $folderList as $folder ) {
-            $paths[] = array(
-                'path'      => $bearsamppBins->getFilezilla()->getRootPath() . '/' . $folder,
-                'includes'  => array('.xml'),
-                'recursive' => true
-            );
-        }
-
         // Composer
         $folderList = self::getFolderList( $bearsamppTools->getComposer()->getRootPath() );
         foreach ( $folderList as $folder ) {
@@ -1164,32 +1150,6 @@ class Util
                 'recursive' => false
             );
         }
-
-        // Yarn
-        $folderList = self::getFolderList( $bearsamppTools->getYarn()->getRootPath() );
-        foreach ( $folderList as $folder ) {
-            $paths[] = array(
-                'path'      => $bearsamppTools->getYarn()->getRootPath() . '/' . $folder,
-                'includes'  => array('yarn.bat'),
-                'recursive' => false
-            );
-            $paths[] = array(
-                'path'      => $bearsamppTools->getYarn()->getRootPath() . '/' . $folder . '/global/bin',
-                'includes'  => array('.bat'),
-                'recursive' => false
-            );
-            $paths[] = array(
-                'path'      => $bearsamppTools->getYarn()->getRootPath() . '/' . $folder . '/nodejs/etc',
-                'includes'  => array('npmrc'),
-                'recursive' => true
-            );
-            $paths[] = array(
-                'path'      => $bearsamppTools->getYarn()->getRootPath() . '/' . $folder . '/nodejs/node_modules/npm',
-                'includes'  => array('npmrc'),
-                'recursive' => false
-            );
-        }
-
         return $paths;
     }
 

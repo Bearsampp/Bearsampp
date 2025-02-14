@@ -67,16 +67,6 @@ class Tools
     private $ruby;
 
     /**
-     * @var ToolXdc|null The Xdc tool instance.
-     */
-    private $xdc;
-
-    /**
-     * @var ToolYarn|null The Yarn tool instance.
-     */
-    private $yarn;
-
-    /**
      * Constructor for the Tools class.
      */
     public function __construct()
@@ -111,8 +101,6 @@ class Tools
             $this->getPerl(),
             $this->getPython(),
             $this->getRuby(),
-            $this->getXdc(),
-            $this->getYarn(),
         );
     }
 
@@ -244,31 +232,5 @@ class Tools
             $this->ruby = new ToolRuby('ruby', self::TYPE);
         }
         return $this->ruby;
-    }
-
-    /**
-     * Retrieves the Xdc tool instance.
-     *
-     * @return ToolXdc The Xdc tool instance.
-     */
-    public function getXdc()
-    {
-        if ($this->xdc == null) {
-            $this->xdc = new ToolXdc('xdc', self::TYPE);
-        }
-        return $this->xdc;
-    }
-
-    /**
-     * Retrieves the Yarn tool instance.
-     *
-     * @return ToolYarn The Yarn tool instance.
-     */
-    public function getYarn()
-    {
-        if ($this->yarn == null) {
-            $this->yarn = new ToolYarn('yarn', self::TYPE);
-        }
-        return $this->yarn;
     }
 }

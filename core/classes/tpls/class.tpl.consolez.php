@@ -26,7 +26,6 @@ class TplConsoleZ
     const ICON_COMPOSER = 'composer.ico';
     const ICON_PYTHON = 'python.ico';
     const ICON_RUBY = 'ruby.ico';
-    const ICON_YARN = 'yarn.ico';
     const ICON_PERL = 'perl.ico';
     const ICON_NGROK = 'ngrok.ico';
 
@@ -283,7 +282,7 @@ class TplConsoleZ
      *
      * This function creates an XML structure defining various tabs and their configurations.
      * It includes multiple tab sections such as command, PowerShell, PEAR, MySQL, MariaDB,
-     * PostgreSQL, Ghostscript, Git, Node.js, Composer, Perl, Python, Ruby, Yarn, and Ngrok.
+     * PostgreSQL, Ghostscript, Git, Node.js, Composer, Perl, Python, Ruby and Ngrok.
      *
      * @return string The formatted XML string for the tabs section.
      */
@@ -303,7 +302,6 @@ class TplConsoleZ
             self::getTabPerlSection() .
             self::getTabPythonSection() .
             self::getTabRubySection() .
-            self::getTabYarnSection() .
             self::getTabNgrokSection() .
             self::getIncrStr(1) . '</tabs>';
     }
@@ -615,34 +613,6 @@ class TplConsoleZ
         return self::getTab(
                 $bearsamppTools->getConsoleZ()->getTabTitleRuby(),
                 self::ICON_RUBY,
-                $shell,
-                $bearsamppRoot->getWwwPath()
-            ) . PHP_EOL;
-    }
-
-    /**
-     * Generates the XML structure for the Yarn tab section.
-     *
-     * This function creates an XML structure defining the Yarn tab and its configuration.
-     * It retrieves the Yarn executable path and sets the WWW path.
-     *
-     * @return string The formatted XML string for the Yarn tab section.
-     * @global Tools $bearsamppTools The tools object of the application.
-     *
-     * @global Root  $bearsamppRoot The root object of the application.
-     */
-    private static function getTabYarnSection()
-    {
-        global $bearsamppRoot, $bearsamppTools;
-
-        $shell = $bearsamppTools->getConsoleZ()->getShell('&quot;' . $bearsamppTools->getYarn()->getExe() . '&quot; --version');
-        if (!file_exists($bearsamppTools->getYarn()->getExe())) {
-            $shell = $bearsamppTools->getConsoleZ()->getShell('echo ' . $bearsamppTools->getYarn()->getExe() . ' not found');
-        }
-
-        return self::getTab(
-                $bearsamppTools->getConsoleZ()->getTabTitleYarn(),
-                self::ICON_YARN,
                 $shell,
                 $bearsamppRoot->getWwwPath()
             ) . PHP_EOL;

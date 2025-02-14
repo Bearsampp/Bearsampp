@@ -9,7 +9,7 @@
  */
 
 /**
- * The `Bins` class manages various bin modules such as Mailhog, Mailpit, Memcached, Apache, PHP, MySQL, MariaDB, PostgreSQL, Node.js, FileZilla, and Xlight.
+ * The `Bins` class manages various bin modules such as Mailpit, Memcached, Apache, PHP, MySQL, MariaDB, PostgreSQL, Node.js and Xlight.
  * It provides methods to initialize, reload, update, and retrieve these modules.
  * The class also handles logging and service management for the enabled bin modules.
  */
@@ -18,8 +18,6 @@ class Bins
     const TYPE = 'bins';
 
     private $apache;
-    private $filezilla;
-    private $mailhog;
     private $mailpit;
     private $mariadb;
     private $memcached;
@@ -71,8 +69,6 @@ class Bins
     {
         return array(
             $this->getApache(),
-            $this->getFilezilla(),
-            $this->getMailhog(),
             $this->getMailpit(),
             $this->getMemcached(),
             $this->getMariadb(),
@@ -82,20 +78,6 @@ class Bins
             $this->getPostgresql(),
             $this->getXlight(),
         );
-    }
-
-    /**
-     * Retrieves the Mailhog bin module.
-     * If the Mailhog module is not initialized, it creates a new instance.
-     *
-     * @return BinMailhog The Mailhog bin module.
-     */
-    public function getMailhog()
-    {
-        if ($this->mailhog == null) {
-            $this->mailhog = new BinMailhog('mailhog', self::TYPE);
-        }
-        return $this->mailhog;
     }
 
     /**
@@ -211,20 +193,6 @@ class Bins
     }
 
     /**
-     * Retrieves the FileZilla bin module.
-     * If the FileZilla module is not initialized, it creates a new instance.
-     *
-     * @return BinFilezilla The FileZilla bin module.
-     */
-    public function getFilezilla()
-    {
-        if ($this->filezilla == null) {
-            $this->filezilla = new BinFilezilla('filezilla', self::TYPE);
-        }
-        return $this->filezilla;
-    }
-
-    /**
      * Retrieves the Xlight bin module.
      * If the Xlight module is not initialized, it creates a new instance.
      *
@@ -239,18 +207,6 @@ class Bins
     }
 
     /**
-     * Retrieves the log paths for all bin modules.
-     *
-     * @return array An array of log paths for all bin modules.
-     */
-    public function getLogsPath()
-    {
-        return array(
-            $this->getFilezilla()->getLogsPath(),
-        );
-    }
-
-    /**
      * Retrieves the services for all enabled bin modules.
      *
      * @return array An associative array of service names and their corresponding service objects.
@@ -259,9 +215,6 @@ class Bins
     {
         $result = array();
 
-        if ($this->getMailhog()->isEnable()) {
-            $result[BinMailhog::SERVICE_NAME] = $this->getMailhog()->getService();
-        }
         if ($this->getMailpit()->isEnable()) {
             $result[BinMailpit::SERVICE_NAME] = $this->getMailpit()->getService();
         }
@@ -279,9 +232,6 @@ class Bins
         }
         if ($this->getPostgresql()->isEnable()) {
             $result[BinPostgresql::SERVICE_NAME] = $this->getPostgresql()->getService();
-        }
-        if ($this->getFilezilla()->isEnable()) {
-            $result[BinFilezilla::SERVICE_NAME] = $this->getFilezilla()->getService();
         }
         if ($this->getXlight()->isEnable()) {
             $result[BinXlight::SERVICE_NAME] = $this->getXlight()->getService();

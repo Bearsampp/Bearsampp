@@ -321,8 +321,6 @@ class TplApp
         global $bearsamppRoot, $bearsamppBins, $bearsamppLang;
 
         $tplApache = TplAppApache::process();
-        $tplFilezilla = TplAppFilezilla::process();
-        $tplMailhog = TplAppMailhog::process();
         $tplMailpit = TplAppMailpit::process();
         $tplMariadb = TplAppMariadb::process();
         $tplMemcached = TplAppMemcached::process();
@@ -353,8 +351,6 @@ class TplApp
             //// Bins menus
             TplAestan::getItemSeparator() . PHP_EOL .
             $tplApache[self::SECTION_CALL] . PHP_EOL .
-            $tplFilezilla[self::SECTION_CALL] . PHP_EOL .
-            $tplMailhog[self::SECTION_CALL] . PHP_EOL .
             $tplMailpit[self::SECTION_CALL] . PHP_EOL .
             $tplMariadb[self::SECTION_CALL] . PHP_EOL .
             $tplMemcached[self::SECTION_CALL] . PHP_EOL .
@@ -380,8 +376,6 @@ class TplApp
 
             // Actions
             PHP_EOL . $tplApache[self::SECTION_CONTENT] .
-            PHP_EOL . $tplFilezilla[self::SECTION_CONTENT] .
-            PHP_EOL . $tplMailhog[self::SECTION_CONTENT] .
             PHP_EOL . $tplMailpit[self::SECTION_CONTENT] .
             PHP_EOL . $tplMariadb[self::SECTION_CONTENT] .
             PHP_EOL . $tplMemcached[self::SECTION_CONTENT] .

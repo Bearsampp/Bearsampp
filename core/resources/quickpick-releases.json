@@ -1029,6 +1029,10 @@
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.12.15/bearsampp-php-8.2.26-2024.12.15.7z"
       },
       {
+        "version": "8.2.27",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.11/bearsampp-php-8.2.27-2025.2.11.7z"
+      },
+      {
         "version": "8.3.1",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.1-2024.11.30.7z"
       },
@@ -1061,8 +1065,16 @@
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.12.15/bearsampp-php-8.3.14-2024.12.15.7z"
       },
       {
+        "version": "8.3.16",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.11/bearsampp-php-8.3.16-2025.2.11.7z"
+      },
+      {
         "version": "8.4.1",
-        "url": "https://github.com/Bearsampp/module-php/releases/download/2024.12.15/bearsampp-php-8.4.1-2024.12.15.7z"
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.11/bearsampp-php-8.4.1-2025.2.11.7z"
+      },
+      {
+        "version": "8.4.3",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.11/bearsampp-php-8.4.3-2025.2.11.7z"
       }
     ]
   },
@@ -1222,6 +1234,10 @@
       {
         "version": "17.2.1",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.12.1/bearsampp-postgresql-17.2.1-2024.12.1.7z"
+      },
+      {
+        "version": "17.2.3",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.13/bearsampp-postgresql-17.2.3-2025.2.13.7z"
       }
     ]
   },
@@ -1243,6 +1259,10 @@
       {
         "version": "3.12.6.0",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2024.9.17/bearsampp-python-3.12.6.0-2024.9.17.7z"
+      },
+      {
+        "version": "3.12.8.0-b2",
+        "url": "https://github.com/Bearsampp/module-python/releases/download/2025.2.13/bearsampp-python-3.12.8.0-b2-2025.2.13.7z"
       }
     ]
   },
@@ -1280,6 +1300,10 @@
       {
         "version": "3.3.6-2",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2024.12.3/bearsampp-ruby-3.3.6-2-2024.12.3.7z"
+      },
+      {
+        "version": "3.4.1",
+        "url": "https://github.com/Bearsampp/module-ruby/releases/download/2025.2.13/bearsampp-ruby-3.4.1-2025.2.13.7z"
       }
     ]
   },
@@ -1310,6 +1334,10 @@
       {
         "version": "3.9.4.4",
         "url": "https://github.com/Bearsampp/module-xlight/releases/download/2024.12.8/bearsampp-xlight-3.9.4.4-2024.12.8.7z"
+      },
+      {
+        "version": "3.9.4.5",
+        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2025.2.13/bearsampp-xlight-3.9.4.5-2025.2.13.7z"
       }
     ]
   }

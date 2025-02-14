@@ -164,39 +164,6 @@ class Batch
     }
 
     /**
-     * Installs the FileZilla service.
-     *
-     * @return bool True if the service was installed successfully, false otherwise.
-     */
-    public static function installFilezillaService()
-    {
-        global $bearsamppBins;
-
-        self::exec('installFilezillaService', '"' . $bearsamppBins->getFilezilla()->getExe() . '" /install', true, false);
-
-        if (!$bearsamppBins->getFilezilla()->getService()->isInstalled()) {
-            return false;
-        }
-
-        self::setServiceDescription(BinFilezilla::SERVICE_NAME, $bearsamppBins->getFilezilla()->getService()->getDisplayName());
-
-        return true;
-    }
-
-    /**
-     * Uninstalls the FileZilla service.
-     *
-     * @return bool True if the service was uninstalled successfully, false otherwise.
-     */
-    public static function uninstallFilezillaService()
-    {
-        global $bearsamppBins;
-
-        self::exec('uninstallFilezillaService', '"' . $bearsamppBins->getFilezilla()->getExe() . '" /uninstall', true, false);
-        return !$bearsamppBins->getFilezilla()->getService()->isInstalled();
-    }
-
-    /**
      * Initializes MySQL using a specified path.
      *
      * @param string $path The path to the MySQL initialization script.
