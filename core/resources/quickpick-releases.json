@@ -1259,6 +1259,10 @@
       {
         "version": "3.12.6.0",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2024.9.17/bearsampp-python-3.12.6.0-2024.9.17.7z"
+      },
+      {
+        "version": "3.12.8.0-b2",
+        "url": "https://github.com/Bearsampp/module-python/releases/download/2025.2.13/bearsampp-python-3.12.8.0-b2-2025.2.13.7z"
       }
     ]
   },
