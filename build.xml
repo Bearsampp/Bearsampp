@@ -97,21 +97,23 @@
         <!-- Echo success message -->
         <echo message="Successfully downloaded and extracted Bearsampp iconography." />
 
-        <!-- Define a property for the formatted date -->
-        <tstamp>
-            <format property="formatted.date" pattern="yyyy.MM.dd" />
-        </tstamp>
-
         <!-- Add the exec task to run rcedit-x64.exe to update version # -->
         <exec executable = "rcedit-x64.exe">
             <arg value = "${project.basedir}\base\bearsampp.exe" />
             <arg value = "--set-file-version" />
             <arg value = "${release.fullversion}" />
-            <arg value = "--set-icon" />
-            <arg value = "${project.basedir}\core\resources\homepage\img\icons\app.ico" />
         </exec>
+
         <!-- Echo success message -->
         <echo message = "Successfully set product version to ${release.fullversion} using rcedit-x64.exe" />
+
+        <!-- Add the exec task to run fix-icon.bat -->
+        <exec executable="cmd">
+            <arg value="/c" />
+            <arg value="fix-icon.bat" />
+        </exec>
+        <!-- Echo success message -->
+        <echo message = "Successfully set icon to bearsampp.ico using ResourceHacker.exe" />
 
         <!-- Clean -->
         <delete dir = "${release.base.target}" />
@@ -133,6 +135,9 @@
     build.xml,
     *.iml,
     *.launch,
+    ResourceHacker.exe,
+    ResourceHacker.ini,
+    fix-icon.bat,
     rcedit-x64.exe"
             />
         </copy>
