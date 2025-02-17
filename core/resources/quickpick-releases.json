@@ -736,6 +736,10 @@
       {
         "version": "3",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/3/bearsampp-ngrok-3-2022.07.14.7z"
+      },
+      {
+        "version": "3.19.1",
+        "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2025.02.16/bearsampp-ngrok-3.19.1-2025.02.16.7z"
       }
     ]
   },
