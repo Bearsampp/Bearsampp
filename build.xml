@@ -81,11 +81,33 @@
         <echo message = "* Name    : ${release.name} " />
         <echo message = "* Version : ${release.fullversion} " />
 
+        <!-- Define the URL and destination for the icongography -->
+        <property name="iconography.url" value="https://github.com/Bearsampp/sandbox/releases/download/iconography/Bearsampp-iconography.zip" />
+        <property name="iconography.zip" value="${project.basedir}/Bearsampp-iconography.zip" />
+
+        <!-- Download the ZIP file -->
+        <get src="${iconography.url}" dest="${iconography.zip}" />
+
+        <!-- Extract the ZIP file -->
+        <unzip src="${iconography.zip}" dest="${project.basedir}" />
+
+        <!-- Optionally, delete the ZIP file after extraction -->
+        <delete file="${iconography.zip}" />
+
+        <!-- Echo success message -->
+        <echo message="Successfully downloaded and extracted Bearsampp iconography." />
+
         <!-- Add the exec task to run rcedit-x64.exe to update version # -->
         <exec executable = "rcedit-x64.exe">
             <arg value = "${project.basedir}\base\bearsampp.exe" />
-            <arg value = "--set-product-version" />
+            <arg value = "--set-file-version" />
             <arg value = "${release.fullversion}" />
+            <arg value="--set-product-version" />
+            <arg value="${current.date}" />
+            <arg value="--set-file-name" />
+            <arg value="Bearsampp" />
+            <arg value="--set-icon" />
+            <arg value="${project.basedir}\core\resources\homepage\img\icons\app.ico" />
         </exec>
         <!-- Echo success message -->
         <echo message = "Successfully set product version to ${release.fullversion} using rcedit-x64.exe" />
