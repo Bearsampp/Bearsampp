@@ -97,15 +97,18 @@
         <!-- Echo success message -->
         <echo message="Successfully downloaded and extracted Bearsampp iconography." />
 
+        <!-- Define a property for the formatted date -->
+        <tstamp>
+            <format property="formatted.date" pattern="yyyy.MM.dd" />
+        </tstamp>
+
         <!-- Add the exec task to run rcedit-x64.exe to update version # -->
         <exec executable = "rcedit-x64.exe">
             <arg value = "${project.basedir}\base\bearsampp.exe" />
             <arg value = "--set-file-version" />
             <arg value = "${release.fullversion}" />
-            <arg value="--set-product-version" />
-            <arg value="${current.date}" />
-            <arg value="--set-icon" />
-            <arg value="${project.basedir}\core\resources\homepage\img\icons\app.ico" />
+            <arg value = "--set-icon" />
+            <arg value = "${project.basedir}\core\resources\homepage\img\icons\app.ico" />
         </exec>
         <!-- Echo success message -->
         <echo message = "Successfully set product version to ${release.fullversion} using rcedit-x64.exe" />
