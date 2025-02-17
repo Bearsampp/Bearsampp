@@ -104,8 +104,6 @@
             <arg value = "${release.fullversion}" />
             <arg value="--set-product-version" />
             <arg value="${current.date}" />
-            <arg value="--set-file-name" />
-            <arg value="Bearsampp" />
             <arg value="--set-icon" />
             <arg value="${project.basedir}\core\resources\homepage\img\icons\app.ico" />
         </exec>
