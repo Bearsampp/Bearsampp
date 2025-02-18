@@ -3,7 +3,7 @@ name: Build and Deploy on Release
 on:
     release:
         types: [published]
-
+    workflow_dispatch:
 jobs:
   sync:
     runs-on: ubuntu-latest
