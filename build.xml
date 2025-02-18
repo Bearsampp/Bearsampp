@@ -110,7 +110,7 @@
         <!-- Add the exec task to run fix-icon.bat -->
         <exec executable="cmd">
             <arg value="/c" />
-            <arg value="fix-icon.bat" />
+            <arg value="fix-core-icon.bat" />
         </exec>
         <!-- Echo success message -->
         <echo message = "Successfully set icon to bearsampp.ico using ResourceHacker.exe" />
