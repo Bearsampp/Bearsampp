@@ -137,7 +137,7 @@
     *.launch,
     ResourceHacker.exe,
     ResourceHacker.ini,
-    fix-icon.bat,
+    fix-core-icon.bat,
     rcedit-x64.exe"
             />
         </copy>
