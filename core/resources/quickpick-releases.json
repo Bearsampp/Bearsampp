@@ -291,6 +291,10 @@
       {
         "version": "2.48.0-rc2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2025.2.9/bearsampp-git-2.48.0-rc2-2025.2.9.7z"
+      },
+      {
+        "version": "2.48.1",
+        "url": "https://github.com/Bearsampp/module-git/releases/download/2025.2.22/bearsampp-git-2.48.1-2025.2.22.7z"
       }
     ]
   },
@@ -1176,6 +1180,10 @@
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.4.16/bearsampp-postgresql-13.14-2024.4.16.7z"
       },
       {
+        "version": "13.20",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-13.20-2025.2.21.7z"
+      },
+      {
         "version": "14.4",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.08.04/bearsampp-postgresql-14.4-2022.08.04.7z"
       },
@@ -1200,6 +1208,10 @@
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.4.16/bearsampp-postgresql-14.11-2024.4.16.7z"
       },
       {
+        "version": "14.17",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-14.17-2025.2.21.7z"
+      },
+      {
         "version": "15.0",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.10.28/bearsampp-postgresql-15.0-2022.10.28.7z"
       },
@@ -1220,6 +1232,10 @@
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.4.16/bearsampp-postgresql-15.6-2024.4.16.7z"
       },
       {
+        "version": "15.12",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-15.12-2025.2.21.7z"
+      },
+      {
         "version": "16.0",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.10.9/bearsampp-postgresql-16.0-2023.10.9.7z"
       },
@@ -1232,6 +1248,10 @@
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.9.18/bearsampp-postgresql-16.4-2024.9.18.7z"
       },
       {
+        "version": "16.8",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-16.8-2025.2.21.7z"
+      },
+      {
         "version": "17.0-RC1",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.9.18/bearsampp-postgresql-17.0-RC1-2024.9.18.7z"
       },
@@ -1242,6 +1262,10 @@
       {
         "version": "17.2.3",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.13/bearsampp-postgresql-17.2.3-2025.2.13.7z"
+      },
+      {
+        "version": "17.4",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-17.4-2025.2.21.7z"
       }
     ]
   },
