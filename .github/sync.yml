@@ -4,7 +4,5 @@ group:
     - files:
           - source: core/resources/version.dat
             dest: core/resources/version.dat
-          - source: /bin/tmp/release/base/bearsampp.exe
-            dest: bearsampp.exe
       repos: |
           Bearsampp/Sandbox
