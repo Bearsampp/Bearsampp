@@ -236,84 +236,73 @@ class BinPostgresql extends Module
     }
 
     /**
-     * Checks if the specified port is used by PostgreSQL.
-     *
-     * @param   int   $port        The port number to check.
-     * @param   bool  $showWindow  Whether to show a message box with the result.
-     *
-     * @return bool True if the port is used by PostgreSQL, false otherwise.
+     * Checks if the specified port is being used by PostgreSQL
+     * @param int $port The port number to check
+     * @param bool $showWindow Whether to show a message box with the result
+     * @return bool True if port is used by PostgreSQL, false otherwise
      */
     public function checkPort($port, $showWindow = false)
     {
         global $bearsamppLang, $bearsamppWinbinder;
-        $boxTitle = sprintf( $bearsamppLang->getValue( Lang::CHECK_PORT_TITLE ), $this->getName(), $port );
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
-        if ( !Util::isValidPort( $port ) ) {
-            Util::logError( $this->getName() . ' port not valid: ' . $port );
-
+        if (!Util::isValidPort($port)) {
+            Util::logError($this->getName() . ' port not valid: ' . $port);
             return false;
         }
 
-        $fp = @fsockopen( '127.0.0.1', $port, $errno, $errstr, 5 );
-        if ( $fp ) {
-            $dbLink = pg_connect( 'host=127.0.0.1 port=' . $port . ' user=' . $this->rootUser . ' password=' . $this->rootPwd );
-
-            $isPostgresql = false;
-            $version      = false;
-
-            if ( $dbLink ) {
-                $result = pg_version( $dbLink );
-                pg_close( $dbLink );
-                if ( $result ) {
-                    if ( isset( $result['server'] ) && $result['server'] == $this->getVersion() ) {
-                        $version      = $result['server'];
-                        $isPostgresql = true;
-                    }
-                    if ( !$isPostgresql ) {
-                        Util::logDebug( $this->getName() . ' port used by another DBMS: ' . $port );
-                        if ( $showWindow ) {
-                            $bearsamppWinbinder->messageBoxWarning(
-                                sprintf( $bearsamppLang->getValue( Lang::PORT_USED_BY_ANOTHER_DBMS ), $port ),
-                                $boxTitle
-                            );
-                        }
-                    }
-                    else {
-                        Util::logDebug( $this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $version );
-                        if ( $showWindow ) {
-                            $bearsamppWinbinder->messageBoxInfo(
-                                sprintf( $bearsamppLang->getValue( Lang::PORT_USED_BY ), $port, $this->getName() . ' ' . $version ),
-                                $boxTitle
-                            );
-                        }
-
-                        return true;
-                    }
-                }
-            }
-            else {
-                Util::logDebug( $this->getName() . ' port ' . $port . ' is used by another application' );
-                if ( $showWindow ) {
-                    $bearsamppWinbinder->messageBoxWarning(
-                        sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED_BY ), $port ),
-                        $boxTitle
-                    );
-                }
-            }
+        $dbLink = @pg_connect("host=127.0.0.1 port=$port user={$this->rootUser} password={$this->rootPwd}");
+        if (!$dbLink) {
+            Util::logDebug($this->getName() . ' connection failed: ' . pg_last_error());
+            return $this->handleNonPostgresUsage($port, $showWindow, $boxTitle);
         }
-        else {
-            Util::logDebug( $this->getName() . ' port ' . $port . ' is not used' );
-            if ( $showWindow ) {
-                $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED ), $port ),
+
+        // Verify active PostgreSQL connection
+        $connectionStatus = pg_connection_status($dbLink);
+        $isPostgres = $connectionStatus === PGSQL_CONNECTION_OK;
+        pg_close($dbLink);
+
+        if ($isPostgres) {
+            Util::logDebug($this->getName() . " port $port is used by PostgreSQL");
+            if ($showWindow) {
+                $bearsamppWinbinder->messageBoxInfo(
+                    sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY), $port, 'PostgreSQL'),
                     $boxTitle
                 );
             }
+            return true;
         }
 
-        return false;
+        return $this->handleNonPostgresUsage($port, $showWindow, $boxTitle);
     }
 
+    /**
+     * Handles non-PostgreSQL port usage scenarios
+     */
+    private function handleNonPostgresUsage($port, $showWindow, $boxTitle)
+    {
+        global $bearsamppLang, $bearsamppWinbinder;
+
+        if (Util::isPortInUse($port)) {
+            Util::logDebug($this->getName() . " port $port used by non-PostgreSQL service");
+            if ($showWindow) {
+                $bearsamppWinbinder->messageBoxWarning(
+                    sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY_ANOTHER_DBMS), $port),
+                    $boxTitle
+                );
+            }
+            return false;
+        }
+
+        Util::logDebug($this->getName() . " port $port not in use");
+        if ($showWindow) {
+            $bearsamppWinbinder->messageBoxError(
+                sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED), $port),
+                $boxTitle
+            );
+        }
+        return false;
+    }
     /**
      * Changes the root password for PostgreSQL.
      *
