@@ -57,11 +57,14 @@ if ($bearsamppBins->getApache()->isEnable()) {
  * Retrieve and format the list of Apache versions.
  */
 foreach ($bearsamppBins->getApache()->getVersionList() as $version) {
-    if ($version != $bearsamppBins->getApache()->getVersion()) {
-        $result['versions'] .= '<span class="m-1 badge float-end text-bg-secondary">' . $version . '</span>';
-    } else {
-        $result['versions'] .= '<span class="m-1 badge float-end text-bg-primary">' . $bearsamppBins->getApache()->getVersion() . '</span>';
-    }
+    $versionBadge = '<span class="m-1 badge text-bg-%s">%s</span>';
+    $isCurrent = $version === $bearsamppBins->getApache()->getVersion();
+
+    $result['versions'] .= sprintf(
+        $versionBadge,
+        $isCurrent ? 'primary' : 'secondary',
+        $version
+    );
 }
 
 /**

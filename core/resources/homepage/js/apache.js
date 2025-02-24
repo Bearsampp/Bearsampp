@@ -25,51 +25,29 @@ async function getApacheStatus() {
       data = JSON.parse(myajaxresponse);
     } catch (error) {
       console.error('Failed to parse response:', error);
+      return;
     }
-    let q = document.querySelector('.apache-checkport');
-    let ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.checkport);
 
-    q = document.querySelector('.apache-versions');
-    ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.versions);
+    const updateElement = (selector, content) => {
+      const element = document.querySelector(selector);
+      if (element) {
+        const loader = element.querySelector('.loader');
+        if (loader) loader.remove();
+        element.insertAdjacentHTML('beforeend', content);
+      } else {
+        console.warn(`Element not found: ${selector}`);
+      }
+    };
 
-    q = document.querySelector('.apache-modulescount');
-    ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.modulescount);
-
-    q = document.querySelector('.apache-aliasescount');
-    ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.aliasescount);
-
-    q = document.querySelector('.apache-vhostscount');
-    ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.vhostscount);
-
-    q = document.querySelector('.apache-moduleslist');
-    ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.moduleslist);
-
-    q = document.querySelector('.apache-aliaseslist');
-    ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.aliaseslist);
-
-    q = document.querySelector('.apache-wwwdirectory');
-    ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.wwwdirectory);
-
-    q = document.querySelector('.apache-vhostslist');
-    ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.vhostslist);
+    updateElement('.apache-checkport', data.checkport);
+    updateElement('.apache-version-list', data.versions);
+    updateElement('.apache-modulescount', data.modulescount);
+    updateElement('.apache-aliasescount', data.aliasescount);
+    updateElement('.apache-vhostscount', data.vhostscount);
+    updateElement('.apache-moduleslist', data.moduleslist);
+    updateElement('.apache-aliaseslist', data.aliaseslist);
+    updateElement('.apache-wwwdirectory', data.wwwdirectory);
+    updateElement('.apache-vhostslist', data.vhostslist);
   }
 }
 
@@ -77,4 +55,4 @@ document.addEventListener("DOMContentLoaded", function () {
   if (document.querySelector('a[name=apache]').name === 'apache') {
     getApacheStatus();
   }
-})
+});

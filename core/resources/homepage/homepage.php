@@ -50,7 +50,7 @@ $downloadTitle = $bearsamppLang->getValue( Lang::DOWNLOAD_MORE );
 /**
  * HTML snippet for a loading spinner image.
  */
-$getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'loader.gif' . '" alt="spinner"></span>';
+$getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'loader.gif" alt="spinner"></span>';
 
 /**
  * HTML structure defining the head of the document, including meta tags, CSS and JS resource inclusion,
