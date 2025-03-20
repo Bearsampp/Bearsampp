@@ -4,7 +4,7 @@
 
  WINBINDER - The native Windows binding for PHP for PHP
 
- Copyright © Hypervisual - see LICENSE.TXT for details
+ Copyright ï¿½ Hypervisual - see LICENSE.TXT for details
  Author: Rubem Pechansky (http://winbinder.org/contact.php)
 
  Main inclusion file for WinBinder
@@ -20,9 +20,9 @@ $_mainpath = $_mainpath["dirname"] . "/";
 
 // WinBinder PHP functions
 
-include $_mainpath . "wb_windows.inc.php";
-include $_mainpath . "wb_generic.inc.php";
-include $_mainpath . "wb_resources.inc.php";
+include_once $_mainpath . "wb_windows.inc.php";
+include_once $_mainpath . "wb_generic.inc.php";
+include_once $_mainpath . "wb_resources.inc.php";
 
 //------------------------------------------------------------------ END OF FILE
 
