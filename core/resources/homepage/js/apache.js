@@ -52,7 +52,7 @@ async function getApacheStatus() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (document.querySelector('a[name=apache]').name === 'apache') {
+  if (document.querySelector('a[name=apache]') || document.getElementById('apache')) {
     getApacheStatus();
   }
 });

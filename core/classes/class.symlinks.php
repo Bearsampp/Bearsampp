@@ -13,6 +13,28 @@
  */
 class Symlinks
 {
+    const ADMINER_SYMLINK = 'adminer';
+    const PHPMYADMIN_SYMLINK = 'phpmyadmin';
+    const PHPPGADMIN_SYMLINK = 'phppgadmin';
+    const APACHE_SYMLINK = 'apache';
+    const MARIADB_SYMLINK = 'mariadb';
+    const MEMCACHED_SYMLINK = 'memcached';
+    const MYSQL_SYMLINK = 'mysql';
+    const NODEJS_SYMLINK = 'nodejs';
+    const PHP_SYMLINK = 'php';
+    const POSTGRESQL_SYMLINK = 'postgresql';
+    const COMPOSER_SYMLINK = 'composer';
+    const CONSOLEZ_SYMLINK = 'consolez';
+    const GHOSTSCRIPT_SYMLINK = 'ghostscript';
+    const GIT_SYMLINK = 'git';
+    const NGROK_SYMLINK = 'ngrok';
+    const PERL_SYMLINK = 'perl';
+    const PYTHON_SYMLINK = 'python';
+    const RUBY_SYMLINK = 'ruby';
+    const XLIGHT_SYMLINK = 'xlight';
+    const MAILPIT_SYMLINK = 'mailpit';
+    const BRUNO_SYMLINK = 'bruno';
+
     /**
      * @var Root The root object providing access to system paths.
      */
@@ -49,27 +71,27 @@ class Symlinks
         $toolsPath = $bearsamppRoot->getToolsPath();
 
         $array = [
-            '1'  => Util::formatWindowsPath($appsPath . '/adminer/current'),
-            '2'  => Util::formatWindowsPath($appsPath . '/phpmyadmin/current'),
-            '3'  => Util::formatWindowsPath($appsPath . '/phppgadmin/current'),
-            '5'  => Util::formatWindowsPath($binPath . '/apache/current'),
-            '8'  => Util::formatWindowsPath($binPath . '/mariadb/current'),
-            '9'  => Util::formatWindowsPath($binPath . '/memcached/current'),
-            '10' => Util::formatWindowsPath($binPath . '/mysql/current'),
-            '11' => Util::formatWindowsPath($binPath . '/nodejs/current'),
-            '12' => Util::formatWindowsPath($binPath . '/php/current'),
-            '13' => Util::formatWindowsPath($binPath . '/postgresql/current'),
-            '14' => Util::formatWindowsPath($toolsPath . '/composer/current'),
-            '15' => Util::formatWindowsPath($toolsPath . '/consolez/current'),
-            '16' => Util::formatWindowsPath($toolsPath . '/ghostscript/current'),
-            '17' => Util::formatWindowsPath($toolsPath . '/git/current'),
-            '18' => Util::formatWindowsPath($toolsPath . '/ngrok/current'),
-            '19' => Util::formatWindowsPath($toolsPath . '/perl/current'),
-            '20' => Util::formatWindowsPath($toolsPath . '/python/current'),
-            '21' => Util::formatWindowsPath($toolsPath . '/ruby/current'),
-            '24'  => Util::formatWindowsPath($binPath . '/xlight/current'),
-            '25'  => Util::formatWindowsPath($binPath . '/mailpit/current'),
-            '26'  => Util::formatWindowsPath($binPath . '/bruno/current')
+            self::ADMINER_SYMLINK => Util::formatWindowsPath($appsPath . '/adminer/current'),
+            self::PHPMYADMIN_SYMLINK => Util::formatWindowsPath($appsPath . '/phpmyadmin/current'),
+            self::PHPPGADMIN_SYMLINK => Util::formatWindowsPath($appsPath . '/phppgadmin/current'),
+            self::APACHE_SYMLINK => Util::formatWindowsPath($binPath . '/apache/current'),
+            self::MARIADB_SYMLINK => Util::formatWindowsPath($binPath . '/mariadb/current'),
+            self::MEMCACHED_SYMLINK => Util::formatWindowsPath($binPath . '/memcached/current'),
+            self::MYSQL_SYMLINK => Util::formatWindowsPath($binPath . '/mysql/current'),
+            self::NODEJS_SYMLINK => Util::formatWindowsPath($binPath . '/nodejs/current'),
+            self::PHP_SYMLINK => Util::formatWindowsPath($binPath . '/php/current'),
+            self::POSTGRESQL_SYMLINK => Util::formatWindowsPath($binPath . '/postgresql/current'),
+            self::COMPOSER_SYMLINK => Util::formatWindowsPath($toolsPath . '/composer/current'),
+            self::CONSOLEZ_SYMLINK => Util::formatWindowsPath($toolsPath . '/consolez/current'),
+            self::GHOSTSCRIPT_SYMLINK => Util::formatWindowsPath($toolsPath . '/ghostscript/current'),
+            self::GIT_SYMLINK => Util::formatWindowsPath($toolsPath . '/git/current'),
+            self::NGROK_SYMLINK => Util::formatWindowsPath($toolsPath . '/ngrok/current'),
+            self::PERL_SYMLINK => Util::formatWindowsPath($toolsPath . '/perl/current'),
+            self::PYTHON_SYMLINK => Util::formatWindowsPath($toolsPath . '/python/current'),
+            self::RUBY_SYMLINK => Util::formatWindowsPath($toolsPath . '/ruby/current'),
+            self::XLIGHT_SYMLINK => Util::formatWindowsPath($binPath . '/xlight/current'),
+            self::MAILPIT_SYMLINK => Util::formatWindowsPath($binPath . '/mailpit/current'),
+            self::BRUNO_SYMLINK => Util::formatWindowsPath($binPath . '/bruno/current')
         ];
 
         if (!is_array($array) || empty($array)) {
@@ -83,8 +105,14 @@ class Symlinks
                 Util::logError('Symlink does not exist: ' . $startPath);
                 continue;
             } else {
-                if (@Batch::removeSymlink($startPath)) {
-                    Util::logDebug('Deleted: ' . $startPath);
+                try {
+                    if (!Batch::removeSymlink($startPath)) {
+                        Util::logError('Failed to remove symlink: ' . $startPath . ' - ' . error_get_last()['message']);
+                    } else {
+                        Util::logDebug('Deleted: ' . $startPath);
+                    }
+                } catch (Exception $e) {
+                    Util::logError('Error removing symlink ' . $startPath . ': ' . $e->getMessage());
                 }
             }
         }

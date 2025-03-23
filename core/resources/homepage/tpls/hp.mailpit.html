@@ -1,3 +1,4 @@
+
 <!--
   ~ Copyright (c) 2021-2024 Bearsampp
   ~ License:  GNU General Public License version 3 or later; see LICENSE.txt
@@ -6,9 +7,9 @@
   ~ Github: https://github.com/Bearsampp
   -->
 
-<a class = "anchor" name = "mailpit"></a>
-<div class = "row-fluid">
-    <div class = "col-lg-12">
+<div id="mailpit" class="anchor"></div>
+<div class="row-fluid">
+    <div class="col-lg-12">
         <?php
             // Prepare data
             $imageSrc = $imagesPath . 'mailpit.svg';
@@ -16,30 +17,30 @@
         ?>
 
         <h1>
-            <img alt = "Mailpit logo" aria-hidden = "true" src = "<?= htmlspecialchars($imageSrc); ?>">
-            <?= htmlspecialchars($mailpitTitle); ?>
+            <img alt="Mailpit logo" aria-hidden="true" src="<?php echo htmlspecialchars($imageSrc); ?>">
+            <?php echo htmlspecialchars($mailpitTitle); ?>
         </h1>
     </div>
 </div>
-<div class = "row-fluid">
-    <div class = "col-lg-6">
-        <div class = "list-group">
-      <span class = "list-group-item mailpit-checkport">
+<div class="row-fluid">
+    <div class="col-lg-6">
+        <div class="list-group">
+      <span class="list-group-item mailpit-checkport">
         <?php echo $getLoader; ?>
-          <i class = "fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
+          <i class="fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
       </span>
-            <span class = "list-group-item mailpit-versions">
-              <span class = "label-left col-1">
-                <i class = "fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
+            <span class="list-group-item mailpit-versions">
+              <span class="label-left col-1">
+                <i class="fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
               </span>
-              <span class = "mailpit-version-list float-end col-11">
+              <span class="mailpit-version-list float-end col-11">
                 <?php echo $getLoader; ?>
               </span>
       </span>
-            <span class = "list-group-item">
-                <i class = 'fa-solid fa-circle-info'></i>
-                <a href = "<?php echo $bearsamppRoot->getLocalUrl() . ':' . $bearsamppBins->getMailpit()->getUiPort() . '/' . $bearsamppBins->getMailpit()->getWebRoot(); ?>"
-                   target = "_blank"><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_MAILPIT_TEXT); ?></a>
+            <span class="list-group-item">
+                <i class='fa-solid fa-circle-info'></i>
+                <a href="<?php echo $bearsamppRoot->getLocalUrl() . ':' . $bearsamppBins->getMailpit()->getUiPort() . '/' . $bearsamppBins->getMailpit()->getWebRoot(); ?>"
+                   target="_blank"><?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_MAILPIT_TEXT); ?></a>
             </span>
         </div>
     </div>

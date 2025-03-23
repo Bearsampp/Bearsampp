@@ -40,7 +40,7 @@ async function getNodeJSStatus() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (document.querySelector('a[name=nodejs]').name === 'nodejs') {
+  if (document.getElementById('nodejs')) {
     getNodeJSStatus();
   }
 })

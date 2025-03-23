@@ -40,7 +40,7 @@ async function getMariaDBStatus() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (document.querySelector('a[name=mariadb]').name === 'mariadb') {
+  if (document.getElementById('mariadb')) {
     getMariaDBStatus();
   }
 })

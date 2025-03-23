@@ -59,15 +59,15 @@ class Homepage
      */
     public function getPageQuery($query)
     {
-        $request = '';
-        if (!empty($query) && in_array($query, $this->pageList) && $query != self::PAGE_INDEX) {
-            $request = '?p=' . $query;
-        } elseif (!empty($query) && in_array($query, $this->pageStdl)) {
-            $request = $query;
-        } elseif (!empty($query) && self::PAGE_INDEX) {
-            $request = "index.php";
+        if (empty($query)) {
+            return '';
         }
-        return $request;
+
+        if (in_array($query, $this->pageList)) {
+            return $query !== self::PAGE_INDEX ? '?p=' . $query : 'index.php';
+        }
+
+        return '';
     }
 
     /**

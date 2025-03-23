@@ -43,7 +43,7 @@ async function getMySQLStatus() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (document.querySelector('a[name=mysql]').name === 'mysql') {
+  if (document.getElementById('mysql')) {
     getMySQLStatus();
   }
 })

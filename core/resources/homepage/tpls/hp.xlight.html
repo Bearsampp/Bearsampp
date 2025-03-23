@@ -6,34 +6,34 @@
   ~ Github: https://github.com/Bearsampp
   -->
 
-<a class = "anchor" name = "xlight"></a>
-<div class = "row-fluid">
-    <div class = "col-lg-12">
-        <?php
-            // Prepare data
-            $imageSrc = $imagesPath . 'xlight-ftp-server.png';
-            $xlightTitle = $bearsamppLang->getValue(Lang::XLIGHT);
-        ?>
+<div id="xlight" class="anchor"></div>
+<div class="row-fluid">
+  <div class="col-lg-12">
+    <?php
+        // Prepare data
+        $imageSrc = $imagesPath . 'xlight-ftp-server.png';
+        $xlightTitle = $bearsamppLang->getValue(Lang::XLIGHT);
+    ?>
 
-        <h1>
-            <img alt = "Xlight logo" aria-hidden = "true" src = "<?php echo htmlspecialchars($imageSrc); ?>"> <?php echo $xlightTitle; ?>
-        </h1>
-    </div>
+    <h1>
+      <img alt="Xlight logo" aria-hidden="true" src="<?php echo htmlspecialchars($imageSrc); ?>"> <?php echo $xlightTitle; ?>
+    </h1>
+  </div>
 </div>
-<div class = "row-fluid">
-    <div class = "col-lg-6">
-        <div class = "list-group">
-      <span class = "list-group-item xlight-checkport">
+<div class="row-fluid">
+  <div class="col-lg-6">
+    <div class="list-group">
+      <span class="list-group-item xlight-checkport">
         <?php echo $getLoader; ?>
-          <i class = "fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
+        <i class="fa-solid fa-server"></i> <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
       </span>
-            <span class = "list-group-item xlight-versions">
-              <span class = "label-left col-1">
-                <i class = "fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
-              </span>
-              <span class = "xlight-version-list float-end col-11">
-                <?php echo $getLoader; ?>
-              </span>
+      <span class="list-group-item xlight-versions">
+        <span class="label-left col-1">
+          <i class="fa-solid fa-code-merge"></i> <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
+        </span>
+        <span class="xlight-version-list float-end col-11">
+          <?php echo $getLoader; ?>
+        </span>
       </span>
     </div>
   </div>
