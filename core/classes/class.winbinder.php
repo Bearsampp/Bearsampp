@@ -9,185 +9,8 @@
  */
 
 // Define control class constants if not already defined
-if (!defined('Label')) {
-    define('Label', 'Label');
-}
 
-if (!defined('EditBox')) {
-    define('EditBox', 'EditBox');
-}
 
-if (!defined('RTFEditBox')) {
-    define('RTFEditBox', 'RTFEditBox');
-}
-
-if (!defined('HyperLink')) {
-    define('HyperLink', 'HyperLink');
-}
-
-if (!defined('RadioButton')) {
-    define('RadioButton', 'RadioButton');
-}
-
-if (!defined('PushButton')) {
-    define('PushButton', 'PushButton');
-}
-
-if (!defined('Gauge')) {
-    define('Gauge', 'Gauge');
-}
-
-// Define window type constants
-if (!defined('AppWindow')) {
-    define('AppWindow', 'AppWindow');
-}
-
-if (!defined('NakedWindow')) {
-    define('NakedWindow', 'NakedWindow');
-}
-
-if (!defined('ResizableWindow')) {
-    define('ResizableWindow', 'ResizableWindow');
-}
-
-if (!defined('ModalDialog')) {
-    define('ModalDialog', 'ModalDialog');
-}
-
-if (!defined('ModelessDialog')) {
-    define('ModelessDialog', 'ModelessDialog');
-}
-
-if (!defined('ToolDialog')) {
-    define('ToolDialog', 'ToolDialog');
-}
-
-if (!defined('WBC_CENTER')) {
-    define('WBC_CENTER', 0x0002);
-}
-
-if (!defined('WBC_TITLE')) {
-    define('WBC_TITLE', 0x0001);
-}
-
-if (!defined('WBC_GROUP')) {
-    define('WBC_GROUP', 0x0004);
-}
-
-// Window styles
-if (!defined('WBC_VISIBLE')) {
-    define('WBC_VISIBLE', 0x0010);
-}
-
-if (!defined('WBC_ENABLED')) {
-    define('WBC_ENABLED', 0x0020);
-}
-
-if (!defined('WBC_NOTIFY')) {
-    define('WBC_NOTIFY', 0x0040);
-}
-
-if (!defined('WBC_BORDER')) {
-    define('WBC_BORDER', 0x0080);
-}
-
-if (!defined('WBC_RESIZE')) {
-    define('WBC_RESIZE', 0x0100);
-}
-
-if (!defined('WBC_MINIMIZED')) {
-    define('WBC_MINIMIZED', 0x0200);
-}
-
-if (!defined('WBC_MAXIMIZED')) {
-    define('WBC_MAXIMIZED', 0x0400);
-}
-
-if (!defined('WBC_TASKBAR')) {
-    define('WBC_TASKBAR', 0x0800);
-}
-
-// Control styles
-if (!defined('WBC_LEFT')) {
-    define('WBC_LEFT', 0x1000);
-}
-
-if (!defined('WBC_RIGHT')) {
-    define('WBC_RIGHT', 0x2000);
-}
-
-if (!defined('WBC_TOP')) {
-    define('WBC_TOP', 0x4000);
-}
-
-if (!defined('WBC_BOTTOM')) {
-    define('WBC_BOTTOM', 0x8000);
-}
-
-if (!defined('WBC_MIDDLE')) {
-    define('WBC_MIDDLE', 0x10000);
-}
-
-if (!defined('WBC_READONLY')) {
-    define('WBC_READONLY', 0x20000);
-}
-
-if (!defined('WBC_MASKED')) {
-    define('WBC_MASKED', 0x40000);
-}
-
-if (!defined('WBC_MULTILINE')) {
-    define('WBC_MULTILINE', 0x80000);
-}
-
-if (!defined('WBC_LINES')) {
-    define('WBC_LINES', 0x100000);
-}
-
-if (!defined('WBC_DEFAULT')) {
-    define('WBC_DEFAULT', 0x200000);
-}
-
-if (!defined('WBC_AUTOREPEAT')) {
-    define('WBC_AUTOREPEAT', 0x400000);
-}
-
-if (!defined('WBC_SINGLE')) {
-    define('WBC_SINGLE', 0x800000);
-}
-
-if (!defined('WBC_SORT')) {
-    define('WBC_SORT', 0x1000000);
-}
-
-if (!defined('WBC_TRANSPARENT')) {
-    define('WBC_TRANSPARENT', 0x2000000);
-}
-
-if (!defined('WBC_IMAGE')) {
-    define('WBC_IMAGE', 0x4000000);
-}
-
-if (!defined('WBC_DISABLED')) {
-    define('WBC_DISABLED', 0x8000000);
-}
-
-if (!defined('WBC_ELLIPSIS')) {
-    define('WBC_ELLIPSIS', 0x10000000);
-}
-
-if (!defined('WBC_CUSTOMDRAW')) {
-    define('WBC_CUSTOMDRAW', 0x20000000);
-}
-
-// Positioning constants
-if (!defined('WBC_HEADERSEL')) {
-    define('WBC_HEADERSEL', 0x40000000);
-}
-
-if (!defined('WBC_REDRAW')) {
-    define('WBC_REDRAW', 0x80000000);
-}
 
 /**
  * Class WinBinder
@@ -232,6 +55,32 @@ class WinBinder
     const CURSOR_UPARROW = 'uparrow';
     const CURSOR_WAIT = 'wait';
     const CURSOR_WAITARROW = 'waitarrow';
+
+    // Window types
+    const AppWindow = 'appwindow';
+    const NakedWindow = 'nakedwindow';
+    const ResizableWindow = 'resizablewindow';
+    const ModalDialog = 'modaldialog';
+    const ModelessDialog = 'modelessdialog';
+    const ToolDialog = 'tooldialog';
+
+    // Alignment constants
+    const WBC_CENTER = 0x0002;
+
+    // Control types
+    const Label = 'label';
+    const EditBox = 'editbox';
+    const RTFEditBox = 'rtfeditbox';
+    const HyperLink = 'hyperlink';
+    const RadioButton = 'radiobutton';
+    const PushButton = 'pushbutton';
+    const Gauge = 'gauge';
+
+    // Window areas
+    const WBC_TITLE = 0x0001;
+
+    // Control styles
+    const WBC_GROUP = 'group';
 
     // Constants for system information types
     const SYSINFO_SCREENAREA = 'screenarea';
@@ -688,7 +537,7 @@ class WinBinder
      */
     public function setArea($wbobject, $width, $height)
     {
-        return $this->callWinBinder('wb_set_area', array($wbobject, WBC_TITLE, 0, 0, $width, $height));
+        return $this->callWinBinder('wb_set_area', array($wbobject, WinBinder::WBC_TITLE, 0, 0, $width, $height));
     }
 
     /**
