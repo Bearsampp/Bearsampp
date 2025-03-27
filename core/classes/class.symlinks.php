@@ -91,7 +91,7 @@ class Symlinks
             self::RUBY_SYMLINK => Util::formatWindowsPath($toolsPath . '/ruby/current'),
             self::XLIGHT_SYMLINK => Util::formatWindowsPath($binPath . '/xlight/current'),
             self::MAILPIT_SYMLINK => Util::formatWindowsPath($binPath . '/mailpit/current'),
-            self::BRUNO_SYMLINK => Util::formatWindowsPath($binPath . '/bruno/current')
+            self::BRUNO_SYMLINK => Util::formatWindowsPath($toolsPath . '/bruno/current')
         ];
 
         if (!is_array($array) || empty($array)) {
@@ -99,7 +99,7 @@ class Symlinks
             return;
         }
 
-        // Purge "current" symlinks
+        // Purge "current" symlinksF
         foreach ($array as $startPath) {
             if (!file_exists($startPath)) {
                 Util::logError('Symlink does not exist: ' . $startPath);
