@@ -8,10 +8,6 @@
  *
  */
 
-// Define control class constants if not already defined
-
-
-
 /**
  * Class WinBinder
  *
@@ -29,15 +25,16 @@ class WinBinder
     const INCR_PROGRESS_BAR = '++';
     const NEW_LINE = '@nl@';
 
+    // TODO why does it say we have undelcared constants
     // Constants for message box types
-    const BOX_INFO = 64;          // Information message
-    const BOX_OK = 0;            // OK button only
-    const BOX_OKCANCEL = 1;      // OK and Cancel buttons
-    const BOX_QUESTION = 32;      // Question mark icon
-    const BOX_ERROR = 16;         // Error icon (Stop sign)
-    const BOX_WARNING = 48;       // Warning icon (Exclamation)
-    const BOX_YESNO = 4;         // Yes and No buttons
-    const BOX_YESNOCANCEL = 3;   // Yes, No and Cancel buttons
+    const BOX_INFO = WBC_INFO;
+    const BOX_OK = WBC_OK;
+    const BOX_OKCANCEL = WBC_OKCANCEL;
+    const BOX_QUESTION = WBC_QUESTION;
+    const BOX_ERROR = WBC_STOP;
+    const BOX_WARNING = WBC_WARNING;
+    const BOX_YESNO = WBC_YESNO;
+    const BOX_YESNOCANCEL = WBC_YESNOCANCEL;
 
     // Constants for cursor types
     const CURSOR_ARROW = 'arrow';
@@ -55,32 +52,6 @@ class WinBinder
     const CURSOR_UPARROW = 'uparrow';
     const CURSOR_WAIT = 'wait';
     const CURSOR_WAITARROW = 'waitarrow';
-
-    // Window types
-    const AppWindow = 'appwindow';
-    const NakedWindow = 'nakedwindow';
-    const ResizableWindow = 'resizablewindow';
-    const ModalDialog = 'modaldialog';
-    const ModelessDialog = 'modelessdialog';
-    const ToolDialog = 'tooldialog';
-
-    // Alignment constants
-    const WBC_CENTER = 0x0002;
-
-    // Control types
-    const Label = 'label';
-    const EditBox = 'editbox';
-    const RTFEditBox = 'rtfeditbox';
-    const HyperLink = 'hyperlink';
-    const RadioButton = 'radiobutton';
-    const PushButton = 'pushbutton';
-    const Gauge = 'gauge';
-
-    // Window areas
-    const WBC_TITLE = 0x0001;
-
-    // Control styles
-    const WBC_GROUP = 'group';
 
     // Constants for system information types
     const SYSINFO_SCREENAREA = 'screenarea';
@@ -537,7 +508,7 @@ class WinBinder
      */
     public function setArea($wbobject, $width, $height)
     {
-        return $this->callWinBinder('wb_set_area', array($wbobject, WinBinder::WBC_TITLE, 0, 0, $width, $height));
+        return $this->callWinBinder('wb_set_area', array($wbobject, WBC_TITLE, 0, 0, $width, $height));
     }
 
     /**

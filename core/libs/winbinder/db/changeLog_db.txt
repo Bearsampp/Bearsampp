@@ -2,7 +2,7 @@
 
  Database Wrapper
 
- Copyright © Hypervisual - see LICENSE.TXT for details
+ Copyright Hypervisual - see LICENSE.TXT for details
  Authors: Rubem Pechansky, Hans Rebel
 
  Changelog
