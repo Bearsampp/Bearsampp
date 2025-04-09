@@ -164,6 +164,7 @@ class ActionStartup
         }
 
         if ( $this->restart ) {
+            Util::logTrace(APP_TITLE . 'has to be restarted');
             $this->writeLog( APP_TITLE . ' has to be restarted' );
             $this->splash->setTextLoading(
                 sprintf(
