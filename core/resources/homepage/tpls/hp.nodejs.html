@@ -6,29 +6,29 @@
   ~ Github: https://github.com/Bearsampp
   -->
 
-<a class = "anchor" name = "nodejs"></a>
-<div class = "row-fluid">
-    <div class = "col-lg-12">
+<div id="nodejs" class="anchor"></div>
+<div class="row-fluid">
+    <div class="col-lg-12">
         <?php
             // Prepare data
             $nodeJsLogoPath = htmlspecialchars($imagesPath . 'nodejs.png');
             $nodeJsTitle = htmlspecialchars($bearsamppLang->getValue(Lang::NODEJS));
         ?>
-        <h1><img alt = "Nodejs logo" aria-hidden = "true" src = "<?php echo $nodeJsLogoPath; ?>"> <?php echo $nodeJsTitle; ?></h1>
+        <h1><img alt="Nodejs logo" aria-hidden="true" src="<?php echo $nodeJsLogoPath; ?>"> <?php echo $nodeJsTitle; ?></h1>
     </div>
 </div>
-<div class = "row-fluid">
-    <div class = "col-lg-6">
-        <div class = "list-group">
-      <span class = "list-group-item nodejs-status">
+<div class="row-fluid">
+    <div class="col-lg-6">
+        <div class="list-group">
+      <span class="list-group-item nodejs-status">
         <?php echo $getLoader; ?>
-          <i class = "fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
+          <i class="fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
       </span>
-            <span class = "list-group-item nodejs-versions">
-              <span class = "label-left col-1">
-                <i class = "fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
+            <span class="list-group-item nodejs-versions">
+              <span class="label-left col-1">
+                <i class="fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
               </span>
-              <span class = "nodejs-version-list float-end col-11">
+              <span class="nodejs-version-list float-end col-11">
                 <?php echo $getLoader; ?>
               </span>
       </span>

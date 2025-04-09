@@ -16,8 +16,8 @@
 /**
  * Include the main root.php file which initializes the application environment.
  */
-include __DIR__ . '/../../root.php';
-include __DIR__ . '/../../classes/actions/class.action.quickPick.php';
+require_once __DIR__ . '/../../root.php';
+require_once __DIR__ . '/../../classes/actions/class.action.quickPick.php';
 
 /**
  * Declare global variables to access various parts of the application such as language settings,
@@ -58,7 +58,7 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
  */
 ?>
 <!DOCTYPE html>
-<html lang = "<?php echo $bearsamppLang->getValue( Lang::LOCALE ) ?>">
+<html lang = "<?php echo htmlspecialchars($bearsamppLang->getValue( Lang::LOCALE ), ENT_QUOTES, 'UTF-8') ?>">
 
 <head>
     <meta charset = "utf-8">
@@ -99,13 +99,6 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
      */
     foreach ( $cssFiles as $file ) {
         echo '<link href="' . $resourcesPath . $file . '" rel="stylesheet">' . PHP_EOL;
-    }
-
-    /**
-     * Loop through JS files and include them in the page.
-     */
-    foreach ( $jsFiles as $file ) {
-        echo '<script src="' . $resourcesPath . $file . '" defer></script>' . PHP_EOL;
     }
     ?>
 
@@ -154,5 +147,11 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
     <?php include 'tpls/hp.latestversion.html'; ?>
     <?php include 'tpls/hp.' . $bearsamppHomepage->getPage() . '.html'; ?>
 </div>
+
+<?php
+foreach ( $jsFiles as $file ) {
+    echo '<script src="' . $resourcesPath . $file . '"></script>' . PHP_EOL;
+}
+?>
 </body>
 </html>

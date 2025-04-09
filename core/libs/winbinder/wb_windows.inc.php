@@ -17,20 +17,20 @@
 
 // Windows constants
 
-define("BM_SETCHECK",			241);
-define("LVM_FIRST",				0x1000);
-define("LVM_DELETEALLITEMS",	(LVM_FIRST+9));
-define("LVM_GETITEMCOUNT",		(LVM_FIRST+4));
-define("LVM_GETITEMSTATE",		(LVM_FIRST+44));
-define("LVM_GETSELECTEDCOUNT",	(LVM_FIRST+50));
-define("LVIS_SELECTED",			2);
-define("TCM_GETCURSEL",			4875);
-define("CB_FINDSTRINGEXACT",	344);
-define("CB_SETCURSEL",			334);
-define("LB_FINDSTRINGEXACT",	418);
-define("LB_SETCURSEL",			390);
-define("TCM_SETCURSEL",			4876);
-define("WM_SETTEXT",			12);
+if(!defined("BM_SETCHECK"))           define("BM_SETCHECK",          241);
+if(!defined("LVM_FIRST"))             define("LVM_FIRST",            0x1000);
+if(!defined("LVM_DELETEALLITEMS"))    define("LVM_DELETEALLITEMS",   (LVM_FIRST+9));
+if(!defined("LVM_GETITEMCOUNT"))      define("LVM_GETITEMCOUNT",     (LVM_FIRST+4));
+if(!defined("LVM_GETITEMSTATE"))      define("LVM_GETITEMSTATE",     (LVM_FIRST+44));
+if(!defined("LVM_GETSELECTEDCOUNT"))  define("LVM_GETSELECTEDCOUNT", (LVM_FIRST+50));
+if(!defined("LVIS_SELECTED"))         define("LVIS_SELECTED",        2);
+if(!defined("TCM_GETCURSEL"))         define("TCM_GETCURSEL",        4875);
+if(!defined("CB_FINDSTRINGEXACT"))    define("CB_FINDSTRINGEXACT",   344);
+if(!defined("CB_SETCURSEL"))          define("CB_SETCURSEL",         334);
+if(!defined("LB_FINDSTRINGEXACT"))    define("LB_FINDSTRINGEXACT",   418);
+if(!defined("LB_SETCURSEL"))          define("LB_SETCURSEL",         390);
+if(!defined("TCM_SETCURSEL"))         define("TCM_SETCURSEL",        4876);
+if(!defined("WM_SETTEXT"))            define("WM_SETTEXT",           12);
 
 //------------------------------------------------------------- WINDOW FUNCTIONS
 
@@ -508,5 +508,3 @@ function _make_file_filter($filter)
 }
 
 //-------------------------------------------------------------------------- END
-
-?>

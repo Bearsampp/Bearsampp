@@ -55,7 +55,7 @@ async function getPHPStatus() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (document.querySelector('a[name=php]').name === 'php') {
+  if (document.getElementById('php')) {
     getPHPStatus();
   }
 })

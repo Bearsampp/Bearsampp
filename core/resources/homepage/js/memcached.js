@@ -40,7 +40,7 @@ async function getMemCachedStatus() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (document.querySelector('a[name=memcached]').name === 'memcached') {
+  if (document.getElementById('memcached')) {
     getMemCachedStatus();
   }
-})
+});

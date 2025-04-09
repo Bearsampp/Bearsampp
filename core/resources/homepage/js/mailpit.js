@@ -39,7 +39,7 @@ try {
   }
 }
 document.addEventListener("DOMContentLoaded", function() {
-  if (document.querySelector('a[name=mailpit]').name === 'mailpit') {
+  if (document.getElementById('mailpit')) {
     getMailpitStatus();
   }
 })

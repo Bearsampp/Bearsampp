@@ -40,7 +40,7 @@ async function getPostgresStatus() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (document.querySelector('a[name=postgresql]').name === 'postgresql') {
+  if (document.getElementById('postgresql')) {
     getPostgresStatus();
   }
-})
+});

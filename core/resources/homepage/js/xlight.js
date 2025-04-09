@@ -39,7 +39,7 @@ async function getXlightStatus() {
   }
 }
 document.addEventListener("DOMContentLoaded", function() {
-  if (document.querySelector('a[name=xlight]').name === 'xlight') {
+  if (document.getElementById('xlight')) {
     getXlightStatus();
   }
-})
+});

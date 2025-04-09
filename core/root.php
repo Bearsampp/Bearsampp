@@ -48,8 +48,7 @@ if ($bearsamppRoot->isRoot()) {
 }
 
 /**
- * Creates an instance of the LangProc class to handle language-specific settings.
- * Retrieves the locale setting from the language data.
+ * Retrieves the locale setting from the global language instance.
  */
-$langProc = new LangProc();
-$locale = $langProc->getValue('locale');
+global $bearsamppLang;
+$locale = $bearsamppLang->getValue('locale');

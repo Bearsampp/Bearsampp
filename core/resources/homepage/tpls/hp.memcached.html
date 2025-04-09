@@ -6,31 +6,31 @@
   ~ Github: https://github.com/Bearsampp
   -->
 
-<a class = "anchor" name = "memcached"></a>
-<div class = "row-fluid">
-    <div class = "col-lg-12">
-        <?php
-            $memcachedLogoPath = $imagesPath . 'memcached.png';
-            $memcachedTitle = $bearsamppLang->getValue(Lang::MEMCACHED);
-        ?>
-        <h1><img alt = "Memcached logo" aria-hidden = "true" src = "<?php echo $memcachedLogoPath; ?>"> <?php echo $memcachedTitle; ?></h1>
-    </div>
+<div id="memcached" class="anchor"></div>
+<div class="row-fluid">
+  <div class="col-lg-12">
+    <?php
+        $memcachedLogoPath = $imagesPath . 'memcached.png';
+        $memcachedTitle = $bearsamppLang->getValue(Lang::MEMCACHED);
+    ?>
+    <h1><img alt="Memcached logo" aria-hidden="true" src="<?php echo $memcachedLogoPath; ?>"> <?php echo $memcachedTitle; ?></h1>
+  </div>
 </div>
-<div class = "row-fluid">
-    <div class = "col-lg-6">
-        <div class = "list-group">
-      <span class = "list-group-item memcached-checkport">
+<div class="row-fluid">
+  <div class="col-lg-6">
+    <div class="list-group">
+      <span class="list-group-item memcached-checkport">
         <?php echo $getLoader; ?>
-          <i class = "fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
+        <i class="fa-solid fa-server"></i> <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
       </span>
-            <span class = "list-group-item memcached-versions">
-              <span class = "label-left col-1">
-                <i class = "fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
-              </span>
-              <span class = "memcached-version-list float-end col-11">
-                <?php echo $getLoader; ?>
-              </span>
+      <span class="list-group-item memcached-versions">
+        <span class="label-left col-1">
+          <i class="fa-solid fa-code-merge"></i> <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
+        </span>
+        <span class="memcached-version-list float-end col-11">
+          <?php echo $getLoader; ?>
+        </span>
       </span>
-        </div>
     </div>
+  </div>
 </div>

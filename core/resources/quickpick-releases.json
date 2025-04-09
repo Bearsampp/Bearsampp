@@ -95,6 +95,10 @@
       {
         "version": "1.38.1",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.2.9/bearsampp-bruno-1.38.1-2025.2.9.7z"
+      },
+      {
+        "version": "1.39.1",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.3.2/bearsampp-bruno-1.39.1-2025.3.2.7z"
       }
     ]
   },
@@ -168,6 +172,10 @@
       {
         "version": "2.8.5",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2025.1.30/bearsampp-composer-2.8.5-2025.1.30.7z"
+      },
+      {
+        "version": "2.8.6",
+        "url": "https://github.com/Bearsampp/module-composer/releases/download/2025.3.2/bearsampp-composer-2.8.6-2025.3.2.7z"
       }
     ]
   },
@@ -831,6 +839,10 @@
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.11.1/bearsampp-nodejs-22.11.0-2024.11.1.7z"
       },
       {
+        "version": "22.14.0",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.3.2/bearsampp-nodejs-22.14.0-2025.3.2.7z"
+      },
+      {
         "version": "23.1.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.11.1/bearsampp-nodejs-23.1.0-2024.11.1.7z"
       },
@@ -845,6 +857,10 @@
       {
         "version": "23.7.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.2.11/bearsampp-nodejs-23.7.0-2025.2.11.7z"
+      },
+      {
+        "version": "23.9.0",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.3.2/bearsampp-nodejs-23.9.0-2025.3.2.7z"
       }
     ]
   },

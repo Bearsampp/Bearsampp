@@ -4,8 +4,8 @@
 
  WINBINDER - The native Windows binding for PHP for PHP
 
- Copyright © Hypervisual - see LICENSE.TXT for details
- Author: Rubem Pechansky (http://winbinder.org/contact.php)
+ Copyright Hypervisual - see LICENSE.TXT for details
+ Author: Rubem Pechansky (https://github.com/crispy-computing-machine/Winbinder)
 
  Some functions to call the FreeImage library directly
 
