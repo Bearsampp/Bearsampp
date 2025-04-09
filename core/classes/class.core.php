@@ -22,7 +22,7 @@ class Core
     const PATH_WIN_PLACEHOLDER = '~BEARSAMPP_WIN_PATH~';
     const PATH_LIN_PLACEHOLDER = '~BEARSAMPP_LIN_PATH~';
 
-    const PHP_VERSION = '5.4.23';
+    const PHP_VERSION = '8.2.3';
     const PHP_EXE = 'php-win.exe';
     const PHP_CONF = 'php.ini';
 
@@ -36,7 +36,7 @@ class Core
     const OPENSSL_EXE = 'openssl.exe';
     const OPENSSL_CONF = 'openssl.cfg';
 
-    const HOSTSEDITOR_VERSION = '1.3';
+    const HOSTSEDITOR_VERSION = '1.5';
     const HOSTSEDITOR_EXE = 'hEdit_x64.exe';
 
     const LN_VERSION = '2.928';

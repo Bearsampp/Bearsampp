@@ -56,12 +56,10 @@ class WinBinder
     // Constants for system information types
     const SYSINFO_SCREENAREA = 'screenarea';
     const SYSINFO_WORKAREA = 'workarea';
-
-    private $defaultTitle;
-    private $countCtrls;
-
     public $callback;
     public $gauge;
+    private $defaultTitle;
+    private $countCtrls;
 
     /**
      * WinBinder constructor.
@@ -78,23 +76,59 @@ class WinBinder
     }
 
     /**
-     * Writes a log message to the WinBinder log file.
-     *
-     * @param   string  $log  The log message to write.
-     */
-    private static function writeLog($log)
-    {
-        global $bearsamppRoot;
-        Util::logDebug($log, $bearsamppRoot->getWinbinderLogFilePath());
-    }
-
-    /**
      * Resets the control counter and callback array.
      */
     public function reset()
     {
         $this->countCtrls = 1000;
         $this->callback   = array();
+    }
+
+    /**
+     * Creates a new application window.
+     *
+     * @param   string  $caption  The window caption.
+     * @param   int     $width    The width of the window.
+     * @param   int     $height   The height of the window.
+     * @param   mixed   $style    The window style.
+     * @param   mixed   $params   Additional parameters for the window.
+     *
+     * @return mixed The created window object.
+     */
+    public function createAppWindow($caption, $width, $height, $style = null, $params = null)
+    {
+        return $this->createWindow(null, AppWindow, $caption, WBC_CENTER, WBC_CENTER, $width, $height, $style, $params);
+    }
+
+    /**
+     * Creates a new window.
+     *
+     * @param   mixed   $parent   The parent window or null for a top-level window.
+     * @param   string  $wclass   The window class.
+     * @param   string  $caption  The window caption.
+     * @param   int     $xPos     The x-coordinate of the window.
+     * @param   int     $yPos     The y-coordinate of the window.
+     * @param   int     $width    The width of the window.
+     * @param   int     $height   The height of the window.
+     * @param   mixed   $style    The window style.
+     * @param   mixed   $params   Additional parameters for the window.
+     *
+     * @return mixed The created window object.
+     */
+    public function createWindow($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style = null, $params = null)
+    {
+        global $bearsamppCore;
+
+        // Fix for PHP 8.2: Convert null to 0 for parent parameter
+        $parent = $parent === null ? 0 : $parent;
+
+        $caption = empty($caption) ? $this->defaultTitle : $this->defaultTitle . ' - ' . $caption;
+        $window  = $this->callWinBinder('wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params));
+
+        // Set tiny window icon
+        $this->setImage($window, $bearsamppCore->getIconsPath() . 'app.ico');
+
+        return $window;
     }
 
     /**
@@ -121,83 +155,28 @@ class WinBinder
     }
 
     /**
-     * Creates a new window.
+     * Sets an image for a WinBinder object.
      *
-     * @param   mixed   $parent   The parent window or null for a top-level window.
-     * @param   string  $wclass   The window class.
-     * @param   string  $caption  The window caption.
-     * @param   int     $xPos     The x-coordinate of the window.
-     * @param   int     $yPos     The y-coordinate of the window.
-     * @param   int     $width    The width of the window.
-     * @param   int     $height   The height of the window.
-     * @param   mixed   $style    The window style.
-     * @param   mixed   $params   Additional parameters for the window.
+     * @param   mixed   $wbobject  The WinBinder object to set the image for.
+     * @param   string  $path      The path to the image file.
      *
-     * @return mixed The created window object.
+     * @return mixed The result of the set image operation.
      */
-    public function createWindow($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style = null, $params = null)
+    public function setImage($wbobject, $path)
     {
-        global $bearsamppCore;
+        if ($wbobject === null) {
+            error_log('Error: $wbobject is null.');
 
-        $caption = empty($caption) ? $this->defaultTitle : $this->defaultTitle . ' - ' . $caption;
-        $window  = $this->callWinBinder('wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params));
+            return false;
+        }
 
-        // Set tiny window icon
-        $this->setImage($window, $bearsamppCore->getIconsPath() . 'app.ico');
+        if (!file_exists($path)) {
+            error_log('Error: Image file does not exist at path: ' . $path);
 
-        return $window;
-    }
+            return false;
+        }
 
-    /**
-     * Creates a new control.
-     *
-     * @param   mixed   $parent    The parent window or control.
-     * @param   string  $ctlClass  The control class.
-     * @param   string  $caption   The control caption.
-     * @param   int     $xPos      The x-coordinate of the control.
-     * @param   int     $yPos      The y-coordinate of the control.
-     * @param   int     $width     The width of the control.
-     * @param   int     $height    The height of the control.
-     * @param   mixed   $style     The control style.
-     * @param   mixed   $params    Additional parameters for the control.
-     *
-     * @return array An array containing the control ID and object.
-     */
-    public function createControl($parent, $ctlClass, $caption, $xPos, $yPos, $width, $height, $style = null, $params = null)
-    {
-        $this->countCtrls++;
-
-        return array(
-            self::CTRL_ID  => $this->countCtrls,
-            self::CTRL_OBJ => $this->callWinBinder('wb_create_control', array(
-                $parent,
-                $ctlClass,
-                $caption,
-                $xPos,
-                $yPos,
-                $width,
-                $height,
-                $this->countCtrls,
-                $style,
-                $params
-            )),
-        );
-    }
-
-    /**
-     * Creates a new application window.
-     *
-     * @param   string  $caption  The window caption.
-     * @param   int     $width    The width of the window.
-     * @param   int     $height   The height of the window.
-     * @param   mixed   $style    The window style.
-     * @param   mixed   $params   Additional parameters for the window.
-     *
-     * @return mixed The created window object.
-     */
-    public function createAppWindow($caption, $width, $height, $style = null, $params = null)
-    {
-        return $this->createWindow(null, AppWindow, $caption, WBC_CENTER, WBC_CENTER, $width, $height, $style, $params);
+        return $this->callWinBinder('wb_set_image', array($wbobject, $path));
     }
 
     /**
@@ -220,14 +199,148 @@ class WinBinder
     }
 
     /**
-     * Destroys a window.
+     * Sets the area of a WinBinder object.
+     *
+     * @param   mixed  $wbobject  The WinBinder object to set the area for.
+     * @param   int    $width     The width of the area.
+     * @param   int    $height    The height of the area.
+     *
+     * @return mixed The result of the set area operation.
+     */
+    public function setArea($wbobject, $width, $height)
+    {
+        return $this->callWinBinder('wb_set_area', array($wbobject, WBC_TITLE, 0, 0, $width, $height));
+    }
+
+    /**
+     * Destroys a window with proper cleanup and handling.
      *
      * @param   mixed  $window  The window object to destroy.
+     * @return  boolean True if window was successfully destroyed
      */
     public function destroyWindow($window)
     {
-        $this->callWinBinder('wb_destroy_window', array($window), true);
-        exit();
+        // Check if window exists and is valid
+        if (!$window || !$this->windowIsValid($window)) {
+            return true; // Already closed or invalid window
+        }
+
+        // Get window title before destruction for fallback
+        $windowTitle = $this->getText($window);
+        $currentPid = Win32Ps::getCurrentPid();
+
+        // Attempt standard destruction
+        $this->callWinBinder('wb_destroy_window', array($window));
+
+        // Verify closure with retries
+        $maxAttempts = 3;
+        $attempt     = 0;
+        $destroyed   = false;
+
+        while ($attempt < $maxAttempts && !$destroyed) {
+            $this->processMessages();
+            usleep(100000); // 100ms delay
+            $destroyed = !$this->windowIsValid($window);
+            $attempt++;
+        }
+
+        // Fallback to process termination if window still exists
+        if (!$destroyed) {
+            // 1. Try to close using window title
+            $this->exec('taskkill', '/FI "WINDOWTITLE eq ' . $windowTitle . '" /F', true);
+
+            // 2. Try to kill process directly using Winbinder's PID method
+            $currentPid = Win32Ps::getCurrentPid();
+            if (!empty($currentPid)) {
+                $this->exec('taskkill', '/PID ' . $currentPid . ' /T /F', true);
+                $this->writeLog('Force-killed PID: ' . $currentPid . ' for window: ' . $window);
+            }
+            
+            // 3. Final sanity check
+            if ($this->windowIsValid($window)) {
+                $this->callWinBinder('wb_destroy_window', array($window), true); // Force native call
+            }
+            
+            // 4. Reset internal state to prevent memory leaks
+            $this->reset();
+        }
+
+        // Final verification
+        return !$this->windowIsValid($window);
+    }
+
+    /**
+     * Retrieves the text from a WinBinder object.
+     *
+     * @param   mixed  $wbobject  The WinBinder object to get the text from.
+     *
+     * @return mixed The retrieved text.
+     */
+    public function getText($wbobject)
+    {
+        return $this->callWinBinder('wb_get_text', array($wbobject));
+    }
+    
+    /**
+     * Checks if a window handle is still valid.
+     *
+     * @param   mixed  $window  The window object to check.
+     * @return  boolean True if window is valid
+     */
+    private function windowIsValid($window)
+    {
+        if (!$window) {
+            return false;
+        }
+        
+        // Try to get window text - if window is invalid, this will fail
+        $text = $this->callWinBinder('wb_get_text', array($window), true);
+        return ($text !== false);
+    }
+    
+    /**
+     * Process any pending window messages.
+     *
+     * @return void
+     */
+    private function processMessages()
+    {
+        $this->callWinBinder('wb_wait', array(null, 1), true);
+    }
+
+    /**
+     * Executes a system command.
+     *
+     * @param   string       $cmd     The command to execute.
+     * @param   string|null  $params  The parameters to pass to the command.
+     * @param   bool         $silent  Whether to execute the command silently.
+     *
+     * @return mixed The result of the command execution.
+     */
+    public function exec($cmd, $params = null, $silent = false)
+    {
+        global $bearsamppCore;
+
+        if ($silent) {
+            $silent = '"' . $bearsamppCore->getScript(Core::SCRIPT_EXEC_SILENT) . '" "' . $cmd . '"';
+            $cmd    = 'wscript.exe';
+            $params = !empty($params) ? $silent . ' "' . $params . '"' : $silent;
+        }
+
+        $this->writeLog('exec: ' . $cmd . ' ' . $params);
+
+        return $this->callWinBinder('wb_exec', array($cmd, $params));
+    }
+
+    /**
+     * Writes a log message to the WinBinder log file.
+     *
+     * @param   string  $log  The log message to write.
+     */
+    private static function writeLog($log)
+    {
+        global $bearsamppRoot;
+        Util::logDebug($log, $bearsamppRoot->getWinbinderLogFilePath());
     }
 
     /**
@@ -369,24 +482,6 @@ class WinBinder
     }
 
     /**
-     * Creates a timer for a WinBinder object.
-     *
-     * @param   mixed  $wbobject  The WinBinder object to create the timer for.
-     * @param   int    $wait      The wait time in milliseconds.
-     *
-     * @return array An array containing the timer ID and object.
-     */
-    public function createTimer($wbobject, $wait = 1000)
-    {
-        $this->countCtrls++;
-
-        return array(
-            self::CTRL_ID  => $this->countCtrls,
-            self::CTRL_OBJ => $this->callWinBinder('wb_create_timer', array($wbobject, $this->countCtrls, $wait))
-        );
-    }
-
-    /**
      * Destroys a timer for a WinBinder object.
      *
      * @param   mixed  $wbobject     The WinBinder object to destroy the timer for.
@@ -397,30 +492,6 @@ class WinBinder
     public function destroyTimer($wbobject, $timerobject)
     {
         return $this->callWinBinder('wb_destroy_timer', array($wbobject, $timerobject));
-    }
-
-    /**
-     * Executes a system command.
-     *
-     * @param   string       $cmd     The command to execute.
-     * @param   string|null  $params  The parameters to pass to the command.
-     * @param   bool         $silent  Whether to execute the command silently.
-     *
-     * @return mixed The result of the command execution.
-     */
-    public function exec($cmd, $params = null, $silent = false)
-    {
-        global $bearsamppCore;
-
-        if ($silent) {
-            $silent = '"' . $bearsamppCore->getScript(Core::SCRIPT_EXEC_SILENT) . '" "' . $cmd . '"';
-            $cmd    = 'wscript.exe';
-            $params = !empty($params) ? $silent . ' "' . $params . '"' : $silent;
-        }
-
-        $this->writeLog('exec: ' . $cmd . ' ' . $params);
-
-        return $this->callWinBinder('wb_exec', array($cmd, $params));
     }
 
     /**
@@ -460,67 +531,21 @@ class WinBinder
     }
 
     /**
-     * Sets an image for a WinBinder object.
+     * Creates a timer for a WinBinder object.
      *
-     * @param   mixed   $wbobject  The WinBinder object to set the image for.
-     * @param   string  $path      The path to the image file.
+     * @param   mixed  $wbobject  The WinBinder object to create the timer for.
+     * @param   int    $wait      The wait time in milliseconds.
      *
-     * @return mixed The result of the set image operation.
+     * @return array An array containing the timer ID and object.
      */
-    public function setImage($wbobject, $path)
+    public function createTimer($wbobject, $wait = 1000)
     {
-        if ($wbobject === null) {
-            error_log('Error: $wbobject is null.');
+        $this->countCtrls++;
 
-            return false;
-        }
-
-        if (!file_exists($path)) {
-            error_log('Error: Image file does not exist at path: ' . $path);
-
-            return false;
-        }
-
-        return $this->callWinBinder('wb_set_image', array($wbobject, $path));
-    }
-
-    /**
-     * Sets the maximum length for a WinBinder object.
-     *
-     * @param   mixed  $wbobject  The WinBinder object to set the maximum length for.
-     * @param   int    $length    The maximum length to set.
-     *
-     * @return mixed The result of the set maximum length operation.
-     */
-    public function setMaxLength($wbobject, $length)
-    {
-        return $this->callWinBinder('wb_send_message', array($wbobject, 0x00c5, $length, 0));
-    }
-
-    /**
-     * Sets the area of a WinBinder object.
-     *
-     * @param   mixed  $wbobject  The WinBinder object to set the area for.
-     * @param   int    $width     The width of the area.
-     * @param   int    $height    The height of the area.
-     *
-     * @return mixed The result of the set area operation.
-     */
-    public function setArea($wbobject, $width, $height)
-    {
-        return $this->callWinBinder('wb_set_area', array($wbobject, WBC_TITLE, 0, 0, $width, $height));
-    }
-
-    /**
-     * Retrieves the text from a WinBinder object.
-     *
-     * @param   mixed  $wbobject  The WinBinder object to get the text from.
-     *
-     * @return mixed The retrieved text.
-     */
-    public function getText($wbobject)
-    {
-        return $this->callWinBinder('wb_get_text', array($wbobject));
+        return array(
+            self::CTRL_ID  => $this->countCtrls,
+            self::CTRL_OBJ => $this->callWinBinder('wb_create_timer', array($wbobject, $this->countCtrls, $wait))
+        );
     }
 
     /**
@@ -536,31 +561,6 @@ class WinBinder
         $content = str_replace(self::NEW_LINE, PHP_EOL, $content);
 
         return $this->callWinBinder('wb_set_text', array($wbobject, $content));
-    }
-
-    /**
-     * Retrieves the value from a WinBinder object.
-     *
-     * @param   mixed  $wbobject  The WinBinder object to get the value from.
-     *
-     * @return mixed The retrieved value.
-     */
-    public function getValue($wbobject)
-    {
-        return $this->callWinBinder('wb_get_value', array($wbobject));
-    }
-
-    /**
-     * Sets the value for a WinBinder object.
-     *
-     * @param   mixed  $wbobject  The WinBinder object to set the value for.
-     * @param   mixed  $content   The value to set.
-     *
-     * @return mixed The result of the set value operation.
-     */
-    public function setValue($wbobject, $content)
-    {
-        return $this->callWinBinder('wb_set_value', array($wbobject, $content));
     }
 
     /**
@@ -586,19 +586,6 @@ class WinBinder
     }
 
     /**
-     * Sets the cursor type for a WinBinder object.
-     *
-     * @param   mixed   $wbobject  The WinBinder object to set the cursor for.
-     * @param   string  $type      The cursor type to set.
-     *
-     * @return mixed The result of the set cursor operation.
-     */
-    public function setCursor($wbobject, $type = self::CURSOR_ARROW)
-    {
-        return $this->callWinBinder('wb_set_cursor', array($wbobject, $type));
-    }
-
-    /**
      * Checks if a WinBinder object is enabled.
      *
      * @param   mixed  $wbobject  The WinBinder object to check.
@@ -608,6 +595,18 @@ class WinBinder
     public function isEnabled($wbobject)
     {
         return $this->callWinBinder('wb_get_enabled', array($wbobject));
+    }
+
+    /**
+     * Disables a WinBinder object.
+     *
+     * @param   mixed  $wbobject  The WinBinder object to disable.
+     *
+     * @return mixed The result of the disable operation.
+     */
+    public function setDisabled($wbobject)
+    {
+        return $this->setEnabled($wbobject, false);
     }
 
     /**
@@ -624,18 +623,6 @@ class WinBinder
     }
 
     /**
-     * Disables a WinBinder object.
-     *
-     * @param   mixed  $wbobject  The WinBinder object to disable.
-     *
-     * @return mixed The result of the disable operation.
-     */
-    public function setDisabled($wbobject)
-    {
-        return $this->setEnabled($wbobject, false);
-    }
-
-    /**
      * Sets the style for a WinBinder object.
      *
      * @param   mixed  $wbobject  The WinBinder object to set the style for.
@@ -646,20 +633,6 @@ class WinBinder
     public function setStyle($wbobject, $style)
     {
         return $this->callWinBinder('wb_set_style', array($wbobject, $style));
-    }
-
-    /**
-     * Sets the range for a WinBinder object.
-     *
-     * @param   mixed  $wbobject  The WinBinder object to set the range for.
-     * @param   int    $min       The minimum value of the range.
-     * @param   int    $max       The maximum value of the range.
-     *
-     * @return mixed The result of the set range operation.
-     */
-    public function setRange($wbobject, $min, $max)
-    {
-        return $this->callWinBinder('wb_set_range', array($wbobject, $min, $max));
     }
 
     /**
@@ -715,6 +688,42 @@ class WinBinder
     }
 
     /**
+     * Creates a new control.
+     *
+     * @param   mixed   $parent    The parent window or control.
+     * @param   string  $ctlClass  The control class.
+     * @param   string  $caption   The control caption.
+     * @param   int     $xPos      The x-coordinate of the control.
+     * @param   int     $yPos      The y-coordinate of the control.
+     * @param   int     $width     The width of the control.
+     * @param   int     $height    The height of the control.
+     * @param   mixed   $style     The control style.
+     * @param   mixed   $params    Additional parameters for the control.
+     *
+     * @return array An array containing the control ID and object.
+     */
+    public function createControl($parent, $ctlClass, $caption, $xPos, $yPos, $width, $height, $style = null, $params = null)
+    {
+        $this->countCtrls++;
+
+        return array(
+            self::CTRL_ID  => $this->countCtrls,
+            self::CTRL_OBJ => $this->callWinBinder('wb_create_control', array(
+                $parent,
+                $ctlClass,
+                $caption,
+                $xPos,
+                $yPos,
+                $width,
+                $height,
+                $this->countCtrls,
+                $style,
+                $params
+            )),
+        );
+    }
+
+    /**
      * Creates an input text control.
      *
      * @param   mixed     $parent     The parent window or control.
@@ -740,6 +749,19 @@ class WinBinder
         }
 
         return $inputText;
+    }
+
+    /**
+     * Sets the maximum length for a WinBinder object.
+     *
+     * @param   mixed  $wbobject  The WinBinder object to set the maximum length for.
+     * @param   int    $length    The maximum length to set.
+     *
+     * @return mixed The result of the set maximum length operation.
+     */
+    public function setMaxLength($wbobject, $length)
+    {
+        return $this->callWinBinder('wb_send_message', array($wbobject, 0x00c5, $length, 0));
     }
 
     /**
@@ -789,6 +811,19 @@ class WinBinder
         $this->setCursor($hyperLink[self::CTRL_OBJ], self::CURSOR_FINGER);
 
         return $hyperLink;
+    }
+
+    /**
+     * Sets the cursor type for a WinBinder object.
+     *
+     * @param   mixed   $wbobject  The WinBinder object to set the cursor for.
+     * @param   string  $type      The cursor type to set.
+     *
+     * @return mixed The result of the set cursor operation.
+     */
+    public function setCursor($wbobject, $type = self::CURSOR_ARROW)
+    {
+        return $this->callWinBinder('wb_set_cursor', array($wbobject, $type));
     }
 
     /**
@@ -865,6 +900,32 @@ class WinBinder
     }
 
     /**
+     * Retrieves the value from a WinBinder object.
+     *
+     * @param   mixed  $wbobject  The WinBinder object to get the value from.
+     *
+     * @return mixed The retrieved value.
+     */
+    public function getValue($wbobject)
+    {
+        return $this->callWinBinder('wb_get_value', array($wbobject));
+    }
+
+    /**
+     * Sets the range for a WinBinder object.
+     *
+     * @param   mixed  $wbobject  The WinBinder object to set the range for.
+     * @param   int    $min       The minimum value of the range.
+     * @param   int    $max       The maximum value of the range.
+     *
+     * @return mixed The result of the set range operation.
+     */
+    public function setRange($wbobject, $min, $max)
+    {
+        return $this->callWinBinder('wb_set_range', array($wbobject, $min, $max));
+    }
+
+    /**
      * Increments the value of a progress bar.
      *
      * @param   array  $progressBar  The progress bar control.
@@ -872,16 +933,6 @@ class WinBinder
     public function incrProgressBar($progressBar)
     {
         $this->setProgressBarValue($progressBar, self::INCR_PROGRESS_BAR);
-    }
-
-    /**
-     * Resets the value of a progress bar to zero.
-     *
-     * @param   array  $progressBar  The progress bar control.
-     */
-    public function resetProgressBar($progressBar)
-    {
-        $this->setProgressBarValue($progressBar, 0);
     }
 
     /**
@@ -904,6 +955,29 @@ class WinBinder
     }
 
     /**
+     * Sets the value for a WinBinder object.
+     *
+     * @param   mixed  $wbobject  The WinBinder object to set the value for.
+     * @param   mixed  $content   The value to set.
+     *
+     * @return mixed The result of the set value operation.
+     */
+    public function setValue($wbobject, $content)
+    {
+        return $this->callWinBinder('wb_set_value', array($wbobject, $content));
+    }
+
+    /**
+     * Resets the value of a progress bar to zero.
+     *
+     * @param   array  $progressBar  The progress bar control.
+     */
+    public function resetProgressBar($progressBar)
+    {
+        $this->setProgressBarValue($progressBar, 0);
+    }
+
+    /**
      * Sets the maximum value of a progress bar.
      *
      * @param   array  $progressBar  The progress bar control.
@@ -912,6 +986,19 @@ class WinBinder
     public function setProgressBarMax($progressBar, $max)
     {
         $this->setRange($progressBar[self::CTRL_OBJ], 0, $max);
+    }
+
+    /**
+     * Displays an informational message box.
+     *
+     * @param   string       $message  The message to display.
+     * @param   string|null  $title    The title of the message box.
+     *
+     * @return mixed The result of the message box operation.
+     */
+    public function messageBoxInfo($message, $title = null)
+    {
+        return $this->messageBox($message, self::BOX_INFO, $title);
     }
 
     /**
@@ -929,26 +1016,13 @@ class WinBinder
 
         $message    = str_replace(self::NEW_LINE, PHP_EOL, $message);
         $messageBox = $this->callWinBinder('wb_message_box', array(
-            null,
+            0, // Use 0 instead of null for the window handle parameter
             strlen($message) < 64 ? str_pad($message, 64) : $message, // Pad message to display entire title
             $title == null ? $this->defaultTitle : $this->defaultTitle . ' - ' . $title,
             $type
         ));
 
         return $messageBox;
-    }
-
-    /**
-     * Displays an informational message box.
-     *
-     * @param   string       $message  The message to display.
-     * @param   string|null  $title    The title of the message box.
-     *
-     * @return mixed The result of the message box operation.
-     */
-    public function messageBoxInfo($message, $title = null)
-    {
-        return $this->messageBox($message, self::BOX_INFO, $title);
     }
 
     /**

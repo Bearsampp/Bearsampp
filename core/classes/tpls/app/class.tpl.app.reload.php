@@ -1,58 +1,78 @@
 <?php
-/*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
- */
 
 /**
- * Class TplAppReload
- *
- * This class provides methods to generate actions and menu items for reloading the Bearsampp application.
- * It includes functionalities for creating reload actions and processing reload commands.
+ * Manages reload action templates and execution for Bearsampp menu system
  */
 class TplAppReload
 {
-    // Constant for the reload action identifier
+    /**
+     * @var string Action identifier for reload operations
+     */
     const ACTION = 'reload';
 
     /**
-     * Generates the reload menu item and associated actions.
+     * Generates multi-action menu item for reload functionality
      *
-     * This method creates a menu item for reloading the application and defines the actions to be taken
-     * when the reload menu item is selected. It uses the global language object to retrieve the localized
-     * string for the reload action.
-     *
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
-     *
-     * @return array The generated menu item and actions for reloading the application.
+     * @global Lang $bearsamppLang Bearsampp language configuration instance
+     * @return array Array structure for TplApp::getActionMulti containing:
+     *               - Action identifier
+     *               - Action parameters
+     *               - Menu item configuration (label + glyph)
+     *               - Disabled state
+     *               - Calling class name
      */
-    public static function process()
+    public static function process(): array
     {
         global $bearsamppLang;
-
         return TplApp::getActionMulti(
-            self::ACTION, null,
-            array($bearsamppLang->getValue(Lang::RELOAD), TplAestan::GLYPH_RELOAD),
-            false, get_called_class()
+            self::ACTION,
+            null,
+            [$bearsamppLang->getValue(Lang::RELOAD), TplAestan::GLYPH_RELOAD],
+            false,
+            get_called_class()
         );
     }
 
     /**
-     * Generates the action to reload the application.
+     * Builds sequence of actions for configuration reload
      *
-     * This method creates the action string for reloading the application. It includes commands to reset
-     * services and read the configuration. The action string is used to define what happens when the reload
-     * action is triggered.
-     *
-     * @return string The generated action string for reloading the application.
+     * @return string Concatenated action sequence containing:
+     *               1. PHP process execution command
+     *               2. Service reset command
+     *               3. Configuration reload command
      */
-    public static function getActionReload()
+    public static function getActionReload(): string
     {
-        return TplApp::getActionRun(Action::RELOAD) . PHP_EOL .
-            'Action: resetservices' . PHP_EOL .
-            'Action: readconfig';
+        return implode("\n", [
+            TplApp::getActionRun(Action::RELOAD),
+            'Action: resetservices',
+            'Action: readconfig'
+        ]);
+    }
+
+    /**
+     * Executes reload sequence and returns action string
+     *
+     * @param mixed|null $args Arguments to pass to reload action
+     * @return string Generated INI action sequence
+     * @throws Exception If reload operation fails
+     *
+     * @log TRACE: Logs method entry and generated action content
+     * @log ERROR: Captures and logs any exceptions during reload
+     */
+    public static function triggerReload($args = null): string
+    {
+        Util::logTrace('ENTERING triggerReload..');
+
+        try {
+            new ActionReload($args);
+            $actionContent = self::getActionReload();
+            Util::logTrace('Generated reload actions: ' . $actionContent);
+            return $actionContent;
+
+        } catch (Exception $e) {
+            Util::logError('Reload failed: ' . $e->getMessage());
+            return '';
+        }
     }
 }

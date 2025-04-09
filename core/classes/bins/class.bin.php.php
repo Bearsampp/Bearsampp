@@ -195,7 +195,9 @@ class BinPhp extends Module
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
         $conf = str_replace('php' . $this->getVersion(), 'php' . $version, $this->getConf());
+        Util::logTrace('Current php version found: ' . $conf);
         $bearsamppConf = str_replace('php' . $this->getVersion(), 'php' . $version, $this->bearsamppConf);
+        Util::logTrace('Current bearsampp.conf php version found: ' . $bearsamppConf);
 
         $tsDll = $this->getTsDll($version);
         $apachePhpModulePath = $this->getApacheModule($bearsamppBins->getApache()->getVersion(), $version);
@@ -238,6 +240,7 @@ class BinPhp extends Module
         }
 
         // bearsampp.conf
+        Util::logTrace('Calling Set Version for php...');
         $this->setVersion($version);
 
         // conf
@@ -635,8 +638,11 @@ class BinPhp extends Module
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
+        Util::logTrace('Setting php version in .conf to: ' . $this->version);
         $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
+        Util::logTrace('Reloading php version...');
         $this->reload();
+        Util::logTrace('Reloading of php version complete');
     }
 
     /**

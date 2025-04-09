@@ -165,8 +165,12 @@ class Util
      */
     public static function startWith($string, $search)
     {
+        // Return false if string is NULL or empty
+        if ($string === null || $string === '') {
+            return false;
+        }
+        
         $length = strlen( $search );
-
         return (substr( $string, 0, $length ) === $search);
     }
 
@@ -660,7 +664,15 @@ class Util
      */
     public static function disableLaunchStartup()
     {
-        return @unlink( self::getStartupLnkPath() );
+        $startupLnkPath = self::getStartupLnkPath();
+        
+        // Check if file exists before attempting to delete
+        if (file_exists($startupLnkPath)) {
+            return @unlink($startupLnkPath);
+        }
+        
+        // Return true if the file doesn't exist (already disabled)
+        return true;
     }
 
     /**
@@ -1590,25 +1602,30 @@ class Util
     }
 
     /**
-     * Checks if a specific port on localhost is in use and returns the process using it if available.
+     * Checks if a specific port is in use.
      *
-     * @param   int  $port  The port number to check.
-     *
-     * @return mixed Returns the process using the port if in use, 'N/A' if the port is open but no specific process can be identified, or false if the port is not in use.
+     * @param int $port The port number to check
+     * @return mixed False if the port is not in use, otherwise returns the process using the port
      */
     public static function isPortInUse($port)
     {
-        // Declaring a variable to hold the IP
-        // address getHostName() gets the name
-        // of the local machine getHostByName()
-        // gets the corresponding IP
-        $localIP = getHostByName( getHostName() );
+        // Set localIP statically
+        $localIP = '127.0.0.1';
 
-        $connection = @fsockopen( $localIP, $port );
+        // Save current error reporting level
+        $errorReporting = error_reporting();
 
-        if ( is_resource( $connection ) ) {
-            fclose( $connection );
-            $process = Batch::getProcessUsingPort( $port );
+        // Disable error reporting temporarily
+        error_reporting(0);
+
+        $connection = @fsockopen($localIP, $port);
+
+        // Restore original error reporting level
+        error_reporting($errorReporting);
+
+        if (is_resource($connection)) {
+            fclose($connection);
+            $process = Batch::getProcessUsingPort($port);
 
             return $process != null ? $process : 'N/A';
         }

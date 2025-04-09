@@ -21,9 +21,24 @@ class ActionSwitchVersion
     private $service;
     private $changePort;
     private $boxTitle;
+    private $pathsToScan = [];
 
     const GAUGE_SERVICES = 1;
     const GAUGE_OTHERS = 7;
+    
+    // Configuration sections
+    const CONFIG_SECTION_APACHE = 'apache';
+    const CONFIG_SECTION_PHP = 'php';
+    const CONFIG_SECTION_MYSQL = 'mysql';
+    const CONFIG_SECTION_MARIADB = 'mariadb';
+    const CONFIG_SECTION_POSTGRESQL = 'postgresql';
+    const CONFIG_SECTION_NODEJS = 'nodejs';
+    const CONFIG_SECTION_MEMCACHED = 'memcached';
+    const CONFIG_SECTION_MAILPIT = 'mailpit';
+    const CONFIG_SECTION_XLIGHT = 'xlight';
+    
+    // Configuration keys
+    const CONFIG_KEY_VERSION = 'version';
 
     /**
      * ActionSwitchVersion constructor.
@@ -239,29 +254,129 @@ class ActionSwitchVersion
         }
 
         $this->bearsamppSplash->incrProgressBar(self::GAUGE_SERVICES * count($bearsamppBins->getServices()) + 1);
+
+        // Update configuration file with the new version
+        Util::logTrace('Updating ini & menu...');
+        $this->updateConfigVersion();
+
+        Util::logTrace('Creating modal...');
         $bearsamppWinbinder->messageBoxInfo(
             sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_OK), $this->bin->getName(), $this->version),
             $this->boxTitle
         );
+
+        Util::logTrace('Destroying modal window...');
         $bearsamppWinbinder->destroyWindow($window);
 
-        $this->bearsamppSplash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_REGISTRY), Registry::APP_BINS_REG_ENTRY));
-        $this->bearsamppSplash->incrProgressBar(2);
-        Util::setAppBinsRegKey(Util::getAppBinsRegKey(false));
+        // Store current registry value for comparison
+        $currentRegValue = Util::getAppBinsRegKey(false);
+        $regEntry = Registry::APP_BINS_REG_ENTRY;
 
+        Util::logTrace(sprintf(
+            'Starting registry adjustment for key: %s | Current value: %s',
+            $regEntry,
+            $currentRegValue
+        ));
+
+        $this->bearsamppSplash->setTextLoading(sprintf(
+            $bearsamppLang->getValue(Lang::SWITCH_VERSION_REGISTRY),
+            $regEntry
+        ));
+
+        $this->bearsamppSplash->incrProgressBar(2);
+
+        // Perform the registry update
+        $newRegValue = Util::setAppBinsRegKey($currentRegValue);
+        Util::logTrace(sprintf(
+            'Registry update completed | Key: %s | New value: %s | Previous value: %s',
+            $regEntry,
+            $newRegValue,
+            $currentRegValue
+        ));
+
+        Util::logTrace(sprintf(
+            'Resetting services: %s',
+            $bearsamppLang->getValue(Lang::SWITCH_VERSION_RESET_SERVICES)
+        ));
+        
         $this->bearsamppSplash->setTextLoading($bearsamppLang->getValue(Lang::SWITCH_VERSION_RESET_SERVICES));
         foreach ($bearsamppBins->getServices() as $sName => $service) {
+            Util::logTrace(sprintf('Deleting service: %s', $sName));
             $this->bearsamppSplash->incrProgressBar();
             $service->delete();
+            Util::logTrace(sprintf('Service deleted: %s', $sName));
         }
+        Util::logTrace('All services reset completed');
 
         $bearsamppWinbinder->messageBoxInfo(
             sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_OK_RESTART), $this->bin->getName(), $this->version, APP_TITLE),
             $this->boxTitle
         );
 
+        Util::logTrace('Running seExec line 316..');
         $bearsamppCore->setExec(ActionExec::RESTART);
 
+        Util::logTrace('Destroying final window...');
         $bearsamppWinbinder->destroyWindow($window);
+    }
+    
+    /**
+     * Updates the configuration file with the new version of the binary
+     * This ensures version persistence across restarts
+     */
+    private function updateConfigVersion(): void
+    {
+        $bearsamppConfig = new Config();
+        $configSection = '';
+        $version = $this->version; // Ensure version is available in scope
+        
+        // Determine the correct configuration section based on binary type
+        if ($this->bin->getName() == $GLOBALS['bearsamppBins']->getApache()->getName()) {
+            $configSection = self::CONFIG_SECTION_APACHE;
+            Util::logTrace(sprintf('Switch %s version to %s', $configSection, $version));
+        } elseif ($this->bin->getName() == $GLOBALS['bearsamppBins']->getPhp()->getName()) {
+            $configSection = self::CONFIG_SECTION_PHP;
+            Util::logTrace(sprintf('Switch %s version to %s', $configSection, $version));
+        } elseif ($this->bin->getName() == $GLOBALS['bearsamppBins']->getMysql()->getName()) {
+            $configSection = self::CONFIG_SECTION_MYSQL;
+            Util::logTrace(sprintf('Switch %s version to %s', $configSection, $version));
+        } elseif ($this->bin->getName() == $GLOBALS['bearsamppBins']->getMariadb()->getName()) {
+            $configSection = self::CONFIG_SECTION_MARIADB;
+            Util::logTrace(sprintf('Switch %s version to %s', $configSection, $version));
+        } elseif ($this->bin->getName() == $GLOBALS['bearsamppBins']->getPostgresql()->getName()) {
+            $configSection = self::CONFIG_SECTION_POSTGRESQL;
+            Util::logTrace(sprintf('Switch %s version to %s', $configSection, $version));
+        } elseif ($this->bin->getName() == $GLOBALS['bearsamppBins']->getNodejs()->getName()) {
+            $configSection = self::CONFIG_SECTION_NODEJS;
+            Util::logTrace(sprintf('Switch %s version to %s', $configSection, $version));
+        } elseif ($this->bin->getName() == $GLOBALS['bearsamppBins']->getMemcached()->getName()) {
+            $configSection = self::CONFIG_SECTION_MEMCACHED;
+            Util::logTrace(sprintf('Switch %s version to %s', $configSection, $version));
+        } elseif ($this->bin->getName() == $GLOBALS['bearsamppBins']->getMailpit()->getName()) {
+            $configSection = self::CONFIG_SECTION_MAILPIT;
+            Util::logTrace(sprintf('Switch %s version to %s', $configSection, $version));
+        } elseif ($this->bin->getName() == $GLOBALS['bearsamppBins']->getXlight()->getName()) {
+            $configSection = self::CONFIG_SECTION_XLIGHT;
+            Util::logTrace(sprintf('Switch %s version to %s', $configSection, $version));
+        }
+        
+        // Update the configuration if a valid section was found
+        if (!empty($configSection)) {
+            Util::logTrace('Updating .ini file...');
+            $bearsamppConfig->replace($configSection, self::CONFIG_KEY_VERSION, $version);
+
+            // Update tray menu display if TrayMenu class is available
+            Util::logTrace('Updating TrayMenu...');
+            if (class_exists('TrayMenu')) {
+                $trayMenu = TrayMenu::getInstance();
+                if (method_exists($trayMenu, 'updateSectionVersion')) {
+                    $trayMenu->updateSectionVersion(
+                        strtoupper($configSection), 
+                        $version
+                    );
+                }
+            }
+        }
+        Util::logTrace('Returning to parent call');
     }
 }

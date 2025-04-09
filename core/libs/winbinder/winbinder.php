@@ -16,12 +16,10 @@ if(!extension_loaded('winbinder'))
 		trigger_error("WinBinder extension could not be loaded.\n", E_USER_ERROR);
 
 $_mainpath = pathinfo(__FILE__);
-$_mainpath = $_mainpath["dirname"] . "/";
+$_mainpath = $_mainpath["dirname"];
 
 // WinBinder PHP functions
 
-include $_mainpath . "wb_windows.inc.php";
-include $_mainpath . "wb_generic.inc.php";
-include $_mainpath . "wb_resources.inc.php";
-
-//------------------------------------------------------------------ END OF FILE
+require_once $_mainpath . '/wb_resources.inc.php';
+require_once $_mainpath . '/wb_windows.inc.php';
+require_once $_mainpath . '/wb_generic.inc.php';

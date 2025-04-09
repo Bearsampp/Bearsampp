@@ -49,6 +49,7 @@ class ActionQuit
         $bearsamppWinbinder->reset();
     }
 
+
     /**
      * Processes the splash screen window events.
      * Stops all services, deletes symlinks, and kills remaining processes.
@@ -99,7 +100,59 @@ class ActionQuit
         $this->splash->setTextLoading( $bearsamppLang->getValue( Lang::EXIT_STOP_OTHER_PROCESS_TEXT ) );
         Win32Ps::killBins( true );
 
-        // Destroy the splash screen window
-        $bearsamppWinbinder->destroyWindow( $window );
+        // Terminate any remaining processes
+        // Final termination sequence
+        $this->splash->setTextLoading('Completing shutdown...');
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $currentPid = Win32Ps::getCurrentPid();
+
+            // 1. Terminate PHP processes first
+            self::terminatePhpProcesses($currentPid, $window, $this->splash);
+
+            // 4. Force exit if still running
+            exit(0);
+        }
+
+        // Non-Windows fallback
+        $bearsamppWinbinder->destroyWindow($window);
+        exit(0);
+    }
+
+    /**
+     * Terminates PHP processes.
+     *
+     * @param   int     $excludePid  Process ID to exclude
+     * @param   mixed   $window      Window handle or null
+     * @param   mixed   $splash      Splash screen or null
+     * @return  void
+     */
+    public static function terminatePhpProcesses($excludePid, $window = null, $splash = null)
+    {
+        global $bearsamppWinbinder;
+
+        $currentPid = Win32Ps::getCurrentPid();
+
+        $targets = ['php-win.exe', 'php.exe'];
+        foreach (Win32Ps::getListProcs() as $proc) {
+            $exe = strtolower(basename($proc[Win32Ps::EXECUTABLE_PATH]));
+            $pid = $proc[Win32Ps::PROCESS_ID];
+
+            if (in_array($exe, $targets) && $pid != $excludePid) {
+                Win32Ps::kill($pid);
+                usleep(100000); // 100ms delay between terminations
+            }
+        }
+
+        // 2. Initiate self-termination
+        if ($splash !== null) {
+            $splash->setTextLoading('Final cleanup...');
+        }
+        Vbs::killProc($currentPid);
+
+        // 3. Destroy window after process termination
+        // Fix for PHP 8.2: Check if window is not null before destroying
+        if ($window && $bearsamppWinbinder) {
+            $bearsamppWinbinder->destroyWindow($window);
+        }
     }
 }

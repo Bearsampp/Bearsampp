@@ -13,32 +13,6 @@
 
 //-------------------------------------------------------------------- FUNCTIONS
 
-/*
-
-Mimics function file_put_contents from PHP 5
-
-int file_put_contents (string filename, string data [, int flags [, resource context]])
-
-*/
-
-if(PHP_VERSION < "5.0.0") {
-
-function file_put_contents($filename, $data, $flags=0, $zcontext=null)
-{
-	if($zcontext)
-		$fp = @fopen($filename, "w+b", $flags, $zcontext);
-	else
-		$fp = @fopen($filename, "w+b", $flags);
-	if(!$fp)
-		return FALSE;
-	fwrite($fp, $data);
-	fclose($fp);
-	return TRUE;
-}
-
-}	// PHP_VERSION < "5.0.0"
-
-
 /* Returns an array with all files of subdirectory $path. If $subdirs is TRUE,
   includes subdirectories recursively. $mask is a PCRE regular expression.
 */
@@ -195,5 +169,3 @@ function parse_ini($initext, $changecase=TRUE, $convertwords=TRUE)
 	}
 	return $section;
 }
-
-//------------------------------------------------------------------ END OF FILE

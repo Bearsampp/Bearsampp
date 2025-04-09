@@ -71,48 +71,55 @@ class Symlinks
         $toolsPath = $bearsamppRoot->getToolsPath();
 
         $array = [
-            self::ADMINER_SYMLINK => Util::formatWindowsPath($appsPath . '/adminer/current'),
-            self::PHPMYADMIN_SYMLINK => Util::formatWindowsPath($appsPath . '/phpmyadmin/current'),
-            self::PHPPGADMIN_SYMLINK => Util::formatWindowsPath($appsPath . '/phppgadmin/current'),
-            self::APACHE_SYMLINK => Util::formatWindowsPath($binPath . '/apache/current'),
-            self::MARIADB_SYMLINK => Util::formatWindowsPath($binPath . '/mariadb/current'),
-            self::MEMCACHED_SYMLINK => Util::formatWindowsPath($binPath . '/memcached/current'),
-            self::MYSQL_SYMLINK => Util::formatWindowsPath($binPath . '/mysql/current'),
-            self::NODEJS_SYMLINK => Util::formatWindowsPath($binPath . '/nodejs/current'),
-            self::PHP_SYMLINK => Util::formatWindowsPath($binPath . '/php/current'),
-            self::POSTGRESQL_SYMLINK => Util::formatWindowsPath($binPath . '/postgresql/current'),
-            self::COMPOSER_SYMLINK => Util::formatWindowsPath($toolsPath . '/composer/current'),
-            self::CONSOLEZ_SYMLINK => Util::formatWindowsPath($toolsPath . '/consolez/current'),
-            self::GHOSTSCRIPT_SYMLINK => Util::formatWindowsPath($toolsPath . '/ghostscript/current'),
-            self::GIT_SYMLINK => Util::formatWindowsPath($toolsPath . '/git/current'),
-            self::NGROK_SYMLINK => Util::formatWindowsPath($toolsPath . '/ngrok/current'),
-            self::PERL_SYMLINK => Util::formatWindowsPath($toolsPath . '/perl/current'),
-            self::PYTHON_SYMLINK => Util::formatWindowsPath($toolsPath . '/python/current'),
-            self::RUBY_SYMLINK => Util::formatWindowsPath($toolsPath . '/ruby/current'),
-            self::XLIGHT_SYMLINK => Util::formatWindowsPath($binPath . '/xlight/current'),
-            self::MAILPIT_SYMLINK => Util::formatWindowsPath($binPath . '/mailpit/current'),
-            self::BRUNO_SYMLINK => Util::formatWindowsPath($toolsPath . '/bruno/current')
+            self::ADMINER_SYMLINK => $appsPath . '/adminer/current',
+            self::PHPMYADMIN_SYMLINK => $appsPath . '/phpmyadmin/current',
+            self::PHPPGADMIN_SYMLINK => $appsPath . '/phppgadmin/current',
+            self::APACHE_SYMLINK => $binPath . '/apache/current',
+            self::MARIADB_SYMLINK => $binPath . '/mariadb/current',
+            self::MEMCACHED_SYMLINK => $binPath . '/memcached/current',
+            self::MYSQL_SYMLINK => $binPath . '/mysql/current',
+            self::NODEJS_SYMLINK => $binPath . '/nodejs/current',
+            self::PHP_SYMLINK => $binPath . '/php/current',
+            self::POSTGRESQL_SYMLINK => $binPath . '/postgresql/current',
+            self::COMPOSER_SYMLINK => $toolsPath . '/composer/current',
+            self::CONSOLEZ_SYMLINK => $toolsPath . '/consolez/current',
+            self::GHOSTSCRIPT_SYMLINK => $toolsPath . '/ghostscript/current',
+            self::GIT_SYMLINK => $toolsPath . '/git/current',
+            self::NGROK_SYMLINK => $toolsPath . '/ngrok/current',
+            self::PERL_SYMLINK => $toolsPath . '/perl/current',
+            self::PYTHON_SYMLINK => $toolsPath . '/python/current',
+            self::RUBY_SYMLINK => $toolsPath . '/ruby/current',
+            self::XLIGHT_SYMLINK => $binPath . '/xlight/current',
+            self::MAILPIT_SYMLINK => $binPath . '/mailpit/current',
+            self::BRUNO_SYMLINK => $toolsPath . '/bruno/current'
         ];
 
+        // Fix for PHP 8.2: Add null checks before accessing array elements
         if (!is_array($array) || empty($array)) {
             Util::logError('Current symlinks array is not initialized or empty.');
             return;
         }
 
-        // Purge "current" symlinksF
-        foreach ($array as $startPath) {
-            if (!file_exists($startPath)) {
-                Util::logError('Symlink does not exist: ' . $startPath);
+        // Purge "current" symlinks
+        foreach ($array as $name => $path) {
+            // Skip if path is null
+            if (empty($path)) {
                 continue;
+            }
+            
+            if (!file_exists($path)) {
+                // Skip if the symlink doesn't exist - no need to log an error
+                continue;
+            }
+            
+            // Simple approach: use rmdir for directories and unlink for files
+            if (is_dir($path)) {
+                if (@rmdir($path)) {
+                    Util::logDebug('Deleted directory symlink: ' . $path);
+                }
             } else {
-                try {
-                    if (!Batch::removeSymlink($startPath)) {
-                        Util::logError('Failed to remove symlink: ' . $startPath . ' - ' . error_get_last()['message']);
-                    } else {
-                        Util::logDebug('Deleted: ' . $startPath);
-                    }
-                } catch (Exception $e) {
-                    Util::logError('Error removing symlink ' . $startPath . ': ' . $e->getMessage());
+                if (@unlink($path)) {
+                    Util::logDebug('Deleted file symlink: ' . $path);
                 }
             }
         }

@@ -225,17 +225,22 @@ class Vbs
         $basename   = 'killProc';
         $resultFile = self::getResultFile( $basename );
 
-        $content = 'Dim objFso, objResultFile, objWMIService' . PHP_EOL . PHP_EOL;
+        $content = 'Dim objFso, objResultFile, objWMIService, processFound' . PHP_EOL . PHP_EOL;
         $content .= 'Set objFso = CreateObject("scripting.filesystemobject")' . PHP_EOL;
         $content .= 'Set objResultFile = objFso.CreateTextFile("' . $resultFile . '", True)' . PHP_EOL;
         $content .= 'strComputer = "."' . PHP_EOL;
         $content .= 'strProcessKill = "' . $pid . '"' . PHP_EOL;
+        $content .= 'processFound = False' . PHP_EOL;
         $content .= 'Set objWMIService = GetObject("winmgmts:" & "{impersonationLevel=impersonate}!\\\\" & strComputer & "\root\cimv2")' . PHP_EOL;
         $content .= 'Set listProcess = objWMIService.ExecQuery ("Select * from Win32_Process Where ProcessID = " & strProcessKill)' . PHP_EOL;
         $content .= 'For Each objProcess in listProcess' . PHP_EOL;
+        $content .= '    processFound = True' . PHP_EOL;
         $content .= '    objResultFile.WriteLine(objProcess.Name & "' . self::STR_SEPARATOR . '" & objProcess.ProcessID & "' . self::STR_SEPARATOR . '" & objProcess.ExecutablePath)' . PHP_EOL;
         $content .= '    objProcess.Terminate()' . PHP_EOL;
         $content .= 'Next' . PHP_EOL;
+        $content .= 'If Not processFound Then' . PHP_EOL;
+        $content .= '    objResultFile.WriteLine("PROCESS_NOT_FOUND' . self::STR_SEPARATOR . '" & strProcessKill & "' . self::STR_SEPARATOR . '")' . PHP_EOL;
+        $content .= 'End If' . PHP_EOL;
         $content .= 'objResultFile.Close' . PHP_EOL;
 
         $result = self::exec( $basename, $resultFile, $content );
@@ -246,8 +251,12 @@ class Vbs
         if ( is_array( $result ) && count( $result ) > 0 ) {
             foreach ( $result as $row ) {
                 $row = explode( self::STR_SEPARATOR, $row );
-                if ( count( $row ) == 3 && !empty( $row[2] ) ) {
-                    Util::logDebug( 'Kill process ' . $row[2] . ' (PID ' . $row[1] . ')' );
+                if ( count( $row ) == 3 ) {
+                    if ( $row[0] === 'PROCESS_NOT_FOUND' ) {
+                        Util::logDebug( 'Process with PID ' . $row[1] . ' not found' );
+                    } elseif ( !empty( $row[2] ) ) {
+                        Util::logDebug( 'Kill process ' . $row[2] . ' (PID ' . $row[1] . ')' );
+                    }
                 }
             }
         }

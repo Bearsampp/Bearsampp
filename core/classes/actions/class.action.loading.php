@@ -97,14 +97,61 @@ class ActionLoading
                 break;
         }
 
-        while (true) {
+        // Set a maximum number of iterations to prevent infinite loops
+        $maxIterations = 10;
+        $iterations = 0;
+        
+        // Set a timeout for the entire loading process
+        $startTime = time();
+        $maxLoadingTime = 10; // 30 seconds maximum
+        
+        while ($iterations < $maxIterations && (time() - $startTime) < $maxLoadingTime) {
             $bearsamppRoot->removeErrorHandling();
             $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
+            
             usleep(100000);
-            for ($i = 0; $i < self::GAUGE; $i++) {
+            
+            for ($i = 0; $i < self::GAUGE && (time() - $startTime) < $maxLoadingTime; $i++) {
                 $this->incrProgressBar();
                 usleep(100000);
             }
+            
+            // Check if all services have started successfully
+            $allServicesStarted = $this->checkAllServicesStarted();
+            if ($allServicesStarted) {
+                Util::logTrace('All services started successfully');
+                break;
+            }
+            
+            $iterations++;
         }
+
+        if($iterations >= $maxIterations ) {
+            Util::logTrace('maxIterations reached, killing loading window, ActionLoading::processLoading, lines 108-127');
+        }
+        // Close the loading window
+        Win32Ps::kill(Win32Ps::getCurrentPid());
+    }
+    
+    /**
+     * Checks if all services have been started successfully
+     *
+     * @return bool True if all services are running, false otherwise
+     */
+    private function checkAllServicesStarted()
+    {
+        global $bearsamppBins;
+        
+        $allStarted = true;
+        
+        foreach ($bearsamppBins->getServices() as $sName => $service) {
+            $status = $service->isRunning();
+            
+            if (!$status) {
+                $allStarted = false;
+            }
+        }
+        
+        return $allStarted;
     }
 }

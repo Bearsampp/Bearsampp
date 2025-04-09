@@ -249,10 +249,41 @@ class Batch
      * Removes a symbolic link.
      *
      * @param string $link The path to the symbolic link.
+     * @return bool True if the symlink was removed successfully, false otherwise.
      */
     public static function removeSymlink($link)
     {
-        self::exec('removeSymlink', 'rmdir /Q "' . Util::formatWindowsPath($link) . '"', true, false);
+        if (!file_exists($link)) {
+            self::writeLog('-> removeSymlink: Link does not exist: ' . $link);
+            return true; // If the link doesn't exist, nothing to do
+        }
+        
+        // Check if it's a directory symlink
+        $isDirectory = is_dir($link);
+        $formattedLink = Util::formatWindowsPath($link);
+        
+        try {
+            // Use different commands based on whether it's a directory or file symlink
+            if ($isDirectory) {
+                // For directory symlinks
+                self::exec('removeSymlink', 'rmdir /Q "' . $formattedLink . '"', true, false);
+            } else {
+                // For file symlinks
+                self::exec('removeSymlink', 'del /F /Q "' . $formattedLink . '"', true, false);
+            }
+            
+            // Check if removal was successful
+            if (file_exists($link)) {
+                self::writeLog('-> removeSymlink: Failed to remove symlink: ' . $link);
+                return false;
+            }
+            
+            self::writeLog('-> removeSymlink: Successfully removed symlink: ' . $link);
+            return true;
+        } catch (Exception $e) {
+            self::writeLog('-> removeSymlink: Exception: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**
