@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 class OpenSsl
@@ -21,8 +22,8 @@ class OpenSsl
         global $bearsamppRoot, $bearsamppCore;
         $destPath = empty($destPath) ? $bearsamppRoot->getSslPath() : $destPath;
 
-        $subject = '"/C=FR/O=bearsampp/CN=' . $name . '"';
-        $password = 'pass:bearsampp';
+        $subject = '/C=US/ST=Oklahoma/L=McCord/O=bearsampp/CN=' . $name;
+        $password = 'bearsampp';
         $ppkPath = '"' . $destPath . '/' . $name . '.ppk"';
         $pubPath = '"' . $destPath . '/' . $name . '.pub"';
         $crtPath = '"' . $destPath . '/' . $name . '.crt"';
@@ -36,23 +37,28 @@ class OpenSsl
         // tmp openssl.cfg
         $conf = $bearsamppCore->getTmpPath() . '/openssl_' . $name . '_' . Util::random() . '.cfg';
         file_put_contents($conf, file_get_contents($bearsamppCore->getOpenSslConf()) . $extContent);
+        $confPath = '"' . $conf . '"';
 
-        // ppk
-        $batch = $exe . ' genrsa -des3 -passout ' . $password . ' -out ' . $ppkPath . ' 2048 -noout -config ' . $conf. PHP_EOL;
+        // Build the batch script
+        $batch = '';
+
+        // Generate private key (using modern parameters for OpenSSL 3.x)
+        $batch .= $exe . ' genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out ' . $ppkPath . ' -pass pass:' . $password . ' -config ' . $confPath . PHP_EOL;
         $batch .= 'IF %ERRORLEVEL% GEQ 1 GOTO EOF' . PHP_EOL . PHP_EOL;
 
-        // pub
-        $batch .= $exe . ' rsa -in ' . $ppkPath . ' -passin ' . $password . ' -out ' . $pubPath . PHP_EOL . PHP_EOL;
+        // Extract public key
+        $batch .= $exe . ' pkey -in ' . $ppkPath . ' -passin pass:' . $password . ' -out ' . $pubPath . PHP_EOL;
         $batch .= 'IF %ERRORLEVEL% GEQ 1 GOTO EOF' . PHP_EOL . PHP_EOL;
 
-        // crt
-        $batch .= $exe . ' req -x509 -nodes -sha256 -new -key ' . $pubPath . ' -out ' . $crtPath . ' -passin ' . $password;
-        $batch .= ' -subj ' . $subject . ' -reqexts ' . $extension . ' -extensions ' . $extension . ' -config ' . $conf. PHP_EOL;
+        // Generate self-signed certificate
+        $batch .= $exe . ' req -x509 -sha256 -new -key ' . $pubPath . ' -out ' . $crtPath;
+        $batch .= ' -subj "' . $subject . '" -reqexts ' . $extension . ' -extensions ' . $extension . ' -config ' . $confPath . ' -days 3650' . PHP_EOL;
         $batch .= 'IF %ERRORLEVEL% GEQ 1 GOTO EOF' . PHP_EOL . PHP_EOL;
 
         $batch .= ':EOF' . PHP_EOL;
         $batch .= 'SET RESULT=KO' . PHP_EOL;
-        $batch .= 'IF EXIST ' . $pubPath . ' IF EXIST ' . $crtPath . ' SET RESULT=OK' . PHP_EOL;
+        $batch .= 'IF EXIST ' . $ppkPath . ' IF EXIST ' . $pubPath . ' IF EXIST ' . $crtPath . ' SET RESULT=OK' . PHP_EOL;
+        $batch .= 'DEL ' . $confPath . ' > NUL 2>&1' . PHP_EOL;
         $batch .= 'ECHO %RESULT%';
 
         $result = Batch::exec('createCertificate', $batch);
@@ -91,5 +97,24 @@ class OpenSsl
         $crtPath = $bearsamppRoot->getSslPath() . '/' . $name . '.crt';
 
         return @unlink($ppkPath) && @unlink($pubPath) && @unlink($crtPath);
+    }
+
+    /**
+     * Verifies a certificate to check if it's valid.
+     *
+     * @param string $name The name of the certificate.
+     * @return bool True if the certificate is valid, false otherwise.
+     */
+    public function verifyCrt($name)
+    {
+        global $bearsamppRoot, $bearsamppCore;
+
+        $crtPath = '"' . $bearsamppRoot->getSslPath() . '/' . $name . '.crt"';
+        $exe = '"' . $bearsamppCore->getOpenSslExe() . '"';
+
+        $batch = $exe . ' x509 -in ' . $crtPath . ' -noout -text';
+        $result = Batch::exec('verifyCertificate', $batch);
+
+        return is_array($result) && count($result) > 0;
     }
 }
