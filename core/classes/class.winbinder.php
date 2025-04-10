@@ -1,8 +1,8 @@
 <?php
 /*
  *
- *  * Copyright (c) 2021-2024 Bearsampp
- *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
  *  * Website: https://bearsampp.com
  *  * Github: https://github.com/Bearsampp
  *
@@ -220,53 +220,29 @@ class WinBinder
      */
     public function destroyWindow($window)
     {
-        // Check if window exists and is valid
-        if (!$window || !$this->windowIsValid($window)) {
-            return true; // Already closed or invalid window
+        if ($this->windowIsValid($window)) {
+            // First attempt - standard window destruction with error suppression
+            Util::logTrace('standard window destruction with error suppression');
+            $result = $this->callWinBinder('wb_destroy_window', array($window), true);
+        }
+        if (!$this->windowIsValid($window)) {
+            Util::logTrace('Error: Window ' . $window . ' is not valid.');
+            return true;
         }
 
-        // Get window title before destruction for fallback
-        $windowTitle = $this->getText($window);
-        $currentPid = Win32Ps::getCurrentPid();
-
-        // Attempt standard destruction
-        $this->callWinBinder('wb_destroy_window', array($window));
-
-        // Verify closure with retries
-        $maxAttempts = 3;
-        $attempt     = 0;
-        $destroyed   = false;
-
-        while ($attempt < $maxAttempts && !$destroyed) {
-            $this->processMessages();
-            usleep(100000); // 100ms delay
-            $destroyed = !$this->windowIsValid($window);
-            $attempt++;
+        // If we have a window, try to get its PID and close it
+        $pid = getmypid();
+        if ($pid) {
+            Util::logTrace('Closing process with PID: ' . $pid . ' - using taskkill');
+            $this->exec('taskkill', '/PID ' . $pid . ' /F', true);
         }
-
-        // Fallback to process termination if window still exists
-        if (!$destroyed) {
-            // 1. Try to close using window title
+        // Fallback to window title if PID retrieval fails
+        elseif (!empty($windowTitle)) {
+            Util::logTrace('Closing window with title: ' . $windowTitle . ' - using taskkill');
             $this->exec('taskkill', '/FI "WINDOWTITLE eq ' . $windowTitle . '" /F', true);
-
-            // 2. Try to kill process directly using Winbinder's PID method
-            $currentPid = Win32Ps::getCurrentPid();
-            if (!empty($currentPid)) {
-                $this->exec('taskkill', '/PID ' . $currentPid . ' /T /F', true);
-                $this->writeLog('Force-killed PID: ' . $currentPid . ' for window: ' . $window);
-            }
-            
-            // 3. Final sanity check
-            if ($this->windowIsValid($window)) {
-                $this->callWinBinder('wb_destroy_window', array($window), true); // Force native call
-            }
-            
-            // 4. Reset internal state to prevent memory leaks
-            $this->reset();
         }
-
-        // Final verification
-        return !$this->windowIsValid($window);
+        
+        return true;
     }
 
     /**
