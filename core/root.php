@@ -1,9 +1,11 @@
 <?php
 /*
- * Copyright (c) 2022 - 2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**

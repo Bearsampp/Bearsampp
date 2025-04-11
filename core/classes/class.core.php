@@ -1,8 +1,8 @@
 <?php
 /*
  *
- *  * Copyright (c) 2021-2024 Bearsampp
- *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
  *  * Website: https://bearsampp.com
  *  * Github: https://github.com/Bearsampp
  *
@@ -22,28 +22,14 @@ class Core
     const PATH_WIN_PLACEHOLDER = '~BEARSAMPP_WIN_PATH~';
     const PATH_LIN_PLACEHOLDER = '~BEARSAMPP_LIN_PATH~';
 
-    const PHP_VERSION = '8.2.3';
     const PHP_EXE = 'php-win.exe';
-    const PHP_CONF = 'php.ini';
-
-    const SETENV_VERSION = '1.09';
     const SETENV_EXE = 'SetEnv.exe';
-
-    const NSSM_VERSION = '2.24';
     const NSSM_EXE = 'nssm.exe';
-
-    const OPENSSL_VERSION = '1.1.0c';
     const OPENSSL_EXE = 'openssl.exe';
     const OPENSSL_CONF = 'openssl.cfg';
-
-    const HOSTSEDITOR_VERSION = '1.5';
     const HOSTSEDITOR_EXE = 'hEdit_x64.exe';
-
-    const LN_VERSION = '2.928';
     const LN_EXE = 'ln.exe';
-
-    const PWGEN_VERSION = '3.5.4';
-    const PWGEN_EXE = "PWGenPortable.exe";
+    const PWGEN_EXE = 'PWGenPortable.exe';
 
     const APP_VERSION = 'version.dat';
     const LAST_PATH = 'lastPath.dat';
@@ -59,7 +45,7 @@ class Core
      */
     public function __construct()
     {
-        if ( extension_loaded( 'winbinder' ) ) {
+        if (extension_loaded('winbinder')) {
             require_once $this->getLibsPath() . '/winbinder/winbinder.php';
         }
     }
@@ -75,7 +61,7 @@ class Core
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/langs';
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/langs';
     }
 
     /**
@@ -89,7 +75,7 @@ class Core
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/libs';
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/libs';
     }
 
     /**
@@ -103,7 +89,7 @@ class Core
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/resources';
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/resources';
     }
 
     /**
@@ -115,9 +101,7 @@ class Core
      */
     public function getIconsPath($aetrayPath = false)
     {
-        global $bearsamppCore;
-
-        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/homepage/img/icons/';
+        return $this->getImagesPath($aetrayPath) . '/icons/';
     }
 
     /**
@@ -125,13 +109,13 @@ class Core
      *
      * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
      *
-     * @return string The path to the icons.
+     * @return string The path to the images.
      */
     public function getImagesPath($aetrayPath = false)
     {
         global $bearsamppCore;
 
-        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/homepage/img/';
+        return $bearsamppCore->getHomepagePath($aetrayPath) . '/img';
     }
 
     /**
@@ -145,17 +129,31 @@ class Core
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/scripts';
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/scripts';
     }
 
+    /**
+     * Retrieves the path to the homepage.
+     *
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
+     * @return string The path to the homepage.
+     */
     public function getHomepagePath($aetrayPath = false)
     {
-        return $this->getResourcesPath( $aetrayPath ) . '/homepage';
+        return $this->getResourcesPath($aetrayPath) . '/homepage';
     }
 
+    /**
+     * Retrieves the path to the AJAX directory.
+     *
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
+     * @return string The path to the AJAX directory.
+     */
     public function getAjaxPath($aetrayPath = false)
     {
-        return $this->getHomepagePath( $aetrayPath ) . '/ajax';
+        return $this->getHomepagePath($aetrayPath) . '/ajax';
     }
 
     /**
@@ -181,7 +179,7 @@ class Core
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/tmp';
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/tmp';
     }
 
     /**
@@ -195,7 +193,7 @@ class Core
     {
         global $bearsamppRoot;
 
-        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/' . self::isRoot_FILE;
+        return $bearsamppRoot->getCorePath($aetrayPath) . '/' . self::isRoot_FILE;
     }
 
     /**
@@ -208,13 +206,13 @@ class Core
         global $bearsamppLang;
 
         $filePath = $this->getResourcesPath() . '/' . self::APP_VERSION;
-        if ( !is_file( $filePath ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), APP_TITLE, $filePath ) );
+        if (!is_file($filePath)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), APP_TITLE, $filePath));
 
             return null;
         }
 
-        return trim( file_get_contents( $filePath ) );
+        return trim(file_get_contents($filePath));
     }
 
     /**
@@ -226,7 +224,7 @@ class Core
      */
     public function getLastPath($aetrayPath = false)
     {
-        return $this->getResourcesPath( $aetrayPath ) . '/' . self::LAST_PATH;
+        return $this->getResourcesPath($aetrayPath) . '/' . self::LAST_PATH;
     }
 
     /**
@@ -236,7 +234,7 @@ class Core
      */
     public function getLastPathContent()
     {
-        return @file_get_contents( $this->getLastPath() );
+        return @file_get_contents($this->getLastPath());
     }
 
     /**
@@ -248,17 +246,19 @@ class Core
      */
     public function getExec($aetrayPath = false)
     {
-        return $this->getTmpPath( $aetrayPath ) . '/' . self::EXEC;
+        return $this->getTmpPath($aetrayPath) . '/' . self::EXEC;
     }
 
     /**
      * Sets the content of the exec file.
      *
      * @param   string  $action  The content to set in the exec file.
+     *
+     * @return void
      */
     public function setExec($action)
     {
-        file_put_contents( $this->getExec(), $action );
+        file_put_contents($this->getExec(), $action);
     }
 
     /**
@@ -270,17 +270,19 @@ class Core
      */
     public function getLoadingPid($aetrayPath = false)
     {
-        return $this->getResourcesPath( $aetrayPath ) . '/' . self::LOADING_PID;
+        return $this->getResourcesPath($aetrayPath) . '/' . self::LOADING_PID;
     }
 
     /**
      * Adds a PID to the loading PID file.
      *
      * @param   int  $pid  The PID to add.
+     *
+     * @return void
      */
     public function addLoadingPid($pid)
     {
-        file_put_contents( $this->getLoadingPid(), $pid . PHP_EOL, FILE_APPEND );
+        file_put_contents($this->getLoadingPid(), $pid . PHP_EOL, FILE_APPEND);
     }
 
     /**
@@ -292,7 +294,7 @@ class Core
      */
     public function getPhpPath($aetrayPath = false)
     {
-        return $this->getLibsPath( $aetrayPath ) . '/php';
+        return $this->getLibsPath($aetrayPath) . '/php';
     }
 
     /**
@@ -304,7 +306,7 @@ class Core
      */
     public function getPhpExe($aetrayPath = false)
     {
-        return $this->getPhpPath( $aetrayPath ) . '/' . self::PHP_EXE;
+        return $this->getPhpPath($aetrayPath) . '/' . self::PHP_EXE;
     }
 
     /**
@@ -316,7 +318,7 @@ class Core
      */
     public function getSetEnvPath($aetrayPath = false)
     {
-        return $this->getLibsPath( $aetrayPath ) . '/setenv';
+        return $this->getLibsPath($aetrayPath) . '/setenv';
     }
 
     /**
@@ -328,7 +330,7 @@ class Core
      */
     public function getSetEnvExe($aetrayPath = false)
     {
-        return $this->getSetEnvPath( $aetrayPath ) . '/' . self::SETENV_EXE;
+        return $this->getSetEnvPath($aetrayPath) . '/' . self::SETENV_EXE;
     }
 
     /**
@@ -340,7 +342,7 @@ class Core
      */
     public function getNssmPath($aetrayPath = false)
     {
-        return $this->getLibsPath( $aetrayPath ) . '/nssm';
+        return $this->getLibsPath($aetrayPath) . '/nssm';
     }
 
     /**
@@ -352,7 +354,7 @@ class Core
      */
     public function getNssmExe($aetrayPath = false)
     {
-        return $this->getNssmPath( $aetrayPath ) . '/' . self::NSSM_EXE;
+        return $this->getNssmPath($aetrayPath) . '/' . self::NSSM_EXE;
     }
 
     /**
@@ -364,7 +366,7 @@ class Core
      */
     public function getOpenSslPath($aetrayPath = false)
     {
-        return $this->getLibsPath( $aetrayPath ) . '/openssl';
+        return $this->getLibsPath($aetrayPath) . '/openssl';
     }
 
     /**
@@ -376,7 +378,7 @@ class Core
      */
     public function getOpenSslExe($aetrayPath = false)
     {
-        return $this->getOpenSslPath( $aetrayPath ) . '/' . self::OPENSSL_EXE;
+        return $this->getOpenSslPath($aetrayPath) . '/' . self::OPENSSL_EXE;
     }
 
     /**
@@ -388,7 +390,7 @@ class Core
      */
     public function getOpenSslConf($aetrayPath = false)
     {
-        return $this->getOpenSslPath( $aetrayPath ) . '/' . self::OPENSSL_CONF;
+        return $this->getOpenSslPath($aetrayPath) . '/' . self::OPENSSL_CONF;
     }
 
     /**
@@ -400,7 +402,7 @@ class Core
      */
     public function getHostsEditorPath($aetrayPath = false)
     {
-        return $this->getLibsPath( $aetrayPath ) . '/hostseditor';
+        return $this->getLibsPath($aetrayPath) . '/hostseditor';
     }
 
     /**
@@ -412,7 +414,7 @@ class Core
      */
     public function getHostsEditorExe($aetrayPath = false)
     {
-        return $this->getHostsEditorPath( $aetrayPath ) . '/' . self::HOSTSEDITOR_EXE;
+        return $this->getHostsEditorPath($aetrayPath) . '/' . self::HOSTSEDITOR_EXE;
     }
 
     /**
@@ -424,7 +426,7 @@ class Core
      */
     public function getLnPath($aetrayPath = false)
     {
-        return $this->getLibsPath( $aetrayPath ) . '/ln';
+        return $this->getLibsPath($aetrayPath) . '/ln';
     }
 
     /**
@@ -436,7 +438,7 @@ class Core
      */
     public function getLnExe($aetrayPath = false)
     {
-        return $this->getLnPath( $aetrayPath ) . '/' . self::LN_EXE;
+        return $this->getLnPath($aetrayPath) . '/' . self::LN_EXE;
     }
 
     /**
@@ -448,7 +450,7 @@ class Core
      */
     public function getPwgenPath($aetrayPath = false)
     {
-        return $this->getLibsPath( $aetrayPath ) . '/pwgen';
+        return $this->getLibsPath($aetrayPath) . '/pwgen';
     }
 
     /**
@@ -460,7 +462,7 @@ class Core
      */
     public function getPwgenExe($aetrayPath = false)
     {
-        return $this->getPwgenPath( $aetrayPath ) . '/' . self::PWGEN_EXE;
+        return $this->getPwgenPath($aetrayPath) . '/' . self::PWGEN_EXE;
     }
 
     /**
@@ -473,7 +475,7 @@ class Core
         return 'core object';
     }
 
-/**
+    /**
      * Unzips a file to the specified directory and provides progress updates.
      *
      * This method uses the 7-Zip command-line tool to extract the contents of a zip file.
@@ -486,8 +488,6 @@ class Core
      *                                            - int $currentFile: The current file number being extracted.
      *                                            - int $totalFiles: The total number of files to be extracted.
      *
-     * @global  object         $bearsamppRoot     Global object to get core paths.
-     *
      * @return array|false An array containing the result of the extraction on success or failure:
      *                     - On success: ['success' => true, 'numFiles' => int]
      *                     - On failure: ['error' => string, 'numFiles' => int]
@@ -499,107 +499,105 @@ class Core
 
         $sevenZipPath = $this->getLibsPath() . '/7zip/7za.exe';
 
-        if ( !file_exists( $sevenZipPath ) ) {
-            Util::logError( '7za.exe not found at: ' . $sevenZipPath );
+        if (!file_exists($sevenZipPath)) {
+            Util::logError('7za.exe not found at: ' . $sevenZipPath);
 
             return false;
         }
 
         // Command to test the archive and get the number of files
-        $testCommand = escapeshellarg( $sevenZipPath ) . ' t ' . escapeshellarg( $filePath ) . ' -y -bsp1';
-        $testOutput  = shell_exec( $testCommand );
+        $testCommand = escapeshellarg($sevenZipPath) . ' t ' . escapeshellarg($filePath) . ' -y -bsp1';
+        $testOutput  = shell_exec($testCommand);
 
         // Extract the number of files from the test command output
-        preg_match( '/Files: (\d+)/', $testOutput, $matches );
-        $numFiles = isset( $matches[1] ) ? (int) $matches[1] : 0;
-        Util::logTrace( 'Number of files to be extracted: ' . $numFiles );
+        preg_match('/Files: (\d+)/', $testOutput, $matches);
+        $numFiles = isset($matches[1]) ? (int)$matches[1] : 0;
+        Util::logTrace('Number of files to be extracted: ' . $numFiles);
 
         // Command to extract the archive
-        $command = escapeshellarg( $sevenZipPath ) . ' x ' . escapeshellarg( $filePath ) . ' -y -bsp1 -bb0 -o' . escapeshellarg( $destination );
-        Util::logTrace( 'Executing command: ' . $command );
+        $command = escapeshellarg($sevenZipPath) . ' x ' . escapeshellarg($filePath) . ' -y -bsp1 -bb0 -o' . escapeshellarg($destination);
+        Util::logTrace('Executing command: ' . $command);
 
-        $process = popen( $command, 'rb' );
+        $process = popen($command, 'rb');
 
-        if ( $process ) {
+        if ($process) {
             $buffer = '';
-            while ( !feof( $process ) ) {
-                $buffer .= fread( $process, 8192 ); // Read in chunks of 8KB
-                while ( ($pos = strpos( $buffer, "\r" )) !== false ) {
-                    $line   = substr( $buffer, 0, $pos );
-                    $buffer = substr( $buffer, $pos + 1 );
-                    $line   = trim( $line ); // Remove any leading/trailing whitespace
-                    Util::logTrace( "Processing line: $line" );
+            while (!feof($process)) {
+                $buffer .= fread($process, 8192); // Read in chunks of 8KB
+                while (($pos = strpos($buffer, "\r")) !== false) {
+                    $line   = substr($buffer, 0, $pos);
+                    $buffer = substr($buffer, $pos + 1);
+                    $line   = trim($line); // Remove any leading/trailing whitespace
+                    Util::logTrace("Processing line: $line");
 
                     // Check if the line indicates everything is okay
-                    if ( $line === "Everything is Ok" ) {
-                        if ( $progressCallback ) {
-                            Util::logTrace( "Extraction progress: 100%" );
-                            call_user_func( $progressCallback, 100 );
-                            Util::logTrace( "Progress callback called with percentage: 100" );
+                    if ($line === 'Everything is Ok') {
+                        if ($progressCallback) {
+                            Util::logTrace('Extraction progress: 100%');
+                            call_user_func($progressCallback, 100);
+                            Util::logTrace('Progress callback called with percentage: 100');
                         }
-                    }
-                    else if ( $progressCallback && preg_match( '/(?:^|\s)(\d+)%/', $line, $matches ) ) {
-                        $currentPercentage = intval( $matches[1] );
-                        Util::logTrace( "Extraction progress: $currentPercentage%" );
-                        call_user_func( $progressCallback, $currentPercentage );
-                        Util::logTrace( "Progress callback called with percentage: $currentPercentage" );
-                    }
-                    else {
-                        Util::logTrace( "Line did not match pattern: $line" );
+                    } else {
+                        if ($progressCallback && preg_match('/(?:^|\s)(\d+)%/', $line, $matches)) {
+                            $currentPercentage = intval($matches[1]);
+                            Util::logTrace("Extraction progress: $currentPercentage%");
+                            call_user_func($progressCallback, $currentPercentage);
+                            Util::logTrace("Progress callback called with percentage: $currentPercentage");
+                        } else {
+                            Util::logTrace("Line did not match pattern: $line");
+                        }
                     }
                 }
             }
 
             // Process any remaining data in the buffer
-            if ( !empty( $buffer ) ) {
-                $line = trim( $buffer );
-                Util::logTrace( "Processing remaining line: $line" );
+            if (!empty($buffer)) {
+                $line = trim($buffer);
+                Util::logTrace("Processing remaining line: $line");
 
                 // Check if the remaining line indicates everything is okay
-                if ( $line === "Everything is Ok" ) {
-                    if ( $progressCallback ) {
-                        Util::logTrace( "Extraction progress: 100%" );
-                        call_user_func( $progressCallback, 100 );
-                        Util::logTrace( "Progress callback called with percentage: 100" );
+                if ($line === 'Everything is Ok') {
+                    if ($progressCallback) {
+                        Util::logTrace('Extraction progress: 100%');
+                        call_user_func($progressCallback, 100);
+                        Util::logTrace('Progress callback called with percentage: 100');
+                    }
+                } else {
+                    if ($progressCallback && preg_match('/(?:^|\s)(\d+)%/', $line, $matches)) {
+                        $currentPercentage = intval($matches[1]);
+                        Util::logTrace("Extraction progress: $currentPercentage%");
+                        call_user_func($progressCallback, $currentPercentage);
+                        Util::logTrace("Progress callback called with percentage: $currentPercentage");
+                    } else {
+                        Util::logTrace("Remaining line did not match pattern: $line");
                     }
                 }
-                else if ( $progressCallback && preg_match( '/(?:^|\s)(\d+)%/', $line, $matches ) ) {
-                    $currentPercentage = intval( $matches[1] );
-                    Util::logTrace( "Extraction progress: $currentPercentage%" );
-                    call_user_func( $progressCallback, $currentPercentage );
-                    Util::logTrace( "Progress callback called with percentage: $currentPercentage" );
-                }
-                else {
-                    Util::logTrace( "Remaining line did not match pattern: $line" );
-                }
             }
 
-            $returnVar = pclose( $process );
-            Util::logTrace( 'Command return value: ' . $returnVar );
+            $returnVar = pclose($process);
+            Util::logTrace('Command return value: ' . $returnVar);
 
             // Set progress to 100% if the command was successful
-            if ( $returnVar === 0 && $progressCallback ) {
-                Util::logTrace( "Extraction completed successfully. Setting progress to 100%" );
-                call_user_func( $progressCallback, 100 );
-                Util::logTrace( "Progress callback called with percentage: 100" );
+            if ($returnVar === 0 && $progressCallback) {
+                Util::logTrace('Extraction completed successfully. Setting progress to 100%');
+                call_user_func($progressCallback, 100);
+                Util::logTrace('Progress callback called with percentage: 100');
 
                 // Adding a small delay to ensure the progress bar update is processed
-                usleep( 100000 ); // 100 milliseconds
+                usleep(100000); // 100 milliseconds
             }
 
-            if ( $returnVar === 0 ) {
-                Util::logDebug( 'Successfully unzipped file to: ' . $destination );
+            if ($returnVar === 0) {
+                Util::logDebug('Successfully unzipped file to: ' . $destination);
 
                 return ['success' => true, 'numFiles' => $numFiles];
-            }
-            else {
-                Util::logError( 'Failed to unzip file. Command return value: ' . $returnVar );
+            } else {
+                Util::logError('Failed to unzip file. Command return value: ' . $returnVar);
 
                 return ['error' => 'Failed to unzip file', 'numFiles' => $numFiles];
             }
-        }
-        else {
-            Util::logError( 'Failed to open process for command: ' . $command );
+        } else {
+            Util::logError('Failed to open process for command: ' . $command);
 
             return ['error' => 'Failed to open process', 'numFiles' => $numFiles];
         }
@@ -617,23 +615,25 @@ class Core
      * @param   string  $filePath     The path where the file content should be saved.
      * @param   bool    $progressBar  Optional. Whether to display a progress bar during the download process. Default is false.
      *
-     * @return array Returns the file path if successful, or an array with an error message if an error occurs.
+     * @return array Returns an array with success status if successful, or an array with an error message if an error occurs.
+     *               - On success: ['success' => true]
+     *               - On failure: ['error' => string]
      */
     public function getFileFromUrl(string $moduleUrl, string $filePath, $progressBar = false)
     {
         // Open the URL for reading
-        $inputStream = @fopen( $moduleUrl, 'rb' );
-        if ( $inputStream === false ) {
-            Util::logError( 'Error fetching content from URL: ' . $moduleUrl );
+        $inputStream = @fopen($moduleUrl, 'rb');
+        if ($inputStream === false) {
+            Util::logError('Error fetching content from URL: ' . $moduleUrl);
 
             return ['error' => 'Error fetching module'];
         }
 
         // Open the file for writing
-        $outputStream = @fopen( $filePath, 'wb' );
-        if ( $outputStream === false ) {
-            Util::logError( 'Error opening file for writing: ' . $filePath );
-            fclose( $inputStream );
+        $outputStream = @fopen($filePath, 'wb');
+        if ($outputStream === false) {
+            Util::logError('Error opening file for writing: ' . $filePath);
+            fclose($inputStream);
 
             return ['error' => 'Error saving module'];
         }
@@ -642,26 +642,26 @@ class Core
         $bufferSize = 8096; // 8KB
         $chunksRead = 0;
 
-        while ( !feof( $inputStream ) ) {
-            $buffer = fread( $inputStream, $bufferSize );
-            fwrite( $outputStream, $buffer );
+        while (!feof($inputStream)) {
+            $buffer = fread($inputStream, $bufferSize);
+            fwrite($outputStream, $buffer);
             $chunksRead++;
 
             // Send progress update
-            if ( $progressBar ) {
+            if ($progressBar) {
                 $progress = $chunksRead;
-                echo json_encode( ['progress' => $progress] );
+                echo json_encode(['progress' => $progress]);
 
                 // Check if output buffering is active before calling ob_flush()
-                if ( ob_get_length() !== false ) {
+                if (ob_get_length() !== false) {
                     ob_flush();
                 }
                 flush();
             }
         }
 
-        fclose( $inputStream );
-        fclose( $outputStream );
+        fclose($inputStream);
+        fclose($outputStream);
 
         return ['success' => true];
     }
