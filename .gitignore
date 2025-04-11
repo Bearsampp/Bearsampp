@@ -1,4 +1,4 @@
-lo# Jetbrains
+# Jetbrains
 /*.iml
 /.idea
 
@@ -18,5 +18,3 @@ lo# Jetbrains
 .vscode/
 .vs/
 .vsc/
-
-.qodo
