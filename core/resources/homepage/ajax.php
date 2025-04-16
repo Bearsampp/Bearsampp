@@ -13,23 +13,25 @@
 include_once __DIR__ . '/../../root.php';
 
 /**
- * @var array $procs
- * An array of valid process names that can be included.
+ * Define a mapping of valid process names to their corresponding file paths.
+ * This approach is more secure than direct string concatenation.
+ * 
+ * @var array $procMap A mapping of process names to their file paths.
  */
-$procs = array(
-    'summary',
-    'latestversion',
-    'apache',
-    'mailpit',
-    'memcached',
-    'mariadb',
-    'mysql',
-    'nodejs',
-    'php',
-    'postgresql',
-    'xlight',
-    'quickpick'
-);
+$procMap = [
+    'summary' => __DIR__ . '/ajax/ajax.summary.php',
+    'latestversion' => __DIR__ . '/ajax/ajax.latestversion.php',
+    'apache' => __DIR__ . '/ajax/ajax.apache.php',
+    'mailpit' => __DIR__ . '/ajax/ajax.mailpit.php',
+    'memcached' => __DIR__ . '/ajax/ajax.memcached.php',
+    'mariadb' => __DIR__ . '/ajax/ajax.mariadb.php',
+    'mysql' => __DIR__ . '/ajax/ajax.mysql.php',
+    'nodejs' => __DIR__ . '/ajax/ajax.nodejs.php',
+    'php' => __DIR__ . '/ajax/ajax.php.php',
+    'postgresql' => __DIR__ . '/ajax/ajax.postgresql.php',
+    'xlight' => __DIR__ . '/ajax/ajax.xlight.php',
+    'quickpick' => __DIR__ . '/ajax/ajax.quickpick.php'
+];
 
 /**
  * Clean and retrieve the 'proc' POST variable.
@@ -41,18 +43,15 @@ $procs = array(
 $proc = Util::cleanPostVar('proc', 'text');  // Ensure 'proc' is cleaned and read correctly
 
 /**
- * Check if the cleaned 'proc' parameter is in the list of valid processes.
- * If valid, include the corresponding AJAX handler file.
+ * Check if the cleaned 'proc' parameter exists in our secure mapping.
+ * If valid, include the corresponding AJAX handler file using the pre-defined path.
  * If not valid, return a JSON error message.
  */
-if (in_array($proc, $procs)) {
+if (isset($procMap[$proc]) && file_exists($procMap[$proc])) {
     /**
-     * Include the corresponding AJAX handler file based on the 'proc' parameter.
-     * The file path is constructed dynamically.
-     *
-     * Example: If $proc is 'latestversion', the file 'ajax/ajax.latestversion.php' will be included.
+     * Include the corresponding AJAX handler file based on the secure mapping.
      */
-    include 'ajax/ajax.' . $proc . '.php';  // This line should correctly include 'ajax.latestversion.php'
+    include $procMap[$proc];
 } else {
     /**
      * Handle the case where the 'proc' parameter is not valid.

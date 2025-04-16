@@ -126,7 +126,7 @@ class WinBinder
         $window  = $this->callWinBinder('wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params));
 
         // Set tiny window icon
-        $this->setImage($window, $bearsamppCore->getIconsPath() . 'app.ico');
+        $this->setImage($window, $bearsamppCore->getIconsPath() . '/app.ico');
 
         return $window;
     }
@@ -255,12 +255,12 @@ class WinBinder
                 $this->exec('taskkill', '/PID ' . $currentPid . ' /T /F', true);
                 $this->writeLog('Force-killed PID: ' . $currentPid . ' for window: ' . $window);
             }
-            
+
             // 3. Final sanity check
             if ($this->windowIsValid($window)) {
                 $this->callWinBinder('wb_destroy_window', array($window), true); // Force native call
             }
-            
+
             // 4. Reset internal state to prevent memory leaks
             $this->reset();
         }
@@ -280,7 +280,7 @@ class WinBinder
     {
         return $this->callWinBinder('wb_get_text', array($wbobject));
     }
-    
+
     /**
      * Checks if a window handle is still valid.
      *
@@ -292,12 +292,12 @@ class WinBinder
         if (!$window) {
             return false;
         }
-        
+
         // Try to get window text - if window is invalid, this will fail
         $text = $this->callWinBinder('wb_get_text', array($window), true);
         return ($text !== false);
     }
-    
+
     /**
      * Process any pending window messages.
      *

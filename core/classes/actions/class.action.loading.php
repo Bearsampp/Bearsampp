@@ -71,7 +71,7 @@ class ActionLoading
 
         for ($i = 0; $i < $nb; $i++) {
             $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
-            $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getResourcesPath() . '/homepage/img/bearsampp.bmp', 4, 2, 32, 32);
+            $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/bearsampp.bmp', 4, 2, 32, 32);
         }
 
         $bearsamppWinbinder->wait();
@@ -100,29 +100,29 @@ class ActionLoading
         // Set a maximum number of iterations to prevent infinite loops
         $maxIterations = 10;
         $iterations = 0;
-        
+
         // Set a timeout for the entire loading process
         $startTime = time();
         $maxLoadingTime = 10; // 30 seconds maximum
-        
+
         while ($iterations < $maxIterations && (time() - $startTime) < $maxLoadingTime) {
             $bearsamppRoot->removeErrorHandling();
             $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
-            
+
             usleep(100000);
-            
+
             for ($i = 0; $i < self::GAUGE && (time() - $startTime) < $maxLoadingTime; $i++) {
                 $this->incrProgressBar();
                 usleep(100000);
             }
-            
+
             // Check if all services have started successfully
             $allServicesStarted = $this->checkAllServicesStarted();
             if ($allServicesStarted) {
                 Util::logTrace('All services started successfully');
                 break;
             }
-            
+
             $iterations++;
         }
 
@@ -132,7 +132,7 @@ class ActionLoading
         // Close the loading window
         Win32Ps::kill(Win32Ps::getCurrentPid());
     }
-    
+
     /**
      * Checks if all services have been started successfully
      *
@@ -141,17 +141,17 @@ class ActionLoading
     private function checkAllServicesStarted()
     {
         global $bearsamppBins;
-        
+
         $allStarted = true;
-        
+
         foreach ($bearsamppBins->getServices() as $sName => $service) {
             $status = $service->isRunning();
-            
+
             if (!$status) {
                 $allStarted = false;
             }
         }
-        
+
         return $allStarted;
     }
 }

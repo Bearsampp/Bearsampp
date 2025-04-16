@@ -22,27 +22,13 @@ class Core
     const PATH_WIN_PLACEHOLDER = '~BEARSAMPP_WIN_PATH~';
     const PATH_LIN_PLACEHOLDER = '~BEARSAMPP_LIN_PATH~';
 
-    const PHP_VERSION = '8.2.3';
     const PHP_EXE = 'php-win.exe';
-    const PHP_CONF = 'php.ini';
-
-    const SETENV_VERSION = '1.09';
     const SETENV_EXE = 'SetEnv.exe';
-
-    const NSSM_VERSION = '2.24';
     const NSSM_EXE = 'nssm.exe';
-
-    const OPENSSL_VERSION = '1.1.0c';
     const OPENSSL_EXE = 'openssl.exe';
     const OPENSSL_CONF = 'openssl.cfg';
-
-    const HOSTSEDITOR_VERSION = '1.5';
     const HOSTSEDITOR_EXE = 'hEdit_x64.exe';
-
-    const LN_VERSION = '2.928';
     const LN_EXE = 'ln.exe';
-
-    const PWGEN_VERSION = '3.5.4';
     const PWGEN_EXE = "PWGenPortable.exe";
 
     const APP_VERSION = 'version.dat';
@@ -115,9 +101,7 @@ class Core
      */
     public function getIconsPath($aetrayPath = false)
     {
-        global $bearsamppCore;
-
-        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/homepage/img/icons/';
+        return $this->getImagesPath($aetrayPath) . '/icons';
     }
 
     /**
@@ -125,13 +109,13 @@ class Core
      *
      * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
      *
-     * @return string The path to the icons.
+     * @return string The path to the images.
      */
     public function getImagesPath($aetrayPath = false)
     {
         global $bearsamppCore;
 
-        return $bearsamppCore->getResourcesPath( $aetrayPath ) . '/homepage/img/';
+        return $bearsamppCore->getHomepagePath($aetrayPath) . '/img';
     }
 
     /**
