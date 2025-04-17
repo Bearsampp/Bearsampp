@@ -1,8 +1,8 @@
 <?php
 /*
  *
- *  * Copyright (c) 2021-2024 Bearsampp
- *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
  *  * Website: https://bearsampp.com
  *  * Github: https://github.com/Bearsampp
  *
@@ -25,7 +25,6 @@ class WinBinder
     const INCR_PROGRESS_BAR = '++';
     const NEW_LINE = '@nl@';
 
-    // TODO why does it say we have undelcared constants
     // Constants for message box types
     const BOX_INFO = WBC_INFO;
     const BOX_OK = WBC_OK;
@@ -132,11 +131,11 @@ class WinBinder
     }
 
     /**
-     * Calls a WinBinder function with the specified parameters.
+     * Calls a WinBinder function with error handling.
      *
      * @param   string  $function            The name of the WinBinder function to call.
      * @param   array   $params              The parameters to pass to the function.
-     * @param   bool    $removeErrorHandler  Whether to remove the error handler during the call.
+     * @param   bool    $removeErrorHandler  Whether to suppress errors during the call.
      *
      * @return mixed The result of the function call.
      */
@@ -145,7 +144,10 @@ class WinBinder
         $result = false;
         if (function_exists($function)) {
             if ($removeErrorHandler) {
+                // Suppress all errors for this call
+                $oldErrorLevel = error_reporting(0);
                 $result = @call_user_func_array($function, $params);
+                error_reporting($oldErrorLevel);
             } else {
                 $result = call_user_func_array($function, $params);
             }
@@ -949,7 +951,10 @@ class WinBinder
             }
             if (is_numeric($value)) {
                 $this->gauge[$progressBar[self::CTRL_OBJ]] = $value;
-                $this->setValue($progressBar[self::CTRL_OBJ], $value);
+                
+                // Check if the control is still valid before setting the value
+                // This prevents errors when the parent window has been destroyed
+                $this->callWinBinder('wb_set_value', array($progressBar[self::CTRL_OBJ], $value), true);
             }
         }
     }
