@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -448,15 +449,25 @@ class Vbs
         $randomObjFile    = Util::random( 15, false );
         $randomObjFso     = Util::random( 15, false );
 
-        // Header
+        // Add a timeout to the VBScript itself
+        $timeoutSeconds = 10; // 10 seconds timeout for the VBScript
+
+        // Header with timeout
         $header = 'On Error Resume Next' . PHP_EOL .
             'Dim ' . $randomVarName . ', ' . $randomObjFso . ', ' . $randomObjErrFile . ', ' . $randomObjFile . PHP_EOL .
             'Set ' . $randomObjFso . ' = CreateObject("scripting.filesystemobject")' . PHP_EOL .
             'Set ' . $randomObjErrFile . ' = ' . $randomObjFso . '.CreateTextFile("' . $errFile . '", True)' . PHP_EOL .
-            'Set ' . $randomObjFile . ' = ' . $randomObjFso . '.CreateTextFile("' . $checkFile . '", True)' . PHP_EOL . PHP_EOL;
+            'Set ' . $randomObjFile . ' = ' . $randomObjFso . '.CreateTextFile("' . $checkFile . '", True)' . PHP_EOL . 
+            // Add timeout mechanism to VBScript
+            'startTime = Timer' . PHP_EOL .
+            'timeoutSeconds = ' . $timeoutSeconds . PHP_EOL . PHP_EOL;
 
-        // Footer
+        // Footer with timeout check
         $footer = PHP_EOL . PHP_EOL .
+            // Add timeout check before ending
+            'If Timer - startTime > timeoutSeconds Then' . PHP_EOL .
+            $randomObjErrFile . '.Write "VBScript execution timed out after " & timeoutSeconds & " seconds"' . PHP_EOL .
+            'End If' . PHP_EOL .
             'If Err.Number <> 0 Then' . PHP_EOL .
             $randomObjErrFile . '.Write Err.Description' . PHP_EOL .
             'End If' . PHP_EOL .
@@ -466,23 +477,66 @@ class Vbs
 
         // Process
         file_put_contents( $scriptPath, $header . $content . $footer );
-        $bearsamppWinbinder->exec( 'wscript.exe', '"' . $scriptPath . '"' );
 
-        $timeout   = is_numeric( $timeout ) ? $timeout : ($timeout === true ? $bearsamppConfig->getScriptsTimeout() : false);
-        $maxtime   = time() + $timeout;
-        $noTimeout = $timeout === false;
-        while ( $result === false || empty( $result ) ) {
-            if ( file_exists( $checkFile ) ) {
-                $check = file( $checkFile );
-                if ( !empty( $check ) && trim( $check[0] ) == self::END_PROCESS_STR ) {
-                    $result = file( $resultFile );
+        // Use set_time_limit to prevent PHP script timeout
+        $originalTimeout = ini_get('max_execution_time');
+        set_time_limit(30); // 30 seconds timeout for PHP
+
+        Util::logTrace("Starting VBS execution for: " . $basename);
+        $startTime = microtime(true);
+
+        try {
+            $bearsamppWinbinder->exec( 'wscript.exe', '"' . $scriptPath . '"' );
+
+            $timeout   = is_numeric( $timeout ) ? $timeout : ($timeout === true ? $bearsamppConfig->getScriptsTimeout() : false);
+            // Use a shorter timeout for VBS execution
+            $timeout = min($timeout, 15); // Maximum 15 seconds
+            $maxtime   = time() + $timeout;
+            $noTimeout = $timeout === false;
+
+            // Add a microtime-based timeout as well
+            $microTimeStart = microtime(true);
+            $microTimeMax = 15; // 15 seconds maximum
+
+            $loopCount = 0;
+            $maxLoops = 30; // Maximum number of attempts
+
+            while ( ($result === false || empty( $result )) && $loopCount < $maxLoops ) {
+                $loopCount++;
+
+                if ( file_exists( $checkFile ) ) {
+                    $check = file( $checkFile );
+                    if ( !empty( $check ) && trim( $check[0] ) == self::END_PROCESS_STR ) {
+                        $result = file( $resultFile );
+                        Util::logTrace("VBS execution completed successfully after " . $loopCount . " attempts");
+                        break;
+                    }
+                }
+
+                // Check both timeouts
+                if (($maxtime < time() && !$noTimeout) || (microtime(true) - $microTimeStart > $microTimeMax)) {
+                    Util::logTrace("VBS execution timed out after " . round(microtime(true) - $startTime, 2) . " seconds");
                     break;
                 }
+
+                // Sleep a short time to prevent CPU hogging
+                usleep(100000); // 100ms
             }
-            if ( $maxtime < time() && !$noTimeout ) {
-                break;
+
+            if ($loopCount >= $maxLoops) {
+                Util::logTrace("VBS execution reached maximum loop count (" . $maxLoops . ")");
             }
+        } catch (\Exception $e) {
+            Util::logTrace("Exception during VBS execution: " . $e->getMessage());
+        } catch (\Throwable $e) {
+            Util::logTrace("Throwable during VBS execution: " . $e->getMessage());
+        } finally {
+            // Reset the timeout
+            set_time_limit($originalTimeout);
         }
+
+        $executionTime = round(microtime(true) - $startTime, 2);
+        Util::logTrace("VBS execution for " . $basename . " took " . $executionTime . " seconds");
 
         $err = file_get_contents( $errFile );
         if ( !empty( $err ) ) {

@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -32,21 +33,29 @@ class ActionManualRestart
     {
         global $bearsamppCore, $bearsamppBins;
 
+        Util::logTrace("Starting ActionManualRestart constructor");
+
         // Start the loading process
+        Util::logTrace("Starting loading process");
         Util::startLoading();
 
         // Delete all services managed by Bearsampp
+        Util::logTrace("Deleting all services managed by Bearsampp");
         foreach ($bearsamppBins->getServices() as $sName => $service) {
+            Util::logTrace("Deleting service: " . $sName);
             $service->delete();
         }
 
         // Kill all related processes
+        Util::logTrace("Killing all related processes");
         Win32Ps::killBins(true);
 
         // Set the application to restart
+        Util::logTrace("Setting application to restart");
         $bearsamppCore->setExec(ActionExec::RESTART);
 
         // Stop the loading process
+        Util::logTrace("Stopping loading process");
         Util::stopLoading();
     }
 }

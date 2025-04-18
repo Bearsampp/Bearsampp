@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -243,7 +244,7 @@ class ActionStartup
         Util::logTrace('Finishing startup process');
 
         $currentPid = Win32Ps::getCurrentPid();
-        $terminate = ActionQuit::terminatePhpProcesses($currentPid);
+        ActionQuit::terminatePhpProcesses($currentPid);
 
         // Safely reset WinBinder instead of trying to destroy specific windows
         $bearsamppWinbinder->reset();
@@ -281,7 +282,7 @@ class ActionStartup
         } else {
             Util::logTrace("Logs archive directory already exists: " . $archiveLogsPath);
         }
-        
+
         if (!is_dir($archiveScriptsPath)) {
             Util::logTrace("Creating scripts archive directory: " . $archiveScriptsPath);
             mkdir($archiveScriptsPath, 0777, true);
@@ -297,7 +298,7 @@ class ActionStartup
             Util::logTrace("Failed to open archives directory: " . $archivesPath);
             return;
         }
-        
+
         while (false !== ($file = readdir($handle))) {
             if ($file == '.' || $file == '..') {
                 continue;
@@ -323,13 +324,13 @@ class ActionStartup
             if (!file_exists($filePath)) {
                 return false;
             }
-            
+
             $handle = @fopen($filePath, 'r+');
             if ($handle === false) {
                 Util::logTrace("File appears to be locked: " . $filePath);
                 return true; // File is locked
             }
-            
+
             fclose($handle);
             return false; // File is not locked
         };
@@ -342,25 +343,25 @@ class ActionStartup
             Util::logTrace("Failed to open logs directory: " . $srcPath);
             return;
         }
-        
+
         $logsCopied = 0;
         $logsSkipped = 0;
-        
+
         while (false !== ($file = readdir($handle))) {
             if ($file == '.' || $file == '..' || is_dir($srcPath . '/' . $file)) {
                 continue;
             }
-            
+
             $sourceFile = $srcPath . '/' . $file;
             $destFile = $archiveLogsPath . '/' . $file;
-            
+
             // Check if file is locked before attempting to copy
             if ($isFileLocked($sourceFile)) {
                 Util::logTrace("Skipping locked log file: " . $file);
                 $logsSkipped++;
                 continue;
             }
-            
+
             try {
                 if (copy($sourceFile, $destFile)) {
                     $logsCopied++;
@@ -385,25 +386,25 @@ class ActionStartup
             Util::logTrace("Failed to open tmp directory: " . $srcPath);
             return;
         }
-        
+
         $scriptsCopied = 0;
         $scriptsSkipped = 0;
-        
+
         while (false !== ($file = readdir($handle))) {
             if ($file == '.' || $file == '..' || is_dir($srcPath . '/' . $file)) {
                 continue;
             }
-            
+
             $sourceFile = $srcPath . '/' . $file;
             $destFile = $archiveScriptsPath . '/' . $file;
-            
+
             // Check if file is locked before attempting to copy
             if ($isFileLocked($sourceFile)) {
                 Util::logTrace("Skipping locked script file: " . $file);
                 $scriptsSkipped++;
                 continue;
             }
-            
+
             try {
                 if (copy($sourceFile, $destFile)) {
                     $scriptsCopied++;
@@ -428,24 +429,24 @@ class ActionStartup
             Util::logTrace("Failed to open logs directory for purging: " . $logsPath);
             return;
         }
-        
+
         $logsDeleted = 0;
         $logsPurgeSkipped = 0;
-        
+
         while (false !== ($file = readdir($handle))) {
             if ($file == '.' || $file == '..' || $file == 'archives' || $file == '.gitignore' || is_dir($logsPath . '/' . $file)) {
                 continue;
             }
-            
+
             $filePath = $logsPath . '/' . $file;
-            
+
             // Check if file is locked before attempting to delete
             if ($isFileLocked($filePath)) {
                 Util::logTrace("Skipping locked log file during purge: " . $file);
                 $logsPurgeSkipped++;
                 continue;
             }
-            
+
             try {
                 if (unlink($filePath)) {
                     $logsDeleted++;
@@ -461,7 +462,7 @@ class ActionStartup
         }
         closedir($handle);
         Util::logTrace("Logs purged: " . $logsDeleted . " deleted, " . $logsPurgeSkipped . " skipped");
-        
+
         Util::logTrace("Log rotation completed");
     }
 
@@ -881,7 +882,27 @@ class ActionStartup
                 $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_CHECK_SERVICE_TEXT), $name));
 
                 Util::logTrace('Checking if service is already installed');
-                $serviceInfos = $service->infos();
+
+                // Add a timeout for the service check operation
+                $serviceCheckStartTime = microtime(true);
+                $serviceCheckTimeout = 15; // 15 seconds timeout
+
+                try {
+                    // Call infos() with a timeout check
+                    $serviceInfos = $service->infos();
+
+                    // Check if we've exceeded our timeout
+                    if (microtime(true) - $serviceCheckStartTime > $serviceCheckTimeout) {
+                        Util::logTrace("Service check timeout exceeded, assuming service is not installed");
+                        $serviceInfos = false;
+                    }
+                } catch (\Exception $e) {
+                    Util::logTrace("Exception during service check: " . $e->getMessage() . ", assuming service is not installed");
+                    $serviceInfos = false;
+                } catch (\Throwable $e) {
+                    Util::logTrace("Throwable during service check: " . $e->getMessage() . ", assuming service is not installed");
+                    $serviceInfos = false;
+                }
                 if ($serviceInfos !== false) {
                     $serviceAlreadyInstalled = true;
                     $this->writeLog($name . ' service already installed');
@@ -908,18 +929,18 @@ class ActionStartup
                         $serviceVbsPathName = trim(str_replace('"', '', $serviceInfos[Win32Service::VBS_PATH_NAME]));
 
                         Util::logTrace('Comparing service paths - Generated: ' . $serviceGenPathName . ' vs Installed: ' . $serviceVbsPathName);
-                    
+
                         // Add detailed debugging to identify invisible characters
                         Util::logTrace('Generated path length: ' . strlen($serviceGenPathName));
                         Util::logTrace('Installed path length: ' . strlen($serviceVbsPathName));
-                    
+
                         // Output character codes to identify invisible characters
                         $genChars = 'Generated path char codes: ';
                         for ($i = 0; $i < strlen($serviceGenPathName); $i++) {
                             $genChars .= ord($serviceGenPathName[$i]) . ' ';
                         }
                         Util::logTrace($genChars);
-                    
+
                         $instChars = 'Installed path char codes: ';
                         for ($i = 0; $i < strlen($serviceVbsPathName); $i++) {
                             $instChars .= ord($serviceVbsPathName[$i]) . ' ';
@@ -930,7 +951,7 @@ class ActionStartup
                     // Try a more robust comparison that normalizes whitespace
                     $normalizedGenPath = preg_replace('/\s+/', ' ', $serviceGenPathName);
                     $normalizedVbsPath = preg_replace('/\s+/', ' ', $serviceVbsPathName);
-                    
+
                     if ($normalizedGenPath === $normalizedVbsPath) {
                         Util::logTrace('Paths match after normalizing whitespace - skipping service reinstall');
                     } else if ($serviceGenPathName != $serviceVbsPathName) {

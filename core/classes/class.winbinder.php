@@ -77,7 +77,7 @@ class WinBinder
     /**
      * Resets the control counter and callback array.
      */
-    public function reset()
+    public function reset(): void
     {
         $this->countCtrls = 1000;
         $this->callback   = array();
@@ -94,7 +94,7 @@ class WinBinder
      *
      * @return mixed The created window object.
      */
-    public function createAppWindow($caption, $width, $height, $style = null, $params = null)
+    public function createAppWindow($caption, $width, $height, $style = null, $params = null): mixed
     {
         return $this->createWindow(null, AppWindow, $caption, WBC_CENTER, WBC_CENTER, $width, $height, $style, $params);
     }
@@ -114,7 +114,7 @@ class WinBinder
      *
      * @return mixed The created window object.
      */
-    public function createWindow($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style = null, $params = null)
+    public function createWindow($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style = null, $params = null): mixed
     {
         global $bearsamppCore;
 
@@ -139,7 +139,7 @@ class WinBinder
      *
      * @return mixed The result of the function call.
      */
-    private function callWinBinder($function, $params = array(), $removeErrorHandler = false)
+    private function callWinBinder($function, $params = array(), $removeErrorHandler = false): mixed
     {
         $result = false;
         if (function_exists($function)) {
@@ -164,7 +164,7 @@ class WinBinder
      *
      * @return mixed The result of the set image operation.
      */
-    public function setImage($wbobject, $path)
+    public function setImage($wbobject, $path): mixed
     {
         if ($wbobject === null) {
             error_log('Error: $wbobject is null.');
@@ -192,7 +192,7 @@ class WinBinder
      *
      * @return mixed The created window object.
      */
-    public function createNakedWindow($caption, $width, $height, $style = null, $params = null)
+    public function createNakedWindow($caption, $width, $height, $style = null, $params = null): mixed
     {
         $window = $this->createWindow(null, NakedWindow, $caption, WBC_CENTER, WBC_CENTER, $width, $height, $style, $params);
         $this->setArea($window, $width, $height);
@@ -209,7 +209,7 @@ class WinBinder
      *
      * @return mixed The result of the set area operation.
      */
-    public function setArea($wbobject, $width, $height)
+    public function setArea($wbobject, $width, $height): mixed
     {
         return $this->callWinBinder('wb_set_area', array($wbobject, WBC_TITLE, 0, 0, $width, $height));
     }
@@ -220,7 +220,7 @@ class WinBinder
      * @param   mixed  $window  The window object to destroy.
      * @return  boolean True if window was successfully destroyed
      */
-    public function destroyWindow($window)
+    public function destroyWindow($window): bool
     {
         // Check if window exists and is valid
         if (!$window || !$this->windowIsValid($window)) {
@@ -278,7 +278,7 @@ class WinBinder
      *
      * @return mixed The retrieved text.
      */
-    public function getText($wbobject)
+    public function getText($wbobject): mixed
     {
         return $this->callWinBinder('wb_get_text', array($wbobject));
     }
@@ -289,7 +289,7 @@ class WinBinder
      * @param   mixed  $window  The window object to check.
      * @return  boolean True if window is valid
      */
-    private function windowIsValid($window)
+    private function windowIsValid($window): bool
     {
         if (!$window) {
             return false;
@@ -305,7 +305,7 @@ class WinBinder
      *
      * @return void
      */
-    private function processMessages()
+    private function processMessages(): void
     {
         $this->callWinBinder('wb_wait', array(null, 1), true);
     }
@@ -319,7 +319,7 @@ class WinBinder
      *
      * @return mixed The result of the command execution.
      */
-    public function exec($cmd, $params = null, $silent = false)
+    public function exec($cmd, $params = null, $silent = false): mixed
     {
         global $bearsamppCore;
 
@@ -339,7 +339,7 @@ class WinBinder
      *
      * @param   string  $log  The log message to write.
      */
-    private static function writeLog($log)
+    private static function writeLog($log): void
     {
         global $bearsamppRoot;
         Util::logDebug($log, $bearsamppRoot->getWinbinderLogFilePath());
@@ -350,7 +350,7 @@ class WinBinder
      *
      * @return mixed The result of the main loop.
      */
-    public function mainLoop()
+    public function mainLoop(): mixed
     {
         return $this->callWinBinder('wb_main_loop');
     }
@@ -362,7 +362,7 @@ class WinBinder
      *
      * @return mixed The result of the refresh operation.
      */
-    public function refresh($wbobject)
+    public function refresh($wbobject): mixed
     {
         return $this->callWinBinder('wb_refresh', array($wbobject, true));
     }
@@ -374,7 +374,7 @@ class WinBinder
      *
      * @return mixed The retrieved system information.
      */
-    public function getSystemInfo($info)
+    public function getSystemInfo($info): mixed
     {
         return $this->callWinBinder('wb_get_system_info', array($info));
     }
@@ -391,7 +391,7 @@ class WinBinder
      *
      * @return mixed The result of the draw operation.
      */
-    public function drawImage($wbobject, $path, $xPos = 0, $yPos = 0, $width = 0, $height = 0)
+    public function drawImage($wbobject, $path, $xPos = 0, $yPos = 0, $width = 0, $height = 0): mixed
     {
         $image = $this->callWinBinder('wb_load_image', array($path));
 

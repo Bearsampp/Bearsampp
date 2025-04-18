@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -166,20 +167,36 @@ class BinMailpit extends Module
     {
         global $bearsamppRegistry;
 
+        Util::logTrace("Starting rebuildConf for Mailpit service");
+        Util::logTrace("Checking if registry key exists for Mailpit service parameters");
+
+        $registryPath = 'SYSTEM\CurrentControlSet\Services\\' . self::SERVICE_NAME . '\Parameters';
+        Util::logTrace("Registry path: " . $registryPath);
+
         $exists = $bearsamppRegistry->exists(
             Registry::HKEY_LOCAL_MACHINE,
-            'SYSTEM\CurrentControlSet\Services\\' . self::SERVICE_NAME . '\Parameters',
+            $registryPath,
             Nssm::INFO_APP_PARAMETERS
         );
+
         if ( $exists ) {
-            return $bearsamppRegistry->setExpandStringValue(
+            Util::logTrace("Registry key exists, updating service parameters");
+
+            $serviceParams = sprintf(self::SERVICE_PARAMS, $this->listen, $this->uiPort, $this->listen, $this->smtpPort, $this->webRoot);
+            Util::logTrace("Service parameters: " . $serviceParams);
+
+            $result = $bearsamppRegistry->setExpandStringValue(
                 Registry::HKEY_LOCAL_MACHINE,
-                'SYSTEM\CurrentControlSet\Services\\' . self::SERVICE_NAME . '\Parameters',
+                $registryPath,
                 Nssm::INFO_APP_PARAMETERS,
-                sprintf( self::SERVICE_PARAMS, $this->listen, $this->uiPort, $this->listen, $this->smtpPort, $this->webRoot )
-                );
+                $serviceParams
+            );
+
+            Util::logTrace("Registry update " . ($result ? "succeeded" : "failed"));
+            return $result;
         }
 
+        Util::logTrace("Registry key does not exist for Mailpit service parameters");
         return false;
     }
 

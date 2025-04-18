@@ -1,8 +1,8 @@
 <?php
 /*
  *
- *  * Copyright (c) 2021-2024 Bearsampp
- *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
  *  * Website: https://bearsampp.com
  *  * Github: https://github.com/Bearsampp
  *
@@ -313,7 +313,7 @@ class ActionSwitchVersion
             $this->boxTitle
         );
 
-        Util::logTrace('Running seExec line 316..');
+        Util::logTrace('Running setExec line 317..');
         $bearsamppCore->setExec(ActionExec::RESTART);
 
         Util::logTrace('Destroying final window...');
