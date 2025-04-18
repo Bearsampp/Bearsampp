@@ -83,7 +83,7 @@ class ActionCheckVersion
         $this->wbLinkFull = $winbinder->createHyperLink($this->wbWindow, $labelFullLink, 80, 87, 200, 20, WBC_LINES | WBC_RIGHT);
 
         $this->wbBtnOk = $winbinder->createButton($this->wbWindow, $lang->getValue(Lang::BUTTON_OK), 280, 103);
-        $this->wbImage = $winbinder->drawImage($this->wbWindow, $core->getResourcesPath() . '/homepage/img/about.bmp');
+        $this->wbImage = $winbinder->drawImage($this->wbWindow, $core->getImagesPath() . '/about.bmp');
 
         Util::stopLoading();
         $winbinder->setHandler($this->wbWindow, $this, 'processWindow');

@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -49,24 +50,24 @@ class ActionAbout
         }
 
         // Add exactly one line of blank space
-        $yPos = 125 ;
+        $yPos = 125;
 
         // Add hyperlinks
         $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::WEBSITE) . ' :', 80, $yPos, 100, 15);
         $this->wbLinkHomepage = $bearsamppWinbinder->createHyperLink($this->wbWindow, Util::getWebsiteUrlNoUtm(), 180, $yPos, 300, 15, WBC_LINES);
-        $yPos += 20;
+        $yPos                 += 20;
 
         $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::DONATE) . ' :', 80, $yPos, 100, 15);
         $this->wbLinkDonate = $bearsamppWinbinder->createHyperLink($this->wbWindow, Util::getWebsiteUrlNoUtm('donate'), 180, $yPos, 300, 15, WBC_LINES);
-        $yPos += 20;
+        $yPos               += 20;
 
         $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::GITHUB) . ' :', 80, $yPos, 100, 15);
         $this->wbLinkGithub = $bearsamppWinbinder->createHyperLink($this->wbWindow, Util::getGithubUserUrl(), 180, $yPos, 300, 15, WBC_LINES);
-        $yPos += 10;
+        $yPos               += 10;
 
         $this->wbBtnOk = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_OK), 390, 180);
 
-        $this->wbImage = $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getResourcesPath() . '/homepage/img/about.bmp');
+        $this->wbImage = $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/about.bmp');
 
         $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
         $bearsamppWinbinder->mainLoop();
@@ -88,18 +89,18 @@ class ActionAbout
 
         switch ($id) {
             case $this->wbLinkHomepage[WinBinder::CTRL_ID]:
-$bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getWebsiteUrl());
-break;
+                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getWebsiteUrl());
+                break;
             case $this->wbLinkDonate[WinBinder::CTRL_ID]:
-$bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getWebsiteUrl('donate'));
-break;
+                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getWebsiteUrl('donate'));
+                break;
             case $this->wbLinkGithub[WinBinder::CTRL_ID]:
-$bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getGithubUserUrl());
-break;
+                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getGithubUserUrl());
+                break;
             case IDCLOSE:
             case $this->wbBtnOk[WinBinder::CTRL_ID]:
-$bearsamppWinbinder->destroyWindow($window);
-break;
+                $bearsamppWinbinder->destroyWindow($window);
+                break;
         }
     }
 }

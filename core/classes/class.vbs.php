@@ -325,7 +325,7 @@ class Vbs
         $content .= 'objShortCut.TargetPath = "' . $bearsamppRoot->getExeFilePath() . '"' . PHP_EOL;
         $content .= 'objShortCut.WorkingDirectory = "' . $bearsamppRoot->getRootPath() . '"' . PHP_EOL;
         $content .= 'objShortCut.Description = "' . APP_TITLE . ' ' . $bearsamppCore->getAppVersion() . '"' . PHP_EOL;
-        $content .= 'objShortCut.IconLocation = "' . $bearsamppCore->getResourcesPath() . '/homepage/img/icons/app.ico' . '"' . PHP_EOL;
+        $content .= 'objShortCut.IconLocation = "' . $bearsamppCore->getIconsPath() . '/app.ico' . '"' . PHP_EOL;
         $content .= 'objShortCut.Save' . PHP_EOL;
         $content .= 'If Err.Number <> 0 Then' . PHP_EOL;
         $content .= '    objResultFile.Write Err.Number & ": " & Err.Description' . PHP_EOL;
