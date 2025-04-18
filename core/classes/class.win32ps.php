@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -181,11 +182,11 @@ class Win32Ps
         $killed = array();
 
         $procs = $bearsamppRoot->getProcs();
-        if ($refreshProcs) {
+        if ($refreshProcs || $procs === null) {
             $procs = self::getListProcs();
         }
 
-        if ($procs !== false) {
+        if ($procs !== false && $procs !== null) {
             foreach ($procs as $proc) {
                 $unixExePath = Util::formatUnixPath($proc[self::EXECUTABLE_PATH]);
                 $unixCommandPath = Util::formatUnixPath($proc[self::COMMAND_LINE]);

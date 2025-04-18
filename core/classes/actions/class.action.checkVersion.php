@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -39,7 +40,11 @@ class ActionCheckVersion
     {
         global $bearsamppCore, $bearsamppLang, $bearsamppWinbinder, $appGithubHeader;
 
-        if (!file_exists($bearsamppCore->getExec())) {
+        // Check if we're being called from the version check menu item
+        $isMenuCheck = !empty($args[0]) && $args[0] == self::DISPLAY_OK;
+
+        // Start loading only if the exec file doesn't exist or if we're doing a menu check
+        if (!file_exists($bearsamppCore->getExec()) || $isMenuCheck) {
             Util::startLoading();
             $this->currentVersion = $bearsamppCore->getAppVersion();
 
@@ -51,7 +56,7 @@ class ActionCheckVersion
                 $this->githubLatestVersionUrl = $githubVersionData['html_url']; // URL of the latest version
                 if (version_compare($this->currentVersion, $githubLatestVersion, '<')) {
                     $this->showVersionUpdateWindow($bearsamppLang, $bearsamppWinbinder, $bearsamppCore, $githubLatestVersion);
-                } elseif (!empty($args[0]) && $args[0] == self::DISPLAY_OK) {
+                } elseif ($isMenuCheck) {
                     $this->showVersionOkMessageBox($bearsamppLang, $bearsamppWinbinder);
                 }
             }
