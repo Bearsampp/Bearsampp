@@ -397,6 +397,7 @@ class QuickPick
     public function installModule(string $module, string $version): array
     {
         // Find the module URL and module name from the data
+	    Util::logTrace( 'Installing module: ' . $module . ' version: ' . $version );
         $moduleUrl = $this->getModuleUrl( $module, $version );
 
         if ( is_array( $moduleUrl ) && isset( $moduleUrl['error'] ) ) {
