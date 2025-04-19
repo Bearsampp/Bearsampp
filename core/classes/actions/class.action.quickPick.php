@@ -1,8 +1,8 @@
 <?php
 /*
  *
- *  * Copyright (c) 2021-2024 Bearsampp
- *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
  *  * Website: https://bearsampp.com
  *  * Github: https://github.com/Bearsampp
  *
@@ -411,8 +411,8 @@ class QuickPick
             return ['error' => 'Module URL not found'];
         }
 
-        $state = Util::checkInternetState();
-        if ( $state ) {
+        $internet = Util::checkInternetState();
+        if ( $internet ) {
             $response = $this->fetchAndUnzipModule( $moduleUrl, $module );
             Util::logDebug( 'Response is: ' . print_r( $response, true ) );
 
