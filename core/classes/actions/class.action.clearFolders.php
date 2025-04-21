@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -41,7 +42,7 @@ class ActionClearFolders
         Util::clearFolder($bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', '.gitignore'));
 
         // Clear logs
-        Util::clearFolder($bearsamppRoot->getLogsPath(), array('mailpit.err.log', 'mailpit.out.log', 'memcached.err.log', 'memcached.out.log', 'xlight.err.log', 'xlight.log', '.gitignore') );
+        Util::clearFolder($bearsamppRoot->getLogsPath(), array('mariadb.log', 'mailpit.err.log', 'mailpit.out.log', 'memcached.err.log', 'memcached.out.log', 'mysql.log', 'postgresql.log', 'xlight.error.log', 'xlight.log', '.gitignore') );
 
         /**
          * Clears the core temporary path.
