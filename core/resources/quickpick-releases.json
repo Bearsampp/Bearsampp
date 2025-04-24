@@ -1416,19 +1416,6 @@
     ]
   },
   {
-    "module": "module-webgrind",
-    "versions": [
-      {
-        "version": "1.9.2",
-        "url": "https://github.com/Bearsampp/module-webgrind/releases/download/2022.07.17/bearsampp-webgrind-1.9.2-2022.07.17.7z"
-      },
-      {
-        "version": "1.9.3",
-        "url": "https://github.com/Bearsampp/module-webgrind/releases/download/2024.6.27/bearsampp-webgrind-1.9.3-2022.07.17.7z"
-      }
-    ]
-  },
-  {
     "module": "module-xlight",
     "versions": [
       {
