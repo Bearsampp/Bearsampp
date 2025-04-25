@@ -244,10 +244,15 @@ class ActionStartup
         Util::logTrace('Finishing startup process');
 
         $currentPid = Win32Ps::getCurrentPid();
-        ActionQuit::terminatePhpProcesses($currentPid);
+        // Add timeout parameter (15 seconds) to prevent hanging
+        ActionQuit::terminatePhpProcesses($currentPid, null, null, 15);
 
         // Safely reset WinBinder instead of trying to destroy specific windows
         $bearsamppWinbinder->reset();
+
+        // Force exit if we're still running after termination attempt
+        Util::logTrace('Forcing exit as final fallback');
+        exit(0);
 
     }
 
@@ -887,21 +892,27 @@ class ActionStartup
                 $serviceCheckStartTime = microtime(true);
                 $serviceCheckTimeout = 15; // 15 seconds timeout
 
-                try {
-                    // Call infos() with a timeout check
-                    $serviceInfos = $service->infos();
+                // Use specialized check for Apache service due to known issues with hanging
+                if ($sName == BinApache::SERVICE_NAME) {
+                    Util::logTrace('Using specialized Apache service check');
+                    $serviceInfos = $this->checkApacheServiceWithTimeout($service);
+                } else {
+                    try {
+                        // Call infos() with a timeout check for other services
+                        $serviceInfos = $service->infos();
 
-                    // Check if we've exceeded our timeout
-                    if (microtime(true) - $serviceCheckStartTime > $serviceCheckTimeout) {
-                        Util::logTrace("Service check timeout exceeded, assuming service is not installed");
+                        // Check if we've exceeded our timeout
+                        if (microtime(true) - $serviceCheckStartTime > $serviceCheckTimeout) {
+                            Util::logTrace("Service check timeout exceeded, assuming service is not installed");
+                            $serviceInfos = false;
+                        }
+                    } catch (\Exception $e) {
+                        Util::logTrace("Exception during service check: " . $e->getMessage() . ", assuming service is not installed");
+                        $serviceInfos = false;
+                    } catch (\Throwable $e) {
+                        Util::logTrace("Throwable during service check: " . $e->getMessage() . ", assuming service is not installed");
                         $serviceInfos = false;
                     }
-                } catch (\Exception $e) {
-                    Util::logTrace("Exception during service check: " . $e->getMessage() . ", assuming service is not installed");
-                    $serviceInfos = false;
-                } catch (\Throwable $e) {
-                    Util::logTrace("Throwable during service check: " . $e->getMessage() . ", assuming service is not installed");
-                    $serviceInfos = false;
                 }
                 if ($serviceInfos !== false) {
                     $serviceAlreadyInstalled = true;
@@ -1067,6 +1078,54 @@ class ActionStartup
 
             $repos = $bearsamppTools->getGit()->findRepos( false );
             $this->writeLog( 'Update GIT repos: ' . count( $repos ) . ' found' );
+        }
+    }
+    
+    /**
+     * Specialized method to check Apache service with timeout protection.
+     * Apache service checks can sometimes hang, so this method provides a safer way to check.
+     * 
+     * @param object $service The Apache service object
+     * @return mixed Service info array or false if service not installed or check timed out
+     */
+    private function checkApacheServiceWithTimeout($service)
+    {
+        Util::logTrace('Starting specialized Apache service check with timeout protection');
+        
+        // Set a timeout for the Apache service check
+        $serviceCheckStartTime = microtime(true);
+        $serviceCheckTimeout = 10; // 10 seconds timeout
+        
+        try {
+            // Use a non-blocking approach to check service
+            $serviceInfos = false;
+            
+            // First try a quick check if the service exists in the list
+            $serviceList = Win32Service::getServices();
+            if (is_array($serviceList) && isset($serviceList[$service->getName()])) {
+                Util::logTrace('Apache service found in service list, getting details');
+                
+                // Service exists, now try to get its details with timeout protection
+                $startTime = microtime(true);
+                $serviceInfos = $service->infos();
+                
+                // Check if we've exceeded our timeout
+                if (microtime(true) - $serviceCheckStartTime > $serviceCheckTimeout) {
+                    Util::logTrace("Apache service check timeout exceeded, assuming service needs reinstall");
+                    return false;
+                }
+            } else {
+                Util::logTrace('Apache service not found in service list');
+                return false;
+            }
+            
+            return $serviceInfos;
+        } catch (\Exception $e) {
+            Util::logTrace("Exception during Apache service check: " . $e->getMessage());
+            return false;
+        } catch (\Throwable $e) {
+            Util::logTrace("Throwable during Apache service check: " . $e->getMessage());
+            return false;
         }
     }
 

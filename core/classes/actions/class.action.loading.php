@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -102,16 +103,16 @@ class ActionLoading
         $iterations = 0;
 
         // Set a timeout for the entire loading process
-        $startTime = time();
-        $maxLoadingTime = 10; // 30 seconds maximum
+        $startTime = microtime(true); // Use microtime for more precise timing
+        $maxLoadingTime = 15; // 15 seconds maximum
 
-        while ($iterations < $maxIterations && (time() - $startTime) < $maxLoadingTime) {
+        while ($iterations < $maxIterations && (microtime(true) - $startTime) < $maxLoadingTime) {
             $bearsamppRoot->removeErrorHandling();
             $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
 
             usleep(100000);
 
-            for ($i = 0; $i < self::GAUGE && (time() - $startTime) < $maxLoadingTime; $i++) {
+            for ($i = 0; $i < self::GAUGE && (microtime(true) - $startTime) < $maxLoadingTime; $i++) {
                 $this->incrProgressBar();
                 usleep(100000);
             }
@@ -124,34 +125,93 @@ class ActionLoading
             }
 
             $iterations++;
+            Util::logTrace('Loading iteration ' . $iterations . ' completed, checking services again');
         }
 
-        if($iterations >= $maxIterations ) {
-            Util::logTrace('maxIterations reached, killing loading window, ActionLoading::processLoading, lines 108-127');
+        if ($iterations >= $maxIterations) {
+            Util::logTrace('Maximum iterations reached (' . $maxIterations . '), some services may not have started properly');
         }
+        
+        if ((microtime(true) - $startTime) >= $maxLoadingTime) {
+            Util::logTrace('Loading timeout reached (' . $maxLoadingTime . ' seconds), some services may not have started properly');
+        }
+        
+        // Add a small delay before killing the process to ensure UI updates are complete
+        usleep(500000); // 500ms
+        
         // Close the loading window
+        Util::logTrace('Closing loading window');
         Win32Ps::kill(Win32Ps::getCurrentPid());
     }
 
     /**
-     * Checks if all services have been started successfully
-     *
+     * Checks if all services have started successfully
+     * 
      * @return bool True if all services are running, false otherwise
      */
     private function checkAllServicesStarted()
     {
-        global $bearsamppBins;
-
+        global $bearsamppBins, $bearsamppCore, $bearsamppRoot;
+        
+        Util::logTrace('Checking if all services have started successfully');
+        
         $allStarted = true;
-
         foreach ($bearsamppBins->getServices() as $sName => $service) {
-            $status = $service->isRunning();
-
-            if (!$status) {
+            // Skip if service is not enabled
+            if (!$service->isEnable()) {
+                Util::logTrace('Service ' . $sName . ' is disabled, skipping check');
+                continue;
+            }
+            
+            // Add timeout for service status check
+            $checkStartTime = microtime(true);
+            $checkTimeout = 5; // 5 seconds timeout
+            $serviceRunning = false;
+            
+            try {
+                // Use a non-blocking check with timeout
+                $tempFile = $bearsamppCore->getTmpPath() . '/service_check_' . uniqid() . '.tmp';
+                
+                // Start a background process to check the service
+                $checkCmd = 'php -r "' .
+                    'require \'' . $bearsamppRoot->getLibsPath() . '/classes/class.win32service.php\'; ' .
+                    '$service = new Win32Service(\'' . $service->getName() . '\'); ' .
+                    '$status = $service->status(); ' .
+                    'file_put_contents(\'' . $tempFile . '\', $status == Win32Service::STATE_RUNNING ? \'1\' : \'0\'); ' .
+                    'exit(0);" > nul 2>&1';
+                
+                // Execute the command in background
+                pclose(popen('start /B ' . $checkCmd, 'r'));
+                
+                // Wait for the result with timeout
+                $startWait = microtime(true);
+                while (!file_exists($tempFile) && (microtime(true) - $startWait < $checkTimeout)) {
+                    usleep(100000); // 100ms
+                }
+                
+                // Check if we got a result
+                if (file_exists($tempFile)) {
+                    $result = file_get_contents($tempFile);
+                    $serviceRunning = ($result === '1');
+                    unlink($tempFile);
+                    Util::logTrace('Service ' . $sName . ' status check: ' . ($serviceRunning ? 'running' : 'not running'));
+                } else {
+                    Util::logTrace('Service ' . $sName . ' status check timed out');
+                    $serviceRunning = false;
+                }
+            } catch (\Exception $e) {
+                Util::logTrace('Exception during service status check for ' . $sName . ': ' . $e->getMessage());
+                $serviceRunning = false;
+            }
+            
+            if (!$serviceRunning) {
+                Util::logTrace('Service ' . $sName . ' is not running');
                 $allStarted = false;
+                break;
             }
         }
-
+        
+        Util::logTrace('All services started check result: ' . ($allStarted ? 'true' : 'false'));
         return $allStarted;
     }
 }
