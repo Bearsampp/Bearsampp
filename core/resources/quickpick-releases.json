@@ -1145,6 +1145,10 @@
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.4.8/bearsampp-php-8.3.19-2025.4.8.7z"
       },
       {
+        "version": "8.3.20",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2025.4.24/bearsampp-php-8.3.20-2025.4.24.7z"
+      },
+      {
         "version": "8.4.1",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.11/bearsampp-php-8.4.1-2025.2.11.7z"
       },
@@ -1159,6 +1163,10 @@
       {
         "version": "8.4.5",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.4.8/bearsampp-php-8.4.5-2025.4.8.7z"
+      },
+      {
+        "version": "8.4.6",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2025.4.24/bearsampp-php-8.4.6-2025.4.24.7z"
       }
     ]
   },

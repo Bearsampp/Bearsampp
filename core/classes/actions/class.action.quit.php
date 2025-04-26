@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /**
@@ -106,10 +107,10 @@ class ActionQuit
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $currentPid = Win32Ps::getCurrentPid();
 
-            // 1. Terminate PHP processes first
-            self::terminatePhpProcesses($currentPid, $window, $this->splash);
-
-            // 4. Force exit if still running
+            // Terminate PHP processes with a timeout of 15 seconds
+            self::terminatePhpProcesses($currentPid, $window, $this->splash, 15);
+            
+            // Force exit if still running
             exit(0);
         }
 
@@ -119,40 +120,72 @@ class ActionQuit
     }
 
     /**
-     * Terminates PHP processes.
+     * Terminates PHP processes with timeout handling.
      *
      * @param   int     $excludePid  Process ID to exclude
      * @param   mixed   $window      Window handle or null
      * @param   mixed   $splash      Splash screen or null
+     * @param   int     $timeout     Maximum time to wait for termination (seconds)
      * @return  void
      */
-    public static function terminatePhpProcesses($excludePid, $window = null, $splash = null)
+    public static function terminatePhpProcesses($excludePid, $window = null, $splash = null, $timeout = 10)
     {
         global $bearsamppWinbinder;
 
         $currentPid = Win32Ps::getCurrentPid();
+        $startTime = microtime(true);
+        
+        Util::logTrace('Starting PHP process termination (excluding PID: ' . $excludePid . ')');
 
         $targets = ['php-win.exe', 'php.exe'];
         foreach (Win32Ps::getListProcs() as $proc) {
+            // Check if we've exceeded our timeout
+            if (microtime(true) - $startTime > $timeout) {
+                Util::logTrace('Process termination timeout exceeded, continuing with remaining operations');
+                break;
+            }
+            
             $exe = strtolower(basename($proc[Win32Ps::EXECUTABLE_PATH]));
             $pid = $proc[Win32Ps::PROCESS_ID];
 
             if (in_array($exe, $targets) && $pid != $excludePid) {
+                Util::logTrace('Terminating PHP process: ' . $pid);
                 Win32Ps::kill($pid);
                 usleep(100000); // 100ms delay between terminations
             }
         }
 
-        // 2. Initiate self-termination
+        // Initiate self-termination with timeout
         if ($splash !== null) {
             $splash->setTextLoading('Final cleanup...');
         }
-        Vbs::killProc($currentPid);
+        
+        try {
+            Util::logTrace('Initiating self-termination for PID: ' . $currentPid);
+            // Add a timeout wrapper around the killProc call
+            $killSuccess = Vbs::killProc($currentPid);
+            if (!$killSuccess) {
+                Util::logTrace('Self-termination via Vbs::killProc failed, using alternative method');
+            }
+        } catch (\Exception $e) {
+            Util::logTrace('Exception during self-termination: ' . $e->getMessage());
+        }
 
-        // 3. Destroy window after process termination
+        // Destroy window after process termination
         // Fix for PHP 8.2: Check if window is not null before destroying
         if ($window && $bearsamppWinbinder) {
-            $bearsamppWinbinder->destroyWindow($window);
+            try {
+                Util::logTrace('Destroying window');
+                $bearsamppWinbinder->destroyWindow($window);
+            } catch (\Exception $e) {
+                Util::logTrace('Exception during window destruction: ' . $e->getMessage());
+            }
+        }
+        
+        // Force exit if still running after timeout
+        if (microtime(true) - $startTime > $timeout * 1.5) {
+            Util::logTrace('Forcing exit due to timeout');
+            exit(0);
         }
     }
 }

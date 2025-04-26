@@ -1,9 +1,10 @@
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 /* ---- VARIABLES ---- */
@@ -404,6 +405,33 @@ div#InternetState {
     text-align: center; /* Center the text */
     line-height: 1rem; /* Adjust based on your progress bar height */
     font-weight: bold;
+}
+
+/* ---- LOADING CURSOR STYLES ---- */
+/* Cursor spinner styles - make sure these are prominent */
+.loading-cursor {
+    cursor: wait !important; /* Basic fallback with !important to override other styles */
+}
+
+/* For browsers that support custom cursors */
+@supports (cursor: progress) {
+    .loading-cursor {
+        cursor: progress !important;
+    }
+}
+
+/* Optional loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
 }
 
 /* ---- ANIMATIONS ---- */

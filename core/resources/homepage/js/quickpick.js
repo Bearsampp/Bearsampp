@@ -1,7 +1,7 @@
 /*
  *
- *  * Copyright (c) 2021-2024 Bearsampp
- *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
  *  * Website: https://bearsampp.com
  *  * Github: https://github.com/Bearsampp
  *
@@ -17,7 +17,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const customSelect = document.querySelector(".custom-select"); // parent div of quickpick select
     const selectBtn = document.querySelector(".select-button"); // trigger button to pop down ul
+    const selectDropdown = document.querySelector(".select-dropdown"); // the dropdown menu
+
     if (selectBtn !== null) {
+        // Make the dropdown focusable
+        if (selectDropdown) {
+            selectDropdown.setAttribute("tabindex", "-1");
+        }
+
         // add a click event to select button
         selectBtn.addEventListener("click", () => {
             // add/remove active class on the container element to show/hide
@@ -27,7 +34,42 @@ document.addEventListener("DOMContentLoaded", function () {
                 "aria-expanded",
                 selectBtn.getAttribute("aria-expanded") === "true" ? "false" : "true"
             );
+
+            // If opening the dropdown, focus it
+            if (customSelect.classList.contains("active") && selectDropdown) {
+                setTimeout(() => {
+                    selectDropdown.focus();
+                }, 0);
+            }
+
             scrolltoview();
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function(event) {
+            // Check if the click was outside the custom select and not on the select button itself
+            if (customSelect && !customSelect.contains(event.target) && event.target !== selectBtn) {
+                // Close the dropdown
+                customSelect.classList.remove("active");
+                selectBtn.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        // Add blur event to close dropdown when it loses focus
+        if (selectDropdown) {
+            selectDropdown.addEventListener("blur", function(event) {
+                // Check if the new focus target is outside the dropdown
+                if (!customSelect.contains(event.relatedTarget) && event.relatedTarget !== selectBtn) {
+                    customSelect.classList.remove("active");
+                    selectBtn.setAttribute("aria-expanded", "false");
+                }
+            });
+        }
+
+        // Add event listener to select button to stop propagation
+        selectBtn.addEventListener("click", function(event) {
+            // Stop the event from bubbling up to the document
+            event.stopPropagation();
         });
 
         const optionsList = document.querySelectorAll(".select-dropdown li.moduleheader");
@@ -37,6 +79,11 @@ document.addEventListener("DOMContentLoaded", function () {
              * @param {Event} e - The event object.
              */
             function handler(e) {
+                // Stop propagation to prevent document click handler from firing
+                if (e.type === "click") {
+                    e.stopPropagation();
+                }
+
                 // Click Events
                 if (e.type === "click" && e.clientX !== 0 && e.clientY !== 0) {
                     if (selectedHeader !== e.target.innerText) {
@@ -71,6 +118,9 @@ document.addEventListener("DOMContentLoaded", function () {
              * @param {Event} e - The event object.
              */
             select.addEventListener('click', function (e) {
+                // Stop propagation to prevent document click handler from firing
+                e.stopPropagation();
+
                 console.log(e);
                 let selectedOption = e.target;
 
@@ -79,8 +129,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (moduleName && version) {
                     installModule(moduleName, version);
                 }
-                hideall()
-                customSelect.classList.toggle("active", false);
+                hideall();
+                // Close the dropdown and update aria-expanded
+                customSelect.classList.remove("active");
+                if (selectBtn) {
+                    selectBtn.setAttribute("aria-expanded", "false");
+                }
             });
         });
         scrolltoview();
