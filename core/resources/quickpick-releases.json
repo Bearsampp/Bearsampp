@@ -922,10 +922,6 @@
       {
         "version": "5.38.2.2",
         "url": "https://github.com/Bearsampp/module-perl/releases/download/2024.4.14/bearsampp-perl-5.38.2.2-2024.04.14.7z"
-      },
-      {
-        "version": "5.40.0",
-        "url": "https://github.com/Bearsampp/module-perl/releases/download/2025.4.26/bearsampp-perl-5.40.0-2025.4.26.7z"
       }
     ]
   },
