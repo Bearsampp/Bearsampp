@@ -226,6 +226,10 @@
       {
         "version": "10.04.0",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2024.10.31/bearsampp-ghostscript-10.04.0-2024.10.31.7z"
+      },
+      {
+        "version": "10.05.0",
+        "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2025.4.26/bearsampp-ghostscript-10.05.0-2025.4.26.7z"
       }
     ]
   },
@@ -368,6 +372,14 @@
       {
         "version": "1.22.3",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.2.18/bearsampp-mailpit-1.22.3-2025.2.18.7z"
+      },
+      {
+        "version": "1.23.0",
+        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.3.5/bearsampp-mailpit-1.23.0-2025.3.5.7z"
+      },
+      {
+        "version": "1.24.1",
+        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.4.22/bearsampp-mailpit-1.24.1-2025.4.22.7z"
       }
     ]
   },
@@ -1375,6 +1387,14 @@
       {
         "version": "3.12.8.0-b2",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2025.2.13/bearsampp-python-3.12.8.0-b2-2025.2.13.7z"
+      },
+      {
+        "version": "3.12.9",
+        "url": "https://github.com/Bearsampp/module-python/releases/download/2025.4.19/bearsampp-python-3.12.9-2025.4.19.7z"
+      },
+      {
+        "version": "3.13.2",
+        "url": "https://github.com/Bearsampp/module-python/releases/download/2025.4.19/bearsampp-python-3.13.2-2025.4.19.7z"
       }
     ]
   },
