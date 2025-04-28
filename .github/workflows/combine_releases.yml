@@ -1,0 +1,69 @@
+name: Combine Releases
+
+on:
+  # Run on pushes to main branch in the main repository
+  push:
+    branches:
+      - main
+  
+  # Run on release events in the main repository
+  release:
+    types: [published, edited, prereleased]
+  
+  # Run when manually triggered
+  workflow_dispatch:
+  
+  # Run when triggered by module repositories
+  repository_dispatch:
+    types: [module_release_created]
+  
+  # Run once a day to catch any missed updates
+  schedule:
+    # Run once a day at midnight UTC
+    - cron: '0 0 * * *'
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  combine-releases:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Combine releases into JSON
+        env:
+          GH_ACTIONS: ${{ secrets.GH_ACTIONS }}
+        run: python .github/combine_releases.py
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GH_ACTIONS }}
+          author: Bearsampp <support@bearsampp.com>
+          branch: update-releases
+          base: main
+          title: 'Update combined releases JSON'
+          body: 'This PR updates the combined releases JSON file.'
+          commit-message: 'Update combined releases JSON'
+          delete-branch: true
+
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        run: gh pr merge --merge --admin ${{ steps.cpr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_ACTIONS }}
