@@ -34,6 +34,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.GH_ACTIONS }}
           fetch-depth: 0  # Fetch all history for proper comparisons
 
       - name: Set up Python
@@ -69,28 +70,26 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: Create Pull Request
-        if: steps.git-check.outputs.changes == 'true'
-        id: cpr
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GH_ACTIONS }}
-          author: Bearsampp <support@bearsampp.com>
-          branch: update-releases
-          base: main
-          title: 'Update combined releases JSON'
-          body: 'This PR updates the combined releases JSON file.'
-          commit-message: 'Update combined releases JSON'
-          delete-branch: true
-
-      - name: PR Result
+      # Alternative approach using direct Git commands instead of create-pull-request action
+      - name: Commit and push changes
         if: steps.git-check.outputs.changes == 'true'
         run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+          # Create a new branch
+          git checkout -b update-releases
+          
+          # Add and commit changes
+          git add -A
+          git commit -m "Update combined releases JSON"
+          
+          # Push to the new branch
+          git push -f origin update-releases
+          
+          echo "Changes pushed to update-releases branch"
 
-      - name: Enable Pull Request Automerge
-        if: steps.git-check.outputs.changes == 'true' && steps.cpr.outputs.pull-request-operation == 'created'
-        run: gh pr merge --merge --admin ${{ steps.cpr.outputs.pull-request-number }}
-        env:
-          GH_TOKEN: ${{ secrets.GH_ACTIONS }}
+      # Create PR using GitHub CLI instead of the action
+      - name: Create Pull Request with GitHub CLI
+        if: steps.git-check.outputs.changes == 'true'
+        id: create-pr
+        run: |
+          # Install GitHub CLI
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-
