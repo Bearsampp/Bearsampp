@@ -308,7 +308,7 @@
         "prerelease": false
       },
       {
-        "version": "2.47.0",
+        "version": "2.47.0-rc1",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.10.7/bearsampp-git-2.47.0-rc1-2024.10.7.7z",
         "prerelease": false
       },
@@ -1058,7 +1058,7 @@
         "prerelease": false
       },
       {
-        "version": "3.12.8.0",
+        "version": "3.12.8.0-b2",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2025.2.13/bearsampp-python-3.12.8.0-b2-2025.2.13.7z",
         "prerelease": false
       },
@@ -1108,12 +1108,12 @@
         "prerelease": false
       },
       {
-        "version": "3.3.6",
+        "version": "3.3.6-2",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2024.12.3/bearsampp-ruby-3.3.6-2-2024.12.3.7z",
         "prerelease": false
       },
       {
-        "version": "3.3.0",
+        "version": "3.3.0-1",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2024.4.14/bearsampp-ruby-3.3.0-1-2024.4.14.7z",
         "prerelease": false
       },
@@ -1128,12 +1128,12 @@
         "prerelease": false
       },
       {
-        "version": "3.1.2",
+        "version": "3.1.2-1",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2022.07.17/bearsampp-ruby-3.1.2-1-2021.07.17.7z",
         "prerelease": false
       },
       {
-        "version": "2.6.3",
+        "version": "2.6.3-1",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2020/bearsampp-ruby-2.6.3-1-2021.07.17.7z",
         "prerelease": false
       }
