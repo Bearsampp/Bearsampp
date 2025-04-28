@@ -5,6 +5,11 @@ on:
         branches:
             - main
     workflow_dispatch:
+    repository_dispatch:
+        types: [module_release_created]
+    schedule:
+        # Run once a day at midnight UTC
+        - cron: '0 0 * * *'
 
 permissions:
     pull-requests: write
