@@ -1,12 +1,23 @@
 name: Combine Releases
 
 on:
+    # Run on pushes to main branch in the main repository
     push:
         branches:
             - main
+    
+    # Run on release events in the main repository
+    release:
+        types: [published, edited, prereleased]
+    
+    # Run when manually triggered
     workflow_dispatch:
+    
+    # Run when triggered by module repositories
     repository_dispatch:
         types: [module_release_created]
+    
+    # Run once a day to catch any missed updates
     schedule:
         # Run once a day at midnight UTC
         - cron: '0 0 * * *'
