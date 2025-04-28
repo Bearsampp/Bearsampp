@@ -4,6 +4,7 @@ import os
 import re
 from packaging import version  # For proper semver comparison
 import time
+from datetime import datetime
 
 # GitHub repositories to fetch releases from
 repos = [
@@ -56,27 +57,80 @@ def normalize_version(version_str):
     parts = version_str.split('.')
     return '.'.join(part.zfill(3) for part in parts)
 
+# Helper function to create a tuple for version comparison
+def version_tuple(v):
+    # Split the version string and convert components to integers for proper comparison
+    # This handles cases where packaging.version might fail
+    components = []
+    for component in v.split('.'):
+        try:
+            components.append(int(component))
+        except ValueError:
+            # If component has non-numeric parts, keep it as is
+            components.append(component)
+    return tuple(components)
+
 # Helper function to extract version from asset name
 def extract_version_from_asset(asset_name, module_short_name, tag_name):
     # Pattern: bearsampp-{module}-{version}.7z or bearsampp-{module}-{version}-{anything}.7z
-    base_pattern = f"bearsampp-{module_short_name}-(.+)\\.7z"
+    base_pattern = f"bearsampp-{module_short_name}-(.+?)\\.7z"
     base_match = re.search(base_pattern, asset_name)
     
     if base_match:
         # Get everything between module name and .7z
         version_with_possible_suffix = base_match.group(1)
         
-        # Remove everything after the last hyphen (if there is one)
-        if '-' in version_with_possible_suffix:
-            version_number = version_with_possible_suffix.rsplit('-', 1)[0]
+        # Extract the version number from the string
+        # First try to match X.Y.Z pattern
+        version_match = re.search(r'(\d+\.\d+\.\d+)', version_with_possible_suffix)
+        if version_match:
+            version_number = version_match.group(1)
         else:
-            version_number = version_with_possible_suffix
+            # Try to match X.Y pattern
+            version_match = re.search(r'(\d+\.\d+)', version_with_possible_suffix)
+            if version_match:
+                version_number = version_match.group(1)
+            else:
+                # If no version pattern found, use the whole string before the first hyphen
+                if '-' in version_with_possible_suffix:
+                    version_number = version_with_possible_suffix.split('-')[0]
+                else:
+                    version_number = version_with_possible_suffix
     else:
         # Fallback to tag name if pattern doesn't match
         version_number = tag_name
         print(f"Warning: Could not extract version from asset name for {asset_name}, using tag name instead")
     
     return version_number
+
+# Helper function to extract date from asset name or URL
+def extract_date_from_asset(asset_name, asset_url, created_at):
+    # Try to extract date from asset name (format: YYYY.MM.DD)
+    date_match = re.search(r'(\d{4}\.\d{1,2}\.\d{1,2})', asset_name)
+    if date_match:
+        try:
+            date_str = date_match.group(1)
+            # Convert dots to dashes for datetime parsing
+            date_str = date_str.replace('.', '-')
+            return datetime.strptime(date_str, '%Y-%m-%d')
+        except ValueError:
+            pass
+    
+    # Try to extract date from asset name (format: YYYY.M.D)
+    date_match = re.search(r'(\d{4})\.(\d{1,2})\.(\d{1,2})', asset_name)
+    if date_match:
+        try:
+            year, month, day = date_match.groups()
+            return datetime(int(year), int(month), int(day))
+        except ValueError:
+            pass
+    
+    # If no date in asset name, use the release created_at date
+    try:
+        return datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
+    except (ValueError, TypeError):
+        # If all else fails, use current time (least preferred)
+        return datetime.now()
 
 for repo_path in repos:
     # Split the repo path into owner and repo
@@ -94,8 +148,10 @@ for repo_path in repos:
     if response.status_code == 200:
         releases = response.json()
         module_name = repo
-        version_data = []
-
+        
+        # Dictionary to store the newest asset for each version
+        version_assets = {}  # {version: (asset_data, date)}
+        
         for release in releases:
             # Find .7z assets
             seven_z_assets = [asset for asset in release['assets']
@@ -109,6 +165,9 @@ for repo_path in repos:
             # Process all .7z assets in this release
             module_short_name = repo.replace('module-', '')
             is_prerelease = release['prerelease']
+            created_at = release.get('created_at')
+            
+            print(f"Processing release {release['tag_name']} in {repo} with {len(seven_z_assets)} .7z assets")
             
             for asset in seven_z_assets:
                 asset_url = asset['browser_download_url']
@@ -117,25 +176,45 @@ for repo_path in repos:
                 # Extract version from the asset name
                 version_number = extract_version_from_asset(asset_name, module_short_name, release['tag_name'])
                 
-                # Check if this version already exists in version_data
-                if not any(v['version'] == version_number and v['url'] == asset_url for v in version_data):
-                    version_data.append({
+                # Extract date from asset name or use release date
+                asset_date = extract_date_from_asset(asset_name, asset_url, created_at)
+                
+                # Check if we already have this version and if this asset is newer
+                if version_number in version_assets:
+                    existing_date = version_assets[version_number][1]
+                    if asset_date > existing_date:
+                        print(f"Replacing {module_name} version {version_number} with newer asset: {asset_name}")
+                        version_assets[version_number] = ({
+                            'version': version_number,
+                            'url': asset_url,
+                            'prerelease': is_prerelease
+                        }, asset_date)
+                    else:
+                        print(f"Skipping older asset for {module_name} version {version_number}: {asset_name}")
+                else:
+                    print(f"Added {module_name} version {version_number} from asset {asset_name}")
+                    version_assets[version_number] = ({
                         'version': version_number,
                         'url': asset_url,
                         'prerelease': is_prerelease
-                    })
-                    print(f"Added {module_name} version {version_number} from asset {asset_name}")
-                else:
-                    print(f"Skipping duplicate {module_name} version {version_number} from asset {asset_name}")
+                    }, asset_date)
         
-        # Sort versions using semantic versioning
+        # Extract just the asset data (without dates) for the final output
+        version_data = [asset_data for asset_data, _ in version_assets.values()]
+        
+        # Sort versions using improved version comparison
         try:
-            # First attempt: Use packaging.version for proper semver sorting
-            version_data.sort(key=lambda x: version.parse(x['version']), reverse=True)
+            # First attempt: Use version_tuple for most reliable sorting
+            version_data.sort(key=lambda x: version_tuple(x['version']), reverse=True)
         except Exception as e:
-            print(f"Warning: Could not sort versions for {repo} using semver: {e}")
-            # Fallback: Use string normalization for simple version comparison
-            version_data.sort(key=lambda x: normalize_version(x['version']), reverse=True)
+            print(f"Warning: Could not sort versions for {repo} using version tuple: {e}")
+            try:
+                # Second attempt: Use packaging.version for proper semver sorting
+                version_data.sort(key=lambda x: version.parse(x['version']), reverse=True)
+            except Exception as e2:
+                print(f"Warning: Could not sort versions for {repo} using semver: {e2}")
+                # Fallback: Use string normalization for simple version comparison
+                version_data.sort(key=lambda x: normalize_version(x['version']), reverse=True)
 
         combined_data.append({
             'module': module_name,
