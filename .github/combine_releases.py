@@ -1,50 +1,106 @@
 import requests
 import json
 import os
+import re
 
-urls = [
-    'https://raw.githubusercontent.com/Bearsampp/module-adminer/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-apache/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-bruno/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-composer/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-consolez/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-ghostscript/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-git/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-mailpit/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-mariadb/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-memcached/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-mysql/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-ngrok/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-nodejs/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-perl/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-php/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-phpmyadmin/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-phppgadmin/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-postgresql/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-python/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-ruby/main/releases.properties',
-    'https://raw.githubusercontent.com/Bearsampp/module-xlight/main/releases.properties'
+# GitHub repositories to fetch releases from
+repos = [
+    'Bearsampp/module-adminer',
+    'Bearsampp/module-apache',
+    'Bearsampp/module-bruno',
+    'Bearsampp/module-composer',
+    'Bearsampp/module-consolez',
+    'Bearsampp/module-ghostscript',
+    'Bearsampp/module-git',
+    'Bearsampp/module-mailpit',
+    'Bearsampp/module-mariadb',
+    'Bearsampp/module-memcached',
+    'Bearsampp/module-mysql',
+    'Bearsampp/module-ngrok',
+    'Bearsampp/module-nodejs',
+    'Bearsampp/module-perl',
+    'Bearsampp/module-php',
+    'Bearsampp/module-phpmyadmin',
+    'Bearsampp/module-phppgadmin',
+    'Bearsampp/module-postgresql',
+    'Bearsampp/module-python',
+    'Bearsampp/module-ruby',
+    'Bearsampp/module-xlight'
 ]
 
 combined_data = []
 
-for url in urls:
-    response = requests.get(url)
+# GitHub API headers - add token if you have one to increase rate limits
+headers = {}
+# Use GitHub token if available in environment variables
+if os.environ.get('GH_ACTIONS'):
+    headers = {"Authorization": f"token {os.environ.get('GH_ACTIONS')}"}
+
+for repo_path in repos:
+    # Split the repo path into owner and repo
+    parts = repo_path.split('/')
+    if len(parts) != 2:
+        print(f"Skipping invalid repo path: {repo_path}")
+        continue
+
+    owner, repo = parts
+
+    # Use GitHub API to fetch releases
+    api_url = f"https://api.github.com/repos/{owner}/{repo}/releases"
+    response = requests.get(api_url, headers=headers)
+
     if response.status_code == 200:
-        module_name = url.split('/')[4]
-        versions = response.text.strip().split('\n')
+        releases = response.json()
+        module_name = repo
         version_data = []
-        for version in versions:
-            if '=' in version:
-                version_number, version_url = version.split('=', 1)
-                version_url = version_url.strip()  # Remove leading and trailing whitespace
-                version_number = version_number.strip()  # Remove leading and trailing whitespace
-                version_data.append({'version': version_number, 'url': version_url})
+
+        for release in releases:
+            # Find .7z assets
+            seven_z_assets = [asset for asset in release['assets']
+                              if asset['name'].lower().endswith('.7z')]
+
+            # Skip releases without .7z assets
+            if not seven_z_assets:
+                print(f"Skipping release {release['tag_name']} in {repo} - no .7z assets found")
+                continue
+
+            # Use the first .7z asset
+            asset_url = seven_z_assets[0]['browser_download_url']
+            asset_name = seven_z_assets[0]['name']
+
+            # Extract version from the asset name
+            # Pattern: bearsampp-{module}-{version}-{date}.7z
+            # Example: bearsampp-php-8.3.20-2025.4.24.7z
+            module_short_name = repo.replace('module-', '')
+            pattern = f"bearsampp-{module_short_name}-([^-]+)-"
+            version_match = re.search(pattern, asset_name)
+
+            if version_match:
+                version_number = version_match.group(1)
+            else:
+                # Fallback to tag name if pattern doesn't match
+                version_number = release['tag_name']
+                print(f"Warning: Could not extract version from asset name for {asset_name}, using tag name instead")
+
+            # Include the prerelease state from the GitHub API
+            is_prerelease = release['prerelease']
+
+            version_data.append({
+                'version': version_number,
+                'url': asset_url,
+                'prerelease': is_prerelease  # Add prerelease state to the output
+            })
+
         combined_data.append({
             'module': module_name,
             'versions': version_data
         })
+    else:
+        print(f"Failed to fetch releases for {repo_path}: {response.status_code}")
+
 output_path = 'core/resources/quickpick-releases.json'
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 with open(output_path, 'w') as f:
     json.dump(combined_data, f, indent=2)
+
+print(f"Combined release data saved to {output_path}")
