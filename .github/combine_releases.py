@@ -33,8 +33,8 @@ combined_data = []
 # GitHub API headers - add token if you have one to increase rate limits
 headers = {}
 # Use GitHub token if available in environment variables
-if os.environ.get('GH_ACTIONS'):
-    headers = {"Authorization": f"token {os.environ.get('GH_ACTIONS')}"}
+if os.environ.get('GH_PAT'):
+    headers = {"Authorization": f"token {os.environ.get('GH_PAT')}"}
 
 for repo_path in repos:
     # Split the repo path into owner and repo
