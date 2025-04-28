@@ -69,14 +69,22 @@ for repo_path in repos:
             asset_name = seven_z_assets[0]['name']
 
             # Extract version from the asset name
-            # Pattern: bearsampp-{module}-{version}-{date}.7z
-            # Example: bearsampp-php-8.3.20-2025.4.24.7z
+            # Pattern: bearsampp-{module}-{version}.7z or bearsampp-{module}-{version}-{anything}.7z
             module_short_name = repo.replace('module-', '')
-            pattern = f"bearsampp-{module_short_name}-([^-]+)-"
-            version_match = re.search(pattern, asset_name)
-
-            if version_match:
-                version_number = version_match.group(1)
+            
+            # Extract the part between module name and .7z extension
+            base_pattern = f"bearsampp-{module_short_name}-(.+)\\.7z"
+            base_match = re.search(base_pattern, asset_name)
+            
+            if base_match:
+                # Get everything between module name and .7z
+                version_with_possible_suffix = base_match.group(1)
+                
+                # Remove everything after the last hyphen (if there is one)
+                if '-' in version_with_possible_suffix:
+                    version_number = version_with_possible_suffix.rsplit('-', 1)[0]
+                else:
+                    version_number = version_with_possible_suffix
             else:
                 # Fallback to tag name if pattern doesn't match
                 version_number = release['tag_name']
