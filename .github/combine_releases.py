@@ -277,6 +277,11 @@ for repo_path in repos:
                 # Extract version from the asset name
                 version_number = extract_version_from_asset(asset_name, module_short_name, release['tag_name'])
                 
+                # Skip assets with unknown version
+                if version_number.startswith('unknown-'):
+                    print(f"Skipping asset with unknown version: {asset_name}")
+                    continue
+                
                 # Extract date from asset name or use release date
                 asset_date = extract_date_from_asset(asset_name, asset_url, created_at)
                 
@@ -310,6 +315,9 @@ for repo_path in repos:
         
         # Extract just the asset data (without dates) for the final output
         version_data = [asset_data for asset_data, _ in version_assets.values()]
+        
+        # Filter out any remaining entries with unknown- prefix (just to be safe)
+        version_data = [item for item in version_data if not item['version'].startswith('unknown-')]
         
         # Sort versions using improved version comparison
         try:
