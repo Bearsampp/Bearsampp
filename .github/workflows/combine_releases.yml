@@ -17,10 +17,10 @@ on:
   repository_dispatch:
     types: [module_release_created]
   
-  # Run once a day to catch any missed updates
+  # Run more frequently to catch any missed updates
   schedule:
-    # Run once a day at midnight UTC
-    - cron: '0 0 * * *'
+    # Run every hour
+    - cron: '0 * * * *'
 
 permissions:
   pull-requests: write

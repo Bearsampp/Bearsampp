@@ -72,39 +72,107 @@ def version_tuple(v):
 
 # Helper function to extract version from asset name
 def extract_version_from_asset(asset_name, module_short_name, tag_name):
-    # Pattern: bearsampp-{module}-{version}.7z or bearsampp-{module}-{version}-{anything}.7z
+    print(f"Extracting version from asset: {asset_name} for module: {module_short_name}")
+    
+    # Special case for assets with "neard-" prefix (legacy naming convention)
+    if asset_name.startswith('neard-'):
+        # Pattern: neard-{module}-{version}-r{release}.7z
+        neard_pattern = f"neard-{module_short_name}-(\\d+(?:\\.\\d+)+)-r\\d+"
+        neard_match = re.search(neard_pattern, asset_name)
+        if neard_match:
+            version_number = neard_match.group(1)
+            print(f"Extracted version {version_number} from neard-prefixed asset {asset_name}")
+            return version_number
+    
+    # General pattern for all modules: bearsampp-{module}-{version}-{date}.7z
+    # First try to match the standard pattern with version and date
+    standard_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)+)-"
+    print(f"Trying standard pattern: {standard_pattern}")
+    standard_match = re.search(standard_pattern, asset_name)
+    if standard_match:
+        version_number = standard_match.group(1)
+        print(f"Extracted version {version_number} from asset {asset_name} using standard pattern")
+        return version_number
+    
+    # Try alternative pattern: bearsampp-{module}-{version}.7z (no date)
+    alt_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)+)\\.7z"
+    print(f"Trying alternative pattern: {alt_pattern}")
+    alt_match = re.search(alt_pattern, asset_name)
+    if alt_match:
+        version_number = alt_match.group(1)
+        print(f"Extracted version {version_number} from asset {asset_name} using alternative pattern")
+        return version_number
+    
+    # Handle non-standard prefixes (like phppgadmin7.13.0-2022.08.28.7z)
+    # Try to match the module name directly at the start of the asset name
+    nonstandard_pattern = f"{module_short_name}(\\d+(?:\\.\\d+)+)-"
+    print(f"Trying non-standard pattern: {nonstandard_pattern}")
+    nonstandard_match = re.search(nonstandard_pattern, asset_name, re.IGNORECASE)
+    if nonstandard_match:
+        version_number = nonstandard_match.group(1)
+        print(f"Extracted version {version_number} from non-standard asset {asset_name}")
+        return version_number
+    
+    # For more complex patterns, extract everything between module name and .7z
     base_pattern = f"bearsampp-{module_short_name}-(.+?)\\.7z"
+    print(f"Trying base pattern: {base_pattern}")
     base_match = re.search(base_pattern, asset_name)
     
     if base_match:
         # Get everything between module name and .7z
         version_with_possible_suffix = base_match.group(1)
+        print(f"Found content between module name and .7z: {version_with_possible_suffix}")
         
         # Extract the version number from the string
         # First try to match X.Y.Z pattern
         version_match = re.search(r'(\d+\.\d+\.\d+)', version_with_possible_suffix)
         if version_match:
             version_number = version_match.group(1)
+            print(f"Extracted version {version_number} from asset {asset_name} using X.Y.Z pattern")
+            return version_number
+        
+        # Try to match X.Y pattern
+        version_match = re.search(r'(\d+\.\d+)', version_with_possible_suffix)
+        if version_match:
+            version_number = version_match.group(1)
+            print(f"Extracted version {version_number} from asset {asset_name} using X.Y pattern")
+            return version_number
+        
+        # If no version pattern found, use the whole string before the first hyphen
+        if '-' in version_with_possible_suffix:
+            version_number = version_with_possible_suffix.split('-')[0]
+            print(f"Extracted version {version_number} from asset {asset_name} by splitting at hyphen")
+            return version_number
         else:
-            # Try to match X.Y pattern
-            version_match = re.search(r'(\d+\.\d+)', version_with_possible_suffix)
-            if version_match:
-                version_number = version_match.group(1)
-            else:
-                # If no version pattern found, use the whole string before the first hyphen
-                if '-' in version_with_possible_suffix:
-                    version_number = version_with_possible_suffix.split('-')[0]
-                else:
-                    version_number = version_with_possible_suffix
-    else:
-        # Fallback to tag name if pattern doesn't match
-        version_number = tag_name
-        print(f"Warning: Could not extract version from asset name for {asset_name}, using tag name instead")
+            version_number = version_with_possible_suffix
+            print(f"Using entire string {version_number} as version from asset {asset_name}")
+            return version_number
     
-    return version_number
+    # Try to extract version directly from the asset name if it contains a version pattern
+    # First try X.Y.Z pattern
+    print("Trying direct version extraction from asset name")
+    version_match = re.search(r'(\d+\.\d+\.\d+)', asset_name)
+    if version_match:
+        version_number = version_match.group(1)
+        print(f"Extracted version {version_number} directly from asset name {asset_name} using X.Y.Z pattern")
+        return version_number
+    
+    # Then try to find any version-like pattern in the asset name
+    # This will catch cases like phppgadmin7.13.0-2022.08.28.7z
+    version_match = re.search(r'(\d+(?:\.\d+)+)', asset_name)
+    if version_match:
+        version_number = version_match.group(1)
+        print(f"Extracted version {version_number} directly from asset name {asset_name} using generic version pattern")
+        return version_number
+    
+    # If we get here, we couldn't extract a version using any pattern
+    print(f"WARNING: Could not extract version from asset name: {asset_name}")
+    return f"unknown-{module_short_name}"
 
 # Helper function to extract date from asset name or URL
 def extract_date_from_asset(asset_name, asset_url, created_at):
+    print(f"Extracting date from asset: {asset_name}")
+    
     # Try to extract date from asset name (format: YYYY.MM.DD)
     date_match = re.search(r'(\d{4}\.\d{1,2}\.\d{1,2})', asset_name)
     if date_match:
@@ -112,25 +180,58 @@ def extract_date_from_asset(asset_name, asset_url, created_at):
             date_str = date_match.group(1)
             # Convert dots to dashes for datetime parsing
             date_str = date_str.replace('.', '-')
-            return datetime.strptime(date_str, '%Y-%m-%d')
-        except ValueError:
-            pass
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+            print(f"Extracted date {date_obj} from asset name using YYYY.MM.DD pattern")
+            return date_obj
+        except ValueError as e:
+            print(f"Failed to parse date from {date_str}: {e}")
     
     # Try to extract date from asset name (format: YYYY.M.D)
     date_match = re.search(r'(\d{4})\.(\d{1,2})\.(\d{1,2})', asset_name)
     if date_match:
         try:
             year, month, day = date_match.groups()
-            return datetime(int(year), int(month), int(day))
-        except ValueError:
-            pass
+            date_obj = datetime(int(year), int(month), int(day))
+            print(f"Extracted date {date_obj} from asset name using YYYY.M.D pattern")
+            return date_obj
+        except ValueError as e:
+            print(f"Failed to parse date from {year}.{month}.{day}: {e}")
     
-    # If no date in asset name, use the release created_at date
+    # Try to extract date from asset name (format: YYYY-MM-DD)
+    date_match = re.search(r'(\d{4}-\d{1,2}-\d{1,2})', asset_name)
+    if date_match:
+        try:
+            date_str = date_match.group(1)
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+            print(f"Extracted date {date_obj} from asset name using YYYY-MM-DD pattern")
+            return date_obj
+        except ValueError as e:
+            print(f"Failed to parse date from {date_str}: {e}")
+    
+    # Try to extract date from URL
+    date_match = re.search(r'/(\d{4}\.\d{1,2}\.\d{1,2})/', asset_url)
+    if date_match:
+        try:
+            date_str = date_match.group(1)
+            # Convert dots to dashes for datetime parsing
+            date_str = date_str.replace('.', '-')
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+            print(f"Extracted date {date_obj} from URL")
+            return date_obj
+        except ValueError as e:
+            print(f"Failed to parse date from URL {date_str}: {e}")
+    
+    # If no date in asset name or URL, use the release created_at date
     try:
-        return datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
-    except (ValueError, TypeError):
+        date_obj = datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
+        print(f"Using release date {date_obj} from created_at")
+        return date_obj
+    except (ValueError, TypeError) as e:
+        print(f"Failed to parse created_at date {created_at}: {e}")
         # If all else fails, use current time (least preferred)
-        return datetime.now()
+        date_obj = datetime.now()
+        print(f"Using current time {date_obj} as fallback")
+        return date_obj
 
 for repo_path in repos:
     # Split the repo path into owner and repo
@@ -179,6 +280,9 @@ for repo_path in repos:
                 # Extract date from asset name or use release date
                 asset_date = extract_date_from_asset(asset_name, asset_url, created_at)
                 
+                # Debug: Print what we're about to store
+                print(f"DEBUG: For asset {asset_name}, extracted version={version_number}, date={asset_date}")
+                
                 # Check if we already have this version and if this asset is newer
                 if version_number in version_assets:
                     existing_date = version_assets[version_number][1]
@@ -199,6 +303,11 @@ for repo_path in repos:
                         'prerelease': is_prerelease
                     }, asset_date)
         
+        # Debug: Print the final version_assets dictionary before sorting
+        print(f"DEBUG: Final version_assets for {module_name} before sorting:")
+        for version_key, (asset_data, date) in version_assets.items():
+            print(f"  {version_key}: {asset_data['url']} ({date})")
+        
         # Extract just the asset data (without dates) for the final output
         version_data = [asset_data for asset_data, _ in version_assets.values()]
         
@@ -215,6 +324,11 @@ for repo_path in repos:
                 print(f"Warning: Could not sort versions for {repo} using semver: {e2}")
                 # Fallback: Use string normalization for simple version comparison
                 version_data.sort(key=lambda x: normalize_version(x['version']), reverse=True)
+
+        # Debug: Print the final sorted version data
+        print(f"DEBUG: Final sorted version_data for {module_name}:")
+        for item in version_data:
+            print(f"  {item['version']}: {item['url']}")
 
         combined_data.append({
             'module': module_name,
