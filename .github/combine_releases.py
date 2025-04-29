@@ -74,12 +74,10 @@ def version_tuple(v):
 def extract_version_from_asset(asset_name, module_short_name, tag_name):
     print(f"Extracting version from asset: {asset_name} for module: {module_short_name}")
     
-    # Special case for Ngrok version 3
-    if module_short_name == 'ngrok':
-        print(f"Processing Ngrok asset: {asset_name}")
-        if 'ngrok-3-' in asset_name or 'ngrok-3.' in asset_name or asset_name.endswith('ngrok-3.7z'):
-            print(f"NGROK MATCH FOUND! Setting version to 3.0 for asset: {asset_name}")
-            return '3.0'
+    # Special case for Ngrok version 3 - only for the specific older asset
+    if module_short_name == 'ngrok' and asset_name == 'bearsampp-ngrok-3-2022.07.14.7z':
+        print(f"Applying special case for specific Ngrok asset: setting version to 3.0")
+        return '3.0'
     
     # Special case for assets with "neard-" prefix (legacy naming convention)
     if asset_name.startswith('neard-'):
@@ -130,9 +128,9 @@ def extract_version_from_asset(asset_name, module_short_name, tag_name):
         version_with_possible_suffix = base_match.group(1)
         print(f"Found content between module name and .7z: {version_with_possible_suffix}")
         
-        # Special case for Ngrok version 3 (again, just to be sure)
-        if module_short_name == 'ngrok' and (version_with_possible_suffix == '3' or version_with_possible_suffix.startswith('3-')):
-            print(f"NGROK MATCH FOUND in base pattern! Setting version to 3.0 for content: {version_with_possible_suffix}")
+        # Special case for Ngrok version 3 - only for specific patterns
+        if module_short_name == 'ngrok' and version_with_possible_suffix == '3':
+            print(f"Applying special case for Ngrok version 3: setting version to 3.0")
             return '3.0'
         
         # Extract the version number from the string
