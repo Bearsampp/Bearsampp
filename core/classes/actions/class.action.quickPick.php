@@ -745,7 +745,7 @@ class QuickPick
     public function generateModuleOptions(array $jsonData, string $activeModule = ''): string
     {
         global $bearsamppConfig;
-        $includePR = $bearsamppConfig->getIncludePr();
+        $includePr = $bearsamppConfig->getIncludePr();
         
         $html = '<ul class="select-dropdown" role="listbox" id="select-dropdown" tabindex="-1">' . PHP_EOL;
         
@@ -772,8 +772,8 @@ class QuickPick
                 // Simply use the prerelease flag directly from the JSON
                 $isPrerelease = isset($version_array['prerelease']) && $version_array['prerelease'] === true;
                 
-                // Skip prereleases if IncludePR is set to 0
-                if ($isPrerelease && !$includePR) {
+                // Skip prereleases if includePr is set to 0
+                if ($isPrerelease && !$includePr) {
                     continue;
                 }
                 
