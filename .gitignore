@@ -4,8 +4,9 @@
 
 # Bearsampp
 /tmp/*
-/core/tmp/*
 /logs/*
+/core/logs/*
+/core/tmp/*
 
 # ignore "current" directories
 /**/current
