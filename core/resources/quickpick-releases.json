@@ -3,6 +3,11 @@
     "module": "module-adminer",
     "versions": [
       {
+        "version": "5.2.1",
+        "url": "https://github.com/Bearsampp/module-adminer/releases/download/2025.5.2/bearsampp-adminer-5.2.1-2025.4.26.7z",
+        "prerelease": true
+      },
+      {
         "version": "4.8.1",
         "url": "https://github.com/Bearsampp/module-adminer/releases/download/2022.7.07/bearsampp-adminer-4.8.1-2022.7.07.7z",
         "prerelease": false
