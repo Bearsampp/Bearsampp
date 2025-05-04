@@ -15,7 +15,7 @@ on:
   
   # Run when triggered by module repositories
   repository_dispatch:
-    types: [module_release_created]
+    types: [quickpick_dispatch]
   
   # Run monthly to catch any missed updates
   schedule:
