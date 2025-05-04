@@ -23,8 +23,8 @@ class Config
     const CFG_NOTEPAD = 'notepad';
     const CFG_SCRIPTS_TIMEOUT = 'scriptsTimeout';
     const DOWNLOAD_ID = 'DownloadId';
-    const INCLUDE_PR = 'IncludePR';
 
+    const CFG_INCLUDE_PR = 'IncludePR';
     const CFG_DEFAULT_LANG = 'defaultLang';
     const CFG_HOSTNAME = 'hostname';
     const CFG_BROWSER = 'browser';
@@ -137,17 +137,6 @@ class Config
     }
 
     /**
-     * Retrieves the license key from the configuration.
-     *
-     * @return string The license key.
-     */
-    public function getIncludePr()
-    {
-        return $this->raw[self::INCLUDE_PR];
-    }
-
-
-    /**
      * Checks if the application is set to be online.
      *
      * @return bool True if online, false otherwise.
@@ -225,5 +214,15 @@ class Config
     public function getMaxLogsArchives()
     {
         return intval($this->raw[self::CFG_MAX_LOGS_ARCHIVES]);
+    }
+
+    /**
+     * Retrieves the IncludePr setting from the configuration.
+     *
+     * @return int 1 if PR should be included, 0 otherwise
+     */
+    public function getIncludePr()
+    {
+        return isset($this->raw[self::CFG_INCLUDE_PR]) ? intval($this->raw[self::CFG_INCLUDE_PR]) : 0;
     }
 }
