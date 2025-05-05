@@ -184,6 +184,7 @@
                 <filter token = "APPCONF_LOGS_VERBOSE" value = "${appconf.logsVerbose}" />
                 <filter token = "APPCONF_SCRIPTS_TIMEOUT" value = "${appconf.scriptsTimeout}" />
                 <filter token = "APPCONF_DOWNLOAD_ID" value = "${appconf.downloadId}" />
+                <filter token = "APPCONF_INCLUDE_PR" value = "${appconf.IncludePR}" />
 
                 <filter token = "BIN_APACHE_VERSION" value = "${bin.apache.version}" />
                 <filter token = "BIN_PHP_VERSION" value = "${bin.php.version}" />
