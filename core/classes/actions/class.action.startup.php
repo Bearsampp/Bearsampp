@@ -256,261 +256,220 @@ class ActionStartup
 
     }
 
-
     /**
      * Rotates the logs by archiving old logs and purging old archives.
      * Enhanced with file lock checking to prevent permission denied errors.
-     * Updated for PHP 8.4.6 compatibility.
      */
     private function rotationLogs()
     {
         global $bearsamppRoot, $bearsamppCore, $bearsamppConfig, $bearsamppLang, $bearsamppBins;
 
-        Util::logTrace('Starting log rotation process');
+        Util::logTrace("Starting log rotation process");
         $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_ROTATION_LOGS_TEXT));
         $this->splash->incrProgressBar();
 
-        try {
-            $archivesPath = $bearsamppRoot->getLogsPath() . '/archives';
-            if (!is_dir($archivesPath)) {
-                Util::logTrace('Creating archives directory: ' . $archivesPath);
-                if (!mkdir($archivesPath, 0777, true) && !is_dir($archivesPath)) {
-                    Util::logTrace('Failed to create archives directory: ' . $archivesPath);
-
-                    return;
-                }
-
-                return;
-            }
-
-            $date               = date('Y-m-d-His', time());
-            $archiveLogsPath    = $archivesPath . '/' . $date;
-            $archiveScriptsPath = $archiveLogsPath . '/scripts';
-
-            // Create archive folders with improved error handling
-            Util::logTrace('Creating archive directories for current rotation');
-            if (!is_dir($archiveLogsPath)) {
-                Util::logTrace('Creating logs archive directory: ' . $archiveLogsPath);
-                if (!mkdir($archiveLogsPath, 0777, true) && !is_dir($archiveLogsPath)) {
-                    Util::logTrace('Failed to create logs archive directory: ' . $archiveLogsPath);
-
-                    return;
-                }
-            } else {
-                Util::logTrace('Logs archive directory already exists: ' . $archiveLogsPath);
-            }
-
-            if (!is_dir($archiveScriptsPath)) {
-                Util::logTrace('Creating scripts archive directory: ' . $archiveScriptsPath);
-                if (!mkdir($archiveScriptsPath, 0777, true) && !is_dir($archiveScriptsPath)) {
-                    Util::logTrace('Failed to create scripts archive directory: ' . $archiveScriptsPath);
-
-                    return;
-                }
-            } else {
-                Util::logTrace('Scripts archive directory already exists: ' . $archiveScriptsPath);
-            }
-
-            // Count archives
-            $archives = array();
-            $handle   = @opendir($archivesPath);
-            if (!$handle) {
-                Util::logTrace('Failed to open archives directory: ' . $archivesPath);
-
-                return;
-            }
-
-            while (false !== ($file = readdir($handle))) {
-                if ($file == '.' || $file == '..') {
-                    continue;
-                }
-                $archives[] = $archivesPath . '/' . $file;
-            }
-            closedir($handle);
-            sort($archives);
-            Util::logTrace('Found ' . count($archives) . ' existing archives');
-
-            // Remove old archives
-            if (count($archives) > $bearsamppConfig->getMaxLogsArchives()) {
-                $total = count($archives) - $bearsamppConfig->getMaxLogsArchives();
-                Util::logTrace('Removing ' . $total . ' old archives');
-                for ($i = 0; $i < $total; $i++) {
-                    Util::logTrace('Deleting old archive: ' . $archives[$i]);
-                    Util::deleteFolder($archives[$i]);
-                }
-            }
-
-            // Helper function to check if a file is locked - improved for PHP 8.4.6
-            $isFileLocked = function ($filePath) {
-                if (!file_exists($filePath)) {
-                    return false;
-                }
-
-                // Try to open with read-only access first
-                $handle = @fopen($filePath, 'r');
-                if ($handle === false) {
-                    Util::logTrace('File appears to be locked (cannot open for reading): ' . $filePath);
-
-                    return true; // File is locked
-                }
-
-                // Close the read handle
-                fclose($handle);
-
-                // Now try to open with write access
-                $handle = @fopen($filePath, 'r+');
-                if ($handle === false) {
-                    Util::logTrace('File appears to be locked (cannot open for writing): ' . $filePath);
-
-                    return true; // File is locked
-                }
-
-                // Release the handle
-                fclose($handle);
-
-                return false; // File is not locked
-            };
-
-            // Logs
-            Util::logTrace('Archiving log files');
-            $srcPath = $bearsamppRoot->getLogsPath();
-            $handle  = @opendir($srcPath);
-            if (!$handle) {
-                Util::logTrace('Failed to open logs directory: ' . $srcPath);
-
-                return;
-            }
-
-            $logsCopied  = 0;
-            $logsSkipped = 0;
-
-            while (false !== ($file = readdir($handle))) {
-                if ($file == '.' || $file == '..' || is_dir($srcPath . '/' . $file) || $file == 'archives' || $file == '.gitignore') {
-                    continue;
-                }
-
-                $sourceFile = $srcPath . '/' . $file;
-                $destFile   = $archiveLogsPath . '/' . $file;
-
-                // Check if file is locked before attempting to copy
-                if ($isFileLocked($sourceFile)) {
-                    Util::logTrace('Skipping locked log file: ' . $file);
-                    $logsSkipped++;
-                    continue;
-                }
-
-                try {
-                    if (copy($sourceFile, $destFile)) {
-                        $logsCopied++;
-                        Util::logTrace('Archived log file: ' . $file);
-                    } else {
-                        $logsSkipped++;
-                        Util::logTrace('Failed to copy log file: ' . $file);
-                    }
-                } catch (Exception $e) {
-                    $logsSkipped++;
-                    Util::logTrace('Exception copying log file ' . $file . ': ' . $e->getMessage());
-                }
-            }
-            closedir($handle);
-            Util::logTrace('Logs archived: ' . $logsCopied . ' copied, ' . $logsSkipped . ' skipped');
-
-            // Scripts
-            Util::logTrace('Archiving script files');
-            $srcPath = $bearsamppCore->getTmpPath();
-            $handle  = @opendir($srcPath);
-            if (!$handle) {
-                Util::logTrace('Failed to open tmp directory: ' . $srcPath);
-
-                return;
-            }
-
-            $scriptsCopied  = 0;
-            $scriptsSkipped = 0;
-
-            while (false !== ($file = readdir($handle))) {
-                if ($file == '.' || $file == '..' || is_dir($srcPath . '/' . $file)) {
-                    continue;
-                }
-
-                $sourceFile = $srcPath . '/' . $file;
-                $destFile   = $archiveScriptsPath . '/' . $file;
-
-                // Check if file is locked before attempting to copy
-                if ($isFileLocked($sourceFile)) {
-                    Util::logTrace('Skipping locked script file: ' . $file);
-                    $scriptsSkipped++;
-                    continue;
-                }
-
-                try {
-                    if (copy($sourceFile, $destFile)) {
-                        $scriptsCopied++;
-                        Util::logTrace('Archived script file: ' . $file);
-                    } else {
-                        $scriptsSkipped++;
-                        Util::logTrace('Failed to copy script file: ' . $file);
-                    }
-                } catch (Exception $e) {
-                    $scriptsSkipped++;
-                    Util::logTrace('Exception copying script file ' . $file . ': ' . $e->getMessage());
-                }
-            }
-            closedir($handle);
-            Util::logTrace('Scripts archived: ' . $scriptsCopied . ' copied, ' . $scriptsSkipped . ' skipped');
-
-            // Purge logs - only delete files that aren't locked
-            Util::logTrace('Purging log files');
-            $logsPath = $bearsamppRoot->getLogsPath();
-            $handle   = @opendir($logsPath);
-            if (!$handle) {
-                Util::logTrace('Failed to open logs directory for purging: ' . $logsPath);
-
-                return;
-            }
-
-            $logsDeleted      = 0;
-            $logsPurgeSkipped = 0;
-
-            while (false !== ($file = readdir($handle))) {
-                if ($file == '.' || $file == '..' || $file == 'archives' || $file == '.gitignore' || is_dir($logsPath . '/' . $file)) {
-                    continue;
-                }
-
-                $filePath = $logsPath . '/' . $file;
-
-                // Check if file is locked before attempting to delete
-                if ($isFileLocked($filePath)) {
-                    Util::logTrace('Skipping locked log file during purge: ' . $file);
-                    $logsPurgeSkipped++;
-                    continue;
-                }
-
-                try {
-                    if (unlink($filePath)) {
-                        $logsDeleted++;
-                        Util::logTrace('Purged log file: ' . $file);
-                    } else {
-                        $logsPurgeSkipped++;
-                        Util::logTrace('Failed to purge log file: ' . $file);
-                    }
-                } catch (Exception $e) {
-                    $logsPurgeSkipped++;
-                    Util::logTrace('Exception purging log file ' . $file . ': ' . $e->getMessage());
-                }
-            }
-            closedir($handle);
-            Util::logTrace('Logs purged: ' . $logsDeleted . ' deleted, ' . $logsPurgeSkipped . ' skipped');
-
-            Util::logTrace('Log rotation completed');
-        } catch (Exception $e) {
-            Util::logTrace('Exception in log rotation: ' . $e->getMessage());
-        } catch (Throwable $e) {
-            // PHP 7+ compatibility
-            Util::logTrace('Throwable in log rotation: ' . $e->getMessage());
+        $archivesPath = $bearsamppRoot->getLogsPath() . '/archives';
+        if (!is_dir($archivesPath)) {
+            Util::logTrace("Creating archives directory: " . $archivesPath);
+            mkdir($archivesPath, 0777, true);
+            return;
         }
-    }
 
+        $date = date('Y-m-d-His', time());
+        $archiveLogsPath = $archivesPath . '/' . $date;
+        $archiveScriptsPath = $archiveLogsPath . '/scripts';
+
+        // Create archive folders
+        Util::logTrace("Creating archive directories for current rotation");
+        if (!is_dir($archiveLogsPath)) {
+            Util::logTrace("Creating logs archive directory: " . $archiveLogsPath);
+            mkdir($archiveLogsPath, 0777, true);
+        } else {
+            Util::logTrace("Logs archive directory already exists: " . $archiveLogsPath);
+        }
+
+        if (!is_dir($archiveScriptsPath)) {
+            Util::logTrace("Creating scripts archive directory: " . $archiveScriptsPath);
+            mkdir($archiveScriptsPath, 0777, true);
+        } else {
+            Util::logTrace("Scripts archive directory already exists: " . $archiveScriptsPath);
+        }
+
+        // Count archives
+        Util::logTrace("Counting existing archives");
+        $archives = array();
+        $handle = @opendir($archivesPath);
+        if (!$handle) {
+            Util::logTrace("Failed to open archives directory: " . $archivesPath);
+            return;
+        }
+
+        while (false !== ($file = readdir($handle))) {
+            if ($file == '.' || $file == '..') {
+                continue;
+            }
+            $archives[] = $archivesPath . '/' . $file;
+        }
+        closedir($handle);
+        sort($archives);
+        Util::logTrace("Found " . count($archives) . " existing archives");
+
+        // Remove old archives
+        if (count($archives) > $bearsamppConfig->getMaxLogsArchives()) {
+            $total = count($archives) - $bearsamppConfig->getMaxLogsArchives();
+            Util::logTrace("Removing " . $total . " old archives");
+            for ($i = 0; $i < $total; $i++) {
+                Util::logTrace("Deleting old archive: " . $archives[$i]);
+                Util::deleteFolder($archives[$i]);
+            }
+        }
+
+        // Helper function to check if a file is locked
+        $isFileLocked = function($filePath) {
+            if (!file_exists($filePath)) {
+                return false;
+            }
+
+            $handle = @fopen($filePath, 'r+');
+            if ($handle === false) {
+                Util::logTrace("File appears to be locked: " . $filePath);
+                return true; // File is locked
+            }
+
+            fclose($handle);
+            return false; // File is not locked
+        };
+
+        // Logs
+        Util::logTrace("Archiving log files");
+        $srcPath = $bearsamppRoot->getLogsPath();
+        $handle = @opendir($srcPath);
+        if (!$handle) {
+            Util::logTrace("Failed to open logs directory: " . $srcPath);
+            return;
+        }
+
+        $logsCopied = 0;
+        $logsSkipped = 0;
+
+        while (false !== ($file = readdir($handle))) {
+            if ($file == '.' || $file == '..' || is_dir($srcPath . '/' . $file)) {
+                continue;
+            }
+
+            $sourceFile = $srcPath . '/' . $file;
+            $destFile = $archiveLogsPath . '/' . $file;
+
+            // Check if file is locked before attempting to copy
+            if ($isFileLocked($sourceFile)) {
+                Util::logTrace("Skipping locked log file: " . $file);
+                $logsSkipped++;
+                continue;
+            }
+
+            try {
+                if (copy($sourceFile, $destFile)) {
+                    $logsCopied++;
+                    Util::logTrace("Archived log file: " . $file);
+                } else {
+                    $logsSkipped++;
+                    Util::logTrace("Failed to copy log file: " . $file);
+                }
+            } catch (Exception $e) {
+                $logsSkipped++;
+                Util::logTrace("Exception copying log file " . $file . ": " . $e->getMessage());
+            }
+        }
+        closedir($handle);
+        Util::logTrace("Logs archived: " . $logsCopied . " copied, " . $logsSkipped . " skipped");
+
+        // Scripts
+        Util::logTrace("Archiving script files");
+        $srcPath = $bearsamppCore->getTmpPath();
+        $handle = @opendir($srcPath);
+        if (!$handle) {
+            Util::logTrace("Failed to open tmp directory: " . $srcPath);
+            return;
+        }
+
+        $scriptsCopied = 0;
+        $scriptsSkipped = 0;
+
+        while (false !== ($file = readdir($handle))) {
+            if ($file == '.' || $file == '..' || is_dir($srcPath . '/' . $file)) {
+                continue;
+            }
+
+            $sourceFile = $srcPath . '/' . $file;
+            $destFile = $archiveScriptsPath . '/' . $file;
+
+            // Check if file is locked before attempting to copy
+            if ($isFileLocked($sourceFile)) {
+                Util::logTrace("Skipping locked script file: " . $file);
+                $scriptsSkipped++;
+                continue;
+            }
+
+            try {
+                if (copy($sourceFile, $destFile)) {
+                    $scriptsCopied++;
+                    Util::logTrace("Archived script file: " . $file);
+                } else {
+                    $scriptsSkipped++;
+                    Util::logTrace("Failed to copy script file: " . $file);
+                }
+            } catch (Exception $e) {
+                $scriptsSkipped++;
+                Util::logTrace("Exception copying script file " . $file . ": " . $e->getMessage());
+            }
+        }
+        closedir($handle);
+        Util::logTrace("Scripts archived: " . $scriptsCopied . " copied, " . $scriptsSkipped . " skipped");
+
+        // Purge logs - only delete files that aren't locked
+        Util::logTrace("Purging log files");
+        $logsPath = $bearsamppRoot->getLogsPath();
+        $handle = @opendir($logsPath);
+        if (!$handle) {
+            Util::logTrace("Failed to open logs directory for purging: " . $logsPath);
+            return;
+        }
+
+        $logsDeleted = 0;
+        $logsPurgeSkipped = 0;
+
+        while (false !== ($file = readdir($handle))) {
+            if ($file == '.' || $file == '..' || $file == 'archives' || $file == '.gitignore' || is_dir($logsPath . '/' . $file)) {
+                continue;
+            }
+
+            $filePath = $logsPath . '/' . $file;
+
+            // Check if file is locked before attempting to delete
+            if ($isFileLocked($filePath)) {
+                Util::logTrace("Skipping locked log file during purge: " . $file);
+                $logsPurgeSkipped++;
+                continue;
+            }
+
+            try {
+                if (unlink($filePath)) {
+                    $logsDeleted++;
+                    Util::logTrace("Purged log file: " . $file);
+                } else {
+                    $logsPurgeSkipped++;
+                    Util::logTrace("Failed to purge log file: " . $file);
+                }
+            } catch (Exception $e) {
+                $logsPurgeSkipped++;
+                Util::logTrace("Exception purging log file " . $file . ": " . $e->getMessage());
+            }
+        }
+        closedir($handle);
+        Util::logTrace("Logs purged: " . $logsDeleted . " deleted, " . $logsPurgeSkipped . " skipped");
+
+        Util::logTrace("Log rotation completed");
+    }
 
     /**
      * Cleans temporary folders by removing unnecessary files.
