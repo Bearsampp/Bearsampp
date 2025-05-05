@@ -78,7 +78,6 @@ class Lang
     const VERBOSE_TRACE = 'verboseTrace';
     const VERSION = 'version';
     const VERSIONS = 'versions';
-    const VERSION_URL = 'https://github.com/Bearsampp/Bearsampp/releases/tag/';
     const VIRTUAL_HOSTS = 'virtualHosts';
     const WEBSITE = 'website';
 
