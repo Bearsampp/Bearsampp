@@ -1,10 +1,11 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
- * License:  GNU General Public License version 3 or later; see LICENSE.txt
- * Author: Bear
- * Website: https://bearsampp.com
- * Github: https://github.com/Bearsampp
+ *
+ *  * Copyright (c) 2022-2025 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
  */
 
 class OpenSsl
@@ -21,7 +22,7 @@ class OpenSsl
         global $bearsamppRoot, $bearsamppCore;
         $destPath = empty($destPath) ? $bearsamppRoot->getSslPath() : $destPath;
 
-        $subject = '"/C=FR/O=bearsampp/CN=' . $name . '"';
+        $subject = '"/C=US/O=Bearsampp/CN=' . $name . '"';
         $password = 'pass:bearsampp';
         $ppkPath = '"' . $destPath . '/' . $name . '.ppk"';
         $pubPath = '"' . $destPath . '/' . $name . '.pub"';
@@ -37,8 +38,11 @@ class OpenSsl
         $conf = $bearsamppCore->getTmpPath() . '/openssl_' . $name . '_' . Util::random() . '.cfg';
         file_put_contents($conf, file_get_contents($bearsamppCore->getOpenSslConf()) . $extContent);
 
-        // ppk
-        $batch = $exe . ' genrsa -des3 -passout ' . $password . ' -out ' . $ppkPath . ' 2048 -noout -config ' . $conf. PHP_EOL;
+        // Properly quote the config path for batch commands
+        $confPath = '"' . $conf . '"';
+
+        // ppk - Updated for OpenSSL 3.x syntax
+        $batch = $exe . ' genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -aes256 -pass ' . $password . ' -out ' . $ppkPath . ' -config ' . $confPath . PHP_EOL;
         $batch .= 'IF %ERRORLEVEL% GEQ 1 GOTO EOF' . PHP_EOL . PHP_EOL;
 
         // pub
@@ -47,7 +51,7 @@ class OpenSsl
 
         // crt
         $batch .= $exe . ' req -x509 -nodes -sha256 -new -key ' . $pubPath . ' -out ' . $crtPath . ' -passin ' . $password;
-        $batch .= ' -subj ' . $subject . ' -reqexts ' . $extension . ' -extensions ' . $extension . ' -config ' . $conf. PHP_EOL;
+        $batch .= ' -subj ' . $subject . ' -reqexts ' . $extension . ' -extensions ' . $extension . ' -config ' . $confPath . PHP_EOL;
         $batch .= 'IF %ERRORLEVEL% GEQ 1 GOTO EOF' . PHP_EOL . PHP_EOL;
 
         $batch .= ':EOF' . PHP_EOL;
@@ -55,8 +59,13 @@ class OpenSsl
         $batch .= 'IF EXIST ' . $pubPath . ' IF EXIST ' . $crtPath . ' SET RESULT=OK' . PHP_EOL;
         $batch .= 'ECHO %RESULT%';
 
+        Util::logTrace('Creating SSL Certificate for "' . $name . '"');
         $result = Batch::exec('createCertificate', $batch);
-        return isset($result[0]) && $result[0] == 'OK';
+
+        $success = isset($result[0]) && $result[0] == 'OK';
+        Util::logTrace('SSL Certificate generation for "' . $name . '": ' . ($success ? 'SUCCESS' : 'FAILURE'));
+
+        return $success;
     }
 
     /**
