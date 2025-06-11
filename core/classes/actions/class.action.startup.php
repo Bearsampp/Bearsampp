@@ -865,6 +865,13 @@ class ActionStartup
                     $port           = $bearsamppBins->getMysql()->getPort();
                     $syntaxCheckCmd = BinMysql::CMD_SYNTAX_CHECK;
                     Util::logTrace('Service identified as MySQL, port: ' . $port);
+
+                    // Pre-initialize MySQL data if needed
+                    if (!file_exists($bin->getDataDir()) || count(glob($bin->getDataDir() . '/*')) === 0) {
+                        Util::logTrace('Pre-initializing MySQL data directory');
+                        $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_CHECK_SERVICE_TEXT), $name . ' (initializing data)'));
+                        $bin->initData();
+                    }
                 } elseif ($sName == BinMariadb::SERVICE_NAME) {
                     $bin            = $bearsamppBins->getMariadb();
                     $port           = $bearsamppBins->getMariadb()->getPort();
@@ -892,10 +899,21 @@ class ActionStartup
                 $serviceCheckStartTime = microtime(true);
                 $serviceCheckTimeout = 15; // 15 seconds timeout
 
-                // Use specialized check for Apache service due to known issues with hanging
+                // Use specialized check for Apache and MySQL services due to known issues with hanging
                 if ($sName == BinApache::SERVICE_NAME) {
                     Util::logTrace('Using specialized Apache service check');
                     $serviceInfos = $this->checkApacheServiceWithTimeout($service);
+                } else if ($sName == BinMysql::SERVICE_NAME) {
+                    Util::logTrace('Using specialized MySQL service check');
+                    $serviceInfos = $this->checkMySQLServiceWithTimeout($service, $bin);
+
+                    // If service exists but is hanging, force restart
+                    if ($serviceInfos === false && $service->isInstalled()) {
+                        Util::logTrace('MySQL service appears to be hanging, forcing restart');
+                        Win32Ps::killBins(['mysqld.exe']);
+                        $service->delete();
+                        $serviceToRemove = true;
+                    }
                 } else {
                     try {
                         // Call infos() with a timeout check for other services
@@ -1017,12 +1035,32 @@ class ActionStartup
 
                             if (!empty($syntaxCheckCmd)) {
                                 Util::logTrace('Running syntax check command for ' . $name);
-                                $cmdSyntaxCheck = $bin->getCmdLineOutput($syntaxCheckCmd);
-                                if (!$cmdSyntaxCheck['syntaxOk']) {
-                                    $serviceError .= PHP_EOL . sprintf($bearsamppLang->getValue(Lang::STARTUP_SERVICE_SYNTAX_ERROR), $cmdSyntaxCheck['content']);
-                                    Util::logTrace('Syntax check failed: ' . $cmdSyntaxCheck['content']);
-                                } else {
-                                    Util::logTrace('Syntax check passed but service still failed to start');
+
+                                // Set a timeout for syntax check
+                                $syntaxCheckStartTime = microtime(true);
+                                $syntaxCheckTimeout = 5; // 5 seconds
+
+                                try {
+                                    $cmdSyntaxCheck = $bin->getCmdLineOutput($syntaxCheckCmd);
+
+                                    // Check if we've exceeded our timeout
+                                    if (microtime(true) - $syntaxCheckStartTime > $syntaxCheckTimeout) {
+                                        Util::logTrace('Syntax check timeout exceeded, assuming syntax is OK');
+                                        $cmdSyntaxCheck = ['syntaxOk' => true];
+                                    }
+
+                                    if (!$cmdSyntaxCheck['syntaxOk']) {
+                                        $serviceError .= PHP_EOL . sprintf($bearsamppLang->getValue(Lang::STARTUP_SERVICE_SYNTAX_ERROR), $cmdSyntaxCheck['content']);
+                                        Util::logTrace('Syntax check failed: ' . $cmdSyntaxCheck['content']);
+                                    } else {
+                                        Util::logTrace('Syntax check passed but service still failed to start');
+                                    }
+                                } catch (\Exception $e) {
+                                    Util::logTrace('Exception during syntax check: ' . $e->getMessage());
+                                    // Don't add error, just continue
+                                } catch (\Throwable $e) {
+                                    Util::logTrace('Throwable during syntax check: ' . $e->getMessage());
+                                    // Don't add error, just continue
                                 }
                             }
                         } else {
@@ -1080,35 +1118,35 @@ class ActionStartup
             $this->writeLog( 'Update GIT repos: ' . count( $repos ) . ' found' );
         }
     }
-    
+
     /**
      * Specialized method to check Apache service with timeout protection.
      * Apache service checks can sometimes hang, so this method provides a safer way to check.
-     * 
+     *
      * @param object $service The Apache service object
      * @return mixed Service info array or false if service not installed or check timed out
      */
     private function checkApacheServiceWithTimeout($service)
     {
         Util::logTrace('Starting specialized Apache service check with timeout protection');
-        
+
         // Set a timeout for the Apache service check
         $serviceCheckStartTime = microtime(true);
         $serviceCheckTimeout = 10; // 10 seconds timeout
-        
+
         try {
             // Use a non-blocking approach to check service
             $serviceInfos = false;
-            
+
             // First try a quick check if the service exists in the list
             $serviceList = Win32Service::getServices();
             if (is_array($serviceList) && isset($serviceList[$service->getName()])) {
                 Util::logTrace('Apache service found in service list, getting details');
-                
+
                 // Service exists, now try to get its details with timeout protection
                 $startTime = microtime(true);
                 $serviceInfos = $service->infos();
-                
+
                 // Check if we've exceeded our timeout
                 if (microtime(true) - $serviceCheckStartTime > $serviceCheckTimeout) {
                     Util::logTrace("Apache service check timeout exceeded, assuming service needs reinstall");
@@ -1118,13 +1156,61 @@ class ActionStartup
                 Util::logTrace('Apache service not found in service list');
                 return false;
             }
-            
+
             return $serviceInfos;
         } catch (\Exception $e) {
             Util::logTrace("Exception during Apache service check: " . $e->getMessage());
             return false;
         } catch (\Throwable $e) {
             Util::logTrace("Throwable during Apache service check: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Specialized method to check MySQL service with timeout protection.
+     * MySQL service checks can sometimes hang, so this method provides a safer way to check.
+     *
+     * @param object $service The MySQL service object
+     * @param object $bin The MySQL bin object
+     * @return mixed Service info array or false if service not installed or check timed out
+     */
+    private function checkMySQLServiceWithTimeout($service, $bin)
+    {
+        Util::logTrace('Starting specialized MySQL service check with timeout protection');
+
+        // Set a timeout for the MySQL service check
+        $serviceCheckStartTime = microtime(true);
+        $serviceCheckTimeout = 8; // 8 seconds timeout
+
+        try {
+            // Use a non-blocking approach to check service
+            $serviceInfos = false;
+
+            // First check if the service exists in the list
+            $serviceList = Win32Service::getServices();
+            if (is_array($serviceList) && isset($serviceList[$service->getName()])) {
+                Util::logTrace('MySQL service found in service list, getting details');
+
+                // Service exists, now try to get its details with timeout protection
+                $serviceInfos = $service->infos();
+
+                // Check if we've exceeded our timeout
+                if (microtime(true) - $serviceCheckStartTime > $serviceCheckTimeout) {
+                    Util::logTrace("MySQL service check timeout exceeded, assuming service needs reinstall");
+                    return false;
+                }
+            } else {
+                Util::logTrace('MySQL service not found in service list');
+                return false;
+            }
+
+            return $serviceInfos;
+        } catch (\Exception $e) {
+            Util::logTrace("Exception during MySQL service check: " . $e->getMessage());
+            return false;
+        } catch (\Throwable $e) {
+            Util::logTrace("Throwable during MySQL service check: " . $e->getMessage());
             return false;
         }
     }

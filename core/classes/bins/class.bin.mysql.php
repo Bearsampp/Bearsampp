@@ -42,6 +42,7 @@ class BinMysql extends Module
     private $rootPwd;
     private $cliExe;
     private $admin;
+    private $dataDir;
 
     /**
      * Constructs a BinMysql object and initializes the MySQL module.
@@ -82,6 +83,7 @@ class BinMysql extends Module
             $this->rootPwd  = isset( $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD] ) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD] : '';
             $this->cliExe   = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CLI_EXE];
             $this->admin    = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_ADMIN];
+            $this->dataDir  = $this->symlinkPath . '/data';
         }
 
         if ( !$this->enable ) {
@@ -222,73 +224,17 @@ class BinMysql extends Module
     {
         global $bearsamppLang, $bearsamppWinbinder;
         $boxTitle = sprintf( $bearsamppLang->getValue( Lang::CHECK_PORT_TITLE ), $this->getName(), $port );
+        $startTime = microtime(true);
 
         if ( !Util::isValidPort( $port ) ) {
             Util::logError( $this->getName() . ' port not valid: ' . $port );
-
             return false;
         }
 
-        $fp = @fsockopen( '127.0.0.1', $port, $errno, $errstr, 5 );
-        if ( $fp ) {
-            if ( version_compare( phpversion(), '5.3' ) === -1 ) {
-                $dbLink = mysqli_connect( '127.0.0.1', $this->rootUser, $this->rootPwd, '', $port );
-            }
-            else {
-                $dbLink = mysqli_connect( '127.0.0.1:' . $port, $this->rootUser, $this->rootPwd );
-            }
-            $isMysql = false;
-            $version = false;
-
-            if ( $dbLink ) {
-                $result = mysqli_query( $dbLink, 'SHOW VARIABLES' );
-                if ( $result ) {
-                    while ( false !== ($row = mysqli_fetch_array( $result, MYSQLI_NUM )) ) {
-                        if ( $row[0] == 'version' ) {
-                            $version = explode( '-', $row[1] );
-                            $version = count( $version ) > 1 ? $version[0] : $row[1];
-                        }
-                        if ( $row[0] == 'version_comment' && Util::startWith( strtolower( $row[1] ), 'mysql' ) ) {
-                            $isMysql = true;
-                        }
-                        if ( $isMysql && $version !== false ) {
-                            break;
-                        }
-                    }
-                    if ( !$isMysql ) {
-                        Util::logDebug( $this->getName() . ' port used by another DBMS: ' . $port );
-                        if ( $showWindow ) {
-                            $bearsamppWinbinder->messageBoxWarning(
-                                sprintf( $bearsamppLang->getValue( Lang::PORT_USED_BY_ANOTHER_DBMS ), $port ),
-                                $boxTitle
-                            );
-                        }
-                    }
-                    else {
-                        Util::logDebug( $this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $version );
-                        if ( $showWindow ) {
-                            $bearsamppWinbinder->messageBoxInfo(
-                                sprintf( $bearsamppLang->getValue( Lang::PORT_USED_BY ), $port, $this->getName() . ' ' . $version ),
-                                $boxTitle
-                            );
-                        }
-
-                        return true;
-                    }
-                }
-                mysqli_close( $dbLink );
-            }
-            else {
-                Util::logDebug( $this->getName() . ' port ' . $port . ' is used by another application' );
-                if ( $showWindow ) {
-                    $bearsamppWinbinder->messageBoxWarning(
-                        sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED_BY ), $port ),
-                        $boxTitle
-                    );
-                }
-            }
-        }
-        else {
+        // First check if port is open at all
+        $timeout = 3; // Reduced timeout for faster checking
+        $fp = @fsockopen( '127.0.0.1', $port, $errno, $errstr, $timeout );
+        if ( !$fp ) {
             Util::logDebug( $this->getName() . ' port ' . $port . ' is not used' );
             if ( $showWindow ) {
                 $bearsamppWinbinder->messageBoxError(
@@ -296,9 +242,74 @@ class BinMysql extends Module
                     $boxTitle
                 );
             }
+            return false;
         }
 
-        return false;
+        fclose($fp);
+
+        // Try to connect using PDO for better performance and error handling
+        try {
+            $options = [
+                \PDO::ATTR_TIMEOUT => $timeout,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+            ];
+
+            $dsn = "mysql:host=127.0.0.1;port=" . $port;
+            $dbLink = new \PDO($dsn, $this->rootUser, $this->rootPwd, $options);
+
+            // Check if it's MySQL
+            $stmt = $dbLink->query('SHOW VARIABLES');
+            $isMysql = false;
+            $version = false;
+
+            while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+                if ($row[0] == 'version') {
+                    $version = explode('-', $row[1]);
+                    $version = count($version) > 1 ? $version[0] : $row[1];
+                }
+                if ($row[0] == 'version_comment' && Util::startWith(strtolower($row[1]), 'mysql')) {
+                    $isMysql = true;
+                }
+                if ($isMysql && $version !== false) {
+                    break;
+                }
+            }
+
+            $dbLink = null; // Close connection
+
+            if (!$isMysql) {
+                Util::logDebug($this->getName() . ' port used by another DBMS: ' . $port);
+                if ($showWindow) {
+                    $bearsamppWinbinder->messageBoxWarning(
+                        sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY_ANOTHER_DBMS), $port),
+                        $boxTitle
+                    );
+                }
+                return false;
+            }
+
+            Util::logDebug($this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $version);
+            if ($showWindow) {
+                $bearsamppWinbinder->messageBoxInfo(
+                    sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY), $port, $this->getName() . ' ' . $version),
+                    $boxTitle
+                );
+            }
+
+            $totalTime = round(microtime(true) - $startTime, 2);
+            Util::logTrace("MySQL port check completed in {$totalTime}s");
+            return true;
+
+        } catch (\PDOException $e) {
+            Util::logDebug($this->getName() . ' port ' . $port . ' is used by another application');
+            if ($showWindow) {
+                $bearsamppWinbinder->messageBoxWarning(
+                    sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port),
+                    $boxTitle
+                );
+            }
+            return false;
+        }
     }
 
     /**
@@ -313,62 +324,74 @@ class BinMysql extends Module
     public function changeRootPassword($currentPwd, $newPwd, $wbProgressBar = null)
     {
         global $bearsamppWinbinder;
+        $startTime = microtime(true);
         $error = null;
+        $timeout = 5; // 5 seconds timeout
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( version_compare( phpversion(), '5.3' ) === -1 ) {
-            $dbLink = @mysqli_connect( '127.0.0.1', $this->rootUser, $currentPwd, '', $this->port );
-        }
-        else {
-            $dbLink = @mysqli_connect( '127.0.0.1:' . $this->port, $this->rootUser, $currentPwd );
-        }
-        if ( !$dbLink ) {
-            $error = mysqli_connect_error();
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+
+        try {
+            // Connect using PDO
+            $options = [
+                \PDO::ATTR_TIMEOUT => $timeout,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+            ];
+
+            $dsn = "mysql:host=127.0.0.1;port=" . $this->port;
+            $dbLink = new \PDO($dsn, $this->rootUser, $currentPwd, $options);
+
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+
+            // Determine MySQL version to use appropriate password update syntax
+            $stmt = $dbLink->query("SELECT VERSION()");
+            $version = $stmt->fetchColumn();
+
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+
+            // Use appropriate SQL syntax based on MySQL version
+            if (version_compare($version, '5.7.6', '>=')) {
+                // MySQL 5.7.6 and newer uses ALTER USER
+                $sql = "ALTER USER '{$this->rootUser}'@'localhost' IDENTIFIED BY :password";
+                $stmt = $dbLink->prepare($sql);
+                $stmt->bindParam(':password', $newPwd);
+            } else {
+                // Older versions use SET PASSWORD
+                $sql = "SET PASSWORD FOR '{$this->rootUser}'@'localhost' = PASSWORD(:password)";
+                $stmt = $dbLink->prepare($sql);
+                $stmt->bindParam(':password', $newPwd);
+            }
+
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+            $stmt->execute();
+
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+            $dbLink->query('FLUSH PRIVILEGES');
+
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+            $dbLink = null; // Close connection properly
+
+        } catch (\PDOException $e) {
+            $error = $e->getMessage();
         }
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        $stmt = @mysqli_prepare( $dbLink, 'UPDATE mysql.user SET Password=PASSWORD(?) WHERE User=?' );
-        if ( empty( $error ) && $stmt === false ) {
-            $error = mysqli_error( $dbLink );
-        }
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( empty( $error ) && !@mysqli_stmt_bind_param( $stmt, 'ss', $newPwd, $this->rootUser ) ) {
-            $error = mysqli_stmt_error( $stmt );
-        }
-
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( empty( $error ) && !@mysqli_stmt_execute( $stmt ) ) {
-            $error = mysqli_stmt_error( $stmt );
-        }
-
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( $stmt !== false ) {
-            mysqli_stmt_close( $stmt );
-        }
-
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( empty( $error ) && @mysqli_query( $dbLink, 'FLUSH PRIVILEGES' ) === false ) {
-            $error = mysqli_error( $dbLink );
-        }
-
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( $dbLink ) {
-            mysqli_close( $dbLink );
-        }
-
-        if ( !empty( $error ) ) {
+        if (!empty($error)) {
+            $totalTime = round(microtime(true) - $startTime, 2);
+            Util::logTrace("MySQL password change failed in {$totalTime}s: " . $error);
             return $error;
         }
 
         // bearsampp.conf
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        $this->setRootPwd( $newPwd );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+        $this->setRootPwd($newPwd);
 
         // conf
         $this->update();
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
+        $totalTime = round(microtime(true) - $startTime, 2);
+        Util::logTrace("MySQL password change completed in {$totalTime}s");
         return true;
     }
 
@@ -383,29 +406,37 @@ class BinMysql extends Module
     public function checkRootPassword($currentPwd = null, $wbProgressBar = null)
     {
         global $bearsamppWinbinder;
+        $startTime = microtime(true);
         $currentPwd = $currentPwd == null ? $this->rootPwd : $currentPwd;
-        $error      = null;
+        $error = null;
+        $timeout = 5; // 5 seconds timeout
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( version_compare( phpversion(), '5.3' ) === -1 ) {
-            $dbLink = @mysqli_connect( '127.0.0.1', $this->rootUser, $currentPwd, '', $this->port );
-        }
-        else {
-            $dbLink = @mysqli_connect( '127.0.0.1:' . $this->port, $this->rootUser, $currentPwd );
-        }
-        if ( !$dbLink ) {
-            $error = mysqli_connect_error();
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+
+        try {
+            $options = [
+                \PDO::ATTR_TIMEOUT => $timeout,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+            ];
+
+            $dsn = "mysql:host=127.0.0.1;port=" . $this->port;
+            $dbLink = new \PDO($dsn, $this->rootUser, $currentPwd, $options);
+            $dbLink = null; // Close connection properly
+
+        } catch (\PDOException $e) {
+            $error = $e->getMessage();
         }
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( $dbLink ) {
-            mysqli_close( $dbLink );
-        }
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
-        if ( !empty( $error ) ) {
+        if (!empty($error)) {
+            $totalTime = round(microtime(true) - $startTime, 2);
+            Util::logTrace("MySQL password check failed in {$totalTime}s: " . $error);
             return $error;
         }
 
+        $totalTime = round(microtime(true) - $startTime, 2);
+        Util::logTrace("MySQL password check completed in {$totalTime}s");
         return true;
     }
 
@@ -504,21 +535,81 @@ class BinMysql extends Module
      *
      * @param   string|null  $path     The path to the MySQL installation. If null, the current path is used.
      * @param   string|null  $version  The version of MySQL. If null, the current version is used.
+     * @return  bool         True if initialization was successful or not needed
      */
     public function initData($path = null, $version = null)
     {
+        Util::logTrace('Starting MySQL data initialization');
+        $startTime = microtime(true);
+
         $path    = $path != null ? $path : $this->getCurrentPath();
         $version = $version != null ? $version : $this->getVersion();
+        $dataDir = $path . '/data';
 
         if ( version_compare( $version, '5.7.0', '<' ) ) {
-            return;
+            Util::logTrace('MySQL version below 5.7.0, skipping initialization');
+            return true;
         }
 
-        if ( file_exists( $path . '/data' ) ) {
-            return;
+        if ( file_exists( $dataDir ) ) {
+            Util::logTrace('MySQL data directory already exists');
+            return true;
         }
 
-        Batch::initializeMysql( $path );
+        // Create data directory if it doesn't exist
+        if ( !is_dir( $dataDir ) ) {
+            mkdir( $dataDir, 0777, true );
+            Util::logTrace('Created MySQL data directory');
+        }
+
+        // Initialize MySQL data directory with timeout
+        $initDbStartTime = microtime(true);
+        $initDbTimeout = 30; // 30 seconds timeout
+
+        try {
+            $process = proc_open(
+                $path . '/bin/mysql_install_db.exe',
+                [
+                    0 => ['pipe', 'r'],
+                    1 => ['pipe', 'w'],
+                    2 => ['pipe', 'w']
+                ],
+                $pipes
+            );
+
+            if ( is_resource( $process ) ) {
+                // Set non-blocking mode
+                stream_set_blocking( $pipes[1], 0 );
+                stream_set_blocking( $pipes[2], 0 );
+
+                while ( true ) {
+                    if ( microtime(true) - $initDbStartTime > $initDbTimeout ) {
+                        Util::logTrace('MySQL init_db timeout reached');
+                        proc_terminate( $process );
+                        break;
+                    }
+
+                    $status = proc_get_status( $process );
+                    if ( !$status['running'] ) {
+                        break;
+                    }
+
+                    usleep(100000); // Sleep for 100ms
+                }
+
+                foreach ( $pipes as $pipe ) {
+                    fclose( $pipe );
+                }
+                proc_close( $process );
+            }
+        } catch ( \Exception $e ) {
+            Util::logTrace('Error during MySQL initialization: ' . $e->getMessage());
+            return false;
+        }
+
+        $totalTime = round(microtime(true) - $startTime, 2);
+        Util::logTrace("MySQL initialization completed in {$totalTime}s");
+        return true;
     }
 
     /**
@@ -729,5 +820,15 @@ class BinMysql extends Module
     public function getAdmin()
     {
         return $this->admin;
+    }
+
+    /**
+     * Retrieves the path to the MySQL data directory.
+     *
+     * @return string The path to the data directory.
+     */
+    public function getDataDir()
+    {
+        return $this->dataDir;
     }
 }
