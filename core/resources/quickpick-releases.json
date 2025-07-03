@@ -78,6 +78,11 @@
     "module": "module-bruno",
     "versions": [
       {
+        "version": "2.5.0",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.6.13/bearsampp-bruno-2.5.0-2025.6.13.7z",
+        "prerelease": false
+      },
+      {
         "version": "2.1.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.4.18/bearsampp-bruno-2.1.0-2025.4.18.7z",
         "prerelease": false
@@ -137,6 +142,11 @@
   {
     "module": "module-composer",
     "versions": [
+      {
+        "version": "2.8.9",
+        "url": "https://github.com/Bearsampp/module-composer/releases/download/2025.7.2/bearsampp-composer-2.8.9-2025.7.2.7z",
+        "prerelease": true
+      },
       {
         "version": "2.8.8",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2025.4.18/bearsampp-composer-2.8.8-2025.4.18.7z",
@@ -308,6 +318,11 @@
     "module": "module-git",
     "versions": [
       {
+        "version": "2.50.0.2",
+        "url": "https://github.com/Bearsampp/module-git/releases/download/2025.7.2/bearsampp-git-2.50.0.2-2025.7.2.7z",
+        "prerelease": true
+      },
+      {
         "version": "2.49.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2025.4.19/bearsampp-git-2.49.0-2025.4.19.7z",
         "prerelease": false
@@ -357,6 +372,21 @@
   {
     "module": "module-mailpit",
     "versions": [
+      {
+        "version": "1.27.0",
+        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.6.29/bearsampp-mailpit-1.27.0-2025.6.29.7z",
+        "prerelease": false
+      },
+      {
+        "version": "1.26.0",
+        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.6.7/bearsampp-mailpit-1.26.0-2025.6.7.7z",
+        "prerelease": false
+      },
+      {
+        "version": "1.24.2",
+        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.5.6/bearsampp-mailpit-1.24.2-2025.5.6.7z",
+        "prerelease": false
+      },
       {
         "version": "1.24.1",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.4.22/bearsampp-mailpit-1.24.1-2025.4.22.7z",
@@ -438,6 +468,11 @@
     "module": "module-mariadb",
     "versions": [
       {
+        "version": "11.8.2",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.7.2/bearsampp-mariadb-11.8.2-2025.7.2.7z",
+        "prerelease": true
+      },
+      {
         "version": "11.6.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.12.1/bearsampp-mariadb-11.6.2-2024.12.1.7z",
         "prerelease": false
@@ -456,6 +491,11 @@
         "version": "11.5.1",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.6.25/bearsampp-mariadb-11.5.1-RC-2024.6.25.7z",
         "prerelease": false
+      },
+      {
+        "version": "11.4.7",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.7.2/bearsampp-mariadb-11.4.7-2025.7.2.7z",
+        "prerelease": true
       },
       {
         "version": "11.4.5",
@@ -541,6 +581,11 @@
         "version": "11.0.1",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.4.20/bearsampp-mariadb-11.0.1-RC-2024.4.18.7z",
         "prerelease": false
+      },
+      {
+        "version": "10.11.13",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.7.2/bearsampp-mariadb-10.11.13-2025.7.2.7z",
+        "prerelease": true
       },
       {
         "version": "10.11.11",
@@ -673,6 +718,11 @@
         "prerelease": false
       },
       {
+        "version": "10.6.22",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.7.2/bearsampp-mariadb-10.6.22-2025.7.2.7z",
+        "prerelease": true
+      },
+      {
         "version": "10.6.21",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.2.11/bearsampp-mariadb-10.6.21-2025.2.11.7z",
         "prerelease": false
@@ -721,6 +771,11 @@
         "version": "10.6.8",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.4.20/bearsampp-mariadb-10.6.8-2024.4.18.7z",
         "prerelease": false
+      },
+      {
+        "version": "10.5.29",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.7.2/bearsampp-mariadb-10.5.29-2025.7.2.7z",
+        "prerelease": true
       },
       {
         "version": "10.5.28",
@@ -993,6 +1048,11 @@
     "module": "module-nodejs",
     "versions": [
       {
+        "version": "24.3.0",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.7.2/bearsampp-nodejs-24.3.0-2025.7.2.7z",
+        "prerelease": true
+      },
+      {
         "version": "23.11.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.4.19/bearsampp-nodejs-23.11.0-2025.3.2.7z",
         "prerelease": false
@@ -1021,6 +1081,11 @@
         "version": "23.1.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.11.1/bearsampp-nodejs-23.1.0-2024.11.1.7z",
         "prerelease": false
+      },
+      {
+        "version": "22.17.0",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.7.2/bearsampp-nodejs-22.17.0-2025.7.2.7z",
+        "prerelease": true
       },
       {
         "version": "22.14.0",
@@ -1543,6 +1608,11 @@
     "module": "module-postgresql",
     "versions": [
       {
+        "version": "17.5",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.7.2/bearsampp-postgresql-17.5-2025.7.2.7z",
+        "prerelease": true
+      },
+      {
         "version": "17.4",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-17.4-2025.2.21.7z",
         "prerelease": false
@@ -1563,6 +1633,11 @@
         "prerelease": false
       },
       {
+        "version": "16.9",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.7.2/bearsampp-postgresql-16.9-2025.7.2.7z",
+        "prerelease": true
+      },
+      {
         "version": "16.8",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-16.8-2025.2.21.7z",
         "prerelease": false
@@ -1581,6 +1656,11 @@
         "version": "16.0",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.10.9/bearsampp-postgresql-16.0-2023.10.9.7z",
         "prerelease": false
+      },
+      {
+        "version": "15.13",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.7.2/bearsampp-postgresql-15.13-2025.7.2.7z",
+        "prerelease": true
       },
       {
         "version": "15.12",
@@ -1611,6 +1691,11 @@
         "version": "15.0",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.10.28/bearsampp-postgresql-15.0-2022.10.28.7z",
         "prerelease": false
+      },
+      {
+        "version": "14.18",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.7.2/bearsampp-postgresql-14.18-2025.7.2.7z",
+        "prerelease": true
       },
       {
         "version": "14.17",
@@ -1646,6 +1731,11 @@
         "version": "14.4",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.09.13/bearsampp-postgresql-14.4-2022.09.13.7z",
         "prerelease": false
+      },
+      {
+        "version": "13.21",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.7.2/bearsampp-postgresql-13.21-2025.7.2.7z",
+        "prerelease": true
       },
       {
         "version": "13.20",
@@ -1723,6 +1813,11 @@
     "module": "module-python",
     "versions": [
       {
+        "version": "3.13.3",
+        "url": "https://github.com/Bearsampp/module-python/releases/download/2025.6.6/bearsampp-python-3.13.3-2025.6.6.7z",
+        "prerelease": false
+      },
+      {
         "version": "3.13.2",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2025.4.19/bearsampp-python-3.13.2-2025.4.19.7z",
         "prerelease": false
@@ -1772,6 +1867,11 @@
   {
     "module": "module-ruby",
     "versions": [
+      {
+        "version": "3.4.4",
+        "url": "https://github.com/Bearsampp/module-ruby/releases/download/2025.7.2/bearsampp-ruby-3.4.4-2-2025.7.2.7z",
+        "prerelease": true
+      },
       {
         "version": "3.4.3",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2025.4.19/bearsampp-ruby-3.4.3-2025.4.19.7z",
