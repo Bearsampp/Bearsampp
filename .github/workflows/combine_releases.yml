@@ -1,4 +1,4 @@
-name: Quickpick Combined Releases
+name: Quickpick Combine Releases
 
 on:
   # Run on pushes to main branch in the main repository
