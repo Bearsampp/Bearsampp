@@ -318,6 +318,11 @@
     "module": "module-git",
     "versions": [
       {
+        "version": "2.50.1",
+        "url": "https://github.com/Bearsampp/module-git/releases/download/2025.7.10/bearsampp-git-2.50.1-2025.7.10.7z",
+        "prerelease": true
+      },
+      {
         "version": "2.50.0.2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2025.7.2/bearsampp-git-2.50.0.2-2025.7.2.7z",
         "prerelease": false
