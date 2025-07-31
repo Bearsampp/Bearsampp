@@ -278,6 +278,11 @@
     "module": "module-ghostscript",
     "versions": [
       {
+        "version": "10.05.1",
+        "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2025.7.31/bearsampp-ghostscript-10.05.1-2025.7.31.7z",
+        "prerelease": true
+      },
+      {
         "version": "10.05.0",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2025.4.26/bearsampp-ghostscript-10.05.0-2025.4.26.7z",
         "prerelease": false
