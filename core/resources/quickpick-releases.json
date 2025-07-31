@@ -1068,6 +1068,11 @@
     "module": "module-nodejs",
     "versions": [
       {
+        "version": "24.4.1",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.7.31/bearsampp-nodejs-24.4.1-2025.7.31.7z",
+        "prerelease": false
+      },
+      {
         "version": "24.3.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.7.2/bearsampp-nodejs-24.3.0-2025.7.2.7z",
         "prerelease": false
@@ -1952,6 +1957,11 @@
   {
     "module": "module-xlight",
     "versions": [
+      {
+        "version": "3.9.4.6",
+        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2025.7.31/bearsampp-xlight-3.9.4.6-2025.2.13.7z",
+        "prerelease": true
+      },
       {
         "version": "3.9.4.5",
         "url": "https://github.com/Bearsampp/module-xlight/releases/download/2025.2.13/bearsampp-xlight-3.9.4.5-2025.2.13.7z",
