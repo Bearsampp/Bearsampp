@@ -1043,6 +1043,11 @@
     "module": "module-ngrok",
     "versions": [
       {
+        "version": "3.25.0",
+        "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2025.7.31/bearsampp-ngrok-3.25.0-2025.7.31.7z",
+        "prerelease": true
+      },
+      {
         "version": "3.19.1",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2025.02.16/bearsampp-ngrok-3.19.1-2025.02.16.7z",
         "prerelease": false
