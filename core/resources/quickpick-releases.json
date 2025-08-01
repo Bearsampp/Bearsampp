@@ -280,7 +280,7 @@
       {
         "version": "10.05.1",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2025.7.31/bearsampp-ghostscript-10.05.1-2025.7.31.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "10.05.0",
@@ -1045,7 +1045,7 @@
       {
         "version": "3.25.0",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2025.7.31/bearsampp-ngrok-3.25.0-2025.7.31.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.19.1",
