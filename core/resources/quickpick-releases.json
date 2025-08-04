@@ -1959,8 +1959,8 @@
     "versions": [
       {
         "version": "3.9.4.6",
-        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2025.7.31/bearsampp-xlight-3.9.4.6-2025.2.13.7z",
-        "prerelease": true
+        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2025.7.31/bearsampp-xlight-3.9.4.6-2025.7.31.7z",
+        "prerelease": false
       },
       {
         "version": "3.9.4.5",
