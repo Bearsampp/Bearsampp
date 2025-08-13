@@ -178,18 +178,19 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
 <div id = "page-wrapper">
     <?php 
     try {
-        include 'tpls/hp.latestversion.html';
+        include __DIR__ . '/tpls/hp.latestversion.html';
     } catch (Exception $e) {
         error_log('Error including latest version template: ' . $e->getMessage());
         echo '<div class="alert alert-warning">Latest version information unavailable</div>';
     }
 
     try {
-        $pagePath = 'tpls/hp.' . $bearsamppHomepage->getPage() . '.html';
-        if (file_exists($pagePath)) {
+        $page = preg_replace('/[^a-z0-9_-]/i', '', (string) $bearsamppHomepage->getPage());
+        $pagePath = __DIR__ . '/tpls/hp.' . $page . '.html';
+        if (is_file($pagePath)) {
             include $pagePath;
         } else {
-            include 'tpls/hp.index.html';
+            include __DIR__ . '/tpls/hp.index.html';
         }
     } catch (Exception $e) {
         error_log('Error including page template: ' . $e->getMessage());
