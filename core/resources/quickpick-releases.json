@@ -80,12 +80,12 @@
       {
         "version": "2.9.1",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.8.15/bearsampp-bruno-2.9.1-2025.8.15.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "2.9.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.8.8/bearsampp-bruno-2.9.0-2025.8.8.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "2.8.1",
