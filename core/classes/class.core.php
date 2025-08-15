@@ -147,37 +147,11 @@ class Core
      *
      * @param   string  $type  The type of script.
      *
-     * @return string|false The path to the script or false if invalid.
+     * @return string The path to the script.
      */
     public function getScript($type)
     {
-        // Validate input to prevent path traversal attacks
-        if (empty($type) || !is_string($type)) {
-            Util::logError('Invalid script type provided: ' . var_export($type, true));
-            return false;
-        }
-
-        // Sanitize the type parameter to prevent directory traversal
-        $type = basename($type);
-
-        // Additional validation - only allow alphanumeric characters, dots, hyphens and underscores
-        if (!preg_match('/^[a-zA-Z0-9._-]+$/', $type)) {
-            Util::logError('Script type contains invalid characters: ' . $type);
-            return false;
-        }
-
-        $scriptPath = $this->getScriptsPath() . '/' . $type;
-
-        // Verify the resolved path is within the scripts directory
-        $realScriptsPath = realpath($this->getScriptsPath());
-        $realScriptPath = realpath($scriptPath);
-
-        if ($realScriptPath === false || strpos($realScriptPath, $realScriptsPath) !== 0) {
-            Util::logError('Attempted path traversal attack detected for script: ' . $type);
-            return false;
-        }
-
-        return $scriptPath;
+        return $this->getScriptsPath() . '/' . $type;
     }
 
     /**
