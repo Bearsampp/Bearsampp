@@ -1135,7 +1135,7 @@
       {
         "version": "24.6.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.8.21/bearsampp-nodejs-24.6.0-2025.8.21.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "24.4.1",
@@ -1180,7 +1180,7 @@
       {
         "version": "22.18.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.8.21/bearsampp-nodejs-22.18.0-2025.8.21.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "22.17.0",
