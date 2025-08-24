@@ -1940,7 +1940,7 @@
       {
         "version": "3.13.5",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2025.8.21/bearsampp-python-3.13.5-2025.8.21.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.13.3",
