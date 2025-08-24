@@ -410,12 +410,7 @@
       {
         "version": "1.27.5",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.8.16/bearsampp-mailpit-1.27.5-2025.8.16.7z",
-        "prerelease": true
-      },
-      {
-        "version": "1.27.4",
-        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.8.15/bearsampp-mailpit-1.27.4-2025.8.15.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "1.27.0",
@@ -2000,7 +1995,7 @@
       {
         "version": "3.4.5",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2025.8.16/bearsampp-ruby-3.4.5-2025.8.16.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.4.4",
