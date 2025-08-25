@@ -52,8 +52,8 @@ class BinMysql extends Module
      */
     public function __construct($id, $type)
     {
-        Util::logInitClass( $this );
-        $this->reload( $id, $type );
+        Util::logInitClass($this);
+        $this->reload($id, $type);
     }
 
     /**
@@ -65,83 +65,83 @@ class BinMysql extends Module
     public function reload($id = null, $type = null)
     {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
-        Util::logReloadClass( $this );
+        Util::logReloadClass($this);
 
-        $this->name    = $bearsamppLang->getValue( Lang::MYSQL );
-        $this->version = $bearsamppConfig->getRaw( self::ROOT_CFG_VERSION );
-        parent::reload( $id, $type );
+        $this->name    = $bearsamppLang->getValue(Lang::MYSQL);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
+        parent::reload($id, $type);
 
-        $this->enable   = $this->enable && $bearsamppConfig->getRaw( self::ROOT_CFG_ENABLE );
-        $this->service  = new Win32Service( self::SERVICE_NAME );
+        $this->enable   = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
+        $this->service  = new Win32Service(self::SERVICE_NAME);
         $this->errorLog = $bearsamppRoot->getLogsPath() . '/mysql.log';
 
-        if ( $this->bearsamppConfRaw !== false ) {
+        if ($this->bearsamppConfRaw !== false) {
             $this->exe      = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->conf     = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
             $this->port     = $this->bearsamppConfRaw[self::LOCAL_CFG_PORT];
-            $this->rootUser = isset( $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER] ) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER] : 'root';
-            $this->rootPwd  = isset( $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD] ) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD] : '';
+            $this->rootUser = isset($this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER]) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER] : 'root';
+            $this->rootPwd  = isset($this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD]) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD] : '';
             $this->cliExe   = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CLI_EXE];
             $this->admin    = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_ADMIN];
             $this->dataDir  = $this->symlinkPath . '/data';
         }
 
-        if ( !$this->enable ) {
-            Util::logInfo( $this->name . ' is not enabled!' );
+        if (!$this->enable) {
+            Util::logInfo($this->name . ' is not enabled!');
 
             return;
         }
-        if ( !is_dir( $this->currentPath ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->currentPath ) );
+        if (!is_dir($this->currentPath)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
 
             return;
         }
-        if ( !is_dir( $this->symlinkPath ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->symlinkPath ) );
+        if (!is_dir($this->symlinkPath)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
 
             return;
         }
-        if ( !is_file( $this->bearsamppConf ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->bearsamppConf ) );
+        if (!is_file($this->bearsamppConf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
 
             return;
         }
-        if ( !is_file( $this->exe ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->exe ) );
+        if (!is_file($this->exe)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
 
             return;
         }
-        if ( !is_file( $this->conf ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->conf ) );
+        if (!is_file($this->conf)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
 
             return;
         }
-        if ( !is_numeric( $this->port ) || $this->port <= 0 ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_PORT, $this->port ) );
+        if (!is_numeric($this->port) || $this->port <= 0) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_PORT, $this->port));
 
             return;
         }
-        if ( empty( $this->rootUser ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_ROOT_USER, $this->rootUser ) );
+        if (empty($this->rootUser)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_ROOT_USER, $this->rootUser));
 
             return;
         }
-        if ( !is_file( $this->cliExe ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->cliExe ) );
+        if (!is_file($this->cliExe)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cliExe));
 
             return;
         }
-        if ( !is_file( $this->admin ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->admin ) );
+        if (!is_file($this->admin)) {
+            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->admin));
 
             return;
         }
 
-        $this->service->setDisplayName( APP_TITLE . ' ' . $this->getName() );
-        $this->service->setBinPath( $this->exe );
-        $this->service->setParams( self::SERVICE_NAME );
-        $this->service->setStartType( Win32Service::SERVICE_DEMAND_START );
-        $this->service->setErrorControl( Win32Service::SERVER_ERROR_NORMAL );
+        $this->service->setDisplayName(APP_TITLE . ' ' . $this->getName());
+        $this->service->setBinPath($this->exe);
+        $this->service->setParams(self::SERVICE_NAME);
+        $this->service->setStartType(Win32Service::SERVICE_DEMAND_START);
+        $this->service->setErrorControl(Win32Service::SERVER_ERROR_NORMAL);
     }
 
     /**
@@ -151,12 +151,12 @@ class BinMysql extends Module
      */
     protected function replaceAll($params)
     {
-        $content = file_get_contents( $this->bearsamppConf );
+        $content = file_get_contents($this->bearsamppConf);
 
-        foreach ( $params as $key => $value ) {
-            $content                      = preg_replace( '|' . $key . ' = .*|', $key . ' = ' . '"' . $value . '"', $content );
+        foreach ($params as $key => $value) {
+            $content                      = preg_replace('|' . $key . ' = .*|', $key . ' = ' . '"' . $value . '"', $content);
             $this->bearsamppConfRaw[$key] = $value;
-            switch ( $key ) {
+            switch ($key) {
                 case self::LOCAL_CFG_PORT:
                     $this->port = $value;
                     break;
@@ -169,7 +169,7 @@ class BinMysql extends Module
             }
         }
 
-        file_put_contents( $this->bearsamppConf, $content );
+        file_put_contents($this->bearsamppConf, $content);
     }
 
     /**
@@ -185,29 +185,29 @@ class BinMysql extends Module
     {
         global $bearsamppWinbinder;
 
-        if ( !Util::isValidPort( $port ) ) {
-            Util::logError( $this->getName() . ' port not valid: ' . $port );
+        if (!Util::isValidPort($port)) {
+            Util::logError($this->getName() . ' port not valid: ' . $port);
 
             return false;
         }
 
-        $port = intval( $port );
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+        $port = intval($port);
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
-        $isPortInUse = Util::isPortInUse( $port );
-        if ( !$checkUsed || $isPortInUse === false ) {
+        $isPortInUse = Util::isPortInUse($port);
+        if (!$checkUsed || $isPortInUse === false) {
             // bearsampp.conf
-            $this->setPort( $port );
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $this->setPort($port);
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             // conf
             $this->update();
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             return true;
         }
 
-        Util::logDebug( $this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse );
+        Util::logDebug($this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse);
 
         return $isPortInUse;
     }
@@ -223,59 +223,68 @@ class BinMysql extends Module
     public function checkPort($port, $showWindow = false)
     {
         global $bearsamppLang, $bearsamppWinbinder;
-        $boxTitle = sprintf( $bearsamppLang->getValue( Lang::CHECK_PORT_TITLE ), $this->getName(), $port );
+        $boxTitle  = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
         $startTime = microtime(true);
 
-        if ( !Util::isValidPort( $port ) ) {
-            Util::logError( $this->getName() . ' port not valid: ' . $port );
+        if (!Util::isValidPort($port)) {
+            Util::logError($this->getName() . ' port not valid: ' . $port);
             return false;
         }
 
-        // First check if port is open at all
-        $timeout = 3; // Reduced timeout for faster checking
-        $fp = @fsockopen( '127.0.0.1', $port, $errno, $errstr, $timeout );
-        if ( !$fp ) {
-            Util::logDebug( $this->getName() . ' port ' . $port . ' is not used' );
-            if ( $showWindow ) {
+        // Quick socket check first - much faster than PDO connection
+        $timeout = 1; // Reduced timeout for better performance
+        $fp      = @fsockopen('127.0.0.1', $port, $errno, $errstr, $timeout);
+        if (!$fp) {
+            Util::logDebug($this->getName() . ' port ' . $port . ' is not used');
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED ), $port ),
+                    sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED), $port),
                     $boxTitle
                 );
             }
             return false;
         }
-
         fclose($fp);
 
-        // Try to connect using PDO for better performance and error handling
+        // Use cached connection if available for better performance
+        static $cachedConnection = null;
+        static $lastPort = null;
+
+        if ($cachedConnection === null || $lastPort !== $port) {
+            try {
+                $options = [
+                    \PDO::ATTR_TIMEOUT => $timeout,
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                    \PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION sql_mode=''"
+                ];
+
+                $dsn = 'mysql:host=127.0.0.1;port=' . $port;
+                $cachedConnection = new \PDO($dsn, $this->rootUser, $this->rootPwd, $options);
+                $lastPort = $port;
+            } catch (\PDOException $e) {
+                Util::logDebug($this->getName() . ' port ' . $port . ' connection failed: ' . $e->getMessage());
+                if ($showWindow) {
+                    $bearsamppWinbinder->messageBoxWarning(
+                        sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port),
+                        $boxTitle
+                    );
+                }
+                return false;
+            }
+        }
+
         try {
-            $options = [
-                \PDO::ATTR_TIMEOUT => $timeout,
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-            ];
+            // Single optimized query to get both version and type
+            $stmt = $cachedConnection->query("SELECT @@version, @@version_comment");
+            $row = $stmt->fetch(\PDO::FETCH_NUM);
 
-            $dsn = "mysql:host=127.0.0.1;port=" . $port;
-            $dbLink = new \PDO($dsn, $this->rootUser, $this->rootPwd, $options);
-
-            // Check if it's MySQL
-            $stmt = $dbLink->query('SHOW VARIABLES');
-            $isMysql = false;
-            $version = false;
-
-            while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-                if ($row[0] == 'version') {
-                    $version = explode('-', $row[1]);
-                    $version = count($version) > 1 ? $version[0] : $row[1];
-                }
-                if ($row[0] == 'version_comment' && Util::startWith(strtolower($row[1]), 'mysql')) {
-                    $isMysql = true;
-                }
-                if ($isMysql && $version !== false) {
-                    break;
-                }
+            if (!$row) {
+                return false;
             }
 
-            $dbLink = null; // Close connection
+            $version = explode('-', $row[0]);
+            $version = count($version) > 1 ? $version[0] : $row[0];
+            $isMysql = Util::startWith(strtolower($row[1]), 'mysql');
 
             if (!$isMysql) {
                 Util::logDebug($this->getName() . ' port used by another DBMS: ' . $port);
@@ -301,7 +310,7 @@ class BinMysql extends Module
             return true;
 
         } catch (\PDOException $e) {
-            Util::logDebug($this->getName() . ' port ' . $port . ' is used by another application');
+            Util::logDebug($this->getName() . ' port ' . $port . ' validation error: ' . $e->getMessage());
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxWarning(
                     sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port),
@@ -325,8 +334,8 @@ class BinMysql extends Module
     {
         global $bearsamppWinbinder;
         $startTime = microtime(true);
-        $error = null;
-        $timeout = 5; // 5 seconds timeout
+        $error     = null;
+        $timeout   = 5; // 5 seconds timeout
 
         $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
@@ -337,13 +346,13 @@ class BinMysql extends Module
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
             ];
 
-            $dsn = "mysql:host=127.0.0.1;port=" . $this->port;
+            $dsn    = 'mysql:host=127.0.0.1;port=' . $this->port;
             $dbLink = new \PDO($dsn, $this->rootUser, $currentPwd, $options);
 
             $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             // Determine MySQL version to use appropriate password update syntax
-            $stmt = $dbLink->query("SELECT VERSION()");
+            $stmt    = $dbLink->query('SELECT VERSION()');
             $version = $stmt->fetchColumn();
 
             $bearsamppWinbinder->incrProgressBar($wbProgressBar);
@@ -351,12 +360,12 @@ class BinMysql extends Module
             // Use appropriate SQL syntax based on MySQL version
             if (version_compare($version, '5.7.6', '>=')) {
                 // MySQL 5.7.6 and newer uses ALTER USER
-                $sql = "ALTER USER '{$this->rootUser}'@'localhost' IDENTIFIED BY :password";
+                $sql  = "ALTER USER '{$this->rootUser}'@'localhost' IDENTIFIED BY :password";
                 $stmt = $dbLink->prepare($sql);
                 $stmt->bindParam(':password', $newPwd);
             } else {
                 // Older versions use SET PASSWORD
-                $sql = "SET PASSWORD FOR '{$this->rootUser}'@'localhost' = PASSWORD(:password)";
+                $sql  = "SET PASSWORD FOR '{$this->rootUser}'@'localhost' = PASSWORD(:password)";
                 $stmt = $dbLink->prepare($sql);
                 $stmt->bindParam(':password', $newPwd);
             }
@@ -379,6 +388,7 @@ class BinMysql extends Module
         if (!empty($error)) {
             $totalTime = round(microtime(true) - $startTime, 2);
             Util::logTrace("MySQL password change failed in {$totalTime}s: " . $error);
+
             return $error;
         }
 
@@ -392,6 +402,7 @@ class BinMysql extends Module
 
         $totalTime = round(microtime(true) - $startTime, 2);
         Util::logTrace("MySQL password change completed in {$totalTime}s");
+
         return true;
     }
 
@@ -406,25 +417,52 @@ class BinMysql extends Module
     public function checkRootPassword($currentPwd = null, $wbProgressBar = null)
     {
         global $bearsamppWinbinder;
-        $startTime = microtime(true);
+        $startTime  = microtime(true);
         $currentPwd = $currentPwd == null ? $this->rootPwd : $currentPwd;
-        $error = null;
-        $timeout = 5; // 5 seconds timeout
+        $error      = null;
+        $timeout    = 2; // Reduced timeout for faster validation
 
         $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+
+        // Use cached connection for password validation if available
+        static $passwordCache = [];
+        $cacheKey = md5($this->rootUser . ':' . $currentPwd . ':' . $this->port);
+
+        if (isset($passwordCache[$cacheKey]) && (time() - $passwordCache[$cacheKey]['time']) < 30) {
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+            $totalTime = round(microtime(true) - $startTime, 2);
+            Util::logTrace("MySQL password check completed from cache in {$totalTime}s");
+            return $passwordCache[$cacheKey]['result'];
+        }
 
         try {
             $options = [
                 \PDO::ATTR_TIMEOUT => $timeout,
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION sql_mode=''"
             ];
 
-            $dsn = "mysql:host=127.0.0.1;port=" . $this->port;
+            $dsn    = 'mysql:host=127.0.0.1;port=' . $this->port;
             $dbLink = new \PDO($dsn, $this->rootUser, $currentPwd, $options);
+
+            // Quick validation query
+            $dbLink->query('SELECT 1');
             $dbLink = null; // Close connection properly
+
+            // Cache successful result
+            $passwordCache[$cacheKey] = [
+                'result' => true,
+                'time' => time()
+            ];
 
         } catch (\PDOException $e) {
             $error = $e->getMessage();
+
+            // Cache failed result for shorter time
+            $passwordCache[$cacheKey] = [
+                'result' => $error,
+                'time' => time() - 25 // Cache for only 5 seconds
+            ];
         }
 
         $bearsamppWinbinder->incrProgressBar($wbProgressBar);
@@ -450,9 +488,9 @@ class BinMysql extends Module
      */
     public function switchVersion($version, $showWindow = false)
     {
-        Util::logDebug( 'Switch ' . $this->name . ' version to ' . $version );
+        Util::logDebug('Switch ' . $this->name . ' version to ' . $version);
 
-        return $this->updateConfig( $version, 0, $showWindow );
+        return $this->updateConfig($version, 0, $showWindow);
     }
 
     /**
@@ -468,28 +506,28 @@ class BinMysql extends Module
     {
         global $bearsamppLang, $bearsamppBins, $bearsamppApps, $bearsamppWinbinder;
 
-        if ( !$this->enable ) {
+        if (!$this->enable) {
             return true;
         }
 
         $version = $version == null ? $this->version : $version;
-        Util::logDebug( ($sub > 0 ? str_repeat( ' ', 2 * $sub ) : '') . 'Update ' . $this->name . ' ' . $version . ' config' );
+        Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
 
-        $boxTitle = sprintf( $bearsamppLang->getValue( Lang::SWITCH_VERSION_TITLE ), $this->getName(), $version );
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
-        $currentPath   = str_replace( 'mysql' . $this->getVersion(), 'mysql' . $version, $this->getCurrentPath() );
-        $conf          = str_replace( 'mysql' . $this->getVersion(), 'mysql' . $version, $this->getConf() );
-        $bearsamppConf = str_replace( 'mysql' . $this->getVersion(), 'mysql' . $version, $this->bearsamppConf );
+        $currentPath   = str_replace('mysql' . $this->getVersion(), 'mysql' . $version, $this->getCurrentPath());
+        $conf          = str_replace('mysql' . $this->getVersion(), 'mysql' . $version, $this->getConf());
+        $bearsamppConf = str_replace('mysql' . $this->getVersion(), 'mysql' . $version, $this->bearsamppConf);
 
-        if ( $this->version != $version ) {
-            $this->initData( $currentPath, $version );
+        if ($this->version != $version) {
+            $this->initData($currentPath, $version);
         }
 
-        if ( !file_exists( $conf ) || !file_exists( $bearsamppConf ) ) {
-            Util::logError( 'bearsampp config files not found for ' . $this->getName() . ' ' . $version );
-            if ( $showWindow ) {
+        if (!file_exists($conf) || !file_exists($bearsamppConf)) {
+            Util::logError('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR ), $this->getName() . ' ' . $version ),
+                    sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
@@ -497,12 +535,12 @@ class BinMysql extends Module
             return false;
         }
 
-        $bearsamppConfRaw = parse_ini_file( $bearsamppConf );
-        if ( $bearsamppConfRaw === false || !isset( $bearsamppConfRaw[self::ROOT_CFG_VERSION] ) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version ) {
-            Util::logError( 'bearsampp config file malformed for ' . $this->getName() . ' ' . $version );
-            if ( $showWindow ) {
+        $bearsamppConfRaw = parse_ini_file($bearsamppConf);
+        if ($bearsamppConfRaw === false || !isset($bearsamppConfRaw[self::ROOT_CFG_VERSION]) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version) {
+            Util::logError('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::BEARSAMPP_CONF_MALFORMED_ERROR ), $this->getName() . ' ' . $version ),
+                    sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
@@ -511,30 +549,32 @@ class BinMysql extends Module
         }
 
         // bearsampp.conf
-        $this->setVersion( $version );
+        $this->setVersion($version);
 
         // conf
-        Util::replaceInFile( $this->getConf(), array(
+        Util::replaceInFile($this->getConf(), array(
             '/^port(.*?)=(.*?)(\d+)/' => 'port = ' . $this->port
-        ) );
+        ));
 
         // phpmyadmin
-        $bearsamppApps->getPhpmyadmin()->update( $sub + 1 );
+        $bearsamppApps->getPhpmyadmin()->update($sub + 1);
 
         // adminer
-        $bearsamppApps->getAdminer()->update( $sub + 1 );
+        $bearsamppApps->getAdminer()->update($sub + 1);
 
         // php
-        $bearsamppBins->getPhp()->update( $sub + 1 );
+        $bearsamppBins->getPhp()->update($sub + 1);
 
         return true;
     }
 
     /**
-     * Initializes the MySQL data directory if it does not exist.
+     * Initializes the MySQL data directory if needed.
+     * Triggers reinitialization when the directory exists but is incomplete (e.g., missing performance_schema).
      *
      * @param   string|null  $path     The path to the MySQL installation. If null, the current path is used.
      * @param   string|null  $version  The version of MySQL. If null, the current version is used.
+     *
      * @return  bool         True if initialization was successful or not needed
      */
     public function initData($path = null, $version = null)
@@ -542,73 +582,83 @@ class BinMysql extends Module
         Util::logTrace('Starting MySQL data initialization');
         $startTime = microtime(true);
 
-        $path    = $path != null ? $path : $this->getCurrentPath();
-        $version = $version != null ? $version : $this->getVersion();
-        $dataDir = $path . '/data';
+        $path          = $path != null ? $path : $this->getCurrentPath();
+        $version       = $version != null ? $version : $this->getVersion();
+        $dataDir       = $path . '/data';
+        $perfSchemaDir = $dataDir . '/performance_schema';
 
-        if ( version_compare( $version, '5.7.0', '<' ) ) {
+        if (version_compare($version, '5.7.0', '<')) {
             Util::logTrace('MySQL version below 5.7.0, skipping initialization');
+
             return true;
         }
 
-        if ( file_exists( $dataDir ) ) {
-            Util::logTrace('MySQL data directory already exists');
-            return true;
-        }
+        $needsInit = false;
 
-        // Create data directory if it doesn't exist
-        if ( !is_dir( $dataDir ) ) {
-            mkdir( $dataDir, 0777, true );
-            Util::logTrace('Created MySQL data directory');
-        }
-
-        // Initialize MySQL data directory with timeout
-        $initDbStartTime = microtime(true);
-        $initDbTimeout = 30; // 30 seconds timeout
-
-        try {
-            $process = proc_open(
-                $path . '/bin/mysql_install_db.exe',
-                [
-                    0 => ['pipe', 'r'],
-                    1 => ['pipe', 'w'],
-                    2 => ['pipe', 'w']
-                ],
-                $pipes
-            );
-
-            if ( is_resource( $process ) ) {
-                // Set non-blocking mode
-                stream_set_blocking( $pipes[1], 0 );
-                stream_set_blocking( $pipes[2], 0 );
-
-                while ( true ) {
-                    if ( microtime(true) - $initDbStartTime > $initDbTimeout ) {
-                        Util::logTrace('MySQL init_db timeout reached');
-                        proc_terminate( $process );
-                        break;
-                    }
-
-                    $status = proc_get_status( $process );
-                    if ( !$status['running'] ) {
-                        break;
-                    }
-
-                    usleep(100000); // Sleep for 100ms
-                }
-
-                foreach ( $pipes as $pipe ) {
-                    fclose( $pipe );
-                }
-                proc_close( $process );
+        if (!is_dir($dataDir)) {
+            Util::logTrace('MySQL data directory does not exist; initialization required');
+            $needsInit = true;
+        } else {
+            if (!is_dir($perfSchemaDir)) {
+                Util::logTrace('performance_schema directory missing; reinitialization required');
+                $needsInit = true;
             }
-        } catch ( \Exception $e ) {
-            Util::logTrace('Error during MySQL initialization: ' . $e->getMessage());
+        }
+
+        if (!$needsInit) {
+            Util::logTrace('MySQL data directory already initialized');
+
+            return true;
+        }
+
+        // Prepare a clean data directory (mysqld --initialize-insecure requires an empty/nonexistent directory)
+        if (is_dir($dataDir)) {
+            $backupDir = $dataDir . '_bak_' . date('Ymd_His');
+            if (@rename($dataDir, $backupDir)) {
+                Util::logTrace('Backed up existing data directory to: ' . $backupDir);
+            } else {
+                Util::logTrace('Failed to backup existing data directory; attempting to clear it');
+                try {
+                    $it    = new \RecursiveDirectoryIterator($dataDir, \FilesystemIterator::SKIP_DOTS);
+                    $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+                    foreach ($files as $file) {
+                        if ($file->isDir()) {
+                            @rmdir($file->getPathname());
+                        } else {
+                            @unlink($file->getPathname());
+                        }
+                    }
+                    @rmdir($dataDir);
+                } catch (\Throwable $t) {
+                    Util::logTrace('Error clearing data directory: ' . $t->getMessage());
+                }
+            }
+        }
+
+        if (!is_dir($dataDir)) {
+            @mkdir($dataDir, 0777, true);
+            Util::logTrace('Created clean MySQL data directory');
+        }
+
+        // Use Bearsampp built-in initialization (init.bat via Batch)
+        try {
+            Batch::initializeMysql($path);
+        } catch (\Throwable $e) {
+            Util::logTrace('Error during MySQL initialization via Batch: ' . $e->getMessage());
+
+            return false;
+        }
+
+        // Verify initialization by checking performance_schema existence
+        if (!is_dir($perfSchemaDir)) {
+            Util::logTrace('MySQL initialization appears to have failed: performance_schema still missing');
+
             return false;
         }
 
         $totalTime = round(microtime(true) - $startTime, 2);
         Util::logTrace("MySQL initialization completed in {$totalTime}s");
+
         return true;
     }
 
@@ -629,26 +679,25 @@ class BinMysql extends Module
         $bin         = $this->getExe();
         $removeLines = 0;
         $outputFrom  = '';
-        if ( $cmd == self::CMD_SYNTAX_CHECK ) {
+        if ($cmd == self::CMD_SYNTAX_CHECK) {
             $outputFrom = '2';
-        }
-        elseif ( $cmd == self::CMD_VARIABLES ) {
+        } elseif ($cmd == self::CMD_VARIABLES) {
             $bin = $this->getAdmin();
             $cmd .= ' --user=' . $this->getRootUser();
-            if ( $this->getRootPwd() ) {
+            if ($this->getRootPwd()) {
                 $cmd .= ' --password=' . $this->getRootPwd();
             }
             $removeLines = 2;
         }
 
-        if ( file_exists( $bin ) ) {
-            $tmpResult = Batch::exec( 'mysqlGetCmdLineOutput', '"' . $bin . '" ' . $cmd . ' ' . $outputFrom, 5 );
-            if ( $tmpResult !== false && is_array( $tmpResult ) ) {
-                $result['syntaxOk'] = empty( $tmpResult ) || !Util::contains( trim( $tmpResult[count( $tmpResult ) - 1] ), '[ERROR]' );
-                for ( $i = 0; $i < $removeLines; $i++ ) {
-                    unset( $tmpResult[$i] );
+        if (file_exists($bin)) {
+            $tmpResult = Batch::exec('mysqlGetCmdLineOutput', '"' . $bin . '" ' . $cmd . ' ' . $outputFrom, 5);
+            if ($tmpResult !== false && is_array($tmpResult)) {
+                $result['syntaxOk'] = empty($tmpResult) || !Util::contains(trim($tmpResult[count($tmpResult) - 1]), '[ERROR]');
+                for ($i = 0; $i < $removeLines; $i++) {
+                    unset($tmpResult[$i]);
                 }
-                $result['content'] = trim( str_replace( $bin, '', implode( PHP_EOL, $tmpResult ) ) );
+                $result['content'] = trim(str_replace($bin, '', implode(PHP_EOL, $tmpResult)));
             }
         }
 
@@ -664,7 +713,7 @@ class BinMysql extends Module
     {
         global $bearsamppConfig;
         $this->version = $version;
-        $bearsamppConfig->replace( self::ROOT_CFG_VERSION, $version );
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 
@@ -688,27 +737,26 @@ class BinMysql extends Module
     {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
-        if ( $enabled == Config::ENABLED && !is_dir( $this->currentPath ) ) {
-            Util::logDebug( $this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath );
-            if ( $showWindow ) {
+        if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
+            Util::logDebug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::ENABLE_BUNDLE_NOT_EXIST ), $this->getName(), $this->getVersion(), $this->currentPath ),
-                    sprintf( $bearsamppLang->getValue( Lang::ENABLE_TITLE ), $this->getName() )
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_TITLE), $this->getName())
                 );
             }
             $enabled = Config::DISABLED;
         }
 
-        Util::logInfo( $this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled') );
+        Util::logInfo($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
         $this->enable = $enabled == Config::ENABLED;
-        $bearsamppConfig->replace( self::ROOT_CFG_ENABLE, $enabled );
+        $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
 
         $this->reload();
-        if ( $this->enable ) {
-            Util::installService( $this, $this->port, self::CMD_SYNTAX_CHECK, $showWindow );
-        }
-        else {
-            Util::removeService( $this->service, $this->name );
+        if ($this->enable) {
+            Util::installService($this, $this->port, self::CMD_SYNTAX_CHECK, $showWindow);
+        } else {
+            Util::removeService($this->service, $this->name);
         }
     }
 
@@ -759,7 +807,7 @@ class BinMysql extends Module
      */
     public function setPort($port)
     {
-        $this->replace( self::LOCAL_CFG_PORT, $port );
+        $this->replace(self::LOCAL_CFG_PORT, $port);
     }
 
     /**
@@ -779,7 +827,7 @@ class BinMysql extends Module
      */
     public function setRootUser($rootUser)
     {
-        $this->replace( self::LOCAL_CFG_ROOT_USER, $rootUser );
+        $this->replace(self::LOCAL_CFG_ROOT_USER, $rootUser);
     }
 
     /**
@@ -799,7 +847,7 @@ class BinMysql extends Module
      */
     public function setRootPwd($rootPwd)
     {
-        $this->replace( self::LOCAL_CFG_ROOT_PWD, $rootPwd );
+        $this->replace(self::LOCAL_CFG_ROOT_PWD, $rootPwd);
     }
 
     /**
