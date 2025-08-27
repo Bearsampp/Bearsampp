@@ -1,8 +1,7 @@
-On Error Resume Next
-Err.Clear
-
 ' Constants
 Const ForAppending = 8
+Const ForReading = 1
+Const ForWriting = 2
 
 ' Variables for execution
 Dim randomShell, randomFso, randomArgs
@@ -10,32 +9,41 @@ Dim randomShell, randomFso, randomArgs
 ' Variables for logging
 Dim scriptPath, logPath, logFile
 
-' Initialize objects
+' Initialize objects with error handling
+On Error Resume Next
 Set randomShell = WScript.CreateObject("WScript.Shell")
 Set randomFso = CreateObject("Scripting.FileSystemObject")
 Set randomArgs = WScript.Arguments
 
-' Setup logging
+If Err.Number <> 0 Then
+    WScript.Echo "Failed to initialize objects: " & Err.Description
+    WScript.Quit 1
+End If
+On Error GoTo 0
+
+' Setup logging with improved error handling
 scriptPath = randomFso.GetParentFolderName(WScript.ScriptFullName)
 logPath = randomFso.BuildPath(scriptPath, "..\logs\")
 
+' Ensure logs directory exists
+On Error Resume Next
 If Not randomFso.FolderExists(logPath) Then
     randomFso.CreateFolder(logPath)
+    If Err.Number <> 0 Then
+    ' Silently continue if we can't create the directory
+        Err.Clear
+    End If
 End If
+On Error GoTo 0
 
 logFile = randomFso.BuildPath(logPath, "bearsampp-vbs.log")
 
-' Check for initialization errors
-If Err.Number <> 0 Then
-    WScript.Echo "Error: " & Err.Description
-    WScript.Quit 1
-End If
-
+' Process arguments
 num = randomArgs.Count
 sargs = ""
 
 If num = 0 Then
-    LogError "No arguments provided"
+    SafeLogError "No arguments provided"
     WScript.Quit 1
 End If
 
@@ -48,35 +56,54 @@ If num > 1 Then
     sargs = " " & Join(argArray, " ") & " "
 End If
 
+' Execute command with error handling
+On Error Resume Next
 Dim exitCode
 exitCode = randomShell.Run("""" & randomArgs(0) & """" & sargs, 0, True)
 
 If Err.Number <> 0 Then
-    LogError "Failed to execute: " & randomArgs(0) & " - " & Err.Description
+    SafeLogError "Failed to execute: " & randomArgs(0) & " - " & Err.Description
     WScript.Quit 1
 End If
+On Error GoTo 0
 
-LogInfo "Successfully executed: " & randomArgs(0) & " with exit code: " & exitCode
+SafeLogInfo "Successfully executed: " & randomArgs(0) & " with exit code: " & exitCode
 WScript.Quit exitCode
 
-' Logging functions
-Sub LogError(message)
-    WriteToLog "ERROR", message
+' Improved logging functions with retry mechanism
+Sub SafeLogError(message)
+    SafeWriteToLog "ERROR", message
 End Sub
 
-Sub LogInfo(message)
-    WriteToLog "INFO", message
+Sub SafeLogInfo(message)
+    SafeWriteToLog "INFO", message
 End Sub
 
-Sub WriteToLog(level, message)
+Sub SafeWriteToLog(level, message)
     On Error Resume Next
-    Dim logStream
-    Set logStream = randomFso.OpenTextFile(logFile, ForAppending, True)
-    If Err.Number <> 0 Then
-        WScript.Echo "Log Error: " & Err.Description
+    Dim logStream, retryCount, maxRetries
+    maxRetries = 3
+    retryCount = 0
+
+    Do While retryCount < maxRetries
         Err.Clear
-        WScript.Quit 1
-    End If
-    logStream.WriteLine Now & " [" & level & "] " & message
-    logStream.Close
+        Set logStream = randomFso.OpenTextFile(logFile, ForAppending, True)
+
+        If Err.Number = 0 Then
+        ' Successfully opened file
+            logStream.WriteLine Now & " [" & level & "] " & message
+            logStream.Close
+            Exit Sub
+        Else
+        ' Failed to open file, wait and retry
+            retryCount = retryCount + 1
+            If retryCount < maxRetries Then
+                WScript.Sleep 50 ' Wait 50ms before retry
+            End If
+        End If
+    Loop
+
+    ' If all retries failed, silently continue without logging
+    ' This prevents the permission denied popup
+    Err.Clear
 End Sub
