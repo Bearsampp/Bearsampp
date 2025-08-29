@@ -466,9 +466,6 @@ class BinPostgresql extends Module
         // phppgadmin
         $bearsamppApps->getPhppgadmin()->update( $sub + 1 );
 
-        // adminer
-        $bearsamppApps->getAdminer()->update( $sub + 1 );
-
         return true;
     }
 

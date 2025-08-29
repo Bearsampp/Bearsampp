@@ -1,9 +1,9 @@
 This snapshot was automatically generated on
-Tue, 29 Jul 2025 16:15:25 +0000
+Tue, 01 Jul 2025 20:41:23 +0000
 
-Version: 8.4.11
+Version: 8.2.29
 Branch: HEAD
-Build: C:\Users\runneradmin\AppData\Local\Temp\21c28c52-0ee1-4201-b39a-95688e08a979\config\vs17\x64\obj\Release_TS
+Build: D:\a\php-ftw\php-ftw\php\vs16\x64\obj\Release_TS
 
 Built-in Extensions
 ===========================
@@ -77,6 +77,29 @@ Module: php_ftp.dll
 	libcrypto-3-x64.dll
 	libssl-3-x64.dll
 
+Module: php_intl.dll
+===========================
+	icuuc71.dll
+	icuin71.dll
+	icuio71.dll
+	vcruntime140_1.dll
+
+Module: icuuc71.dll
+===========================
+	icudt71.dll
+	vcruntime140_1.dll
+
+Module: icuin71.dll
+===========================
+	icuuc71.dll
+	vcruntime140_1.dll
+
+Module: icuio71.dll
+===========================
+	icuuc71.dll
+	icuin71.dll
+	vcruntime140_1.dll
+
 Module: php_ldap.dll
 ===========================
 	libsasl.dll
@@ -92,42 +115,7 @@ Module: php_openssl.dll
 	libcrypto-3-x64.dll
 	libssl-3-x64.dll
 
-Module: php_sodium.dll
-===========================
-	libsodium.dll
-
-Module: php_sqlite3.dll
-===========================
-	libsqlite3.dll
-
-Module: php_intl.dll
-===========================
-	icuin75.dll
-	icuio75.dll
-	icuuc75.dll
-	vcruntime140_1.dll
-
-Module: icuin75.dll
-===========================
-	icuuc75.dll
-	vcruntime140_1.dll
-
-Module: icuuc75.dll
-===========================
-	icudt75.dll
-	vcruntime140_1.dll
-
-Module: icuio75.dll
-===========================
-	icuuc75.dll
-	icuin75.dll
-	vcruntime140_1.dll
-
-Module: php_pdo_firebird.dll
-===========================
-	vcruntime140_1.dll
-
-Module: php_pdo_pgsql.dll
+Module: php_pgsql.dll
 ===========================
 	libpq.dll
 
@@ -136,16 +124,23 @@ Module: libpq.dll
 	libssl-3-x64.dll
 	libcrypto-3-x64.dll
 
-Module: php_pdo_sqlite.dll
-===========================
-	libsqlite3.dll
-
-Module: php_pgsql.dll
-===========================
-	libpq.dll
-
 Module: php_snmp.dll
 ===========================
 	libcrypto-3-x64.dll
-	libssl-3-x64.dll
+
+Module: php_sodium.dll
+===========================
+	libsodium.dll
+
+Module: php_sqlite3.dll
+===========================
+	libsqlite3.dll
+
+Module: php_pdo_pgsql.dll
+===========================
+	libpq.dll
+
+Module: php_pdo_sqlite.dll
+===========================
+	libsqlite3.dll
 

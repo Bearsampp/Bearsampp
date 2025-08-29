@@ -40,7 +40,7 @@ class TplAppApps
      * Generates the content of the "Apps" menu.
      *
      * This method generates the content of the "Apps" menu by adding links to various applications
-     * such as Adminer, phpMyAdmin and phpPgAdmin.
+     * such as phpMyAdmin and phpPgAdmin.
      *
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
@@ -51,11 +51,6 @@ class TplAppApps
         global $bearsamppLang;
 
         return TplAestan::getItemLink(
-                $bearsamppLang->getValue(Lang::ADMINER),
-                'adminer/',
-                true
-            ) . PHP_EOL .
-            TplAestan::getItemLink(
                 $bearsamppLang->getValue(Lang::PHPMYADMIN),
                 'phpmyadmin/',
                 true

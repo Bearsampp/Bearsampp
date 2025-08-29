@@ -13,7 +13,6 @@
  */
 class Symlinks
 {
-    const ADMINER_SYMLINK = 'adminer';
     const PHPMYADMIN_SYMLINK = 'phpmyadmin';
     const PHPPGADMIN_SYMLINK = 'phppgadmin';
     const APACHE_SYMLINK = 'apache';
@@ -71,7 +70,6 @@ class Symlinks
         $toolsPath = $bearsamppRoot->getToolsPath();
 
         $array = [
-            self::ADMINER_SYMLINK => $appsPath . '/adminer/current',
             self::PHPMYADMIN_SYMLINK => $appsPath . '/phpmyadmin/current',
             self::PHPPGADMIN_SYMLINK => $appsPath . '/phppgadmin/current',
             self::APACHE_SYMLINK => $binPath . '/apache/current',

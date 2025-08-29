@@ -115,7 +115,6 @@ postgresql = "PostgreSQL"
 xlight = "Xlight"
 
 ; Aplicaciones
-adminer = "Adminer"
 phpmyadmin = "phpMyAdmin"
 phppgadmin = "phpPgAdmin"
 
