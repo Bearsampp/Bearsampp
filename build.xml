@@ -208,7 +208,6 @@
                 <filter token = "TOOL_PYTHON_VERSION" value = "${tool.python.version}" />
                 <filter token = "TOOL_RUBY_VERSION" value = "${tool.ruby.version}" />
 
-                <filter token = "APP_ADMINER_VERSION" value = "${app.adminer.version}" />
                 <filter token = "APP_PHPMYADMIN_VERSION" value = "${app.phpmyadmin.version}" />
                 <filter token = "APP_PHPPGADMIN_VERSION" value = "${app.phppgadmin.version}" />
             </filterset>
@@ -294,7 +293,6 @@
         <getmodule releasesurl = "${bin.php.url}" version = "${bin.php.version}" dest = "${release.target}\bin\php" />
 
         <!-- Get apps -->
-        <getmodule releasesurl = "${app.adminer.url}" version = "${app.adminer.version}" dest = "${release.target}\apps\adminer" />
         <getmodule releasesurl = "${app.phpmyadmin.url}" version = "${app.phpmyadmin.version}" dest = "${release.target}\apps\phpmyadmin" />
         <getmodule releasesurl = "${app.phppgadmin.url}" version = "${app.phppgadmin.version}" dest = "${release.target}\apps\phppgadmin" />
 
@@ -484,7 +482,6 @@
         <getmodule releasesurl = "${bin.php.url}" version = "${bin.php.version}" dest = "${release.target}\bin\php" />
 
         <!--Get apps -->
-        <getmodule releasesurl = "${app.adminer.url}" version = "${app.adminer.version}" dest = "${release.target}\apps\adminer" />
         <getmodule releasesurl = "${app.phpmyadmin.url}" version = "${app.phpmyadmin.version}" dest = "${release.target}\apps\phpmyadmin" />
 
         <!-- Get tools -->
@@ -578,7 +575,6 @@
         <getmodule releasesurl = "${bin.php.url}" version = "${bin.php.version}" dest = "${release.target}\bin\php" />
 
         <!--Get apps -->
-        <getmodule releasesurl = "${app.adminer.url}" version = "${app.adminer.version}" dest = "${release.target}\apps\adminer" />
         <getmodule releasesurl = "${app.phpmyadmin.url}" version = "${app.phpmyadmin.version}" dest = "${release.target}\apps\phpmyadmin" />
 
         <!-- Get tools -->
