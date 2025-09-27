@@ -16,6 +16,8 @@
   This configuration is primarily used by the build automation tool (Ant) to initialize and prepare the environment for subsequent build and release tasks.
 -->
 <project name = "Bearsampp" basedir = ".">
+    <!-- Define BEARSAMPP_PATH property (customize as needed) -->
+    <property name="BEARSAMPP_PATH" value="${project.basedir}/bearsampp-destination" />
 
     <dirname property = "project.basedir" file = "${ant.file.bearsampp}" />
     <property name = "build.properties" value = "${project.basedir}/build.properties" />
@@ -23,7 +25,7 @@
 
     <!-- Bearsampp dev -->
     <property name = "dev.path" location = "${project.basedir}\${dev.dir}" />
-    <fail unless = "dev.path" message = "Core directory '${dev.path}' not found in ${dev.path}" />
+    <fail unless = "dev.path" message = "core directory '${dev.path}' not found in ${dev.path}" />
     <echo message = "Bearsampp dev found in ${dev.path}" level = "debug" />
 
     <!-- Build dir -->
@@ -54,7 +56,7 @@
       Dependencies: This target depends on the successful completion of 'init', 'load.lib', 'build-full', 'build-basic', and 'build-lite' targets.
       Usage: This target is used to compile all necessary components and variations of the build into a final release package. It ensures that all preliminary steps are completed before packaging.
     -->
-    <target name = "release" depends = "init, load.lib, base, build-full, build-basic, build-lite" description = "Release Bearsampp" />
+    <target name = "release" depends = "init, load.lib, base, build-full, build-basic, build-lite, sync" description = "Release Bearsampp" />
 
     <!--
     Target: base
@@ -107,7 +109,7 @@
         <!-- Echo success message -->
         <echo message = "Successfully set product version to ${release.fullversion} using rcedit-x64.exe" />
 
-        <!-- Add the exec task to run fix-icon.bat -->
+        <!-- Add the exec task to run fix-core-icon.bat -->
         <exec executable="cmd">
             <arg value="/c" />
             <arg value="fix-core-icon.bat" />
@@ -324,6 +326,97 @@
                 <fail message = "Unknown release format: ${release.format}" />
             </else>
         </if>
+    </target>
+
+    <target name="sync-steps-internal" unless="sync.abort">
+        <echo message="Sync step: using path = ${sync.final.path}" />
+
+        <!-- Download and extract Sandbox-iconography.zip to a temp folder -->
+        <property name="iconography.url" value="https://github.com/Bearsampp/sandbox/releases/download/iconography/Sandbox-iconography.zip" />
+        <property name="iconography.temp.dir" value="bin/tmp/bearsampp-iconography-temp" />
+        <property name="iconography.zip" value="${iconography.temp.dir}\\Sandbox-iconography.zip" />
+        <mkdir dir="${iconography.temp.dir}" />
+        <get src="${iconography.url}" dest="${iconography.zip}" />
+        <unzip src="${iconography.zip}" dest="${iconography.temp.dir}" />
+        <delete file="${iconography.zip}" />
+        <echo message="Successfully downloaded and extracted Bearsampp iconography." />
+
+        <!-- Copy bin/tmp/release/base/core to temp/core BEFORE applying iconography -->
+        <copy todir="${iconography.temp.dir}/core" overwrite="true">
+            <fileset dir="bin/tmp/release/base/core" />
+        </copy>
+
+        <!-- Copy bearsampp.exe to the temp folder -->
+        <copy file="${project.basedir}\base\bearsampp.exe" tofile="${iconography.temp.dir}/bearsampp.exe" overwrite="true" />
+        <!-- Copy rcedit-x64.exe to the temp folder -->
+        <copy file="${project.basedir}/rcedit-x64.exe" tofile="${iconography.temp.dir}/rcedit-x64.exe" overwrite="true" />
+        <!-- Copy ResourceHacker.exe from BEARSAMPP_PATH to the temp folder -->
+        <copy file="${sync.final.path}/ResourceHacker.exe" tofile="${iconography.temp.dir}/ResourceHacker.exe" overwrite="true" />
+
+        <!-- Add the exec task to run rcedit-x64.exe to update version # on the temp copy -->
+        <exec executable = "${iconography.temp.dir}/rcedit-x64.exe">
+            <arg value = "${iconography.temp.dir}/bearsampp.exe" />
+            <arg value = "--set-file-version" />
+            <arg value = "${release.fullversion}" />
+        </exec>
+        <echo message = "Successfully set product version to ${release.fullversion} using rcedit-x64.exe" />
+
+        <!-- Copy icons to BEARSAMPP_PATH before running ResourceHacker -->
+        <copy todir="${sync.final.path}\\core\\resources\\homepage\\img\\icons" overwrite="true">
+            <fileset dir="${iconography.temp.dir}\\core\\resources\\homepage\\img\\icons" />
+        </copy>
+        <property name="icon.path" value="${sync.final.path}\\core\\resources\\homepage\\img\\icons\\bearsampp.ico" />
+        <property name="executable.path" value="${iconography.temp.dir}/bearsampp.exe" />
+        <property name="resource.hacker.path" value="${iconography.temp.dir}/ResourceHacker.exe" />
+        <exec executable="${resource.hacker.path}">
+            <arg value="-open" />
+            <arg value="${executable.path}" />
+            <arg value="-save" />
+            <arg value="${executable.path}" />
+            <arg value="-action" />
+            <arg value="modify" />
+            <arg value="-res" />
+            <arg value="${icon.path}," />
+            <arg value="-mask" />
+            <arg value="ICONGROUP,MAINICON," />
+        </exec>
+        <echo message = "Successfully set synced build to BEARSAMPP_PATH\\sandbox" />
+
+        <!-- Delete the existing bearsampp.exe in BEARSAMPP_PATH if it exists (to avoid locked/corrupt file issues) -->
+        <delete file="${sync.final.path}/bearsampp.exe" failonerror="false" />
+        <!-- Copy the temp bearsampp.exe to BEARSAMPP_PATH -->
+        <copy file="${iconography.temp.dir}/bearsampp.exe" tofile="${sync.final.path}/bearsampp.exe" overwrite="true" />
+    </target>
+
+    <target name="sync" depends="build-full" description="Sync step using BEARSAMPP_PATH">
+        <input addproperty="sync.confirm" message="Would you like to sync to sandbox? (y/yes or n/no)" />
+        <condition property="sync.abort">
+            <not>
+                <matches pattern="^(yes|y)$" string="${sync.confirm}" casesensitive="false" />
+            </not>
+        </condition>
+        <fail if="sync.abort" message="Sync aborted by user. Build stopped." />
+
+        <echo message="Current sync path is: ${BEARSAMPP_PATH}" />
+        <input addproperty="sync.path.confirm" message="Is this the path you want to sync to? (y/yes or n/no)" />
+        <condition property="sync.path.custom">
+            <not>
+                <matches pattern="^(yes|y)$" string="${sync.path.confirm}" casesensitive="false" />
+            </not>
+        </condition>
+        <condition property="do.sync.custom.path">
+            <isset property="sync.path.custom"/>
+        </condition>
+        <antcall target="sync.call.custom.path.input"/>
+        <condition property="sync.final.path" value="${sync.custom.path}">
+            <isset property="sync.custom.path"/>
+        </condition>
+        <property name="sync.final.path" value="${BEARSAMPP_PATH}" />
+        <antcall target="sync-steps-internal"/>
+    </target>
+
+    <target name="sync.call.custom.path.input" if="do.sync.custom.path">
+        <antcall target="sync.custom.path.input"/>
     </target>
 
     <!--
@@ -544,5 +637,8 @@
         <echo message = "Executing Bearsampp. Please wait..." />
         <exec executable = "${build.launch.path\bearsampp.exe" />
         <echo message = "If the application needs to restart, you can execute Bearsampp.exe in : ${build.launch.path}" />
+    </target>
+    <target name="sync.custom.path.input" if="do.sync.custom.path">
+        <input addproperty="sync.custom.path" message="Please enter the new path to sync to:" />
     </target>
 </project>
