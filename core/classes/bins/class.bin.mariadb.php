@@ -482,9 +482,6 @@ class BinMariadb extends Module
         // phpmyadmin
         $bearsamppApps->getPhpmyadmin()->update($sub + 1);
 
-        // adminer
-        $bearsamppApps->getAdminer()->update($sub + 1);
-
         return true;
     }
 /**

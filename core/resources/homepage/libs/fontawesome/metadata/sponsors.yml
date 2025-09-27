@@ -978,7 +978,6 @@ speakap:
 starchive:
   icons:
     - hexagon-vertical-nft
-    - hexagon-vertical-nft-slanted
   label: Starchive
   url: 'https://www.starchive.io'
 stay-linked:
@@ -1089,7 +1088,6 @@ the-us-sunnah-foundation:
     - hands-holding-heart
     - handshake
     - handshake-angle
-    - handshake-simple
     - house-heart
     - leaf
     - leaf-heart

@@ -245,7 +245,7 @@
     pro:
       - family: classic
         style: brands
-  label: 42.group
+  label: 42 Group
   search:
     terms: []
   unicode: e080
@@ -439,7 +439,7 @@ adn:
     pro:
       - family: classic
         style: brands
-  label: App.net
+  label: Adn
   search:
     terms: []
   unicode: f170
@@ -469,7 +469,7 @@ affiliatetheme:
     pro:
       - family: classic
         style: brands
-  label: affiliatetheme
+  label: Affiliatetheme
   search:
     terms: []
   unicode: f36b
@@ -488,6 +488,53 @@ airbnb:
   search:
     terms: []
   unicode: f834
+  voted: false
+alarm-clock:
+  aliases:
+    unicodes:
+      composite:
+        - 23f0
+      secondary:
+        - 10f34e
+  changes:
+    - 5.0.0
+    - 5.9.0
+    - 6.0.0-beta1
+    - 6.0.0-beta2
+    - 6.0.0-beta3
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+    - 6.5.0
+    - 6.6.0
+    - 6.7.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: regular
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+  label: Alarm Clock
+  search:
+    terms:
+      - alarm
+      - alarm clock
+      - clock
+      - date
+      - late
+      - pending
+      - reminder
+      - sleep
+      - snooze
+      - timer
+      - timestamp
+      - watch
+  unicode: f34e
   voted: false
 algolia:
   changes:
@@ -876,7 +923,7 @@ angellist:
     pro:
       - family: classic
         style: brands
-  label: AngelList
+  label: Angellist
   search:
     terms: []
   unicode: f209
@@ -1177,7 +1224,7 @@ angrycreative:
     pro:
       - family: classic
         style: brands
-  label: Angry Creative
+  label: Angrycreative
   search:
     terms: []
   unicode: f36e
@@ -1259,7 +1306,7 @@ app-store-ios:
     pro:
       - family: classic
         style: brands
-  label: iOS App Store
+  label: App Store Ios
   search:
     terms: []
   unicode: f370
@@ -1274,7 +1321,7 @@ apper:
     pro:
       - family: classic
         style: brands
-  label: Apper Systems AB
+  label: Apper
   search:
     terms: []
   unicode: f371
@@ -1880,7 +1927,6 @@ arrow-right-arrow-left:
   label: Arrow Right Arrow Left
   search:
     terms:
-      - Rightwards Arrow Over Leftwards Arrow
       - arrow
       - arrows
       - reciprocate
@@ -3118,7 +3164,7 @@ asymmetrik:
     pro:
       - family: classic
         style: brands
-  label: 'Asymmetrik, Ltd.'
+  label: Asymmetrik
   search:
     terms: []
   unicode: f372
@@ -3314,7 +3360,7 @@ avianex:
     pro:
       - family: classic
         style: brands
-  label: avianex
+  label: Avianex
   search:
     terms: []
   unicode: f374
@@ -3381,7 +3427,7 @@ aws:
     pro:
       - family: classic
         style: brands
-  label: Amazon Web Services (AWS)
+  label: Aws
   search:
     terms: []
   unicode: f375
@@ -4482,7 +4528,7 @@ battle-net:
     pro:
       - family: classic
         style: brands
-  label: Battle.net
+  label: Battle Net
   search:
     terms: []
   unicode: f835
@@ -4850,7 +4896,7 @@ bimobject:
     pro:
       - family: classic
         style: brands
-  label: BIMobject
+  label: Bimobject
   search:
     terms: []
   unicode: f378
@@ -5022,7 +5068,7 @@ black-tie:
     pro:
       - family: classic
         style: brands
-  label: Font Awesome Black Tie
+  label: Black Tie
   search:
     terms:
       - administrator
@@ -5038,7 +5084,7 @@ blackberry:
     pro:
       - family: classic
         style: brands
-  label: BlackBerry
+  label: Blackberry
   search:
     terms: []
   unicode: f37b
@@ -5229,7 +5275,7 @@ bluetooth-b:
     pro:
       - family: classic
         style: brands
-  label: Bluetooth
+  label: Bluetooth B
   search:
     terms: []
   unicode: f294
@@ -6884,7 +6930,7 @@ btc:
     pro:
       - family: classic
         style: brands
-  label: BTC
+  label: Btc
   search:
     terms: []
   unicode: f15a
@@ -7529,7 +7575,7 @@ buromobelexperte:
     pro:
       - family: classic
         style: brands
-  label: Büromöbel-Experte GmbH & Co. KG.
+  label: Buromobelexperte
   search:
     terms: []
   unicode: f37f
@@ -7596,6 +7642,26 @@ bus:
       - travel
       - vehicle
   unicode: f207
+  voted: false
+bus-side:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+  label: Bus Side
+  search:
+    terms:
+      - bus
+      - public transportation
+      - transportation
+      - travel
+      - vehicle
+  unicode: e81d
   voted: false
 bus-simple:
   aliases:
@@ -7678,7 +7744,7 @@ buy-n-large:
     pro:
       - family: classic
         style: brands
-  label: Buy n Large
+  label: Buy N Large
   search:
     terms: []
   unicode: f8a6
@@ -7694,7 +7760,7 @@ buysellads:
     pro:
       - family: classic
         style: brands
-  label: BuySellAds
+  label: Buysellads
   search:
     terms: []
   unicode: f20d
@@ -8256,10 +8322,14 @@ camera:
   familyStylesByLicense:
     free:
       - family: classic
+        style: regular
+      - family: classic
         style: solid
     pro:
       - family: classic
         style: solid
+      - family: classic
+        style: regular
   label: Camera
   search:
     terms:
@@ -9106,6 +9176,21 @@ cart-shopping:
       - trolley
   unicode: f07a
   voted: false
+cash-app:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Cash App
+  search:
+    terms: []
+  unicode: e7d4
+  voted: false
 cash-register:
   aliases:
     unicodes:
@@ -9191,7 +9276,7 @@ cc-amazon-pay:
     pro:
       - family: classic
         style: brands
-  label: Amazon Pay Credit Card
+  label: Cc Amazon Pay
   search:
     terms: []
   unicode: f42d
@@ -9226,7 +9311,7 @@ cc-apple-pay:
     pro:
       - family: classic
         style: brands
-  label: Apple Pay Credit Card
+  label: Cc Apple Pay
   search:
     terms: []
   unicode: f416
@@ -9242,7 +9327,7 @@ cc-diners-club:
     pro:
       - family: classic
         style: brands
-  label: Diner's Club Credit Card
+  label: Cc Diners Club
   search:
     terms: []
   unicode: f24c
@@ -9258,7 +9343,7 @@ cc-discover:
     pro:
       - family: classic
         style: brands
-  label: Discover Credit Card
+  label: Cc Discover
   search:
     terms: []
   unicode: f1f2
@@ -9274,7 +9359,7 @@ cc-jcb:
     pro:
       - family: classic
         style: brands
-  label: JCB Credit Card
+  label: Cc Jcb
   search:
     terms: []
   unicode: f24b
@@ -9290,7 +9375,7 @@ cc-mastercard:
     pro:
       - family: classic
         style: brands
-  label: MasterCard Credit Card
+  label: Cc Mastercard
   search:
     terms: []
   unicode: f1f1
@@ -9306,7 +9391,7 @@ cc-paypal:
     pro:
       - family: classic
         style: brands
-  label: Paypal Credit Card
+  label: Cc Paypal
   search:
     terms: []
   unicode: f1f4
@@ -9322,7 +9407,7 @@ cc-stripe:
     pro:
       - family: classic
         style: brands
-  label: Stripe Credit Card
+  label: Cc Stripe
   search:
     terms: []
   unicode: f1f5
@@ -9338,7 +9423,7 @@ cc-visa:
     pro:
       - family: classic
         style: brands
-  label: Visa Credit Card
+  label: Cc Visa
   search:
     terms: []
   unicode: f1f0
@@ -9632,6 +9717,9 @@ charging-station:
   label: Charging Station
   search:
     terms:
+      - car charger
+      - charge
+      - charging
       - electric
       - ev
       - tesla
@@ -12014,7 +12102,6 @@ clipboard:
   label: Clipboard
   search:
     terms:
-      - clipboar
       - clipboard
       - copy
       - notepad
@@ -12293,9 +12380,11 @@ clone:
   label: Clone
   search:
     terms:
+      - add
       - arrange
       - copy
       - duplicate
+      - new
       - paste
   unicode: f24d
   voted: false
@@ -12360,10 +12449,14 @@ cloud:
   familyStylesByLicense:
     free:
       - family: classic
+        style: regular
+      - family: classic
         style: solid
     pro:
       - family: classic
         style: solid
+      - family: classic
+        style: regular
   label: Cloud
   search:
     terms:
@@ -12789,7 +12882,7 @@ cloudscale:
     pro:
       - family: classic
         style: brands
-  label: cloudscale.ch
+  label: Cloudscale
   search:
     terms: []
   unicode: f383
@@ -12820,7 +12913,7 @@ cloudversify:
     pro:
       - family: classic
         style: brands
-  label: cloudversify
+  label: Cloudversify
   search:
     terms: []
   unicode: f385
@@ -13122,7 +13215,7 @@ codiepie:
     pro:
       - family: classic
         style: brands
-  label: Codie Pie
+  label: Codiepie
   search:
     terms: []
   unicode: f284
@@ -13827,7 +13920,7 @@ connectdevelop:
     pro:
       - family: classic
         style: brands
-  label: Connect Develop
+  label: Connectdevelop
   search:
     terms: []
   unicode: f20e
@@ -14099,7 +14192,7 @@ cpanel:
     pro:
       - family: classic
         style: brands
-  label: cPanel
+  label: Cpanel
   search:
     terms: []
   unicode: f388
@@ -14132,7 +14225,7 @@ creative-commons-by:
     pro:
       - family: classic
         style: brands
-  label: Creative Commons Attribution
+  label: Creative Commons By
   search:
     terms: []
   unicode: f4e7
@@ -14147,7 +14240,7 @@ creative-commons-nc:
     pro:
       - family: classic
         style: brands
-  label: Creative Commons Noncommercial
+  label: Creative Commons Nc
   search:
     terms: []
   unicode: f4e8
@@ -14162,7 +14255,7 @@ creative-commons-nc-eu:
     pro:
       - family: classic
         style: brands
-  label: Creative Commons Noncommercial (Euro Sign)
+  label: Creative Commons Nc Eu
   search:
     terms: []
   unicode: f4e9
@@ -14177,7 +14270,7 @@ creative-commons-nc-jp:
     pro:
       - family: classic
         style: brands
-  label: Creative Commons Noncommercial (Yen Sign)
+  label: Creative Commons Nc Jp
   search:
     terms: []
   unicode: f4ea
@@ -14192,7 +14285,7 @@ creative-commons-nd:
     pro:
       - family: classic
         style: brands
-  label: Creative Commons No Derivative Works
+  label: Creative Commons Nd
   search:
     terms: []
   unicode: f4eb
@@ -14207,7 +14300,7 @@ creative-commons-pd:
     pro:
       - family: classic
         style: brands
-  label: Creative Commons Public Domain
+  label: Creative Commons Pd
   search:
     terms: []
   unicode: f4ec
@@ -14222,7 +14315,7 @@ creative-commons-pd-alt:
     pro:
       - family: classic
         style: brands
-  label: Alternate Creative Commons Public Domain
+  label: Creative Commons Pd Alt
   search:
     terms: []
   unicode: f4ed
@@ -14252,7 +14345,7 @@ creative-commons-sa:
     pro:
       - family: classic
         style: brands
-  label: Creative Commons Share Alike
+  label: Creative Commons Sa
   search:
     terms: []
   unicode: f4ef
@@ -14282,7 +14375,7 @@ creative-commons-sampling-plus:
     pro:
       - family: classic
         style: brands
-  label: Creative Commons Sampling +
+  label: Creative Commons Sampling Plus
   search:
     terms: []
   unicode: f4f1
@@ -14313,7 +14406,7 @@ creative-commons-zero:
     pro:
       - family: classic
         style: brands
-  label: Creative Commons CC0
+  label: Creative Commons Zero
   search:
     terms: []
   unicode: f4f3
@@ -14681,7 +14774,7 @@ css3:
     pro:
       - family: classic
         style: brands
-  label: CSS 3 Logo
+  label: Css3
   search:
     terms:
       - code
@@ -14697,7 +14790,7 @@ css3-alt:
     pro:
       - family: classic
         style: brands
-  label: Alternate CSS3 Logo
+  label: Css3 Alt
   search:
     terms: []
   unicode: f38b
@@ -14850,7 +14943,7 @@ d-and-d:
     pro:
       - family: classic
         style: brands
-  label: Dungeons & Dragons
+  label: D And D
   search:
     terms: []
   unicode: f38d
@@ -14865,7 +14958,7 @@ d-and-d-beyond:
     pro:
       - family: classic
         style: brands
-  label: D&D Beyond
+  label: D And D Beyond
   search:
     terms:
       - Dungeons & Dragons
@@ -14887,7 +14980,7 @@ dailymotion:
     pro:
       - family: classic
         style: brands
-  label: dailymotion
+  label: Dailymotion
   search:
     terms: []
   unicode: e052
@@ -14919,7 +15012,7 @@ dashcube:
     pro:
       - family: classic
         style: brands
-  label: DashCube
+  label: Dashcube
   search:
     terms: []
   unicode: f210
@@ -15090,7 +15183,7 @@ deploydog:
     pro:
       - family: classic
         style: brands
-  label: deploy.dog
+  label: Deploydog
   search:
     terms: []
   unicode: f38e
@@ -15166,7 +15259,7 @@ dev:
     pro:
       - family: classic
         style: brands
-  label: DEV
+  label: Dev
   search:
     terms: []
   unicode: f6cc
@@ -15182,7 +15275,7 @@ deviantart:
     pro:
       - family: classic
         style: brands
-  label: deviantART
+  label: Deviantart
   search:
     terms: []
   unicode: f1bd
@@ -15232,7 +15325,7 @@ dhl:
     pro:
       - family: classic
         style: brands
-  label: DHL
+  label: Dhl
   search:
     terms:
       - Dalsey
@@ -15764,7 +15857,7 @@ digg:
     pro:
       - family: classic
         style: brands
-  label: Digg Logo
+  label: Digg
   search:
     terms: []
   unicode: f1a6
@@ -15880,6 +15973,21 @@ display:
       - imac
   unicode: e163
   voted: false
+disqus:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Disqus
+  search:
+    terms: []
+  unicode: e7d5
+  voted: false
 divide:
   aliases:
     unicodes:
@@ -15967,7 +16075,7 @@ dochub:
     pro:
       - family: classic
         style: brands
-  label: DocHub
+  label: Dochub
   search:
     terms: []
   unicode: f394
@@ -16386,7 +16494,13 @@ dragon:
   voted: false
 draw-polygon:
   aliases:
+    names:
+      - vector-polygon
     unicodes:
+      composite:
+        - e2c7
+      primary:
+        - e2c7
       secondary:
         - 10f5ee
   changes:
@@ -16644,7 +16758,7 @@ drupal:
     pro:
       - family: classic
         style: brands
-  label: Drupal Logo
+  label: Drupal
   search:
     terms: []
   unicode: f1a9
@@ -16784,6 +16898,21 @@ dungeon:
       - fantasy
       - gate
   unicode: f6d9
+  voted: false
+duolingo:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Duolingo
+  search:
+    terms: []
+  unicode: e812
   voted: false
 dyalog:
   changes:
@@ -17171,7 +17300,7 @@ ebay:
     pro:
       - family: classic
         style: brands
-  label: eBay
+  label: Ebay
   search:
     terms: []
   unicode: f4f4
@@ -17189,7 +17318,7 @@ edge:
     pro:
       - family: classic
         style: brands
-  label: Edge Browser
+  label: Edge
   search:
     terms:
       - browser
@@ -17207,7 +17336,7 @@ edge-legacy:
     pro:
       - family: classic
         style: brands
-  label: Edge Legacy Browser
+  label: Edge Legacy
   search:
     terms: []
   unicode: e078
@@ -17326,6 +17455,25 @@ elevator:
       - users-people
   unicode: e16d
   voted: true
+eleventy:
+  aliases:
+    names:
+      - 11ty
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Eleventy
+  search:
+    terms:
+      - 11ty
+  unicode: e7d6
+  voted: false
 ellipsis:
   aliases:
     names:
@@ -17454,7 +17602,7 @@ empire:
     pro:
       - family: classic
         style: brands
-  label: Galactic Empire
+  label: Empire
   search:
     terms: []
   unicode: f1d1
@@ -17675,7 +17823,7 @@ envira:
     pro:
       - family: classic
         style: brands
-  label: Envira Gallery
+  label: Envira
   search:
     terms:
       - leaf
@@ -17986,7 +18134,7 @@ expeditedssl:
     pro:
       - family: classic
         style: brands
-  label: ExpeditedSSL
+  label: Expeditedssl
   search:
     terms: []
   unicode: f23e
@@ -19904,7 +20052,7 @@ fantasy-flight-games:
     pro:
       - family: classic
         style: brands
-  label: Fantasy Flight-games
+  label: Fantasy Flight Games
   search:
     terms:
       - Dungeons & Dragons
@@ -20115,7 +20263,7 @@ fedex:
     pro:
       - family: classic
         style: brands
-  label: FedEx
+  label: Fedex
   search:
     terms:
       - Federal Express
@@ -21382,11 +21530,18 @@ fill-drip:
   voted: false
 film:
   aliases:
+    names:
+      - film-alt
+      - film-simple
     unicodes:
       composite:
         - 1f39e
+        - f3a0
+      primary:
+        - f3a0
       secondary:
         - 10f008
+        - 10f3a0
   changes:
     - 1.0.0
     - 5.0.0
@@ -21790,7 +21945,7 @@ first-order-alt:
     pro:
       - family: classic
         style: brands
-  label: Alternate First Order
+  label: First Order Alt
   search:
     terms: []
   unicode: f50a
@@ -21805,7 +21960,7 @@ firstdraft:
     pro:
       - family: classic
         style: brands
-  label: firstdraft
+  label: Firstdraft
   search:
     terms: []
   unicode: f3a1
@@ -22603,7 +22758,7 @@ fort-awesome-alt:
     pro:
       - family: classic
         style: brands
-  label: Alternate Fort Awesome
+  label: Fort Awesome Alt
   search:
     terms:
       - castle
@@ -22788,7 +22943,7 @@ free-code-camp:
     pro:
       - family: classic
         style: brands
-  label: freeCodeCamp
+  label: Free Code Camp
   search:
     terms: []
   unicode: f2c5
@@ -22803,7 +22958,7 @@ freebsd:
     pro:
       - family: classic
         style: brands
-  label: FreeBSD
+  label: Freebsd
   search:
     terms: []
   unicode: f3a4
@@ -23411,7 +23566,7 @@ gg:
     pro:
       - family: classic
         style: brands
-  label: GG Currency
+  label: Gg
   search:
     terms: []
   unicode: f260
@@ -23427,7 +23582,7 @@ gg-circle:
     pro:
       - family: classic
         style: brands
-  label: GG Currency Circle
+  label: Gg Circle
   search:
     terms: []
   unicode: f261
@@ -23598,7 +23753,7 @@ github:
     pro:
       - family: classic
         style: brands
-  label: GitHub
+  label: Github
   search:
     terms:
       - octocat
@@ -23615,7 +23770,7 @@ github-alt:
     pro:
       - family: classic
         style: brands
-  label: Alternate GitHub
+  label: Github Alt
   search:
     terms:
       - octocat
@@ -23631,7 +23786,7 @@ gitkraken:
     pro:
       - family: classic
         style: brands
-  label: GitKraken
+  label: Gitkraken
   search:
     terms: []
   unicode: f3a6
@@ -23650,7 +23805,7 @@ gitlab:
     pro:
       - family: classic
         style: brands
-  label: GitLab
+  label: Gitlab
   search:
     terms:
       - Axosoft
@@ -23863,7 +24018,7 @@ golang:
     pro:
       - family: classic
         style: brands
-  label: Go
+  label: Golang
   search:
     terms: []
   unicode: e40f
@@ -23941,7 +24096,7 @@ google:
     pro:
       - family: classic
         style: brands
-  label: Google Logo
+  label: Google
   search:
     terms: []
   unicode: f1a0
@@ -24151,7 +24306,7 @@ gratipay:
     pro:
       - family: classic
         style: brands
-  label: Gratipay (Gittip)
+  label: Gratipay
   search:
     terms:
       - favorite
@@ -24243,8 +24398,13 @@ greater-than-equal:
 grip:
   aliases:
     names:
+      - grid-horizontal
       - grip-horizontal
     unicodes:
+      composite:
+        - e307
+      primary:
+        - e307
       secondary:
         - 10f58d
   changes:
@@ -24268,10 +24428,16 @@ grip:
   search:
     terms:
       - affordance
+      - app
+      - collection
+      - dashboard
       - drag
       - drop
       - grab
+      - grid
       - handle
+      - launcher
+      - square
   unicode: f58d
   voted: true
 grip-lines:
@@ -24342,6 +24508,8 @@ grip-lines-vertical:
   voted: true
 grip-vertical:
   aliases:
+    names:
+      - grid-vertical
     unicodes:
       secondary:
         - 10f58e
@@ -24382,7 +24550,7 @@ gripfire:
     pro:
       - family: classic
         style: brands
-  label: 'Gripfire, Inc.'
+  label: Gripfire
   search:
     terms: []
   unicode: f3ac
@@ -25746,9 +25914,18 @@ hands-praying:
   voted: false
 handshake:
   aliases:
+    names:
+      - handshake-alt
+      - handshake-simple
     unicodes:
+      composite:
+        - 1f91d
+        - f4c6
+      primary:
+        - f4c6
       secondary:
         - 10f2b5
+        - 10f4c6
   changes:
     - 4.7.0
     - 5.0.0
@@ -25815,82 +25992,18 @@ handshake-angle:
       - volunteering
   unicode: f4c4
   voted: false
-handshake-simple:
-  aliases:
-    names:
-      - handshake-alt
-    unicodes:
-      composite:
-        - 1f91d
-      secondary:
-        - 10f4c6
-  changes:
-    - 5.0.9
-    - 6.0.0-beta1
-    - 6.1.0
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-    - 6.5.0
-    - 6.6.0
-    - 6.7.0
-  familyStylesByLicense:
-    free:
-      - family: classic
-        style: solid
-    pro:
-      - family: classic
-        style: solid
-  label: Handshake Simple
-  search:
-    terms:
-      - agreement
-      - greeting
-      - hand
-      - handshake
-      - meeting
-      - partnership
-      - shake
-  unicode: f4c6
-  voted: false
-handshake-simple-slash:
+handshake-slash:
   aliases:
     names:
       - handshake-alt-slash
+      - handshake-simple-slash
     unicodes:
+      composite:
+        - e05f
+      primary:
+        - e05f
       secondary:
         - 10e05f
-  changes:
-    - 5.13.0
-    - 5.14.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-    - 6.4.1
-    - 6.5.0
-    - 6.6.0
-    - 6.7.0
-  familyStylesByLicense:
-    free:
-      - family: classic
-        style: solid
-    pro:
-      - family: classic
-        style: solid
-  label: Handshake Simple Slash
-  search:
-    terms:
-      - broken
-      - covid-19
-      - disabled
-      - social distance
-  unicode: e05f
-  voted: false
-handshake-slash:
-  aliases:
-    unicodes:
-      secondary:
         - '10e060'
   changes:
     - 5.13.0
@@ -26346,11 +26459,18 @@ heading:
   voted: false
 headphones:
   aliases:
+    names:
+      - headphones-alt
+      - headphones-simple
     unicodes:
       composite:
         - 1f3a7
+        - f58f
+      primary:
+        - f58f
       secondary:
         - 10f025
+        - 10f58f
   changes:
     - 1.0.0
     - 5.0.0
@@ -26364,10 +26484,14 @@ headphones:
   familyStylesByLicense:
     free:
       - family: classic
+        style: regular
+      - family: classic
         style: solid
     pro:
       - family: classic
         style: solid
+      - family: classic
+        style: regular
   label: Headphones
   search:
     terms:
@@ -26380,39 +26504,6 @@ headphones:
       - speaker
   unicode: f025
   voted: false
-headphones-simple:
-  aliases:
-    names:
-      - headphones-alt
-    unicodes:
-      secondary:
-        - 10f58f
-  changes:
-    - 5.1.0
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-    - 6.5.0
-    - 6.6.0
-    - 6.7.0
-  familyStylesByLicense:
-    free:
-      - family: classic
-        style: solid
-    pro:
-      - family: classic
-        style: solid
-  label: Headphones Simple
-  search:
-    terms:
-      - audio
-      - listen
-      - music
-      - sound
-      - speaker
-  unicode: f58f
-  voted: true
 headset:
   aliases:
     unicodes:
@@ -26495,35 +26586,16 @@ heart:
   search:
     terms:
       - ace
-      - black
-      - black heart
-      - blue
-      - blue heart
-      - brown
-      - brown heart
       - card
-      - evil
       - favorite
       - game
-      - green
-      - green heart
       - heart
       - heart suit
       - like
       - love
-      - orange
-      - orange heart
-      - purple
-      - purple heart
-      - red heart
       - relationship
       - valentine
-      - white
-      - white heart
-      - wicked
       - wishlist
-      - yellow
-      - yellow heart
   unicode: f004
   voted: false
 heart-circle-bolt:
@@ -26881,6 +26953,42 @@ helmet-un:
       - united nations
   unicode: e503
   voted: false
+hexagon:
+  aliases:
+    unicodes:
+      composite:
+        - 2b23
+      secondary:
+        - 10f312
+  changes:
+    - 5.0.0
+    - 5.10.1
+    - 5.10.2
+    - 6.0.0-beta1
+    - 6.0.0
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+    - 6.5.0
+    - 6.6.0
+    - 6.7.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+  label: Hexagon
+  search:
+    terms:
+      - Horizontal Black Hexagon
+      - geometry
+      - honeycomb
+      - polygon
+      - shape
+  unicode: f312
+  voted: false
 hexagon-nodes:
   changes:
     - 6.7.0
@@ -27073,7 +27181,7 @@ hire-a-helper:
     pro:
       - family: classic
         style: brands
-  label: HireAHelper
+  label: Hire A Helper
   search:
     terms: []
   unicode: f3b0
@@ -27088,7 +27196,7 @@ hive:
     pro:
       - family: classic
         style: brands
-  label: Hive Blockchain Network
+  label: Hive
   search:
     terms: []
   unicode: e07f
@@ -27674,10 +27782,14 @@ house:
   familyStylesByLicense:
     free:
       - family: classic
+        style: regular
+      - family: classic
         style: solid
     pro:
       - family: classic
         style: solid
+      - family: classic
+        style: regular
   label: House
   search:
     terms:
@@ -28433,7 +28545,7 @@ html5:
     pro:
       - family: classic
         style: brands
-  label: HTML 5 Logo
+  label: Html5
   search:
     terms: []
   unicode: f13b
@@ -28448,7 +28560,7 @@ hubspot:
     pro:
       - family: classic
         style: brands
-  label: HubSpot
+  label: Hubspot
   search:
     terms: []
   unicode: f3b2
@@ -28791,7 +28903,7 @@ ideal:
     pro:
       - family: classic
         style: brands
-  label: iDeal
+  label: Ideal
   search:
     terms: []
   unicode: e013
@@ -28953,7 +29065,7 @@ imdb:
     pro:
       - family: classic
         style: brands
-  label: IMDB
+  label: Imdb
   search:
     terms: []
   unicode: f2d8
@@ -29184,7 +29296,7 @@ instalod:
     pro:
       - family: classic
         style: brands
-  label: InstaLOD
+  label: Instalod
   search:
     terms: []
   unicode: e081
@@ -29218,7 +29330,7 @@ internet-explorer:
     pro:
       - family: classic
         style: brands
-  label: Internet-explorer
+  label: Internet Explorer
   search:
     terms:
       - browser
@@ -29235,7 +29347,7 @@ invision:
     pro:
       - family: classic
         style: brands
-  label: InVision
+  label: Invision
   search:
     terms:
       - app
@@ -29254,7 +29366,7 @@ ioxhost:
     pro:
       - family: classic
         style: brands
-  label: ioxhost
+  label: Ioxhost
   search:
     terms: []
   unicode: f208
@@ -29305,7 +29417,7 @@ itch-io:
     pro:
       - family: classic
         style: brands
-  label: itch.io
+  label: Itch Io
   search:
     terms: []
   unicode: f83a
@@ -29320,7 +29432,7 @@ itunes:
     pro:
       - family: classic
         style: brands
-  label: iTunes
+  label: Itunes
   search:
     terms: []
   unicode: f3b4
@@ -29491,7 +29603,7 @@ jenkins:
     pro:
       - family: classic
         style: brands
-  label: Jenkis
+  label: Jenkins
   search:
     terms: []
   unicode: f3b6
@@ -29653,7 +29765,7 @@ joomla:
     pro:
       - family: classic
         style: brands
-  label: Joomla Logo
+  label: Joomla
   search:
     terms: []
   unicode: f1aa
@@ -29668,7 +29780,7 @@ js:
     pro:
       - family: classic
         style: brands
-  label: JavaScript (JS)
+  label: Js
   search:
     terms: []
   unicode: f3b8
@@ -29684,7 +29796,7 @@ jsfiddle:
     pro:
       - family: classic
         style: brands
-  label: jsFiddle
+  label: Jsfiddle
   search:
     terms: []
   unicode: f1cc
@@ -29724,7 +29836,7 @@ jxl:
     pro:
       - family: classic
         style: brands
-  label: JXL
+  label: Jxl
   search:
     terms: []
   unicode: e67b
@@ -29810,6 +29922,21 @@ kaggle:
     terms: []
   unicode: f5fa
   voted: true
+kakao-talk:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Kakao Talk
+  search:
+    terms: []
+  unicode: e7d7
+  voted: false
 key:
   aliases:
     unicodes:
@@ -29916,7 +30043,7 @@ keycdn:
     pro:
       - family: classic
         style: brands
-  label: KeyCDN
+  label: Keycdn
   search:
     terms: []
   unicode: f3ba
@@ -30114,7 +30241,7 @@ korvue:
     pro:
       - family: classic
         style: brands
-  label: KORVUE
+  label: Korvue
   search:
     terms: []
   unicode: f42f
@@ -30500,7 +30627,7 @@ lastfm:
     pro:
       - family: classic
         style: brands
-  label: last.fm
+  label: Lastfm
   search:
     terms: []
   unicode: f202
@@ -31006,7 +31133,7 @@ linkedin:
     pro:
       - family: classic
         style: brands
-  label: LinkedIn
+  label: Linkedin
   search:
     terms:
       - linkedin-square
@@ -31027,12 +31154,27 @@ linkedin-in:
     pro:
       - family: classic
         style: brands
-  label: LinkedIn In
+  label: Linkedin In
   search:
     terms:
       - linkedin
       - linkin
   unicode: f0e1
+  voted: false
+linktree:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Linktree
+  search:
+    terms: []
+  unicode: e7d8
   voted: false
 linode:
   changes:
@@ -31593,6 +31735,36 @@ locust:
       - swarm
   unicode: e520
   voted: false
+lumon:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Lumon
+  search:
+    terms: []
+  unicode: e7e2
+  voted: false
+lumon-drop:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Lumon Drop
+  search:
+    terms: []
+  unicode: e7e3
+  voted: false
 lungs:
   aliases:
     unicodes:
@@ -31675,7 +31847,7 @@ lyft:
     pro:
       - family: classic
         style: brands
-  label: lyft
+  label: Lyft
   search:
     terms: []
   unicode: f3c3
@@ -32822,7 +32994,7 @@ maxcdn:
     pro:
       - family: classic
         style: brands
-  label: MaxCDN
+  label: Maxcdn
   search:
     terms: []
   unicode: f136
@@ -32876,7 +33048,7 @@ mdb:
     pro:
       - family: classic
         style: brands
-  label: Material Design for Bootstrap
+  label: Mdb
   search:
     terms: []
   unicode: f8ca
@@ -32928,7 +33100,7 @@ medapps:
     pro:
       - family: classic
         style: brands
-  label: MedApps
+  label: Medapps
   search:
     terms: []
   unicode: f3c6
@@ -32966,7 +33138,7 @@ medrt:
     pro:
       - family: classic
         style: brands
-  label: MRT
+  label: Medrt
   search:
     terms: []
   unicode: f3c8
@@ -33225,7 +33397,7 @@ microblog:
     pro:
       - family: classic
         style: brands
-  label: Micro.blog
+  label: Microblog
   search:
     terms: []
   unicode: e01a
@@ -33863,6 +34035,35 @@ mobile-screen-button:
       - telephone
   unicode: f3cd
   voted: false
+mobile-vibrate:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+  label: Mobile Vibrate
+  search:
+    terms:
+      - android
+      - call
+      - cell
+      - cell phone
+      - device
+      - haptic
+      - mobile
+      - mobile phone
+      - notification
+      - number
+      - phone
+      - screen
+      - telephone
+      - text
+  unicode: e816
+  voted: false
 modx:
   changes:
     - 4.5.0
@@ -33874,7 +34075,7 @@ modx:
     pro:
       - family: classic
         style: brands
-  label: MODX
+  label: Modx
   search:
     terms: []
   unicode: f285
@@ -34911,7 +35112,7 @@ nfc-directional:
     pro:
       - family: classic
         style: brands
-  label: NFC Directional
+  label: Nfc Directional
   search:
     terms:
       - connect
@@ -34979,7 +35180,7 @@ node:
     pro:
       - family: classic
         style: brands
-  label: Node.js
+  label: Node
   search:
     terms: []
   unicode: f419
@@ -34995,10 +35196,30 @@ node-js:
     pro:
       - family: classic
         style: brands
-  label: Node.js JS
+  label: Node Js
   search:
     terms: []
   unicode: f3d3
+  voted: false
+non-binary:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+  label: Non Binary
+  search:
+    terms:
+      - female
+      - gender
+      - male
+      - nb
+      - queer
+  unicode: e807
   voted: false
 not-equal:
   aliases:
@@ -35130,6 +35351,21 @@ notes-medical:
       - records
   unicode: f481
   voted: false
+notion:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Notion
+  search:
+    terms: []
+  unicode: e7d9
+  voted: false
 npm:
   changes:
     - 5.0.0
@@ -35140,7 +35376,7 @@ npm:
     pro:
       - family: classic
         style: brands
-  label: npm
+  label: Npm
   search:
     terms: []
   unicode: f3d4
@@ -35156,7 +35392,7 @@ ns8:
     pro:
       - family: classic
         style: brands
-  label: NS8
+  label: Ns8
   search:
     terms: []
   unicode: f3d5
@@ -35279,6 +35515,42 @@ object-ungroup:
       - select
       - separate
   unicode: f248
+  voted: false
+octagon:
+  aliases:
+    unicodes:
+      composite:
+        - 1f6d1
+      secondary:
+        - 10f306
+  changes:
+    - 5.0.0
+    - 5.10.1
+    - 5.10.2
+    - 6.0.0-beta1
+    - 6.0.0
+    - 6.2.0
+    - 6.3.0
+    - 6.4.0
+    - 6.5.0
+    - 6.6.0
+    - 6.7.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+  label: Octagon
+  search:
+    terms:
+      - octagonal
+      - shape
+      - sign
+      - stop
+      - stop sign
+  unicode: f306
   voted: false
 octopus-deploy:
   changes:
@@ -35437,6 +35709,21 @@ om:
       - religion
   unicode: f679
   voted: false
+openai:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Openai
+  search:
+    terms: []
+  unicode: e7cf
+  voted: false
 opencart:
   changes:
     - 4.4.0
@@ -35448,7 +35735,7 @@ opencart:
     pro:
       - family: classic
         style: brands
-  label: OpenCart
+  label: Opencart
   search:
     terms: []
   unicode: f23d
@@ -35464,7 +35751,7 @@ openid:
     pro:
       - family: classic
         style: brands
-  label: OpenID
+  label: Openid
   search:
     terms: []
   unicode: f19b
@@ -35527,7 +35814,7 @@ orcid:
     pro:
       - family: classic
         style: brands
-  label: ORCID
+  label: Orcid
   search:
     terms: []
   unicode: f8d2
@@ -35543,7 +35830,7 @@ osi:
     pro:
       - family: classic
         style: brands
-  label: Open Source Initiative
+  label: Osi
   search:
     terms: []
   unicode: f41a
@@ -35674,7 +35961,7 @@ page4:
     pro:
       - family: classic
         style: brands
-  label: page4 Corporation
+  label: Page4
   search:
     terms: []
   unicode: f3d7
@@ -35902,6 +36189,21 @@ pallet:
       - shipping
       - warehouse
   unicode: f482
+  voted: false
+pandora:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Pandora
+  search:
+    terms: []
+  unicode: e7da
   voted: false
 panorama:
   changes:
@@ -36551,6 +36853,25 @@ pencil:
       - write
   unicode: f303
   voted: false
+pentagon:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+  label: Pentagon
+  search:
+    terms:
+      - '5'
+      - five
+      - pentagon
+      - shape
+  unicode: e790
+  voted: false
 people-arrows:
   aliases:
     names:
@@ -36810,7 +37131,7 @@ perbyte:
     pro:
       - family: classic
         style: brands
-  label: PerByte
+  label: Perbyte
   search:
     terms: []
   unicode: e083
@@ -37453,7 +37774,6 @@ person-drowning:
       - drown
       - emergency
       - swim
-      - uer
   unicode: e545
   voted: false
 person-falling:
@@ -38553,7 +38873,7 @@ php:
     pro:
       - family: classic
         style: brands
-  label: PHP
+  label: Php
   search:
     terms: []
   unicode: f457
@@ -38571,7 +38891,7 @@ pied-piper:
     pro:
       - family: classic
         style: brands
-  label: Pied Piper Logo
+  label: Pied Piper
   search:
     terms: []
   unicode: f2ae
@@ -38588,7 +38908,7 @@ pied-piper-alt:
     pro:
       - family: classic
         style: brands
-  label: Alternate Pied Piper Logo (Old)
+  label: Pied Piper Alt
   search:
     terms: []
   unicode: f1a8
@@ -38603,7 +38923,7 @@ pied-piper-hat:
     pro:
       - family: classic
         style: brands
-  label: Pied Piper Hat (Old)
+  label: Pied Piper Hat
   search:
     terms:
       - clothing
@@ -38620,7 +38940,7 @@ pied-piper-pp:
     pro:
       - family: classic
         style: brands
-  label: Pied Piper PP Logo (Old)
+  label: Pied Piper Pp
   search:
     terms: []
   unicode: f1a7
@@ -38734,6 +39054,21 @@ pix:
     terms: []
   unicode: e43a
   voted: true
+pixelfed:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Pixelfed
+  search:
+    terms: []
+  unicode: e7db
+  voted: false
 pixiv:
   changes:
     - 6.5.0
@@ -39241,7 +39576,7 @@ playstation:
     pro:
       - family: classic
         style: brands
-  label: PlayStation
+  label: Playstation
   search:
     terms: []
   unicode: f3df
@@ -40030,7 +40365,7 @@ qq:
     pro:
       - family: classic
         style: brands
-  label: QQ
+  label: Qq
   search:
     terms: []
   unicode: f1d6
@@ -40065,6 +40400,8 @@ qrcode:
       - barcode
       - info
       - information
+      - qr
+      - qr-code
       - scan
   unicode: f029
   voted: false
@@ -40128,7 +40465,7 @@ quinscape:
     pro:
       - family: classic
         style: brands
-  label: QuinScape
+  label: Quinscape
   search:
     terms: []
   unicode: f459
@@ -40466,7 +40803,7 @@ reacteurope:
     pro:
       - family: classic
         style: brands
-  label: ReactEurope
+  label: Reacteurope
   search:
     terms: []
   unicode: f75d
@@ -40482,7 +40819,7 @@ readme:
     pro:
       - family: classic
         style: brands
-  label: ReadMe
+  label: Readme
   search:
     terms: []
   unicode: f4d5
@@ -40498,7 +40835,7 @@ rebel:
     pro:
       - family: classic
         style: brands
-  label: Rebel Alliance
+  label: Rebel
   search:
     terms: []
   unicode: f1d0
@@ -40746,7 +41083,7 @@ red-river:
     pro:
       - family: classic
         style: brands
-  label: red river
+  label: Red River
   search:
     terms: []
   unicode: f3e3
@@ -40975,7 +41312,7 @@ replyd:
     pro:
       - family: classic
         style: brands
-  label: replyd
+  label: Replyd
   search:
     terms: []
   unicode: f3e6
@@ -41121,7 +41458,7 @@ rev:
     pro:
       - family: classic
         style: brands
-  label: Rev.io
+  label: Rev
   search:
     terms: []
   unicode: f5b2
@@ -41656,7 +41993,7 @@ rocketchat:
     pro:
       - family: classic
         style: brands
-  label: Rocket.Chat
+  label: Rocketchat
   search:
     terms: []
   unicode: f3e8
@@ -42496,7 +42833,7 @@ schlix:
     pro:
       - family: classic
         style: brands
-  label: SCHLIX
+  label: Schlix
   search:
     terms: []
   unicode: f3ea
@@ -43041,6 +43378,28 @@ sellsy:
   search:
     terms: []
   unicode: f213
+  voted: false
+septagon:
+  aliases:
+    names:
+      - heptagon
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+  label: Septagon
+  search:
+    terms:
+      - '7'
+      - heptagon
+      - seven
+      - shape
+  unicode: e820
   voted: false
 server:
   aliases:
@@ -43603,7 +43962,7 @@ shirtsinbulk:
     pro:
       - family: classic
         style: brands
-  label: Shirts in Bulk
+  label: Shirtsinbulk
   search:
     terms: []
   unicode: f214
@@ -43757,7 +44116,6 @@ shop-slash:
       - building
       - buy
       - closed
-      - covid-19
       - disabled
       - purchase
       - shopping
@@ -44148,10 +44506,52 @@ simplybuilt:
     pro:
       - family: classic
         style: brands
-  label: SimplyBuilt
+  label: Simplybuilt
   search:
     terms: []
   unicode: f215
+  voted: false
+single-quote-left:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+  label: Single Quote Left
+  search:
+    terms:
+      - left single quotation mark
+      - mention
+      - note
+      - phrase
+      - text
+      - type
+  unicode: e81b
+  voted: false
+single-quote-right:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+  label: Single Quote Right
+  search:
+    terms:
+      - mention
+      - note
+      - phrase
+      - right single quotation mark
+      - text
+      - type
+  unicode: e81c
   voted: false
 sink:
   aliases:
@@ -44196,7 +44596,7 @@ sistrix:
     pro:
       - family: classic
         style: brands
-  label: SISTRIX
+  label: Sistrix
   search:
     terms: []
   unicode: f3ee
@@ -44392,7 +44792,7 @@ skyatlas:
     pro:
       - family: classic
         style: brands
-  label: skyatlas
+  label: Skyatlas
   search:
     terms: []
   unicode: f216
@@ -44431,7 +44831,7 @@ slack:
     pro:
       - family: classic
         style: brands
-  label: Slack Logo
+  label: Slack
   search:
     terms:
       - anchor
@@ -45227,6 +45627,27 @@ spinner:
       - progress
   unicode: f110
   voted: false
+spiral:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+  label: Spiral
+  search:
+    terms:
+      - design
+      - dizzy
+      - rotate
+      - spin
+      - swirl
+      - twist
+  unicode: e80a
+  voted: false
 splotch:
   aliases:
     unicodes:
@@ -45823,6 +46244,21 @@ square-facebook:
       - social network
   unicode: f082
   voted: false
+square-figma:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Square Figma
+  search:
+    terms: []
+  unicode: e7e4
+  voted: false
 square-font-awesome:
   changes:
     - 5.0.0
@@ -46149,6 +46585,21 @@ square-letterboxd:
     terms: []
   unicode: e62e
   voted: false
+square-linkedin:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Square Linkedin
+  search:
+    terms: []
+  unicode: e7d0
+  voted: false
 square-minus:
   aliases:
     names:
@@ -46420,7 +46871,7 @@ square-pied-piper:
     pro:
       - family: classic
         style: brands
-  label: Pied Piper Square Logo (Old)
+  label: Square Pied Piper
   search:
     terms: []
   unicode: e01e
@@ -46703,7 +47154,7 @@ square-snapchat:
     pro:
       - family: classic
         style: brands
-  label: Snapchat Square
+  label: Square Snapchat
   search:
     terms: []
   unicode: f2ad
@@ -47502,7 +47953,7 @@ staylinked:
     pro:
       - family: classic
         style: brands
-  label: StayLinked
+  label: Staylinked
   search:
     terms:
       - linkin
@@ -47805,7 +48256,6 @@ store-slash:
       - building
       - buy
       - closed
-      - covid-19
       - disabled
       - purchase
       - shopping
@@ -47987,7 +48437,7 @@ studiovinari:
     pro:
       - family: classic
         style: brands
-  label: Studio Vinari
+  label: Studiovinari
   search:
     terms: []
   unicode: f3f8
@@ -48003,7 +48453,7 @@ stumbleupon:
     pro:
       - family: classic
         style: brands
-  label: StumbleUpon Logo
+  label: Stumbleupon
   search:
     terms: []
   unicode: f1a4
@@ -48019,7 +48469,7 @@ stumbleupon-circle:
     pro:
       - family: classic
         style: brands
-  label: StumbleUpon Circle
+  label: Stumbleupon Circle
   search:
     terms: []
   unicode: f1a3
@@ -49833,6 +50283,22 @@ terminal:
       - terminal
   unicode: f120
   voted: false
+tex:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Tex
+  search:
+    terms:
+      - latex
+  unicode: e7ff
+  voted: false
 text-height:
   aliases:
     unicodes:
@@ -49982,7 +50448,7 @@ themeisle:
     pro:
       - family: classic
         style: brands
-  label: ThemeIsle
+  label: Themeisle
   search:
     terms: []
   unicode: f2b2
@@ -50292,6 +50758,21 @@ ticket-simple:
       - voucher
   unicode: f3ff
   voted: false
+tidal:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Tidal
+  search:
+    terms: []
+  unicode: e7dc
+  voted: false
 tiktok:
   changes:
     - 5.13.1
@@ -50303,7 +50784,7 @@ tiktok:
     pro:
       - family: classic
         style: brands
-  label: TikTok
+  label: Tiktok
   search:
     terms: []
   unicode: e07b
@@ -50446,11 +50927,18 @@ toilet:
   voted: true
 toilet-paper:
   aliases:
+    names:
+      - toilet-paper-alt
+      - toilet-paper-blank
     unicodes:
       composite:
         - 1f9fb
+        - f71f
+      primary:
+        - f71f
       secondary:
         - 10f71e
+        - 10f71f
   changes:
     - 5.4.0
     - 5.10.2
@@ -51515,10 +52003,14 @@ truck:
   familyStylesByLicense:
     free:
       - family: classic
+        style: regular
+      - family: classic
         style: solid
     pro:
       - family: classic
         style: solid
+      - family: classic
+        style: regular
   label: Truck
   search:
     terms:
@@ -52211,7 +52703,7 @@ uikit:
     pro:
       - family: classic
         style: brands
-  label: UIkit
+  label: Uikit
   search:
     terms: []
   unicode: f403
@@ -52309,7 +52801,7 @@ uncharted:
     pro:
       - family: classic
         style: brands
-  label: Uncharted Software
+  label: Uncharted
   search:
     terms: []
   unicode: e084
@@ -52375,7 +52867,7 @@ unity:
     pro:
       - family: classic
         style: brands
-  label: Unity 3D
+  label: Unity
   search:
     terms: []
   unicode: e049
@@ -52747,7 +53239,7 @@ ups:
     pro:
       - family: classic
         style: brands
-  label: UPS
+  label: Ups
   search:
     terms:
       - United Parcel Service
@@ -52782,19 +53274,26 @@ usb:
     pro:
       - family: classic
         style: brands
-  label: USB
+  label: Usb
   search:
     terms: []
   unicode: f287
   voted: false
 user:
   aliases:
+    names:
+      - user-alt
+      - user-large
     unicodes:
       composite:
         - 1f464
         - f2c0
+        - f406
+      primary:
+        - f406
       secondary:
         - 10f007
+        - 10f406
   changes:
     - 1.0.0
     - 5.0.0
@@ -53103,72 +53602,6 @@ user-injured:
       - users-people
   unicode: f728
   voted: false
-user-large:
-  aliases:
-    names:
-      - user-alt
-    unicodes:
-      secondary:
-        - 10f406
-  changes:
-    - 5.0.0
-    - 5.0.3
-    - 5.0.11
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-    - 6.5.0
-    - 6.6.0
-    - 6.7.0
-  familyStylesByLicense:
-    free:
-      - family: classic
-        style: solid
-    pro:
-      - family: classic
-        style: solid
-  label: User Large
-  search:
-    terms:
-      - employee
-      - uer
-      - users-people
-  unicode: f406
-  voted: false
-user-large-slash:
-  aliases:
-    names:
-      - user-alt-slash
-    unicodes:
-      secondary:
-        - 10f4fa
-  changes:
-    - 5.0.11
-    - 6.0.0-beta1
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-    - 6.5.0
-    - 6.6.0
-    - 6.7.0
-  familyStylesByLicense:
-    free:
-      - family: classic
-        style: solid
-    pro:
-      - family: classic
-        style: solid
-  label: User Large Slash
-  search:
-    terms:
-      - disabled
-      - disconnect
-      - employee
-      - uer
-      - users-people
-  unicode: f4fa
-  voted: false
 user-lock:
   aliases:
     unicodes:
@@ -53375,7 +53808,7 @@ user-plus:
       - sign up
       - signup
       - team
-      - uer
+      - user
   unicode: f234
   voted: false
 user-secret:
@@ -53442,13 +53875,22 @@ user-shield:
       - employee
       - protect
       - safety
+      - security
       - uer
   unicode: f505
   voted: false
 user-slash:
   aliases:
+    names:
+      - user-alt-slash
+      - user-large-slash
     unicodes:
+      composite:
+        - f4fa
+      primary:
+        - f4fa
       secondary:
+        - 10f4fa
         - 10f506
   changes:
     - 5.0.11
@@ -53831,7 +54273,7 @@ usps:
     pro:
       - family: classic
         style: brands
-  label: United States Postal Service
+  label: Usps
   search:
     terms:
       - american
@@ -53850,7 +54292,7 @@ ussunnah:
     pro:
       - family: classic
         style: brands
-  label: us-Sunnah Foundation
+  label: Ussunnah
   search:
     terms: []
   unicode: f407
@@ -53972,7 +54414,6 @@ van-shuttle:
     terms:
       - airport
       - bus
-      - machine
       - minibus
       - public-transportation
       - transportation
@@ -54010,38 +54451,6 @@ vault:
       - safe
       - salary
   unicode: e2c5
-  voted: false
-vector-square:
-  aliases:
-    unicodes:
-      secondary:
-        - 10f5cb
-  changes:
-    - 5.1.0
-    - 6.0.0-beta1
-    - 6.0.0
-    - 6.2.0
-    - 6.3.0
-    - 6.4.0
-    - 6.5.0
-    - 6.6.0
-    - 6.7.0
-  familyStylesByLicense:
-    free:
-      - family: classic
-        style: solid
-    pro:
-      - family: classic
-        style: solid
-  label: Vector Square
-  search:
-    terms:
-      - anchors
-      - lines
-      - object
-      - render
-      - shape
-  unicode: f5cb
   voted: false
 venus:
   aliases:
@@ -54733,7 +55142,7 @@ vk:
     pro:
       - family: classic
         style: brands
-  label: VK
+  label: Vk
   search:
     terms: []
   unicode: f189
@@ -54748,7 +55157,7 @@ vnv:
     pro:
       - family: classic
         style: brands
-  label: VNV
+  label: Vnv
   search:
     terms: []
   unicode: f40b
@@ -55038,6 +55447,21 @@ vr-cardboard:
       - virtual
   unicode: f729
   voted: true
+vsco:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Vsco
+  search:
+    terms: []
+  unicode: e7dd
+  voted: false
 vuejs:
   changes:
     - 5.0.0
@@ -55048,7 +55472,7 @@ vuejs:
     pro:
       - family: classic
         style: brands
-  label: Vue.js
+  label: Vuejs
   search:
     terms: []
   unicode: f41f
@@ -55080,6 +55504,21 @@ w:
       - Latin Small Letter W
       - letter
   unicode: '57'
+  voted: false
+w3c:
+  changes:
+    - 7.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: W3c
+  search:
+    terms: []
+  unicode: e7de
   voted: false
 walkie-talkie:
   aliases:
@@ -55554,7 +55993,7 @@ weixin:
     pro:
       - family: classic
         style: brands
-  label: Weixin (WeChat)
+  label: Weixin
   search:
     terms: []
   unicode: f1d7
@@ -55570,7 +56009,7 @@ whatsapp:
     pro:
       - family: classic
         style: brands
-  label: What's App
+  label: Whatsapp
   search:
     terms: []
   unicode: f232
@@ -55753,7 +56192,7 @@ whmcs:
     pro:
       - family: classic
         style: brands
-  label: WHMCS
+  label: Whmcs
   search:
     terms: []
   unicode: f40d
@@ -56109,7 +56548,7 @@ wirsindhandwerk:
     pro:
       - family: classic
         style: brands
-  label: wirsindhandwerk
+  label: Wirsindhandwerk
   search:
     terms: []
   unicode: e2d0
@@ -56139,7 +56578,7 @@ wizards-of-the-coast:
     pro:
       - family: classic
         style: brands
-  label: Wizards of the Coast
+  label: Wizards Of The Coast
   search:
     terms:
       - Dungeons & Dragons
@@ -56228,7 +56667,7 @@ wordpress:
     pro:
       - family: classic
         style: brands
-  label: WordPress Logo
+  label: Wordpress
   search:
     terms: []
   unicode: f19a
@@ -56284,7 +56723,7 @@ wpbeginner:
     pro:
       - family: classic
         style: brands
-  label: WPBeginner
+  label: Wpbeginner
   search:
     terms: []
   unicode: f297
@@ -56300,7 +56739,7 @@ wpexplorer:
     pro:
       - family: classic
         style: brands
-  label: WPExplorer
+  label: Wpexplorer
   search:
     terms: []
   unicode: f2de
@@ -56316,7 +56755,7 @@ wpforms:
     pro:
       - family: classic
         style: brands
-  label: WPForms
+  label: Wpforms
   search:
     terms: []
   unicode: f298
@@ -56334,7 +56773,7 @@ wpressr:
     pro:
       - family: classic
         style: brands
-  label: wpressr
+  label: Wpressr
   search:
     terms:
       - rendact
@@ -56640,7 +57079,7 @@ yahoo:
     pro:
       - family: classic
         style: brands
-  label: Yahoo Logo
+  label: Yahoo
   search:
     terms: []
   unicode: f19e
@@ -56833,7 +57272,7 @@ youtube:
     pro:
       - family: classic
         style: brands
-  label: YouTube
+  label: Youtube
   search:
     terms:
       - film

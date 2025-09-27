@@ -135,7 +135,6 @@ class Lang
 
     // Apps
     const PHPMYADMIN = 'phpmyadmin';
-    const ADMINER = 'adminer';
     const PHPPGADMIN = 'phppgadmin';
 
     // Tools
@@ -494,7 +493,6 @@ class Lang
 
             // Apps
             self::PHPMYADMIN,
-            self::ADMINER,
             self::PHPPGADMIN,
 
             // Tools

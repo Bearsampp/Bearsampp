@@ -11,7 +11,7 @@
  * Class Apps
  *
  * This class manages various application modules within the Bearsampp application.
- * It provides methods to retrieve and update configurations for different tools such as Adminer, PhpMyAdmin and PhpPgAdmin.
+ * It provides methods to retrieve and update configurations for different tools such as PhpMyAdmin and PhpPgAdmin.
  */
 class Apps
 {
@@ -24,11 +24,6 @@ class Apps
      * @var AppPhpmyadmin|null Instance of the PhpMyAdmin module.
      */
     private $phpmyadmin;
-
-    /**
-     * @var AppAdminer|null Instance of the Adminer module.
-     */
-    private $adminer;
 
     /**
      * @var AppPhppgadmin|null Instance of the PhpPgAdmin module.
@@ -63,25 +58,9 @@ class Apps
     public function getAll()
     {
         return array(
-            $this->getAdminer(),
             $this->getPhpmyadmin(),
             $this->getPhppgadmin()
         );
-    }
-
-    /**
-     * Retrieves the Adminer module instance.
-     *
-     * If the instance is not already created, it initializes a new AppAdminer object.
-     *
-     * @return AppAdminer The instance of the Adminer module.
-     */
-    public function getAdminer()
-    {
-        if ($this->adminer == null) {
-            $this->adminer = new AppAdminer('adminer', self::TYPE);
-        }
-        return $this->adminer;
     }
 
     /**
