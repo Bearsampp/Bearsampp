@@ -920,7 +920,7 @@
       {
         "version": "1.6.39",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2025.8.20/bearsampp-memcached-1.6.39-2025.8.20.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "1.6.38",
