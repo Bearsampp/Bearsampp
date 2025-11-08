@@ -1,0 +1,28 @@
+# Gradle files
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Gradle Wrapper
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# Build output
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# Gradle daemon
+.gradle/
+gradle-app.setting
+
+# Cache of project
+.gradletasknamecache
+
+# Eclipse Gradle plugin generated files
+# Eclipse Core
+.project
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
