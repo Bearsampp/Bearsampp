@@ -34,17 +34,17 @@
 
 ## Common Commands
 
-| Command | Description | Time |
-|---------|-------------|------|
-| `.\gradlew initBuild` | Initialize build directories | ~1s |
-| `.\gradlew prepareBase` | Prepare base environment | ~30s |
-| `.\gradlew buildLite` | Build lite release | ~5-10min |
-| `.\gradlew buildBasic` | Build basic release | ~10-15min |
-| `.\gradlew buildFull` | Build full release | ~15-25min |
-| `.\gradlew release` | Build all variants | ~30-45min |
-| `.\gradlew checkLang` | Verify language files | ~1s |
-| `.\gradlew launch` | Build and launch Bearsampp | ~10min |
-| `.\gradlew clean` | Clean build directory | ~5s |
+| Command                   | Description                      | Time      |
+|---------------------------|----------------------------------|-----------|
+| `.\gradlew initBuild`     | Initialize build directories     | ~1s       |
+| `.\gradlew prepareBase`   | Prepare base environment         | ~30s      |
+| `.\gradlew buildLite`     | Build lite release               | ~5-10min  |
+| `.\gradlew buildBasic`    | Build basic release              | ~10-15min |
+| `.\gradlew buildFull`     | Build full release               | ~15-25min |
+| `.\gradlew release`       | Build all variants               | ~30-45min |
+| `.\gradlew checkLang`     | Verify language files            | ~1s       |
+| `.\gradlew launch`        | Build and launch Bearsampp       | ~10min    |
+| `.\gradlew clean`         | Clean build directory            | ~5s       |
 
 ## Platform-Specific Commands
 
@@ -260,17 +260,6 @@ Use cached dependencies only:
 4. **Incremental Builds**
    - Gradle only rebuilds changed parts
    - Much faster than full rebuilds
-
-## Comparison with Ant
-
-| Feature | Ant (build.xml) | Gradle (build.gradle) |
-|---------|----------------|----------------------|
-| Build Time (Lite) | ~10min | ~5-10min |
-| Incremental Builds | ❌ No | ✅ Yes |
-| Caching | ❌ No | ✅ Yes |
-| IDE Integration | ⚠️ Basic | ✅ Excellent |
-| Error Messages | ⚠️ Basic | ✅ Detailed |
-| Parallel Execution | ❌ No | ✅ Yes |
 
 ## Next Steps
 

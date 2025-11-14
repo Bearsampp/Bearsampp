@@ -64,11 +64,11 @@ The Gradle build system is a modern replacement for the Ant-based build system, 
 
 ## Build Variants
 
-| Variant | Command | Components | Use Case |
-|---------|---------|------------|----------|
-| **Lite** | `buildLite` | Apache, PHP, MySQL, Mailpit, phpMyAdmin | Development, testing |
-| **Basic** | `buildBasic` | + MariaDB, Node.js, Xlight | Standard development |
-| **Full** | `buildFull` | + PostgreSQL, Memcached, all tools | Production, complete setup |
+| Variant  | Command      | Components                                      | Use Case                   |
+|----------|--------------|------------------------------------------------|----------------------------|
+| **Lite** | `buildLite`  | Apache, PHP, MySQL, Mailpit, phpMyAdmin        | Development, testing       |
+| **Basic** | `buildBasic` | + MariaDB, Node.js, Xlight                     | Standard development       |
+| **Full** | `buildFull`  | + PostgreSQL, Memcached, all tools             | Production, complete setup |
 
 ## Key Features
 

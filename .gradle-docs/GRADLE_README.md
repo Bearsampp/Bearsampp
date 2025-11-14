@@ -38,11 +38,11 @@ Complete documentation is available in the `.docs-gradle/` directory:
 
 ## Build Variants
 
-| Variant | Command | Components |
-|---------|---------|------------|
-| **Lite** | `.\gradlew buildLite` | Apache, PHP, MySQL, Mailpit |
-| **Basic** | `.\gradlew buildBasic` | + MariaDB, Node.js, Xlight |
-| **Full** | `.\gradlew buildFull` | + PostgreSQL, Memcached, all tools |
+| Variant  | Command                   | Components                              |
+|----------|---------------------------|-----------------------------------------|
+| **Lite** | `.\gradlew buildLite`     | Apache, PHP, MySQL, Mailpit             |
+| **Basic** | `.\gradlew buildBasic`    | + MariaDB, Node.js, Xlight              |
+| **Full** | `.\gradlew buildFull`     | + PostgreSQL, Memcached, all tools      |
 
 ## Requirements
 

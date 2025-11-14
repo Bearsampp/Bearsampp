@@ -232,31 +232,31 @@ Syncs build to sandbox with interactive prompts.
 
 ### Comparison Table
 
-| Component | Lite | Basic | Full |
-|-----------|------|-------|------|
-| **Binaries** |
-| Apache | ✅ | ✅ | ✅ |
-| PHP | ✅ | ✅ | ✅ |
-| MySQL | ✅ | ✅ | ✅ |
-| MariaDB | ❌ | ✅ | ✅ |
-| PostgreSQL | ❌ | ❌ | ✅ |
-| Node.js | ✅ | ✅ | ✅ |
-| Xlight | ❌ | ✅ | ✅ |
-| Mailpit | ✅ | ✅ | ✅ |
-| Memcached | ❌ | ❌ | ✅ |
-| **Applications** |
-| phpMyAdmin | ✅ | ✅ | ✅ |
-| phpPgAdmin | ❌ | ❌ | ✅ |
-| **Tools** |
-| Bruno | ✅ | ✅ | ✅ |
-| Composer | ✅ | ✅ | ✅ |
-| ConsoleZ | ✅ | ✅ | ✅ |
-| Git | ❌ | ✅ | ✅ |
-| Ngrok | ❌ | ✅ | ✅ |
-| Perl | ❌ | ✅ | ✅ |
-| Python | ❌ | ❌ | ✅ |
-| Ruby | ❌ | ❌ | ✅ |
-| Ghostscript | ❌ | ❌ | ✅ |
+| Component        | Lite | Basic | Full |
+|------------------|------|-------|------|
+| **Binaries**     |      |       |      |
+| Apache           | ✅   | ✅    | ✅   |
+| PHP              | ✅   | ✅    | ✅   |
+| MySQL            | ✅   | ✅    | ✅   |
+| MariaDB          | ❌   | ✅    | ✅   |
+| PostgreSQL       | ❌   | ❌    | ✅   |
+| Node.js          | ✅   | ✅    | ✅   |
+| Xlight           | ❌   | ✅    | ✅   |
+| Mailpit          | ✅   | ✅    | ✅   |
+| Memcached        | ❌   | ❌    | ✅   |
+| **Applications** |      |       |      |
+| phpMyAdmin       | ✅   | ✅    | ✅   |
+| phpPgAdmin       | ❌   | ❌    | ✅   |
+| **Tools**        |      |       |      |
+| Bruno            | ✅   | ✅    | ✅   |
+| Composer         | ✅   | ✅    | ✅   |
+| ConsoleZ         | ✅   | ✅    | ✅   |
+| Git              | ❌   | ✅    | ✅   |
+| Ngrok            | ❌   | ✅    | ✅   |
+| Perl             | ❌   | ✅    | ✅   |
+| Python           | ❌   | ❌    | ✅   |
+| Ruby             | ❌   | ❌    | ✅   |
+| Ghostscript      | ❌   | ❌    | ✅   |
 
 ### Configuration Tokens
 
@@ -711,45 +711,6 @@ Could not copy file ... another process has locked a portion of the file
 | Lite | ~10 min | ~2 min | ~5 sec |
 | Basic | ~15 min | ~3 min | ~5 sec |
 | Full | ~25 min | ~5 min | ~5 sec |
-
-## Migration from Ant
-
-### Task Mapping
-
-| Ant Target | Gradle Task | Notes |
-|------------|-------------|-------|
-| `init` | `initBuild` | Renamed to avoid conflict |
-| `check.lang` | `checkLang` | Camel case naming |
-| `base` | `prepareBase` | Renamed to avoid conflict with base plugin |
-| `build-full` | `buildFull` | Camel case naming |
-| `build-basic` | `buildBasic` | Camel case naming |
-| `build-lite` | `buildLite` | Camel case naming |
-| `release` | `release` | Same name |
-| `launch` | `launch` | Same name |
-| `sync` | `sync` | Same name |
-
-### Running Both Systems
-
-During migration, both systems can coexist:
-
-```bash
-# Ant build
-ant build-full
-
-# Gradle build
-.\gradlew buildFull
-```
-
-### Differences
-
-| Feature | Ant | Gradle |
-|---------|-----|--------|
-| Incremental Builds | ❌ | ✅ |
-| Build Cache | ❌ | ✅ |
-| Parallel Execution | ❌ | ✅ |
-| IDE Integration | ⚠️ Basic | ✅ Excellent |
-| Error Messages | ⚠️ Basic | ✅ Detailed |
-| Performance | Slower | Faster |
 
 ## License
 
