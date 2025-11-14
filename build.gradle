@@ -151,10 +151,11 @@ def downloadModule(String releasesUrl, String version, File destDir) {
             if (!sevenZipExe.exists()) {
                 throw new GradleException("7-Zip not found at ${sevenZipExe}")
             }
-            exec {
-                commandLine sevenZipExe.absolutePath, 'x', downloadFile.absolutePath, "-o${destDir.absolutePath}", '-y'
-                workingDir destDir
-            }
+            def extractProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'x', downloadFile.absolutePath, "-o${destDir.absolutePath}", '-y')
+                .directory(destDir)
+                .redirectErrorStream(true)
+                .start()
+            extractProcess.waitFor()
         } else if (filename.endsWith('.zip')) {
             // Use Ant unzip for .zip files
             ant.unzip(src: downloadFile, dest: destDir)
@@ -193,17 +194,21 @@ def compressArchive(File sourceDir, File destFile, String format = '7z') {
     }
     
     if (format == '7z') {
-        exec {
-            commandLine sevenZipExe.absolutePath, 'a', '-t7z', destFile.absolutePath, 
-                        "${sourceDir.absolutePath}${File.separator}*",
-                        '-m0=LZMA2', '-mx9', '-mmt6'
-        }
+        def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', '-t7z', destFile.absolutePath, 
+                    "${sourceDir.absolutePath}${File.separator}*",
+                    '-m0=LZMA2', '-mx9', '-mmt6')
+            .directory(sourceDir.parentFile)
+            .redirectErrorStream(true)
+            .start()
+        compressProcess.waitFor()
     } else if (format == 'zip') {
-        exec {
-            commandLine sevenZipExe.absolutePath, 'a', destFile.absolutePath,
-                        "${sourceDir.absolutePath}${File.separator}*",
-                        '-mm=Deflate', '-mfb=258', '-mpass=15', '-r'
-        }
+        def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', destFile.absolutePath,
+                    "${sourceDir.absolutePath}${File.separator}*",
+                    '-mm=Deflate', '-mfb=258', '-mpass=15', '-r')
+            .directory(sourceDir.parentFile)
+            .redirectErrorStream(true)
+            .start()
+        compressProcess.waitFor()
     } else {
         throw new GradleException("Unknown compression format: ${format}")
     }
@@ -327,16 +332,20 @@ task prepareBase(dependsOn: initBuild) {
         // Update version using rcedit-x64.exe
         def bearsamppExe = file("${projectDir}/base/bearsampp.exe")
         if (bearsamppExe.exists()) {
-            exec {
-                commandLine 'rcedit-x64.exe', bearsamppExe.absolutePath, '--set-file-version', releaseFullVersion
-            }
+            def rcEditProcess = new ProcessBuilder('rcedit-x64.exe', bearsamppExe.absolutePath, '--set-file-version', releaseFullVersion)
+                .directory(projectDir)
+                .redirectErrorStream(true)
+                .start()
+            rcEditProcess.waitFor()
             println "Successfully set product version to ${releaseFullVersion} using rcedit-x64.exe"
         }
         
         // Run fix-core-icon.bat
-        exec {
-            commandLine 'cmd', '/c', 'fix-core-icon.bat'
-        }
+        def fixIconProcess = new ProcessBuilder('cmd', '/c', 'fix-core-icon.bat')
+            .directory(projectDir)
+            .redirectErrorStream(true)
+            .start()
+        fixIconProcess.waitFor()
         println "Successfully set icon to bearsampp.ico using ResourceHacker.exe"
         
         // Clean and create base directory
@@ -762,10 +771,12 @@ task sync(dependsOn: buildFull) {
         def rcEditExe = file("${iconographyTempDir}/rcedit-x64.exe")
         def tempBearsamppExe = file("${iconographyTempDir}/bearsampp.exe")
         
-        exec {
-            commandLine rcEditExe.absolutePath, tempBearsamppExe.absolutePath, 
-                        '--set-file-version', releaseFullVersion
-        }
+        def rcEditProcess = new ProcessBuilder(rcEditExe.absolutePath, tempBearsamppExe.absolutePath, 
+                    '--set-file-version', releaseFullVersion)
+            .directory(iconographyTempDir)
+            .redirectErrorStream(true)
+            .start()
+        rcEditProcess.waitFor()
         println "* Successfully set product version to ${releaseFullVersion}"
         
         // 9. Copy icons to sync path before running ResourceHacker
@@ -787,14 +798,16 @@ task sync(dependsOn: buildFull) {
         def iconPath = file("${syncFinalPath}/core/resources/homepage/img/icons/bearsampp.ico")
         
         if (resourceHackerExe.exists() && iconPath.exists()) {
-            exec {
-                commandLine resourceHackerExe.absolutePath,
-                            '-open', tempBearsamppExe.absolutePath,
-                            '-save', tempBearsamppExe.absolutePath,
-                            '-action', 'modify',
-                            '-res', "${iconPath.absolutePath},",
-                            '-mask', 'ICONGROUP,MAINICON,'
-            }
+            def resourceHackerProcess = new ProcessBuilder(resourceHackerExe.absolutePath,
+                        '-open', tempBearsamppExe.absolutePath,
+                        '-save', tempBearsamppExe.absolutePath,
+                        '-action', 'modify',
+                        '-res', "${iconPath.absolutePath},",
+                        '-mask', 'ICONGROUP,MAINICON,')
+                .directory(iconographyTempDir)
+                .redirectErrorStream(true)
+                .start()
+            resourceHackerProcess.waitFor()
             println "* Successfully updated executable icon"
         } else {
             println "WARNING: Could not update icon - ResourceHacker or icon file not found"
@@ -854,9 +867,10 @@ task launch(dependsOn: buildFull) {
         println "Executing Bearsampp. Please wait..."
         def bearsamppExe = file("${buildLaunchPath}/bearsampp.exe")
         if (bearsamppExe.exists()) {
-            exec {
-                commandLine bearsamppExe.absolutePath
-            }
+            def launchProcess = new ProcessBuilder(bearsamppExe.absolutePath)
+                .directory(buildLaunchPath)
+                .start()
+            // Don't wait for this process as it's the main application
         }
         println "If the application needs to restart, you can execute Bearsampp.exe in: ${buildLaunchPath}"
     }
