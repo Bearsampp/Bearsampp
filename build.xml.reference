@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Project Configuration for Bearsampp
+
+  This XML configuration sets up the environment for the Bearsampp project, defining essential paths, properties, and tasks required for development and build processes.
+
+  Key Components:
+  - `project.basedir`: Establishes the base directory for the project using the `ant.file.bearsampp` property.
+  - `build.properties`: Specifies the location of the build properties file relative to the base directory.
+  - `dev.path`: Defines the development path which is crucial for locating development-specific resources and scripts.
+  - Error Handling: Includes a fail-safe mechanism to ensure the `dev.path` exists, preventing build failures due to missing directories.
+  - `build.path` and `release.tmp.path`: Directories for build outputs and temporary release files are created to organize build artifacts.
+  - Import Statements: Includes external XML files (`build-commons.xml` and `build-release.xml`) that modularize the build script, promoting reusability and maintainability.
+
+  Usage:
+  This configuration is primarily used by the build automation tool (Ant) to initialize and prepare the environment for subsequent build and release tasks.
+-->
+<project name = "Bearsampp" basedir = ".">
+    <!-- Define BEARSAMPP_PATH property (customize as needed) -->
+    <property name="BEARSAMPP_PATH" value="${project.basedir}/bearsampp-destination" />
+
+    <dirname property = "project.basedir" file = "${ant.file.bearsampp}" />
+    <property name = "build.properties" value = "${project.basedir}/build.properties" />
+    <property file = "${build.properties}" />
+
+    <!-- Bearsampp dev -->
+    <property name = "dev.path" location = "${project.basedir}\${dev.dir}" />
+    <fail unless = "dev.path" message = "core directory '${dev.path}' not found in ${dev.path}" />
+    <echo message = "Bearsampp dev found in ${dev.path}" level = "debug" />
+
+    <!-- Build dir -->
+    <property name = "build.path" location = "${project.basedir}\${build.dir}" />
+    <mkdir dir = "${build.path}" />
+
+    <!-- Import build-commons.xml -->
+    <import file = "${dev.path}\build\build-commons.xml" />
+    <!-- Import build-release.xml -->
+    <import file = "${dev.path}\build\build-release.xml" />
+
+    <property name = "release.tmp.path" value = "${build.tmp.path}\release" />
+    <mkdir dir = "${release.tmp.path}" />
+
+    <!--
+      Target: check.lang
+      Description: This target checks the language files to ensure they meet the required specifications.
+      Dependencies: This task depends on 'init' and 'load.lib' to be executed beforehand, ensuring that the necessary initializations and library loads are completed.
+      Operation: Executes the 'checklang' action using the 'divhpdev' task.
+    -->
+    <target name = "check.lang" description = "Check languages files" depends = "init, load.lib">
+        <divhpdev action = "checklang" />
+    </target>
+
+    <!--
+      Target: release
+      Description: Aggregates all build types into a single release process.
+      Dependencies: This target depends on the successful completion of 'init', 'load.lib', 'build-full', 'build-basic', and 'build-lite' targets.
+      Usage: This target is used to compile all necessary components and variations of the build into a final release package. It ensures that all preliminary steps are completed before packaging.
+    -->
+    <target name = "release" depends = "init, load.lib, base, build-full, build-basic, build-lite, sync" description = "Release Bearsampp" />
+
+    <!--
+    Target: base
+    Description: Prepares the base environment for the Bearsampp project. This includes cleaning up the previous base directory, copying necessary files, applying configurations, and setting version information.
+    Dependencies: Depends on 'init' and 'load.lib' targets to ensure the environment is initialized and libraries are loaded.
+    Conditions: Executes only if 'is.base.prepared' is not set, ensuring that the base setup does not run multiple times unnecessarily.
+
+    Steps:
+    1. Unset and set the 'release.base.target' property to define the base directory.
+    2. Clean the existing base directory if it exists.
+    3. Copy essential project files while excluding specific directories and files to avoid unnecessary data.
+    4. Apply configuration changes to 'bearsampp.conf' using a filterset that injects current versions and settings.
+    5. Copy and update the 'bearsampp.ini' file with the current release version.
+    6. Record the release version in 'version.dat' within the base and temporary directories.
+    7. Set 'is.base.prepared' to true to indicate completion.
+
+    Usage: This target is crucial for setting up the base environment correctly before any builds or releases are attempted.
+  -->
+    <target name = "base" depends = "init, load.lib" unless = "is.base.prepared">
+        <var name = "release.base.target" unset = "true" />
+        <property name = "release.base.target" value = "${release.tmp.path}\base" />
+
+        <echo message = "*** Preparing base" />
+        <echo message = "* Name    : ${release.name} " />
+        <echo message = "* Version : ${release.fullversion} " />
+
+        <!-- Define the URL and destination for the icongography -->
+        <property name="iconography.url" value="https://github.com/Bearsampp/sandbox/releases/download/iconography/Bearsampp-iconography.zip" />
+        <property name="iconography.zip" value="${project.basedir}/Bearsampp-iconography.zip" />
+
+        <!-- Download the ZIP file -->
+        <get src="${iconography.url}" dest="${iconography.zip}" />
+
+        <!-- Extract the ZIP file -->
+        <unzip src="${iconography.zip}" dest="${project.basedir}" />
+
+        <!-- Optionally, delete the ZIP file after extraction -->
+        <delete file="${iconography.zip}" />
+
+        <!-- Echo success message -->
+        <echo message="Successfully downloaded and extracted Bearsampp iconography." />
+
+        <!-- Add the exec task to run rcedit-x64.exe to update version # -->
+        <exec executable = "rcedit-x64.exe">
+            <arg value = "${project.basedir}\base\bearsampp.exe" />
+            <arg value = "--set-file-version" />
+            <arg value = "${release.fullversion}" />
+        </exec>
+
+        <!-- Echo success message -->
+        <echo message = "Successfully set product version to ${release.fullversion} using rcedit-x64.exe" />
+
+        <!-- Add the exec task to run fix-core-icon.bat -->
+        <exec executable="cmd">
+            <arg value="/c" />
+            <arg value="fix-core-icon.bat" />
+        </exec>
+        <!-- Echo success message -->
+        <echo message = "Successfully set icon to bearsampp.ico using ResourceHacker.exe" />
+
+        <!-- Clean -->
+        <delete dir = "${release.base.target}" />
+        <mkdir dir = "${release.base.target}" />
+
+        <!-- Copy core -->
+        <copy todir = "${release.base.target}" failonerror = "true">
+            <fileset dir = "${project.basedir}" defaultexcludes = "yes" excludes = "
+    .dev/**,
+    .github/**,
+    .idea/**,
+    .settings/**,
+    giscus.json,
+    base/**,
+    bin/**,
+    core/tmp/*,
+    core/.editorconfig,
+    build.properties,
+    build.xml,
+    *.iml,
+    *.launch,
+    ResourceHacker.exe,
+    ResourceHacker.ini,
+    fix-core-icon.bat,
+    rcedit-x64.exe"
+            />
+        </copy>
+
+        <!-- Check for openssl.cfg and fetch if not present -->
+        <available file = "${project.basedir}/core/libs/openssl/openssl.cfg" property = "openssl.cfg.exists" />
+        <if>
+            <not>
+                <isset property = "openssl.cfg.exists" />
+            </not>
+            <then>
+                <mkdir dir = "${project.basedir}/core/libs/openssl" />
+                <get src = "https://github.com/Bearsampp/sandbox/releases/download/2024.8.23/openssl.cfg" dest = "${project.basedir}/core/libs/openssl/openssl.cfg" />
+                <echo message = "openssl.cfg recovered from sandbox" />
+            </then>
+            <else>
+                <echo message = "openssl.cfg already exists." />
+            </else>
+        </if>
+
+        <!-- Copy base -->
+        <copy todir = "${release.base.target}">
+            <fileset dir = "${project.basedir}\base" defaultexcludes = "yes" excludes = "
+    logs/*,
+    ssl/*,
+    tmp/**,
+    vhosts/*"
+            >
+                <present targetdir = "${project.basedir}\base" />
+            </fileset>
+            <fileset dir = "${project.basedir}\base" defaultexcludes = "yes" includes = "tmp/**">
+                <type type = "dir" />
+                <present targetdir = "${project.basedir}\base" />
+            </fileset>
+        </copy>
+
+        <!-- Replacements -->
+        <copy file = "${project.basedir}\base\bearsampp.conf" tofile = "${release.base.target}\bearsampp.conf" overwrite = "true">
+            <filterset>
+                <filter token = "APPCONF_LANG" value = "${appconf.lang}" />
+                <filter token = "APPCONF_TIMEZONE" value = "${appconf.timezone}" />
+                <filter token = "APPCONF_NOTEPAD" value = "${appconf.notepad}" />
+                <filter token = "APPCONF_MAX_LOGS_ARCHIVES" value = "${appconf.maxLogsArchives}" />
+                <filter token = "APPCONF_LOGS_VERBOSE" value = "${appconf.logsVerbose}" />
+                <filter token = "APPCONF_SCRIPTS_TIMEOUT" value = "${appconf.scriptsTimeout}" />
+                <filter token = "APPCONF_DOWNLOAD_ID" value = "${appconf.downloadId}" />
+                <filter token = "APPCONF_INCLUDE_PR" value = "${appconf.IncludePR}" />
+
+                <filter token = "BIN_APACHE_VERSION" value = "${bin.apache.version}" />
+                <filter token = "BIN_PHP_VERSION" value = "${bin.php.version}" />
+                <filter token = "BIN_MYSQL_VERSION" value = "${bin.mysql.version}" />
+                <filter token = "BIN_MARIADB_VERSION" value = "${bin.maria.version}" />
+                <filter token = "BIN_POSTGRESQL_VERSION" value = "${bin.postgresql.version}" />
+                <filter token = "BIN_NODEJS_VERSION" value = "${bin.nodejs.version}" />
+                <filter token = "BIN_XLIGHT_VERSION" value = "${bin.xlight.version}" />
+                <filter token = "BIN_MAILPIT_VERSION" value = "${bin.mailpit.version}" />
+                <filter token = "BIN_MEMCACHED_VERSION" value = "${bin.memcached.version}" />
+
+                <filter token = "TOOL_BRUNO_VERSION" value = "${tool.bruno.version}" />
+                <filter token = "TOOL_COMPOSER_VERSION" value = "${tool.composer.version}" />
+                <filter token = "TOOL_CONSOLEZ_VERSION" value = "${tool.consolez.version}" />
+                <filter token = "TOOL_GHOSTSCRIPT_VERSION" value = "${tool.ghostscript.version}" />
+                <filter token = "TOOL_GIT_VERSION" value = "${tool.git.version}" />
+                <filter token = "TOOL_NGROK_VERSION" value = "${tool.ngrok.version}" />
+                <filter token = "TOOL_PERL_VERSION" value = "${tool.perl.version}" />
+                <filter token = "TOOL_PYTHON_VERSION" value = "${tool.python.version}" />
+                <filter token = "TOOL_RUBY_VERSION" value = "${tool.ruby.version}" />
+
+                <filter token = "APP_ADMINER_VERSION" value = "${app.adminer.version}" />
+                <filter token = "APP_PHPMYADMIN_VERSION" value = "${app.phpmyadmin.version}" />
+                <filter token = "APP_PHPPGADMIN_VERSION" value = "${app.phppgadmin.version}" />
+            </filterset>
+        </copy>
+
+        <!-- Write version -->
+        <copy file = "${project.basedir}\base\bearsampp.ini" tofile = "${release.base.target}\bearsampp.ini" overwrite = "true">
+            <filterset>
+                <filter token = "RELEASE_VERSION" value = "${release.fullversion}" />
+            </filterset>
+        </copy>
+        <echo file = "${release.base.target}\core\resources\version.dat" append = "false">${release.fullversion}</echo>
+        <echo file = "${release.tmp.path}\version.dat" append = "false">${release.fullversion}</echo>
+        <echo file = "${project.basedir}\core\resources\version.dat" append = "false">${release.fullversion}</echo>
+        <var name = "is.base.prepared" value = "true" />
+
+    </target>
+
+    <!--
+    Target: build-full
+    Description: Assembles a full release package for the Bearsampp project. This target handles the initialization, library loading, base setup, and the inclusion of all modules, applications, and tools necessary for a complete deployment.
+
+    Steps:
+    1. Set properties for the release target and destination file paths.
+    2. Display release details such as name, version, and format.
+    3. Clean the previous release directory and create a new directory for the release.
+    4. Copy the base configuration and files to the release directory.
+    5. Enable all necessary binaries in the configuration file.
+    6. Download and place all required binaries, applications, and tools into their respective directories within the release package.
+    7. Compress the assembled release into the specified format (7z, zip, or all) and calculate checksums for file integrity verification.
+
+    Dependencies: Depends on 'init', 'load.lib', and 'base' targets to ensure the environment is properly set up before building the full release.
+
+    Usage: This target is executed as part of a larger build process or manually to generate a complete release package of the Bearsampp project.
+  -->
+    <target name = "build-full" depends = "init, load.lib, base">
+        <var name = "release.target" unset = "true" />
+        <var name = "release.destfile" unset = "true" />
+        <property name = "release.target" value = "${release.tmp.path}\${release.name}-${release.fullversion}" />
+        <property name = "release.destfile" value = "${build.release.path}\${release.name}-${release.fullversion}" />
+
+        <echo message = "*** Release (full)" />
+        <echo message = "* Name    : ${release.name} " />
+        <echo message = "* Version : ${release.fullversion} " />
+        <echo message = "* Format  : ${release.format} " />
+
+        <!-- Clean -->
+        <delete dir = "${release.target}" includeEmptyDirs = "true" />
+        <mkdir dir = "${build.release.path}" />
+
+        <!-- Copy base -->
+        <copy todir = "${release.target}" failonerror = "true" verbose = "true">
+            <fileset dir = "${release.base.target}" defaultexcludes = "yes" />
+            <fileset dir = "${release.base.target}" defaultexcludes = "yes" includes = "tmp/**">
+                <type type = "dir" />
+            </fileset>
+        </copy>
+
+        <!-- Replacements -->
+        <copy file = "${release.base.target}\bearsampp.conf" tofile = "${release.target}\bearsampp.conf" overwrite = "true">
+            <filterset>
+                <filter token = "BIN_APACHE_ENABLE" value = "1" />
+                <filter token = "BIN_PHP_ENABLE" value = "1" />
+                <filter token = "BIN_MYSQL_ENABLE" value = "1" />
+                <filter token = "BIN_MARIADB_ENABLE" value = "1" />
+                <filter token = "BIN_POSTGRESQL_ENABLE" value = "1" />
+                <filter token = "BIN_NODEJS_ENABLE" value = "1" />
+                <filter token = "BIN_XLIGHT_ENABLE" value = "1" />
+                <filter token = "BIN_MAILPIT_ENABLE" value = "1" />
+                <filter token = "BIN_MEMCACHED_ENABLE" value = "1" />
+            </filterset>
+        </copy>
+
+        <!-- Get bins -->
+        <getmodule releasesurl = "${bin.apache.url}" version = "${bin.apache.version}" dest = "${release.target}\bin\apache" />
+        <getmodule releasesurl = "${bin.xlight.url}" version = "${bin.xlight.version}" dest = "${release.target}\bin\xlight" />
+        <getmodule releasesurl = "${bin.mailpit.url}" version = "${bin.mailpit.version}" dest = "${release.target}\bin\mailpit" />
+        <getmodule releasesurl = "${bin.maria.url}" version = "${bin.maria.version}" dest = "${release.target}\bin\mariadb" />
+        <getmodule releasesurl = "${bin.postgresql.url}" version = "${bin.postgresql.version}" dest = "${release.target}\bin\postgresql" />
+        <getmodule releasesurl = "${bin.memcached.url}" version = "${bin.memcached.version}" dest = "${release.target}\bin\memcached" />
+        <getmodule releasesurl = "${bin.mysql.url}" version = "${bin.mysql.version}" dest = "${release.target}\bin\mysql" />
+        <getmodule releasesurl = "${bin.nodejs.url}" version = "${bin.nodejs.version}" dest = "${release.target}\bin\nodejs" />
+        <getmodule releasesurl = "${bin.php.url}" version = "${bin.php.version}" dest = "${release.target}\bin\php" />
+
+        <!-- Get apps -->
+        <getmodule releasesurl = "${app.adminer.url}" version = "${app.adminer.version}" dest = "${release.target}\apps\adminer" />
+        <getmodule releasesurl = "${app.phpmyadmin.url}" version = "${app.phpmyadmin.version}" dest = "${release.target}\apps\phpmyadmin" />
+        <getmodule releasesurl = "${app.phppgadmin.url}" version = "${app.phppgadmin.version}" dest = "${release.target}\apps\phppgadmin" />
+
+        <!--  Get tools -->
+        <getmodule releasesurl = "${tool.bruno.url}" version = "${tool.bruno.version}" dest = "${release.target}\tools\bruno" />
+        <getmodule releasesurl = "${tool.composer.url}" version = "${tool.composer.version}" dest = "${release.target}\tools\composer" />
+        <getmodule releasesurl = "${tool.consolez.url}" version = "${tool.consolez.version}" dest = "${release.target}\tools\consolez" />
+        <getmodule releasesurl = "${tool.ghostscript.url}" version = "${tool.ghostscript.version}" dest = "${release.target}\tools\ghostscript" />
+        <getmodule releasesurl = "${tool.git.url}" version = "${tool.git.version}" dest = "${release.target}\tools\git" />
+        <getmodule releasesurl = "${tool.ngrok.url}" version = "${tool.ngrok.version}" dest = "${release.target}\tools\ngrok" />
+        <getmodule releasesurl = "${tool.perl.url}" version = "${tool.perl.version}" dest = "${release.target}\tools\perl" />
+        <getmodule releasesurl = "${tool.python.url}" version = "${tool.python.version}" dest = "${release.target}\tools\python" />
+        <getmodule releasesurl = "${tool.ruby.url}" version = "${tool.ruby.version}" dest = "${release.target}\tools\ruby" />
+
+        <!-- Compress -->
+        <assertdir dir = "${release.target}" />
+        <if>
+            <matches pattern = "^(7z|zip|all)$" string = "${release.format}" />
+            <then>
+                <delete file = "${release.destfile}.${release.format}" />
+                <echo message = "Compressing ${release.name}${release.fullversion} to ${release.destfile}.${release.format}..." />
+                <sevenzip src = "${release.target}\*" dest = "${release.destfile}.${release.format}" format = "${release.format}" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "MD5" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "SHA-1" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "SHA-256" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "SHA-512" />
+            </then>
+            <else>
+                <fail message = "Unknown release format: ${release.format}" />
+            </else>
+        </if>
+    </target>
+
+    <target name="sync-steps-internal" unless="sync.abort">
+        <echo message="Sync step: using path = ${sync.final.path}" />
+
+        <!-- Download and extract Sandbox-iconography.zip to a temp folder -->
+        <property name="iconography.url" value="https://github.com/Bearsampp/sandbox/releases/download/iconography/Sandbox-iconography.zip" />
+        <property name="iconography.temp.dir" value="bin/tmp/bearsampp-iconography-temp" />
+        <property name="iconography.zip" value="${iconography.temp.dir}\\Sandbox-iconography.zip" />
+        <mkdir dir="${iconography.temp.dir}" />
+        <get src="${iconography.url}" dest="${iconography.zip}" />
+        <unzip src="${iconography.zip}" dest="${iconography.temp.dir}" />
+        <delete file="${iconography.zip}" />
+        <echo message="Successfully downloaded and extracted Bearsampp iconography." />
+
+        <!-- Copy bin/tmp/release/base/core to temp/core BEFORE applying iconography -->
+        <copy todir="${iconography.temp.dir}/core" overwrite="true">
+            <fileset dir="bin/tmp/release/base/core" />
+        </copy>
+
+        <!-- Copy bearsampp.exe to the temp folder -->
+        <copy file="${project.basedir}\base\bearsampp.exe" tofile="${iconography.temp.dir}/bearsampp.exe" overwrite="true" />
+        <!-- Copy rcedit-x64.exe to the temp folder -->
+        <copy file="${project.basedir}/rcedit-x64.exe" tofile="${iconography.temp.dir}/rcedit-x64.exe" overwrite="true" />
+        <!-- Copy ResourceHacker.exe from BEARSAMPP_PATH to the temp folder -->
+        <copy file="${sync.final.path}/ResourceHacker.exe" tofile="${iconography.temp.dir}/ResourceHacker.exe" overwrite="true" />
+
+        <!-- Add the exec task to run rcedit-x64.exe to update version # on the temp copy -->
+        <exec executable = "${iconography.temp.dir}/rcedit-x64.exe">
+            <arg value = "${iconography.temp.dir}/bearsampp.exe" />
+            <arg value = "--set-file-version" />
+            <arg value = "${release.fullversion}" />
+        </exec>
+        <echo message = "Successfully set product version to ${release.fullversion} using rcedit-x64.exe" />
+
+        <!-- Copy icons to BEARSAMPP_PATH before running ResourceHacker -->
+        <copy todir="${sync.final.path}\\core\\resources\\homepage\\img\\icons" overwrite="true">
+            <fileset dir="${iconography.temp.dir}\\core\\resources\\homepage\\img\\icons" />
+        </copy>
+        <property name="icon.path" value="${sync.final.path}\\core\\resources\\homepage\\img\\icons\\bearsampp.ico" />
+        <property name="executable.path" value="${iconography.temp.dir}/bearsampp.exe" />
+        <property name="resource.hacker.path" value="${iconography.temp.dir}/ResourceHacker.exe" />
+        <exec executable="${resource.hacker.path}">
+            <arg value="-open" />
+            <arg value="${executable.path}" />
+            <arg value="-save" />
+            <arg value="${executable.path}" />
+            <arg value="-action" />
+            <arg value="modify" />
+            <arg value="-res" />
+            <arg value="${icon.path}," />
+            <arg value="-mask" />
+            <arg value="ICONGROUP,MAINICON," />
+        </exec>
+        <echo message = "Successfully set synced build to BEARSAMPP_PATH\\sandbox" />
+
+        <!-- Delete the existing bearsampp.exe in BEARSAMPP_PATH if it exists (to avoid locked/corrupt file issues) -->
+        <delete file="${sync.final.path}/bearsampp.exe" failonerror="false" />
+        <!-- Copy the temp bearsampp.exe to BEARSAMPP_PATH -->
+        <copy file="${iconography.temp.dir}/bearsampp.exe" tofile="${sync.final.path}/bearsampp.exe" overwrite="true" />
+    </target>
+
+    <target name="sync" depends="build-full" description="Sync step using BEARSAMPP_PATH">
+        <input addproperty="sync.confirm" message="Would you like to sync to sandbox? (y/yes or n/no)" />
+        <condition property="sync.abort">
+            <not>
+                <matches pattern="^(yes|y)$" string="${sync.confirm}" casesensitive="false" />
+            </not>
+        </condition>
+        <fail if="sync.abort" message="Sync aborted by user. Build stopped." />
+
+        <echo message="Current sync path is: ${BEARSAMPP_PATH}" />
+        <input addproperty="sync.path.confirm" message="Is this the path you want to sync to? (y/yes or n/no)" />
+        <condition property="sync.path.custom">
+            <not>
+                <matches pattern="^(yes|y)$" string="${sync.path.confirm}" casesensitive="false" />
+            </not>
+        </condition>
+        <condition property="do.sync.custom.path">
+            <isset property="sync.path.custom"/>
+        </condition>
+        <antcall target="sync.call.custom.path.input"/>
+        <condition property="sync.final.path" value="${sync.custom.path}">
+            <isset property="sync.custom.path"/>
+        </condition>
+        <property name="sync.final.path" value="${BEARSAMPP_PATH}" />
+        <antcall target="sync-steps-internal"/>
+    </target>
+
+    <target name="sync.call.custom.path.input" if="do.sync.custom.path">
+        <antcall target="sync.custom.path.input"/>
+    </target>
+
+    <!--
+    Target: build-basic
+    Description: Constructs a basic release package for the Bearsampp project. This target is designed to include essential components and configurations necessary for a minimal viable product.
+
+    Steps:
+    1. Set properties for the release target and destination file paths.
+    2. Display release details such as name, version, and format.
+    3. Clean the previous release directory and create a new directory for the release.
+    4. Copy the base configuration and files to the release directory.
+    5. Enable selected binaries and disable others as specified in the configuration.
+    6. Download and place essential binaries, applications, and tools into their respective directories within the release package.
+    7. Compress the assembled release into the specified format (7z, zip, or all) and calculate checksums for file integrity verification.
+
+    Dependencies: This target depends on 'init', 'load.lib', and 'base' targets to ensure the environment is properly set up before building the basic release.
+
+    Usage: This target is executed as part of a larger build process or manually to generate a basic release package of the Bearsampp project, which includes only the most crucial components.
+  -->
+    <target name = "build-basic" depends = "init, load.lib, base">
+        <var name = "release.target" unset = "true" />
+        <var name = "release.destfile" unset = "true" />
+        <property name = "release.target" value = "${release.tmp.path}\${release.name}-basic-${release.fullversion}" />
+        <property name = "release.destfile" value = "${build.release.path}\${release.name}-basic-${release.fullversion}" />
+
+        <echo message = "*** Release (basic)" />
+        <echo message = "* Name    : ${release.name} " />
+        <echo message = "* Version : ${release.fullversion} " />
+        <echo message = "* Format  : ${release.format} " />
+
+        <!-- Clean -->
+        <delete dir = "${release.target}" includeEmptyDirs = "true" />
+        <mkdir dir = "${build.release.path}" />
+
+        <!-- Copy base -->
+        <copy todir = "${release.target}" failonerror = "true" verbose = "true">
+            <fileset dir = "${release.base.target}" defaultexcludes = "yes" />
+            <fileset dir = "${release.base.target}" defaultexcludes = "yes" includes = "tmp/**">
+                <type type = "dir" />
+            </fileset>
+        </copy>
+
+        <!-- Replacements -->
+        <copy file = "${release.base.target}\bearsampp.conf" tofile = "${release.target}\bearsampp.conf" overwrite = "true">
+            <filterset>
+                <filter token = "BIN_APACHE_ENABLE" value = "1" />
+                <filter token = "BIN_PHP_ENABLE" value = "1" />
+                <filter token = "BIN_MYSQL_ENABLE" value = "1" />
+                <filter token = "BIN_MARIADB_ENABLE" value = "1" />
+                <filter token = "BIN_POSTGRESQL_ENABLE" value = "0" />
+                <filter token = "BIN_NODEJS_ENABLE" value = "1" />
+                <filter token = "BIN_XLIGHT_ENABLE" value = "1" />
+                <filter token = "BIN_MAILPIT_ENABLE" value = "1" />
+                <filter token = "BIN_MEMCACHED_ENABLE" value = "0" />
+            </filterset>
+        </copy>
+
+        <!-- Get bins -->
+        <getmodule releasesurl = "${bin.apache.url}" version = "${bin.apache.version}" dest = "${release.target}\bin\apache" />
+        <getmodule releasesurl = "${bin.xlight.url}" version = "${bin.xlight.version}" dest = "${release.target}\bin\xlight" />
+        <getmodule releasesurl = "${bin.mailpit.url}" version = "${bin.mailpit.version}" dest = "${release.target}\bin\mailpit" />
+        <getmodule releasesurl = "${bin.maria.url}" version = "${bin.maria.version}" dest = "${release.target}\bin\mariadb" />
+        <getmodule releasesurl = "${bin.mysql.url}" version = "${bin.mysql.version}" dest = "${release.target}\bin\mysql" />
+        <getmodule releasesurl = "${bin.nodejs.url}" version = "${bin.nodejs.version}" dest = "${release.target}\bin\nodejs" />
+        <getmodule releasesurl = "${bin.php.url}" version = "${bin.php.version}" dest = "${release.target}\bin\php" />
+
+        <!--Get apps -->
+        <getmodule releasesurl = "${app.adminer.url}" version = "${app.adminer.version}" dest = "${release.target}\apps\adminer" />
+        <getmodule releasesurl = "${app.phpmyadmin.url}" version = "${app.phpmyadmin.version}" dest = "${release.target}\apps\phpmyadmin" />
+
+        <!-- Get tools -->
+        <getmodule releasesurl = "${tool.bruno.url}" version = "${tool.bruno.version}" dest = "${release.target}\tools\bruno" />
+        <getmodule releasesurl = "${tool.composer.url}" version = "${tool.composer.version}" dest = "${release.target}\tools\composer" />
+        <getmodule releasesurl = "${tool.consolez.url}" version = "${tool.consolez.version}" dest = "${release.target}\tools\consolez" />
+        <getmodule releasesurl = "${tool.git.url}" version = "${tool.git.version}" dest = "${release.target}\tools\git" />
+        <getmodule releasesurl = "${tool.ngrok.url}" version = "${tool.ngrok.version}" dest = "${release.target}\tools\ngrok" />
+        <getmodule releasesurl = "${tool.perl.url}" version = "${tool.perl.version}" dest = "${release.target}\tools\perl" />
+
+        <!-- Compress -->
+        <assertdir dir = "${release.target}" />
+        <if>
+            <matches pattern = "^(7z|zip|all)$" string = "${release.format}" />
+            <then>
+                <delete file = "${release.destfile}.${release.format}" />
+                <echo message = "Compressing ${release.name}${release.fullversion} to ${release.destfile}.${release.format}..." />
+                <sevenzip src = "${release.target}\*" dest = "${release.destfile}.${release.format}" format = "${release.format}" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "MD5" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "SHA-1" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "SHA-256" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "SHA-512" />
+            </then>
+            <else>
+                <fail message = "Unknown release format: ${release.format}" />
+            </else>
+        </if>
+    </target>
+
+    <!--
+    Target: build-lite
+    Description: Constructs a lightweight release package for the Bearsampp project. This target is optimized for minimal resource usage by including only essential binaries, applications, and tools.
+
+    Steps:
+    1. Unset and then set properties for the release target and destination file paths.
+    2. Display release details such as name, version, and format.
+    3. Clean the previous release directory and create a new directory for the release.
+    4. Copy the base configuration and files to the release directory, including temporary directories.
+    5. Apply configuration changes to enable selected binaries and disable others as specified.
+    6. Download and place essential binaries, applications, and tools into their respective directories within the release package.
+    7. Compress the assembled release into the specified format (7z, zip, or all) and calculate checksums for file integrity verification.
+
+    Dependencies: This target depends on 'init', 'load.lib', and 'base' targets to ensure the environment is properly set up before building the lite release.
+
+    Usage: This target is executed as part of a larger build process or manually to generate a lite release package of the Bearsampp project, which includes only the most crucial components for operation.
+  -->
+    <target name = "build-lite" depends = "init, load.lib, base">
+        <var name = "release.target" unset = "true" />
+        <var name = "release.destfile" unset = "true" />
+        <property name = "release.target" value = "${release.tmp.path}\${release.name}-lite-${release.fullversion}" />
+        <property name = "release.destfile" value = "${build.release.path}\${release.name}-lite-${release.fullversion}" />
+
+        <echo message = "*** Release (lite)" />
+        <echo message = "* Name    : ${release.name} " />
+        <echo message = "* Version : ${release.fullversion} " />
+        <echo message = "* Format  : ${release.format} " />
+
+        <!-- Clean -->
+        <delete dir = "${release.target}" includeEmptyDirs = "true" />
+        <mkdir dir = "${build.release.path}" />
+
+        <!-- Copy base -->
+        <copy todir = "${release.target}" failonerror = "true" verbose = "true">
+            <fileset dir = "${release.base.target}" defaultexcludes = "yes" />
+            <fileset dir = "${release.base.target}" defaultexcludes = "yes" includes = "tmp/**">
+                <type type = "dir" />
+            </fileset>
+        </copy>
+
+        <!-- Replacements -->
+        <copy file = "${release.base.target}\bearsampp.conf" tofile = "${release.target}\bearsampp.conf" overwrite = "true">
+            <filterset>
+                <filter token = "BIN_APACHE_ENABLE" value = "1" />
+                <filter token = "BIN_PHP_ENABLE" value = "1" />
+                <filter token = "BIN_MYSQL_ENABLE" value = "1" />
+                <filter token = "BIN_MARIADB_ENABLE" value = "0" />
+                <filter token = "BIN_POSTGRESQL_ENABLE" value = "0" />
+                <filter token = "BIN_NODEJS_ENABLE" value = "0" />
+                <filter token = "BIN_FILEZILLA_ENABLE" value = "0" />
+                <filter token = "BIN_XLIGHT_ENABLE" value = "0" />
+                <filter token = "BIN_MAILPIT_ENABLE" value = "1" />
+                <filter token = "BIN_MEMCACHED_ENABLE" value = "0" />
+            </filterset>
+        </copy>
+
+        <!-- Get bins -->
+        <getmodule releasesurl = "${bin.apache.url}" version = "${bin.apache.version}" dest = "${release.target}\bin\apache" />
+        <getmodule releasesurl = "${bin.mailpit.url}" version = "${bin.mailpit.version}" dest = "${release.target}\bin\mailpit" />
+        <getmodule releasesurl = "${bin.mysql.url}" version = "${bin.mysql.version}" dest = "${release.target}\bin\mysql" />
+        <getmodule releasesurl = "${bin.nodejs.url}" version = "${bin.nodejs.version}" dest = "${release.target}\bin\nodejs" />
+        <getmodule releasesurl = "${bin.php.url}" version = "${bin.php.version}" dest = "${release.target}\bin\php" />
+
+        <!--Get apps -->
+        <getmodule releasesurl = "${app.adminer.url}" version = "${app.adminer.version}" dest = "${release.target}\apps\adminer" />
+        <getmodule releasesurl = "${app.phpmyadmin.url}" version = "${app.phpmyadmin.version}" dest = "${release.target}\apps\phpmyadmin" />
+
+        <!-- Get tools -->
+        <getmodule releasesurl = "${tool.bruno.url}" version = "${tool.bruno.version}" dest = "${release.target}\tools\bruno" />
+        <getmodule releasesurl = "${tool.composer.url}" version = "${tool.composer.version}" dest = "${release.target}\tools\composer" />
+        <getmodule releasesurl = "${tool.consolez.url}" version = "${tool.consolez.version}" dest = "${release.target}\tools\consolez" />
+
+        <!-- Compress -->
+        <assertdir dir = "${release.target}" />
+        <if>
+            <matches pattern = "^(7z|zip|all)$" string = "${release.format}" />
+            <then>
+                <delete file = "${release.destfile}.${release.format}" />
+                <echo message = "Compressing ${release.name}${release.fullversion} to ${release.destfile}.${release.format}..." />
+                <sevenzip src = "${release.target}\*" dest = "${release.destfile}.${release.format}" format = "${release.format}" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "MD5" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "SHA-1" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "SHA-256" />
+                <checksum file = "${release.destfile}.${release.format}" algorithm = "SHA-512" />
+            </then>
+            <else>
+                <fail message = "Unknown release format: ${release.format}" />
+            </else>
+        </if>
+    </target>
+
+    <!--
+    Target: launch
+    Description: This target is responsible for launching the Bearsampp application after a full build. It ensures that the necessary directories are prepared and that the application is moved to the launch directory.
+
+    Steps:
+    1. Verify the existence of the directory specified by `${release.target}` to ensure the build was successful.
+    2. Set the property `build.launch.path` to define the path where the application will be launched.
+    3. Delete any existing content in the launch directory to prepare for a fresh setup.
+    4. Create the necessary directory structure in the launch path.
+    5. Move the built application files from `${release.target}\bearsampp` to the launch directory.
+    6. Execute the Bearsampp application, providing feedback to the user about the launch process.
+    7. Inform the user where the executable can be found and how to restart the application if necessary.
+
+    Dependencies: This target depends on the successful completion of the `build-full` target, ensuring that all necessary components are built before launching.
+
+    Usage: This target is executed as the final step in the deployment process to start the application directly from the build environment.
+  -->
+    <target name = "launch" depends = "build-full" description = "Launch Bearsampp">
+        <assertdir dir = "${release.target}" />
+        <property name = "build.launch.path" value = "${build.path\launch" />
+
+        <delete dir = "${build.launch.path}" />
+        <mkdir dir = "${build.launch.path}" />
+        <move todir = "${build.launch.path}">
+            <fileset dir = "${release.target}\bearsampp">
+                <include name = "**" />
+            </fileset>
+        </move>
+
+        <echo message = "Executing Bearsampp. Please wait..." />
+        <exec executable = "${build.launch.path\bearsampp.exe" />
+        <echo message = "If the application needs to restart, you can execute Bearsampp.exe in : ${build.launch.path}" />
+    </target>
+    <target name="sync.custom.path.input" if="do.sync.custom.path">
+        <input addproperty="sync.custom.path" message="Please enter the new path to sync to:" />
+    </target>
+</project>

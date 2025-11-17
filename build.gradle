@@ -352,7 +352,7 @@ task prepareBase(dependsOn: initBuild) {
         delete releaseBasePath
         releaseBasePath.mkdirs()
 
-        // Copy core files
+        // Copy core files (excluding base, bin, and build-related files)
         copy {
             from projectDir
             into releaseBasePath
@@ -362,6 +362,7 @@ task prepareBase(dependsOn: initBuild) {
             exclude 'gradle/**', 'gradlew', 'gradlew.bat'
             exclude '*.iml', '*.launch'
             exclude 'ResourceHacker.exe', 'ResourceHacker.ini', 'fix-core-icon.bat', 'rcedit-x64.exe'
+            exclude 'Bearsampp-iconography.zip', 'build.xml.reference'
         }
 
         // Check for openssl.cfg
@@ -377,12 +378,18 @@ task prepareBase(dependsOn: initBuild) {
             println "openssl.cfg already exists."
         }
 
-        // Copy base directory
+        // Copy base directory files (excluding logs, ssl, tmp contents, and vhosts)
         copy {
             from file("${projectDir}/base")
             into releaseBasePath
-            exclude 'logs/*', 'ssl/*', 'tmp/**', 'vhosts/*'
-            include 'tmp/**'
+            exclude 'logs/**', 'ssl/**', 'vhosts/**'
+            exclude 'tmp/**'
+        }
+        
+        // Copy tmp directory structure only (empty directories)
+        copy {
+            from file("${projectDir}/base/tmp")
+            into file("${releaseBasePath}/tmp")
             includeEmptyDirs = true
         }
 
