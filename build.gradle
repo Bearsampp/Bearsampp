@@ -378,20 +378,28 @@ task prepareBase(dependsOn: initBuild) {
             println "openssl.cfg already exists."
         }
 
-        // Copy base directory files (excluding logs, ssl, tmp contents, and vhosts)
+        // Copy base directory with all files and subdirectories
         copy {
             from file("${projectDir}/base")
             into releaseBasePath
-            exclude 'logs/**', 'ssl/**', 'vhosts/**'
+            includeEmptyDirs = true
+            // Exclude .gitignore files and contents from these directories
+            exclude 'logs/**'
+            exclude 'ssl/**'
             exclude 'tmp/**'
+            exclude 'vhosts/**'
         }
         
-        // Copy tmp directory structure only (empty directories)
-        copy {
-            from file("${projectDir}/base/tmp")
-            into file("${releaseBasePath}/tmp")
-            includeEmptyDirs = true
-        }
+        // Create empty directory structure for logs, ssl, vhosts
+        file("${releaseBasePath}/logs").mkdirs()
+        file("${releaseBasePath}/ssl").mkdirs()
+        file("${releaseBasePath}/vhosts").mkdirs()
+        
+        // Create tmp directory structure (subdirectories only, no files)
+        file("${releaseBasePath}/tmp/cachegrind").mkdirs()
+        file("${releaseBasePath}/tmp/npm-cache").mkdirs()
+        file("${releaseBasePath}/tmp/openssl").mkdirs()
+        file("${releaseBasePath}/tmp/pip").mkdirs()
 
         // Apply configuration tokens
         def tokens = [
