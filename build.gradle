@@ -876,5 +876,12 @@ task launch(dependsOn: buildFull) {
     }
 }
 
+// Disable the built-in wrapper task since Gradle is locally installed
+tasks.named('wrapper') {
+    doFirst {
+        throw new GradleException("The wrapper task is disabled. Gradle is installed locally on this system.")
+    }
+}
+
 // Default task
 defaultTasks 'release'
