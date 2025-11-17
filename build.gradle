@@ -356,13 +356,14 @@ task prepareBase(dependsOn: initBuild) {
         copy {
             from projectDir
             into releaseBasePath
-            exclude '.dev/**', '.github/**', '.idea/**', '.settings/**', '.gradle/**', '.gradle-docs/**'
+            exclude '.dev/**', '.github/**', '.idea/**', '.settings/**', '.gradle/**', '.gradle-docs/**', '.qodo/**'
             exclude 'giscus.json', 'base/**', 'bin/**', 'core/tmp/*'
             exclude 'core/.editorconfig', 'build.properties', 'build.xml', 'build.gradle', 'settings.gradle'
             exclude 'gradle/**', 'gradlew', 'gradlew.bat'
             exclude '*.iml', '*.launch'
             exclude 'ResourceHacker.exe', 'ResourceHacker.ini', 'fix-core-icon.bat', 'rcedit-x64.exe'
             exclude 'Bearsampp-iconography.zip', 'build.xml.reference'
+            exclude '.*', '**/.git', '**/.git/**', '**/.gitignore', '**/.gitattributes', '**/.editorconfig'
         }
 
         // Check for openssl.cfg
