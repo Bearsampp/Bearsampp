@@ -1,52 +1,52 @@
-# Bearsampp Gradle Build System Documentation
+# Bearsampp - Gradle Build Documentation
 
-This directory contains comprehensive documentation for the Bearsampp Gradle build system.
+## Table of Contents
 
-## Documentation Files
+- [Overview](#overview)
+- [Quick Start](#quick-start)
+- [Installation](#installation)
+- [Build Tasks](#build-tasks)
+- [Configuration](#configuration)
+- [Architecture](#architecture)
+- [Troubleshooting](#troubleshooting)
+- [Documentation Index](#documentation-index)
 
-1. **[QUICKSTART.md](QUICKSTART.md)** - Quick start guide for common tasks
-2. **[BUILD_GUIDE.md](BUILD_GUIDE.md)** - Comprehensive build system documentation  
-3. **[MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)** - Migration from Ant to Gradle
-4. **[IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)** - Current implementation status
-
-## Quick Links
-
-### Getting Started
-- [Installation](BUILD_GUIDE.md#installation)
-- [First Build](QUICKSTART.md#quick-start)
-- [Available Tasks](BUILD_GUIDE.md#available-tasks)
-
-### Common Tasks
-- [Build Full Release](QUICKSTART.md#build-full-release)
-- [Build Lite Release](QUICKSTART.md#build-lite-release)
-- [Build All Variants](QUICKSTART.md#build-all-variants)
-
-### Advanced Topics
-- [Module Downloads](BUILD_GUIDE.md#module-download-system)
-- [Compression & Checksums](BUILD_GUIDE.md#compression-and-checksums)
-- [Sync Functionality](BUILD_GUIDE.md#sync-task)
+---
 
 ## Overview
 
-The Gradle build system is a modern replacement for the Ant-based build system, providing:
+The Bearsampp project uses **Gradle** as its build system, replacing the legacy Ant build configuration. This provides:
 
-- ✅ **Complete feature parity** with Ant build
-- ✅ **Module download system** from GitHub releases
-- ✅ **7-Zip compression** with multiple formats
-- ✅ **Checksum generation** (MD5, SHA-1, SHA-256, SHA-512)
-- ✅ **Sync functionality** with user prompts
-- ✅ **Incremental builds** for faster rebuilds
-- ✅ **Better IDE integration** (IntelliJ, Eclipse, VS Code)
+- **Modern Build System**     - Native Gradle tasks and conventions
+- **Better Performance**       - Incremental builds and caching
+- **Simplified Maintenance**   - Pure Groovy/Gradle DSL
+- **Enhanced Tooling**         - IDE integration and dependency management
+- **Cross-Platform Support**   - Works on Windows, Linux, and macOS
 
-## System Requirements
+### Project Information
 
-- **Java**: JDK 8 or higher
-- **Gradle**: 8.5 (included via wrapper)
-- **7-Zip**: Required for compression (in dev/tools/7zip/)
-- **rcedit-x64.exe**: Required for version updates
-- **ResourceHacker.exe**: Required for icon updates
+| Property          | Value                                    |
+|-------------------|------------------------------------------|
+| **Project Name**  | Bearsampp                                |
+| **Type**          | WAMP Stack Builder                       |
+| **Build Tool**    | Gradle 8.x+                              |
+| **Language**      | Groovy (Gradle DSL)                      |
+
+---
 
 ## Quick Start
+
+### Prerequisites
+
+| Requirement       | Version       | Purpose                                  |
+|-------------------|---------------|------------------------------------------|
+| **Java**          | 8+            | Required for Gradle execution            |
+| **Gradle**        | 8.5+          | Build automation tool (included via wrapper) |
+| **7-Zip**         | Latest        | Archive compression (in dev/tools/7zip/) |
+| **rcedit-x64.exe**| Latest        | Executable version updates               |
+| **ResourceHacker**| Latest        | Executable icon updates                  |
+
+### Basic Commands
 
 ```bash
 # List all available tasks
@@ -55,49 +55,95 @@ The Gradle build system is a modern replacement for the Ant-based build system, 
 # Build lite release (fastest)
 .\gradlew buildLite
 
-# Build full release (all modules)
+# Build basic release
+.\gradlew buildBasic
+
+# Build full release
 .\gradlew buildFull
 
 # Build all variants
 .\gradlew release
+
+# Clean build artifacts
+.\gradlew clean
+
+# Launch Bearsampp
+.\gradlew launch
 ```
 
-## Build Variants
+---
 
-| Variant  | Command      | Components                                      | Use Case                   |
-|----------|--------------|------------------------------------------------|----------------------------|
-| **Lite** | `buildLite`  | Apache, PHP, MySQL, Mailpit, phpMyAdmin        | Development, testing       |
-| **Basic** | `buildBasic` | + MariaDB, Node.js, Xlight                     | Standard development       |
-| **Full** | `buildFull`  | + PostgreSQL, Memcached, all tools             | Production, complete setup |
+## Installation
 
-## Key Features
+### 1. Verify Environment
 
-### 1. Automatic Module Downloads
-Downloads modules from GitHub releases using `releases.properties` files in each module repository.
+```bash
+# Check Java version
+java -version
 
-### 2. Smart Caching
-- Downloads are cached in `bin/tmp/getmodule/`
-- Reuses cached files on subsequent builds
-- Significantly faster rebuilds
+# Check Gradle wrapper
+.\gradlew --version
+```
 
-### 3. Resilient Error Handling
-- Continues build if module download fails
-- Creates empty directories as fallback
-- Logs warnings for missing modules
+### 2. List Available Tasks
 
-### 4. Compression Support
-- 7-Zip (.7z) with maximum compression
-- ZIP format support
-- Configurable via `build.properties`
+```bash
+.\gradlew tasks
+```
 
-### 5. Checksum Generation
-- Automatic generation for all archives
-- MD5, SHA-1, SHA-256, SHA-512
-- Separate files for each algorithm
+### 3. Build Your First Release
+
+```bash
+# Build lite release (fastest, ~5-10 minutes)
+.\gradlew buildLite
+
+# Or build full release (~15-25 minutes)
+.\gradlew buildFull
+```
+
+---
+
+## Build Tasks
+
+### Core Build Tasks
+
+| Task                  | Description                                      | Build Time    |
+|-----------------------|--------------------------------------------------|---------------|
+| `buildLite`           | Build lite release (minimal modules)             | ~5-10 min     |
+| `buildBasic`          | Build basic release (essential modules)          | ~10-15 min    |
+| `buildFull`           | Build full release (all modules)                 | ~15-25 min    |
+| `release`             | Build all variants                               | ~30-45 min    |
+| `clean`               | Clean build artifacts and temporary files        | ~5 sec        |
+
+### Setup Tasks
+
+| Task                  | Description                                      |
+|-----------------------|--------------------------------------------------|
+| `initBuild`           | Initialize build directories                     |
+| `prepareBase`         | Prepare base environment                         |
+
+### Verification Tasks
+
+| Task                  | Description                                      |
+|-----------------------|--------------------------------------------------|
+| `checkLang`           | Verify language files                            |
+
+### Application Tasks
+
+| Task                  | Description                                      |
+|-----------------------|--------------------------------------------------|
+| `launch`              | Build and launch Bearsampp                       |
+| `sync`                | Sync build to sandbox (interactive)              |
+
+For complete task reference, see [TASKS.md](TASKS.md)
+
+---
 
 ## Configuration
 
-All configuration is in `build.properties`:
+### build.properties
+
+The main configuration file for the build:
 
 ```properties
 # Release version
@@ -113,18 +159,206 @@ bin.mysql.version=9.3.0
 # ... and more
 ```
 
-## Support
+For complete configuration reference, see [CONFIGURATION.md](CONFIGURATION.md)
 
-- **Issues**: Report on GitHub
-- **Questions**: Check documentation files
-- **Debug**: Run with `--stacktrace` or `--debug` flags
+### gradle.properties
 
-## License
+Gradle-specific configuration (optional, create if needed):
 
-Same as Bearsampp project license.
+```properties
+# Gradle daemon configuration
+org.gradle.daemon=true
+org.gradle.parallel=true
+org.gradle.caching=true
+
+# JVM settings
+org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m
+```
+
+### Directory Structure
+
+```
+Bearsampp/
+├── .gradle-docs/          # Gradle documentation
+│   ├── README.md          # This file
+│   ├── QUICKSTART.md      # Quick start guide
+│   ├── BUILD_GUIDE.md     # Comprehensive build guide
+│   ├── TASKS.md           # Task reference
+│   ├── CONFIGURATION.md   # Configuration guide
+│   ├── API.md             # API reference
+│   ├── MIGRATION_GUIDE.md # Migration guide
+│   ├── IMPLEMENTATION_STATUS.md # Implementation status
+│   └── INDEX.md           # Documentation index
+├── base/                  # Base Bearsampp files
+├── core/                  # Core PHP classes and scripts
+├── bin/                   # Build output directory
+│   ├── release/           # Final release archives
+│   └── tmp/               # Temporary build files
+├── build.gradle           # Main Gradle build script
+├── settings.gradle        # Gradle settings
+└── build.properties       # Build configuration
+```
 
 ---
 
-**Last Updated**: 2025
-**Gradle Version**: 8.5
+## Architecture
+
+### Build Process Flow
+
+```
+1. User runs: .\gradlew buildFull
+                    ↓
+2. Initialize build environment (initBuild)
+                    ↓
+3. Prepare base environment (prepareBase)
+   - Download iconography
+   - Update executable version/icon
+   - Copy core files
+   - Apply token replacement
+                    ↓
+4. Download modules from GitHub
+   - Apache, PHP, MySQL, etc.
+   - Cache in bin/tmp/getmodule/
+                    ↓
+5. Copy modules to release directory
+                    ↓
+6. Compress release directory
+   - 7-Zip with maximum compression
+   - Generate checksums (MD5, SHA-1, SHA-256, SHA-512)
+                    ↓
+7. Output final archives to bin/release/
+```
+
+For detailed architecture information, see [BUILD_GUIDE.md](BUILD_GUIDE.md)
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue: "Module download fails"
+
+**Symptom:**
+```
+ERROR: Failed to download module
+WARNING: Created empty directory as fallback
+```
+
+**Solution:**
+- Check internet connection
+- Verify GitHub access
+- Build continues with empty directories (expected behavior)
+
+---
+
+#### Issue: "7-Zip not found"
+
+**Symptom:**
+```
+7-Zip not found at dev/tools/7zip/7za.exe
+```
+
+**Solution:**
+- Verify dev directory path in build.properties
+- Ensure 7-Zip is installed in dev/tools/7zip/
+
+---
+
+#### Issue: "Java version too old"
+
+**Symptom:**
+```
+Unsupported class file major version
+```
+
+**Solution:**
+```bash
+# Check Java version
+java -version
+
+# Requires Java 8+
+# Update JAVA_HOME if needed
+```
+
+---
+
+### Debug Mode
+
+Run Gradle with debug output:
+
+```bash
+.\gradlew buildLite --info
+.\gradlew buildLite --debug
+.\gradlew buildLite --stacktrace
+```
+
+### Clean Build
+
+If you encounter issues, try a clean build:
+
+```bash
+.\gradlew clean
+.\gradlew buildLite
+```
+
+For more troubleshooting information, see [BUILD_GUIDE.md](BUILD_GUIDE.md#troubleshooting)
+
+---
+
+## Documentation Index
+
+### Complete Documentation
+
+| Document              | Description                                      |
+|-----------------------|--------------------------------------------------|
+| **[INDEX.md](INDEX.md)** | Complete documentation index                  |
+| **[QUICKSTART.md](QUICKSTART.md)** | Quick start guide                    |
+| **[BUILD_GUIDE.md](BUILD_GUIDE.md)** | Comprehensive build guide          |
+| **[TASKS.md](TASKS.md)** | Complete task reference                      |
+| **[CONFIGURATION.md](CONFIGURATION.md)** | Configuration guide              |
+| **[API.md](API.md)** | Build script API reference                       |
+| **[MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)** | Ant to Gradle migration    |
+| **[IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)** | Implementation status |
+
+### Quick Links
+
+#### Getting Started
+- [Installation](#installation)
+- [First Build](#quick-start)
+- [Available Tasks](#build-tasks)
+
+#### Common Tasks
+- [Build Lite Release](QUICKSTART.md#build-lite-release)
+- [Build Full Release](QUICKSTART.md#build-full-release)
+- [Build All Variants](QUICKSTART.md#build-all-variants)
+
+#### Advanced Topics
+- [Module Downloads](BUILD_GUIDE.md#module-download-system)
+- [Compression & Checksums](BUILD_GUIDE.md#compression-and-checksums)
+- [Sync Functionality](BUILD_GUIDE.md#sync-task)
+- [Token Replacement](CONFIGURATION.md#token-replacement)
+- [API Reference](API.md)
+
+---
+
+## Support
+
+For issues and questions:
+
+- **GitHub Issues**: https://github.com/bearsampp/bearsampp/issues
+- **Documentation**: This directory (.gradle-docs/)
+- **Website**: https://bearsampp.com
+
+## Additional Resources
+
+- [Gradle Documentation](https://docs.gradle.org/)
+- [Bearsampp Project](https://github.com/bearsampp/bearsampp)
+- [Bearsampp Website](https://bearsampp.com)
+
+---
+
+**Last Updated**: 2025  
+**Version**: 2025.5.6  
+**Gradle Version**: 8.5  
 **Status**: Production Ready ✅
