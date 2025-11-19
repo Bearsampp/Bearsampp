@@ -1,0 +1,904 @@
+plugins {
+    id 'base'
+    id 'de.undercouch.download' version '5.4.0'
+}
+
+// Load properties from build.properties
+def buildProps = new Properties()
+file('build.properties').withInputStream { buildProps.load(it) }
+
+// Project configuration
+group = 'com.bearsampp'
+version = buildProps.getProperty('release.default.version')
+
+// Define properties
+ext {
+    // Application configuration
+    appconfLang = buildProps.getProperty('appconf.lang')
+    appconfTimezone = buildProps.getProperty('appconf.timezone')
+    appconfNotepad = buildProps.getProperty('appconf.notepad')
+    appconfMaxLogsArchives = buildProps.getProperty('appconf.maxLogsArchives')
+    appconfLogsVerbose = buildProps.getProperty('appconf.logsVerbose')
+    appconfScriptsTimeout = buildProps.getProperty('appconf.scriptsTimeout')
+    appconfDownloadId = buildProps.getProperty('appconf.downloadId')
+    appconfIncludePR = buildProps.getProperty('appconf.IncludePR')
+
+    // Release configuration
+    releaseName = 'Bearsampp'
+    releaseFullVersion = buildProps.getProperty('release.default.version')
+    releaseFormat = buildProps.getProperty('release.format')
+    releaseReleaseType = buildProps.getProperty('release.release.type')
+
+    // Development and build directories
+    devDir = buildProps.getProperty('dev.dir')
+    buildDirName = buildProps.getProperty('build.dir')
+    devPath = file("${projectDir}/${devDir}")
+    buildOutputPath = file("${projectDir}/${buildDirName}")
+    buildReleasePath = file("${buildOutputPath}/release")
+    buildTmpPath = file("${buildOutputPath}/tmp")
+    releaseTmpPath = file("${buildTmpPath}/release")
+    releaseBasePath = file("${releaseTmpPath}/base")
+    buildLaunchPath = file("${buildOutputPath}/launch")
+
+    // Binaries versions
+    binApacheVersion = buildProps.getProperty('bin.apache.version')
+    binMailpitVersion = buildProps.getProperty('bin.mailpit.version')
+    binMariaVersion = buildProps.getProperty('bin.maria.version')
+    binMemcachedVersion = buildProps.getProperty('bin.memcached.version')
+    binMysqlVersion = buildProps.getProperty('bin.mysql.version')
+    binNodejsVersion = buildProps.getProperty('bin.nodejs.version')
+    binPhpVersion = buildProps.getProperty('bin.php.version')
+    binPostgresqlVersion = buildProps.getProperty('bin.postgresql.version')
+    binXlightVersion = buildProps.getProperty('bin.xlight.version')
+
+    // Applications versions
+    appPhpmyadminVersion = buildProps.getProperty('app.phpmyadmin.version')
+    appPhppgadminVersion = buildProps.getProperty('app.phppgadmin.version')
+
+    // Tools versions
+    toolBrunoVersion = buildProps.getProperty('tool.bruno.version')
+    toolComposerVersion = buildProps.getProperty('tool.composer.version')
+    toolConsolezVersion = buildProps.getProperty('tool.consolez.version')
+    toolGhostscriptVersion = buildProps.getProperty('tool.ghostscript.version')
+    toolGitVersion = buildProps.getProperty('tool.git.version')
+    toolNgrokVersion = buildProps.getProperty('tool.ngrok.version')
+    toolPerlVersion = buildProps.getProperty('tool.perl.version')
+    toolPythonVersion = buildProps.getProperty('tool.python.version')
+    toolRubyVersion = buildProps.getProperty('tool.ruby.version')
+
+    // BEARSAMPP_PATH property
+    bearsamppPath = file("${projectDir}/bearsampp-destination")
+
+    // URLs (these would need to be defined based on your actual module URLs)
+    binApacheUrl = 'https://github.com/Bearsampp/module-apache/releases'
+    binXlightUrl = 'https://github.com/Bearsampp/module-xlight/releases'
+    binMailpitUrl = 'https://github.com/Bearsampp/module-mailpit/releases'
+    binMariaUrl = 'https://github.com/Bearsampp/module-mariadb/releases'
+    binPostgresqlUrl = 'https://github.com/Bearsampp/module-postgresql/releases'
+    binMemcachedUrl = 'https://github.com/Bearsampp/module-memcached/releases'
+    binMysqlUrl = 'https://github.com/Bearsampp/module-mysql/releases'
+    binNodejsUrl = 'https://github.com/Bearsampp/module-nodejs/releases'
+    binPhpUrl = 'https://github.com/Bearsampp/module-php/releases'
+
+    appPhpmyadminUrl = 'https://github.com/Bearsampp/module-phpmyadmin/releases'
+    appPhppgadminUrl = 'https://github.com/Bearsampp/module-phppgadmin/releases'
+
+    toolBrunoUrl = 'https://github.com/Bearsampp/module-bruno/releases'
+    toolComposerUrl = 'https://github.com/Bearsampp/module-composer/releases'
+    toolConsolezUrl = 'https://github.com/Bearsampp/module-consolez/releases'
+    toolGhostscriptUrl = 'https://github.com/Bearsampp/module-ghostscript/releases'
+    toolGitUrl = 'https://github.com/Bearsampp/module-git/releases'
+    toolNgrokUrl = 'https://github.com/Bearsampp/module-ngrok/releases'
+    toolPerlUrl = 'https://github.com/Bearsampp/module-perl/releases'
+    toolPythonUrl = 'https://github.com/Bearsampp/module-python/releases'
+    toolRubyUrl = 'https://github.com/Bearsampp/module-ruby/releases'
+}
+
+// Helper function to download and extract modules
+def downloadModule(String releasesUrl, String version, File destDir) {
+    println "** Get Module"
+    println "* Releases url : ${releasesUrl}"
+    println "* Version      : ${version}"
+    println "* Destination  : ${destDir}"
+
+    def getmTmpPath = file("${buildTmpPath}/getmodule")
+    getmTmpPath.mkdirs()
+
+    try {
+        // Convert releases URL to raw GitHub URL for releases.properties
+        // From: https://github.com/Bearsampp/module-consolez/releases
+        // To:   https://raw.githubusercontent.com/Bearsampp/module-consolez/main/releases.properties
+        def repoUrl = releasesUrl.replace('/releases', '').replace('github.com', 'raw.githubusercontent.com')
+        def releasesPropsUrl = "${repoUrl}/main/releases.properties"
+        def propsFile = file("${getmTmpPath}/releases-${version}.properties")
+
+        println "* Fetching release properties from: ${releasesPropsUrl}"
+
+        // Download the releases.properties file
+        ant.get(src: releasesPropsUrl, dest: propsFile, verbose: true, ignoreerrors: false)
+
+        // Load the properties
+        def releaseProps = new Properties()
+        propsFile.withInputStream { releaseProps.load(it) }
+
+        // Get the download URL for this version
+        def downloadUrl = releaseProps.getProperty(version)
+        if (!downloadUrl) {
+            throw new GradleException("Version ${version} not found in releases.properties")
+        }
+
+        println "* Download URL : ${downloadUrl}"
+
+        // Extract filename from URL
+        def filename = downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1)
+        def downloadFile = file("${getmTmpPath}/${filename}")
+
+        // Download the module archive
+        if (!downloadFile.exists()) {
+            println "* Downloading ${filename}..."
+            ant.get(src: downloadUrl, dest: downloadFile, verbose: true)
+        } else {
+            println "* Using cached ${filename}"
+        }
+
+        // Extract the archive
+        println "* Extracting ${filename} to ${destDir}..."
+        destDir.mkdirs()
+
+        if (filename.endsWith('.7z')) {
+            // Use 7-Zip for .7z files
+            def sevenZipExe = file("${devPath}/tools/7zip/7za.exe")
+            if (!sevenZipExe.exists()) {
+                throw new GradleException("7-Zip not found at ${sevenZipExe}")
+            }
+            def extractProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'x', downloadFile.absolutePath, "-o${destDir.absolutePath}", '-y')
+                .directory(destDir)
+                .redirectErrorStream(true)
+                .start()
+            extractProcess.waitFor()
+        } else if (filename.endsWith('.zip')) {
+            // Use Ant unzip for .zip files
+            ant.unzip(src: downloadFile, dest: destDir)
+        } else {
+            throw new GradleException("Unknown archive format: ${filename}")
+        }
+
+        println "* Module extracted successfully"
+
+    } catch (Exception e) {
+        println "ERROR: Failed to download module: ${e.message}"
+        // Create empty directory as fallback
+        destDir.mkdirs()
+        println "WARNING: Created empty directory as fallback"
+    }
+}
+
+// Helper function to compress using 7-Zip
+def compressArchive(File sourceDir, File destFile, String format = '7z') {
+    println "** Compressing Archive"
+    println "* Source      : ${sourceDir}"
+    println "* Destination : ${destFile}"
+    println "* Format      : ${format}"
+
+    def sevenZipExe = file("${devPath}/tools/7zip/7za.exe")
+    if (!sevenZipExe.exists()) {
+        throw new GradleException("7-Zip not found at ${sevenZipExe}")
+    }
+
+    // Ensure parent directory exists
+    destFile.parentFile.mkdirs()
+
+    // Delete existing archive if it exists
+    if (destFile.exists()) {
+        destFile.delete()
+    }
+
+    if (format == '7z') {
+        def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', '-t7z', destFile.absolutePath,
+                    "${sourceDir.absolutePath}${File.separator}*",
+                    '-m0=LZMA2', '-mx9', '-mmt6')
+            .directory(sourceDir.parentFile)
+            .redirectErrorStream(true)
+            .start()
+        compressProcess.waitFor()
+    } else if (format == 'zip') {
+        def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', destFile.absolutePath,
+                    "${sourceDir.absolutePath}${File.separator}*",
+                    '-mm=Deflate', '-mfb=258', '-mpass=15', '-r')
+            .directory(sourceDir.parentFile)
+            .redirectErrorStream(true)
+            .start()
+        compressProcess.waitFor()
+    } else {
+        throw new GradleException("Unknown compression format: ${format}")
+    }
+
+    println "* Archive created successfully: ${destFile.name}"
+}
+
+// Helper function to generate checksums
+def generateChecksums(File file) {
+    println "** Generating Checksums"
+    println "* File: ${file.name}"
+
+    def algorithms = ['MD5', 'SHA-1', 'SHA-256', 'SHA-512']
+    def checksums = [:]
+
+    algorithms.each { algorithm ->
+        def checksumFile = new File("${file.absolutePath}.${algorithm.toLowerCase().replace('-', '')}")
+
+        // Use Ant checksum task
+        ant.checksum(file: file, algorithm: algorithm, fileext: ".${algorithm.toLowerCase().replace('-', '')}")
+
+        // Read the checksum value
+        if (checksumFile.exists()) {
+            def checksumContent = checksumFile.text.trim()
+            // Extract just the hash value (format is "hash  filename")
+            def hash = checksumContent.split(/\s+/)[0]
+            checksums[algorithm] = hash
+            println "* ${algorithm.padRight(10)}: ${hash}"
+        }
+    }
+
+    return checksums
+}
+
+// Helper function to apply token filters to a file
+def applyTokenFilters(File sourceFile, File destFile, Map<String, String> tokens) {
+    def content = sourceFile.text
+    tokens.each { token, value ->
+        content = content.replaceAll("@${token}@", value)
+    }
+    destFile.text = content
+}
+
+// Override the clean task from base plugin
+clean {
+    doFirst {
+        println "Cleaning build directory..."
+        println "* Deleting: ${buildOutputPath}"
+    }
+    delete buildOutputPath
+    doLast {
+        if (!buildOutputPath.exists()) {
+            println "* Build directory cleaned successfully"
+        }
+    }
+}
+
+// Task: initBuild
+task initBuild(dependsOn: clean) {
+    group = 'build setup'
+    description = 'Initialize build environment'
+
+    doLast {
+        println "Initializing Bearsampp build environment"
+        println "Project base directory: ${projectDir}"
+        println "Build directory: ${buildOutputPath}"
+
+        // Create necessary directories
+        buildOutputPath.mkdirs()
+        buildTmpPath.mkdirs()
+        releaseTmpPath.mkdirs()
+        buildReleasePath.mkdirs()
+
+        println "Dev path: ${devPath}"
+        if (!devPath.exists()) {
+            throw new GradleException("Dev directory '${devPath}' not found")
+        }
+        println "Bearsampp dev found in ${devPath}"
+    }
+}
+
+// Task: checkLang
+task checkLang(dependsOn: initBuild) {
+    group = 'verification'
+    description = 'Check language files'
+
+    doLast {
+        println "Checking language files..."
+        // Implementation would check language files in core/langs/
+        def langsDir = file("${projectDir}/core/langs")
+        if (langsDir.exists()) {
+            langsDir.listFiles().each { langFile ->
+                if (langFile.name.endsWith('.lang')) {
+                    println "Found language file: ${langFile.name}"
+                }
+            }
+        }
+    }
+}
+
+// Task: prepareBase
+task prepareBase(dependsOn: initBuild) {
+    group = 'build'
+    description = 'Prepare base environment for Bearsampp'
+
+    doLast {
+        println "*** Preparing base"
+        println "* Name    : ${releaseName}"
+        println "* Version : ${releaseFullVersion}"
+
+        // Download iconography
+        def iconographyUrl = 'https://github.com/Bearsampp/sandbox/releases/download/iconography/Bearsampp-iconography.zip'
+        def iconographyZip = file("${projectDir}/Bearsampp-iconography.zip")
+
+        println "Downloading iconography..."
+        ant.get(src: iconographyUrl, dest: iconographyZip)
+        ant.unzip(src: iconographyZip, dest: projectDir)
+        iconographyZip.delete()
+        println "Successfully downloaded and extracted Bearsampp iconography."
+
+        // Update version using rcedit-x64.exe
+        def bearsamppExe = file("${projectDir}/base/bearsampp.exe")
+        if (bearsamppExe.exists()) {
+            def rcEditProcess = new ProcessBuilder('rcedit-x64.exe', bearsamppExe.absolutePath, '--set-file-version', releaseFullVersion)
+                .directory(projectDir)
+                .redirectErrorStream(true)
+                .start()
+            rcEditProcess.waitFor()
+            println "Successfully set product version to ${releaseFullVersion} using rcedit-x64.exe"
+        }
+
+        // Run fix-core-icon.bat
+        def fixIconProcess = new ProcessBuilder('cmd', '/c', 'fix-core-icon.bat')
+            .directory(projectDir)
+            .redirectErrorStream(true)
+            .start()
+        fixIconProcess.waitFor()
+        println "Successfully set icon to bearsampp.ico using ResourceHacker.exe"
+
+        // Clean and create base directory
+        delete releaseBasePath
+        releaseBasePath.mkdirs()
+
+        // Copy core files (excluding base, bin, and build-related files)
+        copy {
+            from projectDir
+            into releaseBasePath
+            exclude '.dev/**', '.github/**', '.idea/**', '.settings/**', '.gradle/**', '.gradle-docs/**', '.qodo/**'
+            exclude 'giscus.json', 'base/**', 'bin/**', 'core/tmp/*'
+            exclude 'core/.editorconfig', 'build.properties', 'build.xml', 'build.gradle', 'settings.gradle'
+            exclude 'gradle/**', 'gradlew', 'gradlew.bat'
+            exclude '*.iml', '*.launch'
+            exclude 'ResourceHacker.exe', 'ResourceHacker.ini', 'fix-core-icon.bat', 'rcedit-x64.exe'
+            exclude 'Bearsampp-iconography.zip', 'build.xml.reference'
+            exclude '.*', '**/.git', '**/.git/**', '**/.gitignore', '**/.gitattributes', '**/.editorconfig'
+        }
+
+        // Check for openssl.cfg
+        def opensslCfg = file("${projectDir}/core/libs/openssl/openssl.cfg")
+        if (!opensslCfg.exists()) {
+            opensslCfg.parentFile.mkdirs()
+            ant.get(
+                src: 'https://github.com/Bearsampp/sandbox/releases/download/2024.8.23/openssl.cfg',
+                dest: opensslCfg
+            )
+            println "openssl.cfg recovered from sandbox"
+        } else {
+            println "openssl.cfg already exists."
+        }
+
+        // Copy base directory with all files and subdirectories
+        copy {
+            from file("${projectDir}/base")
+            into releaseBasePath
+            includeEmptyDirs = true
+            // Exclude .gitignore files and contents from these directories
+            exclude 'logs/**'
+            exclude 'ssl/**'
+            exclude 'tmp/**'
+            exclude 'vhosts/**'
+        }
+        
+        // Create empty directory structure for logs, ssl, vhosts
+        file("${releaseBasePath}/logs").mkdirs()
+        file("${releaseBasePath}/ssl").mkdirs()
+        file("${releaseBasePath}/vhosts").mkdirs()
+        
+        // Create tmp directory structure (subdirectories only, no files)
+        file("${releaseBasePath}/tmp/cachegrind").mkdirs()
+        file("${releaseBasePath}/tmp/npm-cache").mkdirs()
+        file("${releaseBasePath}/tmp/openssl").mkdirs()
+        file("${releaseBasePath}/tmp/pip").mkdirs()
+
+        // Apply configuration tokens
+        def tokens = [
+            'APPCONF_LANG': appconfLang,
+            'APPCONF_TIMEZONE': appconfTimezone,
+            'APPCONF_NOTEPAD': appconfNotepad,
+            'APPCONF_MAX_LOGS_ARCHIVES': appconfMaxLogsArchives,
+            'APPCONF_LOGS_VERBOSE': appconfLogsVerbose,
+            'APPCONF_SCRIPTS_TIMEOUT': appconfScriptsTimeout,
+            'APPCONF_DOWNLOAD_ID': appconfDownloadId,
+            'APPCONF_INCLUDE_PR': appconfIncludePR,
+            'BIN_APACHE_VERSION': binApacheVersion,
+            'BIN_PHP_VERSION': binPhpVersion,
+            'BIN_MYSQL_VERSION': binMysqlVersion,
+            'BIN_MARIADB_VERSION': binMariaVersion,
+            'BIN_POSTGRESQL_VERSION': binPostgresqlVersion,
+            'BIN_NODEJS_VERSION': binNodejsVersion,
+            'BIN_XLIGHT_VERSION': binXlightVersion,
+            'BIN_MAILPIT_VERSION': binMailpitVersion,
+            'BIN_MEMCACHED_VERSION': binMemcachedVersion,
+            'TOOL_BRUNO_VERSION': toolBrunoVersion,
+            'TOOL_COMPOSER_VERSION': toolComposerVersion,
+            'TOOL_CONSOLEZ_VERSION': toolConsolezVersion,
+            'TOOL_GHOSTSCRIPT_VERSION': toolGhostscriptVersion,
+            'TOOL_GIT_VERSION': toolGitVersion,
+            'TOOL_NGROK_VERSION': toolNgrokVersion,
+            'TOOL_PERL_VERSION': toolPerlVersion,
+            'TOOL_PYTHON_VERSION': toolPythonVersion,
+            'TOOL_RUBY_VERSION': toolRubyVersion,
+            'APP_PHPMYADMIN_VERSION': appPhpmyadminVersion,
+            'APP_PHPPGADMIN_VERSION': appPhppgadminVersion
+        ]
+
+        applyTokenFilters(
+            file("${projectDir}/base/bearsampp.conf"),
+            file("${releaseBasePath}/bearsampp.conf"),
+            tokens
+        )
+
+        // Write version files
+        def versionTokens = ['RELEASE_VERSION': releaseFullVersion]
+        applyTokenFilters(
+            file("${projectDir}/base/bearsampp.ini"),
+            file("${releaseBasePath}/bearsampp.ini"),
+            versionTokens
+        )
+
+        file("${releaseBasePath}/core/resources/version.dat").text = releaseFullVersion
+        file("${releaseTmpPath}/version.dat").text = releaseFullVersion
+        file("${projectDir}/core/resources/version.dat").text = releaseFullVersion
+
+        println "Base preparation complete"
+    }
+}
+
+// Task: buildFull
+task buildFull(dependsOn: [initBuild, prepareBase]) {
+    group = 'build'
+    description = 'Build full release package'
+
+    doLast {
+        def releaseTarget = file("${releaseTmpPath}/${releaseName}-${releaseFullVersion}")
+        def releaseDestFile = "${buildReleasePath}/${releaseName}-${releaseFullVersion}"
+
+        println "*** Release (full)"
+        println "* Name    : ${releaseName}"
+        println "* Version : ${releaseFullVersion}"
+        println "* Format  : ${releaseFormat}"
+
+        // Clean and create release directory
+        delete releaseTarget
+        releaseTarget.mkdirs()
+
+        // Copy base
+        copy {
+            from releaseBasePath
+            into releaseTarget
+            includeEmptyDirs = true
+        }
+
+        // Apply configuration for full build
+        def fullTokens = [
+            'BIN_APACHE_ENABLE': '1',
+            'BIN_PHP_ENABLE': '1',
+            'BIN_MYSQL_ENABLE': '1',
+            'BIN_MARIADB_ENABLE': '1',
+            'BIN_POSTGRESQL_ENABLE': '1',
+            'BIN_NODEJS_ENABLE': '1',
+            'BIN_XLIGHT_ENABLE': '1',
+            'BIN_MAILPIT_ENABLE': '1',
+            'BIN_MEMCACHED_ENABLE': '1'
+        ]
+
+        def confContent = file("${releaseBasePath}/bearsampp.conf").text
+        fullTokens.each { token, value ->
+            confContent = confContent.replaceAll("@${token}@", value)
+        }
+        file("${releaseTarget}/bearsampp.conf").text = confContent
+
+        // Download modules (placeholder - actual implementation needed)
+        println "Downloading binaries..."
+        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
+        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight"))
+        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
+        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb"))
+        downloadModule(binPostgresqlUrl, binPostgresqlVersion, file("${releaseTarget}/bin/postgresql"))
+        downloadModule(binMemcachedUrl, binMemcachedVersion, file("${releaseTarget}/bin/memcached"))
+        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
+        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
+        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
+
+        println "Downloading applications..."
+        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin"))
+        downloadModule(appPhppgadminUrl, appPhppgadminVersion, file("${releaseTarget}/apps/phppgadmin"))
+
+        println "Downloading tools..."
+        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
+        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
+        downloadModule(toolConsolezUrl, toolConsolezVersion, file("${releaseTarget}/tools/consolez"))
+        downloadModule(toolGhostscriptUrl, toolGhostscriptVersion, file("${releaseTarget}/tools/ghostscript"))
+        downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
+        downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok"))
+        downloadModule(toolPerlUrl, toolPerlVersion, file("${releaseTarget}/tools/perl"))
+        downloadModule(toolPythonUrl, toolPythonVersion, file("${releaseTarget}/tools/python"))
+        downloadModule(toolRubyUrl, toolRubyVersion, file("${releaseTarget}/tools/ruby"))
+
+        // Compress the release
+        println "\n*** Compressing release..."
+        def archiveFile = file("${releaseDestFile}.${releaseFormat}")
+        compressArchive(releaseTarget, archiveFile, releaseFormat)
+
+        // Generate checksums
+        println "\n*** Generating checksums..."
+        generateChecksums(archiveFile)
+
+        println "\n*** Build complete!"
+        println "* Archive: ${archiveFile.name}"
+        println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
+    }
+}
+
+// Task: buildBasic
+task buildBasic(dependsOn: [initBuild, prepareBase]) {
+    group = 'build'
+    description = 'Build basic release package'
+
+    doLast {
+        def releaseTarget = file("${releaseTmpPath}/${releaseName}-basic-${releaseFullVersion}")
+        def releaseDestFile = "${buildReleasePath}/${releaseName}-basic-${releaseFullVersion}"
+
+        println "*** Release (basic)"
+        println "* Name    : ${releaseName}"
+        println "* Version : ${releaseFullVersion}"
+        println "* Format  : ${releaseFormat}"
+
+        // Clean and create release directory
+        delete releaseTarget
+        releaseTarget.mkdirs()
+
+        // Copy base
+        copy {
+            from releaseBasePath
+            into releaseTarget
+            includeEmptyDirs = true
+        }
+
+        // Apply configuration for basic build
+        def basicTokens = [
+            'BIN_APACHE_ENABLE': '1',
+            'BIN_PHP_ENABLE': '1',
+            'BIN_MYSQL_ENABLE': '1',
+            'BIN_MARIADB_ENABLE': '1',
+            'BIN_POSTGRESQL_ENABLE': '0',
+            'BIN_NODEJS_ENABLE': '1',
+            'BIN_XLIGHT_ENABLE': '1',
+            'BIN_MAILPIT_ENABLE': '1',
+            'BIN_MEMCACHED_ENABLE': '0'
+        ]
+
+        def confContent = file("${releaseBasePath}/bearsampp.conf").text
+        basicTokens.each { token, value ->
+            confContent = confContent.replaceAll("@${token}@", value)
+        }
+        file("${releaseTarget}/bearsampp.conf").text = confContent
+
+        // Download modules for basic build
+        println "Downloading binaries..."
+        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
+        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight"))
+        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
+        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb"))
+        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
+        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
+        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
+
+        println "Downloading applications..."
+        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin"))
+
+        println "Downloading tools..."
+        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
+        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
+        downloadModule(toolConsolezUrl, toolConsolezVersion, file("${releaseTarget}/tools/consolez"))
+        downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
+        downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok"))
+        downloadModule(toolPerlUrl, toolPerlVersion, file("${releaseTarget}/tools/perl"))
+
+        // Compress the release
+        println "\n*** Compressing release..."
+        def archiveFile = file("${releaseDestFile}.${releaseFormat}")
+        compressArchive(releaseTarget, archiveFile, releaseFormat)
+
+        // Generate checksums
+        println "\n*** Generating checksums..."
+        generateChecksums(archiveFile)
+
+        println "\n*** Build complete!"
+        println "* Archive: ${archiveFile.name}"
+        println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
+    }
+}
+
+// Task: buildLite
+task buildLite(dependsOn: [initBuild, prepareBase]) {
+    group = 'build'
+    description = 'Build lite release package'
+
+    doLast {
+        def releaseTarget = file("${releaseTmpPath}/${releaseName}-lite-${releaseFullVersion}")
+        def releaseDestFile = "${buildReleasePath}/${releaseName}-lite-${releaseFullVersion}"
+
+        println "*** Release (lite)"
+        println "* Name    : ${releaseName}"
+        println "* Version : ${releaseFullVersion}"
+        println "* Format  : ${releaseFormat}"
+
+        // Clean and create release directory
+        delete releaseTarget
+        releaseTarget.mkdirs()
+
+        // Copy base
+        copy {
+            from releaseBasePath
+            into releaseTarget
+            includeEmptyDirs = true
+        }
+
+        // Apply configuration for lite build
+        def liteTokens = [
+            'BIN_APACHE_ENABLE': '1',
+            'BIN_PHP_ENABLE': '1',
+            'BIN_MYSQL_ENABLE': '1',
+            'BIN_MARIADB_ENABLE': '0',
+            'BIN_POSTGRESQL_ENABLE': '0',
+            'BIN_NODEJS_ENABLE': '0',
+            'BIN_FILEZILLA_ENABLE': '0',
+            'BIN_XLIGHT_ENABLE': '0',
+            'BIN_MAILPIT_ENABLE': '1',
+            'BIN_MEMCACHED_ENABLE': '0'
+        ]
+
+        def confContent = file("${releaseBasePath}/bearsampp.conf").text
+        liteTokens.each { token, value ->
+            confContent = confContent.replaceAll("@${token}@", value)
+        }
+        file("${releaseTarget}/bearsampp.conf").text = confContent
+
+        // Download modules for lite build
+        println "Downloading binaries..."
+        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
+        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
+        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
+        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
+        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
+
+        println "Downloading applications..."
+        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin"))
+
+        println "Downloading tools..."
+        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
+        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
+        downloadModule(toolConsolezUrl, toolConsolezVersion, file("${releaseTarget}/tools/consolez"))
+
+        // Compress the release
+        println "\n*** Compressing release..."
+        def archiveFile = file("${releaseDestFile}.${releaseFormat}")
+        compressArchive(releaseTarget, archiveFile, releaseFormat)
+
+        // Generate checksums
+        println "\n*** Generating checksums..."
+        generateChecksums(archiveFile)
+
+        println "\n*** Build complete!"
+        println "* Archive: ${archiveFile.name}"
+        println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
+    }
+}
+
+// Task: sync
+task sync(dependsOn: buildFull) {
+    group = 'build'
+    description = 'Sync build to sandbox'
+
+    doLast {
+        println "\n*** Sync to Sandbox ***"
+
+        // 1. Ask user if they want to sync
+        def console = System.console()
+        def syncConfirm
+        if (console) {
+            syncConfirm = console.readLine('Would you like to sync to sandbox? (y/yes or n/no): ')
+        } else {
+            // Fallback for non-interactive environments
+            println "Running in non-interactive mode. Skipping sync."
+            return
+        }
+
+        if (!(syncConfirm ==~ /(?i)^(yes|y)$/)) {
+            println "Sync aborted by user."
+            return
+        }
+
+        // 2. Ask about sync path
+        println "\nCurrent sync path is: ${bearsamppPath}"
+        def pathConfirm = console.readLine('Is this the path you want to sync to? (y/yes or n/no): ')
+
+        def syncFinalPath = bearsamppPath
+        if (!(pathConfirm ==~ /(?i)^(yes|y)$/)) {
+            def customPath = console.readLine('Please enter the new path to sync to: ')
+            if (customPath && customPath.trim()) {
+                syncFinalPath = file(customPath.trim())
+            }
+        }
+
+        println "\n*** Sync step: using path = ${syncFinalPath}"
+
+        // 3. Download and extract Sandbox-iconography
+        def iconographyUrl = 'https://github.com/Bearsampp/sandbox/releases/download/iconography/Sandbox-iconography.zip'
+        def iconographyTempDir = file("${buildTmpPath}/bearsampp-iconography-temp")
+        def iconographyZip = file("${iconographyTempDir}/Sandbox-iconography.zip")
+
+        println "* Downloading Sandbox iconography..."
+        iconographyTempDir.mkdirs()
+        ant.get(src: iconographyUrl, dest: iconographyZip)
+        ant.unzip(src: iconographyZip, dest: iconographyTempDir)
+        iconographyZip.delete()
+        println "* Successfully downloaded and extracted Sandbox iconography"
+
+        // 4. Copy bin/tmp/release/base/core to temp/core BEFORE applying iconography
+        println "* Copying base core files..."
+        copy {
+            from file("${releaseTmpPath}/base/core")
+            into file("${iconographyTempDir}/core")
+            overwrite true
+        }
+
+        // 5. Copy bearsampp.exe to temp folder
+        println "* Preparing executable..."
+        copy {
+            from file("${projectDir}/base/bearsampp.exe")
+            into iconographyTempDir
+            overwrite true
+        }
+
+        // 6. Copy rcedit-x64.exe to temp folder
+        copy {
+            from file("${projectDir}/rcedit-x64.exe")
+            into iconographyTempDir
+            overwrite true
+        }
+
+        // 7. Copy ResourceHacker.exe from sync path to temp folder
+        def resourceHackerSource = file("${syncFinalPath}/ResourceHacker.exe")
+        if (resourceHackerSource.exists()) {
+            copy {
+                from resourceHackerSource
+                into iconographyTempDir
+                overwrite true
+            }
+        } else {
+            println "WARNING: ResourceHacker.exe not found at ${resourceHackerSource}"
+        }
+
+        // 8. Update version using rcedit-x64.exe
+        println "* Updating executable version to ${releaseFullVersion}..."
+        def rcEditExe = file("${iconographyTempDir}/rcedit-x64.exe")
+        def tempBearsamppExe = file("${iconographyTempDir}/bearsampp.exe")
+
+        def rcEditProcess = new ProcessBuilder(rcEditExe.absolutePath, tempBearsamppExe.absolutePath,
+                    '--set-file-version', releaseFullVersion)
+            .directory(iconographyTempDir)
+            .redirectErrorStream(true)
+            .start()
+        rcEditProcess.waitFor()
+        println "* Successfully set product version to ${releaseFullVersion}"
+
+        // 9. Copy icons to sync path before running ResourceHacker
+        println "* Copying icons to sync path..."
+        def iconsSource = file("${iconographyTempDir}/core/resources/homepage/img/icons")
+        def iconsDest = file("${syncFinalPath}/core/resources/homepage/img/icons")
+
+        if (iconsSource.exists()) {
+            copy {
+                from iconsSource
+                into iconsDest
+                overwrite true
+            }
+        }
+
+        // 10. Update icon using ResourceHacker
+        println "* Updating executable icon..."
+        def resourceHackerExe = file("${iconographyTempDir}/ResourceHacker.exe")
+        def iconPath = file("${syncFinalPath}/core/resources/homepage/img/icons/bearsampp.ico")
+
+        if (resourceHackerExe.exists() && iconPath.exists()) {
+            def resourceHackerProcess = new ProcessBuilder(resourceHackerExe.absolutePath,
+                        '-open', tempBearsamppExe.absolutePath,
+                        '-save', tempBearsamppExe.absolutePath,
+                        '-action', 'modify',
+                        '-res', "${iconPath.absolutePath},",
+                        '-mask', 'ICONGROUP,MAINICON,')
+                .directory(iconographyTempDir)
+                .redirectErrorStream(true)
+                .start()
+            resourceHackerProcess.waitFor()
+            println "* Successfully updated executable icon"
+        } else {
+            println "WARNING: Could not update icon - ResourceHacker or icon file not found"
+        }
+
+        // 11. Delete existing bearsampp.exe in sync path (to avoid locked file issues)
+        def finalBearsamppExe = file("${syncFinalPath}/bearsampp.exe")
+        if (finalBearsamppExe.exists()) {
+            finalBearsamppExe.delete()
+        }
+
+        // 12. Copy the updated bearsampp.exe to sync path
+        println "* Copying updated executable to sync path..."
+        copy {
+            from tempBearsamppExe
+            into syncFinalPath
+            overwrite true
+        }
+
+        println "\n*** Sync complete!"
+        println "* Synced to: ${syncFinalPath}"
+        println "* Executable updated with version ${releaseFullVersion}"
+    }
+}
+
+// Task: release
+task release(dependsOn: [initBuild, prepareBase, buildFull, buildBasic, buildLite, sync]) {
+    group = 'build'
+    description = 'Release Bearsampp (all variants) - includes clean'
+
+    doLast {
+        println "Release complete!"
+        println "All build variants have been created."
+    }
+}
+
+// Task: launch
+task launch(dependsOn: buildFull) {
+    group = 'application'
+    description = 'Launch Bearsampp'
+
+    doLast {
+        def releaseTarget = file("${releaseTmpPath}/${releaseName}-${releaseFullVersion}")
+
+        if (!releaseTarget.exists()) {
+            throw new GradleException("Release target directory not found: ${releaseTarget}")
+        }
+
+        delete buildLaunchPath
+        buildLaunchPath.mkdirs()
+
+        copy {
+            from releaseTarget
+            into buildLaunchPath
+        }
+
+        println "Executing Bearsampp. Please wait..."
+        def bearsamppExe = file("${buildLaunchPath}/bearsampp.exe")
+        if (bearsamppExe.exists()) {
+            def launchProcess = new ProcessBuilder(bearsamppExe.absolutePath)
+                .directory(buildLaunchPath)
+                .start()
+            // Don't wait for this process as it's the main application
+        }
+        println "If the application needs to restart, you can execute Bearsampp.exe in: ${buildLaunchPath}"
+    }
+}
+
+// Disable the built-in wrapper task since Gradle is locally installed
+tasks.named('wrapper') {
+    doFirst {
+        throw new GradleException("The wrapper task is disabled. Gradle is installed locally on this system.")
+    }
+}
+
+// Default task
+defaultTasks 'release'

@@ -8,7 +8,6 @@ from datetime import datetime
 
 # GitHub repositories to fetch releases from
 repos = [
-    'Bearsampp/module-adminer',
     'Bearsampp/module-apache',
     'Bearsampp/module-bruno',
     'Bearsampp/module-composer',
