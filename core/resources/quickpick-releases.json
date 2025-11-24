@@ -1188,9 +1188,14 @@
     "module": "module-nodejs",
     "versions": [
       {
+        "version": "25.2.1",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-25.2.1-2025.11.23.7z",
+        "prerelease": true
+      },
+      {
         "version": "24.6.0",
-        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.8.21/bearsampp-nodejs-24.6.0-2025.8.21.7z",
-        "prerelease": false
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-24.6.0-2025.11.23.7z",
+        "prerelease": true
       },
       {
         "version": "24.4.1",
@@ -1233,6 +1238,11 @@
         "prerelease": false
       },
       {
+        "version": "22.21.1",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-22.21.1-2025.11.23.7z",
+        "prerelease": true
+      },
+      {
         "version": "22.18.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.8.21/bearsampp-nodejs-22.18.0-2025.8.21.7z",
         "prerelease": false
@@ -1266,6 +1276,11 @@
         "version": "21.7.3",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.4.11/bearsampp-nodejs-21.7.3-2024.4.11.7z",
         "prerelease": false
+      },
+      {
+        "version": "20.19.5",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-20.19.5-2025.11.23.7z",
+        "prerelease": true
       },
       {
         "version": "20.17.0",
@@ -1757,6 +1772,11 @@
   {
     "module": "module-phpmyadmin",
     "versions": [
+      {
+        "version": "5.2.3",
+        "url": "https://github.com/Bearsampp/module-phpmyadmin/releases/download/2025.11.23/bearsampp-phpmyadmin-5.2.3-2025.11.23.7z",
+        "prerelease": true
+      },
       {
         "version": "5.2.2",
         "url": "https://github.com/Bearsampp/module-phpmyadmin/releases/download/2025.1.23/bearsampp-phpmyadmin-5.2.2-2025.1.23.7z",
