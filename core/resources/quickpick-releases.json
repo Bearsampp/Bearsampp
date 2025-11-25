@@ -280,14 +280,8 @@
     ]
   },
   {
-    "module": "module-consolez",
-    "versions": [
-      {
-        "version": "1.19.0.19104",
-        "url": "https://github.com/Bearsampp/module-consolez/releases/download/r1/bearsampp-consolez-1.19.0.19104-r1.7z",
-        "prerelease": false
-      }
-    ]
+    "module": "module-cmder",
+    "versions": []
   },
   {
     "module": "module-ghostscript",
