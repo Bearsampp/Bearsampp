@@ -281,7 +281,13 @@
   },
   {
     "module": "module-cmder",
-    "versions": []
+    "versions": [
+      {
+        "version": "1.3.25.328",
+        "url": "https://github.com/Bearsampp/module-cmder/releases/download/2025.11.25/bearsampp-cmder-1.3.25.328-2025.11.25.7z",
+        "prerelease": true
+      }
+    ]
   },
   {
     "module": "module-ghostscript",
