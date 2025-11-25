@@ -11,7 +11,7 @@ repos = [
     'Bearsampp/module-apache',
     'Bearsampp/module-bruno',
     'Bearsampp/module-composer',
-    'Bearsampp/module-consolez',
+    'Bearsampp/module-cmder',
     'Bearsampp/module-ghostscript',
     'Bearsampp/module-git',
     'Bearsampp/module-mailpit',
