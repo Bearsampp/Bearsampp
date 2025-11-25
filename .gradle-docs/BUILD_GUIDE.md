@@ -465,7 +465,7 @@ app.phppgadmin.version=7.14.7
 ```properties
 tool.bruno.version=2.1.0
 tool.composer.version=2.8.8
-tool.consolez.version=1.19.0.19104
+tool.cmder.version=1.19.0.19104
 tool.ghostscript.version=10.05.0
 tool.git.version=2.48.1
 tool.ngrok.version=3.20.1

@@ -170,7 +170,7 @@ tool.bruno.version=2.1.0
 tool.composer.version=2.8.8
 
 # ConsoleZ
-tool.consolez.version=1.19.0.19104
+tool.cmder.version=1.19.0.19104
 
 # Ghostscript
 tool.ghostscript.version=10.05.0
@@ -195,7 +195,7 @@ tool.ruby.version=3.4.1.1
 |---------------------------|---------|--------------------------------------|
 | `tool.bruno.version`      | String  | Bruno API Client version             |
 | `tool.composer.version`   | String  | Composer version                     |
-| `tool.consolez.version`   | String  | ConsoleZ version                     |
+| `tool.cmder.version`   | String  | ConsoleZ version                     |
 | `tool.ghostscript.version`| String  | Ghostscript version                  |
 | `tool.git.version`        | String  | Git version                          |
 | `tool.ngrok.version`      | String  | Ngrok version                        |
@@ -490,7 +490,7 @@ The build system uses token replacement to inject configuration values into file
 |--------------------------------|------------------------------|--------------------|
 | `@TOOL_BRUNO_VERSION@`         | `tool.bruno.version`         | `2.1.0`            |
 | `@TOOL_COMPOSER_VERSION@`      | `tool.composer.version`      | `2.8.8`            |
-| `@TOOL_CONSOLEZ_VERSION@`      | `tool.consolez.version`      | `1.19.0.19104`     |
+| `@TOOL_CMDER_VERSION@`      | `tool.cmder.version`      | `1.19.0.19104`     |
 | `@TOOL_GHOSTSCRIPT_VERSION@`   | `tool.ghostscript.version`   | `10.05.0`          |
 | `@TOOL_GIT_VERSION@`           | `tool.git.version`           | `2.48.1`           |
 | `@TOOL_NGROK_VERSION@`         | `tool.ngrok.version`         | `3.20.1`           |

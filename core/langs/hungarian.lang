@@ -121,7 +121,7 @@ phppgadmin = "phpPgAdmin"
 ; Tools
 bruno = "Bruno"
 composer = "Composer"
-consolez = "ConsoleZ"
+cmder = "ConsoleZ"
 ghostscript = "Ghostscript"
 git = "Git"
 ngrok = "ngrok"

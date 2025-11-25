@@ -58,7 +58,7 @@ ext {
     // Tools versions
     toolBrunoVersion = buildProps.getProperty('tool.bruno.version')
     toolComposerVersion = buildProps.getProperty('tool.composer.version')
-    toolConsolezVersion = buildProps.getProperty('tool.consolez.version')
+    toolCmderVersion = buildProps.getProperty('tool.cmder.version')
     toolGhostscriptVersion = buildProps.getProperty('tool.ghostscript.version')
     toolGitVersion = buildProps.getProperty('tool.git.version')
     toolNgrokVersion = buildProps.getProperty('tool.ngrok.version')
@@ -85,7 +85,7 @@ ext {
 
     toolBrunoUrl = 'https://github.com/Bearsampp/module-bruno/releases'
     toolComposerUrl = 'https://github.com/Bearsampp/module-composer/releases'
-    toolConsolezUrl = 'https://github.com/Bearsampp/module-consolez/releases'
+    toolCmderUrl = 'https://github.com/Bearsampp/module-cmder/releases'
     toolGhostscriptUrl = 'https://github.com/Bearsampp/module-ghostscript/releases'
     toolGitUrl = 'https://github.com/Bearsampp/module-git/releases'
     toolNgrokUrl = 'https://github.com/Bearsampp/module-ngrok/releases'
@@ -106,8 +106,8 @@ def downloadModule(String releasesUrl, String version, File destDir) {
 
     try {
         // Convert releases URL to raw GitHub URL for releases.properties
-        // From: https://github.com/Bearsampp/module-consolez/releases
-        // To:   https://raw.githubusercontent.com/Bearsampp/module-consolez/main/releases.properties
+        // From: https://github.com/Bearsampp/module-cmder/releases
+        // To:   https://raw.githubusercontent.com/Bearsampp/module-cmder/main/releases.properties
         def repoUrl = releasesUrl.replace('/releases', '').replace('github.com', 'raw.githubusercontent.com')
         def releasesPropsUrl = "${repoUrl}/main/releases.properties"
         def propsFile = file("${getmTmpPath}/releases-${version}.properties")
@@ -423,7 +423,7 @@ task prepareBase(dependsOn: initBuild) {
             'BIN_MEMCACHED_VERSION': binMemcachedVersion,
             'TOOL_BRUNO_VERSION': toolBrunoVersion,
             'TOOL_COMPOSER_VERSION': toolComposerVersion,
-            'TOOL_CONSOLEZ_VERSION': toolConsolezVersion,
+            'TOOL_CMDER_VERSION': toolCmderVersion,
             'TOOL_GHOSTSCRIPT_VERSION': toolGhostscriptVersion,
             'TOOL_GIT_VERSION': toolGitVersion,
             'TOOL_NGROK_VERSION': toolNgrokVersion,
@@ -519,7 +519,7 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
         println "Downloading tools..."
         downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
         downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
-        downloadModule(toolConsolezUrl, toolConsolezVersion, file("${releaseTarget}/tools/consolez"))
+        downloadModule(toolCmderUrl, toolCmderVersion, file("${releaseTarget}/tools/cmder"))
         downloadModule(toolGhostscriptUrl, toolGhostscriptVersion, file("${releaseTarget}/tools/ghostscript"))
         downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
         downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok"))
@@ -602,7 +602,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
         println "Downloading tools..."
         downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
         downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
-        downloadModule(toolConsolezUrl, toolConsolezVersion, file("${releaseTarget}/tools/consolez"))
+        downloadModule(toolCmderUrl, toolCmderVersion, file("${releaseTarget}/tools/cmder"))
         downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
         downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok"))
         downloadModule(toolPerlUrl, toolPerlVersion, file("${releaseTarget}/tools/perl"))
@@ -681,7 +681,7 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
         println "Downloading tools..."
         downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
         downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
-        downloadModule(toolConsolezUrl, toolConsolezVersion, file("${releaseTarget}/tools/consolez"))
+        downloadModule(toolCmderUrl, toolCmderVersion, file("${releaseTarget}/tools/cmder"))
 
         // Compress the release
         println "\n*** Compressing release..."

@@ -140,7 +140,7 @@ class Lang
     // Tools
     const BRUNO = 'bruno';
     const COMPOSER = 'composer';
-    const CONSOLEZ = 'consolez';
+    const CMDER = 'cmder';
     const GHOSTSCRIPT = 'ghostscript';
     const GIT = 'git';
     const NGROK = 'ngrok';
@@ -498,7 +498,7 @@ class Lang
             // Tools
             self::BRUNO,
             self::COMPOSER,
-            self::CONSOLEZ,
+            self::CMDER,
             self::GIT,
             self::NGROK,
             self::PERL,

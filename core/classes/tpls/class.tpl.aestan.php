@@ -46,7 +46,7 @@
 class TplAestan
 {
     // Glyph constants
-    const GLYPH_CONSOLEZ = 0;
+    const GLYPH_CMDER = 0;
     const GLYPH_ADD = 1;
     const GLYPH_FOLDER_OPEN = 2;
     const GLYPH_FOLDER_CLOSE = 3;

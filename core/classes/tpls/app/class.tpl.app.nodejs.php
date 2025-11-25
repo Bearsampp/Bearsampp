@@ -97,7 +97,7 @@ class TplAppNodejs
             // Console
             $resultItems .= TplAestan::getItemConsoleZ(
                 $bearsamppLang->getValue(Lang::CONSOLE),
-                TplAestan::GLYPH_CONSOLEZ,
+                TplAestan::GLYPH_CMDER,
                 $bearsamppTools->getConsoleZ()->getTabTitleNodejs()
             ) . PHP_EOL;
 

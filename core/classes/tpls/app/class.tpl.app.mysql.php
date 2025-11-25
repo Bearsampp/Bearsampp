@@ -102,7 +102,7 @@ class TplAppMysql
             // Console
             $resultItems .= TplAestan::getItemConsoleZ(
                 $bearsamppLang->getValue(Lang::CONSOLE),
-                TplAestan::GLYPH_CONSOLEZ,
+                TplAestan::GLYPH_CMDER,
                 $bearsamppTools->getConsoleZ()->getTabTitleMysql()
             ) . PHP_EOL;
 

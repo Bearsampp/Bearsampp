@@ -34,7 +34,7 @@ class Tools
     /**
      * @var ToolConsoleZ|null The ConsoleZ tool instance.
      */
-    private $consolez;
+    private $cmder;
 
     /**
      * @var ToolGhostscript|null The Ghostscript tool instance.
@@ -137,10 +137,10 @@ class Tools
      */
     public function getConsoleZ()
     {
-        if ($this->consolez == null) {
-            $this->consolez = new ToolConsoleZ('consolez', self::TYPE);
+        if ($this->cmder == null) {
+            $this->cmder = new ToolConsoleZ('cmder', self::TYPE);
         }
-        return $this->consolez;
+        return $this->cmder;
     }
 
     /**

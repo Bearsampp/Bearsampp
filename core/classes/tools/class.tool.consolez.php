@@ -15,13 +15,13 @@
  */
 class ToolConsoleZ extends Module
 {
-    const ROOT_CFG_VERSION = 'consolezVersion';
+    const ROOT_CFG_VERSION = 'cmderVersion';
 
-    const LOCAL_CFG_EXE = 'consolezExe';
-    const LOCAL_CFG_CONF = 'consolezConf';
-    const LOCAL_CFG_LAUNCH_EXE = 'consolezLaunchExe';
-    const LOCAL_CFG_ROWS = 'consolezRows';
-    const LOCAL_CFG_COLS = 'consolezCols';
+    const LOCAL_CFG_EXE = 'cmderExe';
+    const LOCAL_CFG_CONF = 'cmderConf';
+    const LOCAL_CFG_LAUNCH_EXE = 'cmderLaunchExe';
+    const LOCAL_CFG_ROWS = 'cmderRows';
+    const LOCAL_CFG_COLS = 'cmderCols';
 
     private $exe;
     private $launchExe;
@@ -50,7 +50,7 @@ class ToolConsoleZ extends Module
         global $bearsamppConfig, $bearsamppLang;
         Util::logReloadClass($this);
 
-        $this->name = $bearsamppLang->getValue(Lang::CONSOLEZ);
+        $this->name = $bearsamppLang->getValue(Lang::CMDER);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
