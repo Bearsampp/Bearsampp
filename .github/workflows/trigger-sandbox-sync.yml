@@ -6,6 +6,7 @@
 name: Trigger Sandbox Version Sync
 
 on:
+  workflow_dispatch:  # Allows manual triggering from GitHub Actions UI
   workflow_run:
     workflows: ["Your Gradle Workflow Name"]  # Replace with actual gradle workflow name
     types:
