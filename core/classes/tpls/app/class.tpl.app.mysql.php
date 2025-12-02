@@ -100,10 +100,13 @@ class TplAppMysql
             $resultActions .= $tplDebug[TplApp::SECTION_CONTENT];
 
             // Console
-            $resultItems .= TplAestan::getItemConsoleZ(
+            $resultItems .= TplAestan::getItemPowerShell(
                 $bearsamppLang->getValue(Lang::CONSOLE),
-                TplAestan::GLYPH_CONSOLEZ,
-                $bearsamppTools->getConsoleZ()->getTabTitleMysql()
+                TplAestan::GLYPH_POWERSHELL,
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitleMysql(),
+                $bearsamppBins->getMysql()->getSymlinkPath(),
+                null
             ) . PHP_EOL;
 
             // Conf

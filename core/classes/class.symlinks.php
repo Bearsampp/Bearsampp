@@ -23,7 +23,7 @@ class Symlinks
     const PHP_SYMLINK = 'php';
     const POSTGRESQL_SYMLINK = 'postgresql';
     const COMPOSER_SYMLINK = 'composer';
-    const CONSOLEZ_SYMLINK = 'consolez';
+    const POWERSHELL_SYMLINK = 'powershell';
     const GHOSTSCRIPT_SYMLINK = 'ghostscript';
     const GIT_SYMLINK = 'git';
     const NGROK_SYMLINK = 'ngrok';
@@ -80,7 +80,7 @@ class Symlinks
             self::PHP_SYMLINK => $binPath . '/php/current',
             self::POSTGRESQL_SYMLINK => $binPath . '/postgresql/current',
             self::COMPOSER_SYMLINK => $toolsPath . '/composer/current',
-            self::CONSOLEZ_SYMLINK => $toolsPath . '/consolez/current',
+            self::POWERSHELL_SYMLINK => $toolsPath . '/powershell/current',
             self::GHOSTSCRIPT_SYMLINK => $toolsPath . '/ghostscript/current',
             self::GIT_SYMLINK => $toolsPath . '/git/current',
             self::NGROK_SYMLINK => $toolsPath . '/ngrok/current',

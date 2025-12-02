@@ -32,9 +32,9 @@ class Tools
     private $bruno;
 
     /**
-     * @var ToolConsoleZ|null The ConsoleZ tool instance.
+     * @var ToolPowerShell|null The PowerShell tool instance.
      */
-    private $consolez;
+    private $powershell;
 
     /**
      * @var ToolGhostscript|null The Ghostscript tool instance.
@@ -94,7 +94,7 @@ class Tools
         return array(
             $this->getBruno(),
             $this->getComposer(),
-            $this->getConsoleZ(),
+            $this->getPowerShell(),
             $this->getGhostscript(),
             $this->getGit(),
             $this->getNgrok(),
@@ -131,16 +131,16 @@ class Tools
     }
 
     /**
-     * Retrieves the ConsoleZ tool instance.
+     * Retrieves the PowerShell tool instance.
      *
-     * @return ToolConsoleZ The ConsoleZ tool instance.
+     * @return ToolPowerShell The PowerShell tool instance.
      */
-    public function getConsoleZ()
+    public function getPowerShell()
     {
-        if ($this->consolez == null) {
-            $this->consolez = new ToolConsoleZ('consolez', self::TYPE);
+        if ($this->powershell == null) {
+            $this->powershell = new ToolPowerShell('powershell', self::TYPE);
         }
-        return $this->consolez;
+        return $this->powershell;
     }
 
     /**

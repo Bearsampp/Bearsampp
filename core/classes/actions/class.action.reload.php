@@ -54,8 +54,8 @@ class ActionReload
         // Process and update the bearsampp.ini file
         file_put_contents($bearsamppRoot->getIniFilePath(), Util::utf8ToCp1252(TplApp::process()));
 
-        // Process and update the ConsoleZ configuration
-        TplConsoleZ::process();
+        // Process and update the PowerShell configuration
+        TplPowerShell::process();
 
         // Refresh PEAR version cache file
         $bearsamppBins->getPhp()->getPearVersion();

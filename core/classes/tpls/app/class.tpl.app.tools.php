@@ -46,7 +46,7 @@ class TplAppTools
      */
     public static function getMenuTools()
     {
-        global $bearsamppLang, $bearsamppCore, $bearsamppTools;
+        global $bearsamppLang, $bearsamppCore, $bearsamppTools, $bearsamppRoot, $bearsamppBins;
         $resultItems = $resultActions = '';
 
         // Git
@@ -67,54 +67,72 @@ class TplAppTools
             ) . PHP_EOL;
 
         // Composer
-        $resultItems .= TplAestan::getItemConsoleZ(
+        $resultItems .= TplAestan::getItemPowerShell(
             $bearsamppLang->getValue(Lang::COMPOSER),
             TplAestan::GLYPH_COMPOSER,
-            $bearsamppTools->getConsoleZ()->getTabTitleComposer()
+            null,
+            $bearsamppTools->getPowerShell()->getTabTitleComposer(),
+            $bearsamppRoot->getWwwPath(),
+            null
         ) . PHP_EOL;
 
         // Ghostscript
-        $resultItems .= TplAestan::getItemConsoleZ(
+        $resultItems .= TplAestan::getItemPowerShell(
             $bearsamppLang->getValue(Lang::GHOSTSCRIPT),
             TplAestan::GLYPH_GHOSTSCRIPT,
-            $bearsamppTools->getConsoleZ()->getTabTitleGhostscript()
+            null,
+            $bearsamppTools->getPowerShell()->getTabTitleGhostscript(),
+            $bearsamppRoot->getWwwPath(),
+            null
         ) . PHP_EOL;
 
         // Ngrok
-        $resultItems .= TplAestan::getItemConsoleZ(
+        $resultItems .= TplAestan::getItemPowerShell(
             $bearsamppLang->getValue(Lang::NGROK),
             TplAestan::GLYPH_NGROK,
-            $bearsamppTools->getConsoleZ()->getTabTitleNgrok()
+            null,
+            $bearsamppTools->getPowerShell()->getTabTitleNgrok(),
+            $bearsamppRoot->getWwwPath(),
+            null
         ) . PHP_EOL;
 
         // Pear
-        $resultItems .= TplAestan::getItemConsoleZ(
+        $resultItems .= TplAestan::getItemPowerShell(
             $bearsamppLang->getValue(Lang::PEAR),
             TplAestan::GLYPH_PEAR,
-            $bearsamppTools->getConsoleZ()->getTabTitlePear()
+            null,
+            $bearsamppTools->getPowerShell()->getTabTitlePear(),
+            $bearsamppBins->getPhp()->getSymlinkPath() . '/pear',
+            null
         ) . PHP_EOL;
 
         // Perl
-        $resultItems .= TplAestan::getItemConsoleZ(
+        $resultItems .= TplAestan::getItemPowerShell(
             $bearsamppLang->getValue(Lang::PERL),
             TplAestan::GLYPH_PERL,
-            $bearsamppTools->getConsoleZ()->getTabTitlePerl()
+            null,
+            $bearsamppTools->getPowerShell()->getTabTitlePerl(),
+            $bearsamppRoot->getWwwPath(),
+            null
         ) . PHP_EOL;
 
         // Ruby
-        $resultItems .= TplAestan::getItemConsoleZ(
+        $resultItems .= TplAestan::getItemPowerShell(
             $bearsamppLang->getValue(Lang::RUBY),
             TplAestan::GLYPH_RUBY,
-            $bearsamppTools->getConsoleZ()->getTabTitleRuby()
+            null,
+            $bearsamppTools->getPowerShell()->getTabTitleRuby(),
+            $bearsamppRoot->getWwwPath(),
+            null
         ) . PHP_EOL;
 
         // Line Separator
         $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
         // Console
-        $resultItems .= TplAestan::getItemConsoleZ(
+        $resultItems .= TplAestan::getItemPowerShell(
             $bearsamppLang->getValue(Lang::CONSOLE),
-            TplAestan::GLYPH_CONSOLEZ
+            TplAestan::GLYPH_POWERSHELL
         ) . PHP_EOL;
 
         // HostsEditor

@@ -53,7 +53,7 @@ class TplAppGit
      */
     public static function getMenuGit()
     {
-        global $bearsamppLang, $bearsamppTools;
+        global $bearsamppLang, $bearsamppTools, $bearsamppRoot;
 
         $tplRepos = TplApp::getMenu($bearsamppLang->getValue(Lang::REPOS), self::MENU_REPOS, get_called_class());
         $emptyRepos = count(explode(PHP_EOL, $tplRepos[TplApp::SECTION_CONTENT])) == 2;
@@ -73,10 +73,13 @@ class TplAppGit
         /* get path for git gui */
         $gitgui = $bearsamppTools->getGit()->getSymlinkPath() . '/cmd';
 
-        return TplAestan::getItemConsoleZ(
+        return TplAestan::getItemPowerShell(
                 $bearsamppLang->getValue(Lang::GIT_CONSOLE),
                 TplAestan::GLYPH_GIT,
-                $bearsamppTools->getConsoleZ()->getTabTitleGit()
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitleGit(),
+                $bearsamppRoot->getWwwPath(),
+                null
             ) . PHP_EOL .
             TplAestan::getItemExe(
                     $bearsamppLang->getValue(Lang::GITGUI),
@@ -112,12 +115,13 @@ class TplAppGit
         $result = '';
 
         foreach ($bearsamppTools->getGit()->findRepos() as $repo) {
-            $result .= TplAestan::getItemConsoleZ(
+            $result .= TplAestan::getItemPowerShell(
                 basename($repo),
                 TplAestan::GLYPH_GIT,
-                $bearsamppTools->getConsoleZ()->getTabTitleGit(),
-                $bearsamppTools->getConsoleZ()->getTabTitleGit($repo),
-                $repo
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitleGit($repo),
+                $repo,
+                null
             ) . PHP_EOL;
         }
 

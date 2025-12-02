@@ -12,7 +12,7 @@
  * Class TplAestan
  *
  * This class provides various methods to generate configuration strings for the Bearsampp application.
- * It includes methods to create items for ConsoleZ, links, Notepad, executables, and explorer actions.
+ * It includes methods to create items for PowerShell, links, Notepad, executables, and explorer actions.
  * Additionally, it handles service actions such as start, stop, and restart, and generates configuration
  * sections for messages, config, and menu settings.
  *
@@ -24,7 +24,7 @@
  * Methods:
  * - getGlyphFlah($lang): Retrieves the glyph flag for a given language.
  * - getItemSeparator(): Returns a string representing a separator item.
- * - getItemConsoleZ($caption, $glyph, $id, $title, $initDir, $command): Returns a string representing a ConsoleZ item.
+ * - getItemPowerShell($caption, $glyph, $id, $title, $initDir, $command): Returns a string representing a PowerShell item.
  * - getItemLink($caption, $link, $local, $glyph): Returns a string representing a link item.
  * - getItemNotepad($caption, $path): Returns a string representing a Notepad item.
  * - getItemExe($caption, $exe, $glyph, $params): Returns a string representing an executable item.
@@ -46,7 +46,7 @@
 class TplAestan
 {
     // Glyph constants
-    const GLYPH_CONSOLEZ = 0;
+    const GLYPH_POWERSHELL = 0;
     const GLYPH_ADD = 1;
     const GLYPH_FOLDER_OPEN = 2;
     const GLYPH_FOLDER_CLOSE = 3;
@@ -128,39 +128,51 @@ class TplAestan
     }
 
     /**
-     * Returns a string representing a ConsoleZ item.
+     * Returns a string representing a PowerShell item.
      *
      * @param string $caption The caption for the item.
      * @param int $glyph The glyph index.
-     * @param string|null $id The ID for the item.
-     * @param string|null $title The title for the item.
+     * @param string|null $id The ID for the item (not used with PowerShell).
+     * @param string|null $title The title for the tab.
      * @param string|null $initDir The initial directory for the item.
      * @param string|null $command The command to execute.
-     * @return string The ConsoleZ item string.
+     * @return string The PowerShell item string.
      */
-    public static function getItemConsoleZ($caption, $glyph, $id = null, $title = null, $initDir = null, $command = null)
+    public static function getItemPowerShell($caption, $glyph, $id = null, $title = null, $initDir = null, $command = null)
     {
         global $bearsamppTools;
 
-        $args = '';
-        if ($id != null) {
-            $args .= ' -t ""' . $id . '""';
-        }
+        // PowerShell uses the launch batch file which handles the command execution
+        // We use Windows Terminal command-line arguments:
+        // --title or -w for window title
+        // --startingDirectory or -d for starting directory
+        $launchExe = $bearsamppTools->getPowerShell()->getLaunchExe();
+        
+        // Build the parameters using Windows Terminal switches
+        $params = '';
+        
+        // Add title if provided (using -w for compatibility)
         if ($title != null) {
-            $args .= ' -w ""' . $title . '""';
+            $params .= '--title ""' . $title . '""';
         }
+        
+        // Add starting directory if provided (using -d for compatibility)
         if ($initDir != null) {
-            $args .= ' -d ""' . $initDir . '""';
+            if (!empty($params)) $params .= ' ';
+            $params .= '--startingDirectory ""' . $initDir . '""';
         }
+        
+        // Add command to execute if provided
         if ($command != null) {
-            $args .= ' -r ""' . $command . '""';
+            if (!empty($params)) $params .= ' ';
+            $params .= '--command ""' . $command . '""';
         }
 
         return self::getItemExe(
             $caption,
-            $bearsamppTools->getConsoleZ()->getExe(),
+            $launchExe,
             $glyph,
-            $args
+            $params
         );
     }
 

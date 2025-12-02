@@ -94,10 +94,10 @@ class TplAppMariadb
             $resultActions .= $tplDebug[TplApp::SECTION_CONTENT];
 
             // Console
-            $resultItems .= TplAestan::getItemConsoleZ(
+            $resultItems .= TplAestan::getItemPowerShell(
                 $bearsamppLang->getValue(Lang::CONSOLE),
-                TplAestan::GLYPH_CONSOLEZ,
-                $bearsamppTools->getConsoleZ()->getTabTitleMariadb()
+                TplAestan::GLYPH_POWERSHELL,
+                null, $bearsamppTools->getPowerShell()->getTabTitleMariadb(), $bearsamppBins->getMariadb()->getSymlinkPath(), null
             ) . PHP_EOL;
 
             // Conf

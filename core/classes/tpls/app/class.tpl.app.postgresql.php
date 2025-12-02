@@ -95,10 +95,10 @@ class TplAppPostgresql
             $resultActions .= $tplDebug[TplApp::SECTION_CONTENT];
 
             // Console
-            $resultItems .= TplAestan::getItemConsoleZ(
+            $resultItems .= TplAestan::getItemPowerShell(
                 $bearsamppLang->getValue(Lang::CONSOLE),
-                TplAestan::GLYPH_CONSOLEZ,
-                $bearsamppTools->getConsoleZ()->getTabTitlePostgresql()
+                TplAestan::GLYPH_POWERSHELL,
+                null, $bearsamppTools->getPowerShell()->getTabTitlePostgresql(), $bearsamppBins->getPostgresql()->getSymlinkPath(), null
             ) . PHP_EOL;
 
             // Conf

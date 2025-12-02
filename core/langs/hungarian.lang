@@ -1,4 +1,4 @@
-﻿; Author: jmos
+; Author: jmos
 ;
 
 ; General
@@ -121,7 +121,7 @@ phppgadmin = "phpPgAdmin"
 ; Tools
 bruno = "Bruno"
 composer = "Composer"
-consolez = "ConsoleZ"
+powershell = "PowerShell"
 ghostscript = "Ghostscript"
 git = "Git"
 ngrok = "ngrok"

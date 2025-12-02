@@ -47,10 +47,13 @@ class TplAppPython
         global $bearsamppLang, $bearsamppTools;
 
         // Generate menu item for Python console
-        $resultItems = TplAestan::getItemConsoleZ(
+        $resultItems = TplAestan::getItemPowerShell(
             $bearsamppLang->getValue(Lang::PYTHON_CONSOLE),
             TplAestan::GLYPH_PYTHON,
-            $bearsamppTools->getConsoleZ()->getTabTitlePython()
+            null,
+            $bearsamppTools->getPowerShell()->getTabTitlePython(),
+            $bearsamppTools->getPython()->getSymlinkPath(),
+            null
         ) . PHP_EOL;
 
         // Generate menu item for Python IDLE

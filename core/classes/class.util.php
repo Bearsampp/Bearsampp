@@ -980,7 +980,7 @@ class Util
      * Retrieves a list of directories and file types to scan within the BEARSAMPP environment.
      *
      * This method compiles an array of paths from various components of the BEARSAMPP stack,
-     * including Apache, PHP, MySQL, MariaDB, PostgreSQL, Node.js, Composer, ConsoleZ,
+     * including Apache, PHP, MySQL, MariaDB, PostgreSQL, Node.js, Composer, PowerShell,
      * Python and Ruby. Each path entry includes the directory path, file types to include
      * in the scan, and whether the scan should be recursive.
      *
@@ -1108,11 +1108,11 @@ class Util
             );
         }
 
-        // ConsoleZ
-        $folderList = self::getFolderList($bearsamppTools->getConsoleZ()->getRootPath());
+        // PowerShell
+        $folderList = self::getFolderList($bearsamppTools->getPowerShell()->getRootPath());
         foreach ($folderList as $folder) {
             $paths[] = array(
-                'path'      => $bearsamppTools->getConsoleZ()->getRootPath() . '/' . $folder,
+                'path'      => $bearsamppTools->getPowerShell()->getRootPath() . '/' . $folder,
                 'includes'  => array('console.xml', '.ini', '.btm'),
                 'recursive' => true
             );
