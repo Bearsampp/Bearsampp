@@ -1,0 +1,25 @@
+# This file should be added to Bearsampp repository at:
+# .github/workflows/trigger-sandbox-sync.yml
+#
+# Add this step to your gradle workflow AFTER the version.dat file is modified:
+
+name: Trigger Sandbox Version Sync
+
+on:
+  workflow_run:
+    workflows: ["Your Gradle Workflow Name"]  # Replace with actual gradle workflow name
+    types:
+      - completed
+
+jobs:
+  trigger-sync:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Sandbox Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: Bearsampp/Sandbox
+          event-type: version-updated
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
