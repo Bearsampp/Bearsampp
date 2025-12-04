@@ -251,113 +251,117 @@ task updateVersions {
         
         def buildPropsFile = file('build.properties')
         def confFile = file("${projectDir}/base/bearsampp.conf")
-        def buildPropsLines = buildPropsFile.readLines()
-        def confLines = confFile.readLines()
         def tmpDir = file("${buildTmpPath}/version-check")
         tmpDir.mkdirs()
         
-        // Extract modules from bearsampp.conf
-        def modulesFromConf = [:]
-        def currentSection = null
+        // Discover modules from bearsampp.conf
+        def confLines = confFile.readLines()
+        def modulesMap = [:]
+        def confSection = null
         
         confLines.each { line ->
-            // Track sections
-            if (line.contains('; ---- BINS ----')) {
-                currentSection = 'bin'
-            } else if (line.contains('; ---- TOOLS ----')) {
-                currentSection = 'tool'
-            } else if (line.contains('; ---- APPS ----')) {
-                currentSection = 'app'
-            }
+            if (line.contains('; ---- BINS ----')) confSection = 'bin'
+            else if (line.contains('; ---- TOOLS ----')) confSection = 'tool'
+            else if (line.contains('; ---- APPS ----')) confSection = 'app'
             
-            // Extract version properties (e.g., apacheVersion = "@BIN_APACHE_VERSION@")
-            if (line.contains('Version = "@') && !line.startsWith(';')) {
+            if (confSection && line.contains('Version = "@') && !line.startsWith(';')) {
                 def parts = line.split('=')
                 if (parts.size() >= 2) {
-                    def varName = parts[0].trim()  // e.g., "apacheVersion"
-                    def moduleName = varName.replaceAll('Version$', '')  // e.g., "apache"
-                    
-                    if (currentSection) {
-                        def property = "${currentSection}.${moduleName}.version"
+                    def varName = parts[0].trim()
+                    def moduleName = varName.replaceAll('Version$', '')
+                    def propName = "${confSection}.${moduleName}.version"
+                    modulesMap[propName] = "module-${moduleName}"
+                }
+            }
+        }
+        
+        println "* Discovered ${modulesMap.size()} modules"
+        
+        // Read current build.properties
+        def propsLines = buildPropsFile.readLines()
+        def newLines = []
+        def propsSection = null
+        def addedProps = [] as Set
+        
+        for (int i = 0; i < propsLines.size(); i++) {
+            def line = propsLines[i]
+            newLines << line
+            
+            // Track sections
+            if (line.startsWith('# Binaries versions')) propsSection = 'bin'
+            else if (line.startsWith('# Applications versions')) propsSection = 'app'
+            else if (line.startsWith('# Tools versions')) propsSection = 'tool'
+            
+            // Check if we should insert missing entries after this line
+            if (propsSection && line.startsWith("${propsSection}.") && line.contains('=')) {
+                def currentProp = line.split('=')[0].trim()
+                
+                // Find missing props that should go after current line
+                modulesMap.each { propName, repoName ->
+                    if (propName.startsWith("${propsSection}.") && !addedProps.contains(propName)) {
+                        def propExists = propsLines.any { it.startsWith("${propName} ") || it.startsWith("${propName}=") }
                         
-                        // Determine repository name
-                        def repoName = "module-${moduleName}"
-                        def repoMappings = [
-                            'mariadb': 'module-mariadb'
-                        ]
-                        if (repoMappings.containsKey(moduleName)) {
-                            repoName = repoMappings[moduleName]
+                        if (!propExists && propName > currentProp) {
+                            // Check next line
+                            def hasNext = i + 1 < propsLines.size()
+                            def nextLine = hasNext ? propsLines[i + 1] : ''
+                            def nextProp = nextLine.startsWith("${propsSection}.") ? nextLine.split('=')[0].trim() : null
+                            
+                            if (!nextProp || propName < nextProp) {
+                                newLines << "${propName} = 0.0.0"
+                                addedProps << propName
+                                println "  [ADD] ${propName}"
+                            }
                         }
-                        
-                        modulesFromConf[property] = repoName
                     }
                 }
             }
         }
         
-        println "* Discovered ${modulesFromConf.size()} modules from bearsampp.conf"
-        
-        // Add missing entries to build.properties
-        def buildPropsContent = buildPropsFile.text
-        def addedEntries = []
-        
-        modulesFromConf.each { property, repo ->
-            if (!buildPropsContent.contains(property)) {
-                addedEntries << "${property} = 0.0.0"
-                println "  [ADD] Missing entry: ${property}"
-            }
-        }
-        
-        if (addedEntries.size() > 0) {
-            buildPropsContent += '\n' + addedEntries.join('\n')
-            buildPropsFile.text = buildPropsContent
-            buildPropsLines = buildPropsFile.readLines()
-            println "* Added ${addedEntries.size()} missing entries to build.properties"
-        }
+        buildPropsFile.text = newLines.join('\n')
         
         // Now update versions from GitHub
-        def updatedLines = buildPropsLines.collect { line ->
-            def result = line
+        propsLines = buildPropsFile.readLines()
+        def updatedLines = []
+        
+        propsLines.each { line ->
+            def updated = line
             
-            modulesFromConf.each { property, repo ->
-                if (line.startsWith(property + ' ') || line.startsWith(property + '=')) {
+            modulesMap.each { propName, repoName ->
+                if (line.startsWith("${propName} ") || line.startsWith("${propName}=")) {
                     try {
-                        def repoUrl = "https://raw.githubusercontent.com/Bearsampp/${repo}/main/releases.properties"
-                        def propsFile = file("${tmpDir}/${repo}-releases.properties")
+                        def url = "https://raw.githubusercontent.com/Bearsampp/${repoName}/main/releases.properties"
+                        def propsFile = file("${tmpDir}/${repoName}.properties")
                         
-                        println "* Fetching ${property}"
-                        ant.get(src: repoUrl, dest: propsFile, verbose: false, ignoreerrors: false)
+                        println "* Fetching ${propName}"
+                        ant.get(src: url, dest: propsFile, verbose: false, ignoreerrors: false)
                         
                         def releaseProps = new Properties()
                         propsFile.withInputStream { releaseProps.load(it) }
                         
-                        def allVersions = releaseProps.stringPropertyNames().toList()
-                        if (!allVersions.isEmpty()) {
-                            // Sort all versions in descending order (highest first)
-                            def latestVersion = allVersions.sort { a, b ->
+                        def versions = releaseProps.stringPropertyNames().toList()
+                        if (!versions.isEmpty()) {
+                            def latest = versions.sort { a, b ->
                                 def aParts = a.split('[.-]')
                                 def bParts = b.split('[.-]')
-                                for (int i = 0; i < Math.max(aParts.length, bParts.length); i++) {
-                                    def aStr = i < aParts.length ? aParts[i] : '0'
-                                    def bStr = i < bParts.length ? bParts[i] : '0'
-                                    
-                                    def aNum = aStr.isInteger() ? aStr.toInteger() : 0
-                                    def bNum = bStr.isInteger() ? bStr.toInteger() : 0
-                                    
-                                    if (aNum != bNum) return bNum - aNum
+                                for (int j = 0; j < Math.max(aParts.length, bParts.length); j++) {
+                                    def aVal = j < aParts.length ? (aParts[j].isInteger() ? aParts[j].toInteger() : 0) : 0
+                                    def bVal = j < bParts.length ? (bParts[j].isInteger() ? bParts[j].toInteger() : 0) : 0
+                                    if (aVal != bVal) return bVal - aVal
                                 }
                                 return 0
                             }[0]
                             
-                            result = "${property} = ${latestVersion}"
-                            println "  [OK] Updated to ${latestVersion}"
+                            updated = "${propName} = ${latest}"
+                            println "  [OK] Updated to ${latest}"
                         }
                     } catch (Exception e) {
                         println "  [SKIP] ${e.message}"
                     }
                 }
             }
-            result
+            
+            updatedLines << updated
         }
         
         buildPropsFile.text = updatedLines.join('\n')
@@ -374,10 +378,31 @@ clean {
         println "Cleaning build directory..."
         println "* Deleting: ${buildOutputPath}"
     }
-    delete buildOutputPath
     doLast {
-        if (!buildOutputPath.exists()) {
-            println "* Build directory cleaned successfully"
+        if (buildOutputPath.exists()) {
+            def maxRetries = 5
+            def retryCount = 0
+            def deleted = false
+            
+            while (retryCount < maxRetries && !deleted) {
+                try {
+                    delete buildOutputPath
+                    deleted = true
+                    println "* Build directory cleaned successfully"
+                } catch (Exception e) {
+                    retryCount++
+                    if (retryCount < maxRetries) {
+                        println "* Retry ${retryCount}/${maxRetries}: Waiting for file locks to release..."
+                        Thread.sleep(1000)
+                    } else {
+                        println "* WARNING: Could not fully clean directory after ${maxRetries} attempts"
+                        println "* Error: ${e.message}"
+                        println "* Some files may still be locked. Please close any applications using files in this directory."
+                    }
+                }
+            }
+        } else {
+            println "* Build directory already clean"
         }
     }
 }
