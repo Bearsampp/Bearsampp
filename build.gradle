@@ -33,7 +33,11 @@ ext {
     devDir = buildProps.getProperty('dev.dir')
     buildDirName = buildProps.getProperty('build.dir')
     devPath = file("${projectDir}/${devDir}")
-    buildOutputPath = file("${projectDir}/${buildDirName}")
+    
+    // Use build.dir from properties - can be absolute or relative path
+    def buildDirPath = buildDirName.startsWith('/') || buildDirName.contains(':') ? 
+        buildDirName : "${projectDir}/${buildDirName}"
+    buildOutputPath = file(buildDirPath)
     buildReleasePath = file("${buildOutputPath}/release")
     buildTmpPath = file("${buildOutputPath}/tmp")
     releaseTmpPath = file("${buildTmpPath}/release")
