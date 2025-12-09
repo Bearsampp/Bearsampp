@@ -3,6 +3,11 @@
     "module": "module-apache",
     "versions": [
       {
+        "version": "2.4.66",
+        "url": "https://github.com/Bearsampp/module-apache/releases/download/2025.12.8/bearsampp-apache-2.4.66-2025.12.8.7z",
+        "prerelease": false
+      },
+      {
         "version": "2.4.65",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2025.8.15/bearsampp-apache-2.4.65-2025.8.15.7z",
         "prerelease": false
@@ -2065,6 +2070,16 @@
       {
         "version": "11.3",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.09.13/bearsampp-postgresql-11.3-2022.09.13.7z",
+        "prerelease": false
+      }
+    ]
+  },
+  {
+    "module": "module-powershell",
+    "versions": [
+      {
+        "version": "7.5.4",
+        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2025.11.30/bearsampp-powershell-7.5.4-2025.11.30.7z",
         "prerelease": false
       }
     ]
