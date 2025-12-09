@@ -25,6 +25,7 @@ repos = [
     'Bearsampp/module-phpmyadmin',
     'Bearsampp/module-phppgadmin',
     'Bearsampp/module-postgresql',
+    'Bearsampp/module-powershell',
     'Bearsampp/module-python',
     'Bearsampp/module-ruby',
     'Bearsampp/module-xlight'
