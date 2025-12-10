@@ -408,6 +408,11 @@
     "module": "module-mailpit",
     "versions": [
       {
+        "version": "1.28.0",
+        "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.12.10/bearsampp-mailpit-1.28.0-2025.12.10.7z",
+        "prerelease": true
+      },
+      {
         "version": "1.27.11",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.11.23/bearsampp-mailpit-1.27.11-2025.11.23.7z",
         "prerelease": false
