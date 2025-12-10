@@ -208,43 +208,48 @@ class BinMemcached extends Module
             return false;
         }
 
-        if (function_exists('memcache_connect')) {
-            $memcache = @memcache_connect('127.0.0.1', $port);
-            if ($memcache) {
-                $memcacheVersion = memcache_get_version($memcache);
-                Util::logDebug($this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $memcacheVersion);
-                memcache_close($memcache);
+        // Use fsockopen instead of memcache_connect to avoid file descriptor leaks in PHP 8.4+
+        $fp = @fsockopen('127.0.0.1', $port, $errno, $errstr, 1);
+        if ($fp) {
+            // Port is open, verify it's memcached by sending a simple command
+            @stream_set_timeout($fp, 1);
+            @fwrite($fp, "version\r\n");
+            $response = @fgets($fp, 128);
+            @fclose($fp);
+
+            if ($response && strpos($response, 'VERSION') === 0) {
+                // Extract version from response (format: "VERSION x.x.x")
+                $version = trim(substr($response, 8));
+                Util::logDebug($this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $version);
                 if ($showWindow) {
                     $bearsamppWinbinder->messageBoxInfo(
-                        sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY), $port, $this->getName() . ' ' . $memcacheVersion),
+                        sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY), $port, $this->getName() . ' ' . $version),
                         $boxTitle
                     );
                 }
                 return true;
-            }
-        } else {
-            $fp = @fsockopen('127.0.0.1', $port, $errno, $errstr, 3);
-            if (!$fp) {
-                Util::logDebug($this->getName() . ' port ' . $port . ' is used by another application');
+            } else {
+                // Port is open but not responding as memcached
+                Util::logDebug($this->getName() . ' port ' . $port . ' is open but not responding as memcached');
                 if ($showWindow) {
                     $bearsamppWinbinder->messageBoxWarning(
                         sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port),
                         $boxTitle
                     );
                 }
-            } else {
-                Util::logDebug($this->getName() . ' port ' . $port . ' is not used');
-                if ($showWindow) {
-                    $bearsamppWinbinder->messageBoxError(
-                        sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED), $port),
-                        $boxTitle
-                    );
-                }
-                fclose($fp);
+                return false;
             }
+        } else {
+            // Port is not open
+            Util::logDebug($this->getName() . ' port ' . $port . ' is not open');
+            if ($showWindow) {
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED), $port),
+                    $boxTitle
+                );
+            }
+            return false;
         }
-
-        return false;
     }
 
     /**

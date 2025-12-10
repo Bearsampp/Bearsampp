@@ -30,7 +30,6 @@ class QuickPick
         'Apache'      => ['type' => 'binary'],
         'Bruno'       => ['type' => 'tools'],
         'Composer'    => ['type' => 'tools'],
-        'PowerShell'  => ['type' => 'tools'],
         'Ghostscript' => ['type' => 'tools'],
         'Git'         => ['type' => 'tools'],
         'Mailpit'     => ['type' => 'binary'],
@@ -44,6 +43,7 @@ class QuickPick
         'PhpMyAdmin'  => ['type' => 'application'],
         'PhpPgAdmin'  => ['type' => 'application'],
         'PostgreSQL'  => ['type' => 'binary'],
+        'PowerShell'  => ['type' => 'tools'],
         'Python'      => ['type' => 'tools'],
         'Ruby'        => ['type' => 'tools'],
         'Xlight'      => ['type' => 'binary']
