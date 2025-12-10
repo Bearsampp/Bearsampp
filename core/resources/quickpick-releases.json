@@ -2155,7 +2155,7 @@
       {
         "version": "3.4.7",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2025.11.23/bearsampp-ruby-3.4.7-2025.11.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.4.5",
