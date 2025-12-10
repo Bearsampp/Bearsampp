@@ -252,10 +252,18 @@ class BinMysql extends Module
 
         if ($cachedConnection === null || $lastPort !== $port) {
             try {
+                // Use new constant name for PHP 8.5+ while maintaining backward compatibility
+                // Check PHP version to avoid deprecation warnings
+                if (PHP_VERSION_ID >= 80500) {
+                    $initCommandAttr = \Pdo\Mysql::ATTR_INIT_COMMAND;
+                } else {
+                    $initCommandAttr = \PDO::MYSQL_ATTR_INIT_COMMAND;
+                }
+
                 $options = [
                     \PDO::ATTR_TIMEOUT => $timeout,
                     \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                    \PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION sql_mode=''"
+                    $initCommandAttr => "SET SESSION sql_mode=''"
                 ];
 
                 $dsn = 'mysql:host=127.0.0.1;port=' . $port;
@@ -436,10 +444,18 @@ class BinMysql extends Module
         }
 
         try {
+            // Use new constant name for PHP 8.5+ while maintaining backward compatibility
+            // Check PHP version to avoid deprecation warnings
+            if (PHP_VERSION_ID >= 80500) {
+                $initCommandAttr = \Pdo\Mysql::ATTR_INIT_COMMAND;
+            } else {
+                $initCommandAttr = \PDO::MYSQL_ATTR_INIT_COMMAND;
+            }
+
             $options = [
                 \PDO::ATTR_TIMEOUT => $timeout,
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION sql_mode=''"
+                $initCommandAttr => "SET SESSION sql_mode=''"
             ];
 
             $dsn    = 'mysql:host=127.0.0.1;port=' . $this->port;
