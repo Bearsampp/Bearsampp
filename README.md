@@ -74,6 +74,7 @@ Bearsampp uses Gradle as its build system. For detailed build instructions, see:
 
 * [Quick Start Guide](.gradle-docs/QUICKSTART.md) - Get up and running quickly
 * [Build Guide](.gradle-docs/BUILD_GUIDE.md) - Comprehensive build documentation
+* [Update Versions](.gradle-docs/UPDATE_VERSIONS.md) - Automatic version updates from GitHub
 * [Gradle Documentation](.gradle-docs/GRADLE_README.md) - Gradle-specific information
 * [Migration Guide](.gradle-docs/MIGRATION_GUIDE.md) - Migrating from Ant to Gradle
 * [Implementation Status](.gradle-docs/IMPLEMENTATION_STATUS.md) - Current build system status
