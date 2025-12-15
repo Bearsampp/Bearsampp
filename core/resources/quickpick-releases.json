@@ -1195,12 +1195,12 @@
       {
         "version": "25.2.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-25.2.1-2025.11.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "24.11.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-24.11.1-2025.11.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "24.6.0",
@@ -1250,7 +1250,7 @@
       {
         "version": "22.21.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-22.21.1-2025.11.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "22.18.0",
@@ -1290,7 +1290,7 @@
       {
         "version": "20.19.5",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-20.19.5-2025.11.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "20.17.0",
