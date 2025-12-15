@@ -1795,7 +1795,7 @@
       {
         "version": "5.2.3",
         "url": "https://github.com/Bearsampp/module-phpmyadmin/releases/download/2025.11.23/bearsampp-phpmyadmin-5.2.3-2025.11.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "5.2.2",
