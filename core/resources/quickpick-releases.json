@@ -1035,7 +1035,7 @@
       {
         "version": "9.5.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.11.23/bearsampp-mysql-9.5.0-2025.11.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "9.4.0",
@@ -1065,7 +1065,7 @@
       {
         "version": "8.4.7",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.11.23/bearsampp-mysql-8.4.7-2025.11.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "8.4.6",
@@ -1105,7 +1105,7 @@
       {
         "version": "8.0.44",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.11.23/bearsampp-mysql-8.0.44-2025.11.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "8.0.42",
