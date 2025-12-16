@@ -25,11 +25,12 @@ class ActionReload
      * @global Core $bearsamppCore The core object of the Bearsampp application.
      * @global Config $bearsamppConfig The configuration object of the Bearsampp application.
      * @global Bins $bearsamppBins The bins object containing various binaries used by the Bearsampp application.
+     * @global Apps $bearsamppApps The apps object containing various applications used by the Bearsampp application.
      * @global Homepage $bearsamppHomepage The homepage object for managing homepage-related settings and content.
      */
     public function __construct($args)
     {
-        global $bearsamppRoot, $bearsamppCore, $bearsamppConfig, $bearsamppBins, $bearsamppHomepage;
+        global $bearsamppRoot, $bearsamppCore, $bearsamppConfig, $bearsamppBins, $bearsamppApps, $bearsamppHomepage;
 
         // If the executable file exists, return early.
         if (file_exists($bearsamppCore->getExec())) {
@@ -38,6 +39,10 @@ class ActionReload
 
         // Start loading process
         Util::startLoading();
+
+        // Reload bins and apps to recreate symlinks if needed
+        $bearsamppBins->reload();
+        $bearsamppApps->reload();
 
         // Refresh hostname in the configuration
         $bearsamppConfig->replace(Config::CFG_HOSTNAME, gethostname());
