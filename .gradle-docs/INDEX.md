@@ -11,6 +11,7 @@ Complete index of all Gradle build documentation for Bearsampp.
 | **Main Documentation**| Complete build system guide                      | [README.md](README.md)        |
 | **Quick Start**       | Get started quickly                              | [QUICKSTART.md](QUICKSTART.md)|
 | **Build Guide**       | Comprehensive build documentation                | [BUILD_GUIDE.md](BUILD_GUIDE.md)|
+| **Update Versions**   | Automatic version updates from GitHub            | [UPDATE_VERSIONS.md](UPDATE_VERSIONS.md)|
 | **Task Reference**    | All available Gradle tasks                       | [TASKS.md](TASKS.md)          |
 | **Configuration**     | Configuration files and properties               | [CONFIGURATION.md](CONFIGURATION.md) |
 | **API Reference**     | Build script API and helper functions            | [API.md](API.md)              |
@@ -27,6 +28,7 @@ Complete index of all Gradle build documentation for Bearsampp.
 ├── README.md                     # Main documentation and overview
 ├── QUICKSTART.md                 # Quick start guide
 ├── BUILD_GUIDE.md                # Comprehensive build guide
+├── UPDATE_VERSIONS.md            # Automatic version updates from GitHub
 ├── TASKS.md                      # Complete task reference
 ├── CONFIGURATION.md              # Configuration guide
 ├── API.md                        # API reference for build scripts
@@ -442,4 +444,4 @@ For documentation issues or questions:
 
 **Last Updated**: 2025  
 **Version**: 2025.5.6  
-**Total Documents**: 8
+**Total Documents**: 9

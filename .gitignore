@@ -22,6 +22,5 @@
 # Qodo
 /.qodo
 
-#Gradle
+# Gradle
 .gradle/
-/.gradle/
