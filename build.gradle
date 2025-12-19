@@ -58,7 +58,6 @@ ext {
     // Tools versions
     toolBrunoVersion = buildProps.getProperty('tool.bruno.version')
     toolComposerVersion = buildProps.getProperty('tool.composer.version')
-    toolConsolezVersion = buildProps.getProperty('tool.consolez.version')
     toolGhostscriptVersion = buildProps.getProperty('tool.ghostscript.version')
     toolGitVersion = buildProps.getProperty('tool.git.version')
     toolNgrokVersion = buildProps.getProperty('tool.ngrok.version')
@@ -85,7 +84,6 @@ ext {
 
     toolBrunoUrl = 'https://github.com/Bearsampp/module-bruno/releases'
     toolComposerUrl = 'https://github.com/Bearsampp/module-composer/releases'
-    toolConsolezUrl = 'https://github.com/Bearsampp/module-consolez/releases'
     toolGhostscriptUrl = 'https://github.com/Bearsampp/module-ghostscript/releases'
     toolGitUrl = 'https://github.com/Bearsampp/module-git/releases'
     toolNgrokUrl = 'https://github.com/Bearsampp/module-ngrok/releases'
@@ -315,9 +313,20 @@ task prepareBase(dependsOn: initBuild) {
     description = 'Prepare base environment for Bearsampp'
 
     doLast {
+        // Set version to current date (YYYY.MM.DD format)
+        def now = new Date()
+        def currentDate = String.format('%tY.%tm.%td', now, now, now)
+        project.ext.releaseFullVersion = currentDate
+        
+        // Update build.properties file with new version
+        def buildPropsFile = file('build.properties')
+        def buildPropsContent = buildPropsFile.text
+        buildPropsContent = buildPropsContent.replaceAll(/release\.default\.version\s*=\s*.*/, "release.default.version = ${currentDate}")
+        buildPropsFile.text = buildPropsContent
+        
         println "*** Preparing base"
         println "* Name    : ${releaseName}"
-        println "* Version : ${releaseFullVersion}"
+        println "* Version : ${project.ext.releaseFullVersion}"
 
         // Download iconography
         def iconographyUrl = 'https://github.com/Bearsampp/sandbox/releases/download/iconography/Bearsampp-iconography.zip'
@@ -423,7 +432,6 @@ task prepareBase(dependsOn: initBuild) {
             'BIN_MEMCACHED_VERSION': binMemcachedVersion,
             'TOOL_BRUNO_VERSION': toolBrunoVersion,
             'TOOL_COMPOSER_VERSION': toolComposerVersion,
-            'TOOL_CONSOLEZ_VERSION': toolConsolezVersion,
             'TOOL_GHOSTSCRIPT_VERSION': toolGhostscriptVersion,
             'TOOL_GIT_VERSION': toolGitVersion,
             'TOOL_NGROK_VERSION': toolNgrokVersion,
@@ -451,6 +459,13 @@ task prepareBase(dependsOn: initBuild) {
         file("${releaseBasePath}/core/resources/version.dat").text = releaseFullVersion
         file("${releaseTmpPath}/version.dat").text = releaseFullVersion
         file("${projectDir}/core/resources/version.dat").text = releaseFullVersion
+        
+        // Update sandbox version.dat if it exists
+        def sandboxVersionFile = file("${projectDir}/../sandbox/core/resources/version.dat")
+        if (sandboxVersionFile.exists()) {
+            sandboxVersionFile.text = releaseFullVersion
+            println "Updated sandbox version.dat to ${releaseFullVersion}"
+        }
 
         println "Base preparation complete"
     }
@@ -519,7 +534,6 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
         println "Downloading tools..."
         downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
         downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
-        downloadModule(toolConsolezUrl, toolConsolezVersion, file("${releaseTarget}/tools/consolez"))
         downloadModule(toolGhostscriptUrl, toolGhostscriptVersion, file("${releaseTarget}/tools/ghostscript"))
         downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
         downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok"))
@@ -602,7 +616,6 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
         println "Downloading tools..."
         downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
         downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
-        downloadModule(toolConsolezUrl, toolConsolezVersion, file("${releaseTarget}/tools/consolez"))
         downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
         downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok"))
         downloadModule(toolPerlUrl, toolPerlVersion, file("${releaseTarget}/tools/perl"))
@@ -681,7 +694,6 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
         println "Downloading tools..."
         downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
         downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
-        downloadModule(toolConsolezUrl, toolConsolezVersion, file("${releaseTarget}/tools/consolez"))
 
         // Compress the release
         println "\n*** Compressing release..."
@@ -858,6 +870,24 @@ task release(dependsOn: [initBuild, prepareBase, buildFull, buildBasic, buildLit
     doLast {
         println "Release complete!"
         println "All build variants have been created."
+        
+        // Update sandbox bearsampp.exe after build is complete
+        def sandboxExePath = file("${projectDir}/../sandbox/bearsampp.exe")
+        def sourceExePath = file("${projectDir}/base/bearsampp.exe")
+        
+        if (sourceExePath.exists() && sandboxExePath.exists()) {
+            println "\n*** Updating sandbox bearsampp.exe ***"
+            copy {
+                from sourceExePath
+                into sandboxExePath.parentFile
+                overwrite true
+            }
+            println "Successfully updated sandbox bearsampp.exe"
+        } else if (!sourceExePath.exists()) {
+            println "WARNING: Source bearsampp.exe not found at ${sourceExePath}"
+        } else if (!sandboxExePath.exists()) {
+            println "WARNING: Sandbox bearsampp.exe not found at ${sandboxExePath}"
+        }
     }
 }
 
