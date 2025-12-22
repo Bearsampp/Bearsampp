@@ -1855,12 +1855,12 @@
       {
         "version": "18.1",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-18.1-2025.7.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "17.7",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-17.7-2025.7.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "17.5",
@@ -1890,7 +1890,7 @@
       {
         "version": "16.11",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-16.11-2025.7.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "16.9",
@@ -1920,7 +1920,7 @@
       {
         "version": "15.15",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-15.15-2025.7.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "15.13",
@@ -1960,7 +1960,7 @@
       {
         "version": "14.20",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-14.20-2025.7.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "14.18",
@@ -2005,7 +2005,7 @@
       {
         "version": "13.23",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-13.23-2025.7.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "13.21",
