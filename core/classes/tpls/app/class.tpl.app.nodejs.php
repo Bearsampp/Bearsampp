@@ -58,7 +58,7 @@ class TplAppNodejs
      */
     public static function getMenuNodejs()
     {
-        global $bearsamppBins, $bearsamppLang, $bearsamppTools;
+        global $bearsamppBins, $bearsamppLang, $bearsamppTools, $bearsamppRoot;
         $resultItems = $resultActions = '';
 
         $isEnabled = $bearsamppBins->getNodejs()->isEnable();
@@ -97,8 +97,11 @@ class TplAppNodejs
             // Console
             $resultItems .= TplAestan::getItemPowerShell(
                 $bearsamppLang->getValue(Lang::CONSOLE),
-                TplAestan::GLYPH_POWERSHELL,
-                $bearsamppTools->getPowerShell()->getTabTitleNodejs()
+                TplAestan::GLYPH_NODEJS,
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitleNodejs(),
+                $bearsamppRoot->getWwwPath(),
+                null
             ) . PHP_EOL;
 
             // Conf
