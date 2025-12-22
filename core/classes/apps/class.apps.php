@@ -38,6 +38,19 @@ class Apps
     }
 
     /**
+     * Reloads the configuration for all application modules.
+     *
+     * This method logs the reload process and iterates through all the apps to reload their configurations.
+     */
+    public function reload()
+    {
+        Util::logInfo('Reload apps');
+        foreach ($this->getAll() as $app) {
+            $app->reload();
+        }
+    }
+
+    /**
      * Updates the configuration for all application modules.
      *
      * This method logs the update process and iterates through all the tools to update their configurations.
