@@ -1194,13 +1194,13 @@
     "versions": [
       {
         "version": "25.2.1",
-        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-25.2.1-2025.11.23.7z",
-        "prerelease": false
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.12.30/bearsampp-nodejs-25.2.1-2025.12.30.7z",
+        "prerelease": true
       },
       {
         "version": "24.11.1",
-        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-24.11.1-2025.11.23.7z",
-        "prerelease": false
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.12.30/bearsampp-nodejs-24.11.1-2025.12.30.7z",
+        "prerelease": true
       },
       {
         "version": "24.6.0",
