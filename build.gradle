@@ -392,6 +392,12 @@ clean {
     doFirst {
         println "Cleaning build directory..."
         println "* Deleting: ${buildOutputPath}"
+        
+        // Purge exe folder before cleaning
+        def exeFolder = buildOutputPath
+        if (exeFolder.exists()) {
+            println "* Purging exe folder: ${exeFolder}"
+        }
     }
     doLast {
         if (buildOutputPath.exists()) {
