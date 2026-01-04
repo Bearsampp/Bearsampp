@@ -47,7 +47,7 @@ ext {
     // Binaries versions
     binApacheVersion = buildProps.getProperty('bin.apache.version')
     binMailpitVersion = buildProps.getProperty('bin.mailpit.version')
-    binMariaVersion = buildProps.getProperty('bin.maria.version')
+    binMariaVersion = buildProps.getProperty('bin.mariadb.version')
     binMemcachedVersion = buildProps.getProperty('bin.memcached.version')
     binMysqlVersion = buildProps.getProperty('bin.mysql.version')
     binNodejsVersion = buildProps.getProperty('bin.nodejs.version')
@@ -341,19 +341,34 @@ task updateVersions {
                         
                         def versions = releaseProps.stringPropertyNames().toList()
                         if (!versions.isEmpty()) {
-                            def latest = versions.sort { a, b ->
-                                def aParts = a.split('[.-]')
-                                def bParts = b.split('[.-]')
-                                for (int j = 0; j < Math.max(aParts.length, bParts.length); j++) {
-                                    def aVal = j < aParts.length ? (aParts[j].isInteger() ? aParts[j].toInteger() : 0) : 0
-                                    def bVal = j < bParts.length ? (bParts[j].isInteger() ? bParts[j].toInteger() : 0) : 0
-                                    if (aVal != bVal) return bVal - aVal
+                            // Filter out date-like versions (e.g., 2025.7.2.7) - versions starting with year > 2100
+                            def validVersions = versions.findAll { version ->
+                                def parts = version.split('[.-]')
+                                if (parts.length > 0 && parts[0].isInteger()) {
+                                    def firstPart = parts[0].toInteger()
+                                    // Exclude versions that start with a year (> 2100 or look like dates)
+                                    return firstPart < 100 || (firstPart >= 1000 && firstPart < 2000)
                                 }
-                                return 0
-                            }[0]
+                                return true
+                            }
                             
-                            updated = "${propName} = ${latest}"
-                            println "  [OK] Updated to ${latest}"
+                            if (!validVersions.isEmpty()) {
+                                def latest = validVersions.sort { a, b ->
+                                    def aParts = a.split('[.-]')
+                                    def bParts = b.split('[.-]')
+                                    for (int j = 0; j < Math.max(aParts.length, bParts.length); j++) {
+                                        def aVal = j < aParts.length ? (aParts[j].isInteger() ? aParts[j].toInteger() : 0) : 0
+                                        def bVal = j < bParts.length ? (bParts[j].isInteger() ? bParts[j].toInteger() : 0) : 0
+                                        if (aVal != bVal) return bVal - aVal
+                                    }
+                                    return 0
+                                }[0]
+                                
+                                updated = "${propName} = ${latest}"
+                                println "  [OK] Updated to ${latest}"
+                            } else {
+                                println "  [SKIP] No valid versions found (filtered out date-like versions)"
+                            }
                         }
                     } catch (Exception e) {
                         println "  [SKIP] ${e.message}"
