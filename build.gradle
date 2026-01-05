@@ -618,6 +618,13 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         file("${releaseTmpPath}/version.dat").text = releaseFullVersion
         file("${projectDir}/core/resources/version.dat").text = releaseFullVersion
 
+        // Create lastPath.dat file if it doesn't exist
+        def lastPathFile = file("${releaseBasePath}/core/resources/lastPath.dat")
+        if (!lastPathFile.exists()) {
+            lastPathFile.text = ''
+            println "Created lastPath.dat file"
+        }
+
         println "Base preparation complete"
     }
 }
