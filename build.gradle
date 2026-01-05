@@ -664,30 +664,30 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
         file("${releaseTarget}/bearsampp.conf").text = confContent
 
         println "Downloading binaries..."
-        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
-        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight"))
-        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
-        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb"))
-        downloadModule(binPostgresqlUrl, binPostgresqlVersion, file("${releaseTarget}/bin/postgresql"))
-        downloadModule(binMemcachedUrl, binMemcachedVersion, file("${releaseTarget}/bin/memcached"))
-        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
-        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
-        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
+        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache/apache${binApacheVersion}"))
+        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight/xlight${binXlightVersion}"))
+        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit/mailpit${binMailpitVersion}"))
+        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb/mariadb${binMariaVersion}"))
+        downloadModule(binPostgresqlUrl, binPostgresqlVersion, file("${releaseTarget}/bin/postgresql/postgresql${binPostgresqlVersion}"))
+        downloadModule(binMemcachedUrl, binMemcachedVersion, file("${releaseTarget}/bin/memcached/memcached${binMemcachedVersion}"))
+        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql/mysql${binMysqlVersion}"))
+        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs/nodejs${binNodejsVersion}"))
+        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php/php${binPhpVersion}"))
 
         println "Downloading applications..."
-        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin"))
-        downloadModule(appPhppgadminUrl, appPhppgadminVersion, file("${releaseTarget}/apps/phppgadmin"))
+        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin/phpmyadmin${appPhpmyadminVersion}"))
+        downloadModule(appPhppgadminUrl, appPhppgadminVersion, file("${releaseTarget}/apps/phppgadmin/phppgadmin${appPhppgadminVersion}"))
 
         println "Downloading tools..."
-        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
-        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
-        downloadModule(toolPowershellUrl, toolPowershellVersion, file("${releaseTarget}/tools/powershell"))
-        downloadModule(toolGhostscriptUrl, toolGhostscriptVersion, file("${releaseTarget}/tools/ghostscript"))
-        downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
-        downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok"))
-        downloadModule(toolPerlUrl, toolPerlVersion, file("${releaseTarget}/tools/perl"))
-        downloadModule(toolPythonUrl, toolPythonVersion, file("${releaseTarget}/tools/python"))
-        downloadModule(toolRubyUrl, toolRubyVersion, file("${releaseTarget}/tools/ruby"))
+        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno/bruno${toolBrunoVersion}"))
+        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer/composer${toolComposerVersion}"))
+        downloadModule(toolPowershellUrl, toolPowershellVersion, file("${releaseTarget}/tools/powershell/powershell${toolPowershellVersion}"))
+        downloadModule(toolGhostscriptUrl, toolGhostscriptVersion, file("${releaseTarget}/tools/ghostscript/ghostscript${toolGhostscriptVersion}"))
+        downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git/git${toolGitVersion}"))
+        downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok/ngrok${toolNgrokVersion}"))
+        downloadModule(toolPerlUrl, toolPerlVersion, file("${releaseTarget}/tools/perl/perl${toolPerlVersion}"))
+        downloadModule(toolPythonUrl, toolPythonVersion, file("${releaseTarget}/tools/python/python${toolPythonVersion}"))
+        downloadModule(toolRubyUrl, toolRubyVersion, file("${releaseTarget}/tools/ruby/ruby${toolRubyVersion}"))
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")
@@ -744,23 +744,23 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
         file("${releaseTarget}/bearsampp.conf").text = confContent
 
         println "Downloading binaries..."
-        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
-        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight"))
-        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
-        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb"))
-        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
-        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
-        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
+        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache/apache${binApacheVersion}"))
+        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight/xlight${binXlightVersion}"))
+        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit/mailpit${binMailpitVersion}"))
+        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb/mariadb${binMariaVersion}"))
+        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql/mysql${binMysqlVersion}"))
+        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs/nodejs${binNodejsVersion}"))
+        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php/php${binPhpVersion}"))
 
         println "Downloading applications..."
-        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin"))
+        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin/phpmyadmin${appPhpmyadminVersion}"))
 
         println "Downloading tools..."
-        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
-        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
-        downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
-        downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok"))
-        downloadModule(toolPerlUrl, toolPerlVersion, file("${releaseTarget}/tools/perl"))
+        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno/bruno${toolBrunoVersion}"))
+        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer/composer${toolComposerVersion}"))
+        downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git/git${toolGitVersion}"))
+        downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok/ngrok${toolNgrokVersion}"))
+        downloadModule(toolPerlUrl, toolPerlVersion, file("${releaseTarget}/tools/perl/perl${toolPerlVersion}"))
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")
@@ -818,18 +818,18 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
         file("${releaseTarget}/bearsampp.conf").text = confContent
 
         println "Downloading binaries..."
-        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
-        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
-        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
-        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
-        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
+        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache/apache${binApacheVersion}"))
+        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit/mailpit${binMailpitVersion}"))
+        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql/mysql${binMysqlVersion}"))
+        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs/nodejs${binNodejsVersion}"))
+        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php/php${binPhpVersion}"))
 
         println "Downloading applications..."
-        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin"))
+        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin/phpmyadmin${appPhpmyadminVersion}"))
 
         println "Downloading tools..."
-        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
-        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
+        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno/bruno${toolBrunoVersion}"))
+        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer/composer${toolComposerVersion}"))
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")
