@@ -667,9 +667,8 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             exclude 'ResourceHacker.exe', 'ResourceHacker.ini', 'fix-core-icon.bat', 'rcedit-x64.exe'
             exclude 'Bearsampp-iconography.zip', 'build.xml.reference'
             exclude 'buildFull.ini', 'buildBasic.ini', 'buildLite.ini'
-            exclude '.*', '**/.git', '**/.git/**', '**/.gitattributes', '**/.editorconfig'
-            // Note: .gitignore files are intentionally included to preserve directory structure
-            // Note: core/tmp/* is NOT excluded here so .gitignore is preserved
+            exclude '**/.git', '**/.git/**', '**/.gitattributes', '**/.editorconfig'
+            // .gitignore files ARE included to preserve directory structure
         }
 
         def opensslCfg = file("${projectDir}/core/libs/openssl/openssl.cfg")
@@ -688,11 +687,15 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             from file("${projectDir}/base")
             into releaseBasePath
             includeEmptyDirs = true
-            exclude 'logs/*'
-            exclude 'ssl/*'
-            exclude 'tmp/*'
-            exclude 'vhosts/*'
-            // Note: Changed from logs/** to logs/* to preserve .gitignore files
+            // Exclude files in these directories, but keep .gitignore
+            exclude { fileTreeElement ->
+                def path = fileTreeElement.relativePath.pathString
+                def name = fileTreeElement.file.name
+                // Exclude everything in these dirs EXCEPT .gitignore files
+                return (path.startsWith('logs/') || path.startsWith('ssl/') || 
+                        path.startsWith('tmp/') || path.startsWith('vhosts/')) && 
+                       name != '.gitignore'
+            }
         }
         
         // Ensure directories exist (they should already have .gitignore files from copy above)

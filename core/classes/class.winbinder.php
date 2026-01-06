@@ -140,8 +140,9 @@ class WinBinder
             $this->writeLog('TRACE: Attempting to show window with multiple methods');
             
             // Method 1: Try wb_send_message with WM_SHOWWINDOW (0x0018)
+            // Suppress warnings as wb_send_message may trigger "Low level functions disabled" warning
             if (function_exists('wb_send_message')) {
-                $this->callWinBinder('wb_send_message', array($window, 0x0018, 1, 0));
+                $this->callWinBinder('wb_send_message', array($window, 0x0018, 1, 0), true);
             }
             
             // Method 2: Try wb_set_visible if it exists
@@ -890,7 +891,8 @@ class WinBinder
      */
     public function setMaxLength($wbobject, $length)
     {
-        return $this->callWinBinder('wb_send_message', array($wbobject, 0x00c5, $length, 0));
+        // Suppress warnings as wb_send_message may trigger "Low level functions disabled" warning
+        return $this->callWinBinder('wb_send_message', array($wbobject, 0x00c5, $length, 0), true);
     }
 
     /**
