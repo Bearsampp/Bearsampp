@@ -241,6 +241,111 @@ def applyTokenFilters(File sourceFile, File destFile, Map<String, String> tokens
     destFile.text = content
 }
 
+// Helper function to comment out specific config lines
+def commentOutConfigLines(File confFile, List<String> linePrefixes) {
+    def lines = confFile.readLines()
+    def newLines = []
+    
+    lines.each { line ->
+        def shouldComment = false
+        linePrefixes.each { prefix ->
+            if (line.trim().startsWith(prefix) && !line.trim().startsWith(';')) {
+                shouldComment = true
+            }
+        }
+        if (shouldComment) {
+            newLines << ";${line}"
+        } else {
+            newLines << line
+        }
+    }
+    
+    confFile.text = newLines.join('\n')
+}
+
+// Helper function to load build configuration from INI file
+def loadBuildConfig(String configFile) {
+    def config = [bins: [:], apps: [:], tools: [:]]
+    def currentSection = null
+    
+    file(configFile).eachLine { line ->
+        line = line.trim()
+        
+        // Skip comments and empty lines
+        if (line.startsWith('#') || line.startsWith(';') || line.isEmpty()) {
+            return
+        }
+        
+        // Check for section headers
+        if (line.startsWith('[') && line.endsWith(']')) {
+            currentSection = line[1..-2]
+            return
+        }
+        
+        // Parse key=value pairs
+        if (currentSection && line.contains('=')) {
+            def parts = line.split('=', 2)
+            def key = parts[0].trim()
+            def value = parts[1].trim()
+            config[currentSection][key] = value
+        }
+    }
+    
+    return config
+}
+
+// Helper function to get modules to download based on config
+def getModulesToDownload(Map config, String type) {
+    def modules = []
+    config[type].each { module, enabled ->
+        if (enabled == '1') {
+            modules << module
+        }
+    }
+    return modules
+}
+
+// Helper function to get modules to comment out based on config
+def getModulesToComment(Map config) {
+    def toComment = []
+    
+    // Check bins
+    config.bins.each { module, enabled ->
+        if (enabled == '0') {
+            toComment << "${module}Version"
+            toComment << "${module}Enable"
+        }
+    }
+    
+    // Check apps
+    config.apps.each { module, enabled ->
+        if (enabled == '0') {
+            toComment << "${module}Version"
+        }
+    }
+    
+    // Check tools
+    config.tools.each { module, enabled ->
+        if (enabled == '0') {
+            toComment << "${module}Version"
+        }
+    }
+    
+    return toComment
+}
+
+// Helper function to get enable tokens based on config
+def getEnableTokens(Map config) {
+    def tokens = [:]
+    
+    config.bins.each { module, enabled ->
+        def tokenName = "BIN_${module.toUpperCase()}_ENABLE"
+        tokens[tokenName] = enabled
+    }
+    
+    return tokens
+}
+
 // Task: updateVersions
 task updateVersions {
     group = 'build setup'
@@ -749,6 +854,17 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
             confContent = confContent.replaceAll("@${token}@", value)
         }
         file("${releaseTarget}/bearsampp.conf").text = confContent
+        
+        // Comment out unused modules in basic build
+        def confFile = file("${releaseTarget}/bearsampp.conf")
+        commentOutConfigLines(confFile, [
+            'postgresqlVersion', 'postgresqlEnable',
+            'memcachedVersion', 'memcachedEnable',
+            'ghostscriptVersion',
+            'pythonVersion',
+            'rubyVersion',
+            'phppgadminVersion'
+        ])
 
         println "Downloading binaries..."
         downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
@@ -765,6 +881,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
         println "Downloading tools..."
         downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
         downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
+        downloadModule(toolPowershellUrl, toolPowershellVersion, file("${releaseTarget}/tools/powershell"))
         downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
         downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok"))
         downloadModule(toolPerlUrl, toolPerlVersion, file("${releaseTarget}/tools/perl"))
@@ -823,12 +940,27 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
             confContent = confContent.replaceAll("@${token}@", value)
         }
         file("${releaseTarget}/bearsampp.conf").text = confContent
+        
+        // Comment out unused modules in lite build
+        def confFile = file("${releaseTarget}/bearsampp.conf")
+        commentOutConfigLines(confFile, [
+            'mariadbVersion', 'mariadbEnable',
+            'postgresqlVersion', 'postgresqlEnable',
+            'nodejsVersion', 'nodejsEnable',
+            'xlightVersion', 'xlightEnable',
+            'memcachedVersion', 'memcachedEnable',
+            'ghostscriptVersion',
+            'ngrokVersion',
+            'perlVersion',
+            'pythonVersion',
+            'rubyVersion',
+            'phppgadminVersion'
+        ])
 
         println "Downloading binaries..."
         downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
         downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
         downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
-        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
         downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
 
         println "Downloading applications..."
@@ -837,6 +969,8 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
         println "Downloading tools..."
         downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
         downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
+        downloadModule(toolPowershellUrl, toolPowershellVersion, file("${releaseTarget}/tools/powershell"))
+        downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")
