@@ -41,24 +41,53 @@ class ActionLoading
     {
         global $bearsamppCore, $bearsamppLang, $bearsamppWinbinder;
 
+        Util::logTrace('ActionLoading: Constructor started');
+        
         $bearsamppWinbinder->reset();
+        Util::logTrace('ActionLoading: WinBinder reset complete');
+        
         $bearsamppCore->addLoadingPid(Win32Ps::getCurrentPid());
+        Util::logTrace('ActionLoading: Loading PID added: ' . Win32Ps::getCurrentPid());
 
         // Screen information
+        Util::logTrace('ActionLoading: Getting screen information');
         $screenArea = explode(' ', $bearsamppWinbinder->getSystemInfo(WinBinder::SYSINFO_WORKAREA));
+        Util::logTrace('ActionLoading: Screen area: ' . implode(', ', $screenArea));
         $screenWidth = intval($screenArea[2]);
         $screenHeight = intval($screenArea[3]);
         $xPos = $screenWidth - self::WINDOW_WIDTH;
         $yPos = $screenHeight - self::WINDOW_HEIGHT - 5;
+        Util::logTrace('ActionLoading: Window position calculated - x: ' . $xPos . ', y: ' . $yPos);
 
         // Create the window and progress bar
+        Util::logTrace('ActionLoading: Creating window with ToolDialog class');
         $this->wbWindow = $bearsamppWinbinder->createWindow(null, ToolDialog, null, $xPos, $yPos, self::WINDOW_WIDTH, self::WINDOW_HEIGHT, WBC_TOP, null);
-        $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::LOADING), 42, 2, 295, null, WBC_LEFT);
-        $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE, 42, 20, 290, 15);
+        
+        if ($this->wbWindow) {
+            Util::logTrace('ActionLoading: Window created successfully');
+            
+            Util::logTrace('ActionLoading: Creating label');
+            $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::LOADING), 42, 2, 295, null, WBC_LEFT);
+            
+            Util::logTrace('ActionLoading: Creating progress bar');
+            $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE, 42, 20, 290, 15);
+            
+            if ($this->wbProgressBar) {
+                Util::logTrace('ActionLoading: Progress bar created successfully');
+            } else {
+                Util::logTrace('ActionLoading: ERROR - Progress bar creation failed');
+            }
 
-        // Set the handler and start the main loop
-        $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processLoading', 10);
-        $bearsamppWinbinder->mainLoop();
+            // Set the handler and start the main loop
+            Util::logTrace('ActionLoading: Setting event handler');
+            $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processLoading', 10);
+            
+            Util::logTrace('ActionLoading: Starting main loop');
+            $bearsamppWinbinder->mainLoop();
+            Util::logTrace('ActionLoading: Main loop exited');
+        } else {
+            Util::logTrace('ActionLoading: ERROR - Window creation failed');
+        }
     }
 
     /**
@@ -70,13 +99,22 @@ class ActionLoading
     {
         global $bearsamppCore, $bearsamppWinbinder;
 
+        Util::logTrace('ActionLoading: incrProgressBar called with nb=' . $nb);
+        
         for ($i = 0; $i < $nb; $i++) {
+            Util::logTrace('ActionLoading: Incrementing progress bar iteration ' . ($i + 1));
             $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
-            $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/bearsampp.bmp', 4, 2, 32, 32);
+            
+            $imagePath = $bearsamppCore->getImagesPath() . '/bearsampp.bmp';
+            Util::logTrace('ActionLoading: Drawing image: ' . $imagePath);
+            $bearsamppWinbinder->drawImage($this->wbWindow, $imagePath, 4, 2, 32, 32);
         }
 
+        Util::logTrace('ActionLoading: Calling wait()');
         $bearsamppWinbinder->wait();
+        Util::logTrace('ActionLoading: Calling wait(window)');
         $bearsamppWinbinder->wait($this->wbWindow);
+        Util::logTrace('ActionLoading: incrProgressBar complete');
     }
 
     /**
@@ -92,8 +130,11 @@ class ActionLoading
     {
         global $bearsamppRoot, $bearsamppWinbinder;
 
+        Util::logTrace('ActionLoading: processLoading called - id: ' . $id);
+
         switch ($id) {
             case IDCLOSE:
+                Util::logTrace('ActionLoading: IDCLOSE event received, killing process');
                 Win32Ps::kill(Win32Ps::getCurrentPid());
                 break;
         }

@@ -96,7 +96,10 @@ class WinBinder
      */
     public function createAppWindow($caption, $width, $height, $style = null, $params = null): mixed
     {
-        return $this->createWindow(null, AppWindow, $caption, WBC_CENTER, WBC_CENTER, $width, $height, $style, $params);
+        $this->writeLog('TRACE: createAppWindow called - caption: ' . $caption . ', width: ' . $width . ', height: ' . $height);
+        $result = $this->createWindow(null, AppWindow, $caption, WBC_CENTER, WBC_CENTER, $width, $height, $style, $params);
+        $this->writeLog('TRACE: createAppWindow result: ' . ($result ? 'SUCCESS' : 'FAILED'));
+        return $result;
     }
 
     /**
@@ -114,18 +117,62 @@ class WinBinder
      *
      * @return mixed The created window object.
      */
-    public function createWindow($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style = null, $params = null): mixed
+    public function createWindow($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style = 0, $params = 0): mixed
     {
         global $bearsamppCore;
 
-        // Fix for PHP 8.2: Convert null to 0 for parent parameter
-        $parent = $parent === null ? 0 : $parent;
+        $this->writeLog('TRACE: createWindow called - wclass: ' . $wclass . ', caption: ' . $caption . ', pos: (' . $xPos . ',' . $yPos . '), size: (' . $width . 'x' . $height . ')');
+
+        // Fix for PHP 8.2+: Convert null to 0/empty for WinBinder parameters
+        $parent  = $parent  === null ? 0  : $parent;
+        $style   = $style   === null ? 0  : $style;
+        $params  = $params  === null ? 0  : $params;
+        $caption = $caption === null ? '' : $caption;
 
         $caption = empty($caption) ? $this->defaultTitle : $this->defaultTitle . ' - ' . $caption;
+        $this->writeLog('TRACE: Calling wb_create_window with caption: ' . $caption);
         $window  = $this->callWinBinder('wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params));
+        $this->writeLog('TRACE: wb_create_window returned: ' . ($window ? 'window handle' : 'NULL/FALSE'));
 
-        // Set tiny window icon
-        $this->setImage($window, $bearsamppCore->getIconsPath() . '/app.ico');
+        if ($window) {
+            // FIX for PHP 8.4.16 winbinder.dll: Explicitly show and paint the window
+            // The new winbinder.dll creates windows but doesn't show them by default
+            $this->writeLog('TRACE: Attempting to show window with multiple methods');
+            
+            // Method 1: Try wb_send_message with WM_SHOWWINDOW (0x0018)
+            if (function_exists('wb_send_message')) {
+                $this->callWinBinder('wb_send_message', array($window, 0x0018, 1, 0));
+            }
+            
+            // Method 2: Try wb_set_visible if it exists
+            if (function_exists('wb_set_visible')) {
+                $this->callWinBinder('wb_set_visible', array($window, true));
+            }
+            
+            // Method 3: Force window update and paint
+            $this->callWinBinder('wb_refresh', array($window, true));
+            
+            // Method 4: CRITICAL - Pump messages to force window to paint
+            // Without an active message loop, windows won't render
+            // Call wb_wait() multiple times to process paint messages
+            for ($i = 0; $i < 10; $i++) {
+                $this->callWinBinder('wb_wait', array($window, 10), true);
+            }
+            
+            $this->writeLog('TRACE: Window show and paint commands completed');
+            
+            // Set tiny window icon
+            $iconPath = $bearsamppCore->getIconsPath() . '/app.ico';
+            $this->writeLog('TRACE: Setting window icon: ' . $iconPath);
+            $this->setImage($window, $iconPath);
+            
+            // Pump messages again after setting icon
+            for ($i = 0; $i < 5; $i++) {
+                $this->callWinBinder('wb_wait', array($window, 10), true);
+            }
+        } else {
+            $this->writeLog('ERROR: Failed to create window - wb_create_window returned null/false');
+        }
 
         return $window;
     }
@@ -142,16 +189,35 @@ class WinBinder
     private function callWinBinder($function, $params = array(), $removeErrorHandler = false): mixed
     {
         $result = false;
-        if (function_exists($function)) {
-            if ($removeErrorHandler) {
-                // Suppress all errors for this call
-                $oldErrorLevel = error_reporting(0);
-                $result = @call_user_func_array($function, $params);
-                error_reporting($oldErrorLevel);
-            } else {
-                $result = call_user_func_array($function, $params);
-            }
+        
+        $this->writeLog('TRACE: callWinBinder - function: ' . $function . ', params: ' . json_encode($params));
+        
+        if (!function_exists($function)) {
+            $this->writeLog('ERROR: Function does not exist: ' . $function);
+            return false;
         }
+        
+        // Clear any previous errors
+        error_clear_last();
+        
+        if ($removeErrorHandler) {
+            // Suppress all errors for this call
+            $oldErrorLevel = error_reporting(0);
+            $result = @call_user_func_array($function, $params);
+            error_reporting($oldErrorLevel);
+        } else {
+            $result = call_user_func_array($function, $params);
+        }
+        
+        // Check for errors
+        $lastError = error_get_last();
+        if ($lastError && $lastError['type'] & (E_ERROR | E_WARNING | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR)) {
+            $this->writeLog('ERROR: ' . $function . ' triggered error: ' . $lastError['message']);
+        }
+        
+        $resultType = gettype($result);
+        $resultValue = is_bool($result) ? ($result ? 'true' : 'false') : (is_scalar($result) ? $result : $resultType);
+        $this->writeLog('TRACE: callWinBinder - result type: ' . $resultType . ', value: ' . $resultValue);
 
         return $result;
     }
@@ -194,8 +260,14 @@ class WinBinder
      */
     public function createNakedWindow($caption, $width, $height, $style = null, $params = null): mixed
     {
+        $this->writeLog('TRACE: createNakedWindow called - caption: ' . $caption . ', size: (' . $width . 'x' . $height . ')');
         $window = $this->createWindow(null, NakedWindow, $caption, WBC_CENTER, WBC_CENTER, $width, $height, $style, $params);
-        $this->setArea($window, $width, $height);
+        if ($window) {
+            $this->writeLog('TRACE: Setting area for naked window');
+            $this->setArea($window, $width, $height);
+        } else {
+            $this->writeLog('ERROR: Failed to create naked window');
+        }
 
         return $window;
     }
@@ -307,7 +379,7 @@ class WinBinder
      */
     private function processMessages(): void
     {
-        $this->callWinBinder('wb_wait', array(null, 1), true);
+        $this->callWinBinder('wb_wait', array(0, 1), true);
     }
 
     /**
@@ -352,7 +424,10 @@ class WinBinder
      */
     public function mainLoop(): mixed
     {
-        return $this->callWinBinder('wb_main_loop');
+        $this->writeLog('TRACE: Entering mainLoop');
+        $result = $this->callWinBinder('wb_main_loop');
+        $this->writeLog('TRACE: mainLoop exited with result: ' . ($result ? 'SUCCESS' : 'FAILED'));
+        return $result;
     }
 
     /**
@@ -376,7 +451,10 @@ class WinBinder
      */
     public function getSystemInfo($info): mixed
     {
-        return $this->callWinBinder('wb_get_system_info', array($info));
+        $this->writeLog('TRACE: getSystemInfo called - info type: ' . $info);
+        $result = $this->callWinBinder('wb_get_system_info', array($info));
+        $this->writeLog('TRACE: getSystemInfo result: ' . ($result ? $result : 'FAILED'));
+        return $result;
     }
 
     /**
@@ -393,9 +471,34 @@ class WinBinder
      */
     public function drawImage($wbobject, $path, $xPos = 0, $yPos = 0, $width = 0, $height = 0): mixed
     {
-        $image = $this->callWinBinder('wb_load_image', array($path));
+        $this->writeLog('TRACE: drawImage called - path: ' . $path . ', pos: (' . $xPos . ',' . $yPos . '), size: (' . $width . 'x' . $height . ')');
+        
+        if (!$wbobject) {
+            $this->writeLog('ERROR: drawImage - wbobject is null/false');
+            return false;
+        }
+        
+        if (empty($path)) {
+            $this->writeLog('ERROR: drawImage - path is empty');
+            return false;
+        }
+        
+        if (!file_exists($path)) {
+            $this->writeLog('ERROR: drawImage - file does not exist: ' . $path);
+            return false;
+        }
 
-        return $this->callWinBinder('wb_draw_image', array($wbobject, $image, $xPos, $yPos, $width, $height));
+        $this->writeLog('TRACE: Loading image with wb_load_image');
+        $image = $this->callWinBinder('wb_load_image', array($path));
+        if (!$image) {
+            $this->writeLog('ERROR: wb_load_image failed for: ' . $path);
+            return false;
+        }
+        $this->writeLog('TRACE: Image loaded successfully, calling wb_draw_image');
+
+        $result = $this->callWinBinder('wb_draw_image', array($wbobject, $image, $xPos, $yPos, $width, $height));
+        $this->writeLog('TRACE: wb_draw_image result: ' . ($result ? 'SUCCESS' : 'FAILED'));
+        return $result;
     }
 
     /**
@@ -411,11 +514,12 @@ class WinBinder
      *
      * @return mixed The result of the draw operation.
      */
-    public function drawText($parent, $caption, $xPos, $yPos, $width = null, $height = null, $font = null)
+    public function drawText($parent, $caption, $xPos, $yPos, $width = null, $height = null, $font = 0)
     {
         $caption = str_replace(self::NEW_LINE, PHP_EOL, $caption);
         $width   = $width == null ? 120 : $width;
         $height  = $height == null ? 25 : $height;
+        $font    = $font == null ? 0 : $font;
 
         return $this->callWinBinder('wb_draw_text', array($parent, $caption, $xPos, $yPos, $width, $height, $font));
     }
@@ -466,8 +570,13 @@ class WinBinder
      *
      * @return mixed The created font object.
      */
-    public function createFont($fontName, $size = null, $color = null, $style = null)
+    public function createFont($fontName, $size = 0, $color = 0, $style = 0)
     {
+        // Fix for PHP 8.2+: Convert null to 0 for numeric WinBinder parameters
+        $size  = $size  === null ? 0 : $size;
+        $color = $color === null ? 0 : $color;
+        $style = $style === null ? 0 : $style;
+
         return $this->callWinBinder('wb_create_font', array($fontName, $size, $color, $style));
     }
 
@@ -478,8 +587,11 @@ class WinBinder
      *
      * @return mixed The result of the wait operation.
      */
-    public function wait($wbobject = null)
+    public function wait($wbobject = 0)
     {
+        // Fix for PHP 8.2+: Convert null to 0 for WinBinder parameter
+        $wbobject = $wbobject === null ? 0 : $wbobject;
+
         return $this->callWinBinder('wb_wait', array($wbobject), true);
     }
 
@@ -523,13 +635,18 @@ class WinBinder
      */
     public function setHandler($wbobject, $classCallback, $methodCallback, $launchTimer = null)
     {
+        $this->writeLog('TRACE: setHandler called - method: ' . $methodCallback . ', timer: ' . ($launchTimer ? $launchTimer : 'none'));
+        
         if ($launchTimer != null) {
+            $this->writeLog('TRACE: Creating timer with interval: ' . $launchTimer);
             $launchTimer = $this->createTimer($wbobject, $launchTimer);
         }
 
         $this->callback[$wbobject] = array($classCallback, $methodCallback, $launchTimer);
 
-        return $this->callWinBinder('wb_set_handler', array($wbobject, '__winbinderEventHandler'));
+        $result = $this->callWinBinder('wb_set_handler', array($wbobject, '__winbinderEventHandler'));
+        $this->writeLog('TRACE: wb_set_handler result: ' . ($result ? 'SUCCESS' : 'FAILED'));
+        return $result;
     }
 
     /**
@@ -648,6 +765,7 @@ class WinBinder
      */
     public function sysDlgPath($parent, $title, $path = null)
     {
+        $parent = $parent === null ? 0 : $parent;
         return $this->callWinBinder('wb_sys_dlg_path', array($parent, $title, $path));
     }
 
@@ -682,11 +800,14 @@ class WinBinder
      */
     public function createLabel($parent, $caption, $xPos, $yPos, $width = null, $height = null, $style = null, $params = null)
     {
+        $this->writeLog('TRACE: createLabel called - caption: ' . $caption . ', pos: (' . $xPos . ',' . $yPos . ')');
         $caption = str_replace(self::NEW_LINE, PHP_EOL, $caption);
         $width   = $width == null ? 120 : $width;
         $height  = $height == null ? 25 : $height;
 
-        return $this->createControl($parent, Label, $caption, $xPos, $yPos, $width, $height, $style, $params);
+        $result = $this->createControl($parent, Label, $caption, $xPos, $yPos, $width, $height, $style, $params);
+        $this->writeLog('TRACE: createLabel result: ' . ($result ? 'SUCCESS' : 'FAILED'));
+        return $result;
     }
 
     /**
@@ -704,9 +825,15 @@ class WinBinder
      *
      * @return array An array containing the control ID and object.
      */
-    public function createControl($parent, $ctlClass, $caption, $xPos, $yPos, $width, $height, $style = null, $params = null)
+    public function createControl($parent, $ctlClass, $caption, $xPos, $yPos, $width, $height, $style = 0, $params = 0)
     {
         $this->countCtrls++;
+
+        // Fix for PHP 8.2+: Convert null to 0/empty for WinBinder parameters
+        $parent  = $parent  === null ? 0  : $parent;
+        $style   = $style   === null ? 0  : $style;
+        $params  = $params  === null ? 0  : $params;
+        $caption = $caption === null ? '' : $caption;
 
         return array(
             self::CTRL_ID  => $this->countCtrls,
@@ -891,12 +1018,19 @@ class WinBinder
     {
         global $bearsamppLang;
 
+        $this->writeLog('TRACE: createProgressBar called - max: ' . $max . ', pos: (' . $xPos . ',' . $yPos . ')');
         $width       = $width == null ? 200 : $width;
         $height      = $height == null ? 15 : $height;
         $progressBar = $this->createControl($parent, Gauge, $bearsamppLang->getValue(Lang::LOADING), $xPos, $yPos, $width, $height, $style, $params);
 
-        $this->setRange($progressBar[self::CTRL_OBJ], 0, $max);
-        $this->gauge[$progressBar[self::CTRL_OBJ]] = 0;
+        if ($progressBar && isset($progressBar[self::CTRL_OBJ])) {
+            $this->writeLog('TRACE: Setting progress bar range: 0 to ' . $max);
+            $this->setRange($progressBar[self::CTRL_OBJ], 0, $max);
+            $this->gauge[$progressBar[self::CTRL_OBJ]] = 0;
+            $this->writeLog('TRACE: Progress bar created successfully');
+        } else {
+            $this->writeLog('ERROR: Failed to create progress bar control');
+        }
 
         return $progressBar;
     }

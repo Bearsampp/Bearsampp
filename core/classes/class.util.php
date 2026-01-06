@@ -935,7 +935,7 @@ class Util
     public static function startLoading()
     {
         global $bearsamppCore, $bearsamppWinbinder;
-        $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), Core::isRoot_FILE . ' ' . Action::LOADING);
+        $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), $bearsamppCore->getisRootFilePath() . ' ' . Action::LOADING);
     }
 
     /**
@@ -1843,9 +1843,14 @@ class Util
     {
         $result = array();
 
+        // Return empty array if path is null or empty
+        if (empty($path)) {
+            return $result;
+        }
+
         $handle = @opendir($path);
         if (!$handle) {
-            return false;
+            return $result;
         }
 
         while (false !== ($file = readdir($handle))) {

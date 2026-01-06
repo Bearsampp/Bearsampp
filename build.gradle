@@ -241,6 +241,37 @@ def applyTokenFilters(File sourceFile, File destFile, Map<String, String> tokens
     destFile.text = content
 }
 
+// Helper function to safely delete a directory with retry logic
+def safeDelete(File dir) {
+    if (!dir.exists()) {
+        return true
+    }
+    
+    def maxRetries = 5
+    def retryCount = 0
+    def deleted = false
+    
+    while (retryCount < maxRetries && !deleted) {
+        try {
+            delete dir
+            deleted = true
+        } catch (Exception e) {
+            retryCount++
+            if (retryCount < maxRetries) {
+                println "* Retry ${retryCount}/${maxRetries}: Waiting for file locks to release..."
+                Thread.sleep(2000)
+            } else {
+                println "* WARNING: Could not delete directory after ${maxRetries} attempts: ${dir}"
+                println "* Error: ${e.message}"
+                println "* Please close any applications that may have files open in this directory."
+                return false
+            }
+        }
+    }
+    
+    return deleted
+}
+
 // Helper function to comment out specific config lines
 def commentOutConfigLines(File confFile, List<String> linePrefixes) {
     def lines = confFile.readLines()
@@ -309,22 +340,16 @@ def getModulesToDownload(Map config, String type) {
 def getModulesToComment(Map config) {
     def toComment = []
     
-    // Check bins
-    config.bins.each { module, enabled ->
-        if (enabled == '0') {
-            toComment << "${module}Version"
-            toComment << "${module}Enable"
-        }
-    }
+    // For bins, DON'T comment out - they are handled dynamically by the enable=0/1 flag
+    // The application checks the enable flag to determine if a bin should be used
     
-    // Check apps
+    // For apps and tools, comment out version lines when disabled (they don't have enable flags)
     config.apps.each { module, enabled ->
         if (enabled == '0') {
             toComment << "${module}Version"
         }
     }
     
-    // Check tools
     config.tools.each { module, enabled ->
         if (enabled == '0') {
             toComment << "${module}Version"
@@ -635,13 +660,16 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             from projectDir
             into releaseBasePath
             exclude '.dev/**', '.github/**', '.idea/**', '.settings/**', '.gradle/**', '.gradle-docs/**', '.qodo/**'
-            exclude 'giscus.json', 'base/**', 'bin/**', 'core/tmp/*'
+            exclude 'giscus.json', 'base/**', 'bin/**'
             exclude 'core/.editorconfig', 'build.properties', 'build.xml', 'build.gradle', 'settings.gradle'
             exclude 'gradle/**', 'gradlew', 'gradlew.bat'
             exclude '*.iml', '*.launch'
             exclude 'ResourceHacker.exe', 'ResourceHacker.ini', 'fix-core-icon.bat', 'rcedit-x64.exe'
             exclude 'Bearsampp-iconography.zip', 'build.xml.reference'
-            exclude '.*', '**/.git', '**/.git/**', '**/.gitignore', '**/.gitattributes', '**/.editorconfig'
+            exclude 'buildFull.ini', 'buildBasic.ini', 'buildLite.ini'
+            exclude '.*', '**/.git', '**/.git/**', '**/.gitattributes', '**/.editorconfig'
+            // Note: .gitignore files are intentionally included to preserve directory structure
+            // Note: core/tmp/* is NOT excluded here so .gitignore is preserved
         }
 
         def opensslCfg = file("${projectDir}/core/libs/openssl/openssl.cfg")
@@ -660,12 +688,14 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             from file("${projectDir}/base")
             into releaseBasePath
             includeEmptyDirs = true
-            exclude 'logs/**'
-            exclude 'ssl/**'
-            exclude 'tmp/**'
-            exclude 'vhosts/**'
+            exclude 'logs/*'
+            exclude 'ssl/*'
+            exclude 'tmp/*'
+            exclude 'vhosts/*'
+            // Note: Changed from logs/** to logs/* to preserve .gitignore files
         }
         
+        // Ensure directories exist (they should already have .gitignore files from copy above)
         file("${releaseBasePath}/logs").mkdirs()
         file("${releaseBasePath}/ssl").mkdirs()
         file("${releaseBasePath}/vhosts").mkdirs()
@@ -729,6 +759,17 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             lastPathFile.text = ''
             println "Created lastPath.dat file"
         }
+        
+        // Clean up any logs that may have been created during build process (but keep .gitignore)
+        def logsDir = file("${releaseBasePath}/logs")
+        if (logsDir.exists()) {
+            logsDir.listFiles().each { logFile ->
+                if (logFile.isFile() && logFile.name != '.gitignore') {
+                    logFile.delete()
+                    println "Removed build-time log: ${logFile.name}"
+                }
+            }
+        }
 
         println "Base preparation complete"
     }
@@ -748,7 +789,7 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
         println "* Version : ${releaseFullVersion}"
         println "* Format  : ${releaseFormat}"
 
-        delete releaseTarget
+        safeDelete(releaseTarget)
         releaseTarget.mkdirs()
 
         copy {
@@ -828,7 +869,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
         println "* Version : ${releaseFullVersion}"
         println "* Format  : ${releaseFormat}"
 
-        delete releaseTarget
+        safeDelete(releaseTarget)
         releaseTarget.mkdirs()
 
         copy {
@@ -837,17 +878,11 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
             includeEmptyDirs = true
         }
 
-        def basicTokens = [
-            'BIN_APACHE_ENABLE': '1',
-            'BIN_PHP_ENABLE': '1',
-            'BIN_MYSQL_ENABLE': '1',
-            'BIN_MARIADB_ENABLE': '1',
-            'BIN_POSTGRESQL_ENABLE': '0',
-            'BIN_NODEJS_ENABLE': '1',
-            'BIN_XLIGHT_ENABLE': '1',
-            'BIN_MAILPIT_ENABLE': '1',
-            'BIN_MEMCACHED_ENABLE': '0'
-        ]
+        // Load configuration from buildBasic.ini
+        def buildConfig = loadBuildConfig("${projectDir}/buildBasic.ini")
+        
+        // Generate enable tokens from config
+        def basicTokens = getEnableTokens(buildConfig)
 
         def confContent = file("${releaseBasePath}/bearsampp.conf").text
         basicTokens.each { token, value ->
@@ -855,16 +890,12 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
         }
         file("${releaseTarget}/bearsampp.conf").text = confContent
         
-        // Comment out unused modules in basic build
+        // Comment out unused apps and tools (bins are handled by enable flags)
         def confFile = file("${releaseTarget}/bearsampp.conf")
-        commentOutConfigLines(confFile, [
-            'postgresqlVersion', 'postgresqlEnable',
-            'memcachedVersion', 'memcachedEnable',
-            'ghostscriptVersion',
-            'pythonVersion',
-            'rubyVersion',
-            'phppgadminVersion'
-        ])
+        def toComment = getModulesToComment(buildConfig)
+        if (!toComment.isEmpty()) {
+            commentOutConfigLines(confFile, toComment)
+        }
 
         println "Downloading binaries..."
         downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
@@ -913,7 +944,7 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
         println "* Version : ${releaseFullVersion}"
         println "* Format  : ${releaseFormat}"
 
-        delete releaseTarget
+        safeDelete(releaseTarget)
         releaseTarget.mkdirs()
 
         copy {
@@ -922,18 +953,11 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
             includeEmptyDirs = true
         }
 
-        def liteTokens = [
-            'BIN_APACHE_ENABLE': '1',
-            'BIN_PHP_ENABLE': '1',
-            'BIN_MYSQL_ENABLE': '1',
-            'BIN_MARIADB_ENABLE': '0',
-            'BIN_POSTGRESQL_ENABLE': '0',
-            'BIN_NODEJS_ENABLE': '0',
-            'BIN_FILEZILLA_ENABLE': '0',
-            'BIN_XLIGHT_ENABLE': '0',
-            'BIN_MAILPIT_ENABLE': '1',
-            'BIN_MEMCACHED_ENABLE': '0'
-        ]
+        // Load configuration from buildLite.ini
+        def buildConfig = loadBuildConfig("${projectDir}/buildLite.ini")
+        
+        // Generate enable tokens from config
+        def liteTokens = getEnableTokens(buildConfig)
 
         def confContent = file("${releaseBasePath}/bearsampp.conf").text
         liteTokens.each { token, value ->
@@ -941,36 +965,59 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
         }
         file("${releaseTarget}/bearsampp.conf").text = confContent
         
-        // Comment out unused modules in lite build
+        // Comment out unused apps and tools (bins are handled by enable flags)
         def confFile = file("${releaseTarget}/bearsampp.conf")
-        commentOutConfigLines(confFile, [
-            'mariadbVersion', 'mariadbEnable',
-            'postgresqlVersion', 'postgresqlEnable',
-            'nodejsVersion', 'nodejsEnable',
-            'xlightVersion', 'xlightEnable',
-            'memcachedVersion', 'memcachedEnable',
-            'ghostscriptVersion',
-            'ngrokVersion',
-            'perlVersion',
-            'pythonVersion',
-            'rubyVersion',
-            'phppgadminVersion'
-        ])
+        def toComment = getModulesToComment(buildConfig)
+        if (!toComment.isEmpty()) {
+            commentOutConfigLines(confFile, toComment)
+        }
 
-        println "Downloading binaries..."
+        // Download ALL bins (even disabled ones) because the app needs their config files
+        // Only download enabled apps and tools
+        def appsToDownload = getModulesToDownload(buildConfig, 'apps')
+        def toolsToDownload = getModulesToDownload(buildConfig, 'tools')
+
+        println "Downloading binaries (all bins needed for config files)..."
         downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
-        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
-        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
         downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
+        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
+        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb"))
+        downloadModule(binPostgresqlUrl, binPostgresqlVersion, file("${releaseTarget}/bin/postgresql"))
+        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
+        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight"))
+        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
+        downloadModule(binMemcachedUrl, binMemcachedVersion, file("${releaseTarget}/bin/memcached"))
 
-        println "Downloading applications..."
-        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin"))
+        println "Downloading applications (only enabled)..."
+        def appUrls = [
+            phpmyadmin: [url: appPhpmyadminUrl, version: appPhpmyadminVersion],
+            phppgadmin: [url: appPhppgadminUrl, version: appPhppgadminVersion]
+        ]
+        appsToDownload.each { moduleName ->
+            def moduleInfo = appUrls[moduleName]
+            if (moduleInfo) {
+                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/apps/${moduleName}"))
+            }
+        }
 
-        println "Downloading tools..."
-        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
-        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
-        downloadModule(toolPowershellUrl, toolPowershellVersion, file("${releaseTarget}/tools/powershell"))
-        downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
+        println "Downloading tools (only enabled)..."
+        def toolUrls = [
+            bruno: [url: toolBrunoUrl, version: toolBrunoVersion],
+            composer: [url: toolComposerUrl, version: toolComposerVersion],
+            powershell: [url: toolPowershellUrl, version: toolPowershellVersion],
+            ghostscript: [url: toolGhostscriptUrl, version: toolGhostscriptVersion],
+            git: [url: toolGitUrl, version: toolGitVersion],
+            ngrok: [url: toolNgrokUrl, version: toolNgrokVersion],
+            perl: [url: toolPerlUrl, version: toolPerlVersion],
+            python: [url: toolPythonUrl, version: toolPythonVersion],
+            ruby: [url: toolRubyUrl, version: toolRubyVersion]
+        ]
+        toolsToDownload.each { moduleName ->
+            def moduleInfo = toolUrls[moduleName]
+            if (moduleInfo) {
+                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/tools/${moduleName}"))
+            }
+        }
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")

@@ -48,6 +48,14 @@ abstract class Module
 
         $this->id = empty($id) ? $this->id : $id;
         $this->type = empty($type) ? $this->type : $type;
+        
+        // If version is null or empty, the module is not configured - skip initialization
+        if (empty($this->version)) {
+            $this->enable = false;
+            $this->bearsamppConfRaw = false; // Initialize to false so child classes can check it
+            return;
+        }
+        
         $mainPath = 'N/A';
 
         switch ($this->type) {

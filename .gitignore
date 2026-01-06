@@ -24,3 +24,6 @@
 
 # Gradle
 .gradle/
+
+# ResourceHacker auto-generated config
+ResourceHacker.ini

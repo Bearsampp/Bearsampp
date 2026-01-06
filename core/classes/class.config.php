@@ -50,19 +50,28 @@ class Config
         global $bearsamppRoot;
 
         // Set current timezone to match whats in .conf
-        $this->raw = parse_ini_file($bearsamppRoot->getConfigFilePath());
-        date_default_timezone_set($this->getTimezone());
+        $this->raw = @parse_ini_file($bearsamppRoot->getConfigFilePath());
+        
+        // If config file doesn't exist or is invalid, initialize with empty array
+        if ($this->raw === false) {
+            $this->raw = array();
+        }
+        
+        $timezone = $this->getTimezone();
+        if (!empty($timezone)) {
+            date_default_timezone_set($timezone);
+        }
     }
 
     /**
      * Retrieves the raw configuration value for the specified key.
      *
      * @param string $key The configuration key.
-     * @return mixed The configuration value.
+     * @return mixed The configuration value, or null if the key doesn't exist.
      */
     public function getRaw($key)
     {
-        return $this->raw[$key];
+        return isset($this->raw[$key]) ? $this->raw[$key] : null;
     }
 
     /**
@@ -103,7 +112,7 @@ class Config
      */
     public function getLang()
     {
-        return $this->raw[self::CFG_LANG];
+        return isset($this->raw[self::CFG_LANG]) ? $this->raw[self::CFG_LANG] : '';
     }
 
     /**
@@ -113,7 +122,7 @@ class Config
      */
     public function getDefaultLang()
     {
-        return $this->raw[self::CFG_DEFAULT_LANG];
+        return isset($this->raw[self::CFG_DEFAULT_LANG]) ? $this->raw[self::CFG_DEFAULT_LANG] : '';
     }
 
     /**
@@ -123,7 +132,7 @@ class Config
      */
     public function getTimezone()
     {
-        return $this->raw[self::CFG_TIMEZONE];
+        return isset($this->raw[self::CFG_TIMEZONE]) ? $this->raw[self::CFG_TIMEZONE] : '';
     }
 
     /**
@@ -133,7 +142,7 @@ class Config
      */
     public function getDownloadId()
     {
-        return $this->raw[self::DOWNLOAD_ID];
+        return isset($this->raw[self::DOWNLOAD_ID]) ? $this->raw[self::DOWNLOAD_ID] : '';
     }
 
     /**
@@ -143,7 +152,7 @@ class Config
      */
     public function isOnline()
     {
-        return $this->raw[self::CFG_ONLINE] == self::ENABLED;
+        return isset($this->raw[self::CFG_ONLINE]) && $this->raw[self::CFG_ONLINE] == self::ENABLED;
     }
 
     /**
@@ -153,7 +162,7 @@ class Config
      */
     public function isLaunchStartup()
     {
-        return $this->raw[self::CFG_LAUNCH_STARTUP] == self::ENABLED;
+        return isset($this->raw[self::CFG_LAUNCH_STARTUP]) && $this->raw[self::CFG_LAUNCH_STARTUP] == self::ENABLED;
     }
 
     /**
@@ -163,7 +172,7 @@ class Config
      */
     public function getBrowser()
     {
-        return $this->raw[self::CFG_BROWSER];
+        return isset($this->raw[self::CFG_BROWSER]) ? $this->raw[self::CFG_BROWSER] : '';
     }
 
     /**
@@ -173,7 +182,7 @@ class Config
      */
     public function getHostname()
     {
-        return $this->raw[self::CFG_HOSTNAME];
+        return isset($this->raw[self::CFG_HOSTNAME]) ? $this->raw[self::CFG_HOSTNAME] : '';
     }
 
     /**
@@ -183,7 +192,7 @@ class Config
      */
     public function getScriptsTimeout()
     {
-        return intval($this->raw[self::CFG_SCRIPTS_TIMEOUT]);
+        return isset($this->raw[self::CFG_SCRIPTS_TIMEOUT]) ? intval($this->raw[self::CFG_SCRIPTS_TIMEOUT]) : 0;
     }
 
     /**
@@ -193,7 +202,7 @@ class Config
      */
     public function getNotepad()
     {
-        return $this->raw[self::CFG_NOTEPAD];
+        return isset($this->raw[self::CFG_NOTEPAD]) ? $this->raw[self::CFG_NOTEPAD] : '';
     }
 
     /**
@@ -203,7 +212,7 @@ class Config
      */
     public function getLogsVerbose()
     {
-        return intval($this->raw[self::CFG_LOGS_VERBOSE]);
+        return isset($this->raw[self::CFG_LOGS_VERBOSE]) ? intval($this->raw[self::CFG_LOGS_VERBOSE]) : 0;
     }
 
     /**
@@ -213,7 +222,7 @@ class Config
      */
     public function getMaxLogsArchives()
     {
-        return intval($this->raw[self::CFG_MAX_LOGS_ARCHIVES]);
+        return isset($this->raw[self::CFG_MAX_LOGS_ARCHIVES]) ? intval($this->raw[self::CFG_MAX_LOGS_ARCHIVES]) : 0;
     }
 
     /**
