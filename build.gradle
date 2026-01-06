@@ -539,39 +539,42 @@ task updateVersions {
 clean {
     doFirst {
         println "Cleaning build directory..."
-        println "* Deleting: ${buildOutputPath}"
-        
-        // Purge exe folder before cleaning
-        def exeFolder = buildOutputPath
-        if (exeFolder.exists()) {
-            println "* Purging exe folder: ${exeFolder}"
-        }
+        println "* Build output path: ${buildOutputPath}"
+        println "* Absolute path: ${buildOutputPath.absolutePath}"
     }
     doLast {
         if (buildOutputPath.exists()) {
-            def maxRetries = 5
-            def retryCount = 0
-            def deleted = false
+            println "* Deleting build directory: ${buildOutputPath.absolutePath}"
             
-            while (retryCount < maxRetries && !deleted) {
-                try {
-                    delete buildOutputPath
-                    deleted = true
-                    println "* Build directory cleaned successfully"
-                } catch (Exception e) {
-                    retryCount++
-                    if (retryCount < maxRetries) {
-                        println "* Retry ${retryCount}/${maxRetries}: Waiting for file locks to release..."
-                        Thread.sleep(1000)
-                    } else {
-                        println "* WARNING: Could not fully clean directory after ${maxRetries} attempts"
-                        println "* Error: ${e.message}"
-                        println "* Some files may still be locked. Please close any applications using files in this directory."
-                    }
-                }
+            // Use safeDelete helper function with retry logic
+            def deleted = safeDelete(buildOutputPath)
+            
+            if (deleted) {
+                println "* Build directory cleaned successfully"
+            } else {
+                println "* WARNING: Could not fully clean build directory"
+                println "* Please close any applications using files in: ${buildOutputPath.absolutePath}"
+                println "* Then run 'gradle clean' again"
             }
         } else {
-            println "* Build directory already clean"
+            println "* Build directory does not exist (already clean)"
+        }
+        
+        // Also clean any temporary build artifacts in project directory
+        def projectTempDirs = [
+            file("${projectDir}/.gradle"),
+            file("${projectDir}/build")
+        ]
+        
+        projectTempDirs.each { tempDir ->
+            if (tempDir.exists() && tempDir != buildOutputPath) {
+                println "* Cleaning project temp directory: ${tempDir.name}"
+                try {
+                    delete tempDir
+                } catch (Exception e) {
+                    println "  WARNING: Could not delete ${tempDir.name}: ${e.message}"
+                }
+            }
         }
     }
 }
@@ -659,16 +662,63 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         copy {
             from projectDir
             into releaseBasePath
-            exclude '.dev/**', '.github/**', '.idea/**', '.settings/**', '.gradle/**', '.gradle-docs/**', '.qodo/**'
-            exclude 'giscus.json', 'base/**', 'bin/**'
-            exclude 'core/.editorconfig', 'build.properties', 'build.xml', 'build.gradle', 'settings.gradle'
-            exclude 'gradle/**', 'gradlew', 'gradlew.bat'
-            exclude '*.iml', '*.launch'
-            exclude 'ResourceHacker.exe', 'ResourceHacker.ini', 'fix-core-icon.bat', 'rcedit-x64.exe'
-            exclude 'Bearsampp-iconography.zip', 'build.xml.reference'
-            exclude 'buildFull.ini', 'buildBasic.ini', 'buildLite.ini'
-            exclude '**/.git', '**/.git/**', '**/.gitattributes', '**/.editorconfig'
-            // .gitignore files ARE included to preserve directory structure
+            includeEmptyDirs = true
+            exclude { fileTreeElement ->
+                def path = fileTreeElement.relativePath.pathString
+                def name = fileTreeElement.file.name
+                
+                // FIRST: NEVER EVER exclude .gitignore files - this takes priority over everything
+                if (name == '.gitignore') {
+                    return false
+                }
+                
+                // SECOND: NEVER exclude files from these directories - copy everything
+                if (path.startsWith('core/tmp/') || path.startsWith('core/logs/') || 
+                    path.startsWith('tmp/') || path.startsWith('logs/')) {
+                    return false
+                }
+                
+                // Exclude these directories
+                if (path.startsWith('.dev/') || path.startsWith('.github/') || 
+                    path.startsWith('.idea/') || path.startsWith('.settings/') || 
+                    path.startsWith('.gradle/') || path.startsWith('.gradle-docs/') || 
+                    path.startsWith('.qodo/')) {
+                    return true
+                }
+                
+                // Exclude base and bin directories
+                if (path.startsWith('base/') || path.startsWith('bin/')) {
+                    return true
+                }
+                
+                // Exclude specific files
+                if (path == 'giscus.json' || path == 'core/.editorconfig' || 
+                    path == 'build.properties' || path == 'build.xml' || 
+                    path == 'build.gradle' || path == 'settings.gradle' ||
+                    path == 'ResourceHacker.exe' || path == 'ResourceHacker.ini' ||
+                    path == 'fix-core-icon.bat' || path == 'rcedit-x64.exe' ||
+                    path == 'Bearsampp-iconography.zip' || path == 'build.xml.reference' ||
+                    path == 'buildFull.ini' || path == 'buildBasic.ini' || path == 'buildLite.ini') {
+                    return true
+                }
+                
+                // Exclude gradle wrapper files
+                if (path.startsWith('gradle/') || path == 'gradlew' || path == 'gradlew.bat') {
+                    return true
+                }
+                
+                // Exclude specific file types
+                if (name.endsWith('.iml') || name.endsWith('.launch')) {
+                    return true
+                }
+                
+                // Exclude git-related files (but NOT .gitignore - already handled above)
+                if (path.contains('/.git/') || name == '.gitattributes' || name == '.editorconfig') {
+                    return true
+                }
+                
+                return false
+            }
         }
 
         def opensslCfg = file("${projectDir}/core/libs/openssl/openssl.cfg")
@@ -683,20 +733,65 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             println "openssl.cfg already exists."
         }
 
+        // Debug: Check what files exist in base/ before copying
+        println "Checking base directory contents..."
+        def baseDir = file("${projectDir}/base")
+        def gitignoreFiles = []
+        baseDir.eachFileRecurse { f ->
+            if (f.name == '.gitignore') {
+                gitignoreFiles << f.absolutePath.replace(baseDir.absolutePath, 'base')
+            }
+        }
+        println "Found ${gitignoreFiles.size()} .gitignore files in base/:"
+        gitignoreFiles.each { println "  - ${it}" }
+        
+        // Copy everything from base/ first
         copy {
             from file("${projectDir}/base")
             into releaseBasePath
             includeEmptyDirs = true
-            // Exclude files in these directories, but keep .gitignore
-            exclude { fileTreeElement ->
-                def path = fileTreeElement.relativePath.pathString
-                def name = fileTreeElement.file.name
-                // Exclude everything in these dirs EXCEPT .gitignore files
-                return (path.startsWith('logs/') || path.startsWith('ssl/') || 
-                        path.startsWith('tmp/') || path.startsWith('vhosts/')) && 
-                       name != '.gitignore'
+        }
+        
+        // Manually copy .gitignore files (Gradle excludes them by default)
+        println "Manually copying .gitignore files..."
+        gitignoreFiles.each { gitignorePath ->
+            def sourceFile = file("${projectDir}/${gitignorePath}")
+            def destPath = gitignorePath.replace('base\\', '').replace('base/', '')
+            def destFile = file("${releaseBasePath}/${destPath}")
+            if (sourceFile.exists()) {
+                destFile.parentFile.mkdirs()
+                destFile.text = sourceFile.text
+                println "  [COPY] ${destPath}"
             }
         }
+        
+        // Now manually delete unwanted files from logs/, ssl/, tmp/, vhosts/ (but keep .gitignore)
+        println "Cleaning up temporary directories (keeping .gitignore files)..."
+        ['logs', 'ssl', 'tmp', 'vhosts'].each { dirName ->
+            def targetDir = file("${releaseBasePath}/${dirName}")
+            if (targetDir.exists() && targetDir.isDirectory()) {
+                // Recursively process all files in this directory tree
+                targetDir.eachFileRecurse { f ->
+                    if (f.isFile() && f.name != '.gitignore') {
+                        def relativePath = f.absolutePath.replace(releaseBasePath.absolutePath + File.separator, '')
+                        println "  [DELETE] ${relativePath}"
+                        f.delete()
+                    }
+                }
+            }
+        }
+        
+        // Verify .gitignore files were kept
+        println "Verifying .gitignore files in release..."
+        def keptGitignores = []
+        releaseBasePath.eachFileRecurse { f ->
+            if (f.name == '.gitignore') {
+                def relativePath = f.absolutePath.replace(releaseBasePath.absolutePath + File.separator, '')
+                keptGitignores << relativePath
+            }
+        }
+        println "Found ${keptGitignores.size()} .gitignore files in release:"
+        keptGitignores.each { println "  [OK] ${it}" }
         
         // Ensure directories exist (they should already have .gitignore files from copy above)
         file("${releaseBasePath}/logs").mkdirs()
