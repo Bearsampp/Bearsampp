@@ -258,23 +258,50 @@ class Batch
             return true; // If the link doesn't exist, nothing to do
         }
         
-        // Check if it's a directory symlink
+        // Check if it's actually a symlink
+        $isSymlink = is_link($link);
         $isDirectory = is_dir($link);
         $formattedLink = Util::formatWindowsPath($link);
         
+        self::writeLog('-> removeSymlink: Attempting to remove: ' . $link . ' (isSymlink: ' . ($isSymlink ? 'yes' : 'no') . ', isDirectory: ' . ($isDirectory ? 'yes' : 'no') . ')');
+        
         try {
-            // Use different commands based on whether it's a directory or file symlink
-            if ($isDirectory) {
-                // For directory symlinks
-                self::exec('removeSymlink', 'rmdir /Q "' . $formattedLink . '"', true, false);
+            // For symlinks (both file and directory), use rmdir on Windows
+            // Windows treats directory symlinks differently than regular directories
+            if ($isSymlink || $isDirectory) {
+                // Try rmdir first (works for directory symlinks and junctions)
+                $result = self::exec('removeSymlink', 'rmdir /Q "' . $formattedLink . '"', 5, false);
+                
+                // If rmdir failed and it's not a directory, try del
+                if (file_exists($link) && !$isDirectory) {
+                    self::writeLog('-> removeSymlink: rmdir failed, trying del for file symlink');
+                    self::exec('removeSymlink', 'del /F /Q "' . $formattedLink . '"', 5, false);
+                }
             } else {
-                // For file symlinks
-                self::exec('removeSymlink', 'del /F /Q "' . $formattedLink . '"', true, false);
+                // For regular files, use del
+                self::exec('removeSymlink', 'del /F /Q "' . $formattedLink . '"', 5, false);
             }
+            
+            // Give Windows a moment to complete the operation
+            usleep(100000); // 100ms
             
             // Check if removal was successful
             if (file_exists($link)) {
-                self::writeLog('-> removeSymlink: Failed to remove symlink: ' . $link);
+                self::writeLog('-> removeSymlink: Failed to remove symlink after command execution: ' . $link);
+                
+                // Try PHP's native functions as a fallback
+                if ($isDirectory) {
+                    if (@rmdir($link)) {
+                        self::writeLog('-> removeSymlink: Successfully removed using PHP rmdir: ' . $link);
+                        return true;
+                    }
+                } else {
+                    if (@unlink($link)) {
+                        self::writeLog('-> removeSymlink: Successfully removed using PHP unlink: ' . $link);
+                        return true;
+                    }
+                }
+                
                 return false;
             }
             

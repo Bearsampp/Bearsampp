@@ -97,13 +97,26 @@ abstract class Module
                 if ($target == $src) {
                     return;
                 }
-                Batch::removeSymlink($dest);
+                // Symlink exists but points to wrong target, remove it
+                Util::logDebug('Removing existing symlink: ' . $dest . ' (points to ' . $target . ', should point to ' . $src . ')');
+                if (!Batch::removeSymlink($dest)) {
+                    Util::logError('Failed to remove existing symlink: ' . $dest);
+                    return;
+                }
             } elseif (is_file($dest)) {
-                Util::logError('Removing . ' . $this->symlinkPath . ' file. It should not be a regular file');
-                unlink($dest);
+                Util::logError('Removing ' . $this->symlinkPath . ' file. It should not be a regular file');
+                if (!@unlink($dest)) {
+                    Util::logError('Failed to remove file: ' . $dest);
+                    return;
+                }
             } elseif (is_dir($dest)) {
+                // Check if it's an empty directory or a directory junction/symlink
                 if (!(new \FilesystemIterator($dest))->valid()) {
-                    rmdir($dest);
+                    // Empty directory, safe to remove
+                    if (!@rmdir($dest)) {
+                        Util::logError('Failed to remove empty directory: ' . $dest);
+                        return;
+                    }
                 } else {
                     Util::logError($this->symlinkPath . ' should be a symlink to ' . $this->currentPath . '. Please remove this dir and restart bearsampp.');
                     return;

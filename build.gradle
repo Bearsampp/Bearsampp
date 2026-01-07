@@ -668,7 +668,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                 def name = fileTreeElement.file.name
                 
                 // FIRST: NEVER EVER exclude .gitignore files - this takes priority over everything
-                if (name == '.gitignore') {
+                if (name == '.gitignore' && fileTreeElement.file.isFile()) {
                     return false
                 }
                 
@@ -678,8 +678,9 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                     return false
                 }
                 
-                // Exclude these directories
-                if (path.startsWith('.dev/') || path.startsWith('.github/') || 
+                // Exclude .git directory and other dot directories
+                if (path.startsWith('.git/') || path == '.git' ||
+                    path.startsWith('.dev/') || path.startsWith('.github/') || 
                     path.startsWith('.idea/') || path.startsWith('.settings/') || 
                     path.startsWith('.gradle/') || path.startsWith('.gradle-docs/') || 
                     path.startsWith('.qodo/')) {
@@ -713,7 +714,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                 }
                 
                 // Exclude git-related files (but NOT .gitignore - already handled above)
-                if (path.contains('/.git/') || name == '.gitattributes' || name == '.editorconfig') {
+                if (name == '.gitattributes' || name == '.editorconfig') {
                     return true
                 }
                 
@@ -895,6 +896,18 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
             into releaseTarget
             includeEmptyDirs = true
         }
+        
+        // Manually copy .gitignore files from releaseBasePath to releaseTarget
+        println "Copying .gitignore files to release target..."
+        releaseBasePath.eachFileRecurse { f ->
+            if (f.name == '.gitignore') {
+                def relativePath = f.absolutePath.replace(releaseBasePath.absolutePath + File.separator, '')
+                def destFile = file("${releaseTarget}/${relativePath}")
+                destFile.parentFile.mkdirs()
+                destFile.text = f.text
+                println "  [COPY] ${relativePath}"
+            }
+        }
 
         def fullTokens = [
             'BIN_APACHE_ENABLE': '1',
@@ -975,6 +988,18 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
             into releaseTarget
             includeEmptyDirs = true
         }
+        
+        // Manually copy .gitignore files from releaseBasePath to releaseTarget
+        println "Copying .gitignore files to release target..."
+        releaseBasePath.eachFileRecurse { f ->
+            if (f.name == '.gitignore') {
+                def relativePath = f.absolutePath.replace(releaseBasePath.absolutePath + File.separator, '')
+                def destFile = file("${releaseTarget}/${relativePath}")
+                destFile.parentFile.mkdirs()
+                destFile.text = f.text
+                println "  [COPY] ${relativePath}"
+            }
+        }
 
         // Load configuration from buildBasic.ini
         def buildConfig = loadBuildConfig("${projectDir}/buildBasic.ini")
@@ -1049,6 +1074,18 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
             from releaseBasePath
             into releaseTarget
             includeEmptyDirs = true
+        }
+        
+        // Manually copy .gitignore files from releaseBasePath to releaseTarget
+        println "Copying .gitignore files to release target..."
+        releaseBasePath.eachFileRecurse { f ->
+            if (f.name == '.gitignore') {
+                def relativePath = f.absolutePath.replace(releaseBasePath.absolutePath + File.separator, '')
+                def destFile = file("${releaseTarget}/${relativePath}")
+                destFile.parentFile.mkdirs()
+                destFile.text = f.text
+                println "  [COPY] ${relativePath}"
+            }
         }
 
         // Load configuration from buildLite.ini
