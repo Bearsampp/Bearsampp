@@ -30,7 +30,14 @@ class ActionService
     public function __construct($args)
     {
         global $bearsamppBins;
+        
+        Util::logInfo('=== ActionService constructor called ===');
+        Util::logInfo('Arguments: ' . print_r($args, true));
+        Util::logTrace('About to call startLoading()');
+        
         Util::startLoading();
+        
+        Util::logTrace('startLoading() returned');
 
         // Reload bins
         $bearsamppBins->reload();
@@ -71,6 +78,21 @@ class ActionService
             elseif ( $sName == BinXlight::SERVICE_NAME ) {
                 $bin  = $bearsamppBins->getXlight();
                 $port = $bin->getPort();
+            }
+
+            // Check if bin was found
+            if ($bin === null) {
+                Util::logError('Service not found: ' . $sName);
+                Util::logError('Available services: ' . 
+                    BinApache::SERVICE_NAME . ', ' . 
+                    BinMailpit::SERVICE_NAME . ', ' . 
+                    BinMemcached::SERVICE_NAME . ', ' . 
+                    BinMysql::SERVICE_NAME . ', ' . 
+                    BinMariadb::SERVICE_NAME . ', ' . 
+                    BinPostgresql::SERVICE_NAME . ', ' . 
+                    BinXlight::SERVICE_NAME);
+                Util::stopLoading();
+                return;
             }
 
             $name    = $bin->getName();
@@ -142,8 +164,15 @@ class ActionService
      */
     private function restart($bin, $syntaxCheckCmd)
     {
-        if ( $bin->getService()->stop() ) {
-            $this->start( $bin, $syntaxCheckCmd );
+        Util::logInfo('=== Restart: Attempting to stop service ===');
+        $stopResult = $bin->getService()->stop();
+        Util::logInfo('Stop result: ' . var_export($stopResult, true));
+        
+        if ($stopResult) {
+            Util::logInfo('=== Restart: Service stopped, now starting ===');
+            $this->start($bin, $syntaxCheckCmd);
+        } else {
+            Util::logError('=== Restart: Failed to stop service ===');
         }
     }
 

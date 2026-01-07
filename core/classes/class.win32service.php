@@ -632,10 +632,31 @@ class Win32Service
      */
     public function restart(): bool
     {
-        if ( $this->stop() ) {
-            return $this->start();
+        Util::logInfo('=== Win32Service::restart() called for: ' . $this->getName() . ' ===');
+        
+        // Start the loading/splash screen
+        Util::startLoading();
+        
+        Util::logInfo('Stopping service: ' . $this->getName());
+        $stopResult = $this->stop();
+        Util::logInfo('Stop result: ' . var_export($stopResult, true));
+        
+        if ($stopResult) {
+            Util::logInfo('Starting service: ' . $this->getName());
+            $startResult = $this->start();
+            Util::logInfo('Start result: ' . var_export($startResult, true));
+            
+            // Stop the loading/splash screen
+            Util::stopLoading();
+            
+            return $startResult;
         }
-
+        
+        Util::logError('Failed to stop service during restart: ' . $this->getName());
+        
+        // Stop the loading/splash screen even on failure
+        Util::stopLoading();
+        
         return false;
     }
 

@@ -935,7 +935,20 @@ class Util
     public static function startLoading()
     {
         global $bearsamppCore, $bearsamppWinbinder;
-        $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), $bearsamppCore->getisRootFilePath() . ' ' . Action::LOADING);
+        
+        $phpExe = $bearsamppCore->getPhpExe();
+        $rootFile = $bearsamppCore->getisRootFilePath();
+        $command = $rootFile . ' ' . Action::LOADING;
+        
+        self::logInfo('=== Starting splash screen ===');
+        self::logInfo('PHP executable: ' . $phpExe);
+        self::logInfo('Root file: ' . $rootFile);
+        self::logInfo('Action: ' . Action::LOADING);
+        self::logInfo('Full command: ' . $command);
+        
+        $result = $bearsamppWinbinder->exec($phpExe, $command);
+        
+        self::logInfo('WinBinder exec returned: ' . var_export($result, true));
     }
 
     /**
