@@ -666,6 +666,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             exclude { fileTreeElement ->
                 def path = fileTreeElement.relativePath.pathString
                 def name = fileTreeElement.file.name
+                def isDirectory = fileTreeElement.file.isDirectory()
                 
                 // FIRST: NEVER EVER exclude .gitignore files - this takes priority over everything
                 if (name == '.gitignore' && fileTreeElement.file.isFile()) {
@@ -678,13 +679,18 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                     return false
                 }
                 
-                // Exclude .git directory and other dot directories
-                if (path.startsWith('.git/') || path == '.git' ||
-                    path.startsWith('.dev/') || path.startsWith('.github/') || 
-                    path.startsWith('.idea/') || path.startsWith('.settings/') || 
-                    path.startsWith('.gradle/') || path.startsWith('.gradle-docs/') || 
-                    path.startsWith('.qodo/')) {
+                // Exclude dot directories (but NOT .gitignore files)
+                // Check if this is a directory that starts with a dot
+                if (isDirectory && name.startsWith('.')) {
                     return true
+                }
+                
+                // Also exclude paths that are inside dot directories
+                def pathParts = path.split('[/\\\\]')
+                for (def part : pathParts) {
+                    if (part.startsWith('.') && part != '.gitignore' && part != '.htaccess') {
+                        return true
+                    }
                 }
                 
                 // Exclude base and bin directories
