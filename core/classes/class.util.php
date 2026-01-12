@@ -1666,6 +1666,11 @@ class Util
     public static function installService($bin, $port, $syntaxCheckCmd, $showWindow = false)
     {
         global $bearsamppLang, $bearsamppWinbinder;
+
+        if (method_exists($bin, 'initData')) {
+            $bin->initData();
+        }
+
         $name     = $bin->getName();
         $service  = $bin->getService();
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::INSTALL_SERVICE_TITLE), $name);
@@ -1778,6 +1783,11 @@ class Util
     public static function startService($bin, $syntaxCheckCmd, $showWindow = false)
     {
         global $bearsamppLang, $bearsamppWinbinder;
+
+        if (method_exists($bin, 'initData')) {
+            $bin->initData();
+        }
+
         $name     = $bin->getName();
         $service  = $bin->getService();
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::START_SERVICE_TITLE), $name);

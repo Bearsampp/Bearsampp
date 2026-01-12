@@ -665,7 +665,8 @@ public function setRootPwd($rootPwd) {
  *
  * @return string The CLI executable path.
  */
-public function getCliExe() {
+public function getCliExe()
+{
     return $this->cliExe;
 }
 
@@ -674,6 +675,95 @@ public function getCliExe() {
  *
  * @return string The admin executable path.
  */
-public function getAdmin() {
+public function getAdmin()
+{
     return $this->admin;
-}}
+}
+
+/**
+ * Retrieves the data directory path for MariaDB.
+ *
+ * @return string The data directory path.
+ */
+public function getDataDir()
+{
+    return $this->currentPath . '/data';
+}
+
+/**
+ * Initializes the MariaDB data directory if needed.
+ *
+ * @param   string|null  $path     The path to the MariaDB installation. If null, the current path is used.
+ * @param   string|null  $version  The version of MariaDB. If null, the current version is used.
+ *
+ * @return  bool         True if initialization was successful or not needed
+ */
+public function initData($path = null, $version = null)
+{
+    Util::logTrace( 'Starting MariaDB data initialization' );
+    $startTime = microtime( true );
+
+    $path    = $path != null ? $path : $this->getCurrentPath();
+    $version = $version != null ? $version : $this->getVersion();
+    $dataDir = $path . '/data';
+
+    if ( is_dir( $dataDir . '/mysql' ) ) {
+        Util::logTrace( 'MariaDB data directory already initialized' );
+
+        return true;
+    }
+
+    if ( !is_dir( $dataDir ) ) {
+        @mkdir( $dataDir, 0777, true );
+        Util::logTrace( 'Created MariaDB data directory' );
+    }
+
+    // Check for init.bat first
+    if ( file_exists( $path . '/init.bat' ) ) {
+        Util::logTrace( 'Initializing MariaDB via init.bat' );
+        try {
+            Batch::initializeMariadb( $path );
+        } catch ( \Throwable $e ) {
+            Util::logTrace( 'Error during MariaDB initialization via Batch: ' . $e->getMessage() );
+
+            return false;
+        }
+    } else {
+        // Use mariadb-install-db.exe
+        Util::logTrace( 'Initializing MariaDB via mariadb-install-db.exe' );
+        $installDbExe = $path . '/bin/mariadb-install-db.exe';
+        if ( !file_exists( $installDbExe ) ) {
+            $installDbExe = $path . '/bin/mysql_install_db.exe';
+        }
+
+        if ( file_exists( $installDbExe ) ) {
+            $cmd = '"' . Util::formatWindowsPath( $installDbExe ) . '"';
+            $cmd .= ' --datadir="' . Util::formatWindowsPath( $dataDir ) . '"';
+
+            try {
+                Batch::exec( 'initializeMariadb', $cmd, 60 );
+            } catch ( \Throwable $e ) {
+                Util::logTrace( 'Error during MariaDB initialization via mariadb-install-db: ' . $e->getMessage() );
+
+                return false;
+            }
+        } else {
+            Util::logError( 'MariaDB initialization failed: No init.bat or mariadb-install-db.exe found' );
+
+            return false;
+        }
+    }
+
+    // Verify initialization
+    if ( !is_dir( $dataDir . '/mysql' ) ) {
+        Util::logTrace( 'MariaDB initialization appears to have failed: mysql directory still missing' );
+
+        return false;
+    }
+
+    $totalTime = round( microtime( true ) - $startTime, 2 );
+    Util::logTrace( "MariaDB initialization completed in {$totalTime}s" );
+
+    return true;
+}
+}
