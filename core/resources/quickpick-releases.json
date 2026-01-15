@@ -68,6 +68,11 @@
     "module": "module-bruno",
     "versions": [
       {
+        "version": "3.0.2",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2026.1.15/bearsampp-bruno-3.0.2-2025.1.15.7z",
+        "prerelease": true
+      },
+      {
         "version": "2.14.2",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.11.14/bearsampp-bruno-2.14.2-2025.11.14.7z",
         "prerelease": true
@@ -157,6 +162,11 @@
   {
     "module": "module-composer",
     "versions": [
+      {
+        "version": "2.9.3",
+        "url": "https://github.com/Bearsampp/module-composer/releases/download/untagged-7ee997b7d2b6765bdfb8/bearsampp-composer-2.9.3-2026.1.15.7z",
+        "prerelease": false
+      },
       {
         "version": "2.9.2",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2025.11.19/bearsampp-composer-2.9.2-2025.11.19.7z",
