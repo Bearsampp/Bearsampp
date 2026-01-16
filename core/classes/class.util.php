@@ -935,20 +935,7 @@ class Util
     public static function startLoading()
     {
         global $bearsamppCore, $bearsamppWinbinder;
-        
-        $phpExe = $bearsamppCore->getPhpExe();
-        $rootFile = $bearsamppCore->getisRootFilePath();
-        $command = $rootFile . ' ' . Action::LOADING;
-        
-        self::logInfo('=== Starting splash screen ===');
-        self::logInfo('PHP executable: ' . $phpExe);
-        self::logInfo('Root file: ' . $rootFile);
-        self::logInfo('Action: ' . Action::LOADING);
-        self::logInfo('Full command: ' . $command);
-        
-        $result = $bearsamppWinbinder->exec($phpExe, $command);
-        
-        self::logInfo('WinBinder exec returned: ' . var_export($result, true));
+        $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), Core::isRoot_FILE . ' ' . Action::LOADING);
     }
 
     /**
@@ -1726,7 +1713,7 @@ class Util
 
             return true;
         } else {
-            self::logError(sprintf('Port %s is used by an other application : %s', $name));
+            self::logError(sprintf('Port %s is used by an other application : %s', $port, $isPortInUse));
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port, $isPortInUse),
@@ -1866,14 +1853,9 @@ class Util
     {
         $result = array();
 
-        // Return empty array if path is null or empty
-        if (empty($path)) {
-            return $result;
-        }
-
         $handle = @opendir($path);
         if (!$handle) {
-            return $result;
+            return false;
         }
 
         while (false !== ($file = readdir($handle))) {

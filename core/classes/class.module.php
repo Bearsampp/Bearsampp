@@ -48,14 +48,6 @@ abstract class Module
 
         $this->id = empty($id) ? $this->id : $id;
         $this->type = empty($type) ? $this->type : $type;
-        
-        // If version is null or empty, the module is not configured - skip initialization
-        if (empty($this->version)) {
-            $this->enable = false;
-            $this->bearsamppConfRaw = false; // Initialize to false so child classes can check it
-            return;
-        }
-        
         $mainPath = 'N/A';
 
         switch ($this->type) {
@@ -97,26 +89,13 @@ abstract class Module
                 if ($target == $src) {
                     return;
                 }
-                // Symlink exists but points to wrong target, remove it
-                Util::logDebug('Removing existing symlink: ' . $dest . ' (points to ' . $target . ', should point to ' . $src . ')');
-                if (!Batch::removeSymlink($dest)) {
-                    Util::logError('Failed to remove existing symlink: ' . $dest);
-                    return;
-                }
+                Batch::removeSymlink($dest);
             } elseif (is_file($dest)) {
-                Util::logError('Removing ' . $this->symlinkPath . ' file. It should not be a regular file');
-                if (!@unlink($dest)) {
-                    Util::logError('Failed to remove file: ' . $dest);
-                    return;
-                }
+                Util::logError('Removing . ' . $this->symlinkPath . ' file. It should not be a regular file');
+                unlink($dest);
             } elseif (is_dir($dest)) {
-                // Check if it's an empty directory or a directory junction/symlink
                 if (!(new \FilesystemIterator($dest))->valid()) {
-                    // Empty directory, safe to remove
-                    if (!@rmdir($dest)) {
-                        Util::logError('Failed to remove empty directory: ' . $dest);
-                        return;
-                    }
+                    rmdir($dest);
                 } else {
                     Util::logError($this->symlinkPath . ' should be a symlink to ' . $this->currentPath . '. Please remove this dir and restart bearsampp.');
                     return;
