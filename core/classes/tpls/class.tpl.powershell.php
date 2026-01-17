@@ -352,6 +352,10 @@ class TplPowerShell
     {
         global $bearsamppRoot, $bearsamppTools;
 
+        if (!$bearsamppTools->getPython()->isEnable()) {
+            return '';
+        }
+
         $shell = $bearsamppTools->getPowerShell()->getShell('&quot;' . $bearsamppTools->getPython()->getExe() . '&quot;');
         if (!file_exists($bearsamppTools->getPython()->getExe())) {
             $shell = $bearsamppTools->getPowerShell()->getShell('echo ' . $bearsamppTools->getPython()->getExe() . ' not found');
@@ -379,6 +383,10 @@ class TplPowerShell
     private static function getTabRubySection()
     {
         global $bearsamppRoot, $bearsamppTools;
+
+        if (!$bearsamppTools->getRuby()->isEnable()) {
+            return '';
+        }
 
         // Check if Ruby exists first
         if (!file_exists($bearsamppTools->getRuby()->getExe())) {
@@ -424,6 +432,10 @@ class TplPowerShell
     {
         global $bearsamppRoot, $bearsamppTools;
 
+        if (!$bearsamppTools->getPerl()->isEnable()) {
+            return '';
+        }
+
         $shell = $bearsamppTools->getPowerShell()->getShell('&quot;' . $bearsamppTools->getPerl()->getExe() . '&quot;');
         if (!file_exists($bearsamppTools->getPerl()->getExe())) {
             $shell = $bearsamppTools->getPowerShell()->getShell('echo ' . $bearsamppTools->getPerl()->getExe() . ' not found');
@@ -454,6 +466,10 @@ class TplPowerShell
     {
         global $bearsamppRoot, $bearsamppTools;
 
+        if (!$bearsamppTools->getGhostscript()->isEnable()) {
+            return '';
+        }
+
         $shell = $bearsamppTools->getPowerShell()->getShell('&quot;' . $bearsamppTools->getGhostscript()->getExeConsole() . '&quot;');
         if (!file_exists($bearsamppTools->getGhostscript()->getExeConsole())) {
             $shell = $bearsamppTools->getPowerShell()->getShell('echo ' . $bearsamppTools->getGhostscript()->getExeConsole() . ' not found');
@@ -483,6 +499,10 @@ class TplPowerShell
     private static function getTabNgrokSection()
     {
         global $bearsamppRoot, $bearsamppTools;
+
+        if (!$bearsamppTools->getNgrok()->isEnable()) {
+            return '';
+        }
 
         $shell = $bearsamppTools->getPowerShell()->getShell('&quot;' . $bearsamppTools->getNgrok()->getExe() . '&quot;');
         if (!file_exists($bearsamppTools->getNgrok()->getExe())) {

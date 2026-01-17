@@ -274,6 +274,7 @@ class Batch
 
         // Check if it's a directory symlink
         $isDirectory = is_dir($link);
+        $isSymlink = is_link($link);
         $formattedLink = Util::formatWindowsPath($link);
 
         self::writeLog('-> removeSymlink: Attempting to remove: ' . $link . ' (isSymlink: ' . ($isSymlink ? 'yes' : 'no') . ', isDirectory: ' . ($isDirectory ? 'yes' : 'no') . ')');

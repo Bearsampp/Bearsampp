@@ -58,11 +58,11 @@ class Config
      * Retrieves the raw configuration value for the specified key.
      *
      * @param string $key The configuration key.
-     * @return mixed The configuration value.
+     * @return mixed The configuration value, or null if the key does not exist.
      */
     public function getRaw($key)
     {
-        return $this->raw[$key];
+        return isset($this->raw[$key]) ? $this->raw[$key] : null;
     }
 
     /**

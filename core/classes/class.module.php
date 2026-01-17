@@ -67,7 +67,7 @@ abstract class Module
         $this->symlinkPath = $this->rootPath . '/current';
         $this->enable = is_dir($this->currentPath);
         $this->bearsamppConf = $this->currentPath . '/bearsampp.conf';
-        $this->bearsamppConfRaw = @parse_ini_file($this->bearsamppConf);
+        $this->bearsamppConfRaw = is_file($this->bearsamppConf) ? @parse_ini_file($this->bearsamppConf) : false;
 
         if ($bearsamppRoot->isRoot()) {
             $this->createSymlink();
