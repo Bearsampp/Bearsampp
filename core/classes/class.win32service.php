@@ -518,7 +518,30 @@ class Win32Service
         Util::logInfo('Attempting to start service: ' . $this->getName());
 
         if ( $this->getName() == BinMysql::SERVICE_NAME ) {
+            Util::logInfo('Initializing MySQL data directory...');
             $bearsamppBins->getMysql()->initData();
+            Util::logInfo('MySQL data directory initialization complete');
+        }
+        elseif ( $this->getName() == BinMariadb::SERVICE_NAME ) {
+            Util::logInfo('Initializing MariaDB data directory...');
+            $initResult = $bearsamppBins->getMariadb()->initData();
+            Util::logInfo('MariaDB data directory initialization ' . ($initResult ? 'succeeded' : 'FAILED'));
+            
+            if (!$initResult) {
+                Util::logError('MariaDB data initialization failed - cannot start service');
+                return false;
+            }
+            
+            // Log MariaDB configuration details
+            Util::logInfo('MariaDB configuration:');
+            Util::logInfo('  - Exe: ' . $bearsamppBins->getMariadb()->getExe());
+            Util::logInfo('  - Conf: ' . $bearsamppBins->getMariadb()->getConf());
+            Util::logInfo('  - Port: ' . $bearsamppBins->getMariadb()->getPort());
+            Util::logInfo('  - Data Dir: ' . $bearsamppBins->getMariadb()->getDataDir());
+            Util::logInfo('  - Service Name: ' . $this->getName());
+            Util::logInfo('  - Display Name: ' . $this->getDisplayName());
+            Util::logInfo('  - Bin Path: ' . $this->getBinPath());
+            Util::logInfo('  - Params: ' . $this->getParams());
         }
         elseif ( $this->getName() == BinMariadb::SERVICE_NAME ) {
             $bearsamppBins->getMariadb()->initData();
@@ -537,12 +560,15 @@ class Win32Service
             $bearsamppBins->getXlight()->rebuildConf();
         }
 
-
+        Util::logInfo('Calling win32_start_service for: ' . $this->getName());
         $result = $this->callWin32Service( 'win32_start_service', $this->getName(), true );
         // Ensure proper type conversion for PHP 8.2.3 compatibility
         $resultInt = is_numeric($result) ? (int)$result : 0;
         $start = $result !== null ? dechex( $resultInt ) : '0';
-        Util::logDebug( 'Start service ' . $this->getName() . ': ' . $start . ' (status: ' . $this->status() . ')' );
+        Util::logInfo( 'win32_start_service returned code: ' . $start . ' for service: ' . $this->getName() );
+        
+        $statusAfterStart = $this->status();
+        Util::logDebug( 'Start service ' . $this->getName() . ': ' . $start . ' (status after start: ' . $statusAfterStart . ')' );
 
         if ( $start != self::WIN32_NO_ERROR && $start != self::WIN32_ERROR_SERVICE_ALREADY_RUNNING ) {
 
@@ -550,8 +576,11 @@ class Win32Service
             Util::logError('Failed to start service: ' . $this->getName() . ' with error code: ' . $start);
 
             if ( $this->getName() == BinApache::SERVICE_NAME ) {
+                Util::logInfo('Running Apache syntax check...');
                 $cmdOutput = $bearsamppBins->getApache()->getCmdLineOutput( BinApache::CMD_SYNTAX_CHECK );
+                Util::logInfo('Apache syntax check result: ' . ($cmdOutput['syntaxOk'] ? 'OK' : 'FAILED'));
                 if ( !$cmdOutput['syntaxOk'] ) {
+                    Util::logError('Apache syntax error: ' . $cmdOutput['content']);
                     file_put_contents(
                         $bearsamppBins->getApache()->getErrorLog(),
                         '[' . date( 'Y-m-d H:i:s', time() ) . '] [error] ' . $cmdOutput['content'] . PHP_EOL,
@@ -560,8 +589,11 @@ class Win32Service
                 }
             }
             elseif ( $this->getName() == BinMysql::SERVICE_NAME ) {
+                Util::logInfo('Running MySQL syntax check...');
                 $cmdOutput = $bearsamppBins->getMysql()->getCmdLineOutput( BinMysql::CMD_SYNTAX_CHECK );
+                Util::logInfo('MySQL syntax check result: ' . ($cmdOutput['syntaxOk'] ? 'OK' : 'FAILED'));
                 if ( !$cmdOutput['syntaxOk'] ) {
+                    Util::logError('MySQL syntax error: ' . $cmdOutput['content']);
                     file_put_contents(
                         $bearsamppBins->getMysql()->getErrorLog(),
                         '[' . date( 'Y-m-d H:i:s', time() ) . '] [error] ' . $cmdOutput['content'] . PHP_EOL,
@@ -570,13 +602,20 @@ class Win32Service
                 }
             }
             elseif ( $this->getName() == BinMariadb::SERVICE_NAME ) {
+                Util::logInfo('Running MariaDB syntax check...');
                 $cmdOutput = $bearsamppBins->getMariadb()->getCmdLineOutput( BinMariadb::CMD_SYNTAX_CHECK );
+                Util::logInfo('MariaDB syntax check result: ' . ($cmdOutput['syntaxOk'] ? 'OK' : 'FAILED'));
                 if ( !$cmdOutput['syntaxOk'] ) {
+                    Util::logError('MariaDB syntax error: ' . $cmdOutput['content']);
                     file_put_contents(
                         $bearsamppBins->getMariadb()->getErrorLog(),
                         '[' . date( 'Y-m-d H:i:s', time() ) . '] [error] ' . $cmdOutput['content'] . PHP_EOL,
                         FILE_APPEND
                     );
+                } else {
+                    Util::logInfo('MariaDB syntax check passed, but service still failed to start');
+                    Util::logInfo('Check Windows Event Viewer for more details');
+                    Util::logInfo('Try running manually: ' . $this->getBinPath() . ' ' . $this->getParams());
                 }
             }
 
@@ -585,6 +624,23 @@ class Win32Service
         elseif ( !$this->isRunning() ) {
             $this->latestError = self::WIN32_NO_ERROR;
             Util::logError('Service ' . $this->getName() . ' is not running after start attempt.');
+            Util::logError('Service status code: ' . $statusAfterStart);
+            
+            // Additional diagnostics for MariaDB
+            if ( $this->getName() == BinMariadb::SERVICE_NAME ) {
+                Util::logError('MariaDB failed to start - running diagnostics...');
+                Util::logError('  - Checking if MariaDB executable exists: ' . (file_exists($bearsamppBins->getMariadb()->getExe()) ? 'YES' : 'NO'));
+                Util::logError('  - Checking if MariaDB config exists: ' . (file_exists($bearsamppBins->getMariadb()->getConf()) ? 'YES' : 'NO'));
+                Util::logError('  - Checking if data directory exists: ' . (is_dir($bearsamppBins->getMariadb()->getDataDir()) ? 'YES' : 'NO'));
+                Util::logError('  - Checking if mysql subdirectory exists: ' . (is_dir($bearsamppBins->getMariadb()->getDataDir() . '/mysql') ? 'YES' : 'NO'));
+                
+                // Try to get more info from syntax check
+                $cmdOutput = $bearsamppBins->getMariadb()->getCmdLineOutput( BinMariadb::CMD_SYNTAX_CHECK );
+                if ( !$cmdOutput['syntaxOk'] ) {
+                    Util::logError('MariaDB configuration error: ' . $cmdOutput['content']);
+                }
+            }
+            
             $this->latestError = null;
             return false;
         }
