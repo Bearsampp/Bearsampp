@@ -1423,8 +1423,8 @@
     "module": "module-perl",
     "versions": [
       {
-        "version": "5.42.0",
-        "url": "https://github.com/Bearsampp/module-perl/releases/download/2026.1.15/bearsampp-perl-5.42.0-2026.1.15.7z",
+        "version": "5.42.0.1",
+        "url": "https://github.com/Bearsampp/module-perl/releases/download/2026.1.15/bearsampp-perl-5.42.0.1-2026.1.15.7z",
         "prerelease": true
       },
       {
