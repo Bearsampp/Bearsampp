@@ -26,14 +26,14 @@ class WinBinder
     const NEW_LINE = '@nl@';
 
     // Constants for message box types
-    const BOX_INFO = WBC_INFO;
-    const BOX_OK = WBC_OK;
-    const BOX_OKCANCEL = WBC_OKCANCEL;
-    const BOX_QUESTION = WBC_QUESTION;
-    const BOX_ERROR = WBC_STOP;
-    const BOX_WARNING = WBC_WARNING;
-    const BOX_YESNO = WBC_YESNO;
-    const BOX_YESNOCANCEL = WBC_YESNOCANCEL;
+    const BOX_INFO = 64;
+    const BOX_OK = 1;
+    const BOX_OKCANCEL = 1;
+    const BOX_QUESTION = 32;
+    const BOX_ERROR = 16;
+    const BOX_WARNING = 48;
+    const BOX_YESNO = 4;
+    const BOX_YESNOCANCEL = 3;
 
     // Constants for cursor types
     const CURSOR_ARROW = 'arrow';
@@ -96,7 +96,7 @@ class WinBinder
      */
     public function createAppWindow($caption, $width, $height, $style = null, $params = null): mixed
     {
-        return $this->createWindow(null, AppWindow, $caption, WBC_CENTER, WBC_CENTER, $width, $height, $style, $params);
+        return $this->createWindow(null, 1, $caption, -777, -777, $width, $height, $style, $params);
     }
 
     /**
@@ -194,7 +194,7 @@ class WinBinder
      */
     public function createNakedWindow($caption, $width, $height, $style = null, $params = null): mixed
     {
-        $window = $this->createWindow(null, NakedWindow, $caption, WBC_CENTER, WBC_CENTER, $width, $height, $style, $params);
+        $window = $this->createWindow(null, 6, $caption, -777, -777, $width, $height, $style, $params);
         $this->setArea($window, $width, $height);
 
         return $window;
@@ -211,7 +211,7 @@ class WinBinder
      */
     public function setArea($wbobject, $width, $height): mixed
     {
-        return $this->callWinBinder('wb_set_area', array($wbobject, WBC_TITLE, 0, 0, $width, $height));
+        return $this->callWinBinder('wb_set_area', array($wbobject, 0, 0, 0, $width, $height));
     }
 
     /**
@@ -686,7 +686,7 @@ class WinBinder
         $width   = $width == null ? 120 : $width;
         $height  = $height == null ? 25 : $height;
 
-        return $this->createControl($parent, Label, $caption, $xPos, $yPos, $width, $height, $style, $params);
+        return $this->createControl($parent, 10, $caption, $xPos, $yPos, $width, $height, $style, $params);
     }
 
     /**
@@ -745,7 +745,7 @@ class WinBinder
         $value     = str_replace(self::NEW_LINE, PHP_EOL, $value);
         $width     = $width == null ? 120 : $width;
         $height    = $height == null ? 25 : $height;
-        $inputText = $this->createControl($parent, EditBox, (string)$value, $xPos, $yPos, $width, $height, $style, $params);
+        $inputText = $this->createControl($parent, 16, (string)$value, $xPos, $yPos, $width, $height, $style, $params);
         if (is_numeric($maxLength) && $maxLength > 0) {
             $this->setMaxLength($inputText[self::CTRL_OBJ], $maxLength);
         }
@@ -785,7 +785,7 @@ class WinBinder
         $value   = str_replace(self::NEW_LINE, PHP_EOL, $value);
         $width   = $width == null ? 540 : $width;
         $height  = $height == null ? 340 : $height;
-        $editBox = $this->createControl($parent, RTFEditBox, (string)$value, $xPos, $yPos, $width, $height, $style, $params);
+        $editBox = $this->createControl($parent, 18, (string)$value, $xPos, $yPos, $width, $height, $style, $params);
 
         return $editBox;
     }
@@ -809,7 +809,7 @@ class WinBinder
         $caption   = str_replace(self::NEW_LINE, PHP_EOL, $caption);
         $width     = $width == null ? 120 : $width;
         $height    = $height == null ? 15 : $height;
-        $hyperLink = $this->createControl($parent, HyperLink, (string)$caption, $xPos, $yPos, $width, $height, $style, $params);
+        $hyperLink = $this->createControl($parent, 27, (string)$caption, $xPos, $yPos, $width, $height, $style, $params);
         $this->setCursor($hyperLink[self::CTRL_OBJ], self::CURSOR_FINGER);
 
         return $hyperLink;
@@ -848,7 +848,7 @@ class WinBinder
         $width   = $width == null ? 120 : $width;
         $height  = $height == null ? 25 : $height;
 
-        return $this->createControl($parent, RadioButton, (string)$caption, $xPos, $yPos, $width, $height, $startGroup ? WBC_GROUP : null, $checked ? 1 : 0);
+        return $this->createControl($parent, 13, (string)$caption, $xPos, $yPos, $width, $height, $startGroup ? 0x00020000 : null, $checked ? 1 : 0);
     }
 
     /**
@@ -870,7 +870,7 @@ class WinBinder
         $width  = $width == null ? 80 : $width;
         $height = $height == null ? 25 : $height;
 
-        return $this->createControl($parent, PushButton, $caption, $xPos, $yPos, $width, $height, $style, $params);
+        return $this->createControl($parent, 11, $caption, $xPos, $yPos, $width, $height, $style, $params);
     }
 
     /**
@@ -893,7 +893,7 @@ class WinBinder
 
         $width       = $width == null ? 200 : $width;
         $height      = $height == null ? 15 : $height;
-        $progressBar = $this->createControl($parent, Gauge, $bearsamppLang->getValue(Lang::LOADING), $xPos, $yPos, $width, $height, $style, $params);
+        $progressBar = $this->createControl($parent, 22, $bearsamppLang->getValue(Lang::LOADING), $xPos, $yPos, $width, $height, $style, $params);
 
         $this->setRange($progressBar[self::CTRL_OBJ], 0, $max);
         $this->gauge[$progressBar[self::CTRL_OBJ]] = 0;
