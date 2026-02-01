@@ -118,14 +118,34 @@ class WinBinder
     {
         global $bearsamppCore;
 
-        // Fix for PHP 8.2: Convert null to 0 for parent parameter
+        // Fix for PHP 8.4: Convert null to 0 for parent parameter
         $parent = $parent === null ? 0 : $parent;
+        
+        // Fix for PHP 8.4: Ensure style and params are proper types
+        $style = $style === null ? 0 : $style;
+        $params = $params === null ? 0 : $params;
+
+        // Log window creation attempt for debugging
+        $this->writeLog('Creating window: class=' . $wclass . ', caption=' . $caption . ', pos=(' . $xPos . ',' . $yPos . '), size=(' . $width . 'x' . $height . '), style=' . $style . ', params=' . $params);
 
         $caption = empty($caption) ? $this->defaultTitle : $this->defaultTitle . ' - ' . $caption;
         $window  = $this->callWinBinder('wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params));
 
-        // Set tiny window icon
-        $this->setImage($window, $bearsamppCore->getIconsPath() . '/app.ico');
+        if ($window === false || $window === null) {
+            $this->writeLog('ERROR: Failed to create window - wb_create_window returned: ' . var_export($window, true));
+            // Check if WinBinder extension is loaded
+            if (!extension_loaded('winbinder')) {
+                $this->writeLog('ERROR: WinBinder extension is not loaded!');
+            }
+            // Check if the function exists
+            if (!function_exists('wb_create_window')) {
+                $this->writeLog('ERROR: wb_create_window function does not exist!');
+            }
+        } else {
+            $this->writeLog('Window created successfully: handle=' . $window);
+            // Set tiny window icon
+            $this->setImage($window, $bearsamppCore->getIconsPath() . '/app.ico');
+        }
 
         return $window;
     }
@@ -707,6 +727,10 @@ class WinBinder
     public function createControl($parent, $ctlClass, $caption, $xPos, $yPos, $width, $height, $style = null, $params = null)
     {
         $this->countCtrls++;
+        
+        // Fix for PHP 8.4: Ensure style and params are proper types
+        $style = $style === null ? 0 : $style;
+        $params = $params === null ? 0 : $params;
 
         return array(
             self::CTRL_ID  => $this->countCtrls,

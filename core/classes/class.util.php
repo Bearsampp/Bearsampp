@@ -935,7 +935,19 @@ class Util
     public static function startLoading()
     {
         global $bearsamppCore, $bearsamppWinbinder;
-        $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), Core::isRoot_FILE . ' ' . Action::LOADING);
+        
+        self::logTrace('startLoading() called');
+        self::logTrace('PHP executable: ' . $bearsamppCore->getPhpExe());
+        self::logTrace('Root file: ' . Core::isRoot_FILE);
+        self::logTrace('Action: ' . Action::LOADING);
+        
+        $command = Core::isRoot_FILE . ' ' . Action::LOADING;
+        self::logTrace('Executing command: ' . $bearsamppCore->getPhpExe() . ' ' . $command);
+        
+        $result = $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), $command);
+        self::logTrace('exec() returned: ' . var_export($result, true));
+        
+        self::logTrace('startLoading() completed');
     }
 
     /**
