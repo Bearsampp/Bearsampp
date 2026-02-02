@@ -133,8 +133,20 @@ def downloadModule(String releasesUrl, String version, File destDir) {
         if (!downloadFile.exists()) {
             println "* Downloading ${filename}..."
             ant.get(src: downloadUrl, dest: downloadFile, verbose: true)
+            
+            // Verify download completed successfully
+            if (downloadFile.exists() && downloadFile.length() < 1024 * 1024) {
+                println "WARNING: Downloaded file seems too small (${downloadFile.length()} bytes), may be corrupted"
+            }
         } else {
-            println "* Using cached ${filename}"
+            println "* Using cached ${filename} (${downloadFile.length()} bytes)"
+            
+            // Verify cached file is not corrupted
+            if (downloadFile.length() < 1024 * 1024) {
+                println "WARNING: Cached file seems too small (${downloadFile.length()} bytes), deleting and re-downloading..."
+                downloadFile.delete()
+                ant.get(src: downloadUrl, dest: downloadFile, verbose: true)
+            }
         }
 
         println "* Extracting ${filename} to ${destDir}..."
