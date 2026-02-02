@@ -1279,6 +1279,8 @@ class Util
             }
         }
 
+        self::logDebug('changePath() completed: ' . $result['countChangedFiles'] . ' files changed, ' . $result['countChangedOcc'] . ' total occurrences');
+
         return $result;
     }
 
