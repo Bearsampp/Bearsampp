@@ -787,7 +787,9 @@ class WinBinder
      */
     public function setMaxLength($wbobject, $length)
     {
-        return $this->callWinBinder('wb_send_message', array($wbobject, 0x00c5, $length, 0));
+        // Use error suppression for wb_send_message as it may be disabled in some PHP configurations
+        // This is a non-critical operation - if it fails, the input will just not have a max length
+        return $this->callWinBinder('wb_send_message', array($wbobject, 0x00c5, $length, 0), true);
     }
 
     /**
