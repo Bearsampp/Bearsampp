@@ -1285,7 +1285,7 @@ class Util
     }
 
     /**
-     * Fetches the latest version information from a given URL.
+     * Fetches the latest version information from a given url.
      *
      * @param   string  $url  The URL to fetch version information from.
      *
