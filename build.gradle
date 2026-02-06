@@ -721,8 +721,9 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                     return true
                 }
                 
-                // Exclude gradle wrapper files
-                if (path.startsWith('gradle/') || path == 'gradlew' || path == 'gradlew.bat') {
+                // Exclude gradle wrapper files and directories
+                if (path.startsWith('gradle/') || path.startsWith('gradle\\') || 
+                    path == 'gradle' || path == 'gradlew' || path == 'gradlew.bat') {
                     return true
                 }
                 
@@ -1366,10 +1367,9 @@ task launch(dependsOn: buildFull) {
     }
 }
 
-// Disable the built-in wrapper task since Gradle is locally installed
-tasks.named('wrapper') { doFirst {
-        throw new GradleException("The wrapper task is disabled. Gradle is installed locally on this system.")
-    }
+// Disable wrapper task - Gradle is installed locally, wrappers are not used
+tasks.named('wrapper') {
+    enabled = false
 }
 
 // Default task
