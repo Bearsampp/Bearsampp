@@ -27,6 +27,9 @@ class ActionLoading
     /** @var mixed The window object created by WinBinder. */
     private $wbWindow;
 
+    /** @var mixed The label control for displaying status text. */
+    private $wbLabel;
+
     /** @var mixed The progress bar object created by WinBinder. */
     private $wbProgressBar;
 
@@ -41,24 +44,58 @@ class ActionLoading
     {
         global $bearsamppCore, $bearsamppLang, $bearsamppWinbinder;
 
+        $currentPid = Win32Ps::getCurrentPid();
+        Util::logTrace('ActionLoading constructor started - PID: ' . $currentPid);
+
         $bearsamppWinbinder->reset();
-        $bearsamppCore->addLoadingPid(Win32Ps::getCurrentPid());
+        Util::logTrace('WinBinder reset complete');
+        
+        $bearsamppCore->addLoadingPid($currentPid);
+        Util::logTrace('Loading PID added to tracking file: ' . $currentPid);
 
         // Screen information
+        Util::logTrace('Getting screen information');
         $screenArea = explode(' ', $bearsamppWinbinder->getSystemInfo(WinBinder::SYSINFO_WORKAREA));
         $screenWidth = intval($screenArea[2]);
         $screenHeight = intval($screenArea[3]);
         $xPos = $screenWidth - self::WINDOW_WIDTH;
         $yPos = $screenHeight - self::WINDOW_HEIGHT - 5;
+        Util::logTrace('Screen dimensions: ' . $screenWidth . 'x' . $screenHeight . ', Window position: (' . $xPos . ',' . $yPos . ')');
 
         // Create the window and progress bar
+        Util::logTrace('Creating loading window...');
         $this->wbWindow = $bearsamppWinbinder->createWindow(null, ToolDialog, null, $xPos, $yPos, self::WINDOW_WIDTH, self::WINDOW_HEIGHT, WBC_TOP, null);
-        $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::LOADING), 42, 2, 295, null, WBC_LEFT);
+        
+        // Check if window was created successfully
+        if ($this->wbWindow === false || $this->wbWindow === null) {
+            Util::logError('CRITICAL: Failed to create loading window - window handle is: ' . var_export($this->wbWindow, true));
+            Util::logError('WinBinder extension loaded: ' . (extension_loaded('winbinder') ? 'YES' : 'NO'));
+            Util::logError('wb_create_window function exists: ' . (function_exists('wb_create_window') ? 'YES' : 'NO'));
+            return;
+        }
+        
+        Util::logTrace('Loading window created successfully - handle: ' . $this->wbWindow);
+        
+        // CRITICAL: wb_set_visible() must be called AFTER window creation in PHP 8.4
+        // The WS_VISIBLE flag during creation doesn't work
+        Util::logTrace('Making window visible with wb_set_visible()');
+        wb_set_visible($this->wbWindow, true);
+        Util::logTrace('Window set to visible');
+        
+        Util::logTrace('Creating label control...');
+        $this->wbLabel = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::LOADING), 42, 2, 295, null, WBC_LEFT);
+        Util::logTrace('Label created: ' . var_export($this->wbLabel, true));
+        
+        Util::logTrace('Creating progress bar...');
         $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE, 42, 20, 290, 15);
+        Util::logTrace('Progress bar created: ' . var_export($this->wbProgressBar, true));
 
         // Set the handler and start the main loop
+        Util::logTrace('Setting window handler...');
         $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processLoading', 10);
+        Util::logTrace('Handler set, starting main loop...');
         $bearsamppWinbinder->mainLoop();
+        Util::logTrace('Main loop exited');
     }
 
     /**
@@ -121,6 +158,8 @@ class ActionLoading
             $allServicesStarted = $this->checkAllServicesStarted();
             if ($allServicesStarted) {
                 Util::logTrace('All services started successfully');
+                $this->updateLoadingText('All services ready!');
+                usleep(500000); // Show success message for 500ms
                 break;
             }
 
@@ -145,6 +184,21 @@ class ActionLoading
     }
 
     /**
+     * Updates the loading text on the window
+     * 
+     * @param string $text The text to display
+     */
+    private function updateLoadingText($text)
+    {
+        global $bearsamppWinbinder;
+        
+        if ($this->wbLabel) {
+            wb_set_text($this->wbLabel, $text);
+            wb_refresh($this->wbWindow);
+        }
+    }
+
+    /**
      * Checks if all services have started successfully
      * 
      * @return bool True if all services are running, false otherwise
@@ -162,6 +216,10 @@ class ActionLoading
                 Util::logTrace('Service ' . $sName . ' is disabled, skipping check');
                 continue;
             }
+            
+            // Update the loading text to show which service we're checking
+            $serviceName = $service->getName();
+            $this->updateLoadingText('Checking ' . $serviceName . '...');
             
             // Add timeout for service status check
             $checkStartTime = microtime(true);

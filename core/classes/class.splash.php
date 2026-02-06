@@ -57,6 +57,17 @@ class Splash
         $yPos = $screenHeight - self::WINDOW_HEIGHT - 5;
 
         $this->wbWindow = $bearsamppWinbinder->createWindow(null, ToolDialog, $title, $xPos, $yPos, self::WINDOW_WIDTH, self::WINDOW_HEIGHT, WBC_TOP | WBC_READONLY, null);
+        
+        // Check if window was created successfully
+        if ($this->wbWindow === false || $this->wbWindow === null) {
+            Util::logError('Failed to create splash window');
+            return;
+        }
+        
+        // CRITICAL: wb_set_visible() must be called AFTER window creation in PHP 8.4
+        // The WS_VISIBLE flag during creation doesn't work
+        wb_set_visible($this->wbWindow, true);
+        
         $this->wbImage = $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/bearsampp.bmp');
         $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, $gauge + 1, 42, 24, 390, 15);
 

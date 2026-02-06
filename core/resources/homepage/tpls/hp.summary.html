@@ -103,17 +103,6 @@
 					<span> <?php echo $bearsamppLang->getValue(Lang::COMPOSER); ?> </span>
 					</span>
 					<span class = "list-group-item">
-					<a aria-label = "Download PowerShell" href = "
-						<?php echo Util::getWebsiteUrl('module/powershell', '#releases'); ?>" target = "_blank" title = "
-						<?php echo $downloadTitle; ?>">
-					<span class = "float-end ms-2">
-					<i class = "fa-solid fa-cloud-arrow-down"></i>
-					</span>
-					</a>
-					<span class = "float-end badge text-bg-primary"> <?php echo $bearsamppTools->getPowerShell()->getVersion(); ?> </span>
-					<span> <?php echo $bearsamppLang->getValue(Lang::POWERSHELL); ?> </span>
-					</span>
-					<span class = "list-group-item">
 					<a aria-label = "Download ghostscript" href = "
 						<?php echo Util::getWebsiteUrl('module/ghostscript', '#releases'); ?>" target = "_blank" title = "
 						<?php echo $downloadTitle; ?>">
@@ -156,6 +145,17 @@
 					</a>
 					<span class = "float-end badge text-bg-primary"> <?php echo $bearsamppTools->getPerl()->getVersion(); ?> </span>
 					<span> <?php echo $bearsamppLang->getValue(Lang::PERL); ?> </span>
+					</span>
+					<span class = "list-group-item">
+					<a aria-label = "Download PowerShell" href = "
+						<?php echo Util::getWebsiteUrl('module/powershell', '#releases'); ?>" target = "_blank" title = "
+						<?php echo $downloadTitle; ?>">
+					<span class = "float-end ms-2">
+					<i class = "fa-solid fa-cloud-arrow-down"></i>
+					</span>
+					</a>
+					<span class = "float-end badge text-bg-primary"> <?php echo $bearsamppTools->getPowerShell()->getVersion(); ?> </span>
+					<span> <?php echo $bearsamppLang->getValue(Lang::POWERSHELL); ?> </span>
 					</span>
 					<span class = "list-group-item">
 					<a aria-label = "Download python" href = "

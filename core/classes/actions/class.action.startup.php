@@ -238,20 +238,22 @@ class ActionStartup
 
         Util::logTrace('Starting loading screen');
         Util::startLoading();
-        Util::logTrace('Loading process completed');
+        
+        // Give the loading window time to initialize before we terminate this process
+        Util::logTrace('Waiting for loading window to initialize');
+        usleep(500000); // 500ms delay to allow loading window to start
+        
+        Util::logTrace('Loading process started');
 
         // Closing cli to finish startup
         Util::logTrace('Finishing startup process');
 
-        $currentPid = Win32Ps::getCurrentPid();
-        // Add timeout parameter (15 seconds) to prevent hanging
-        ActionQuit::terminatePhpProcesses($currentPid, null, null, 15);
-
-        // Safely reset WinBinder instead of trying to destroy specific windows
+        // Safely reset WinBinder and destroy the splash window
+        $bearsamppWinbinder->destroyWindow($window);
         $bearsamppWinbinder->reset();
 
-        // Force exit if we're still running after termination attempt
-        Util::logTrace('Forcing exit as final fallback');
+        // Exit this startup process cleanly - the loading window will continue running
+        Util::logTrace('Exiting startup process cleanly');
         exit(0);
 
     }
