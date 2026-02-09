@@ -476,49 +476,13 @@ class BinPostgresql extends Module
      */
     public function initData($path = null)
     {
-        global $bearsamppRoot;
-        
         $path = $path != null ? $path : $this->getCurrentPath();
 
         if ( file_exists( $path . '/data' ) ) {
             return;
         }
 
-        // Run PostgreSQL initialization
         Batch::initializePostgresql( $path );
-        
-        // Replace placeholders in generated configuration files AFTER initialization
-        // The postgresql.conf is created by init.bat, so we need to fix it after it's generated
-        Util::logDebug('Replacing placeholders in PostgreSQL configuration files after initialization');
-        
-        $filesToScan = array();
-        $dataDir = $path . '/data';
-        
-        // Scan the data directory for .conf files that were just created
-        if (is_dir($dataDir)) {
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($dataDir, RecursiveDirectoryIterator::SKIP_DOTS),
-                RecursiveIteratorIterator::SELF_FIRST
-            );
-            foreach ($iterator as $file) {
-                if ($file->isFile()) {
-                    $filename = $file->getFilename();
-                    // Include .conf files that were just created
-                    if (substr($filename, -5) === '.conf') {
-                        $filesToScan[] = Util::formatUnixPath($file->getPathname());
-                        Util::logDebug('Added config file to scan list: ' . $file->getPathname());
-                    }
-                }
-            }
-        }
-        
-        if (!empty($filesToScan)) {
-            Util::logDebug('Starting placeholder replacement for ' . count($filesToScan) . ' files');
-            $result = Util::changePath($filesToScan);
-            Util::logDebug('Placeholder replacement result: ' . $result['countChangedFiles'] . ' files changed, ' . $result['countChangedOcc'] . ' occurrences replaced');
-        } else {
-            Util::logDebug('No configuration files found to scan for placeholder replacement');
-        }
     }
 
     /**

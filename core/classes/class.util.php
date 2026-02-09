@@ -1217,53 +1217,39 @@ class Util
         $unixCurrentPath    = self::formatUnixPath($rootPath);
         $windowsCurrentPath = self::formatWindowsPath($rootPath);
 
-        self::logDebug('changePath() called with ' . count($filesToScan) . ' files to scan');
-        self::logDebug('Root path: ' . $rootPath);
-        self::logDebug('Unix current path: ' . $unixCurrentPath);
-        self::logDebug('Windows current path: ' . $windowsCurrentPath);
-
         foreach ($filesToScan as $fileToScan) {
             $tmpCountChangedOcc = 0;
             $fileContentOr      = file_get_contents($fileToScan);
             $fileContent        = $fileContentOr;
-
-            self::logDebug('Processing file: ' . $fileToScan);
 
             // old path
             preg_match('#' . $unixOldPath . '#i', $fileContent, $unixMatches);
             if (!empty($unixMatches)) {
                 $fileContent        = str_replace($unixOldPath, $unixCurrentPath, $fileContent, $countChanged);
                 $tmpCountChangedOcc += $countChanged;
-                self::logDebug('  -> Replaced old unix path: ' . $countChanged . ' occurrences');
             }
             preg_match('#' . str_replace('\\', '\\\\', $windowsOldPath) . '#i', $fileContent, $windowsMatches);
             if (!empty($windowsMatches)) {
                 $fileContent        = str_replace($windowsOldPath, $windowsCurrentPath, $fileContent, $countChanged);
                 $tmpCountChangedOcc += $countChanged;
-                self::logDebug('  -> Replaced old windows path: ' . $countChanged . ' occurrences');
             }
 
             // placeholders
-            preg_match('#' . preg_quote(Core::PATH_LIN_PLACEHOLDER, '#') . '#i', $fileContent, $unixMatches);
+            preg_match('#' . Core::PATH_LIN_PLACEHOLDER . '#i', $fileContent, $unixMatches);
             if (!empty($unixMatches)) {
                 $fileContent        = str_replace(Core::PATH_LIN_PLACEHOLDER, $unixCurrentPath, $fileContent, $countChanged);
                 $tmpCountChangedOcc += $countChanged;
-                self::logDebug('  -> Replaced unix placeholder: ' . $countChanged . ' occurrences');
             }
-            preg_match('#' . preg_quote(Core::PATH_WIN_PLACEHOLDER, '#') . '#i', $fileContent, $windowsMatches);
+            preg_match('#' . Core::PATH_WIN_PLACEHOLDER . '#i', $fileContent, $windowsMatches);
             if (!empty($windowsMatches)) {
                 $fileContent        = str_replace(Core::PATH_WIN_PLACEHOLDER, $windowsCurrentPath, $fileContent, $countChanged);
                 $tmpCountChangedOcc += $countChanged;
-                self::logDebug('  -> Replaced windows placeholder: ' . $countChanged . ' occurrences');
             }
 
             if ($fileContentOr != $fileContent) {
                 $result['countChangedOcc']   += $tmpCountChangedOcc;
                 $result['countChangedFiles'] += 1;
                 file_put_contents($fileToScan, $fileContent);
-                self::logDebug('  -> File updated with ' . $tmpCountChangedOcc . ' total changes');
-            } else {
-                self::logDebug('  -> No changes made to this file');
             }
         }
 
@@ -1440,8 +1426,6 @@ class Util
                 self::logDebug('-> ' . $header);
             }
         }
-
-        self::logDebug('changePath() completed: ' . $result['countChangedFiles'] . ' files changed, ' . $result['countChangedOcc'] . ' total occurrences');
 
         return $result;
     }
