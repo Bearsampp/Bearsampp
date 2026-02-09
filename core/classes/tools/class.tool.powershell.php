@@ -264,8 +264,7 @@ class ToolPowerShell extends Module
      */
     public function getTabTitlePython() {
         global $bearsamppLang, $bearsamppTools;
-        $version = $bearsamppTools->getPython()->getVersion();
-        return $bearsamppLang->getValue(Lang::PYTHON) . ($version ? ' ' . $version : '');
+        return $bearsamppLang->getValue(Lang::PYTHON) . ' ' . $bearsamppTools->getPython()->getVersion();
     }
 
     /**
@@ -275,8 +274,7 @@ class ToolPowerShell extends Module
      */
     public function getTabTitleRuby() {
         global $bearsamppLang, $bearsamppTools;
-        $version = $bearsamppTools->getRuby()->getVersion();
-        return $bearsamppLang->getValue(Lang::RUBY) . ($version ? ' ' . $version : '');
+        return $bearsamppLang->getValue(Lang::RUBY) . ' ' . $bearsamppTools->getRuby()->getVersion();
     }
 
     /**
@@ -286,8 +284,7 @@ class ToolPowerShell extends Module
      */
     public function getTabTitlePerl() {
         global $bearsamppLang, $bearsamppTools;
-        $version = $bearsamppTools->getPerl()->getVersion();
-        return $bearsamppLang->getValue(Lang::PERL) . ($version ? ' ' . $version : '');
+        return $bearsamppLang->getValue(Lang::PERL) . ' ' . $bearsamppTools->getPerl()->getVersion();
     }
 
     /**
@@ -297,8 +294,7 @@ class ToolPowerShell extends Module
      */
     public function getTabTitleGhostscript() {
         global $bearsamppLang, $bearsamppTools;
-        $version = $bearsamppTools->getGhostscript()->getVersion();
-        return $bearsamppLang->getValue(Lang::GHOSTSCRIPT) . ($version ? ' ' . $version : '');
+        return $bearsamppLang->getValue(Lang::GHOSTSCRIPT) . ' ' . $bearsamppTools->getGhostscript()->getVersion();
     }
 
     /**
@@ -308,7 +304,6 @@ class ToolPowerShell extends Module
      */
     public function getTabTitleNgrok() {
         global $bearsamppLang, $bearsamppTools;
-        $version = $bearsamppTools->getNgrok()->getVersion();
-        return $bearsamppLang->getValue(Lang::NGROK) . ($version ? ' ' . $version : '');
+        return $bearsamppLang->getValue(Lang::NGROK) . ' ' . $bearsamppTools->getNgrok()->getVersion();
     }
 }
