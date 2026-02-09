@@ -236,6 +236,14 @@ changeDbRootPwdNotsameError = "Las contraseñas que ingresó no son idénticas e
 changeDbRootPwdIncorrectError = "Error de %s: %s"
 changeDbRootPwdText = "¡Contraseña de root cambiada con éxito!"
 
+; Action Start All Services
+loadingStartServices = "Iniciando todos los servicios"
+loadingStartService = "Iniciando %s..."
+loadingStopServices = "Deteniendo todos los servicios"
+loadingStopService = "Deteniendo %s..."
+loadingRestartServices = "Reiniciando todos los servicios"
+loadingComplete = "Completado"
+
 ; Inicio
 startupStartingText = "Iniciando %s. Por favor espere"
 startupRotationLogsText = "Archivado de registros"

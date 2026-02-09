@@ -64,50 +64,32 @@ class TplAppServices
     }
 
     /**
-     * Generates the actions to start all services.
+     * Generates the actions to start all services using a single splash screen.
      *
-     * @global object $bearsamppBins Provides access to system binaries and their configurations.
-     *
-     * @return string The generated actions to start all services.
+     * @return string The generated action to start all services.
      */
     public static function getActionStartServices()
     {
-        global $bearsamppBins;
-        $actions = '';
-
-        foreach ($bearsamppBins->getServices() as $sName => $service) {
-            $actions .= TplService::getActionStart($service->getName()) . PHP_EOL;
-        }
-
-        return $actions;
+        return TplApp::getActionRun(Action::START_ALL_SERVICES, array());
     }
 
     /**
-     * Generates the actions to stop all services.
+     * Generates the actions to stop all services using a single splash screen.
      *
-     * @global object $bearsamppBins Provides access to system binaries and their configurations.
-     *
-     * @return string The generated actions to stop all services.
+     * @return string The generated action to stop all services.
      */
     public static function getActionStopServices()
     {
-        global $bearsamppBins;
-        $actions = '';
-
-        foreach ($bearsamppBins->getServices() as $sName => $service) {
-            $actions .= TplService::getActionStop($service->getName()) . PHP_EOL;
-        }
-
-        return $actions;
+        return TplApp::getActionRun(Action::STOP_ALL_SERVICES, array());
     }
 
     /**
-     * Generates the actions to restart all services by stopping and then starting them.
+     * Generates the actions to restart all services using a single splash screen.
      *
-     * @return string The generated actions to restart all services.
+     * @return string The generated action to restart all services.
      */
     public static function getActionRestartServices()
     {
-        return self::getActionStopServices() . self::getActionStartServices();
+        return TplApp::getActionRun(Action::RESTART_ALL_SERVICES, array());
     }
 }

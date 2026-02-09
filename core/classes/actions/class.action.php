@@ -40,8 +40,11 @@ class Action
     const REFRESH_REPOS_STARTUP = 'refreshReposStartup';
     const RELOAD = 'reload';
     const RESTART = 'restart';
+    const RESTART_ALL_SERVICES = 'restartAllServices';
     const SERVICE = 'service';
+    const START_ALL_SERVICES = 'startAllServices';
     const STARTUP = 'startup';
+    const STOP_ALL_SERVICES = 'stopAllServices';
     const SWITCH_APACHE_MODULE = 'switchApacheModule';
     const SWITCH_LANG = 'switchLang';
     const SWITCH_LOGS_VERBOSE = 'switchLogsVerbose';

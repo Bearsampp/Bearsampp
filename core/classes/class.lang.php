@@ -255,6 +255,14 @@ class Lang
     const CHANGE_DB_ROOT_PWD_INCORRECT_ERROR = 'changeDbRootPwdIncorrectError';
     const CHANGE_DB_ROOT_PWD_TEXT = 'changeDbRootPwdText';
 
+    // Action Start All Services
+    const LOADING_START_SERVICES = 'loadingStartServices';
+    const LOADING_START_SERVICE = 'loadingStartService';
+    const LOADING_STOP_SERVICES = 'loadingStopServices';
+    const LOADING_STOP_SERVICE = 'loadingStopService';
+    const LOADING_RESTART_SERVICES = 'loadingRestartServices';
+    const LOADING_COMPLETE = 'loadingComplete';
+
     // Action Startup
     const STARTUP_STARTING_TEXT = 'startupStartingText';
     const STARTUP_ROTATION_LOGS_TEXT = 'startupRotationLogsText';

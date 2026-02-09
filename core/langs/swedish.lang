@@ -236,6 +236,14 @@ changeDbRootPwdNotsameError = "#Passwords that you entered are not identical to 
 changeDbRootPwdIncorrectError = "#%s error: %s"
 changeDbRootPwdText = "#Root password changed successfully!"
 
+; Action Start All Services
+loadingStartServices = "Startar alla tjänster"
+loadingStartService = "Startar %s..."
+loadingStopServices = "Stoppar alla tjänster"
+loadingStopService = "Stoppar %s..."
+loadingRestartServices = "Startar om alla tjänster"
+loadingComplete = "Klart"
+
 ; Action Startup
 startupStartingText = "Startar %s. Var vänlig vänta"
 startupRotationLogsText = "#Log archiving"

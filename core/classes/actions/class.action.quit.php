@@ -130,12 +130,22 @@ class ActionQuit
      */
     public static function terminatePhpProcesses($excludePid, $window = null, $splash = null, $timeout = 10)
     {
-        global $bearsamppWinbinder;
+        global $bearsamppWinbinder, $bearsamppCore;
 
         $currentPid = Win32Ps::getCurrentPid();
         $startTime = microtime(true);
         
         Util::logTrace('Starting PHP process termination (excluding PID: ' . $excludePid . ')');
+
+        // Get list of loading PIDs to exclude from termination
+        $loadingPids = array();
+        if (file_exists($bearsamppCore->getLoadingPid())) {
+            $pids = file($bearsamppCore->getLoadingPid());
+            foreach ($pids as $pid) {
+                $loadingPids[] = intval(trim($pid));
+            }
+            Util::logTrace('Loading PIDs to preserve: ' . implode(', ', $loadingPids));
+        }
 
         $targets = ['php-win.exe', 'php.exe'];
         foreach (Win32Ps::getListProcs() as $proc) {
@@ -148,10 +158,13 @@ class ActionQuit
             $exe = strtolower(basename($proc[Win32Ps::EXECUTABLE_PATH]));
             $pid = $proc[Win32Ps::PROCESS_ID];
 
-            if (in_array($exe, $targets) && $pid != $excludePid) {
+            // Skip if this is the excluded PID or a loading window PID
+            if (in_array($exe, $targets) && $pid != $excludePid && !in_array($pid, $loadingPids)) {
                 Util::logTrace('Terminating PHP process: ' . $pid);
                 Win32Ps::kill($pid);
                 usleep(100000); // 100ms delay between terminations
+            } elseif (in_array($pid, $loadingPids)) {
+                Util::logTrace('Preserving loading window process: ' . $pid);
             }
         }
 

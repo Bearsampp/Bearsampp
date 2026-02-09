@@ -236,6 +236,14 @@ changeDbRootPwdNotsameError = "Les mots de passe que vous avez saisis ne sont pa
 changeDbRootPwdIncorrectError = "Erreur %s : %s"
 changeDbRootPwdText = "Mot de passe root changé avec succès !"
 
+; Action Start All Services
+loadingStartServices = "Démarrage de tous les services"
+loadingStartService = "Démarrage de %s..."
+loadingStopServices = "Arrêt de tous les services"
+loadingStopService = "Arrêt de %s..."
+loadingRestartServices = "Redémarrage de tous les services"
+loadingComplete = "Terminé"
+
 ; Action Startup
 startupStartingText = "Démarrage de %s. Veuillez patienter."
 startupRotationLogsText = "Archivage des journaux"
