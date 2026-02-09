@@ -963,6 +963,36 @@ class Util
             }
             @unlink($bearsamppCore->getLoadingPid());
         }
+        
+        // Clean up status file
+        self::clearLoadingText();
+    }
+
+    /**
+     * Updates the loading screen text (if loading screen is active)
+     * This allows dynamic updates to show which service is being processed
+     * 
+     * @param string $text The text to display on the loading screen
+     */
+    public static function updateLoadingText($text)
+    {
+        global $bearsamppCore;
+        
+        $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
+        file_put_contents($statusFile, json_encode(['text' => $text]));
+    }
+
+    /**
+     * Clears the loading status file
+     */
+    public static function clearLoadingText()
+    {
+        global $bearsamppCore;
+        
+        $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
+        if (file_exists($statusFile)) {
+            @unlink($statusFile);
+        }
     }
 
     /**

@@ -151,6 +151,10 @@ class ActionLoading
 
             for ($i = 0; $i < self::GAUGE && (microtime(true) - $startTime) < $maxLoadingTime; $i++) {
                 $this->incrProgressBar();
+                
+                // Check for status file updates to show current service being processed
+                $this->updateLabelFromStatusFile();
+                
                 usleep(100000);
             }
 
@@ -158,8 +162,6 @@ class ActionLoading
             $allServicesStarted = $this->checkAllServicesStarted();
             if ($allServicesStarted) {
                 Util::logTrace('All services started successfully');
-                $this->updateLoadingText('All services ready!');
-                usleep(500000); // Show success message for 500ms
                 break;
             }
 
@@ -174,9 +176,6 @@ class ActionLoading
         if ((microtime(true) - $startTime) >= $maxLoadingTime) {
             Util::logTrace('Loading timeout reached (' . $maxLoadingTime . ' seconds), some services may not have started properly');
         }
-        
-        // Add a small delay before killing the process to ensure UI updates are complete
-        usleep(500000); // 500ms
         
         // Close the loading window
         Util::logTrace('Closing loading window');
@@ -195,6 +194,29 @@ class ActionLoading
         if ($this->wbLabel) {
             wb_set_text($this->wbLabel, $text);
             wb_refresh($this->wbWindow);
+        }
+    }
+
+    /**
+     * Updates the label text from status file if it exists
+     * This allows external processes to update the loading screen text dynamically
+     */
+    private function updateLabelFromStatusFile()
+    {
+        global $bearsamppCore, $bearsamppWinbinder;
+        
+        $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
+        
+        if (file_exists($statusFile)) {
+            $content = @file_get_contents($statusFile);
+            if ($content !== false && !empty($content)) {
+                $status = @json_decode($content, true);
+                if ($status && isset($status['text']) && !empty($status['text'])) {
+                    // Update the label with new text
+                    $bearsamppWinbinder->setText($this->wbLabel[WinBinder::CTRL_OBJ], $status['text']);
+                    $bearsamppWinbinder->refresh($this->wbWindow);
+                }
+            }
         }
     }
 
