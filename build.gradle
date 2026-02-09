@@ -9,7 +9,7 @@ file('build.properties').withInputStream { buildProps.load(it) }
 
 // Project configuration
 group = 'com.bearsampp'
-version = buildProps.getProperty('release.default.version')
+version = buildProps.getProperty('release.version')
 
 // Define properties
 ext {
@@ -25,7 +25,7 @@ ext {
 
     // Release configuration
     releaseName = 'Bearsampp'
-    releaseFullVersion = buildProps.getProperty('release.default.version')
+    releaseFullVersion = buildProps.getProperty('release.version')
     releaseFormat = buildProps.getProperty('release.format')
     releaseReleaseType = buildProps.getProperty('release.release.type')
 

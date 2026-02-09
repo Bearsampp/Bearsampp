@@ -236,6 +236,14 @@ changeDbRootPwdNotsameError = "Passwords that you entered are not identical to e
 changeDbRootPwdIncorrectError = "%s error: %s"
 changeDbRootPwdText = "Root password changed successfully!"
 
+; Action Start All Services
+loadingStartServices = "Starting all services"
+loadingStartService = "Starting %s..."
+loadingStopServices = "Stopping all services"
+loadingStopService = "Stopping %s..."
+loadingRestartServices = "Restarting all services"
+loadingComplete = "Complete"
+
 ; Action Startup
 startupStartingText = "Starting %s. Please wait"
 startupRotationLogsText = "Log archiving"
