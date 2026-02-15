@@ -479,10 +479,33 @@ class BinPostgresql extends Module
         $path = $path != null ? $path : $this->getCurrentPath();
 
         if ( file_exists( $path . '/data' ) ) {
+            // Even if it exists, ensure placeholders are replaced in the whole folder
+            $filesToScan = Util::getFilesToScan( array(
+                array(
+                    'path'      => $path,
+                    'includes'  => array( '.conf', '.bat', '.ber' ),
+                    'recursive' => true
+                )
+            ) );
+            if ( !empty( $filesToScan ) ) {
+                Util::changePath( $filesToScan );
+            }
             return;
         }
 
         Batch::initializePostgresql( $path );
+
+        // Replace placeholders in the newly created data directory and the whole version folder
+        $filesToScan = Util::getFilesToScan( array(
+            array(
+                'path'      => $path,
+                'includes'  => array( '.conf', '.bat', '.ber' ),
+                'recursive' => true
+            )
+        ) );
+        if ( !empty( $filesToScan ) ) {
+            Util::changePath( $filesToScan );
+        }
     }
 
     /**
