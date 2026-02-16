@@ -749,6 +749,16 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             into releaseBasePath
             includeEmptyDirs = true
         }
+
+
+        // Copy LICENSE file
+        if (file("${projectDir}/LICENSE").exists()) {
+            copy {
+                from "${projectDir}/LICENSE"
+                into releaseBasePath
+            }
+            println "  [COPY] LICENSE"
+        }
         
         // Manually copy .gitignore files (Gradle excludes them by default)
         println "Manually copying .gitignore files..."
