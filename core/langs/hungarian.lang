@@ -236,6 +236,14 @@ changeDbRootPwdNotsameError = "A beirt jelszavak nem egyeznek egymással"
 changeDbRootPwdIncorrectError = "%s hiba: %s"
 changeDbRootPwdText = "Root jelszó sikeresen megváltoztatva"
 
+; Action Start All Services
+loadingStartServices = "Minden szervíz indítása"
+loadingStartService = "%s indítása..."
+loadingStopServices = "Minden szervíz leállítása"
+loadingStopService = "%s leállítása..."
+loadingRestartServices = "Minden szervíz újraindítása"
+loadingComplete = "Kész"
+
 ; Action Change port
 startupStartingText = "%s inditása Kérem várjon"
 startupRotationLogsText = "Napló arhiválás"

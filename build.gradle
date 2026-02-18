@@ -9,7 +9,7 @@ file('build.properties').withInputStream { buildProps.load(it) }
 
 // Project configuration
 group = 'com.bearsampp'
-version = buildProps.getProperty('release.default.version')
+version = buildProps.getProperty('release.version')
 
 // Define properties
 ext {
@@ -25,7 +25,7 @@ ext {
 
     // Release configuration
     releaseName = 'Bearsampp'
-    releaseFullVersion = buildProps.getProperty('release.default.version')
+    releaseFullVersion = buildProps.getProperty('release.version')
     releaseFormat = buildProps.getProperty('release.format')
     releaseReleaseType = buildProps.getProperty('release.release.type')
 
@@ -133,8 +133,20 @@ def downloadModule(String releasesUrl, String version, File destDir) {
         if (!downloadFile.exists()) {
             println "* Downloading ${filename}..."
             ant.get(src: downloadUrl, dest: downloadFile, verbose: true)
+            
+            // Verify download completed successfully
+            if (downloadFile.exists() && downloadFile.length() < 1024 * 1024) {
+                println "WARNING: Downloaded file seems too small (${downloadFile.length()} bytes), may be corrupted"
+            }
         } else {
-            println "* Using cached ${filename}"
+            println "* Using cached ${filename} (${downloadFile.length()} bytes)"
+            
+            // Verify cached file is not corrupted
+            if (downloadFile.length() < 1024 * 1024) {
+                println "WARNING: Cached file seems too small (${downloadFile.length()} bytes), deleting and re-downloading..."
+                downloadFile.delete()
+                ant.get(src: downloadUrl, dest: downloadFile, verbose: true)
+            }
         }
 
         println "* Extracting ${filename} to ${destDir}..."
@@ -659,9 +671,10 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         delete releaseBasePath
         releaseBasePath.mkdirs()
 
+        // Copy only the core directory from the project
         copy {
-            from projectDir
-            into releaseBasePath
+            from file("${projectDir}/core")
+            into file("${releaseBasePath}/core")
             includeEmptyDirs = true
             exclude { fileTreeElement ->
                 def path = fileTreeElement.relativePath.pathString
@@ -674,8 +687,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                 }
                 
                 // SECOND: NEVER exclude files from these directories - copy everything
-                if (path.startsWith('core/tmp/') || path.startsWith('core/logs/') || 
-                    path.startsWith('tmp/') || path.startsWith('logs/')) {
+                if (path.startsWith('tmp/') || path.startsWith('logs/')) {
                     return false
                 }
                 
@@ -691,27 +703,6 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                     if (part.startsWith('.') && part != '.gitignore' && part != '.htaccess') {
                         return true
                     }
-                }
-                
-                // Exclude base and bin directories
-                if (path.startsWith('base/') || path.startsWith('bin/')) {
-                    return true
-                }
-                
-                // Exclude specific files
-                if (path == 'giscus.json' || path == 'core/.editorconfig' || 
-                    path == 'build.properties' || path == 'build.xml' || 
-                    path == 'build.gradle' || path == 'settings.gradle' ||
-                    path == 'ResourceHacker.exe' || path == 'ResourceHacker.ini' ||
-                    path == 'fix-core-icon.bat' || path == 'rcedit-x64.exe' ||
-                    path == 'Bearsampp-iconography.zip' || path == 'build.xml.reference' ||
-                    path == 'buildFull.ini' || path == 'buildBasic.ini' || path == 'buildLite.ini') {
-                    return true
-                }
-                
-                // Exclude gradle wrapper files
-                if (path.startsWith('gradle/') || path == 'gradlew' || path == 'gradlew.bat') {
-                    return true
                 }
                 
                 // Exclude specific file types
@@ -757,6 +748,16 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             from file("${projectDir}/base")
             into releaseBasePath
             includeEmptyDirs = true
+        }
+
+
+        // Copy LICENSE file
+        if (file("${projectDir}/LICENSE").exists()) {
+            copy {
+                from "${projectDir}/LICENSE"
+                into releaseBasePath
+            }
+            println "  [COPY] LICENSE"
         }
         
         // Manually copy .gitignore files (Gradle excludes them by default)
@@ -1354,11 +1355,9 @@ task launch(dependsOn: buildFull) {
     }
 }
 
-// Disable the built-in wrapper task since Gradle is locally installed
+// Disable wrapper task - Gradle is installed locally, wrappers are not used
 tasks.named('wrapper') {
-    doFirst {
-        throw new GradleException("The wrapper task is disabled. Gradle is installed locally on this system.")
-    }
+    enabled = false
 }
 
 // Default task

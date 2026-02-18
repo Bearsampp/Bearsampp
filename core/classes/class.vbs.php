@@ -118,11 +118,13 @@ class Vbs
 
         $content = 'On Error Resume Next' . PHP_EOL;
         $content .= 'Err.Clear' . PHP_EOL . PHP_EOL;
-        $content .= 'Dim objShell, objRegistry, objFso, objFile' . PHP_EOL . PHP_EOL;
+        $content .= 'Dim objShell, objRegistry, objFso, objFile, browserPath' . PHP_EOL . PHP_EOL;
         $content .= 'Set objShell = WScript.CreateObject("WScript.Shell")' . PHP_EOL;
         $content .= 'Set objRegistry = GetObject("winmgmts://./root/default:StdRegProv")' . PHP_EOL;
         $content .= 'Set objFso = CreateObject("scripting.filesystemobject")' . PHP_EOL;
         $content .= 'Set objFile = objFso.CreateTextFile("' . $resultFile . '", True)' . PHP_EOL . PHP_EOL;
+        
+        // Check HKLM (system-wide browsers)
         $content .= 'mainKey = "SOFTWARE\WOW6432Node\Clients\StartMenuInternet"' . PHP_EOL;
         $content .= 'checkKey = objShell.RegRead("HKLM\" & mainKey & "\")' . PHP_EOL;
         $content .= 'If Err.Number <> 0 Then' . PHP_EOL;
@@ -137,9 +139,34 @@ class Vbs
         $content .= 'If mainKey <> "" Then' . PHP_EOL;
         $content .= '    objRegistry.EnumKey &H80000002, mainKey, arrSubKeys' . PHP_EOL;
         $content .= '    For Each subKey In arrSubKeys' . PHP_EOL;
-        $content .= '        objFile.Write objShell.RegRead("HKLM\SOFTWARE\Clients\StartMenuInternet\" & subKey & "\shell\open\command\") & vbCrLf' . PHP_EOL;
+        $content .= '        Err.Clear' . PHP_EOL;
+        $content .= '        browserPath = objShell.RegRead("HKLM\" & mainKey & "\" & subKey & "\shell\open\command\")' . PHP_EOL;
+        $content .= '        If Err.Number = 0 And browserPath <> "" Then' . PHP_EOL;
+        $content .= '            objFile.Write browserPath & vbCrLf' . PHP_EOL;
+        $content .= '        End If' . PHP_EOL;
+        $content .= '        Err.Clear' . PHP_EOL;
         $content .= '    Next' . PHP_EOL;
-        $content .= 'End If' . PHP_EOL;
+        $content .= 'End If' . PHP_EOL . PHP_EOL;
+        
+        // Check HKCU (user-installed browsers like Brave)
+        $content .= 'Err.Clear' . PHP_EOL;
+        $content .= 'userKey = "SOFTWARE\Clients\StartMenuInternet"' . PHP_EOL;
+        $content .= 'checkKey = objShell.RegRead("HKCU\" & userKey & "\")' . PHP_EOL;
+        $content .= 'If Err.Number = 0 Then' . PHP_EOL;
+        $content .= '    Err.Clear' . PHP_EOL;
+        $content .= '    objRegistry.EnumKey &H80000001, userKey, arrUserSubKeys' . PHP_EOL;
+        $content .= '    If Not IsEmpty(arrUserSubKeys) Then' . PHP_EOL;
+        $content .= '        For Each subKey In arrUserSubKeys' . PHP_EOL;
+        $content .= '            Err.Clear' . PHP_EOL;
+        $content .= '            browserPath = objShell.RegRead("HKCU\" & userKey & "\" & subKey & "\shell\open\command\")' . PHP_EOL;
+        $content .= '            If Err.Number = 0 And browserPath <> "" Then' . PHP_EOL;
+        $content .= '                objFile.Write browserPath & vbCrLf' . PHP_EOL;
+        $content .= '            End If' . PHP_EOL;
+        $content .= '            Err.Clear' . PHP_EOL;
+        $content .= '        Next' . PHP_EOL;
+        $content .= '    End If' . PHP_EOL;
+        $content .= 'End If' . PHP_EOL . PHP_EOL;
+        
         $content .= 'objFile.Close' . PHP_EOL;
 
         $result = self::exec( $basename, $resultFile, $content );

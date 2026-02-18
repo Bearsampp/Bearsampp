@@ -935,7 +935,19 @@ class Util
     public static function startLoading()
     {
         global $bearsamppCore, $bearsamppWinbinder;
-        $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), Core::isRoot_FILE . ' ' . Action::LOADING);
+        
+        self::logTrace('startLoading() called');
+        self::logTrace('PHP executable: ' . $bearsamppCore->getPhpExe());
+        self::logTrace('Root file: ' . Core::isRoot_FILE);
+        self::logTrace('Action: ' . Action::LOADING);
+        
+        $command = Core::isRoot_FILE . ' ' . Action::LOADING;
+        self::logTrace('Executing command: ' . $bearsamppCore->getPhpExe() . ' ' . $command);
+        
+        $result = $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), $command);
+        self::logTrace('exec() returned: ' . var_export($result, true));
+        
+        self::logTrace('startLoading() completed');
     }
 
     /**
@@ -950,6 +962,36 @@ class Util
                 Win32Ps::kill($pid);
             }
             @unlink($bearsamppCore->getLoadingPid());
+        }
+        
+        // Clean up status file
+        self::clearLoadingText();
+    }
+
+    /**
+     * Updates the loading screen text (if loading screen is active)
+     * This allows dynamic updates to show which service is being processed
+     * 
+     * @param string $text The text to display on the loading screen
+     */
+    public static function updateLoadingText($text)
+    {
+        global $bearsamppCore;
+        
+        $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
+        file_put_contents($statusFile, json_encode(['text' => $text]));
+    }
+
+    /**
+     * Clears the loading status file
+     */
+    public static function clearLoadingText()
+    {
+        global $bearsamppCore;
+        
+        $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
+        if (file_exists($statusFile)) {
+            @unlink($statusFile);
         }
     }
 
@@ -1078,7 +1120,7 @@ class Util
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => $bearsamppBins->getPostgresql()->getRootPath() . '/' . $folder,
-                'includes'  => array( '.conf', '.bat'),
+                'includes'  => array( '.conf', '.bat', '.ber'),
                 'recursive' => true
             );
         }
@@ -1253,11 +1295,13 @@ class Util
             }
         }
 
+        self::logDebug('changePath() completed: ' . $result['countChangedFiles'] . ' files changed, ' . $result['countChangedOcc'] . ' total occurrences');
+
         return $result;
     }
 
     /**
-     * Fetches the latest version information from a given URL.
+     * Fetches the latest version information from a given url.
      *
      * @param   string  $url  The URL to fetch version information from.
      *
