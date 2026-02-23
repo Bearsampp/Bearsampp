@@ -236,6 +236,14 @@ changeDbRootPwdNotsameError = "Die von Ihnen eingegebenen Passwörter sind nicht
 changeDbRootPwdIncorrectError = "%s Fehler: %s"
 changeDbRootPwdText = "Root-Passwort erfolgreich geändert!"
 
+; Action Start All Services
+loadingStartServices = "Alle Dienste werden gestartet"
+loadingStartService = "%s wird gestartet..."
+loadingStopServices = "Alle Dienste werden gestoppt"
+loadingStopService = "%s wird gestoppt..."
+loadingRestartServices = "Alle Dienste werden neu gestartet"
+loadingComplete = "Fertig"
+
 ; Action Startup
 startupStartingText = "%s wird gestartet. Bitte warten"
 startupRotationLogsText = "Protokollarchivierung"

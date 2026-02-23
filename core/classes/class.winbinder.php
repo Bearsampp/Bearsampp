@@ -118,14 +118,34 @@ class WinBinder
     {
         global $bearsamppCore;
 
-        // Fix for PHP 8.2: Convert null to 0 for parent parameter
+        // Fix for PHP 8.4: Convert null to 0 for parent parameter
         $parent = $parent === null ? 0 : $parent;
+        
+        // Fix for PHP 8.4: Ensure style and params are proper types
+        $style = $style === null ? 0 : $style;
+        $params = $params === null ? 0 : $params;
+
+        // Log window creation attempt for debugging
+        $this->writeLog('Creating window: class=' . $wclass . ', caption=' . $caption . ', pos=(' . $xPos . ',' . $yPos . '), size=(' . $width . 'x' . $height . '), style=' . $style . ', params=' . $params);
 
         $caption = empty($caption) ? $this->defaultTitle : $this->defaultTitle . ' - ' . $caption;
         $window  = $this->callWinBinder('wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params));
 
-        // Set tiny window icon
-        $this->setImage($window, $bearsamppCore->getIconsPath() . '/app.ico');
+        if ($window === false || $window === null) {
+            $this->writeLog('ERROR: Failed to create window - wb_create_window returned: ' . var_export($window, true));
+            // Check if WinBinder extension is loaded
+            if (!extension_loaded('winbinder')) {
+                $this->writeLog('ERROR: WinBinder extension is not loaded!');
+            }
+            // Check if the function exists
+            if (!function_exists('wb_create_window')) {
+                $this->writeLog('ERROR: wb_create_window function does not exist!');
+            }
+        } else {
+            $this->writeLog('Window created successfully: handle=' . $window);
+            // Set tiny window icon
+            $this->setImage($window, $bearsamppCore->getIconsPath() . '/app.ico');
+        }
 
         return $window;
     }
@@ -401,18 +421,20 @@ class WinBinder
     /**
      * Draws text on a WinBinder object.
      *
-     * @param   mixed     $parent   The parent WinBinder object.
-     * @param   string    $caption  The text to draw.
-     * @param   int       $xPos     The x-coordinate of the text.
-     * @param   int       $yPos     The y-coordinate of the text.
-     * @param   int|null  $width    The width of the text area.
-     * @param   int|null  $height   The height of the text area.
-     * @param   mixed     $font     The font to use for the text.
+     * @param   mixed        $parent   The parent WinBinder object.
+     * @param   string|null  $caption  The text to draw. Null will be converted to empty string.
+     * @param   int          $xPos     The x-coordinate of the text.
+     * @param   int          $yPos     The y-coordinate of the text.
+     * @param   int|null     $width    The width of the text area.
+     * @param   int|null     $height   The height of the text area.
+     * @param   mixed        $font     The font to use for the text.
      *
      * @return mixed The result of the draw operation.
      */
     public function drawText($parent, $caption, $xPos, $yPos, $width = null, $height = null, $font = null)
     {
+        // Fix for PHP 8+: Convert null to empty string before str_replace
+        $caption = $caption === null ? '' : $caption;
         $caption = str_replace(self::NEW_LINE, PHP_EOL, $caption);
         $width   = $width == null ? 120 : $width;
         $height  = $height == null ? 25 : $height;
@@ -553,13 +575,15 @@ class WinBinder
     /**
      * Sets the text for a WinBinder object.
      *
-     * @param   mixed   $wbobject  The WinBinder object to set the text for.
-     * @param   string  $content   The text content to set.
+     * @param   mixed        $wbobject  The WinBinder object to set the text for.
+     * @param   string|null  $content   The text content to set. Null will be converted to empty string.
      *
      * @return mixed The result of the set text operation.
      */
     public function setText($wbobject, $content)
     {
+        // Fix for PHP 8+: Convert null to empty string before str_replace
+        $content = $content === null ? '' : $content;
         $content = str_replace(self::NEW_LINE, PHP_EOL, $content);
 
         return $this->callWinBinder('wb_set_text', array($wbobject, $content));
@@ -707,6 +731,10 @@ class WinBinder
     public function createControl($parent, $ctlClass, $caption, $xPos, $yPos, $width, $height, $style = null, $params = null)
     {
         $this->countCtrls++;
+        
+        // Fix for PHP 8.4: Ensure style and params are proper types
+        $style = $style === null ? 0 : $style;
+        $params = $params === null ? 0 : $params;
 
         return array(
             self::CTRL_ID  => $this->countCtrls,
@@ -728,20 +756,22 @@ class WinBinder
     /**
      * Creates an input text control.
      *
-     * @param   mixed     $parent     The parent window or control.
-     * @param   string    $value      The initial value for the input text.
-     * @param   int       $xPos       The x-coordinate of the input text.
-     * @param   int       $yPos       The y-coordinate of the input text.
-     * @param   int|null  $width      The width of the input text.
-     * @param   int|null  $height     The height of the input text.
-     * @param   int|null  $maxLength  The maximum length of the input text.
-     * @param   mixed     $style      The style for the input text.
-     * @param   mixed     $params     Additional parameters for the input text.
+     * @param   mixed        $parent     The parent window or control.
+     * @param   string|null  $value      The initial value for the input text. Null will be converted to empty string.
+     * @param   int          $xPos       The x-coordinate of the input text.
+     * @param   int          $yPos       The y-coordinate of the input text.
+     * @param   int|null     $width      The width of the input text.
+     * @param   int|null     $height     The height of the input text.
+     * @param   int|null     $maxLength  The maximum length of the input text.
+     * @param   mixed        $style      The style for the input text.
+     * @param   mixed        $params     Additional parameters for the input text.
      *
      * @return array An array containing the control ID and object.
      */
     public function createInputText($parent, $value, $xPos, $yPos, $width = null, $height = null, $maxLength = null, $style = null, $params = null)
     {
+        // Fix for PHP 8+: Convert null to empty string before str_replace
+        $value     = $value === null ? '' : $value;
         $value     = str_replace(self::NEW_LINE, PHP_EOL, $value);
         $width     = $width == null ? 120 : $width;
         $height    = $height == null ? 25 : $height;
@@ -763,7 +793,9 @@ class WinBinder
      */
     public function setMaxLength($wbobject, $length)
     {
-        return $this->callWinBinder('wb_send_message', array($wbobject, 0x00c5, $length, 0));
+        // Use error suppression for wb_send_message as it may be disabled in some PHP configurations
+        // This is a non-critical operation - if it fails, the input will just not have a max length
+        return $this->callWinBinder('wb_send_message', array($wbobject, 0x00c5, $length, 0), true);
     }
 
     /**
