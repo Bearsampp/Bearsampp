@@ -1,0 +1,7 @@
+PHP Warning:  PHP Startup: Can't load module 'E:\Bearsampp-development\sandbox\bin\php\php8.3.30\ext\php_memcache.dll' as it's linked with 14.39, but the core is linked with 14.29 in Unknown on line 0
+
+Warning: PHP Startup: Can't load module 'E:\Bearsampp-development\sandbox\bin\php\php8.3.30\ext\php_memcache.dll' as it's linked with 14.39, but the core is linked with 14.29 in Unknown on line 0
+PEAR Version: 1.10.16
+PHP Version: 8.3.30
+Zend Engine Version: 4.3.30
+Running on: Windows NT BEARS-PC 10.0 build 26200 (Windows 11) AMD64
