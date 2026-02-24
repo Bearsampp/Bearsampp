@@ -79,7 +79,9 @@ class Util
     {
         if (is_string($name)) {
             if ($type == 'text') {
-                return (isset($_GET[$name]) && !empty($_GET[$name])) ? stripslashes($_GET[$name]) : '';
+                $value = (isset($_GET[$name]) && !empty($_GET[$name])) ? stripslashes($_GET[$name]) : '';
+                // Additional sanitization: remove null bytes and control characters
+                return filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             } elseif ($type == 'numeric') {
                 return (isset($_GET[$name]) && is_numeric($_GET[$name])) ? intval($_GET[$name]) : '';
             } elseif ($type == 'boolean') {
@@ -183,12 +185,13 @@ class Util
     }
 
     /**
-     * Generates a random string of specified length and character set.
+     * Generates a cryptographically secure random string of specified length and character set.
      *
      * @param   int   $length       The length of the random string to generate.
      * @param   bool  $withNumeric  Whether to include numeric characters in the random string.
      *
      * @return string Returns the generated random string.
+     * @throws Exception If an appropriate source of randomness cannot be found.
      */
     public static function random($length = 32, $withNumeric = true)
     {
@@ -197,12 +200,59 @@ class Util
             $characters .= '0123456789';
         }
 
+        $charactersLength = strlen($characters);
         $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+
+        try {
+            for ($i = 0; $i < $length; $i++) {
+                // Use cryptographically secure random_int() instead of rand()
+                $randomIndex = random_int(0, $charactersLength - 1);
+                $randomString .= $characters[$randomIndex];
+            }
+        } catch (Exception $e) {
+            self::logError('Failed to generate cryptographically secure random string: ' . $e->getMessage());
+            throw $e;
         }
 
         return $randomString;
+    }
+
+    /**
+     * Generates a cryptographically secure random token as a hexadecimal string.
+     * This is ideal for security tokens, session IDs, CSRF tokens, etc.
+     *
+     * @param   int  $length  The length in bytes (output will be double this in hex characters).
+     *
+     * @return string Returns a hexadecimal string of cryptographically secure random bytes.
+     * @throws Exception If an appropriate source of randomness cannot be found.
+     */
+    public static function generateSecureToken($length = 32)
+    {
+        try {
+            return bin2hex(random_bytes($length));
+        } catch (Exception $e) {
+            self::logError('Failed to generate secure token: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Generates a cryptographically secure random bytes string.
+     * Useful for encryption keys, initialization vectors, etc.
+     *
+     * @param   int  $length  The length in bytes.
+     *
+     * @return string Returns raw binary random bytes.
+     * @throws Exception If an appropriate source of randomness cannot be found.
+     */
+    public static function generateSecureBytes($length = 32)
+    {
+        try {
+            return random_bytes($length);
+        } catch (Exception $e) {
+            self::logError('Failed to generate secure bytes: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     /**
@@ -935,18 +985,18 @@ class Util
     public static function startLoading()
     {
         global $bearsamppCore, $bearsamppWinbinder;
-        
+
         self::logTrace('startLoading() called');
         self::logTrace('PHP executable: ' . $bearsamppCore->getPhpExe());
         self::logTrace('Root file: ' . Core::isRoot_FILE);
         self::logTrace('Action: ' . Action::LOADING);
-        
+
         $command = Core::isRoot_FILE . ' ' . Action::LOADING;
         self::logTrace('Executing command: ' . $bearsamppCore->getPhpExe() . ' ' . $command);
-        
+
         $result = $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), $command);
         self::logTrace('exec() returned: ' . var_export($result, true));
-        
+
         self::logTrace('startLoading() completed');
     }
 
@@ -963,7 +1013,7 @@ class Util
             }
             @unlink($bearsamppCore->getLoadingPid());
         }
-        
+
         // Clean up status file
         self::clearLoadingText();
     }
@@ -971,13 +1021,13 @@ class Util
     /**
      * Updates the loading screen text (if loading screen is active)
      * This allows dynamic updates to show which service is being processed
-     * 
+     *
      * @param string $text The text to display on the loading screen
      */
     public static function updateLoadingText($text)
     {
         global $bearsamppCore;
-        
+
         $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
         file_put_contents($statusFile, json_encode(['text' => $text]));
     }
@@ -988,7 +1038,7 @@ class Util
     public static function clearLoadingText()
     {
         global $bearsamppCore;
-        
+
         $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
         if (file_exists($statusFile)) {
             @unlink($statusFile);
