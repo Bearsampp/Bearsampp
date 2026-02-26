@@ -14,68 +14,66 @@
  * It retrieves various Apache debug information based on the provided arguments
  * and displays the information in a message box or editor.
  */
-class ActionDebugApache
+class ActionDebugApache extends ActionDebugBase
 {
     /**
-     * Constructor for ActionDebugApache.
+     * Get the service name for language strings
      *
-     * @param array $args An array of arguments specifying the type of Apache debug information to retrieve.
+     * @return string The language constant name for Apache
      */
-    public function __construct($args)
+    protected function getServiceLangConstant()
     {
-        global $bearsamppLang, $bearsamppBins, $bearsamppTools, $bearsamppWinbinder;
+        return 'APACHE';
+    }
 
-        if (isset($args[0]) && !empty($args[0])) {
-            $editor = false;
-            $msgBoxError = false;
-            $caption = $bearsamppLang->getValue(Lang::DEBUG) . ' ' . $bearsamppLang->getValue(Lang::APACHE) . ' - ';
+    /**
+     * Get the Apache binary instance
+     *
+     * @param object $bearsamppBins The bins object containing all service binaries
+     * @return BinApache The Apache binary instance
+     */
+    protected function getBinInstance($bearsamppBins)
+    {
+        return $bearsamppBins->getApache();
+    }
 
-            // Determine the type of debug information requested and set the caption accordingly
-            if ($args[0] == BinApache::CMD_VERSION_NUMBER) {
-                $caption .= $bearsamppLang->getValue(Lang::DEBUG_APACHE_VERSION_NUMBER);
-            } elseif ($args[0] == BinApache::CMD_COMPILE_SETTINGS) {
-                $caption .= $bearsamppLang->getValue(Lang::DEBUG_APACHE_COMPILE_SETTINGS);
-            } elseif ($args[0] == BinApache::CMD_COMPILED_MODULES) {
-                $caption .= $bearsamppLang->getValue(Lang::DEBUG_APACHE_COMPILED_MODULES);
-            } elseif ($args[0] == BinApache::CMD_CONFIG_DIRECTIVES) {
-                $editor = true;
-                $caption .= $bearsamppLang->getValue(Lang::DEBUG_APACHE_CONFIG_DIRECTIVES);
-            } elseif ($args[0] == BinApache::CMD_VHOSTS_SETTINGS) {
-                $editor = true;
-                $caption .= $bearsamppLang->getValue(Lang::DEBUG_APACHE_VHOSTS_SETTINGS);
-            } elseif ($args[0] == BinApache::CMD_LOADED_MODULES) {
-                $editor = true;
-                $caption .= $bearsamppLang->getValue(Lang::DEBUG_APACHE_LOADED_MODULES);
-            } elseif ($args[0] == BinApache::CMD_SYNTAX_CHECK) {
-                $caption .= $bearsamppLang->getValue(Lang::DEBUG_APACHE_SYNTAX_CHECK);
-            }
-            $caption .= ' (' . $args[0] . ')';
-
-            // Retrieve the debug output from Apache
-            $debugOutput = $bearsamppBins->getApache()->getCmdLineOutput($args[0]);
-
-            // Handle syntax check specifically
-            if ($args[0] == BinApache::CMD_SYNTAX_CHECK) {
-                $msgBoxError = !$debugOutput['syntaxOk'];
-                $debugOutput['content'] = $debugOutput['syntaxOk'] ? 'Syntax OK !' : $debugOutput['content'];
-            }
-
-            // Display the debug output in an editor or message box
-            if ($editor) {
-                Util::openFileContent($caption, $debugOutput['content']);
-            } else {
-                if ($msgBoxError) {
-                    $bearsamppWinbinder->messageBoxError(
-                        $debugOutput['content'],
-                        $caption
-                    );
-                } else {
-                    $bearsamppWinbinder->messageBoxInfo(
-                        $debugOutput['content'],
-                        $caption
-                    );
-                }
-            }
-        }
+    /**
+     * Get the command-to-caption mapping for Apache
+     *
+     * @return array Command mapping configuration
+     */
+    protected function getCommandMapping()
+    {
+        return [
+            BinApache::CMD_VERSION_NUMBER => [
+                'lang' => Lang::DEBUG_APACHE_VERSION_NUMBER,
+                'editor' => false
+            ],
+            BinApache::CMD_COMPILE_SETTINGS => [
+                'lang' => Lang::DEBUG_APACHE_COMPILE_SETTINGS,
+                'editor' => false
+            ],
+            BinApache::CMD_COMPILED_MODULES => [
+                'lang' => Lang::DEBUG_APACHE_COMPILED_MODULES,
+                'editor' => false
+            ],
+            BinApache::CMD_CONFIG_DIRECTIVES => [
+                'lang' => Lang::DEBUG_APACHE_CONFIG_DIRECTIVES,
+                'editor' => true
+            ],
+            BinApache::CMD_VHOSTS_SETTINGS => [
+                'lang' => Lang::DEBUG_APACHE_VHOSTS_SETTINGS,
+                'editor' => true
+            ],
+            BinApache::CMD_LOADED_MODULES => [
+                'lang' => Lang::DEBUG_APACHE_LOADED_MODULES,
+                'editor' => true
+            ],
+            BinApache::CMD_SYNTAX_CHECK => [
+                'lang' => Lang::DEBUG_APACHE_SYNTAX_CHECK,
+                'editor' => false,
+                'syntaxCheck' => true
+            ]
+        ];
     }
 }

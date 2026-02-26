@@ -14,62 +14,50 @@
  * It processes command-line arguments to determine the type of debugging action to perform,
  * retrieves the corresponding output from MariaDB, and displays it using the appropriate method.
  */
-class ActionDebugMariadb
+class ActionDebugMariadb extends ActionDebugBase
 {
     /**
-     * ActionDebugMariadb constructor.
+     * Get the service name for language strings
      *
-     * @param array $args Command-line arguments specifying the debugging action to perform.
-     *
-     * This constructor initializes the debugging process for MariaDB based on the provided arguments.
-     * It supports three types of debugging actions: version check, variables display, and syntax check.
-     * The output of the debugging action is displayed either in an editor or a message box.
+     * @return string The language constant name for MariaDB
      */
-    public function __construct($args)
+    protected function getServiceLangConstant()
     {
-        global $bearsamppLang, $bearsamppBins, $bearsamppTools, $bearsamppWinbinder;
+        return 'MARIADB';
+    }
 
-        if (isset($args[0]) && !empty($args[0])) {
-            $editor = false;
-            $msgBoxError = false;
-            $caption = $bearsamppLang->getValue(Lang::DEBUG) . ' ' . $bearsamppLang->getValue(Lang::MARIADB) . ' - ';
+    /**
+     * Get the MariaDB binary instance
+     *
+     * @param object $bearsamppBins The bins object containing all service binaries
+     * @return BinMariadb The MariaDB binary instance
+     */
+    protected function getBinInstance($bearsamppBins)
+    {
+        return $bearsamppBins->getMariadb();
+    }
 
-            // Determine the type of debugging action based on the first argument
-            if ($args[0] == BinMariadb::CMD_VERSION) {
-                $caption .= $bearsamppLang->getValue(Lang::DEBUG_MARIADB_VERSION);
-            } elseif ($args[0] == BinMariadb::CMD_VARIABLES) {
-                $editor = true;
-                $caption .= $bearsamppLang->getValue(Lang::DEBUG_MARIADB_VARIABLES);
-            } elseif ($args[0] == BinMariadb::CMD_SYNTAX_CHECK) {
-                $caption .= $bearsamppLang->getValue(Lang::DEBUG_MARIADB_SYNTAX_CHECK);
-            }
-            $caption .= ' (' . $args[0] . ')';
-
-            // Retrieve the command line output for the specified debugging action
-            $debugOutput = $bearsamppBins->getMariadb()->getCmdLineOutput($args[0]);
-
-            // Handle syntax check results
-            if ($args[0] == BinMariadb::CMD_SYNTAX_CHECK) {
-                $msgBoxError = !$debugOutput['syntaxOk'];
-                $debugOutput['content'] = $debugOutput['syntaxOk'] ? 'Syntax OK !' : $debugOutput['content'];
-            }
-
-            // Display the debugging output
-            if ($editor) {
-                Util::openFileContent($caption, $debugOutput['content']);
-            } else {
-                if ($msgBoxError) {
-                    $bearsamppWinbinder->messageBoxError(
-                        $debugOutput['content'],
-                        $caption
-                    );
-                } else {
-                    $bearsamppWinbinder->messageBoxInfo(
-                        $debugOutput['content'],
-                        $caption
-                    );
-                }
-            }
-        }
+    /**
+     * Get the command-to-caption mapping for MariaDB
+     *
+     * @return array Command mapping configuration
+     */
+    protected function getCommandMapping()
+    {
+        return [
+            BinMariadb::CMD_VERSION => [
+                'lang' => Lang::DEBUG_MARIADB_VERSION,
+                'editor' => false
+            ],
+            BinMariadb::CMD_VARIABLES => [
+                'lang' => Lang::DEBUG_MARIADB_VARIABLES,
+                'editor' => true
+            ],
+            BinMariadb::CMD_SYNTAX_CHECK => [
+                'lang' => Lang::DEBUG_MARIADB_SYNTAX_CHECK,
+                'editor' => false,
+                'syntaxCheck' => true
+            ]
+        ];
     }
 }
