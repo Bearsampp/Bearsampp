@@ -49,7 +49,7 @@ class ActionStopAllServices
             $bearsamppLang->getValue(Lang::LOADING_STOP_SERVICES)
         );
 
-        // Set handler for the splash screen window with 1000ms timeout like ActionStartup
+        // Set handler for the splash screen window with 1000ms timeout
         $bearsamppWinbinder->setHandler($this->splash->getWbWindow(), $this, 'processWindow', 1000);
         $bearsamppWinbinder->mainLoop();
         $bearsamppWinbinder->reset();
@@ -75,38 +75,16 @@ class ActionStopAllServices
         }
         $this->processed = true;
 
-        // Stop all services
-        foreach ($bearsamppBins->getServices() as $sName => $service) {
-            $bin = null;
+        // Stop all services using ServiceHelper
+        ServiceHelper::processServices($bearsamppBins, function($serviceName, $service, $bin, $syntaxCheckCmd) use ($bearsamppLang) {
+            $name = ServiceHelper::getServiceDisplayName($bin, $service);
 
-            // Get the binary object
-            if ($sName == BinApache::SERVICE_NAME) {
-                $bin = $bearsamppBins->getApache();
-            } elseif ($sName == BinMysql::SERVICE_NAME) {
-                $bin = $bearsamppBins->getMysql();
-            } elseif ($sName == BinMariadb::SERVICE_NAME) {
-                $bin = $bearsamppBins->getMariadb();
-            } elseif ($sName == BinMailpit::SERVICE_NAME) {
-                $bin = $bearsamppBins->getMailpit();
-            } elseif ($sName == BinMemcached::SERVICE_NAME) {
-                $bin = $bearsamppBins->getMemcached();
-            } elseif ($sName == BinPostgresql::SERVICE_NAME) {
-                $bin = $bearsamppBins->getPostgresql();
-            } elseif ($sName == BinXlight::SERVICE_NAME) {
-                $bin = $bearsamppBins->getXlight();
-            }
+            $this->splash->incrProgressBar();
+            $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::LOADING_STOP_SERVICE), $name));
 
-            if ($bin !== null) {
-                $name = $bin->getName() . ' ' . $bin->getVersion();
-                $name .= ' (' . $service->getName() . ')';
-
-                $this->splash->incrProgressBar();
-                $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::LOADING_STOP_SERVICE), $name));
-
-                // Stop the service
-                $service->stop();
-            }
-        }
+            // Stop the service
+            ServiceHelper::stopService($service);
+        });
 
         // Final update
         $this->splash->incrProgressBar();
