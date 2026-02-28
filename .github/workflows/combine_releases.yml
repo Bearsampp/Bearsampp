@@ -46,6 +46,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests packaging
 
+      - name: Create quickpick-releases.json if it doesn't exist
+        run: |
+          mkdir -p core/resources
+          if [ ! -f core/resources/quickpick-releases.json ]; then
+            echo "[]" > core/resources/quickpick-releases.json
+            echo "Created quickpick-releases.json"
+          else
+            echo "quickpick-releases.json already exists"
+          fi
+
       - name: Combine releases into JSON
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
