@@ -564,7 +564,7 @@ class QuickPick
     {
         global $bearsamppConfig;
         $includePr = $bearsamppConfig->getIncludePr();
-        
+
         ob_start();
         if ( Util::checkInternetState() ) {
 
@@ -592,7 +592,7 @@ class QuickPick
                                         </li>
 
                                         <?php
-                                        foreach ( $versions['module-' . strtolower( $module )] as $version_array ): 
+                                        foreach ( $versions['module-' . strtolower( $module )] as $version_array ):
                                             // Skip prerelease versions if includePr is not enabled
                                             if (isset($version_array['prerelease']) && $version_array['prerelease'] === true && $includePr != 1) {
                                                 continue;

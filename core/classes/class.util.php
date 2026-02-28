@@ -43,6 +43,63 @@ class Util
     const LOG_TRACE = 'TRACE';
 
     /**
+     * Log buffer for batching log writes
+     * @var array
+     */
+    private static $logBuffer = [];
+
+    /**
+     * Maximum number of log entries to buffer before flushing
+     * @var int
+     */
+    private static $logBufferSize = 50;
+
+    /**
+     * Flag to track if shutdown handler is registered
+     * @var bool
+     */
+    private static $shutdownRegistered = false;
+
+    /**
+     * Statistics for monitoring log buffer effectiveness
+     * @var array
+     */
+    private static $logStats = [
+        'buffered' => 0,
+        'flushed' => 0,
+        'writes' => 0
+    ];
+
+    /**
+     * Cache for file scan results
+     * @var array|null
+     */
+    private static $fileScanCache = null;
+
+    /**
+     * Cache validity duration in seconds (default: 1 hour)
+     * @var int
+     */
+    private static $fileScanCacheDuration = 3600;
+
+    /**
+     * Statistics for monitoring file scan cache effectiveness
+     * @var array
+     */
+    private static $fileScanStats = [
+        'hits' => 0,
+        'misses' => 0,
+        'invalidations' => 0
+    ];
+
+    /**
+     * Secret key for cache file integrity verification
+     * Generated once per session to prevent cache tampering
+     * @var string|null
+     */
+    private static $cacheIntegrityKey = null;
+
+    /**
      * Cleans and returns a specific command line argument based on the type specified.
      *
      * @param   string  $name  The index of the argument in the $_SERVER['argv'] array.
@@ -711,6 +768,7 @@ class Util
 
     /**
      * Logs a message to a specified file or default log file based on the log type.
+     * Implements buffering to reduce file I/O operations and improve performance.
      *
      * @param   string       $data  The message to log.
      * @param   string       $type  The type of log message: 'ERROR', 'WARNING', 'INFO', 'DEBUG', or 'TRACE'.
@@ -719,6 +777,19 @@ class Util
     private static function log($data, $type, $file = null)
     {
         global $bearsamppRoot, $bearsamppCore, $bearsamppConfig;
+
+        // Safety check: if globals aren't initialized, use error_log as fallback
+        if (!isset($bearsamppRoot) || !isset($bearsamppCore) || !isset($bearsamppConfig)) {
+            error_log('[' . $type . '] ' . $data);
+            return;
+        }
+
+        // Register shutdown handler on first log call
+        if (!self::$shutdownRegistered) {
+            register_shutdown_function([__CLASS__, 'flushLogBuffer']);
+            self::$shutdownRegistered = true;
+        }
+
         $file = $file == null ? ($type == self::LOG_ERROR ? $bearsamppRoot->getErrorLogFilePath() : $bearsamppRoot->getLogFilePath()) : $file;
         if (!$bearsamppRoot->isRoot()) {
             $file = $bearsamppRoot->getHomepageLogFilePath();
@@ -742,12 +813,96 @@ class Util
         }
 
         if ($writeLog) {
-            file_put_contents(
-                $file,
-                '[' . date('Y-m-d H:i:s', time()) . '] # ' . APP_TITLE . ' ' . $bearsamppCore->getAppVersion() . ' # ' . $type . ': ' . $data . PHP_EOL,
-                FILE_APPEND
-            );
+            // Add to buffer instead of writing immediately
+            self::$logBuffer[] = [
+                'file' => $file,
+                'data' => $data,
+                'type' => $type,
+                'time' => time()
+            ];
+            self::$logStats['buffered']++;
+
+            // Flush if buffer is full or if it's an error (errors should be written immediately)
+            if (count(self::$logBuffer) >= self::$logBufferSize || $type == self::LOG_ERROR) {
+                self::flushLogBuffer();
+            }
         }
+    }
+
+    /**
+     * Flushes the log buffer to disk.
+     * Groups log entries by file to minimize file operations.
+     *
+     * @return void
+     */
+    public static function flushLogBuffer()
+    {
+        if (empty(self::$logBuffer)) {
+            return;
+        }
+
+        global $bearsamppCore;
+
+        // Group logs by file
+        $logsByFile = [];
+        foreach (self::$logBuffer as $log) {
+            if (!isset($logsByFile[$log['file']])) {
+                $logsByFile[$log['file']] = [];
+            }
+            $logsByFile[$log['file']][] = $log;
+        }
+
+        // Write all logs at once per file
+        foreach ($logsByFile as $file => $logs) {
+            $content = '';
+            foreach ($logs as $log) {
+                $content .= '[' . date('Y-m-d H:i:s', $log['time']) . '] # ' .
+                           APP_TITLE . ' ' . $bearsamppCore->getAppVersion() . ' # ' .
+                           $log['type'] . ': ' . $log['data'] . PHP_EOL;
+            }
+
+            // Use LOCK_EX to prevent race conditions
+            @file_put_contents($file, $content, FILE_APPEND | LOCK_EX);
+            self::$logStats['writes']++;
+        }
+
+        self::$logStats['flushed'] += count(self::$logBuffer);
+        self::$logBuffer = [];
+    }
+
+    /**
+     * Gets the current log buffer statistics.
+     * Useful for monitoring and debugging log buffer effectiveness.
+     *
+     * @return array Array containing buffered, flushed, and writes counts
+     */
+    public static function getLogStats()
+    {
+        return self::$logStats;
+    }
+
+    /**
+     * Sets the log buffer size.
+     * Allows dynamic adjustment of buffer size based on application needs.
+     *
+     * @param int $size The new buffer size
+     * @return void
+     */
+    public static function setLogBufferSize($size)
+    {
+        if ($size > 0 && $size <= 1000) {
+            self::$logBufferSize = $size;
+        }
+    }
+
+    /**
+     * Gets the current log buffer size.
+     *
+     * @return int The current buffer size
+     */
+    public static function getLogBufferSize()
+    {
+        return self::$logBufferSize;
     }
 
     /**
@@ -1047,25 +1202,313 @@ class Util
 
     /**
      * Retrieves a list of files to scan from specified paths or default paths.
+     * Implements caching to avoid repeated expensive file system scans.
      *
-     * @param   string|null  $path  Optional. The path to start scanning from. If null, uses default paths.
+     * @param   string|null  $path          Optional. The path to start scanning from. If null, uses default paths.
+     * @param   bool         $useCache      Whether to use cached results (default: true).
+     * @param   bool         $forceRefresh  Force refresh the cache even if valid (default: false).
      *
      * @return array Returns an array of files found during the scan.
      */
-    public static function getFilesToScan($path = null)
+    public static function getFilesToScan($path = null, $useCache = true, $forceRefresh = false)
     {
+        // Generate cache key based on path parameter
+        $cacheKey = md5(serialize($path));
+
+        // Try to get from cache if enabled and not forcing refresh
+        if ($useCache && !$forceRefresh) {
+            $cachedResult = self::getFileScanCache($cacheKey);
+            if ($cachedResult !== false) {
+                self::$fileScanStats['hits']++;
+                self::logDebug('File scan cache HIT (saved expensive scan operation)');
+                return $cachedResult;
+            }
+        }
+
+        self::$fileScanStats['misses']++;
+        self::logDebug('File scan cache MISS (performing full scan)');
+
+        // Perform the actual scan
+        $startTime = self::getMicrotime();
         $result      = array();
         $pathsToScan = !empty($path) ? $path : self::getPathsToScan();
+
         foreach ($pathsToScan as $pathToScan) {
-            $startTime = self::getMicrotime();
+            $pathStartTime = self::getMicrotime();
             $findFiles = self::findFiles($pathToScan['path'], $pathToScan['includes'], $pathToScan['recursive']);
             foreach ($findFiles as $findFile) {
                 $result[] = $findFile;
             }
-            self::logDebug($pathToScan['path'] . ' scanned in ' . round(self::getMicrotime() - $startTime, 3) . 's');
+            self::logDebug($pathToScan['path'] . ' scanned in ' . round(self::getMicrotime() - $pathStartTime, 3) . 's');
+        }
+
+        $totalTime = round(self::getMicrotime() - $startTime, 3);
+        self::logInfo('Full file scan completed in ' . $totalTime . 's (' . count($result) . ' files found)');
+
+        // Store in cache if enabled
+        if ($useCache) {
+            self::setFileScanCache($cacheKey, $result);
         }
 
         return $result;
+    }
+
+    /**
+     * Gets cached file scan results if valid.
+     * Includes integrity verification to prevent cache tampering.
+     *
+     * @param   string  $cacheKey  The cache key to retrieve.
+     *
+     * @return array|false Returns cached results or false if cache is invalid/missing.
+     */
+    private static function getFileScanCache($cacheKey)
+    {
+        global $bearsamppRoot;
+
+        // Check if we have in-memory cache first
+        if (self::$fileScanCache !== null && isset(self::$fileScanCache[$cacheKey])) {
+            $cache = self::$fileScanCache[$cacheKey];
+
+            // Check if cache is still valid
+            if (time() - $cache['timestamp'] < self::$fileScanCacheDuration) {
+                return $cache['data'];
+            } else {
+                self::$fileScanStats['invalidations']++;
+                unset(self::$fileScanCache[$cacheKey]);
+            }
+        }
+
+        // Try to load from file cache
+        if (!isset($bearsamppRoot)) {
+            return false;
+        }
+
+        $cacheFile = $bearsamppRoot->getTmpPath() . '/filescan_cache_' . $cacheKey . '.dat';
+
+        if (file_exists($cacheFile)) {
+            $fileContents = @file_get_contents($cacheFile);
+
+            if ($fileContents === false) {
+                return false;
+            }
+
+            // Verify file integrity before unserializing
+            if (!self::verifyCacheIntegrity($fileContents, $cacheKey)) {
+                self::logWarning('File scan cache integrity check failed for key: ' . $cacheKey . '. Possible tampering detected.');
+                @unlink($cacheFile);
+                return false;
+            }
+
+            $cacheData = @unserialize($fileContents);
+
+            if ($cacheData !== false && isset($cacheData['timestamp']) && isset($cacheData['data']) && isset($cacheData['hmac'])) {
+                // Check if file cache is still valid
+                if (time() - $cacheData['timestamp'] < self::$fileScanCacheDuration) {
+                    // Store in memory cache for faster subsequent access
+                    if (self::$fileScanCache === null) {
+                        self::$fileScanCache = [];
+                    }
+                    self::$fileScanCache[$cacheKey] = $cacheData;
+
+                    return $cacheData['data'];
+                } else {
+                    // Cache expired, delete file
+                    self::$fileScanStats['invalidations']++;
+                    @unlink($cacheFile);
+                }
+            } else {
+                // Invalid cache structure, delete file
+                self::logWarning('Invalid cache structure detected for key: ' . $cacheKey);
+                @unlink($cacheFile);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Stores file scan results in cache with integrity protection.
+     *
+     * @param   string  $cacheKey  The cache key to store under.
+     * @param   array   $data      The scan results to cache.
+     *
+     * @return void
+     */
+    private static function setFileScanCache($cacheKey, $data)
+    {
+        global $bearsamppRoot;
+
+        // Generate HMAC for integrity verification
+        $hmac = self::generateCacheHMAC($data, $cacheKey);
+
+        $cacheData = [
+            'timestamp' => time(),
+            'data' => $data,
+            'hmac' => $hmac
+        ];
+
+        // Store in memory cache
+        if (self::$fileScanCache === null) {
+            self::$fileScanCache = [];
+        }
+        self::$fileScanCache[$cacheKey] = $cacheData;
+
+        // Store in file cache
+        if (isset($bearsamppRoot)) {
+            $cacheFile = $bearsamppRoot->getTmpPath() . '/filescan_cache_' . $cacheKey . '.dat';
+            @file_put_contents($cacheFile, serialize($cacheData), LOCK_EX);
+            self::logDebug('File scan results cached to: ' . $cacheFile);
+        }
+    }
+
+    /**
+     * Generates or retrieves the cache integrity key.
+     * This key is unique per session to prevent cross-session cache tampering.
+     *
+     * @return string The cache integrity key
+     */
+    private static function getCacheIntegrityKey()
+    {
+        if (self::$cacheIntegrityKey === null) {
+            global $bearsamppRoot;
+
+            // Try to load existing key from session file
+            if (isset($bearsamppRoot)) {
+                $keyFile = $bearsamppRoot->getTmpPath() . '/cache_integrity.key';
+
+                if (file_exists($keyFile)) {
+                    $key = @file_get_contents($keyFile);
+                    if ($key !== false && strlen($key) === 64) {
+                        self::$cacheIntegrityKey = $key;
+                        return self::$cacheIntegrityKey;
+                    }
+                }
+
+                // Generate new key if none exists or invalid
+                try {
+                    self::$cacheIntegrityKey = bin2hex(random_bytes(32));
+                    @file_put_contents($keyFile, self::$cacheIntegrityKey, LOCK_EX);
+                } catch (Exception $e) {
+                    self::logError('Failed to generate cache integrity key: ' . $e->getMessage());
+                    // Fallback to a less secure but functional key
+                    self::$cacheIntegrityKey = hash('sha256', uniqid('bearsampp_cache_', true));
+                }
+            } else {
+                // Fallback if bearsamppRoot not available
+                try {
+                    self::$cacheIntegrityKey = bin2hex(random_bytes(32));
+                } catch (Exception $e) {
+                    self::$cacheIntegrityKey = hash('sha256', uniqid('bearsampp_cache_', true));
+                }
+            }
+        }
+
+        return self::$cacheIntegrityKey;
+    }
+
+    /**
+     * Generates HMAC for cache data integrity verification.
+     *
+     * @param   array   $data      The data to generate HMAC for
+     * @param   string  $cacheKey  The cache key
+     *
+     * @return string The HMAC hash
+     */
+    private static function generateCacheHMAC($data, $cacheKey)
+    {
+        $key = self::getCacheIntegrityKey();
+        $message = serialize($data) . $cacheKey;
+        return hash_hmac('sha256', $message, $key);
+    }
+
+    /**
+     * Verifies cache file integrity using HMAC.
+     *
+     * @param   string  $fileContents  The serialized cache file contents
+     * @param   string  $cacheKey      The cache key
+     *
+     * @return bool True if integrity check passes, false otherwise
+     */
+    private static function verifyCacheIntegrity($fileContents, $cacheKey)
+    {
+        $cacheData = @unserialize($fileContents);
+
+        if ($cacheData === false || !isset($cacheData['hmac']) || !isset($cacheData['data'])) {
+            return false;
+        }
+
+        $expectedHmac = self::generateCacheHMAC($cacheData['data'], $cacheKey);
+
+        // Use hash_equals to prevent timing attacks
+        return hash_equals($expectedHmac, $cacheData['hmac']);
+    }
+
+    /**
+     * Clears all file scan caches.
+     *
+     * @return void
+     */
+    public static function clearFileScanCache()
+    {
+        global $bearsamppRoot;
+
+        // Clear memory cache
+        self::$fileScanCache = null;
+
+        // Clear file caches
+        if (isset($bearsamppRoot)) {
+            $tmpPath = $bearsamppRoot->getTmpPath();
+            $cacheFiles = glob($tmpPath . '/filescan_cache_*.dat');
+
+            if ($cacheFiles !== false) {
+                foreach ($cacheFiles as $cacheFile) {
+                    @unlink($cacheFile);
+                }
+                self::logInfo('Cleared ' . count($cacheFiles) . ' file scan cache files');
+            }
+        }
+
+        // Reset stats
+        self::$fileScanStats = [
+            'hits' => 0,
+            'misses' => 0,
+            'invalidations' => 0
+        ];
+    }
+
+    /**
+     * Gets file scan cache statistics.
+     *
+     * @return array Array containing hits, misses, and invalidations counts
+     */
+    public static function getFileScanStats()
+    {
+        return self::$fileScanStats;
+    }
+
+    /**
+     * Sets the file scan cache duration.
+     *
+     * @param   int  $seconds  Cache duration in seconds (default: 3600 = 1 hour).
+     *
+     * @return void
+     */
+    public static function setFileScanCacheDuration($seconds)
+    {
+        if ($seconds > 0 && $seconds <= 86400) { // Max 24 hours
+            self::$fileScanCacheDuration = $seconds;
+            self::logDebug('File scan cache duration set to ' . $seconds . ' seconds');
+        }
+    }
+
+    /**
+     * Gets the current file scan cache duration.
+     *
+     * @return int Cache duration in seconds
+     */
+    public static function getFileScanCacheDuration()
+    {
+        return self::$fileScanCacheDuration;
     }
 
     /**
