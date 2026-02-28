@@ -21,6 +21,15 @@ require_once __DIR__ . '/../../root.php';
 require_once __DIR__ . '/../../classes/actions/class.action.quickPick.php';
 
 /**
+ * Set security headers to protect against common web vulnerabilities
+ */
+header('X-Frame-Options: SAMEORIGIN');
+header('X-Content-Type-Options: nosniff');
+header('X-XSS-Protection: 1; mode=block');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.github.com https://bearsampp.com;");
+
+/**
  * Declare global variables to access various parts of the application such as language settings,
  * core functionalities, homepage configurations, and more.
  */
@@ -106,18 +115,18 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
 
     <link href = "<?php echo $iconsPath . 'favicon.ico'; ?>" rel = "icon" />
     <title><?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?></title>
-    
+
     <!-- Inline script to set loading cursor immediately -->
     <script>
         // Set loading cursor immediately
         document.documentElement.classList.add('loading-cursor');
-        
+
         // Create and show loading overlay
         window.addEventListener('DOMContentLoaded', function() {
             // Remove loading cursor when page is fully loaded
             window.addEventListener('load', function() {
                 document.documentElement.classList.remove('loading-cursor');
-                
+
                 // If there's an overlay, remove it
                 const existingOverlay = document.querySelector('.loading-overlay');
                 if (existingOverlay) {
@@ -142,7 +151,7 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
             </button>
         </div>
     </div>
-    <?php 
+    <?php
     try {
         echo $quickPick->loadQuickpick($imagesPath);
     } catch (Exception $e) {
@@ -176,7 +185,7 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
 </nav>
 
 <div id = "page-wrapper">
-    <?php 
+    <?php
     try {
         include __DIR__ . '/tpls/hp.latestversion.html';
     } catch (Exception $e) {

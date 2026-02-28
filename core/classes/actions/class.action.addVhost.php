@@ -11,128 +11,207 @@
  * Class ActionAddVhost
  * Handles the creation of a new virtual host (vhost) in the Bearsampp application.
  */
-class ActionAddVhost
+class ActionAddVhost extends ActionDialogBase
 {
-    private $wbWindow;
     private $wbLabelServerName;
     private $wbInputServerName;
     private $wbLabelDocRoot;
     private $wbInputDocRoot;
     private $wbBtnDocRoot;
     private $wbLabelExp;
-    private $wbProgressBar;
-    private $wbBtnSave;
-    private $wbBtnCancel;
 
-    const GAUGE_SAVE = 2;
-
-    /**
-     * ActionAddVhost constructor.
-     * Initializes the window and its components for adding a new virtual host.
-     *
-     * @param array $args Arguments passed to the constructor.
-     */
-    public function __construct($args)
+    protected function getWindowTitle()
     {
-        global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
+        global $bearsamppLang;
+        return $bearsamppLang->getValue(Lang::ADD_VHOST_TITLE);
+    }
+
+    protected function getDialogTitle()
+    {
+        global $bearsamppLang;
+        return $bearsamppLang->getValue(Lang::ADD_VHOST_TITLE);
+    }
+
+    protected function getDeleteDialogTitle()
+    {
+        // Not used in add mode
+        return '';
+    }
+
+    protected function createFormFields($bearsamppWinbinder)
+    {
+        global $bearsamppRoot, $bearsamppLang;
 
         $initServerName = 'test.local';
         $initDocumentRoot = Util::formatWindowsPath($bearsamppRoot->getWwwPath()) . '\\' . $initServerName;
 
-        $bearsamppWinbinder->reset();
-        $this->wbWindow = $bearsamppWinbinder->createAppWindow($bearsamppLang->getValue(Lang::ADD_VHOST_TITLE), 490, 200, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP);
+        $this->wbLabelServerName = $bearsamppWinbinder->createLabel(
+            $this->wbWindow,
+            $bearsamppLang->getValue(Lang::VHOST_SERVER_NAME_LABEL) . ' :',
+            15, 15, 85, null, WBC_RIGHT
+        );
+        $this->wbInputServerName = $bearsamppWinbinder->createInputText(
+            $this->wbWindow,
+            $initServerName,
+            105, 13, 150, null
+        );
 
-        $this->wbLabelServerName = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::VHOST_SERVER_NAME_LABEL) . ' :', 15, 15, 85, null, WBC_RIGHT);
-        $this->wbInputServerName = $bearsamppWinbinder->createInputText($this->wbWindow, $initServerName, 105, 13, 150, null);
+        $this->wbLabelDocRoot = $bearsamppWinbinder->createLabel(
+            $this->wbWindow,
+            $bearsamppLang->getValue(Lang::VHOST_DOCUMENT_ROOT_LABEL) . ' :',
+            15, 45, 85, null, WBC_RIGHT
+        );
+        $this->wbInputDocRoot = $bearsamppWinbinder->createInputText(
+            $this->wbWindow,
+            $initDocumentRoot,
+            105, 43, 190, null, null, WBC_READONLY
+        );
+        $this->wbBtnDocRoot = $bearsamppWinbinder->createButton(
+            $this->wbWindow,
+            $bearsamppLang->getValue(Lang::BUTTON_BROWSE),
+            300, 43, 110
+        );
 
-        $this->wbLabelDocRoot = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::VHOST_DOCUMENT_ROOT_LABEL) . ' :', 15, 45, 85, null, WBC_RIGHT);
-        $this->wbInputDocRoot = $bearsamppWinbinder->createInputText($this->wbWindow, $initDocumentRoot, 105, 43, 190, null, null, WBC_READONLY);
-        $this->wbBtnDocRoot = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_BROWSE), 300, 43, 110);
-
-        $this->wbLabelExp = $bearsamppWinbinder->createLabel($this->wbWindow, sprintf($bearsamppLang->getValue(Lang::VHOST_EXP_LABEL), $initServerName, $initDocumentRoot), 15, 80, 470, 50);
-
-        $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE_SAVE + 1, 15, 137, 275);
-        $this->wbBtnSave = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_SAVE), 300, 132);
-        $this->wbBtnCancel = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_CANCEL), 387, 132);
-
-        $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
-        $bearsamppWinbinder->mainLoop();
-        $bearsamppWinbinder->reset();
+        $this->wbLabelExp = $bearsamppWinbinder->createLabel(
+            $this->wbWindow,
+            sprintf($bearsamppLang->getValue(Lang::VHOST_EXP_LABEL), $initServerName, $initDocumentRoot),
+            15, 80, 470, 50
+        );
     }
 
-    /**
-     * Processes window events and handles user interactions.
-     *
-     * @param resource $window The window resource.
-     * @param int $id The ID of the control that triggered the event.
-     * @param resource $ctrl The control resource.
-     * @param mixed $param1 Additional parameter 1.
-     * @param mixed $param2 Additional parameter 2.
-     */
-    public function processWindow($window, $id, $ctrl, $param1, $param2)
+    protected function getFormValues($bearsamppWinbinder)
     {
-        global $bearsamppRoot, $bearsamppBins, $bearsamppLang, $bearsamppOpenSsl, $bearsamppWinbinder;
+        return [
+            'serverName' => $bearsamppWinbinder->getText($this->wbInputServerName[WinBinder::CTRL_OBJ]),
+            'documentRoot' => $bearsamppWinbinder->getText($this->wbInputDocRoot[WinBinder::CTRL_OBJ])
+        ];
+    }
+
+    protected function validateInput($values)
+    {
+        global $bearsamppLang;
+
+        if (!Util::isValidDomainName($values['serverName'])) {
+            return [
+                'valid' => false,
+                'error' => sprintf($bearsamppLang->getValue(Lang::VHOST_NOT_VALID_DOMAIN), $values['serverName'])
+            ];
+        }
+
+        return ['valid' => true];
+    }
+
+    protected function itemExists($values)
+    {
+        global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
+
+        if (is_file($bearsamppRoot->getVhostsPath() . '/' . $values['serverName'] . '.conf')) {
+            $bearsamppWinbinder->messageBoxError(
+                sprintf($bearsamppLang->getValue(Lang::VHOST_ALREADY_EXISTS), $values['serverName']),
+                $this->getDialogTitle()
+            );
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function saveItem($values)
+    {
+        global $bearsamppRoot, $bearsamppBins, $bearsamppOpenSsl;
+
+        // Create SSL certificate
+        if (!$bearsamppOpenSsl->createCrt($values['serverName'])) {
+            return false;
+        }
+
+        // Create vhost configuration file
+        return file_put_contents(
+            $bearsamppRoot->getVhostsPath() . '/' . $values['serverName'] . '.conf',
+            $bearsamppBins->getApache()->getVhostContent($values['serverName'], $values['documentRoot'])
+        ) !== false;
+    }
+
+    protected function deleteItem()
+    {
+        // Not used in add mode
+        return false;
+    }
+
+    protected function getSaveSuccessMessage($values)
+    {
+        global $bearsamppLang;
+        return sprintf(
+            $bearsamppLang->getValue(Lang::VHOST_CREATED),
+            $values['serverName'],
+            $values['serverName'],
+            $values['documentRoot']
+        );
+    }
+
+    protected function getSaveErrorMessage()
+    {
+        global $bearsamppLang;
+        return $bearsamppLang->getValue(Lang::VHOST_CREATED_ERROR);
+    }
+
+    protected function getDeleteConfirmMessage()
+    {
+        // Not used in add mode
+        return '';
+    }
+
+    protected function getDeleteSuccessMessage()
+    {
+        // Not used in add mode
+        return '';
+    }
+
+    protected function getDeleteErrorMessage()
+    {
+        // Not used in add mode
+        return '';
+    }
+
+    protected function restartService()
+    {
+        global $bearsamppBins;
+        $bearsamppBins->getApache()->getService()->restart();
+    }
+
+    protected function handleCustomEvent($window, $id, $ctrl, $param1, $param2)
+    {
+        global $bearsamppLang, $bearsamppWinbinder;
 
         $serverName = $bearsamppWinbinder->getText($this->wbInputServerName[WinBinder::CTRL_OBJ]);
         $documentRoot = $bearsamppWinbinder->getText($this->wbInputDocRoot[WinBinder::CTRL_OBJ]);
 
-        switch ($id) {
-            case $this->wbInputServerName[WinBinder::CTRL_ID]:
+        // Handle server name input change
+        if ($id == $this->wbInputServerName[WinBinder::CTRL_ID]) {
+            $bearsamppWinbinder->setText(
+                $this->wbLabelExp[WinBinder::CTRL_OBJ],
+                sprintf($bearsamppLang->getValue(Lang::VHOST_EXP_LABEL), $serverName, $documentRoot)
+            );
+            $bearsamppWinbinder->setEnabled(
+                $this->wbBtnSave[WinBinder::CTRL_OBJ],
+                !empty($serverName)
+            );
+        }
+
+        // Handle browse button
+        if ($id == $this->wbBtnDocRoot[WinBinder::CTRL_ID]) {
+            $documentRoot = $bearsamppWinbinder->sysDlgPath(
+                $window,
+                $bearsamppLang->getValue(Lang::VHOST_DOC_ROOT_PATH),
+                $documentRoot
+            );
+            if ($documentRoot && is_dir($documentRoot)) {
+                $bearsamppWinbinder->setText($this->wbInputDocRoot[WinBinder::CTRL_OBJ], $documentRoot . '\\');
                 $bearsamppWinbinder->setText(
                     $this->wbLabelExp[WinBinder::CTRL_OBJ],
-                    sprintf($bearsamppLang->getValue(Lang::VHOST_EXP_LABEL), $serverName, $documentRoot)
+                    sprintf($bearsamppLang->getValue(Lang::VHOST_EXP_LABEL), $serverName, $documentRoot . '\\')
                 );
-                $bearsamppWinbinder->setEnabled($this->wbBtnSave[WinBinder::CTRL_OBJ], empty($serverName) ? false : true);
-                break;
-            case $this->wbBtnDocRoot[WinBinder::CTRL_ID]:
-                $documentRoot = $bearsamppWinbinder->sysDlgPath($window, $bearsamppLang->getValue(Lang::VHOST_DOC_ROOT_PATH), $documentRoot);
-                if ($documentRoot && is_dir($documentRoot)) {
-                    $bearsamppWinbinder->setText($this->wbInputDocRoot[WinBinder::CTRL_OBJ], $documentRoot . '\\');
-                    $bearsamppWinbinder->setText(
-                        $this->wbLabelExp[WinBinder::CTRL_OBJ],
-                        sprintf($bearsamppLang->getValue(Lang::VHOST_EXP_LABEL), $serverName, $documentRoot . '\\')
-                    );
-                }
-                break;
-            case $this->wbBtnSave[WinBinder::CTRL_ID]:
-                $bearsamppWinbinder->setProgressBarMax($this->wbProgressBar, self::GAUGE_SAVE + 1);
-                $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
-
-                if (!Util::isValidDomainName($serverName)) {
-                    $bearsamppWinbinder->messageBoxError(
-                        sprintf($bearsamppLang->getValue(Lang::VHOST_NOT_VALID_DOMAIN), $serverName),
-                        $bearsamppLang->getValue(Lang::ADD_VHOST_TITLE));
-                    $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
-                    break;
-                }
-
-                if (is_file($bearsamppRoot->getVhostsPath() . '/' . $serverName . '.conf')) {
-                    $bearsamppWinbinder->messageBoxError(
-                        sprintf($bearsamppLang->getValue(Lang::VHOST_ALREADY_EXISTS), $serverName),
-                        $bearsamppLang->getValue(Lang::ADD_VHOST_TITLE));
-                    $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
-                    break;
-                }
-
-                if ($bearsamppOpenSsl->createCrt($serverName) && file_put_contents($bearsamppRoot->getVhostsPath() . '/' . $serverName . '.conf', $bearsamppBins->getApache()->getVhostContent($serverName, $documentRoot)) !== false) {
-                    $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
-
-                    $bearsamppBins->getApache()->getService()->restart();
-                    $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
-
-                    $bearsamppWinbinder->messageBoxInfo(
-                        sprintf($bearsamppLang->getValue(Lang::VHOST_CREATED), $serverName, $serverName, $documentRoot),
-                        $bearsamppLang->getValue(Lang::ADD_VHOST_TITLE));
-                    $bearsamppWinbinder->destroyWindow($window);
-                } else {
-                    $bearsamppWinbinder->messageBoxError($bearsamppLang->getValue(Lang::VHOST_CREATED_ERROR), $bearsamppLang->getValue(Lang::ADD_VHOST_TITLE));
-                    $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
-                }
-                break;
-            case IDCLOSE:
-            case $this->wbBtnCancel[WinBinder::CTRL_ID]:
-                $bearsamppWinbinder->destroyWindow($window);
-                break;
+            }
         }
     }
 }

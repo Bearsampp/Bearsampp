@@ -49,7 +49,7 @@ class ActionStartAllServices
             $bearsamppLang->getValue(Lang::LOADING_START_SERVICES)
         );
 
-        // Set handler for the splash screen window with 1000ms timeout like ActionStartup
+        // Set handler for the splash screen window with 1000ms timeout
         $bearsamppWinbinder->setHandler($this->splash->getWbWindow(), $this, 'processWindow', 1000);
         $bearsamppWinbinder->mainLoop();
         $bearsamppWinbinder->reset();
@@ -75,42 +75,16 @@ class ActionStartAllServices
         }
         $this->processed = true;
 
-        // Start all services
-        foreach ($bearsamppBins->getServices() as $sName => $service) {
-            $bin = null;
-            $syntaxCheckCmd = null;
+        // Start all services using ServiceHelper
+        ServiceHelper::processServices($bearsamppBins, function($serviceName, $service, $bin, $syntaxCheckCmd) use ($bearsamppLang) {
+            $name = ServiceHelper::getServiceDisplayName($bin, $service);
 
-            // Get the binary object and syntax check command if applicable
-            if ($sName == BinApache::SERVICE_NAME) {
-                $bin = $bearsamppBins->getApache();
-                $syntaxCheckCmd = BinApache::CMD_SYNTAX_CHECK;
-            } elseif ($sName == BinMysql::SERVICE_NAME) {
-                $bin = $bearsamppBins->getMysql();
-                $syntaxCheckCmd = BinMysql::CMD_SYNTAX_CHECK;
-            } elseif ($sName == BinMariadb::SERVICE_NAME) {
-                $bin = $bearsamppBins->getMariadb();
-                $syntaxCheckCmd = BinMariadb::CMD_SYNTAX_CHECK;
-            } elseif ($sName == BinMailpit::SERVICE_NAME) {
-                $bin = $bearsamppBins->getMailpit();
-            } elseif ($sName == BinMemcached::SERVICE_NAME) {
-                $bin = $bearsamppBins->getMemcached();
-            } elseif ($sName == BinPostgresql::SERVICE_NAME) {
-                $bin = $bearsamppBins->getPostgresql();
-            } elseif ($sName == BinXlight::SERVICE_NAME) {
-                $bin = $bearsamppBins->getXlight();
-            }
+            $this->splash->incrProgressBar();
+            $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::LOADING_START_SERVICE), $name));
 
-            if ($bin !== null) {
-                $name = $bin->getName() . ' ' . $bin->getVersion();
-                $name .= ' (' . $service->getName() . ')';
-
-                $this->splash->incrProgressBar();
-                $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::LOADING_START_SERVICE), $name));
-
-                // Start the service
-                Util::startService($bin, $syntaxCheckCmd, false);
-            }
-        }
+            // Start the service
+            ServiceHelper::startService($bin, $syntaxCheckCmd, false);
+        });
 
         // Final update
         $this->splash->incrProgressBar();

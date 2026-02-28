@@ -6,44 +6,19 @@
  * Github: https://github.com/Bearsampp
  */
 
-async function getMySQLStatus() {
-  const url = AJAX_URL;
-  const proc = 'mysql';
-  const senddata = new URLSearchParams();
-  senddata.append(`proc`, proc);
-  const options = {
-    method: 'POST',
-    body: senddata
-  }
-  let response = await fetch(url, options);
-  if (!response.ok) {
-    console.log('Error receiving from ajax.php');
-  } else {
-    let myajaxresponse = await response.text();
-    let data;
-    try {
-            if(myajaxresponse.includes("Uncaught mysqli_sql_exception")) {
-                console.log("Error occured accessing MySQL - ");
-            } else {
-      data = JSON.parse(myajaxresponse);
-    let q = document.querySelector('.mysql-checkport');
-    let ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.checkport);
-
-    q = document.querySelector('.mysql-version-list');
-    ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.versions);
-  }
-        } catch (error) {
-            console.error('Failed to parse response:', error);
-        }
+// MySQL status fetcher with custom validation for mysqli_sql_exception
+// Maps 'versions' data key to 'version-list' selector
+createStatusFetcher('mysql', [
+  'checkport',
+  { data: 'versions', selector: 'version-list' }
+], {
+  responseValidator: (responseText) => {
+    if (responseText.includes("Uncaught mysqli_sql_exception")) {
+      return {
+        valid: false,
+        message: "Error occurred accessing MySQL"
+      };
     }
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-  if (document.getElementById('mysql')) {
-    getMySQLStatus();
+    return { valid: true };
   }
-})
+});

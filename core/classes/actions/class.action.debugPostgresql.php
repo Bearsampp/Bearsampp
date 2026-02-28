@@ -13,51 +13,51 @@
  * This class handles the debugging actions for PostgreSQL within the Bearsampp application.
  * It retrieves and displays PostgreSQL command line output based on the provided arguments.
  */
-class ActionDebugPostgresql
+class ActionDebugPostgresql extends ActionDebugBase
 {
     /**
-     * Constructor for ActionDebugPostgresql.
+     * Get the service name for language strings
      *
-     * @param array $args An array of arguments where the first element is expected to be a PostgreSQL command.
-     *
-     * This constructor initializes the debugging process for PostgreSQL. It checks the provided arguments,
-     * retrieves the command line output for the specified PostgreSQL command, and displays it in a message box.
-     *
-     * Global variables used:
-     * - $bearsamppLang: Provides language-specific strings.
-     * - $bearsamppBins: Provides access to Bearsampp binaries, including PostgreSQL.
-     * - $bearsamppWinbinder: Handles the display of message boxes.
+     * @return string The language constant name for PostgreSQL
      */
-    public function __construct($args)
+    protected function getServiceLangConstant()
     {
-        global $bearsamppLang, $bearsamppBins, $bearsamppTools, $bearsamppWinbinder;
+        return 'POSTGRESQL';
+    }
 
-        if (isset($args[0]) && !empty($args[0])) {
-            $editor = false;
-            $msgBoxError = false;
-            $caption = $bearsamppLang->getValue(Lang::DEBUG) . ' ' . $bearsamppLang->getValue(Lang::POSTGRESQL) . ' - ';
-            if ($args[0] == BinPostgresql::CMD_VERSION) {
-                $caption .= $bearsamppLang->getValue(Lang::DEBUG_POSTGRESQL_VERSION);
-            }
-            $caption .= ' (' . $args[0] . ')';
+    /**
+     * Get the PostgreSQL binary instance
+     *
+     * @param object $bearsamppBins The bins object containing all service binaries
+     * @return BinPostgresql The PostgreSQL binary instance
+     */
+    protected function getBinInstance($bearsamppBins)
+    {
+        return $bearsamppBins->getPostgresql();
+    }
 
-            $debugOutput = $bearsamppBins->getPostgresql()->getCmdLineOutput($args[0]);
+    /**
+     * Get the command-to-caption mapping for PostgreSQL
+     *
+     * @return array Command mapping configuration
+     */
+    protected function getCommandMapping()
+    {
+        return [
+            BinPostgresql::CMD_VERSION => [
+                'lang' => Lang::DEBUG_POSTGRESQL_VERSION,
+                'editor' => false
+            ]
+        ];
+    }
 
-            if ($editor) {
-                Util::openFileContent($caption, $debugOutput);
-            } else {
-                if ($msgBoxError) {
-                    $bearsamppWinbinder->messageBoxError(
-                        $debugOutput,
-                        $caption
-                    );
-                } else {
-                    $bearsamppWinbinder->messageBoxInfo(
-                        $debugOutput,
-                        $caption
-                    );
-                }
-            }
-        }
+    /**
+     * PostgreSQL returns output as a direct string, not an array with 'content' key
+     *
+     * @return bool False to indicate direct string output
+     */
+    protected function hasContentKey()
+    {
+        return false;
     }
 }

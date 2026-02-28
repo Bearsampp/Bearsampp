@@ -6,40 +6,9 @@
  * Github: https://github.com/Bearsampp
  */
 
-async function getXlightStatus() {
-  const url = AJAX_URL;
-  const proc = 'xlight';
-  const senddata = new URLSearchParams();
-  senddata.append(`proc`, proc);
-  const options = {
-    method: 'POST',
-    body: senddata
-  }
-  let response = await fetch(url, options);
-  if (!response.ok) {
-    console.log('Error receiving from ajax.php');
-  } else {
-    let myajaxresponse = await response.text();
-    let data;
-    try {
-      data = JSON.parse(myajaxresponse);
-    } catch (error) {
-      console.error('Failed to parse response:', error);
-    }
-
-    let q = document.querySelector('.xlight-checkport');
-    let ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.checkport);
-
-    q = document.querySelector('.xlight-version-list');
-    ql = q.querySelector('.loader');
-    ql.remove();
-    q.insertAdjacentHTML('beforeend', data.versions);
-  }
-}
-document.addEventListener("DOMContentLoaded", function() {
-  if (document.getElementById('xlight')) {
-    getXlightStatus();
-  }
-});
+// Xlight status fetcher
+// Maps 'versions' data key to 'version-list' selector
+createStatusFetcher('xlight', [
+  'checkport',
+  { data: 'versions', selector: 'version-list' }
+]);
