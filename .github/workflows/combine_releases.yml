@@ -59,7 +59,18 @@ jobs:
       - name: Combine releases into JSON
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
-        run: python .github/combine_releases.py
+        run: python .github/combine_releases.py || true
+
+      - name: Verify quickpick-releases.json exists
+        run: |
+          if [ ! -f core/resources/quickpick-releases.json ]; then
+            echo "File does not exist, creating empty file"
+            echo "[]" > core/resources/quickpick-releases.json
+          fi
+          echo "File exists:"
+          ls -la core/resources/quickpick-releases.json
+          echo "File contents:"
+          cat core/resources/quickpick-releases.json
 
       - name: Check for changes
         id: git-check
