@@ -243,121 +243,140 @@ def extract_date_from_asset(asset_name, asset_url, created_at):
         print(f"Using current time {date_obj} as fallback")
         return date_obj
 
-for repo_path in repos:
-    # Split the repo path into owner and repo
-    parts = repo_path.split('/')
-    if len(parts) != 2:
-        print(f"Skipping invalid repo path: {repo_path}")
-        continue
+try:
+    for repo_path in repos:
+        # Split the repo path into owner and repo
+        parts = repo_path.split('/')
+        if len(parts) != 2:
+            print(f"Skipping invalid repo path: {repo_path}")
+            continue
 
-    owner, repo = parts
+        owner, repo = parts
 
-    # Use GitHub API to fetch releases
-    api_url = f"https://api.github.com/repos/{owner}/{repo}/releases"
-    response = make_api_request(api_url, headers)
+        # Use GitHub API to fetch releases
+        api_url = f"https://api.github.com/repos/{owner}/{repo}/releases"
+        response = make_api_request(api_url, headers)
 
-    if response.status_code == 200:
-        releases = response.json()
-        module_name = repo
-        
-        # Dictionary to store the newest asset for each version
-        version_assets = {}  # {version: (asset_data, date)}
-        
-        for release in releases:
-            # Find .7z assets
-            seven_z_assets = [asset for asset in release['assets']
-                              if asset['name'].lower().endswith('.7z')]
-
-            # Skip releases without .7z assets
-            if not seven_z_assets:
-                print(f"Skipping release {release['tag_name']} in {repo} - no .7z assets found")
-                continue
-
-            # Process all .7z assets in this release
-            module_short_name = repo.replace('module-', '')
-            is_prerelease = release['prerelease']
-            created_at = release.get('created_at')
+        if response.status_code == 200:
+            releases = response.json()
+            module_name = repo
             
-            print(f"Processing release {release['tag_name']} in {repo} with {len(seven_z_assets)} .7z assets")
+            # Dictionary to store the newest asset for each version
+            version_assets = {}  # {version: (asset_data, date)}
             
-            for asset in seven_z_assets:
-                asset_url = asset['browser_download_url']
-                asset_name = asset['name']
-                
-                # Extract version from the asset name
-                version_number = extract_version_from_asset(asset_name, module_short_name, release['tag_name'])
-                
-                # Skip assets with unknown version
-                if version_number.startswith('unknown-'):
-                    print(f"Skipping asset with unknown version: {asset_name}")
+            for release in releases:
+                # Find .7z assets
+                seven_z_assets = [asset for asset in release['assets']
+                                  if asset['name'].lower().endswith('.7z')]
+
+                # Skip releases without .7z assets
+                if not seven_z_assets:
+                    print(f"Skipping release {release['tag_name']} in {repo} - no .7z assets found")
                     continue
+
+                # Process all .7z assets in this release
+                module_short_name = repo.replace('module-', '')
+                is_prerelease = release['prerelease']
+                created_at = release.get('created_at')
                 
-                # Extract date from asset name or use release date
-                asset_date = extract_date_from_asset(asset_name, asset_url, created_at)
+                print(f"Processing release {release['tag_name']} in {repo} with {len(seven_z_assets)} .7z assets")
                 
-                # Debug: Print what we're about to store
-                print(f"DEBUG: For asset {asset_name}, extracted version={version_number}, date={asset_date}")
-                
-                # Check if we already have this version and if this asset is newer
-                if version_number in version_assets:
-                    existing_date = version_assets[version_number][1]
-                    if asset_date > existing_date:
-                        print(f"Replacing {module_name} version {version_number} with newer asset: {asset_name}")
+                for asset in seven_z_assets:
+                    asset_url = asset['browser_download_url']
+                    asset_name = asset['name']
+                    
+                    # Extract version from the asset name
+                    version_number = extract_version_from_asset(asset_name, module_short_name, release['tag_name'])
+                    
+                    # Skip assets with unknown version
+                    if version_number.startswith('unknown-'):
+                        print(f"Skipping asset with unknown version: {asset_name}")
+                        continue
+                    
+                    # Extract date from asset name or use release date
+                    asset_date = extract_date_from_asset(asset_name, asset_url, created_at)
+                    
+                    # Debug: Print what we're about to store
+                    print(f"DEBUG: For asset {asset_name}, extracted version={version_number}, date={asset_date}")
+                    
+                    # Check if we already have this version and if this asset is newer
+                    if version_number in version_assets:
+                        existing_date = version_assets[version_number][1]
+                        if asset_date > existing_date:
+                            print(f"Replacing {module_name} version {version_number} with newer asset: {asset_name}")
+                            version_assets[version_number] = ({
+                                'version': version_number,
+                                'url': asset_url,
+                                'prerelease': is_prerelease
+                            }, asset_date)
+                        else:
+                            print(f"Skipping older asset for {module_name} version {version_number}: {asset_name}")
+                    else:
+                        print(f"Added {module_name} version {version_number} from asset {asset_name}")
                         version_assets[version_number] = ({
                             'version': version_number,
                             'url': asset_url,
                             'prerelease': is_prerelease
                         }, asset_date)
-                    else:
-                        print(f"Skipping older asset for {module_name} version {version_number}: {asset_name}")
-                else:
-                    print(f"Added {module_name} version {version_number} from asset {asset_name}")
-                    version_assets[version_number] = ({
-                        'version': version_number,
-                        'url': asset_url,
-                        'prerelease': is_prerelease
-                    }, asset_date)
-        
-        # Debug: Print the final version_assets dictionary before sorting
-        print(f"DEBUG: Final version_assets for {module_name} before sorting:")
-        for version_key, (asset_data, date) in version_assets.items():
-            print(f"  {version_key}: {asset_data['url']} ({date})")
-        
-        # Extract just the asset data (without dates) for the final output
-        version_data = [asset_data for asset_data, _ in version_assets.values()]
-        
-        # Filter out any remaining entries with unknown- prefix (just to be safe)
-        version_data = [item for item in version_data if not item['version'].startswith('unknown-')]
-        
-        # Sort versions using improved version comparison
-        try:
-            # First attempt: Use version_tuple for most reliable sorting
-            version_data.sort(key=lambda x: version_tuple(x['version']), reverse=True)
-        except Exception as e:
-            print(f"Warning: Could not sort versions for {repo} using version tuple: {e}")
+            
+            # Debug: Print the final version_assets dictionary before sorting
+            print(f"DEBUG: Final version_assets for {module_name} before sorting:")
+            for version_key, (asset_data, date) in version_assets.items():
+                print(f"  {version_key}: {asset_data['url']} ({date})")
+            
+            # Extract just the asset data (without dates) for the final output
+            version_data = [asset_data for asset_data, _ in version_assets.values()]
+            
+            # Filter out any remaining entries with unknown- prefix (just to be safe)
+            version_data = [item for item in version_data if not item['version'].startswith('unknown-')]
+            
+            # Sort versions using improved version comparison
             try:
-                # Second attempt: Use packaging.version for proper semver sorting
-                version_data.sort(key=lambda x: version.parse(x['version']), reverse=True)
-            except Exception as e2:
-                print(f"Warning: Could not sort versions for {repo} using semver: {e2}")
-                # Fallback: Use string normalization for simple version comparison
-                version_data.sort(key=lambda x: normalize_version(x['version']), reverse=True)
+                # First attempt: Use version_tuple for most reliable sorting
+                version_data.sort(key=lambda x: version_tuple(x['version']), reverse=True)
+            except Exception as e:
+                print(f"Warning: Could not sort versions for {repo} using version tuple: {e}")
+                try:
+                    # Second attempt: Use packaging.version for proper semver sorting
+                    version_data.sort(key=lambda x: version.parse(x['version']), reverse=True)
+                except Exception as e2:
+                    print(f"Warning: Could not sort versions for {repo} using semver: {e2}")
+                    # Fallback: Use string normalization for simple version comparison
+                    version_data.sort(key=lambda x: normalize_version(x['version']), reverse=True)
 
-        # Debug: Print the final sorted version data
-        print(f"DEBUG: Final sorted version_data for {module_name}:")
-        for item in version_data:
-            print(f"  {item['version']}: {item['url']}")
+            # Debug: Print the final sorted version data
+            print(f"DEBUG: Final sorted version_data for {module_name}:")
+            for item in version_data:
+                print(f"  {item['version']}: {item['url']}")
 
-        combined_data.append({
-            'module': module_name,
-            'versions': version_data
-        })
-    else:
-        print(f"Failed to fetch releases for {repo_path}: {response.status_code}")
+            combined_data.append({
+                'module': module_name,
+                'versions': version_data
+            })
+        else:
+            print(f"Failed to fetch releases for {repo_path}: {response.status_code}")
 
+except Exception as e:
+    print(f"Error during release processing: {e}")
+    import traceback
+    traceback.print_exc()
+
+# Ensure the output directory exists
 output_path = 'core/resources/quickpick-releases.json'
-os.makedirs(os.path.dirname(output_path), exist_ok=True)
-with open(output_path, 'w') as f:
-    json.dump(combined_data, f, indent=2)
-
-print(f"Combined release data saved to {output_path}")
+try:
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, 'w') as f:
+        json.dump(combined_data, f, indent=2)
+    print(f"Combined release data saved to {output_path}")
+except Exception as e:
+    print(f"Error writing to {output_path}: {e}")
+    import traceback
+    traceback.print_exc()
+    # Create an empty file if writing fails
+    try:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        with open(output_path, 'w') as f:
+            json.dump([], f, indent=2)
+        print(f"Created empty {output_path} due to error")
+    except Exception as e2:
+        print(f"Failed to create {output_path}: {e2}")
