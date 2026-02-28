@@ -46,31 +46,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests packaging
 
-      - name: Create quickpick-releases.json if it doesn't exist
-        run: |
-          mkdir -p core/resources
-          if [ ! -f core/resources/quickpick-releases.json ]; then
-            echo "[]" > core/resources/quickpick-releases.json
-            echo "Created quickpick-releases.json"
-          else
-            echo "quickpick-releases.json already exists"
-          fi
-
       - name: Combine releases into JSON
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
-        run: python .github/combine_releases.py || true
+        run: python .github/combine_releases.py
 
-      - name: Verify quickpick-releases.json exists
+      - name: Verify quickpick-releases.json was created
         run: |
-          if [ ! -f core/resources/quickpick-releases.json ]; then
-            echo "File does not exist, creating empty file"
-            echo "[]" > core/resources/quickpick-releases.json
+          if [ -f core/resources/quickpick-releases.json ]; then
+            echo "✓ File created successfully"
+            ls -lh core/resources/quickpick-releases.json
+          else
+            echo "✗ File was not created!"
+            exit 1
           fi
-          echo "File exists:"
-          ls -la core/resources/quickpick-releases.json
-          echo "File contents:"
-          cat core/resources/quickpick-releases.json
 
       - name: Check for changes
         id: git-check
