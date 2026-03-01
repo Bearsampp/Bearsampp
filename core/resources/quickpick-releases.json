@@ -73,11 +73,6 @@
         "prerelease": false
       },
       {
-        "version": "2.14.2",
-        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.11.14/bearsampp-bruno-2.14.2-2025.11.14.7z",
-        "prerelease": true
-      },
-      {
         "version": "2.13.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.10.14/bearsampp-bruno-2.13.0-2025.10.14.7z",
         "prerelease": false
