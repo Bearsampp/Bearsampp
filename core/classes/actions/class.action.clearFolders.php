@@ -34,12 +34,12 @@ class ActionClearFolders
          *
          * Util::clearFolder is used to clear the contents of the root temporary path, excluding
          * certain essential items such as 'cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache',
-         * 'pip' and '.gitignore'. This ensures that important data and configurations are not lost.
+         * 'pip', 'opcache' and '.gitignore'. This ensures that important data and configurations are not lost.
          *
          * @param string $bearsamppRoot->getTmpPath() The root temporary path to be cleared.
          * @param array $exclusions List of folders and files to be excluded from deletion.
          */
-        Util::clearFolder($bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', '.gitignore'));
+        Util::clearFolder($bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore'));
 
         // Clear logs
         Util::clearFolder($bearsamppRoot->getLogsPath(), array('mariadb.log', 'mailpit.err.log', 'mailpit.out.log', 'memcached.err.log', 'memcached.out.log', 'mysql.log', 'postgresql.log', 'xlight.error.log', 'xlight.log', '.gitignore') );

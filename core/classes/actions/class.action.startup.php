@@ -238,11 +238,11 @@ class ActionStartup
 
         Util::logTrace('Starting loading screen');
         Util::startLoading();
-        
+
         // Give the loading window time to initialize before we terminate this process
         Util::logTrace('Waiting for loading window to initialize');
         usleep(500000); // 500ms delay to allow loading window to start
-        
+
         Util::logTrace('Loading process started');
 
         // Closing cli to finish startup
@@ -484,8 +484,23 @@ class ActionStartup
         $this->splash->incrProgressBar();
 
         $this->writeLog( 'Clear tmp folders' );
-        Util::clearFolder( $bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', '.gitignore') );
+        Util::clearFolder( $bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore') );
         Util::clearFolder( $bearsamppCore->getTmpPath(), array('.gitignore') );
+
+        // Ensure opcache directory exists for persistent file cache
+        $opcachePath = $bearsamppRoot->getTmpPath() . DIRECTORY_SEPARATOR . 'opcache';
+
+        if (!is_dir($opcachePath)) {
+            $this->writeLog('Creating opcache directory: ' . $opcachePath);
+            if (!@mkdir($opcachePath, 0755, true) && !is_dir($opcachePath)) {
+                $this->writeLog('Failed to create opcache directory: ' . $opcachePath);
+                return;
+            }
+        }
+
+        if (!is_writable($opcachePath)) {
+            $this->writeLog('Opcache directory is not writable: ' . $opcachePath);
+        }
     }
 
     /**
