@@ -1,9 +1,9 @@
 This snapshot was automatically generated on
-Tue, 16 Dec 2025 16:21:57 +0000
+Tue, 10 Feb 2026 18:49:49 +0000
 
-Version: 8.4.16
+Version: 8.5.3
 Branch: HEAD
-Build: C:\Users\runneradmin\AppData\Local\Temp\php-b43d012d-df57-4810-a9e0-564faafa1fb8\config\vs17\x64\obj\Release_TS
+Build: C:\Users\runneradmin\AppData\Local\Temp\php-bcc002de-06eb-4b02-9d1e-b843c67b001a\config\vs17\x64\obj\Release_TS
 
 Built-in Extensions
 ===========================
@@ -102,30 +102,22 @@ Module: php_sqlite3.dll
 
 Module: php_intl.dll
 ===========================
-	icuin75.dll
-	icuio75.dll
-	icuuc75.dll
-	vcruntime140_1.dll
+	icuin77.dll
+	icuio77.dll
+	icuuc77.dll
 
-Module: icuin75.dll
+Module: icuin77.dll
 ===========================
-	icuuc75.dll
-	vcruntime140_1.dll
+	icuuc77.dll
 
-Module: icuuc75.dll
+Module: icuuc77.dll
 ===========================
-	icudt75.dll
-	vcruntime140_1.dll
+	icudt77.dll
 
-Module: icuio75.dll
+Module: icuio77.dll
 ===========================
-	icuuc75.dll
-	icuin75.dll
-	vcruntime140_1.dll
-
-Module: php_pdo_firebird.dll
-===========================
-	vcruntime140_1.dll
+	icuuc77.dll
+	icuin77.dll
 
 Module: php_pdo_pgsql.dll
 ===========================
