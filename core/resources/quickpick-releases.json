@@ -70,7 +70,7 @@
       {
         "version": "3.1.4",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2026.3.5/bearsampp-bruno-3.1.4-2026.3.5.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.0.2",
@@ -360,7 +360,7 @@
       {
         "version": "2.53.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2026.3.5/bearsampp-git-2.53.0-2026.3.5.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "2.52.0",
