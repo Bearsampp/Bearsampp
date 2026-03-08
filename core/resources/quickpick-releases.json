@@ -1978,9 +1978,19 @@
     "module": "module-postgresql",
     "versions": [
       {
+        "version": "18.3",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.3.8/bearsampp-postgresql-18.3-2025.3.8.7z",
+        "prerelease": true
+      },
+      {
         "version": "18.1",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-18.1-2025.7.2.7z",
         "prerelease": false
+      },
+      {
+        "version": "17.9",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.3.8/bearsampp-postgresql-17.9-2025.3.8.7z",
+        "prerelease": true
       },
       {
         "version": "17.7",
@@ -2013,6 +2023,11 @@
         "prerelease": false
       },
       {
+        "version": "16.13",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.3.8/bearsampp-postgresql-16.13-2025.3.8.7z",
+        "prerelease": true
+      },
+      {
         "version": "16.11",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-16.11-2025.7.2.7z",
         "prerelease": false
@@ -2041,6 +2056,11 @@
         "version": "16.0",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.10.9/bearsampp-postgresql-16.0-2023.10.9.7z",
         "prerelease": false
+      },
+      {
+        "version": "15.17",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.3.8/bearsampp-postgresql-15.17-2025.3.8.7z",
+        "prerelease": true
       },
       {
         "version": "15.15",
@@ -2081,6 +2101,11 @@
         "version": "15.0",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.10.28/bearsampp-postgresql-15.0-2022.10.28.7z",
         "prerelease": false
+      },
+      {
+        "version": "14.22",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.3.8/bearsampp-postgresql-14.22-2025.3.8.7z",
+        "prerelease": true
       },
       {
         "version": "14.20",
