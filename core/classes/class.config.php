@@ -25,6 +25,7 @@ class Config
     const DOWNLOAD_ID = 'DownloadId';
 
     const CFG_INCLUDE_PR = 'IncludePR';
+    const CFG_ENHANCED_QUICKPICK = 'EnhancedQuickPick';
     const CFG_DEFAULT_LANG = 'defaultLang';
     const CFG_HOSTNAME = 'hostname';
     const CFG_BROWSER = 'browser';
@@ -224,5 +225,43 @@ class Config
     public function getIncludePr()
     {
         return isset($this->raw[self::CFG_INCLUDE_PR]) ? intval($this->raw[self::CFG_INCLUDE_PR]) : 0;
+    }
+
+    /**
+     * Retrieves the EnhancedQuickPick setting from the configuration.
+     *
+     * @return int 1 if enhanced mode is enabled, 0 otherwise
+     */
+    public function getEnhancedQuickPick()
+    {
+        return isset($this->raw[self::CFG_ENHANCED_QUICKPICK]) ? intval($this->raw[self::CFG_ENHANCED_QUICKPICK]) : 0;
+    }
+
+    /**
+     * Validates that the EnhancedQuickPick parameter exists and has a valid value.
+     *
+     * @return array An array with 'valid' boolean and optional 'error' message
+     */
+    public function validateEnhancedQuickPick()
+    {
+        // Check if the parameter exists in the config
+        if (!isset($this->raw[self::CFG_ENHANCED_QUICKPICK])) {
+            return [
+                'valid' => false,
+                'error' => 'Missing parameter: EnhancedQuickPick is not defined in bearsampp.conf'
+            ];
+        }
+
+        $value = $this->raw[self::CFG_ENHANCED_QUICKPICK];
+
+        // Check if the value is either "0" or "1"
+        if ($value !== "0" && $value !== "1") {
+            return [
+                'valid' => false,
+                'error' => 'Invalid parameter: EnhancedQuickPick must be set to "0" or "1" in bearsampp.conf'
+            ];
+        }
+
+        return ['valid' => true];
     }
 }

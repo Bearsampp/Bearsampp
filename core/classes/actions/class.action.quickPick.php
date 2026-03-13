@@ -91,6 +91,29 @@ class QuickPick
     }
 
     /**
+     * Normalizes a module name to find the correct module key from the modules array.
+     * Handles case-insensitive matching for all module types.
+     *
+     * @param string $moduleName The module name to normalize (may include 'module-' prefix)
+     * @return string|null The correctly capitalized module key, or null if not found
+     */
+    public function normalizeModuleName(string $moduleName): ?string
+    {
+        // Remove 'module-' prefix if present
+        $moduleName = str_replace('module-', '', $moduleName);
+        
+        // Find the correct module key by searching through the modules array
+        // This handles proper capitalization for all module types
+        foreach ($this->modules as $key => $moduleInfo) {
+            if (strtolower($key) === strtolower($moduleName)) {
+                return $key;
+            }
+        }
+        
+        return null;
+    }
+
+    /**
      * Retrieves the list of available modules.
      *
      * @return array An array of module names.
@@ -111,6 +134,14 @@ class QuickPick
      */
     public function loadQuickpick(string $imagesPath): string
     {
+        global $bearsamppConfig;
+
+        // Validate EnhancedQuickPick parameter
+        $validation = $bearsamppConfig->validateEnhancedQuickPick();
+        if (!$validation['valid']) {
+            return $this->getErrorModal($validation['error']);
+        }
+
         $this->checkQuickpickJson();
 
         $modules  = $this->getModules();
@@ -364,13 +395,14 @@ class QuickPick
         $url = QUICKPICK_API_URL . QUICKPICK_API_KEY . '&download_id=' . $DownloadId;
         Util::logDebug( 'API URL: ' . $url );
 
-        $response = @file_get_contents( $url );
+        // Attempt to fetch the API response
+        // Note: If this fails, PHP will generate a warning which will be logged by the error handler
+        // This is expected behavior when the API server is unavailable
+        $response = file_get_contents( $url );
 
         // Check if the response is false
         if ( $response === false ) {
-            $error = error_get_last();
-            Util::logError( 'Error fetching API response: ' . $error['message'] );
-
+            Util::logError( 'Failed to validate QuickPick license - API server unavailable' );
             return false;
         }
 
@@ -433,6 +465,47 @@ class QuickPick
             $response = $this->fetchAndUnzipModule( $moduleUrl, $module );
             Util::logDebug( 'Response is: ' . print_r( $response, true ) );
 
+            // Check if enhanced mode is enabled
+            global $bearsamppConfig;
+            $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
+            
+            Util::logDebug('Enhanced mode: ' . ($enhancedMode ? 'enabled' : 'disabled'));
+            
+            // If installation was successful and enhanced mode is enabled, update config
+            if (isset($response['success']) && $enhancedMode == 1) {
+                // Step 1: Update config FIRST (so reload can pick up the new version)
+                Util::logDebug('Enhanced mode enabled - Updating config for module: ' . $module . ' version: ' . $version);
+                $configUpdated = $this->updateModuleConfig($module, $version);
+                
+                if ($configUpdated) {
+                    // Step 2: Trigger reload AFTER config update (reload will apply the new version)
+                    Util::logDebug('Config updated successfully, triggering reload to apply changes...');
+                    
+                    // Send progress update to user - temporarily stop output buffering
+                    $obLevel = ob_get_level();
+                    while (ob_get_level() > 0) {
+                        ob_end_flush();
+                    }
+                    
+                    echo json_encode(['phase' => 'updating', 'message' => 'Updating system configuration...']);
+                    flush();
+                    
+                    // Restart output buffering
+                    for ($i = 0; $i < $obLevel; $i++) {
+                        ob_start();
+                    }
+                    
+                    // Note: User must manually reload from tray menu to activate the new version
+                    Util::logDebug('Installation complete - user must manually reload from tray menu');
+                    $response['reload_required'] = true;
+                } else {
+                    Util::logError('Config update failed for module: ' . $module);
+                    $response['reload_triggered'] = false;
+                }
+            } else if (isset($response['success']) && $enhancedMode == 0) {
+                Util::logDebug('Enhanced mode disabled - skipping config update');
+            }
+
             return $response;
         }
         else {
@@ -467,7 +540,22 @@ class QuickPick
     $moduleName = str_replace('module-', '', $module);
     Util::logDebug('Module Name: ' . $moduleName);
 
-    $moduleType = $this->modules[$module]['type'];
+    // Find the correct module key by searching through the modules array
+    // This handles proper capitalization for all module types
+    $moduleKey = null;
+    foreach ($this->modules as $key => $moduleInfo) {
+        if (strtolower($key) === strtolower($moduleName)) {
+            $moduleKey = $key;
+            break;
+        }
+    }
+    
+    if (!$moduleKey) {
+        Util::logError("Module not found in modules array: $moduleName");
+        return ['error' => 'Module configuration not found'];
+    }
+    
+    $moduleType = $this->modules[$moduleKey]['type'];
     Util::logDebug('Module Type: ' . $moduleType);
 
     // Get module type
@@ -547,6 +635,125 @@ class QuickPick
     }
 
     /**
+     * Regenerates the bearsampp.ini menu file without VBS checks (AJAX-safe version).
+     * This is a simplified version of TplApp::process() that avoids VBS errors in web context.
+     *
+     * @return string The generated INI content
+     */
+    private function regenerateMenuSafe(): string
+    {
+        Util::logDebug('Regenerating menu (AJAX-safe mode)...');
+        
+        // Suppress errors temporarily during menu generation
+        $oldErrorReporting = error_reporting();
+        error_reporting($oldErrorReporting & ~E_WARNING);
+        
+        try {
+            // Generate the menu content
+            $menuContent = TplApp::process();
+            
+            // Restore error reporting
+            error_reporting($oldErrorReporting);
+            
+            Util::logDebug('Menu regenerated successfully');
+            return $menuContent;
+            
+        } catch (Exception $e) {
+            // Restore error reporting
+            error_reporting($oldErrorReporting);
+            
+            Util::logWarning('Error during menu regeneration: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Updates the bearsampp.conf configuration file with the new module version.
+     * This method handles all module types: binaries, apps, and tools.
+     *
+     * @param   string  $module   The name of the module (e.g., 'Apache', 'PhpMyAdmin', 'Git').
+     * @param   string  $version  The version to set in the configuration.
+     *
+     * @return bool True if the configuration was updated successfully, false otherwise.
+     */
+    private function updateModuleConfig(string $module, string $version): bool
+    {
+        try {
+            $bearsamppConfig = new Config();
+            
+            // Remove 'module-' prefix if present and normalize the module name
+            $moduleName = str_replace('module-', '', $module);
+            
+            // Find the correct module key by searching through the modules array
+            // This handles proper capitalization for all module types
+            $moduleKey = null;
+            foreach ($this->modules as $key => $moduleInfo) {
+                if (strtolower($key) === strtolower($moduleName)) {
+                    $moduleKey = $key;
+                    break;
+                }
+            }
+            
+            if (!$moduleKey) {
+                Util::logError("Module not found in modules array: $moduleName");
+                return false;
+            }
+            
+            $moduleType = $this->modules[$moduleKey]['type'];
+            
+            // Map module names to their config section names
+            // For all types, use the lowercase name for the config key
+            $configSection = strtolower($moduleKey);
+            
+            Util::logDebug("Updating config for module: $module (key: $moduleKey, type: $moduleType) to version: $version");
+            Util::logDebug("Config section: $configSection");
+            
+            // Update the configuration file
+            // The Config class expects a flat key like "nodejsVersion" not a section
+            $configKey = $configSection . 'Version';
+            $bearsamppConfig->replace($configKey, $version);
+            
+            Util::logInfo("Successfully updated $configSection version to $version in bearsampp.conf");
+            
+            return true;
+            
+        } catch (Exception $e) {
+            Util::logError("Failed to update module config: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Generates an error modal for configuration validation failures.
+     *
+     * @param   string  $errorMessage  The error message to display.
+     *
+     * @return string The HTML content of the error modal.
+     */
+    public function getErrorModal(string $errorMessage): string
+    {
+        ob_start();
+        ?>
+        <div id="configErrorContainer" class="text-center mt-3 pe-3">
+            <div class="alert alert-danger d-inline-block" role="alert" style="max-width: 500px;">
+                <h4 class="alert-heading">
+                    <i class="fas fa-exclamation-circle"></i> Configuration Error
+                </h4>
+                <hr>
+                <p class="mb-0">
+                    <?php echo htmlspecialchars($errorMessage); ?>
+                </p>
+                <hr>
+                <small class="text-muted">
+                    Please add the missing parameter to the <code>bearsampp.conf</code> file in the Bearsampp root directory.
+                </small>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
      * Generates the HTML content for the QuickPick menu.
      *
      * This method creates the HTML structure for the QuickPick interface, including a dropdown
@@ -564,6 +771,7 @@ class QuickPick
     {
         global $bearsamppConfig;
         $includePr = $bearsamppConfig->getIncludePr();
+        $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
 
         ob_start();
         if ( Util::checkInternetState() ) {
@@ -571,7 +779,7 @@ class QuickPick
             // Check if the license key is valid
             if ( $this->checkDownloadId() ): ?>
                 <div id = 'quickPickContainer'>
-                    <div class = 'quickpick me-5'>
+                    <div class = 'quickpick'>
 
                         <div class = "custom-select">
                             <button class = "select-button" role = "combobox"

@@ -30,7 +30,9 @@ $procMap = [
     'php' => __DIR__ . '/ajax/ajax.php.php',
     'postgresql' => __DIR__ . '/ajax/ajax.postgresql.php',
     'xlight' => __DIR__ . '/ajax/ajax.xlight.php',
-    'quickpick' => __DIR__ . '/ajax/ajax.quickpick.php'
+    'quickpick' => __DIR__ . '/ajax/ajax.quickpick.php',
+    'toggleenhancedquickpick' => __DIR__ . '/ajax/ajax.toggle.enhancedquickpick.php',
+    'applymoduleconfig' => __DIR__ . '/ajax/ajax.apply.moduleconfig.php'
 ];
 
 /**
@@ -56,6 +58,13 @@ if (isset($procMap[$proc]) && file_exists($procMap[$proc])) {
     /**
      * Handle the case where the 'proc' parameter is not valid.
      * Return a JSON encoded error message indicating the invalid parameter.
+     * Include the requested proc value for debugging purposes.
      */
-    echo json_encode(['error' => 'Invalid proc parameter']);
+    $errorMessage = 'Invalid proc parameter';
+    if (!empty($proc)) {
+        $errorMessage .= ': "' . htmlspecialchars($proc) . '" is not a valid procedure';
+    } else {
+        $errorMessage .= ': no procedure was specified';
+    }
+    echo json_encode(['error' => $errorMessage]);
 }

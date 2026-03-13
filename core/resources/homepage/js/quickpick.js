@@ -15,6 +15,14 @@ document.addEventListener("DOMContentLoaded", function () {
     let selectedHeader = null; // Store which module has been selected to allow open/close of versions
     let progressValue = 0; // Initialize progressValue as a number
 
+    // Initialize Enhanced QuickPick toggle switch
+    const enhancedQuickPickSwitch = document.getElementById('enhancedQuickPickSwitch');
+    if (enhancedQuickPickSwitch) {
+        enhancedQuickPickSwitch.addEventListener('change', function() {
+            toggleEnhancedQuickPick(this.checked ? 1 : 0);
+        });
+    }
+
     const customSelect = document.querySelector(".custom-select"); // parent div of quickpick select
     const selectBtn = document.querySelector(".select-button"); // trigger button to pop down ul
     const selectDropdown = document.querySelector(".select-dropdown"); // the dropdown menu
@@ -245,7 +253,7 @@ async function installModule(moduleName, version) {
                     } else if (data.success) {
                         console.log(data);
                         isCompleted = true;
-                        messageData = data.message;
+                        messageData = data; // Store the full response object, not just the message
                     } else if (data.error) {
                         console.error('Error:', data.error);
                         window.alert(`Error: ${data.error}`);
@@ -264,11 +272,283 @@ async function installModule(moduleName, version) {
         console.error('Failed to install module:', error);
         window.alert('Failed to install module: ' + error.message);
     } finally {
-        if (isCompleted === true) {
-            confirm(messageData);
+        if (isCompleted === true && messageData) {
+            console.log('Final messageData:', messageData);
+            console.log('showApplyButton:', messageData.showApplyButton);
+            console.log('moduleName:', messageData.moduleName);
+            
+            // Check if we should show the apply config button
+            if (messageData.showApplyButton && messageData.moduleName) {
+                // Don't reload immediately for apps/tools - let user apply config first
+                showApplyConfigDialog(messageData.message, messageData.moduleName, version);
+                return; // Exit early to prevent reload
+            } else {
+                // Show enhanced mode or binary message in same styled modal
+                showInfoDialog(messageData.message || messageData);
+                return; // Exit early to prevent reload
+            }
         }
         setTimeout(() => {
             location.reload();
         }, 100); // Delay of 100 milliseconds
+    }
+}
+
+/**
+ * Shows a custom dialog with an "Apply Config" button for apps/tools
+ *
+ * @param {string} message - The success message to display
+ * @param {string} moduleName - The module name (e.g., 'composer', 'git')
+ * @param {string} version - The version to apply
+ */
+function showApplyConfigDialog(message, moduleName, version) {
+    console.log('showApplyConfigDialog called with:', {message, moduleName, version});
+    
+    // Create Bootstrap modal structure with dark theme
+    const modalHTML = `
+        <div class="modal fade show" id="applyConfigModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog" data-bs-theme="dark">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark text-light">
+                    <div class="modal-header border-secondary">
+                        <h5 class="modal-title w-100 text-center">Module Installation Complete</h5>
+                        <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="white-space: pre-wrap;">
+${message}
+                    </div>
+                    <div class="modal-footer border-secondary justify-content-center">
+                        <button type="button" class="btn btn-secondary" id="closeModalBtn">Close</button>
+                        <button type="button" class="btn btn-success" id="applyConfigBtn">Apply Config</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    `;
+    
+    // Insert modal into DOM
+    const modalContainer = document.createElement('div');
+    modalContainer.innerHTML = modalHTML;
+    document.body.appendChild(modalContainer);
+    
+    // Get button references
+    const applyButton = document.getElementById('applyConfigBtn');
+    const closeButton = document.getElementById('closeModalBtn');
+    const closeX = modalContainer.querySelector('.btn-close');
+    
+    // Apply Config button handler
+    applyButton.onclick = async () => {
+        applyButton.disabled = true;
+        applyButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Applying...';
+        
+        try {
+            const result = await applyModuleConfig(moduleName, version);
+            
+            // Update modal to show success - keep same styling as initial message
+            const modalBody = modalContainer.querySelector('.modal-body');
+            modalBody.style.whiteSpace = 'pre-wrap';
+            const htmlMessage = `Configuration updated successfully!<br><br>✓ Set ${moduleName}Version = "${version}"<br><br><span class='text-warning'><i class='fas fa-exclamation-triangle'></i> IMPORTANT: Right-click the Bearsampp tray icon and select 'Reload' to activate the new version.</span>`;
+            modalBody.innerHTML = htmlMessage;
+            
+            // Change button to just "Close"
+            applyButton.style.display = 'none';
+            closeButton.textContent = 'OK';
+            closeButton.classList.remove('btn-secondary');
+            closeButton.classList.add('btn-primary');
+            
+        } catch (error) {
+            applyButton.disabled = false;
+            applyButton.textContent = 'Apply Config';
+            
+            // Show error in modal - keep same styling as initial message
+            const modalBody = modalContainer.querySelector('.modal-body');
+            const currentText = modalBody.textContent;
+            modalBody.textContent = currentText + `\n\n❌ Error: ${error.message}`;
+        }
+    };
+    
+    // Close button handler
+    const closeModal = () => {
+        modalContainer.remove();
+        // Reload after closing
+        setTimeout(() => location.reload(), 100);
+    };
+    
+    closeButton.onclick = closeModal;
+    closeX.onclick = closeModal;
+}
+
+/**
+ * Shows an info dialog for Enhanced Mode or binary installations
+ *
+ * @param {string} message - The message to display
+ */
+function showInfoDialog(message) {
+    console.log('showInfoDialog called with:', message);
+    
+    // Create Bootstrap modal structure with dark theme
+    const modalHTML = `
+        <div class="modal fade show" id="infoModal" tabindex="-1" style="display: block;" aria-modal="true" role="dialog" data-bs-theme="dark">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark text-light">
+                    <div class="modal-header border-secondary">
+                        <h5 class="modal-title w-100 text-center">Module Installation Complete</h5>
+                        <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="infoModalBody">
+                    </div>
+                    <div class="modal-footer border-secondary justify-content-center">
+                        <button type="button" class="btn btn-primary" id="okBtn">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    `;
+    
+    // Insert modal into DOM
+    const modalContainer = document.createElement('div');
+    modalContainer.innerHTML = modalHTML;
+    document.body.appendChild(modalContainer);
+    
+    // Set message content (use innerHTML to support FontAwesome icons)
+    const modalBody = document.getElementById('infoModalBody');
+    // Convert newlines to <br> for HTML display, but preserve white-space for formatting
+    modalBody.style.whiteSpace = 'pre-wrap';
+    const htmlMessage = message.replace(/\n/g, '<br>');
+    modalBody.innerHTML = htmlMessage;
+    
+    // Get button references
+    const okButton = document.getElementById('okBtn');
+    const closeX = modalContainer.querySelector('.btn-close');
+    
+    // Close handler
+    const closeModal = () => {
+        modalContainer.remove();
+        // Reload after closing
+        setTimeout(() => location.reload(), 100);
+    };
+    
+    okButton.onclick = closeModal;
+    closeX.onclick = closeModal;
+}
+
+/**
+ * Applies the module version to bearsampp.conf
+ *
+ * @param {string} moduleName - The module name (e.g., 'composer', 'git')
+ * @param {string} version - The version to apply
+ */
+async function applyModuleConfig(moduleName, version) {
+    const url = AJAX_URL;
+    const senddata = new URLSearchParams();
+    senddata.append('proc', 'applymoduleconfig');
+    senddata.append('moduleName', moduleName);
+    senddata.append('version', version);
+
+    const options = {
+        method: 'POST',
+        body: senddata,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
+
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('Config applied successfully');
+            // Don't use alert - the modal will close and page will reload
+            // The success message is already in data.message if needed
+            return data;
+        } else if (data.error) {
+            console.error('Error applying config:', data.error);
+            throw new Error(data.error);
+        }
+    } catch (error) {
+        console.error('Failed to apply config:', error);
+        throw error;
+    }
+}
+
+/**
+ * Toggles the EnhancedQuickPick setting via AJAX.
+ *
+ * @param {number} value - The value to set (0 or 1).
+ */
+async function toggleEnhancedQuickPick(value) {
+    const url = AJAX_URL;
+    const senddata = new URLSearchParams();
+    senddata.append('proc', 'toggleenhancedquickpick');
+    senddata.append('value', value);
+
+    const options = {
+        method: 'POST',
+        body: senddata,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
+
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('EnhancedQuickPick mode changed to:', data.mode);
+            
+            // Show a brief notification to the user
+            const modeName = data.mode === 'enhanced' ? 'Enhanced' : 'Standard';
+            const message = `QuickPick mode switched to ${modeName}`;
+            
+            // Create a temporary notification
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3';
+            notification.style.zIndex = '9999';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        } else if (data.error) {
+            console.error('Error toggling EnhancedQuickPick:', data.error);
+            
+            // Check if it's an "Invalid proc parameter" error
+            if (data.error.includes('Invalid proc parameter')) {
+                // Extract the proc value from the error message if available
+                const procMatch = data.error.match(/"([^"]+)"/);
+                const procValue = procMatch ? procMatch[1] : 'unknown';
+                window.alert(`Configuration Error: The requested procedure "${procValue}" is not recognized.\n\nThe EnhancedQuickPick parameter may be missing from bearsampp.conf. Please add it manually or reload the application.`);
+            } else {
+                window.alert(`Error: ${data.error}`);
+            }
+            
+            // Revert the switch state
+            const enhancedQuickPickSwitch = document.getElementById('enhancedQuickPickSwitch');
+            if (enhancedQuickPickSwitch) {
+                enhancedQuickPickSwitch.checked = !enhancedQuickPickSwitch.checked;
+            }
+        }
+    } catch (error) {
+        console.error('Failed to toggle EnhancedQuickPick:', error);
+        window.alert('Failed to toggle EnhancedQuickPick: ' + error.message);
+        
+        // Revert the switch state
+        const enhancedQuickPickSwitch = document.getElementById('enhancedQuickPickSwitch');
+        if (enhancedQuickPickSwitch) {
+            enhancedQuickPickSwitch.checked = !enhancedQuickPickSwitch.checked;
+        }
     }
 }

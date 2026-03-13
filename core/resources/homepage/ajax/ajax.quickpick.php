@@ -39,21 +39,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ob_start();
         
         try {
+            global $bearsamppConfig;
             $QuickPick = new QuickPick();
             Util::logDebug('QuickPick initialized for module: ' . $module . ', version: ' . $version);
+            
+            // Check if enhanced mode is enabled
+            $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
+            Util::logDebug('Enhanced QuickPick mode: ' . ($enhancedMode ? 'enabled' : 'disabled'));
             
             // Install the module
             $response = $QuickPick->installModule($module, $version);
             
             if (!isset($response['error'])) {
-                // Build success message
-                $successMessage = "Module $module version $version installed successfully.";
+                // Determine module type for appropriate messaging
+                // Use the helper method to normalize the module name consistently
+                $moduleKey = $QuickPick->normalizeModuleName($module);
+                $moduleName = strtolower($moduleKey ?? $module);
+                $moduleType = ($moduleKey && isset($QuickPick->modules[$moduleKey])) ? $QuickPick->modules[$moduleKey]['type'] : 'binary';
                 
-                // Add appropriate instructions based on module type
-                if (isset($QuickPick->modules[$module]) && $QuickPick->modules[$module]['type'] === "binary") {
-                    $successMessage .= "\nReload needed...\nWhen you are done installing modules then\nRight click on menu and choose reload.";
+                // Build success message based on mode and module type
+                if ($enhancedMode == 1) {
+                    // Enhanced mode: config auto-updated, just need to reload
+                    $successMessage = "Module $module version $version installed successfully!";
+                    $successMessage .= "\n\n✓ Files extracted";
+                    $successMessage .= "\n✓ Configuration updated";
+                    $successMessage .= "\n\n<span class='text-warning'><i class='fas fa-exclamation-triangle'></i> IMPORTANT: Right-click the Bearsampp tray icon and select 'Reload' to activate the new version.</span>";
                 } else {
-                    $successMessage .= "\nEdit Bearsampp.conf to use new version(s) then\nWhen you are done installing modules\nRight click on menu and choose reload.";
+                    // Standard mode: offer to update config for all module types
+                    $successMessage = "Module $module version $version has been downloaded and extracted successfully!";
+                    $successMessage .= "\n\nNext steps:";
+                    $successMessage .= "\n1. Click 'Apply Config' below to update bearsampp.conf";
+                    $successMessage .= "\n2. Right-click the Bearsampp tray icon and select 'Reload'";
+                    
+                    // Include module info for the apply button
+                    $response['moduleType'] = $moduleType;
+                    $response['moduleName'] = $moduleName;
+                    $response['showApplyButton'] = true;
                 }
                 
                 $response['message'] = $successMessage;
