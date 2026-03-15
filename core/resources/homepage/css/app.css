@@ -753,3 +753,30 @@ div#InternetState {
         background-position: 0 0;
     }
 }
+
+/* ---- INLINE STYLES MOVED FROM TEMPLATES ---- */
+
+/* Pear icon height - from hp.php.html */
+.php-pearversion img {
+    height: 1.125em;
+}
+
+/* Summary section - list group items with minimum height */
+.summary .list-group-item {
+    min-height: 8rem;
+}
+
+/* Summary section - cards with minimum height */
+.summary .card {
+    min-height: 18rem;
+}
+
+/* Summary section - list groups with no bottom margin */
+.summary .list-group {
+    margin-bottom: 0;
+}
+
+/* Download icon spacing - from ajax.summary.php */
+.download-icon-wrapper {
+    margin-left: 0.5rem;
+}

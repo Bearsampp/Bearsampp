@@ -9,7 +9,7 @@
 <div class = "row summary">
 	<div class = "col-md-4">
 		<div class = "list-group">
-			<div class = "list-group-item" style = "min-height: 8rem">
+			<div class = "list-group-item">
 				<h4 class = "list-group-item-heading"> <?php echo $bearsamppLang->getValue(Lang::ABOUT); ?> </h4>
 				<div class = "list-group-item-text"> <?php echo sprintf($bearsamppLang->getValue(Lang::HOMEPAGE_ABOUT_HTML), Util::getWebsiteUrl(), Util::getGithubUrl()); ?></div>
 			</div>
@@ -17,7 +17,7 @@
 	</div>
 	<div class = "col-md-4">
 		<div class = "list-group">
-			<div class = "list-group-item" style = "min-height: 8rem">
+			<div class = "list-group-item">
 				<h4 class = "list-group-item-heading"> <?php echo $bearsamppLang->getValue(Lang::LICENSE); ?> </h4>
 				<div class = "list-group-item-text"> <?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_LICENSE_TEXT); ?></div>
 			</div>
@@ -25,7 +25,7 @@
 	</div>
 	<div class = "col-md-4">
 		<div class = "list-group">
-			<div class = "list-group-item" style = "min-height: 8rem">
+			<div class = "list-group-item">
 				<h4 class = "list-group-item-heading"> <?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_QUESTIONS_TITLE); ?> </h4>
 				<div class = "list-group-item-text">
 					<div> <?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_QUESTIONS_TEXT); ?></div>
@@ -41,14 +41,14 @@
 </div>
 <div class = "row">
 	<div class = "col-md-4">
-		<div class = "card" style = "min-height:18rem;">
+		<div class = "card">
 			<div class = "card-heading">
 				<h3 class = "card-title bg-dark text-light p-1">
 					<i class = "fa-regular fa-file-code"></i> <?php echo $bearsamppLang->getValue(Lang::BINS); ?>
 				</h3>
 			</div>
 			<div class = "card-body card-summary">
-				<div class = "list-group" style = "margin-bottom:0;">
+				<div class = "list-group">
 					<span class = "list-group-item summary-binapache"> <?php echo $getLoader; ?> <a href = "#apache"> <?php echo $bearsamppLang->getValue(Lang::APACHE); ?> </a> </span>
 					<span class = "list-group-item summary-binphp"> <?php echo $getLoader; ?> <a href = "#php"> <?php echo $bearsamppLang->getValue(Lang::PHP); ?> </a>
 					</span>
@@ -72,14 +72,14 @@
 		</div>
 	</div>
 	<div class = "col-md-4">
-		<div class = "card" style = "min-height:18rem;">
+		<div class = "card">
 			<div class = "card-heading">
 				<h3 class = "card-title bg-dark text-light p-1">
 					<i class = "fa-solid fa-wrench"></i> <?php echo $bearsamppLang->getValue(Lang::TOOLS); ?>
 				</h3>
 			</div>
 			<div class = "card-body card-summary">
-				<div class = "list-group" style = "margin-bottom:0;">
+				<div class = "list-group">
 					<span class = "list-group-item">
 					<a aria-label = "Download Bruno" href = "
 						<?php echo Util::getWebsiteUrl('module/bruno', '#releases'); ?>" target = "_blank" title = "
@@ -184,14 +184,14 @@
 		</div>
 	</div>
 	<div class = "col-md-4">
-		<div class = "card" style = "min-height:18rem;">
+		<div class = "card">
 			<div class = "card-heading">
 				<h3 class = "card-title bg-dark text-light p-1">
 					<i class = 'fa-solid fa-network-wired'></i> <?php echo $bearsamppLang->getValue(Lang::APPS); ?>
 				</h3>
 			</div>
 			<div class = "card-body card-summary">
-				<div class = "list-group" style = "margin-bottom:0;">
+				<div class = "list-group">
 					<span class = "list-group-item">
 					<a aria-label = "Download phpmyadmin" href = "
 						<?php echo Util::getWebsiteUrl('module/phpmyadmin', '#releases'); ?>" target = "_blank" title = "
