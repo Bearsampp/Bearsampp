@@ -22,6 +22,7 @@ ext {
     appconfScriptsTimeout = buildProps.getProperty('appconf.scriptsTimeout')
     appconfDownloadId = buildProps.getProperty('appconf.downloadId')
     appconfIncludePR = buildProps.getProperty('appconf.IncludePR')
+    appconfEnhancedQuickPick = buildProps.getProperty('appconf.EnhancedQuickPick')
 
     // Release configuration
     releaseName = 'Bearsampp'
@@ -820,6 +821,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             'APPCONF_SCRIPTS_TIMEOUT': appconfScriptsTimeout,
             'APPCONF_DOWNLOAD_ID': appconfDownloadId,
             'APPCONF_INCLUDE_PR': appconfIncludePR,
+            'APPCONF_ENHANCED_QUICK_PICK': appconfEnhancedQuickPick,
             'BIN_APACHE_VERSION': binApacheVersion,
             'BIN_PHP_VERSION': binPhpVersion,
             'BIN_MYSQL_VERSION': binMysqlVersion,
