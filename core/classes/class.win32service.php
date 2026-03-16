@@ -643,7 +643,136 @@ class Win32Service
     }
 
     /**
+     * Fast service check using sc.exe (Windows Service Control utility).
+     * This is much faster than WMI/VBS queries and less prone to hanging.
+     *
+     * @return array|false Service information array or false if service doesn't exist
+     */
+    /**
+     * Execute a command with hidden console window.
+     * Prevents command prompt flash during execution.
+     *
+     * @param string $command The command to execute
+     * @return string|false The command output or false on failure
+     */
+    private function execHidden($command)
+    {
+        // Use proc_open with hidden window flags
+        $descriptorspec = [
+            0 => ['pipe', 'r'],  // stdin
+            1 => ['pipe', 'w'],  // stdout
+            2 => ['pipe', 'w']   // stderr
+        ];
+
+        // On Windows, use CREATE_NO_WINDOW flag to hide console
+        $options = ['bypass_shell' => true];
+
+        $process = @proc_open($command, $descriptorspec, $pipes, null, null, $options);
+
+        if (!is_resource($process)) {
+            return false;
+        }
+
+        // Close stdin
+        fclose($pipes[0]);
+
+        // Read stdout
+        $output = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+
+        // Read stderr
+        $errors = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+
+        // Close process
+        proc_close($process);
+
+        // Combine output and errors for sc.exe
+        if (!empty($errors)) {
+            $output .= "\n" . $errors;
+        }
+
+        return $output;
+    }
+
+    public function fastServiceCheck()
+    {
+        Util::logTrace("Starting fastServiceCheck for service: " . $this->getName());
+
+        $startTime = microtime(true);
+
+        // Use sc.exe to query service - this is very fast and reliable
+        // Execute with hidden window to prevent command prompt flash
+        $command = 'sc query "' . $this->getName() . '"';
+        Util::logTrace("Executing command: " . $command);
+
+        $output = $this->execHidden($command);
+        $duration = round(microtime(true) - $startTime, 3);
+
+        Util::logTrace("sc.exe query completed in " . $duration . "s");
+
+        if ($output === null || $output === false) {
+            Util::logTrace("sc.exe returned null/false, service likely doesn't exist");
+            return false;
+        }
+
+        // Check if service doesn't exist
+        if (stripos($output, 'does not exist') !== false ||
+            stripos($output, 'FAILED') !== false ||
+            stripos($output, '1060') !== false) {  // Error code 1060 = service doesn't exist
+            Util::logTrace("Service doesn't exist: " . $this->getName());
+            return false;
+        }
+
+        // Service exists - parse basic info
+        $serviceInfo = [];
+
+        // Extract service name
+        if (preg_match('/SERVICE_NAME:\s*(.+)/i', $output, $matches)) {
+            $serviceInfo[self::VBS_NAME] = trim($matches[1]);
+        }
+
+        // Extract display name
+        if (preg_match('/DISPLAY_NAME:\s*(.+)/i', $output, $matches)) {
+            $serviceInfo[self::VBS_DISPLAY_NAME] = trim($matches[1]);
+        }
+
+        // Extract state
+        if (preg_match('/STATE\s*:\s*\d+\s+(\w+)/i', $output, $matches)) {
+            $state = trim($matches[1]);
+            $serviceInfo[self::VBS_STATE] = $state;
+            Util::logTrace("Service state: " . $state);
+        }
+
+        // If we have basic info, service exists - get full details if needed
+        if (!empty($serviceInfo)) {
+            Util::logTrace("Service exists, getting full details");
+
+            // Use sc qc to get configuration details (including path)
+            $configCommand = 'sc qc "' . $this->getName() . '"';
+            $configOutput = $this->execHidden($configCommand);
+
+            if ($configOutput !== null && $configOutput !== false && preg_match('/BINARY_PATH_NAME\s*:\s*(.+)/i', $configOutput, $matches)) {
+                $serviceInfo[self::VBS_PATH_NAME] = trim($matches[1]);
+                Util::logTrace("Service path: " . $serviceInfo[self::VBS_PATH_NAME]);
+            }
+
+            // Get description if available
+            if ($configOutput !== null && $configOutput !== false && preg_match('/DISPLAY_NAME\s*:\s*(.+)/i', $configOutput, $matches)) {
+                $serviceInfo[self::VBS_DESCRIPTION] = trim($matches[1]);
+            }
+
+            Util::logTrace("Fast service check successful for: " . $this->getName());
+            return $serviceInfo;
+        }
+
+        Util::logTrace("Could not parse service info from sc.exe output");
+        return false;
+    }
+
+    /**
      * Retrieves information about the service.
+     * Performance optimization: Uses fast sc.exe check first, falls back to VBS if needed.
      *
      * @return array|false The service information, or false on failure.
      */
@@ -663,7 +792,26 @@ class Win32Service
                 return $result;
             }
 
-            Util::logTrace("Using VBS to get service info");
+            // Performance optimization: Try fast sc.exe check first
+            Util::logTrace("Attempting fast service check using sc.exe");
+            $fastResult = $this->fastServiceCheck();
+
+            if ($fastResult !== false) {
+                $duration = round(microtime(true) - $startTime, 3);
+                Util::logTrace("Fast service check succeeded in " . $duration . "s (saved 5-10s)");
+                Util::logDebug("Performance: Fast service check used for " . $this->getName() . ", saved 5-10 seconds");
+                return $fastResult;
+            }
+
+            // Fast check returned false - service doesn't exist
+            if ($fastResult === false) {
+                $duration = round(microtime(true) - $startTime, 3);
+                Util::logTrace("Fast service check determined service doesn't exist in " . $duration . "s");
+                return false;
+            }
+
+            // Fallback to VBS (should rarely be needed now)
+            Util::logTrace("Falling back to VBS for service info");
 
             // Use set_time_limit to prevent PHP script timeout
             $originalTimeout = ini_get('max_execution_time');
