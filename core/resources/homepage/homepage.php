@@ -21,6 +21,11 @@ require_once __DIR__ . '/../../root.php';
 require_once __DIR__ . '/../../classes/actions/class.action.quickPick.php';
 
 /**
+ * Initialize CSRF protection
+ */
+Csrf::init();
+
+/**
  * Set security headers to protect against common web vulnerabilities
  */
 header('X-Frame-Options: SAMEORIGIN');
@@ -75,6 +80,7 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
     <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
     <meta name = "description" content = "Localhost Dashboard">
     <meta name = "author" content = "Bearsampp">
+    <?php echo Csrf::getTokenMeta(); ?>
 
     <?php
     /**
@@ -89,6 +95,7 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
 
         "/libs/bootstrap/js/bootstrap.bundle.min.js",
         "/libs/fontawesome/js/all.min.js",
+        "/js/csrf.js",
         "/js/_commons.js",
         "/js/latestversion.js",
         "/js/summary.js",
@@ -166,9 +173,9 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
                             Enhanced Mode
                         </label>
                         <div class = "form-check form-switch mb-0">
-                            <input class = "form-check-input" type = "checkbox" role = "switch" id = "enhancedQuickPickSwitch" 
+                            <input class = "form-check-input" type = "checkbox" role = "switch" id = "enhancedQuickPickSwitch"
                                    <?php echo $enhancedMode == 1 ? 'checked' : ''; ?>
-                                   data-bs-toggle = "tooltip" data-bs-placement = "bottom" 
+                                   data-bs-toggle = "tooltip" data-bs-placement = "bottom"
                                    title = "Toggle between enhanced (auto-config update) and standard QuickPick mode">
                         </div>
                     </div>

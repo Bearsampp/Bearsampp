@@ -58,6 +58,11 @@ class StatusFetcher {
     const senddata = new URLSearchParams();
     senddata.append('proc', this.serviceName);
 
+    // Add CSRF token using the helper function
+    if (typeof addCsrfToken === 'function') {
+      addCsrfToken(senddata);
+    }
+
     try {
       const response = await fetch(AJAX_URL, {
         method: 'POST',

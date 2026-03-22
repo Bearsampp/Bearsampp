@@ -204,6 +204,142 @@ class Util
     }
 
     /**
+     * Sanitizes a process ID (PID) by removing all non-numeric characters.
+     * This prevents command injection through PID parameters.
+     *
+     * @param   mixed  $pid  The PID to sanitize
+     * @return int|false Returns the sanitized PID as integer, or false if invalid
+     */
+    public static function sanitizePID($pid)
+    {
+        // Remove all non-numeric characters
+        $sanitized = preg_replace('/[^0-9]/', '', (string)$pid);
+
+        if (empty($sanitized)) {
+            self::logWarning('Invalid PID provided: ' . var_export($pid, true));
+            return false;
+        }
+
+        $pidInt = (int)$sanitized;
+
+        // Validate range (PIDs are positive integers)
+        if ($pidInt <= 0 || $pidInt > 2147483647) {
+            self::logWarning('PID out of valid range: ' . $pidInt);
+            return false;
+        }
+
+        return $pidInt;
+    }
+
+    /**
+     * Sanitizes a port number by ensuring it's a valid integer in the correct range.
+     * This prevents command injection through port parameters.
+     *
+     * @param   mixed  $port  The port to sanitize
+     * @return int|false Returns the sanitized port as integer, or false if invalid
+     */
+    public static function sanitizePort($port)
+    {
+        $portStr = trim((string)$port);
+
+        // Require strictly digits to avoid silently changing meaning
+        if ($portStr === '' || !preg_match('/^\d+$/', $portStr)) {
+            self::logWarning('Invalid port provided: ' . var_export($port, true));
+            return false;
+        }
+
+        $portInt = (int)$portStr;
+
+        // Validate range (1-65535)
+        if ($portInt < 1 || $portInt > 65535) {
+            self::logWarning('Port out of valid range: ' . $portInt);
+            return false;
+        }
+
+        return $portInt;
+    }
+
+    /**
+     * Sanitizes a service name by removing dangerous characters.
+     * Allows only alphanumeric characters, underscores, and hyphens.
+     *
+     * @param   string  $serviceName  The service name to sanitize
+     * @return string|false Returns the sanitized service name, or false if invalid
+     */
+    public static function sanitizeServiceName($serviceName)
+    {
+        if (!is_string($serviceName) || empty($serviceName)) {
+            self::logWarning('Invalid service name: not a string or empty');
+            return false;
+        }
+
+        // Remove all characters except alphanumeric, underscore, and hyphen
+        $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $serviceName);
+
+        if (empty($sanitized)) {
+            self::logWarning('Service name became empty after sanitization: ' . $serviceName);
+            return false;
+        }
+
+        // Limit length to 256 characters (Windows service name limit)
+        if (strlen($sanitized) > 256) {
+            $sanitized = substr($sanitized, 0, 256);
+        }
+
+        return $sanitized;
+    }
+
+    /**
+     * Sanitizes a file path by removing null bytes and checking for path traversal attempts.
+     * This is a basic sanitization - paths should still be validated before use.
+     *
+     * @param   string  $path  The path to sanitize
+     * @return string|false Returns the sanitized path, or false if dangerous patterns detected
+     */
+    public static function sanitizePath($path)
+    {
+        if (!is_string($path) || empty($path)) {
+            return false;
+        }
+
+        // Remove null bytes
+        $sanitized = str_replace("\0", '', $path);
+
+        // Check for path traversal attempts (but allow environment variables)
+        $pathWithoutEnvVars = preg_replace('/%[^%]+%/', '', $sanitized);
+        if (strpos($pathWithoutEnvVars, '..') !== false) {
+            self::logWarning('Path traversal attempt detected: ' . $path);
+            return false;
+        }
+
+        // Remove dangerous characters that could be used for command injection
+        // But preserve valid path characters including : for drive letters and ; for PATH
+        $sanitized = preg_replace('/[<>"|?*\x00-\x1F]/', '', $sanitized);
+
+        return $sanitized;
+    }
+
+    /**
+     * Sanitizes output for display to prevent XSS attacks.
+     * Escapes HTML special characters.
+     *
+     * @param   string  $output  The output to sanitize
+     * @return string Returns the sanitized output safe for HTML display
+     */
+    public static function sanitizeOutput($output)
+    {
+        if (!is_string($output)) {
+            return '';
+        }
+
+        // Remove null bytes
+        $output = str_replace("\0", '', $output);
+
+        // Escape HTML special characters
+        return htmlspecialchars($output, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    }
+
+    /**
      * Checks if a string contains a specified substring.
      *
      * @param   string  $string  The string to search in.

@@ -58,7 +58,14 @@ class Batch
      */
     public static function findExeByPid($pid)
     {
-        $result = self::exec('findExeByPid', 'TASKLIST /FO CSV /NH /FI "PID eq ' . $pid . '"', 5);
+        // Sanitize PID to prevent command injection
+        $sanitizedPid = Util::sanitizePID($pid);
+        if ($sanitizedPid === false) {
+            self::writeLog('Invalid PID provided to findExeByPid: ' . var_export($pid, true));
+            return false;
+        }
+
+        $result = self::exec('findExeByPid', 'TASKLIST /FO CSV /NH /FI "PID eq ' . $sanitizedPid . '"', 5);
         if ($result !== false) {
             $expResult = explode('","', $result[0]);
             if (is_array($expResult) && count($expResult) > 2 && isset($expResult[0]) && !empty($expResult[0])) {
@@ -77,6 +84,13 @@ class Batch
      */
     public static function getProcessUsingPort($port)
     {
+        // Sanitize port to prevent command injection
+        $sanitizedPort = Util::sanitizePort($port);
+        if ($sanitizedPort === false) {
+            self::writeLog('Invalid port provided to getProcessUsingPort: ' . var_export($port, true));
+            return null;
+        }
+
         $result = self::exec('getProcessUsingPort', 'NETSTAT -aon', 4);
         if ($result !== false) {
             foreach ($result as $row) {
@@ -84,7 +98,7 @@ class Batch
                     continue;
                 }
                 $rowExp = explode(' ', preg_replace('/\s+/', ' ', $row));
-                if (count($rowExp) == 5 && Util::endWith($rowExp[1], ':' . $port) && $rowExp[3] == 'LISTENING') {
+                if (count($rowExp) == 5 && Util::endWith($rowExp[1], ':' . $sanitizedPort) && $rowExp[3] == 'LISTENING') {
                     $pid = intval($rowExp[4]);
                     $exe = self::findExeByPid($pid);
                     if ($exe !== false) {
@@ -326,7 +340,18 @@ class Batch
      */
     public static function setServiceDisplayName($serviceName, $displayName)
     {
-        $cmd = 'sc config ' . $serviceName . ' DisplayName= "' . $displayName . '"';
+        // Sanitize service name to prevent command injection
+        $sanitizedName = Util::sanitizeServiceName($serviceName);
+        if ($sanitizedName === false) {
+            self::writeLog('Invalid service name provided to setServiceDisplayName: ' . $serviceName);
+            return;
+        }
+
+        // Remove quotes and dangerous characters from display name
+        $sanitizedDisplayName = str_replace('"', '', $displayName);
+        $sanitizedDisplayName = preg_replace('/[<>|&^]/', '', $sanitizedDisplayName);
+
+        $cmd = 'sc config ' . $sanitizedName . ' DisplayName= "' . $sanitizedDisplayName . '"';
         self::exec('setServiceDisplayName', $cmd, true, false);
     }
 
@@ -338,7 +363,18 @@ class Batch
      */
     public static function setServiceDescription($serviceName, $desc)
     {
-        $cmd = 'sc description ' . $serviceName . ' "' . $desc . '"';
+        // Sanitize service name to prevent command injection
+        $sanitizedName = Util::sanitizeServiceName($serviceName);
+        if ($sanitizedName === false) {
+            self::writeLog('Invalid service name provided to setServiceDescription: ' . $serviceName);
+            return;
+        }
+
+        // Remove quotes and dangerous characters from description
+        $sanitizedDesc = str_replace('"', '', $desc);
+        $sanitizedDesc = preg_replace('/[<>|&^]/', '', $sanitizedDesc);
+
+        $cmd = 'sc description ' . $sanitizedName . ' "' . $sanitizedDesc . '"';
         self::exec('setServiceDescription', $cmd, true, false);
     }
 
@@ -350,7 +386,21 @@ class Batch
      */
     public static function setServiceStartType($serviceName, $startType)
     {
-        $cmd = 'sc config ' . $serviceName . ' start= ' . $startType;
+        // Sanitize service name to prevent command injection
+        $sanitizedName = Util::sanitizeServiceName($serviceName);
+        if ($sanitizedName === false) {
+            self::writeLog('Invalid service name provided to setServiceStartType: ' . $serviceName);
+            return;
+        }
+
+        // Validate start type (only allow known values)
+        $allowedStartTypes = ['auto', 'demand', 'disabled', 'delayed-auto'];
+        if (!in_array(strtolower($startType), $allowedStartTypes, true)) {
+            self::writeLog('Invalid start type provided: ' . $startType);
+            return;
+        }
+
+        $cmd = 'sc config ' . $sanitizedName . ' start= ' . strtolower($startType);
         self::exec('setServiceStartType', $cmd, true, false);
     }
 
