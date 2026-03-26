@@ -127,6 +127,7 @@ class ActionChangePort
                 }
                 $changePort = $this->bin->changePort( $port, true, $this->wbProgressBar );
                 if ( $changePort === true ) {
+                    Util::updateLoadingText('Restarting ' . $this->bin->getName() . '...');
                     $this->bin->getService()->restart();
 
                     $bearsamppWinbinder->messageBoxInfo(

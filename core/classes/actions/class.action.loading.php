@@ -82,13 +82,17 @@ class ActionLoading
         wb_set_visible($this->wbWindow, true);
         Util::logTrace('Window set to visible');
         
-        Util::logTrace('Creating label control...');
-        $this->wbLabel = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::LOADING), 42, 2, 295, null, WBC_LEFT);
-        Util::logTrace('Label created: ' . var_export($this->wbLabel, true));
+        Util::logTrace('Drawing image...');
+        $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/bearsampp.bmp');
+        Util::logTrace('Image drawn');
         
         Util::logTrace('Creating progress bar...');
-        $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE, 42, 20, 290, 15);
+        $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE + 1, 42, 24, self::WINDOW_WIDTH - 62, 15);
         Util::logTrace('Progress bar created: ' . var_export($this->wbProgressBar, true));
+        
+        Util::logTrace('Drawing initial text...');
+        $this->wbLabel = $bearsamppWinbinder->drawText($this->wbWindow, '', 42, 0, self::WINDOW_WIDTH - 64, 25);
+        Util::logTrace('Label created: ' . var_export($this->wbLabel, true));
 
         // Set the handler and start the main loop
         Util::logTrace('Setting window handler...');
@@ -212,10 +216,17 @@ class ActionLoading
             if ($content !== false && !empty($content)) {
                 $status = @json_decode($content, true);
                 if ($status && isset($status['text']) && !empty($status['text'])) {
-                    // Update the label with new text
-                    $bearsamppWinbinder->setText($this->wbLabel[WinBinder::CTRL_OBJ], $status['text']);
-                    $bearsamppWinbinder->refresh($this->wbWindow);
+                    // Clear the text area and redraw with new text
+                    $bearsamppWinbinder->drawRect($this->wbWindow, 42, 0, self::WINDOW_WIDTH - 52, 25);
+                    $this->wbLabel = $bearsamppWinbinder->drawText($this->wbWindow, $status['text'], 42, 0, self::WINDOW_WIDTH - 64, 25);
                 }
+            }
+        } else {
+            // If no status file exists, show a default message
+            $currentText = $this->wbLabel;
+            if (empty($currentText)) {
+                $bearsamppWinbinder->drawRect($this->wbWindow, 42, 0, self::WINDOW_WIDTH - 52, 25);
+                $this->wbLabel = $bearsamppWinbinder->drawText($this->wbWindow, 'Processing...', 42, 0, self::WINDOW_WIDTH - 64, 25);
             }
         }
     }

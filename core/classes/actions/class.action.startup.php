@@ -205,6 +205,15 @@ class ActionStartup
             $startupTime = round(Util::getMicrotime() - $this->startTime, 3);
             $this->writeLog('Started in ' . $startupTime . 's');
             Util::logTrace('Application started successfully in ' . $startupTime . ' seconds');
+            
+            // Log total startup time in VERBOSE_TRACE mode (mode 3)
+            global $bearsamppConfig;
+            if ($bearsamppConfig->getLogsVerbose() == Config::VERBOSE_TRACE) {
+                $minutes = floor($startupTime / 60);
+                $seconds = round($startupTime % 60, 3);
+                $formattedTime = sprintf('%d:%05.2f', $minutes, $seconds);
+                Util::logTrace('=== TOTAL STARTUP TIME: ' . $formattedTime . ' ===');
+            }
         } else {
             Util::logTrace('Startup issues detected - incrementing progress bar');
             $this->splash->incrProgressBar(2);
