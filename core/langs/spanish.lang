@@ -134,6 +134,8 @@ errorConfNotFound = "Archivo de configuración %s no encontrado en %s"
 errorExeNotFound = "Archivo ejecutable %s no encontrado en %s"
 errorFileNotFound = "%s no encontrado en %s"
 errorInvalidParameter = "Parámetro inválido '%s' : %s"
+errorAdminRequiredTitle = "Se requieren derechos de administrador"
+errorAdminRequiredText = "%s requiere privilegios de administrador para instalar y administrar servicios de Windows.@nl@@nl@Por favor, haga clic derecho en bearsampp.exe y seleccione 'Ejecutar como administrador' para iniciar la aplicación."
 
 ; Acción Cambiar versión
 switchVersionTitle = "Cambiar a la versión %s %s"

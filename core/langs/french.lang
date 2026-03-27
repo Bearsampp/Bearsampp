@@ -134,6 +134,8 @@ errorConfNotFound = "Fichier de configuration %s introuvable dans %s"
 errorExeNotFound = "Exécutable %s introuvable dans %s"
 errorFileNotFound = "%s introuvable dans %s"
 errorInvalidParameter = "Paramètre '%s' invalide : %s"
+errorAdminRequiredTitle = "Droits d'administrateur requis"
+errorAdminRequiredText = "%s nécessite des privilèges d'administrateur pour installer et gérer les services Windows.@nl@@nl@Veuillez faire un clic droit sur bearsampp.exe et sélectionner 'Exécuter en tant qu'administrateur' pour démarrer l'application."
 
 ; Action Switch version
 switchVersionTitle = "Passer à %s version %s"

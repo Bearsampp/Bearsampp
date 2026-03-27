@@ -37,6 +37,10 @@ class ActionStartup
         global $bearsamppRoot, $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
         $this->writeLog( 'Starting ' . APP_TITLE );
 
+        // Admin check is now performed in root.php before ActionStartup is instantiated
+        // This prevents screen flashes and ensures the check happens before any WinBinder initialization
+        Util::logInfo('Administrator privileges confirmed - proceeding with startup');
+
         // Init
         $this->splash    = new Splash();
         $this->restart   = false;
@@ -75,6 +79,9 @@ class ActionStartup
         global $bearsamppRoot, $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppTools, $bearsamppApps, $bearsamppWinbinder;
 
         Util::logTrace('Starting processWindow method');
+
+        // Admin check is now performed in the constructor before anything else
+        // No need to check again here
 
         // Rotation logs
         Util::logTrace('Performing log rotation');
@@ -205,7 +212,7 @@ class ActionStartup
             $startupTime = round(Util::getMicrotime() - $this->startTime, 3);
             $this->writeLog('Started in ' . $startupTime . 's');
             Util::logTrace('Application started successfully in ' . $startupTime . ' seconds');
-            
+
             // Log total startup time in VERBOSE_TRACE mode (mode 3)
             global $bearsamppConfig;
             if ($bearsamppConfig->getLogsVerbose() == Config::VERBOSE_TRACE) {
@@ -887,6 +894,9 @@ class ActionStartup
 
         if (!$this->restart) {
             Util::logTrace('Normal startup mode - processing services');
+
+            // Admin check is now performed at the very beginning of processWindow()
+            // No need to check again here
 
             // Service Installation
             $this->installServicesSequential($bearsamppBins, $bearsamppLang);

@@ -622,6 +622,72 @@ class Util
     }
 
     /**
+     * Checks if the current process is running with administrator/elevated privileges.
+     * This is essential for operations that require admin rights, such as installing Windows services.
+     *
+     * @return bool True if running as administrator, false otherwise.
+     */
+    public static function isAdmin()
+    {
+        // Only applicable on Windows
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+            // On non-Windows systems, check if running as root
+            if (function_exists('posix_geteuid')) {
+                return posix_geteuid() === 0;
+            }
+            // If we can't determine on non-Windows, assume true to avoid blocking
+            return true;
+        }
+
+        // Method 1: Try using shell_exec with 'net session' command
+        // This command only succeeds when run with admin privileges
+        $output = @shell_exec('net session 2>&1');
+        if ($output !== null) {
+            // Check for access denied errors
+            if (stripos($output, 'Access is denied') !== false ||
+                stripos($output, 'System error 5') !== false ||
+                stripos($output, 'Zugriff verweigert') !== false) { // German
+                // Explicitly denied - not admin
+                return false;
+            }
+
+            // If we got output without errors, we likely have admin rights
+            if (stripos($output, 'There are no entries') !== false ||
+                stripos($output, 'These workstations') !== false ||
+                preg_match('/\\\\\\\\/', $output)) {
+                return true;
+            }
+        }
+
+        // Method 2: Check using whoami command (Windows Vista and later)
+        $output = @shell_exec('whoami /groups 2>&1');
+        if ($output !== null && !empty($output)) {
+            // Look for the Administrators group or High Mandatory Level
+            if (stripos($output, 'S-1-16-12288') !== false || // High Mandatory Level
+                stripos($output, 'S-1-5-32-544') !== false) {  // Administrators group
+                return true;
+            }
+
+            // If we got output but no admin indicators, we're not admin
+            if (stripos($output, 'S-1-16-8192') !== false) { // Medium Mandatory Level (not admin)
+                return false;
+            }
+        }
+
+        // Method 3: Try to write to a system directory
+        // This is a fallback method that checks if we can write to Windows directory
+        $testFile = getenv('SystemRoot') . '\\Temp\\bearsampp_admin_test_' . uniqid() . '.tmp';
+        $result = @file_put_contents($testFile, 'test');
+        if ($result !== false) {
+            @unlink($testFile);
+            return true;
+        }
+
+        // If all methods fail or indicate no admin, return false
+        return false;
+    }
+
+    /**
      * Replaces a defined constant in a file with a new value.
      *
      * @param   string  $path   The file path where the constant is defined.
