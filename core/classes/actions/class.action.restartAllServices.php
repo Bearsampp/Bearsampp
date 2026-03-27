@@ -57,8 +57,62 @@ class ActionRestartAllServices
     }
 
     /**
+     * Get the optimal service shutdown order based on dependencies.
+     * Services are ordered to stop dependent services first, then core services.
+     * This is the reverse of the startup order.
+     *
+     * @return array Array of service names in shutdown order
+     */
+    private function getServiceShutdownOrder()
+    {
+        // Define shutdown order: dependent services first, then core services
+        // This prevents connection errors and ensures clean shutdown
+        return [
+            // Tier 1: Application services (no dependencies on other services)
+            BinMailpit::SERVICE_NAME,      // Mail testing tool
+            BinMemcached::SERVICE_NAME,    // Caching service
+            BinXlight::SERVICE_NAME,       // FTP server
+
+            // Tier 2: Database services (web server depends on these)
+            BinPostgresql::SERVICE_NAME,   // PostgreSQL database
+            BinMariadb::SERVICE_NAME,      // MariaDB database
+            BinMysql::SERVICE_NAME,        // MySQL database
+
+            // Tier 3: Web server (depends on databases and other services)
+            BinApache::SERVICE_NAME,       // Apache web server (stopped last)
+        ];
+    }
+
+    /**
+     * Get the optimal service startup order based on dependencies.
+     * Services are ordered to start core services first, then dependent services.
+     * This is the reverse of the shutdown order.
+     *
+     * @return array Array of service names in startup order
+     */
+    private function getServiceStartupOrder()
+    {
+        // Define startup order: core services first, then dependent services
+        // This ensures dependencies are available when needed
+        return [
+            // Tier 1: Web server (should start first as it's the foundation)
+            BinApache::SERVICE_NAME,       // Apache web server (started first)
+
+            // Tier 2: Database services (web server may depend on these)
+            BinMysql::SERVICE_NAME,        // MySQL database
+            BinMariadb::SERVICE_NAME,      // MariaDB database
+            BinPostgresql::SERVICE_NAME,   // PostgreSQL database
+
+            // Tier 3: Application services (no dependencies on other services)
+            BinXlight::SERVICE_NAME,       // FTP server
+            BinMemcached::SERVICE_NAME,    // Caching service
+            BinMailpit::SERVICE_NAME,      // Mail testing tool
+        ];
+    }
+
+    /**
      * Processes the splash screen window events.
-     * Stops all services, then starts them all sequentially with progress updates.
+     * Stops all services in shutdown order, then starts them in startup order with progress updates.
      *
      * @param   resource  $window  The window resource.
      * @param   int       $id      The event ID.
@@ -76,27 +130,57 @@ class ActionRestartAllServices
         }
         $this->processed = true;
 
-        // First, stop all services using ServiceHelper
-        ServiceHelper::processServices($bearsamppBins, function($serviceName, $service, $bin, $syntaxCheckCmd) use ($bearsamppLang) {
-            $name = ServiceHelper::getServiceDisplayName($bin, $service);
+        // Get all available services
+        $allServices = $bearsamppBins->getServices();
 
-            $this->splash->incrProgressBar();
-            $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::LOADING_STOP_SERVICE), $name));
+        // Get optimal shutdown order
+        $shutdownOrder = $this->getServiceShutdownOrder();
 
-            // Stop the service
-            ServiceHelper::stopService($service);
-        });
+        // First, stop all services in optimal shutdown order
+        foreach ($shutdownOrder as $serviceName) {
+            // Check if this service exists and is enabled
+            if (!isset($allServices[$serviceName])) {
+                continue;
+            }
 
-        // Then, start all services using ServiceHelper
-        ServiceHelper::processServices($bearsamppBins, function($serviceName, $service, $bin, $syntaxCheckCmd) use ($bearsamppLang) {
-            $name = ServiceHelper::getServiceDisplayName($bin, $service);
+            $service = $allServices[$serviceName];
+            $bin = ServiceHelper::getBinFromServiceName($serviceName, $bearsamppBins);
 
-            $this->splash->incrProgressBar();
-            $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::LOADING_START_SERVICE), $name));
+            if ($bin !== null) {
+                $name = ServiceHelper::getServiceDisplayName($bin, $service);
 
-            // Start the service
-            ServiceHelper::startService($bin, $syntaxCheckCmd, false);
-        });
+                $this->splash->incrProgressBar();
+                $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::LOADING_STOP_SERVICE), $name));
+
+                // Stop the service
+                ServiceHelper::stopService($service);
+            }
+        }
+
+        // Get optimal startup order
+        $startupOrder = $this->getServiceStartupOrder();
+
+        // Then, start all services in optimal startup order
+        foreach ($startupOrder as $serviceName) {
+            // Check if this service exists and is enabled
+            if (!isset($allServices[$serviceName])) {
+                continue;
+            }
+
+            $service = $allServices[$serviceName];
+            $bin = ServiceHelper::getBinFromServiceName($serviceName, $bearsamppBins);
+            $syntaxCheckCmd = ServiceHelper::getSyntaxCheckCmd($serviceName);
+
+            if ($bin !== null) {
+                $name = ServiceHelper::getServiceDisplayName($bin, $service);
+
+                $this->splash->incrProgressBar();
+                $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::LOADING_START_SERVICE), $name));
+
+                // Start the service
+                ServiceHelper::startService($bin, $syntaxCheckCmd, false);
+            }
+        }
 
         // Final update
         $this->splash->incrProgressBar();
