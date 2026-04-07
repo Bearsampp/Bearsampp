@@ -61,9 +61,14 @@ class ActionExec
                 Util::logTrace('Unknown action: "' . $action . '"');
             }
 
-            Util::logTrace('Deleting exec file');
-            $unlinkResult = @unlink($execFile);
-            Util::logTrace('Unlink result: ' . ($unlinkResult ? 'success' : 'failed'));
+            // Do NOT delete the exec file yet if it's a restart,
+            // as we need the next instance to know it's a restart.
+            // ActionStartup will handle the unlinking.
+            if ($action != self::RESTART) {
+                Util::logTrace('Deleting exec file');
+                $unlinkResult = @unlink($execFile);
+                Util::logTrace('Unlink result: ' . ($unlinkResult ? 'success' : 'failed'));
+            }
         } else {
             Util::logTrace('Exec file does not exist: ' . $execFile);
         }

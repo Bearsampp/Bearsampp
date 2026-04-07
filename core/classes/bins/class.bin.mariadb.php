@@ -137,7 +137,7 @@ class BinMariadb extends Module
 
         $this->service->setDisplayName( APP_TITLE . ' ' . $this->getName() );
         $this->service->setBinPath( $this->exe );
-        $this->service->setParams( self::SERVICE_NAME );
+        $this->service->setParams( '--defaults-file="' . Util::formatWindowsPath($this->conf) . '" ' . self::SERVICE_NAME );
         $this->service->setStartType( Win32Service::SERVICE_DEMAND_START );
         $this->service->setErrorControl( Win32Service::SERVER_ERROR_NORMAL );
     }

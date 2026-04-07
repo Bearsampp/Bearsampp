@@ -223,6 +223,8 @@ class ActionSwitchVersion
             $this->bearsamppSplash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STOP_SERVICE_TITLE), $binName));
             $this->bearsamppSplash->incrProgressBar();
             $this->service->stop();
+            // Wait for SCM to stop the service
+            usleep(2000000); // 2 seconds
         } else {
             $this->bearsamppSplash->incrProgressBar();
         }
@@ -236,6 +238,37 @@ class ActionSwitchVersion
         $this->bearsamppSplash->setTextLoading($bearsamppLang->getValue(Lang::SWITCH_VERSION_RELOAD_BINS));
         $this->bearsamppSplash->incrProgressBar();
         $bearsamppBins->reload();
+
+        // After reloading bins, get a fresh service reference from the reloaded bin
+        // This ensures we're using the updated service instance with new configuration
+        if ($this->service != null) {
+            // Get the reloaded bin and its fresh service instance
+            if ($this->bin->getName() == $bearsamppBins->getApache()->getName()) {
+                $this->service = $bearsamppBins->getApache()->getService();
+                Util::logTrace("Refreshed service reference from reloaded Apache bin");
+            } elseif ($this->bin->getName() == $bearsamppBins->getPhp()->getName()) {
+                $this->service = $bearsamppBins->getApache()->getService();
+                Util::logTrace("Refreshed service reference from reloaded Apache bin (for PHP)");
+            } elseif ($this->bin->getName() == $bearsamppBins->getMysql()->getName()) {
+                $this->service = $bearsamppBins->getMysql()->getService();
+                Util::logTrace("Refreshed service reference from reloaded MySQL bin");
+            } elseif ($this->bin->getName() == $bearsamppBins->getMariadb()->getName()) {
+                $this->service = $bearsamppBins->getMariadb()->getService();
+                Util::logTrace("Refreshed service reference from reloaded MariaDB bin");
+            } elseif ($this->bin->getName() == $bearsamppBins->getPostgresql()->getName()) {
+                $this->service = $bearsamppBins->getPostgresql()->getService();
+                Util::logTrace("Refreshed service reference from reloaded PostgreSQL bin");
+            } elseif ($this->bin->getName() == $bearsamppBins->getMemcached()->getName()) {
+                $this->service = $bearsamppBins->getMemcached()->getService();
+                Util::logTrace("Refreshed service reference from reloaded Memcached bin");
+            } elseif ($this->bin->getName() == $bearsamppBins->getMailpit()->getName()) {
+                $this->service = $bearsamppBins->getMailpit()->getService();
+                Util::logTrace("Refreshed service reference from reloaded Mailpit bin");
+            } elseif ($this->bin->getName() == $bearsamppBins->getXlight()->getName()) {
+                $this->service = $bearsamppBins->getXlight()->getService();
+                Util::logTrace("Refreshed service reference from reloaded Xlight bin");
+            }
+        }
 
         // change port
         if ($this->changePort) {
@@ -258,15 +291,6 @@ class ActionSwitchVersion
         // Update configuration file with the new version
         Util::logTrace('Updating ini & menu...');
         $this->updateConfigVersion();
-
-        Util::logTrace('Creating modal...');
-        $bearsamppWinbinder->messageBoxInfo(
-            sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_OK), $this->bin->getName(), $this->version),
-            $this->boxTitle
-        );
-
-        Util::logTrace('Destroying modal window...');
-        $bearsamppWinbinder->destroyWindow($window);
 
         // Store current registry value for comparison
         $currentRegValue = Util::getAppBinsRegKey(false);
@@ -294,29 +318,29 @@ class ActionSwitchVersion
             $currentRegValue
         ));
 
-        Util::logTrace(sprintf(
-            'Resetting services: %s',
-            $bearsamppLang->getValue(Lang::SWITCH_VERSION_RESET_SERVICES)
-        ));
-        
         $this->bearsamppSplash->setTextLoading($bearsamppLang->getValue(Lang::SWITCH_VERSION_RESET_SERVICES));
-        foreach ($bearsamppBins->getServices() as $sName => $service) {
-            Util::logTrace(sprintf('Deleting service: %s', $sName));
-            $this->bearsamppSplash->incrProgressBar();
-            $service->delete();
-            Util::logTrace(sprintf('Service deleted: %s', $sName));
-        }
-        Util::logTrace('All services reset completed');
+        
+        // For version switches, services are properly restarted above
+        // No additional service reset/delete is needed
+        // The service is now running with the new version
+        Util::logTrace('Version switch complete - service restarted with new version');
+        $this->bearsamppSplash->incrProgressBar();
 
+        // Compensate progress bar for all services (none are being reset)
+        $remainingServicesCount = count($bearsamppBins->getServices());
+        if ($remainingServicesCount > 0) {
+            $this->bearsamppSplash->incrProgressBar($remainingServicesCount);
+        }
+        
+        Util::logTrace('Version switch process completed successfully');
+
+        Util::logTrace('Creating modal...');
         $bearsamppWinbinder->messageBoxInfo(
-            sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_OK_RESTART), $this->bin->getName(), $this->version, APP_TITLE),
+            sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_OK), $this->bin->getName(), $this->version),
             $this->boxTitle
         );
 
-        Util::logTrace('Running setExec line 317..');
-        $bearsamppCore->setExec(ActionExec::RESTART);
-
-        Util::logTrace('Destroying final window...');
+        Util::logTrace('Destroying splash window...');
         $bearsamppWinbinder->destroyWindow($window);
     }
     

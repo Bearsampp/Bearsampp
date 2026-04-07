@@ -10,7 +10,7 @@
 /**
  * Class Registry
  *
- * This class provides methods to interact with the Windows Registry using VBScript.
+ * This class provides methods to interact with the Windows Registry using COM.
  * It includes functionalities to check the existence of registry keys, get and set values,
  * and delete registry entries. The class also logs operations and errors.
  */
@@ -73,6 +73,7 @@ class Registry
 
     /**
      * Checks if a registry key or entry exists.
+     * Now uses Win32Native COM methods instead of VBScript.
      *
      * @param string $key The root key (e.g., HKEY_LOCAL_MACHINE).
      * @param string $subkey The subkey path.
@@ -81,55 +82,19 @@ class Registry
      */
     public function exists($key, $subkey, $entry = null)
     {
-        $basename = 'registryExists';
-        $resultFile = Vbs::getResultFile($basename);
-
-        $scriptContent = 'On Error Resume Next' . PHP_EOL;
-        $scriptContent .= 'Err.Clear' . PHP_EOL . PHP_EOL;
-
-        $scriptContent .= 'Dim objShell, objFso, objFile, outFile, bExists' . PHP_EOL . PHP_EOL;
-
-        $scriptContent .= 'outFile = "' . $resultFile . '"' . PHP_EOL;
-        $scriptContent .= 'Set objShell = WScript.CreateObject("WScript.Shell")' . PHP_EOL;
-        $scriptContent .= 'Set objFso = CreateObject("Scripting.FileSystemObject")' . PHP_EOL;
-        $scriptContent .= 'Set objFile = objFso.CreateTextFile(outFile, True)' . PHP_EOL . PHP_EOL;
-
-        $scriptContent .= 'strKey = "' . $key . '\\' . $subkey . '\\' . $entry . '"' . PHP_EOL;
-        $scriptContent .= 'entryValue = objShell.RegRead(strKey)' . PHP_EOL;
-        $scriptContent .= 'If Err.Number <> 0 Then' . PHP_EOL;
-        $scriptContent .= '    If Right(strKey,1) = "\" Then' . PHP_EOL;
-        $scriptContent .= '        If Instr(1, Err.Description, ssig, 1) <> 0 Then' . PHP_EOL;
-        $scriptContent .= '            bExists = true' . PHP_EOL;
-        $scriptContent .= '        Else' . PHP_EOL;
-        $scriptContent .= '            bExists = false' . PHP_EOL;
-        $scriptContent .= '        End If' . PHP_EOL;
-        $scriptContent .= '    Else' . PHP_EOL;
-        $scriptContent .= '        bExists = false' . PHP_EOL;
-        $scriptContent .= '    End If' . PHP_EOL;
-        $scriptContent .= '    Err.Clear' . PHP_EOL;
-        $scriptContent .= 'Else' . PHP_EOL;
-        $scriptContent .= '    bExists = true' . PHP_EOL;
-        $scriptContent .= 'End If' . PHP_EOL . PHP_EOL;
-
-        $scriptContent .= 'On Error Goto 0' . PHP_EOL;
-        $scriptContent .= 'If bExists = vbFalse Then' . PHP_EOL;
-        $scriptContent .= '    objFile.Write "0"' . PHP_EOL;
-        $scriptContent .= 'Else' . PHP_EOL;
-        $scriptContent .= '    objFile.Write "1"' . PHP_EOL;
-        $scriptContent .= 'End If' . PHP_EOL;
-        $scriptContent .= 'objFile.Close' . PHP_EOL;
-
-        $result = Vbs::exec($basename, $resultFile, $scriptContent);
-        $result = isset($result[0]) ? $result[0] : null;
-
         $this->writeLog('Exists ' . $key . '\\' . $subkey . '\\' . $entry);
-        $this->writeLog('-> result: ' . $result);
 
-        return !empty($result) && intval($result) == 1;
+        // Use Win32Native COM implementation
+        $result = Win32Native::registryExists($key, $subkey, $entry);
+
+        $this->writeLog('-> result: ' . ($result ? '1' : '0'));
+
+        return $result;
     }
 
     /**
      * Retrieves the value of a registry entry.
+     * Now uses Win32Native COM methods instead of VBScript.
      *
      * @param string $key The root key (e.g., HKEY_LOCAL_MACHINE).
      * @param string $subkey The subkey path.
@@ -140,34 +105,17 @@ class Registry
     {
         global $bearsamppLang;
 
-        $basename = 'registryGetValue';
-        $resultFile = Vbs::getResultFile($basename);
         $this->latestError = null;
 
-        $scriptContent = 'On Error Resume Next' . PHP_EOL;
-        $scriptContent .= 'Err.Clear' . PHP_EOL . PHP_EOL;
-
-        $scriptContent .= 'Dim objShell, objFso, objFile, outFile, entryValue' . PHP_EOL . PHP_EOL;
-
-        $scriptContent .= 'outFile = "' . $resultFile . '"' . PHP_EOL;
-        $scriptContent .= 'Set objShell = WScript.CreateObject("WScript.Shell")' . PHP_EOL;
-        $scriptContent .= 'Set objFso = CreateObject("Scripting.FileSystemObject")' . PHP_EOL;
-        $scriptContent .= 'Set objFile = objFso.CreateTextFile(outFile, True)' . PHP_EOL . PHP_EOL;
-
-        $scriptContent .= 'entryValue = objShell.RegRead("' . $key . '\\' . $subkey . '\\' . $entry . '")' . PHP_EOL;
-        $scriptContent .= 'If Err.Number <> 0 Then' . PHP_EOL;
-        $scriptContent .= '    objFile.Write "' . self::REG_ERROR_ENTRY . '" & Err.Number & ": " & Err.Description' . PHP_EOL;
-        $scriptContent .= 'Else' . PHP_EOL;
-        $scriptContent .= '    objFile.Write entryValue' . PHP_EOL;
-        $scriptContent .= 'End If' . PHP_EOL;
-        $scriptContent .= 'objFile.Close' . PHP_EOL;
-
-        $result = Vbs::exec($basename, $resultFile, $scriptContent);
-        $result = isset($result[0]) ? $result[0] : null;
         $this->writeLog('GetValue ' . $key . '\\' . $subkey . '\\' . $entry);
+
+        // Use Win32Native COM implementation
+        $result = Win32Native::registryGetValue($key, $subkey, $entry);
+
         $this->writeLog('-> result: ' . $result);
-        if (Util::startWith($result, self::REG_ERROR_ENTRY)) {
-            $this->latestError = $bearsamppLang->getValue(Lang::ERROR) . ' ' . str_replace(self::REG_ERROR_ENTRY, '', $result);
+
+        if ($result === null) {
+            $this->latestError = $bearsamppLang->getValue(Lang::ERROR) . ' Registry value not found';
             return false;
         }
 
@@ -218,6 +166,7 @@ class Registry
 
     /**
      * Sets a value in the registry.
+     * Now uses Win32Native COM methods instead of VBScript.
      *
      * @param string $key The root key (e.g., HKEY_LOCAL_MACHINE).
      * @param string $subkey The subkey path.
@@ -230,77 +179,53 @@ class Registry
     {
         global $bearsamppLang;
 
-        $basename = 'registrySetValue';
-        $resultFile = Vbs::getResultFile($basename);
         $this->latestError = null;
 
-        $strKey = $key;
-        if ($key == self::HKEY_CLASSES_ROOT) {
-            $key = '&H80000000';
-        } elseif ($key == self::HKEY_CURRENT_USER) {
-            $key = '&H80000001';
-        } elseif ($key == self::HKEY_LOCAL_MACHINE) {
-            $key = '&H80000002';
-        } elseif ($key == self::HKEY_LOCAL_MACHINE) {
-            $key = '&H80000003';
+        $this->writeLog('SetValue ' . $key . '\\' . $subkey . '\\' . $entry);
+        $this->writeLog('-> value: ' . $value);
+        $this->writeLog('-> type: ' . $type);
+
+        // Map the VBS type to Win32Native registry type
+        $regType = self::REG_SZ; // Default
+        if ($type == 'SetExpandedStringValue') {
+            $regType = self::REG_EXPAND_SZ;
+        } elseif ($type == 'SetStringValue') {
+            $regType = self::REG_SZ;
         }
 
-        $scriptContent = 'On Error Resume Next' . PHP_EOL;
-        $scriptContent .= 'Err.Clear' . PHP_EOL . PHP_EOL;
-
-        $scriptContent .= 'Const HKEY = ' . $key . PHP_EOL . PHP_EOL;
-
-        $scriptContent .= 'Dim objShell, objRegistry, objFso, objFile, outFile, entryValue, newValue' . PHP_EOL . PHP_EOL;
-
-        $scriptContent .= 'newValue = "' . (!empty($value) ? str_replace('"', '""', $value) : '') . '"' . PHP_EOL;
-        $scriptContent .= 'outFile = "' . $resultFile . '"' . PHP_EOL;
-        $scriptContent .= 'Set objShell = WScript.CreateObject("WScript.Shell")' . PHP_EOL;
-        $scriptContent .= 'Set objRegistry = GetObject("winmgmts://./root/default:StdRegProv")' . PHP_EOL;
-        $scriptContent .= 'Set objFso = CreateObject("Scripting.FileSystemObject")' . PHP_EOL;
-        $scriptContent .= 'Set objFile = objFso.CreateTextFile(outFile, True)' . PHP_EOL . PHP_EOL;
-
-        if (!empty($value)) {
-            $scriptContent .= 'objRegistry.' . $type . ' HKEY, "' . $subkey . '", "' . $entry . '", newValue' . PHP_EOL;
-        } elseif (!empty($entry)) {
-            $scriptContent .= 'objRegistry.' . $type . ' HKEY, "' . $subkey . '", "' . $entry . '"' . PHP_EOL;
+        // Handle delete operations
+        if ($type == 'DeleteValue' && !empty($entry)) {
+            // Delete a value
+            $result = Win32Native::registryDeleteValue($key, $subkey, $entry);
+        } elseif ($type == 'DeleteValue' && empty($entry)) {
+            // Delete a key
+            $result = Win32Native::registryDeleteKey($key, $subkey);
         } else {
-            $scriptContent .= 'objRegistry.' . $type . ' HKEY, "' . $subkey . '"' . PHP_EOL;
+            // Set a value
+            $result = Win32Native::registrySetValue($key, $subkey, $entry, $value, $regType);
         }
-        $scriptContent .= 'If Err.Number <> 0 Then' . PHP_EOL;
-        $scriptContent .= '    objFile.Write "' . self::REG_ERROR_ENTRY . '" & Err.Number & ": " & Err.Description' . PHP_EOL;
-        $scriptContent .= 'Else' . PHP_EOL;
-        if (!empty($value)) {
-            $scriptContent .= '    entryValue = objShell.RegRead("' . $strKey . '\\' . $subkey . '\\' . $entry . '")' . PHP_EOL;
-            $scriptContent .= '    If entryValue = newValue Then' . PHP_EOL;
-            $scriptContent .= '        objFile.Write "' . self::REG_NO_ERROR . '"' . PHP_EOL;
-            $scriptContent .= '    Else' . PHP_EOL;
-            $scriptContent .= '        objFile.Write "' . self::REG_ERROR_SET . '" & newValue' . PHP_EOL;
-            $scriptContent .= '    End If' . PHP_EOL;
-        } else {
-            $scriptContent .= '    objFile.Write "' . self::REG_NO_ERROR . '"' . PHP_EOL;
-        }
-        $scriptContent .= 'End If' . PHP_EOL;
-        $scriptContent .= 'objFile.Close' . PHP_EOL;
-
-        $result = Vbs::exec($basename, $resultFile, $scriptContent);
-        $result = isset($result[0]) ? $result[0] : null;
 
         if ($subkey == self::ENV_KEY) {
             Batch::refreshEnvVars();
         }
 
-        $this->writeLog('SetValue ' . $strKey . '\\' . $subkey . '\\' . $entry);
-        $this->writeLog('-> value: ' . $value);
-        $this->writeLog('-> result: ' . $result);
-        if (Util::startWith($result, self::REG_ERROR_SET)) {
-            $this->latestError = sprintf($bearsamppLang->getValue(Lang::REGISTRY_SET_ERROR_TEXT), str_replace(self::REG_ERROR_SET, '', $result));
-            return false;
-        } elseif (Util::startWith($result, self::REG_ERROR_ENTRY)) {
-            $this->latestError = $bearsamppLang->getValue(Lang::ERROR) . ' ' . str_replace(self::REG_ERROR_ENTRY, '', $result);
+        $this->writeLog('-> result: ' . ($result ? 'success' : 'failed'));
+
+        if (!$result) {
+            $this->latestError = $bearsamppLang->getValue(Lang::ERROR) . ' Registry operation failed';
             return false;
         }
 
-        return $result == self::REG_NO_ERROR;
+        // Verify the value was set correctly (for set operations)
+        if ($type != 'DeleteValue' && !empty($value)) {
+            $verifyValue = Win32Native::registryGetValue($key, $subkey, $entry);
+            if ($verifyValue != $value) {
+                $this->latestError = sprintf($bearsamppLang->getValue(Lang::REGISTRY_SET_ERROR_TEXT), $value);
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

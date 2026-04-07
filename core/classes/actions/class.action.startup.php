@@ -216,8 +216,8 @@ class ActionStartup
             // Log total startup time in VERBOSE_TRACE mode (mode 3)
             global $bearsamppConfig;
             if ($bearsamppConfig->getLogsVerbose() == Config::VERBOSE_TRACE) {
-                $minutes = floor($startupTime / 60);
-                $seconds = round($startupTime % 60, 3);
+                $minutes = floor($startupTime / 60);  // floor() returns int-compatible value
+                $seconds = fmod($startupTime, 60);
                 $formattedTime = sprintf('%d:%05.2f', $minutes, $seconds);
                 Util::logTrace('=== TOTAL STARTUP TIME: ' . $formattedTime . ' ===');
             }
@@ -253,7 +253,7 @@ class ActionStartup
         }
 
         Util::logTrace('Starting loading screen');
-        Util::startLoading();
+        // Moved Util::startLoading() to after splash window destruction to prevent double progress bars
 
         // Give the loading window time to initialize before we terminate this process
         Util::logTrace('Waiting for loading window to initialize');
@@ -267,6 +267,9 @@ class ActionStartup
         // Safely reset WinBinder and destroy the splash window
         $bearsamppWinbinder->destroyWindow($window);
         $bearsamppWinbinder->reset();
+
+        // Start loading screen AFTER splash window is destroyed to prevent double progress bars
+        Util::startLoading();
 
         // Exit this startup process cleanly - the loading window will continue running
         Util::logTrace('Exiting startup process cleanly');
@@ -618,7 +621,7 @@ class ActionStartup
 
         $currentBrowser = $bearsamppConfig->getBrowser();
         if ( empty( $currentBrowser ) || !file_exists( $currentBrowser ) ) {
-            $bearsamppConfig->replace( Config::CFG_BROWSER, Vbs::getDefaultBrowser() );
+            $bearsamppConfig->replace( Config::CFG_BROWSER, Win32Native::getDefaultBrowser() );
         }
     }
 

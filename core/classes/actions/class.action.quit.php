@@ -278,9 +278,9 @@ class ActionQuit
         try {
             Util::logTrace('Initiating self-termination for PID: ' . $currentPid);
             // Add a timeout wrapper around the killProc call
-            $killSuccess = Vbs::killProc($currentPid);
+            $killSuccess = Win32Native::killProcess($currentPid);
             if (!$killSuccess) {
-                Util::logTrace('Self-termination via Vbs::killProc failed, using alternative method');
+                Util::logTrace('Self-termination via Win32Native::killProcess failed, using alternative method');
             }
         } catch (\Exception $e) {
             Util::logTrace('Exception during self-termination: ' . $e->getMessage());

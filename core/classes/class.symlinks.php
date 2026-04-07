@@ -51,11 +51,141 @@ class Symlinks
     }
 
     /**
+     * Validates that a path is within allowed symlink directories.
+     * Prevents deletion of paths outside the Bearsampp managed directories.
+     *
+     * @param string $path The path to validate
+     * @return bool True if path is within allowed directories, false otherwise
+     */
+    private static function isPathWithinAllowedBase($path)
+    {
+        global $bearsamppRoot;
+
+        // Normalize paths for comparison
+        $normalizedPath = realpath($path);
+        if ($normalizedPath === false) {
+            Util::logError('Failed to resolve path: ' . $path);
+            return false;
+        }
+
+        $allowedBases = [
+            realpath($bearsamppRoot->getAppsPath()),
+            realpath($bearsamppRoot->getBinPath()),
+            realpath($bearsamppRoot->getToolsPath())
+        ];
+
+        foreach ($allowedBases as $base) {
+            if ($base === false) {
+                continue;
+            }
+
+            // Ensure path starts with allowed base (with directory separator to prevent substring matches)
+            if (strpos($normalizedPath, $base . DIRECTORY_SEPARATOR) === 0 ||
+                $normalizedPath === $base) {
+                return true;
+            }
+        }
+
+        Util::logError('Path is outside allowed symlink directories: ' . $path);
+        return false;
+    }
+
+    /**
+     * Checks if a path is a symlink (not following the link).
+     * Uses lstat to avoid following symlinks.
+     *
+     * @param string $path The path to check
+     * @return bool True if path is a symlink, false otherwise
+     */
+    private static function isSymlink($path)
+    {
+        // Use is_link to check without following symlinks
+        return is_link($path);
+    }
+
+    /**
+     * Safely removes a symlink or empty directory.
+     * CRITICAL: Does NOT recursively delete; only removes:
+     * - Actual symlinks (using unlink)
+     * - Empty directories (using rmdir)
+     *
+     * Will NOT remove:
+     * - Non-empty directories
+     * - Files that are not symlinks
+     * - Paths outside allowed directories
+     * - Junctions or other special link types if they contain files
+     *
+     * @param string $path The path to remove
+     * @return bool True on success, false on failure
+     */
+    private static function safeRemoveSymlink($path)
+    {
+        // Validate path is within allowed directories
+        if (!self::isPathWithinAllowedBase($path)) {
+            Util::logError('Symlink removal blocked - path not in allowed directories: ' . $path);
+            return false;
+        }
+
+        // Check if path exists
+        if (!file_exists($path) && !is_link($path)) {
+            Util::logDebug('Symlink does not exist: ' . $path);
+            return false;
+        }
+
+        // If it's a symlink, use unlink (works for symlinks regardless of target)
+        if (self::isSymlink($path)) {
+            if (@unlink($path)) {
+                Util::logDebug('Safely removed symlink: ' . $path);
+                return true;
+            } else {
+                Util::logError('Failed to remove symlink: ' . $path);
+                return false;
+            }
+        }
+
+        // If it's a directory, only remove if empty (rmdir fails on non-empty)
+        if (is_dir($path)) {
+            // Double-check: ensure we're not attempting recursive deletion
+            $items = @scandir($path);
+            if ($items === false) {
+                Util::logError('Cannot read directory contents: ' . $path);
+                return false;
+            }
+
+            // Count real items (exclude . and ..)
+            $realItems = array_diff($items, ['.', '..']);
+
+            if (!empty($realItems)) {
+                Util::logWarning('Directory is not empty - refusing to delete: ' . $path .
+                    ' (contains ' . count($realItems) . ' items)');
+                return false;
+            }
+
+            // Directory is empty, safe to remove
+            if (@rmdir($path)) {
+                Util::logDebug('Safely removed empty directory: ' . $path);
+                return true;
+            } else {
+                Util::logError('Failed to remove empty directory: ' . $path);
+                return false;
+            }
+        }
+
+        // Regular files should not be deleted here
+        Util::logWarning('Path is a regular file, not a symlink - refusing deletion: ' . $path);
+        return false;
+    }
+
+    /**
      * Deletes all symbolic links listed in the arrayOfCurrents.
      * Logs each operation's success or failure.
      *
      * This method iterates over a predefined list of symbolic link paths and attempts to delete each one.
-     * If a symbolic link does not exist, an error is logged. If the deletion is successful, a debug message is logged.
+     * Uses strict safety checks to prevent accidental deletion of user data:
+     * - Only deletes symlinks or empty directories
+     * - Validates all paths are within Bearsampp managed directories
+     * - Refuses to perform recursive deletion
+     * - Does not follow or delete junction points with content
      *
      * @global Root $bearsamppRoot The root object providing access to system paths.
      * @global Core $bearsamppCore The core object providing core functionalities.
@@ -98,28 +228,20 @@ class Symlinks
             return;
         }
 
-        // Purge "current" symlinks
+        // Purge "current" symlinks with safety checks
         foreach ($array as $name => $path) {
             // Skip if path is null
             if (empty($path)) {
                 continue;
             }
-            
-            if (!file_exists($path)) {
+
+            if (!file_exists($path) && !is_link($path)) {
                 // Skip if the symlink doesn't exist - no need to log an error
                 continue;
             }
-            
-            // Simple approach: use rmdir for directories and unlink for files
-            if (is_dir($path)) {
-                if (@rmdir($path)) {
-                    Util::logDebug('Deleted directory symlink: ' . $path);
-                }
-            } else {
-                if (@unlink($path)) {
-                    Util::logDebug('Deleted file symlink: ' . $path);
-                }
-            }
+
+            // Use safe removal method with path validation and non-recursive guarantees
+            self::safeRemoveSymlink($path);
         }
     }
 }

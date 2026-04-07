@@ -34,11 +34,10 @@ if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1]
 
     // Quick exit if we already determined no admin recently
     if (file_exists($flagFile) && (time() - filemtime($flagFile)) < 10) {
-        // Create VBScript to kill processes silently and exit immediately
-        $killScript = sys_get_temp_dir() . '/bearsampp_kill.vbs';
-        $vbsKill = 'CreateObject("WScript.Shell").Run "taskkill /F /IM bearsampp.exe /IM php.exe", 0, False';
-        @file_put_contents($killScript, $vbsKill);
-        pclose(popen('start /B wscript //nologo "' . $killScript . '"', 'r'));
+        // Use PowerShell to kill processes silently (no window flashing)
+        $currentPid = getmypid();
+        $killCmd = 'powershell.exe -WindowStyle Hidden -Command "Stop-Process -Id ' . (int)$currentPid . ' -Force -ErrorAction SilentlyContinue; Stop-Process -Name bearsampp -Force -ErrorAction SilentlyContinue"';
+        pclose(popen($killCmd, 'r'));
         exit(1);
     }
 
@@ -63,43 +62,61 @@ if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1]
         // Create flag file immediately
         @file_put_contents($flagFile, time());
 
-        // Create comprehensive VBScript that handles everything
-        $vbsFile = sys_get_temp_dir() . '/bearsampp_admin_error.vbs';
-        $line1 = APP_TITLE . ' requires administrator privileges to install and manage Windows services.';
-        $line2 = 'Please right-click on bearsampp.exe and select "Run as administrator" to start the application.';
+        // Load language file for error message
+        $langFile = dirname(__FILE__) . '/langs/english.lang';
+        $langData = @parse_ini_file($langFile);
 
-        // Escape double quotes
-        $line1 = str_replace('"', '""', $line1);
-        $line2 = str_replace('"', '""', $line2);
+        // Get localized messages
+        $title = isset($langData['errorAdminRequiredTitle']) ? $langData['errorAdminRequiredTitle'] : 'Administrator Rights Required';
+        $messageText = isset($langData['errorAdminRequiredText']) ? $langData['errorAdminRequiredText'] : '%s requires administrator privileges to install and manage Windows services.@nl@@nl@Please right-click on bearsampp.exe and select "Run as administrator" to start the application.';
 
-        // VBScript that kills processes IMMEDIATELY then shows message
-        $vbsContent = 'Option Explicit' . "\r\n";
-        $vbsContent .= 'Dim objShell' . "\r\n";
-        $vbsContent .= 'Set objShell = CreateObject("WScript.Shell")' . "\r\n";
-        $vbsContent .= "\r\n";
-        $vbsContent .= '\'Kill ALL processes immediately and WAIT for completion' . "\r\n";
-        $vbsContent .= 'objShell.Run "taskkill /F /IM php.exe", 0, True' . "\r\n";
-        $vbsContent .= 'objShell.Run "taskkill /F /IM bearsampp.exe", 0, True' . "\r\n";
-        $vbsContent .= "\r\n";
-        $vbsContent .= '\'Brief pause to ensure processes are killed' . "\r\n";
-        $vbsContent .= 'WScript.Sleep 500' . "\r\n";
-        $vbsContent .= "\r\n";
-        $vbsContent .= '\'Show error message' . "\r\n";
-        $vbsContent .= 'MsgBox "' . $line1 . '" & vbCrLf & vbCrLf & "' . $line2 . '", vbCritical, "Administrator Rights Required"' . "\r\n";
-        $vbsContent .= "\r\n";
-        $vbsContent .= '\'Clean up' . "\r\n";
-        $vbsContent .= 'On Error Resume Next' . "\r\n";
-        $vbsContent .= 'CreateObject("Scripting.FileSystemObject").DeleteFile "' . str_replace('/', '\\', $flagFile) . '"' . "\r\n";
-        $vbsContent .= 'CreateObject("Scripting.FileSystemObject").DeleteFile WScript.ScriptFullName' . "\r\n";
+        // Replace placeholders
+        $messageText = sprintf($messageText, APP_TITLE);
+        $messageText = str_replace('@nl@', '|||NEWLINE|||', $messageText);
 
-        @file_put_contents($vbsFile, $vbsContent);
+        // Split by newline placeholder
+        $messageParts = explode('|||NEWLINE|||', $messageText);
 
-        // Launch VBScript and exit PHP immediately
-        // The VBScript will kill this PHP process within milliseconds
-        pclose(popen('start /B wscript //nologo "' . $vbsFile . '"', 'r'));
+        // Create PowerShell script that handles everything (no window flashing)
+        $psFile = sys_get_temp_dir() . '/bearsampp_admin_error.ps1';
+        $flagFilePs = str_replace('/', '\\', $flagFile);
+        $psFilePs = str_replace('/', '\\', $psFile);
 
-        // Give VBScript a moment to start, then exit
-        usleep(100000); // 100ms
+        // Escape for PowerShell
+        $title = str_replace("'", "''", $title);
+        $currentPid = getmypid();
+
+        // PowerShell script that shows message FIRST, then kills processes
+        $psContent = "# Show error message using Windows Forms\n";
+        $psContent .= "Add-Type -AssemblyName System.Windows.Forms\n";
+
+        // Build message from parts
+        $psContent .= "\$messageParts = @(\n";
+        $lastIndex = count($messageParts) - 1;
+        foreach ($messageParts as $index => $part) {
+            $part = str_replace("'", "''", trim($part));
+            // Don't add comma after last item
+            $comma = ($index < $lastIndex) ? ',' : '';
+            $psContent .= "    '" . $part . "'" . $comma . "\n";
+        }
+        $psContent .= ")\n";
+        $psContent .= "\$message = \$messageParts -join [Environment]::NewLine\n";
+        $psContent .= "[System.Windows.Forms.MessageBox]::Show(\$message, '" . $title . "', [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error) | Out-Null\n";
+        $psContent .= "\n";
+        $psContent .= "# After user clicks OK, kill only Bearsampp-related processes\n";
+        $psContent .= "Stop-Process -Id " . (int)$currentPid . " -Force -ErrorAction SilentlyContinue\n";
+        $psContent .= "Stop-Process -Name bearsampp -Force -ErrorAction SilentlyContinue\n";
+        $psContent .= "\n";
+        $psContent .= "# Clean up\n";
+        $psContent .= "Remove-Item -Path '" . $flagFilePs . "' -Force -ErrorAction SilentlyContinue\n";
+        $psContent .= "Remove-Item -Path '" . $psFilePs . "' -Force -ErrorAction SilentlyContinue\n";
+
+        @file_put_contents($psFile, $psContent);
+
+        // Launch PowerShell to show the error message (hide console window, but message box will still show)
+        pclose(popen('start "" powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "' . $psFile . '"', 'r'));
+
+        // Exit immediately - PowerShell will handle showing the message and cleanup
         exit(1);
     } else {
         // We're elevated, clean up any old flag

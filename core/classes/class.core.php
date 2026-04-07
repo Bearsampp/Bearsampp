@@ -36,8 +36,6 @@ class Core
     const EXEC = 'exec.dat';
     const LOADING_PID = 'loading.pid';
 
-    const SCRIPT_EXEC_SILENT = 'execSilent.vbs';
-
     /**
      * Core constructor.
      *
@@ -221,6 +219,20 @@ class Core
     public function getLastPathContent()
     {
         return @file_get_contents( $this->getLastPath() );
+    }
+
+    /**
+     * Retrieves the content of the exec file without unlinking it.
+     *
+     * @return string|false The content of the exec file or false if it doesn't exist.
+     */
+    public function getPreviousExec()
+    {
+        $file = $this->getExec();
+        if (file_exists($file)) {
+            return trim(file_get_contents($file));
+        }
+        return false;
     }
 
     /**

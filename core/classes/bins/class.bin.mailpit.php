@@ -373,6 +373,10 @@ class BinMailpit extends Module
         $this->version = $version;
         $bearsamppConfig->replace( self::ROOT_CFG_VERSION, $version );
         $this->reload();
+
+        // Rebuild NSSM configuration after version change
+        Util::logTrace('Rebuilding Mailpit NSSM configuration after version switch');
+        $this->rebuildConf();
     }
 
     /**

@@ -369,17 +369,6 @@ class Root
     }
 
     /**
-     * Gets the path to the VBS log file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The VBS log file path.
-     */
-    public function getVbsLogFilePath($aetrayPath = false)
-    {
-        return $this->getLogsPath($aetrayPath) . '/bearsampp-vbs.log';
-    }
-
-    /**
      * Gets the path to the Winbinder log file.
      *
      * @param bool $aetrayPath Whether to format the path for AeTrayMenu.

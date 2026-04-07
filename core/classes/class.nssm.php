@@ -349,7 +349,7 @@ class Nssm
     {
         global $bearsamppRegistry;
 
-        $infos = Vbs::getServiceInfos( $this->getName() );
+        $infos = Win32Native::getServiceInfo( $this->getName() );
         if ( $infos === false ) {
             return false;
         }

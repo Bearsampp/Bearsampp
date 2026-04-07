@@ -78,7 +78,20 @@ class Win32Ps
      */
     public static function getListProcs()
     {
-        return Vbs::getListProcs(self::getKeys());
+        $procs = Win32Native::getProcessList(self::getKeys());
+
+        // Filter out processes without ExecutablePath (same behavior as old VBS version)
+        if ($procs !== false && is_array($procs)) {
+            $filtered = array();
+            foreach ($procs as $proc) {
+                if (!empty($proc[self::EXECUTABLE_PATH])) {
+                    $filtered[] = $proc;
+                }
+            }
+            return $filtered;
+        }
+
+        return $procs;
     }
 
     /**
@@ -166,7 +179,7 @@ class Win32Ps
     {
         $pid = intval($pid);
         if (!empty($pid)) {
-            Vbs::killProc($pid);
+            Win32Native::killProcess($pid);
         }
     }
 

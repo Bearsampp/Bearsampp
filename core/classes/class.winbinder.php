@@ -120,7 +120,7 @@ class WinBinder
 
         // Fix for PHP 8.4: Convert null to 0 for parent parameter
         $parent = $parent === null ? 0 : $parent;
-        
+
         // Fix for PHP 8.4: Ensure style and params are proper types
         $style = $style === null ? 0 : $style;
         $params = $params === null ? 0 : $params;
@@ -341,12 +341,30 @@ class WinBinder
      */
     public function exec($cmd, $params = null, $silent = false): mixed
     {
-        global $bearsamppCore;
-
         if ($silent) {
-            $silent = '"' . $bearsamppCore->getScript(Core::SCRIPT_EXEC_SILENT) . '" "' . $cmd . '"';
-            $cmd    = 'wscript.exe';
-            $params = !empty($params) ? $silent . ' "' . $params . '"' : $silent;
+            // Use PowerShell with -EncodedCommand for silent execution (no window flashing)
+            // This avoids all quoting/escaping issues by encoding the command in UTF-16LE base64
+
+            // Build the PowerShell command using single quotes to avoid nested quote issues
+            $psCmd = 'Start-Process -FilePath \'' . str_replace("'", "''", $cmd) . '\'';
+            if (!empty($params)) {
+                // Escape single quotes in params for PowerShell
+                $psCmd .= ' -ArgumentList \'' . str_replace("'", "''", $params) . '\'';
+            }
+            $psCmd .= ' -WindowStyle Hidden -Wait';
+
+            // Encode the command in UTF-16LE and then base64
+            $encodedCmd = base64_encode(mb_convert_encoding($psCmd, 'UTF-16LE', 'UTF-8'));
+
+            // Log the original PowerShell command at TRACE level for debugging
+            global $bearsamppConfig;
+            if ($bearsamppConfig && $bearsamppConfig->getLogsVerbose() == Config::VERBOSE_TRACE) {
+                $this->writeLog('[TRACE] PowerShell command: ' . $psCmd);
+                $this->writeLog('[TRACE] Encoded command length: ' . strlen($encodedCmd));
+            }
+
+            $cmd = 'powershell.exe';
+            $params = '-WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand ' . $encodedCmd;
         }
 
         $this->writeLog('exec: ' . $cmd . ' ' . $params);
@@ -731,7 +749,7 @@ class WinBinder
     public function createControl($parent, $ctlClass, $caption, $xPos, $yPos, $width, $height, $style = null, $params = null)
     {
         $this->countCtrls++;
-        
+
         // Fix for PHP 8.4: Ensure style and params are proper types
         $style = $style === null ? 0 : $style;
         $params = $params === null ? 0 : $params;
@@ -983,7 +1001,7 @@ class WinBinder
             }
             if (is_numeric($value)) {
                 $this->gauge[$progressBar[self::CTRL_OBJ]] = $value;
-                
+
                 // Check if the control is still valid before setting the value
                 // This prevents errors when the parent window has been destroyed
                 $this->callWinBinder('wb_set_value', array($progressBar[self::CTRL_OBJ], $value), true);
