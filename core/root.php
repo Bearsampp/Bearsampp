@@ -34,27 +34,35 @@ if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1]
 
     // Quick exit if we already determined no admin recently
     if (file_exists($flagFile) && (time() - filemtime($flagFile)) < 10) {
-        // Use PowerShell to kill processes silently (no window flashing)
         $currentPid = getmypid();
         $killCmd = 'powershell.exe -WindowStyle Hidden -Command "Stop-Process -Id ' . (int)$currentPid . ' -Force -ErrorAction SilentlyContinue; Stop-Process -Name bearsampp -Force -ErrorAction SilentlyContinue"';
-        pclose(popen($killCmd, 'r'));
+        try {
+            // WScript.Shell.Run with style=0 (hidden) avoids cmd.exe flash that popen causes
+            $wshKill = new COM('WScript.Shell');
+            $wshKill->Run($killCmd, 0, false);
+        } catch (Exception $e) {
+            pclose(popen($killCmd, 'r'));
+        }
         exit(1);
     }
 
-    // FAST elevation check - use ONLY net session (fastest method)
+    // FAST elevation check - use WScript.Shell.Run with hidden window (style=0) to avoid console flash
     $isElevated = false;
-    $netOutput = @shell_exec('net session 2>&1');
-
-    if ($netOutput !== null) {
-        // Check for explicit denial
-        if (stripos($netOutput, 'Access is denied') !== false ||
-            stripos($netOutput, 'System error 5') !== false) {
-            $isElevated = false;
-        }
-        // Check for success
-        else if (stripos($netOutput, 'There are no entries') !== false ||
-                 stripos($netOutput, 'Computer') !== false) {
-            $isElevated = true;
+    try {
+        $wsh = new COM('WScript.Shell');
+        // intWindowStyle=0 = completely hidden (no window, no taskbar entry), bWaitOnReturn=true
+        // net session exits 0 when elevated, non-zero when access denied
+        $exitCode = $wsh->Run('net session', 0, true);
+        $isElevated = ($exitCode === 0);
+    } catch (Exception $e) {
+        // COM unavailable — fall back to shell_exec (may flash briefly)
+        $netOutput = @shell_exec('net session 2>&1');
+        if ($netOutput !== null) {
+            if (stripos($netOutput, 'Access is denied') === false &&
+                stripos($netOutput, 'System error 5') === false &&
+                $netOutput !== '') {
+                $isElevated = true;
+            }
         }
     }
 
@@ -113,8 +121,12 @@ if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1]
 
         @file_put_contents($psFile, $psContent);
 
-        // Launch PowerShell to show the error message (hide console window, but message box will still show)
-        pclose(popen('start "" powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "' . $psFile . '"', 'r'));
+        // Launch PowerShell to show the error message — use COM Run(style=0) to avoid cmd.exe flash
+        if (isset($wsh)) {
+            $wsh->Run('powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "' . $psFile . '"', 0, false);
+        } else {
+            pclose(popen('start "" powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "' . $psFile . '"', 'r'));
+        }
 
         // Exit immediately - PowerShell will handle showing the message and cleanup
         exit(1);
