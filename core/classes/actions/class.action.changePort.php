@@ -39,43 +39,18 @@ class ActionChangePort
         global $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
 
         if ( isset( $args[0] ) && !empty( $args[0] ) ) {
-            $this->bin               = $bearsamppBins->getApache();
-            $this->currentPort       = $bearsamppBins->getApache()->getPort();
+            $bin = $bearsamppBins->getBinByName($args[0]);
+            if ($bin !== null) {
+                $this->bin = $bin;
+                // Mailpit exposes an SMTP port separately; all other services use getPort()
+                $this->currentPort = ($args[0] == $bearsamppBins->getMailpit()->getName())
+                    ? $bin->getSmtpPort()
+                    : $bin->getPort();
+            } else {
+                $this->bin         = $bearsamppBins->getApache();
+                $this->currentPort = $bearsamppBins->getApache()->getPort();
+            }
             $this->cntProcessActions = 3;
-            if ( $args[0] == $bearsamppBins->getMysql()->getName() ) {
-                $this->bin               = $bearsamppBins->getMysql();
-                $this->currentPort       = $bearsamppBins->getMysql()->getPort();
-                $this->cntProcessActions = 3;
-            }
-            elseif ( $args[0] == $bearsamppBins->getMariadb()->getName() ) {
-                $this->bin               = $bearsamppBins->getMariadb();
-                $this->currentPort       = $bearsamppBins->getMariadb()->getPort();
-                $this->cntProcessActions = 3;
-            }
-            elseif ( $args[0] == $bearsamppBins->getPostgresql()->getName() ) {
-                $this->bin               = $bearsamppBins->getPostgresql();
-                $this->currentPort       = $bearsamppBins->getPostgresql()->getPort();
-                $this->cntProcessActions = 3;
-            }
-            elseif ( $args[0] == $bearsamppBins->getMailpit()->getName() ) {
-                $this->bin               = $bearsamppBins->getMailpit();
-                $this->currentPort       = $bearsamppBins->getMailpit()->getSmtpPort();
-                $this->cntProcessActions = 3;
-            }
-            elseif ( $args[0] == $bearsamppBins->getMemcached()->getName() ) {
-                $this->bin               = $bearsamppBins->getMemcached();
-                $this->currentPort       = $bearsamppBins->getMemcached()->getPort();
-                $this->cntProcessActions = 3;
-            } elseif ($args[0] == $bearsamppBins->getXlight()->getName()) {
-                $this->bin               = $bearsamppBins->getXlight();
-                $this->currentPort       = $bearsamppBins->getXlight()->getPort();
-                $this->cntProcessActions = 3;
-            }
-            elseif ( $args[0] == $bearsamppBins->getXlight()->getName() ) {
-                $this->bin               = $bearsamppBins->getXlight();
-                $this->currentPort       = $bearsamppBins->getXlight()->getPort();
-                $this->cntProcessActions = 3;
-            }
 
             $bearsamppWinbinder->reset();
             $this->wbWindow = $bearsamppWinbinder->createAppWindow( sprintf( $bearsamppLang->getValue( Lang::CHANGE_PORT_TITLE ), $args[0] ), 380, 170, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP );

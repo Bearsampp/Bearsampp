@@ -34,27 +34,14 @@ class ActionCheckPort
             // Determine if SSL is to be used
             $ssl = isset( $args[2] ) && !empty( $args[2] );
 
-            // Check the port for the specified service
-            if ( $args[0] == $bearsamppBins->getApache()->getName() ) {
-                $bearsamppBins->getApache()->checkPort( $args[1], $ssl, true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getMysql()->getName() ) {
-                $bearsamppBins->getMysql()->checkPort( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getMariadb()->getName() ) {
-                $bearsamppBins->getMariadb()->checkPort( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getPostgresql()->getName() ) {
-                $bearsamppBins->getPostgresql()->checkPort( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getMailpit()->getName() ) {
-                $bearsamppBins->getMailpit()->checkPort( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getMemcached()->getName() ) {
-                $bearsamppBins->getMemcached()->checkPort( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getXlight()->getName() ) {
-                $bearsamppBins->getXlight()->checkPort( $args[1], true );
+            $bin = $bearsamppBins->getBinByName($args[0]);
+            if ($bin !== null) {
+                // Apache accepts an extra $ssl parameter; all other bins do not
+                if ($args[0] == $bearsamppBins->getApache()->getName()) {
+                    $bin->checkPort($args[1], $ssl, true);
+                } else {
+                    $bin->checkPort($args[1], true);
+                }
             }
         }
     }

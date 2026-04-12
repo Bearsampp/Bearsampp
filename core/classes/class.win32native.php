@@ -15,6 +15,66 @@
  */
 class Win32Native
 {
+    // ========================================================================
+    // COM Connection Cache
+    // Each COM object is created once per PHP process and reused across calls.
+    // On a COM/WMI failure the catching method calls resetConnections() so the
+    // next call gets a fresh object instead of reusing a broken cached instance.
+    // ========================================================================
+
+    /** @var COM|null Cached WMI connection to root/cimv2 (process/service queries) */
+    private static ?COM $wmiCimv2 = null;
+
+    /** @var COM|null Cached WMI connection to root/default:StdRegProv (registry key checks) */
+    private static ?COM $wmiStdRegProv = null;
+
+    /** @var COM|null Cached WScript.Shell object (registry values, shortcuts, special folders) */
+    private static ?COM $wscriptShell = null;
+
+    /**
+     * Returns the cached WMI cimv2 connection, creating it on first use.
+     */
+    private static function getWmiCimv2(): COM
+    {
+        if (self::$wmiCimv2 === null) {
+            self::$wmiCimv2 = new COM("winmgmts://./root/cimv2");
+        }
+        return self::$wmiCimv2;
+    }
+
+    /**
+     * Returns the cached WMI StdRegProv connection, creating it on first use.
+     */
+    private static function getWmiStdRegProv(): COM
+    {
+        if (self::$wmiStdRegProv === null) {
+            self::$wmiStdRegProv = new COM("winmgmts://./root/default:StdRegProv");
+        }
+        return self::$wmiStdRegProv;
+    }
+
+    /**
+     * Returns the cached WScript.Shell object, creating it on first use.
+     */
+    private static function getWscriptShell(): COM
+    {
+        if (self::$wscriptShell === null) {
+            self::$wscriptShell = new COM("WScript.Shell");
+        }
+        return self::$wscriptShell;
+    }
+
+    /**
+     * Clears all cached COM connections.
+     * Call this after a COM operation fails so the next call gets a fresh connection.
+     */
+    public static function resetConnections(): void
+    {
+        self::$wmiCimv2      = null;
+        self::$wmiStdRegProv = null;
+        self::$wscriptShell  = null;
+    }
+
     /**
      * Gets a list of running processes using COM/WMI.
      * Replaces VBS WMI process query with direct PHP COM access.
@@ -30,7 +90,7 @@ class Win32Native
 
         try {
             // Create WMI connection
-            $wmi = new COM("winmgmts://./root/cimv2");
+            $wmi = self::getWmiCimv2();
 
             // Build WQL query
             if (empty($properties)) {
@@ -65,6 +125,7 @@ class Win32Native
             return $result;
 
         } catch (Exception $e) {
+            self::resetConnections();
             Util::logError('getProcessList: COM exception: ' . $e->getMessage());
             return [];
         }
@@ -91,7 +152,7 @@ class Win32Native
 
         try {
             // Create WMI connection
-            $wmi = new COM("winmgmts://./root/cimv2");
+            $wmi = self::getWmiCimv2();
 
             // Query for specific process
             $query = "SELECT * FROM Win32_Process WHERE ProcessID = {$pid}";
@@ -130,6 +191,7 @@ class Win32Native
             return true;
 
         } catch (Exception $e) {
+            self::resetConnections();
             Util::logError('killProcess: COM exception: ' . $e->getMessage());
             return false;
         }
@@ -148,7 +210,7 @@ class Win32Native
         }
 
         try {
-            $wmi = new COM("winmgmts://./root/cimv2");
+            $wmi = self::getWmiCimv2();
             $query = "SELECT ProcessID FROM Win32_Process WHERE ProcessID = {$pid}";
             $processes = $wmi->ExecQuery($query);
 
@@ -159,6 +221,7 @@ class Win32Native
             return false;
 
         } catch (Exception $e) {
+            self::resetConnections();
             return false;
         }
     }
@@ -181,7 +244,7 @@ class Win32Native
         }
 
         try {
-            $wmi = new COM("winmgmts://./root/cimv2");
+            $wmi = self::getWmiCimv2();
             $selectClause = implode(', ', $properties);
             $query = "SELECT {$selectClause} FROM Win32_Process WHERE ProcessID = {$pid}";
             $processes = $wmi->ExecQuery($query);
@@ -202,6 +265,7 @@ class Win32Native
             return false;
 
         } catch (Exception $e) {
+            self::resetConnections();
             Util::logError('getProcessInfo: COM exception: ' . $e->getMessage());
             return false;
         }
@@ -225,7 +289,7 @@ class Win32Native
         }
 
         try {
-            $wmi = new COM("winmgmts://./root/cimv2");
+            $wmi = self::getWmiCimv2();
             $selectClause = implode(', ', $properties);
 
             // Sanitize the name parameter to prevent WQL injection
@@ -252,6 +316,7 @@ class Win32Native
             return $result;
 
         } catch (Exception $e) {
+            self::resetConnections();
             Util::logError('findProcessesByName: COM exception: ' . $e->getMessage());
             return [];
         }
@@ -318,7 +383,7 @@ class Win32Native
                 // Use StdRegProv::EnumKey for reliable key existence checking
                 // This avoids false negatives from checking for a default value that may not exist
                 try {
-                    $wmi = new COM("winmgmts://./root/default:StdRegProv");
+                    $wmi = self::getWmiStdRegProv();
 
                     // Map hive names to WMI constants
                     $hiveConstMap = [
@@ -370,6 +435,7 @@ class Win32Native
                     }
 
                 } catch (Exception $e) {
+                    self::$wmiStdRegProv = null;
                     Util::logError('registryExists: StdRegProv exception during key check: ' . $e->getMessage());
                     return false;
                 }
@@ -377,7 +443,7 @@ class Win32Native
                 // Check if a specific value exists within the key
                 // Use WScript.Shell::RegRead for value existence
                 try {
-                    $shell = new COM("WScript.Shell");
+                    $shell = self::getWscriptShell();
                     $valuePath = $regPath . '\\' . $value;
                     $shell->RegRead($valuePath);
                     Util::logDebug('registryExists: Value found');
@@ -389,6 +455,7 @@ class Win32Native
             }
 
         } catch (Exception $e) {
+            self::resetConnections();
             Util::logError('registryExists: COM exception: ' . $e->getMessage());
             return false;
         }
@@ -420,7 +487,7 @@ class Win32Native
         $startTime = microtime(true);
 
         try {
-            $shell = new COM("WScript.Shell");
+            $shell = self::getWscriptShell();
             $result = $shell->RegRead($regPath);
 
             $duration = round((microtime(true) - $startTime) * 1000, 2);
@@ -468,7 +535,7 @@ class Win32Native
         $startTime = microtime(true);
 
         try {
-            $shell = new COM("WScript.Shell");
+            $shell = self::getWscriptShell();
 
             // Convert data based on type
             if ($type === 'REG_DWORD') {
@@ -484,6 +551,7 @@ class Win32Native
             return true;
 
         } catch (Exception $e) {
+            self::resetConnections();
             Util::logError('registrySetValue: COM exception: ' . $e->getMessage());
             return false;
         }
@@ -508,7 +576,7 @@ class Win32Native
         $startTime = microtime(true);
 
         try {
-            $shell = new COM("WScript.Shell");
+            $shell = self::getWscriptShell();
 
             // Delete the value
             $shell->RegDelete($regPath);
@@ -527,6 +595,7 @@ class Win32Native
                 return true;
             }
 
+            self::resetConnections();
             Util::logError('registryDeleteValue: COM exception: ' . $e->getMessage());
             return false;
         }
@@ -548,7 +617,7 @@ class Win32Native
         Util::logDebug('registryDeleteKey: Deleting ' . $regPath . ' (COM)');
 
         try {
-            $shell = new COM("WScript.Shell");
+            $shell = self::getWscriptShell();
 
             // Delete the key (note the trailing backslash)
             $shell->RegDelete($regPath);
@@ -565,6 +634,7 @@ class Win32Native
                 return true;
             }
 
+            self::resetConnections();
             Util::logError('registryDeleteKey: COM exception: ' . $e->getMessage());
             return false;
         }
@@ -588,7 +658,7 @@ class Win32Native
         $startTime = microtime(true);
 
         try {
-            $shell = new COM("WScript.Shell");
+            $shell = self::getWscriptShell();
 
             // Get the special folder path
             $path = $shell->SpecialFolders($folderName);
@@ -606,6 +676,7 @@ class Win32Native
             }
 
         } catch (Exception $e) {
+            self::resetConnections();
             Util::logError('getSpecialFolderPath: COM exception: ' . $e->getMessage());
             return false;
         }
@@ -629,7 +700,7 @@ class Win32Native
         $startTime = microtime(true);
 
         try {
-            $shell = new COM("WScript.Shell");
+            $shell = self::getWscriptShell();
 
             // Create the shortcut object
             $shortcut = $shell->CreateShortcut($shortcutPath);
@@ -658,6 +729,7 @@ class Win32Native
             return true;
 
         } catch (Exception $e) {
+            self::resetConnections();
             Util::logError('createShortcut: COM exception: ' . $e->getMessage());
             return false;
         }
@@ -836,7 +908,7 @@ class Win32Native
 
         try {
             // Create WMI connection
-            $wmi = new COM("winmgmts://./root/cimv2");
+            $wmi = self::getWmiCimv2();
 
             // Default properties if none specified
             if (empty($properties)) {
@@ -885,6 +957,7 @@ class Win32Native
             return false;
 
         } catch (Exception $e) {
+            self::resetConnections();
             Util::logError('getServiceInfo: COM exception: ' . $e->getMessage());
             return false;
         }
@@ -905,7 +978,7 @@ class Win32Native
 
         try {
             // Create WMI connection
-            $wmi = new COM("winmgmts://./root/cimv2");
+            $wmi = self::getWmiCimv2();
 
             // Default properties if none specified
             if (empty($properties)) {
@@ -940,6 +1013,7 @@ class Win32Native
             return $result;
 
         } catch (Exception $e) {
+            self::resetConnections();
             Util::logError('listServices: COM exception: ' . $e->getMessage());
             return [];
         }
@@ -955,7 +1029,7 @@ class Win32Native
     public static function serviceExists($serviceName)
     {
         try {
-            $wmi = new COM("winmgmts://./root/cimv2");
+            $wmi = self::getWmiCimv2();
             // Sanitize the serviceName parameter to prevent WQL injection
             // Escape single quotes by doubling them (WQL standard)
             $safeServiceName = str_replace("'", "''", $serviceName);
@@ -971,6 +1045,7 @@ class Win32Native
             return false;
 
         } catch (Exception $e) {
+            self::resetConnections();
             return false;
         }
     }
@@ -985,7 +1060,7 @@ class Win32Native
     public static function getServiceState($serviceName)
     {
         try {
-            $wmi = new COM("winmgmts://./root/cimv2");
+            $wmi = self::getWmiCimv2();
             // Sanitize the serviceName parameter to prevent WQL injection
             // Escape single quotes by doubling them (WQL standard)
             $safeServiceName = str_replace("'", "''", $serviceName);
@@ -1001,6 +1076,7 @@ class Win32Native
             return false;
 
         } catch (Exception $e) {
+            self::resetConnections();
             return false;
         }
     }

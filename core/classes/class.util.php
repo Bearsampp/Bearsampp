@@ -159,7 +159,7 @@ class Util
     {
         if (is_string($name)) {
             if ($type == 'text') {
-                $value = (isset($_GET[$name]) && !empty($_GET[$name])) ? stripslashes($_GET[$name]) : '';
+                $value = (isset($_GET[$name]) && !empty($_GET[$name])) ? $_GET[$name] : '';
                 // Additional sanitization: remove null bytes and control characters
                 return filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             } elseif ($type == 'numeric') {
@@ -186,7 +186,7 @@ class Util
     {
         if (is_string($name)) {
             if ($type == 'text') {
-                return (isset($_POST[$name]) && !empty($_POST[$name])) ? stripslashes(trim($_POST[$name])) : '';
+                return (isset($_POST[$name]) && !empty($_POST[$name])) ? trim($_POST[$name]) : '';
             } elseif ($type == 'number') {
                 return (isset($_POST[$name]) && is_numeric($_POST[$name])) ? intval($_POST[$name]) : '';
             } elseif ($type == 'float') {
@@ -641,7 +641,7 @@ class Util
 
         // Method 1: Try using shell_exec with 'net session' command
         // This command only succeeds when run with admin privileges
-        $output = @shell_exec('net session 2>&1');
+        $output = CommandRunner::shellExec('net session 2>&1');
         if ($output !== null) {
             // Check for access denied errors
             if (stripos($output, 'Access is denied') !== false ||
@@ -660,7 +660,7 @@ class Util
         }
 
         // Method 2: Check using whoami command (Windows Vista and later)
-        $output = @shell_exec('whoami /groups 2>&1');
+        $output = CommandRunner::shellExec('whoami /groups 2>&1');
         if ($output !== null && !empty($output)) {
             // Look for the Administrators group or High Mandatory Level
             if (stripos($output, 'S-1-16-12288') !== false || // High Mandatory Level

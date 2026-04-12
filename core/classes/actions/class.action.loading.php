@@ -272,7 +272,7 @@ class ActionLoading
                     'exit(0);" > nul 2>&1';
                 
                 // Execute the command in background
-                pclose(popen('start /B ' . $checkCmd, 'r'));
+                CommandRunner::background($checkCmd);
                 
                 // Wait for the result with timeout
                 $startWait = microtime(true);

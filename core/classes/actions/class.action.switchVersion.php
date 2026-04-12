@@ -239,34 +239,19 @@ class ActionSwitchVersion
         $this->bearsamppSplash->incrProgressBar();
         $bearsamppBins->reload();
 
-        // After reloading bins, get a fresh service reference from the reloaded bin
-        // This ensures we're using the updated service instance with new configuration
+        // After reloading bins, get a fresh service reference from the reloaded bin.
+        // This ensures we're using the updated service instance with new configuration.
         if ($this->service != null) {
-            // Get the reloaded bin and its fresh service instance
-            if ($this->bin->getName() == $bearsamppBins->getApache()->getName()) {
-                $this->service = $bearsamppBins->getApache()->getService();
-                Util::logTrace("Refreshed service reference from reloaded Apache bin");
-            } elseif ($this->bin->getName() == $bearsamppBins->getPhp()->getName()) {
+            // PHP is a special case: it runs under Apache's service, not its own.
+            if ($this->bin->getName() == $bearsamppBins->getPhp()->getName()) {
                 $this->service = $bearsamppBins->getApache()->getService();
                 Util::logTrace("Refreshed service reference from reloaded Apache bin (for PHP)");
-            } elseif ($this->bin->getName() == $bearsamppBins->getMysql()->getName()) {
-                $this->service = $bearsamppBins->getMysql()->getService();
-                Util::logTrace("Refreshed service reference from reloaded MySQL bin");
-            } elseif ($this->bin->getName() == $bearsamppBins->getMariadb()->getName()) {
-                $this->service = $bearsamppBins->getMariadb()->getService();
-                Util::logTrace("Refreshed service reference from reloaded MariaDB bin");
-            } elseif ($this->bin->getName() == $bearsamppBins->getPostgresql()->getName()) {
-                $this->service = $bearsamppBins->getPostgresql()->getService();
-                Util::logTrace("Refreshed service reference from reloaded PostgreSQL bin");
-            } elseif ($this->bin->getName() == $bearsamppBins->getMemcached()->getName()) {
-                $this->service = $bearsamppBins->getMemcached()->getService();
-                Util::logTrace("Refreshed service reference from reloaded Memcached bin");
-            } elseif ($this->bin->getName() == $bearsamppBins->getMailpit()->getName()) {
-                $this->service = $bearsamppBins->getMailpit()->getService();
-                Util::logTrace("Refreshed service reference from reloaded Mailpit bin");
-            } elseif ($this->bin->getName() == $bearsamppBins->getXlight()->getName()) {
-                $this->service = $bearsamppBins->getXlight()->getService();
-                Util::logTrace("Refreshed service reference from reloaded Xlight bin");
+            } else {
+                $freshBin = $bearsamppBins->getBinByName($this->bin->getName());
+                if ($freshBin !== null) {
+                    $this->service = $freshBin->getService();
+                    Util::logTrace("Refreshed service reference from reloaded " . $this->bin->getName() . " bin");
+                }
             }
         }
 

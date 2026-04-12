@@ -665,53 +665,6 @@ class Win32Service
      *
      * @return array|false Service information array or false if service doesn't exist
      */
-    /**
-     * Execute a command with hidden console window.
-     * Prevents command prompt flash during execution.
-     *
-     * @param string $command The command to execute
-     * @return string|false The command output or false on failure
-     */
-    private function execHidden($command)
-    {
-        // Use proc_open with hidden window flags
-        $descriptorspec = [
-            0 => ['pipe', 'r'],  // stdin
-            1 => ['pipe', 'w'],  // stdout
-            2 => ['pipe', 'w']   // stderr
-        ];
-
-        // On Windows, use CREATE_NO_WINDOW flag to hide console
-        $options = ['bypass_shell' => true];
-
-        $process = @proc_open($command, $descriptorspec, $pipes, null, null, $options);
-
-        if (!is_resource($process)) {
-            return false;
-        }
-
-        // Close stdin
-        fclose($pipes[0]);
-
-        // Read stdout
-        $output = stream_get_contents($pipes[1]);
-        fclose($pipes[1]);
-
-        // Read stderr
-        $errors = stream_get_contents($pipes[2]);
-        fclose($pipes[2]);
-
-        // Close process
-        proc_close($process);
-
-        // Combine output and errors for sc.exe
-        if (!empty($errors)) {
-            $output .= "\n" . $errors;
-        }
-
-        return $output;
-    }
-
     public function fastServiceCheck()
     {
         Util::logTrace("Starting fastServiceCheck for service: " . $this->getName());
@@ -720,10 +673,9 @@ class Win32Service
 
         // Use sc.exe to query service - this is very fast and reliable
         // Execute with hidden window to prevent command prompt flash
-        $command = 'sc query "' . $this->getName() . '"';
-        Util::logTrace("Executing command: " . $command);
+        Util::logTrace("Executing: sc query " . $this->getName());
 
-        $output = $this->execHidden($command);
+        $output = CommandRunner::execCombined('sc', ['query', $this->getName()]);
         $duration = round(microtime(true) - $startTime, 3);
 
         Util::logTrace("sc.exe query completed in " . $duration . "s");
@@ -766,8 +718,7 @@ class Win32Service
             Util::logTrace("Service exists, getting full details");
 
             // Use sc qc to get configuration details (including path)
-            $configCommand = 'sc qc "' . $this->getName() . '"';
-            $configOutput = $this->execHidden($configCommand);
+            $configOutput = CommandRunner::execCombined('sc', ['qc', $this->getName()]);
 
             if ($configOutput !== null && $configOutput !== false && preg_match('/BINARY_PATH_NAME\s*:\s*(.+)/i', $configOutput, $matches)) {
                 $serviceInfo[self::VBS_PATH_NAME] = trim($matches[1]);

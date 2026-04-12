@@ -207,6 +207,26 @@ class Bins
     }
 
     /**
+     * Finds a bin by its display name.
+     *
+     * Iterates over all bins and returns the one whose getName() matches the
+     * provided string. Returns null if no bin matches, so callers can handle
+     * unrecognised names without branching on each individual service.
+     *
+     * @param string $name The display name to look up (as returned by getName()).
+     * @return object|null The matching bin object, or null if not found.
+     */
+    public function getBinByName(string $name): ?object
+    {
+        foreach ($this->getAll() as $bin) {
+            if ($bin->getName() === $name) {
+                return $bin;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Retrieves the services for all enabled bin modules.
      *
      * @return array An associative array of service names and their corresponding service objects.
