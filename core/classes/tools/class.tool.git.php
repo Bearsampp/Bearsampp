@@ -224,7 +224,7 @@ class ToolGit extends Module
      * @param bool $scanStartup True to enable scanning at startup, false to disable.
      */
     public function setScanStartup($scanStartup) {
-        $this->scanStartup = $scanStartup;
+        $this->scanStartup = intval($scanStartup) === Config::ENABLED ? Config::ENABLED : Config::DISABLED;
         Util::replaceInFile($this->bearsamppConf, array(
             '/^' . self::LOCAL_CFG_SCAN_STARTUP . '/' => self::LOCAL_CFG_SCAN_STARTUP . ' = "' . $this->scanStartup . '"'
         ));
