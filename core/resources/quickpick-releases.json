@@ -1285,7 +1285,7 @@
       {
         "version": "25.9.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.4.12/bearsampp-nodejs-25.9.0-2026.4.12.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "25.8.0",
@@ -1300,7 +1300,7 @@
       {
         "version": "24.14.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.4.12/bearsampp-nodejs-24.14.1-2026.4.12.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "24.14.0",
@@ -1510,7 +1510,7 @@
       {
         "version": "5.42.2.1",
         "url": "https://github.com/Bearsampp/module-perl/releases/download/2026.4.12/bearsampp-perl-5.42.2.1-2026.4.12.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "5.42.0.1",
