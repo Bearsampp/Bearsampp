@@ -71,8 +71,8 @@ EOD;
             throw new Exception("Failed to write to bearsampp.ini file.");
         }
 
-        Util::logTrace('Calling triggerReload...');
+        Log::trace('Calling triggerReload...');
         $reloadAction = TplAppReload::triggerReload($args);
-        Util::logTrace('Reload action: ' . $reloadAction);
+        Log::trace('Reload action: ' . $reloadAction);
     }
 }

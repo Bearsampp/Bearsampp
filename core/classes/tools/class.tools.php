@@ -78,7 +78,7 @@ class Tools
      */
     public function update()
     {
-        Util::logInfo('Update tools config');
+        Log::info('Update tools config');
         foreach ($this->getAll() as $tool) {
             $tool->update();
         }

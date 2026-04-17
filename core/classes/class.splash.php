@@ -33,7 +33,7 @@ class Splash
      */
     public function __construct()
     {
-        Util::logInitClass($this);
+        Log::initClass($this);
         $this->currentImg = null;
     }
 
@@ -60,7 +60,7 @@ class Splash
         
         // Check if window was created successfully
         if ($this->wbWindow === false || $this->wbWindow === null) {
-            Util::logError('Failed to create splash window');
+            Log::error('Failed to create splash window');
             return;
         }
         

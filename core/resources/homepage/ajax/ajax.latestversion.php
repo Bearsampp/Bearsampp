@@ -37,12 +37,12 @@ $bearsamppCurrentVersion = $bearsamppCore->getAppVersion();
  * @return array|null Returns an array with version data or null if retrieval fails.
  */
 $githubVersionData = Util::getLatestVersion(APP_GITHUB_LATEST_URL);
-Util::logDebug('GitHub Version Data: ' . print_r($githubVersionData, true));
+Log::debug('GitHub Version Data: ' . print_r($githubVersionData, true));
 
 if (!empty($githubVersionData)) {
-    Util::logDebug('GitHub Version Data: ' . print_r($githubVersionData, true));
+    Log::debug('GitHub Version Data: ' . print_r($githubVersionData, true));
 } else {
-    Util::logError('No data available in $githubVersionData');
+    Log::error('No data available in $githubVersionData');
 }
 
 /**
@@ -51,7 +51,7 @@ if (!empty($githubVersionData)) {
  * @return void Exits the function if version data is null.
  */
 if ($githubVersionData === null) {
-    Util::logError('Failed to retrieve version data from GitHub URL: ' . APP_GITHUB_LATEST_URL);
+    Log::error('Failed to retrieve version data from GitHub URL: ' . APP_GITHUB_LATEST_URL);
     return;
 }
 
@@ -65,7 +65,7 @@ if ($githubVersionData === null) {
 $githubLatestVersion = $githubVersionData['version'];
 $githubLatestVersionUrl = $githubVersionData['html_url']; // URL of the latest version
 $githubVersionName = $githubVersionData['name'];
-Util::logDebug($githubLatestVersion, $githubLatestVersionUrl);
+Log::debug('Latest version: ' . $githubLatestVersion . ' (' . $githubLatestVersionUrl . ')');
 
 /**
  * Compares the current version with the latest version.

@@ -27,32 +27,9 @@ class ActionEnable
 
         if ( isset( $args[0] ) && !empty( $args[0] ) && isset( $args[1] ) ) {
             Util::startLoading();
-            if ( $args[0] == $bearsamppBins->getApache()->getName() ) {
-                $bearsamppBins->getApache()->setEnable( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getPhp()->getName() ) {
-                $bearsamppBins->getPhp()->setEnable( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getMysql()->getName() ) {
-                $bearsamppBins->getMysql()->setEnable( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getMariadb()->getName() ) {
-                $bearsamppBins->getMariadb()->setEnable( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getNodejs()->getName() ) {
-                $bearsamppBins->getNodejs()->setEnable( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getPostgresql()->getName() ) {
-                $bearsamppBins->getPostgresql()->setEnable( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getMailpit()->getName() ) {
-                $bearsamppBins->getMailpit()->setEnable( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getMemcached()->getName() ) {
-                $bearsamppBins->getMemcached()->setEnable( $args[1], true );
-            }
-            elseif ( $args[0] == $bearsamppBins->getXlight()->getName() ) {
-                $bearsamppBins->getXlight()->setEnable( $args[1], true );
+            $bin = $bearsamppBins->getBinByName($args[0]);
+            if ($bin !== null) {
+                $bin->setEnable($args[1], true);
             }
         }
     }

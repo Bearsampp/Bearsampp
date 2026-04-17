@@ -153,6 +153,8 @@ class Lang
     const ERROR_EXE_NOT_FOUND = 'errorExeNotFound';
     const ERROR_FILE_NOT_FOUND = 'errorFileNotFound';
     const ERROR_INVALID_PARAMETER = 'errorInvalidParameter';
+    const ERROR_ADMIN_REQUIRED_TITLE = 'errorAdminRequiredTitle';
+    const ERROR_ADMIN_REQUIRED_TEXT = 'errorAdminRequiredText';
 
     // Action Switch version
     const SWITCH_VERSION_TITLE = 'switchVersionTitle';
@@ -518,6 +520,8 @@ class Lang
             self::ERROR_EXE_NOT_FOUND,
             self::ERROR_FILE_NOT_FOUND,
             self::ERROR_INVALID_PARAMETER,
+            self::ERROR_ADMIN_REQUIRED_TITLE,
+            self::ERROR_ADMIN_REQUIRED_TEXT,
 
             // Action Switch version
             self::SWITCH_VERSION_TITLE,

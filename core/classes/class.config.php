@@ -86,11 +86,11 @@ class Config
     {
         global $bearsamppRoot;
 
-        Util::logTrace('Replace config:');
+        Log::trace('Replace config:');
         $content = file_get_contents($bearsamppRoot->getConfigFilePath());
         foreach ($params as $key => $value) {
             $content = preg_replace('/^' . $key . '\s=\s.*/m', $key . ' = ' . '"' . $value.'"', $content, -1, $count);
-            Util::logTrace('## ' . $key . ': ' . $value . ' (' . $count . ' replacements done)');
+            Log::trace('## ' . $key . ': ' . $value . ' (' . $count . ' replacements done)');
             $this->raw[$key] = $value;
         }
 

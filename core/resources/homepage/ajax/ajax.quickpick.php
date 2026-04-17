@@ -41,11 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             global $bearsamppConfig;
             $QuickPick = new QuickPick();
-            Util::logDebug('QuickPick initialized for module: ' . $module . ', version: ' . $version);
+            Log::debug('QuickPick initialized for module: ' . $module . ', version: ' . $version);
             
             // Check if enhanced mode is enabled
             $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
-            Util::logDebug('Enhanced QuickPick mode: ' . ($enhancedMode ? 'enabled' : 'disabled'));
+            Log::debug('Enhanced QuickPick mode: ' . ($enhancedMode ? 'enabled' : 'disabled'));
             
             // Install the module
             $response = $QuickPick->installModule($module, $version);
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 error_log('Error in QuickPick installation: ' . json_encode($response));
             }
             
-            Util::logDebug('Response: ' . json_encode($response));
+            Log::debug('Response: ' . json_encode($response));
         } catch (Exception $e) {
             $response = ['error' => 'Exception: ' . $e->getMessage()];
             error_log('Exception in QuickPick: ' . $e->getMessage());

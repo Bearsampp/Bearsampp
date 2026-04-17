@@ -33,29 +33,29 @@ class ActionManualRestart
     {
         global $bearsamppCore, $bearsamppBins;
 
-        Util::logTrace("Starting ActionManualRestart constructor");
+        Log::trace("Starting ActionManualRestart constructor");
 
         // Start the loading process
-        Util::logTrace("Starting loading process");
+        Log::trace("Starting loading process");
         Util::startLoading();
 
         // Delete all services managed by Bearsampp
-        Util::logTrace("Deleting all services managed by Bearsampp");
+        Log::trace("Deleting all services managed by Bearsampp");
         foreach ($bearsamppBins->getServices() as $sName => $service) {
-            Util::logTrace("Deleting service: " . $sName);
+            Log::trace("Deleting service: " . $sName);
             $service->delete();
         }
 
         // Kill all related processes
-        Util::logTrace("Killing all related processes");
+        Log::trace("Killing all related processes");
         Win32Ps::killBins(true);
 
         // Set the application to restart
-        Util::logTrace("Setting application to restart");
+        Log::trace("Setting application to restart");
         $bearsamppCore->setExec(ActionExec::RESTART);
 
         // Stop the loading process
-        Util::logTrace("Stopping loading process");
+        Log::trace("Stopping loading process");
         Util::stopLoading();
     }
 }

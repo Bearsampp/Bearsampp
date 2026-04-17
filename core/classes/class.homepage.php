@@ -35,7 +35,7 @@ class Homepage
      */
     public function __construct()
     {
-        Util::logInitClass($this);
+        Log::initClass($this);
 
         $page = Util::cleanGetVar('p');
         $this->page = !empty($page) && in_array($page, $this->pageList) ? $page : self::PAGE_INDEX;

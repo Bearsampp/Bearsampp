@@ -27,6 +27,116 @@ const QUICKPICK_API_URL = 'https://bearsampp.com/index.php?option=com_osmembersh
 const QUICKPICK_JSON_URL = 'https://raw.githubusercontent.com/Bearsampp/Bearsampp/main/core/resources/quickpick-releases.json';
 
 /**
+ * CRITICAL: Check for elevation IMMEDIATELY - must be FAST to minimize console window visibility
+ */
+if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === 'startup') {
+    $flagFile = sys_get_temp_dir() . '/bearsampp_no_admin.lock';
+
+    // Quick exit if we already determined no admin recently
+    if (file_exists($flagFile) && (time() - filemtime($flagFile)) < 10) {
+        $currentPid = getmypid();
+        $killCmd = 'powershell.exe -WindowStyle Hidden -Command "Stop-Process -Id ' . (int)$currentPid . ' -Force -ErrorAction SilentlyContinue; Stop-Process -Name bearsampp -Force -ErrorAction SilentlyContinue"';
+        try {
+            // WScript.Shell.Run with style=0 (hidden) avoids cmd.exe flash that popen causes
+            $wshKill = new COM('WScript.Shell');
+            $wshKill->Run($killCmd, 0, false);
+        } catch (Exception $e) {
+            pclose(popen($killCmd, 'r'));
+        }
+        exit(1);
+    }
+
+    // FAST elevation check - use WScript.Shell.Run with hidden window (style=0) to avoid console flash
+    $isElevated = false;
+    try {
+        $wsh = new COM('WScript.Shell');
+        // intWindowStyle=0 = completely hidden (no window, no taskbar entry), bWaitOnReturn=true
+        // net session exits 0 when elevated, non-zero when access denied
+        $exitCode = $wsh->Run('net session', 0, true);
+        $isElevated = ($exitCode === 0);
+    } catch (Exception $e) {
+        // COM unavailable — fall back to shell_exec (may flash briefly)
+        $netOutput = @shell_exec('net session 2>&1');
+        if ($netOutput !== null) {
+            if (stripos($netOutput, 'Access is denied') === false &&
+                stripos($netOutput, 'System error 5') === false &&
+                $netOutput !== '') {
+                $isElevated = true;
+            }
+        }
+    }
+
+    if (!$isElevated) {
+        // Create flag file immediately
+        @file_put_contents($flagFile, time());
+
+        // Load language file for error message
+        $langFile = dirname(__FILE__) . '/langs/english.lang';
+        $langData = @parse_ini_file($langFile);
+
+        // Get localized messages
+        $title = isset($langData['errorAdminRequiredTitle']) ? $langData['errorAdminRequiredTitle'] : 'Administrator Rights Required';
+        $messageText = isset($langData['errorAdminRequiredText']) ? $langData['errorAdminRequiredText'] : '%s requires administrator privileges to install and manage Windows services.@nl@@nl@Please right-click on bearsampp.exe and select "Run as administrator" to start the application.';
+
+        // Replace placeholders
+        $messageText = sprintf($messageText, APP_TITLE);
+        $messageText = str_replace('@nl@', '|||NEWLINE|||', $messageText);
+
+        // Split by newline placeholder
+        $messageParts = explode('|||NEWLINE|||', $messageText);
+
+        // Create PowerShell script that handles everything (no window flashing)
+        $psFile = sys_get_temp_dir() . '/bearsampp_admin_error.ps1';
+        $flagFilePs = str_replace('/', '\\', $flagFile);
+        $psFilePs = str_replace('/', '\\', $psFile);
+
+        // Escape for PowerShell
+        $title = str_replace("'", "''", $title);
+        $currentPid = getmypid();
+
+        // PowerShell script that shows message FIRST, then kills processes
+        $psContent = "# Show error message using Windows Forms\n";
+        $psContent .= "Add-Type -AssemblyName System.Windows.Forms\n";
+
+        // Build message from parts
+        $psContent .= "\$messageParts = @(\n";
+        $lastIndex = count($messageParts) - 1;
+        foreach ($messageParts as $index => $part) {
+            $part = str_replace("'", "''", trim($part));
+            // Don't add comma after last item
+            $comma = ($index < $lastIndex) ? ',' : '';
+            $psContent .= "    '" . $part . "'" . $comma . "\n";
+        }
+        $psContent .= ")\n";
+        $psContent .= "\$message = \$messageParts -join [Environment]::NewLine\n";
+        $psContent .= "[System.Windows.Forms.MessageBox]::Show(\$message, '" . $title . "', [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error) | Out-Null\n";
+        $psContent .= "\n";
+        $psContent .= "# After user clicks OK, kill only Bearsampp-related processes\n";
+        $psContent .= "Stop-Process -Id " . (int)$currentPid . " -Force -ErrorAction SilentlyContinue\n";
+        $psContent .= "Stop-Process -Name bearsampp -Force -ErrorAction SilentlyContinue\n";
+        $psContent .= "\n";
+        $psContent .= "# Clean up\n";
+        $psContent .= "Remove-Item -Path '" . $flagFilePs . "' -Force -ErrorAction SilentlyContinue\n";
+        $psContent .= "Remove-Item -Path '" . $psFilePs . "' -Force -ErrorAction SilentlyContinue\n";
+
+        @file_put_contents($psFile, $psContent);
+
+        // Launch PowerShell to show the error message — use COM Run(style=0) to avoid cmd.exe flash
+        if (isset($wsh)) {
+            $wsh->Run('powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "' . $psFile . '"', 0, false);
+        } else {
+            pclose(popen('start "" powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "' . $psFile . '"', 'r'));
+        }
+
+        // Exit immediately - PowerShell will handle showing the message and cleanup
+        exit(1);
+    } else {
+        // We're elevated, clean up any old flag
+        @unlink($flagFile);
+    }
+}
+
+/**
  * Includes the Root class file and creates an instance of Root.
  * Registers the root directory of the application.
  */

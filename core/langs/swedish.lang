@@ -134,6 +134,8 @@ errorConfNotFound = "%s konfigurationsfil hittades inte i %s"
 errorExeNotFound = "%s .exe-fil hittades inte i %s"
 errorFileNotFound = "%s hittades inte i %s"
 errorInvalidParameter = "#Invalid parameter '%s' : %s"
+errorAdminRequiredTitle = "Administratörsrättigheter krävs"
+errorAdminRequiredText = "%s kräver administratörsbehörighet för att installera och hantera Windows-tjänster.@nl@@nl@Högerklicka på bearsampp.exe och välj 'Kör som administratör' för att starta programmet."
 
 ; Action Switch version
 switchVersionTitle = "Byt %s version %s"

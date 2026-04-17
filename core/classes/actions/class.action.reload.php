@@ -53,7 +53,7 @@ class ActionReload
         // Check and update the browser setting in the configuration
         $currentBrowser = $bearsamppConfig->getBrowser();
         if (empty($currentBrowser) || !file_exists($currentBrowser)) {
-            $bearsamppConfig->replace(Config::CFG_BROWSER, Vbs::getDefaultBrowser());
+            $bearsamppConfig->replace(Config::CFG_BROWSER, Win32Native::getDefaultBrowser());
         }
 
         // Process and update the bearsampp.ini file

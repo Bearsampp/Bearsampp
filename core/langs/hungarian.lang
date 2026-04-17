@@ -134,6 +134,8 @@ errorConfNotFound = "A %s konfiguraciós file nincs a %s -ban"
 errorExeNotFound = "A %s végrehajtható file nincs a %s -ban"
 errorFileNotFound = "A %s  file nincs a %s -ban"
 errorInvalidParameter = "Hibás paraméter '%s' : %s"
+errorAdminRequiredTitle = "Rendszergazdai jogok szükségesek"
+errorAdminRequiredText = "%s rendszergazdai jogosultságokat igényel a Windows szolgáltatások telepítéséhez és kezeléséhez.@nl@@nl@Kérjük, kattintson jobb gombbal a bearsampp.exe fájlra, és válassza a 'Futtatás rendszergazdaként' lehetőséget az alkalmazás elindításához."
 
 ; Action Switch version
 switchVersionTitle = "Verzió %s váltás %s"

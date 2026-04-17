@@ -13,9 +13,14 @@
 include_once __DIR__ . '/../../root.php';
 
 /**
+ * Initialize CSRF protection
+ */
+Csrf::init();
+
+/**
  * Define a mapping of valid process names to their corresponding file paths.
  * This approach is more secure than direct string concatenation.
- * 
+ *
  * @var array $procMap A mapping of process names to their file paths.
  */
 $procMap = [
@@ -36,6 +41,17 @@ $procMap = [
 ];
 
 /**
+ * Define which endpoints require CSRF protection.
+ * Read-only endpoints (GET-like operations) don't need CSRF protection.
+ * Write operations (POST that changes state) require CSRF protection.
+ */
+$csrfProtectedEndpoints = [
+    'quickpick',                    // Installs modules
+    'toggleenhancedquickpick',      // Changes configuration
+    'applymoduleconfig'             // Applies configuration changes
+];
+
+/**
  * Clean and retrieve the 'proc' POST variable.
  *
  * Util::cleanPostVar is assumed to be a method that sanitizes the input to prevent security issues such as SQL injection or XSS.
@@ -43,6 +59,21 @@ $procMap = [
  * @var string $proc The cleaned 'proc' parameter from the POST request.
  */
 $proc = Util::cleanPostVar('proc', 'text');  // Ensure 'proc' is cleaned and read correctly
+
+/**
+ * Validate CSRF token for protected endpoints
+ */
+if (in_array($proc, $csrfProtectedEndpoints, true)) {
+    if (!Csrf::validateRequest()) {
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'error' => 'CSRF validation failed',
+            'message' => 'Invalid or expired security token. Please refresh the page and try again.'
+        ]);
+        exit;
+    }
+}
 
 /**
  * Check if the cleaned 'proc' parameter exists in our secure mapping.

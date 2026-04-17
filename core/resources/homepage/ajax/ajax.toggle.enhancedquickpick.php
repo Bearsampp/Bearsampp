@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Update the configuration
             $bearsamppConfig->replace('EnhancedQuickPick', $newValue);
             
-            Util::logInfo('EnhancedQuickPick setting changed from ' . $currentValue . ' to ' . $newValue);
+            Log::info('EnhancedQuickPick setting changed from ' . $currentValue . ' to ' . $newValue);
             
             $response = [
                 'success' => true,

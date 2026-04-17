@@ -34,13 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             global $bearsamppConfig;
             
-            Util::logDebug("Applying config for module: $moduleName, version: $version");
+            Log::debug("Applying config for module: $moduleName, version: $version");
             
             // Update the configuration file
             $configKey = $moduleName . 'Version';
             $bearsamppConfig->replace($configKey, $version);
             
-            Util::logInfo("Successfully updated $moduleName version to $version in bearsampp.conf");
+            Log::info("Successfully updated $moduleName version to $version in bearsampp.conf");
             
             $response = [
                 'success' => true,

@@ -226,7 +226,7 @@ class QuickPick
         global $bearsamppConfig;
 
         if ($bearsamppConfig->getLogsVerbose() === 2) {
-            Util::logDebug('Headers: ' . print_r($headers, true));
+            Log::debug('Headers: ' . print_r($headers, true));
         }
     }
 
@@ -239,14 +239,14 @@ class QuickPick
     {
         $content = @file_get_contents( $this->jsonFilePath );
         if ( $content === false ) {
-            Util::logError( 'Error fetching content from JSON file: ' . $this->jsonFilePath );
+            Log::error( 'Error fetching content from JSON file: ' . $this->jsonFilePath );
 
             return ['error' => 'Error fetching JSON file'];
         }
 
         $data = json_decode( $content, true );
         if ( json_last_error() !== JSON_ERROR_NONE ) {
-            Util::logError( 'Error decoding JSON content: ' . json_last_error_msg() );
+            Log::error( 'Error decoding JSON content: ' . json_last_error_msg() );
 
             return ['error' => 'Error decoding JSON content'];
         }
@@ -262,7 +262,7 @@ class QuickPick
      */
     public function rebuildQuickpickJson(): array
     {
-        Util::logDebug( 'Fetching JSON file: ' . $this->jsonFilePath );
+        Log::debug( 'Fetching JSON file: ' . $this->jsonFilePath );
 
         // Fetch the JSON content from the URL
         $jsonContent = file_get_contents( QUICKPICK_JSON_URL );
@@ -294,7 +294,7 @@ class QuickPick
      */
     public function getVersions(): array
     {
-        Util::logDebug( 'Versions called' );
+        Log::debug( 'Versions called' );
 
         $versions = [];
 
@@ -309,17 +309,17 @@ class QuickPick
                 }
             }
             else {
-                Util::logError( 'Invalid entry format in JSON data' );
+                Log::error( 'Invalid entry format in JSON data' );
             }
         }
 
         if ( empty( $versions ) ) {
-            Util::logError( 'No versions found' );
+            Log::error( 'No versions found' );
 
             return ['error' => 'No versions found'];
         }
 
-        Util::logDebug( 'Found versions' );
+        Log::debug( 'Found versions' );
 
         $this->versions = $versions;
 
@@ -340,15 +340,15 @@ class QuickPick
     public function getModuleUrl(string $module, string $version)
     {
         $this->getVersions();
-        Util::logDebug( 'getModuleUrl called for module: ' . $module . ' version: ' . $version );
+        Log::debug( 'getModuleUrl called for module: ' . $module . ' version: ' . $version );
         $url = trim( $this->versions['module-' . strtolower( $module )][$version]['url'] );
         if ( $url <> '' ) {
-            Util::logDebug( 'Found URL for version: ' . $version . ' URL: ' . $url );
+            Log::debug( 'Found URL for version: ' . $version . ' URL: ' . $url );
 
             return $url;
         }
         else {
-            Util::logError( 'Version not found: ' . $version );
+            Log::error( 'Version not found: ' . $version );
 
             return ['error' => 'Version not found'];
         }
@@ -373,27 +373,27 @@ class QuickPick
     {
         global $bearsamppConfig;
 
-        Util::logDebug( 'checkDownloadId method called.' );
+        Log::debug( 'checkDownloadId method called.' );
 
         // Ensure the global config is available
         if ( !isset( $bearsamppConfig ) ) {
-            Util::logError( 'Global configuration is not set.' );
+            Log::error( 'Global configuration is not set.' );
 
             return false;
         }
 
         $DownloadId = $bearsamppConfig->getDownloadId();
-        Util::logDebug( 'DownloadId is: ' . $DownloadId );
+        Log::debug( 'DownloadId is: ' . $DownloadId );
 
         // Ensure the license key is not empty
         if ( empty( $DownloadId ) ) {
-            Util::logError( 'License key is empty.' );
+            Log::error( 'License key is empty.' );
 
             return false;
         }
 
         $url = QUICKPICK_API_URL . QUICKPICK_API_KEY . '&download_id=' . $DownloadId;
-        Util::logDebug( 'API URL: ' . $url );
+        Log::debug( 'API URL: ' . $url );
 
         // Attempt to fetch the API response
         // Note: If this fails, PHP will generate a warning which will be logged by the error handler
@@ -402,29 +402,29 @@ class QuickPick
 
         // Check if the response is false
         if ( $response === false ) {
-            Util::logError( 'Failed to validate QuickPick license - API server unavailable' );
+            Log::error( 'Failed to validate QuickPick license - API server unavailable' );
             return false;
         }
 
-        Util::logDebug( 'API response: ' . $response );
+        Log::debug( 'API response: ' . $response );
 
         $data = json_decode( $response, true );
 
         // Check if the JSON decoding was successful
         if ( json_last_error() !== JSON_ERROR_NONE ) {
-            Util::logError( 'Error decoding JSON response: ' . json_last_error_msg() );
+            Log::error( 'Error decoding JSON response: ' . json_last_error_msg() );
 
             return false;
         }
 
         // Validate the response data
         if ( isset( $data['success'] ) && $data['success'] === true && isset( $data['data'] ) && is_array( $data['data'] ) && count( $data['data'] ) > 0 ) {
-            Util::logDebug( 'License key valid: ' . $DownloadId );
+            Log::debug( 'License key valid: ' . $DownloadId );
 
             return true;
         }
 
-        Util::logError( 'Invalid license key: ' . $DownloadId );
+        Log::error( 'Invalid license key: ' . $DownloadId );
 
         return false;
     }
@@ -449,13 +449,13 @@ class QuickPick
         $moduleUrl = $this->getModuleUrl( $module, $version );
 
         if ( is_array( $moduleUrl ) && isset( $moduleUrl['error'] ) ) {
-            Util::logError( 'Module URL not found for module: ' . $module . ' version: ' . $version );
+            Log::error( 'Module URL not found for module: ' . $module . ' version: ' . $version );
 
             return ['error' => 'Module URL not found'];
         }
 
         if ( empty( $moduleUrl ) ) {
-            Util::logError( 'Module URL not found for module: ' . $module . ' version: ' . $version );
+            Log::error( 'Module URL not found for module: ' . $module . ' version: ' . $version );
 
             return ['error' => 'Module URL not found'];
         }
@@ -463,23 +463,23 @@ class QuickPick
         $state = Util::checkInternetState();
         if ( $state ) {
             $response = $this->fetchAndUnzipModule( $moduleUrl, $module );
-            Util::logDebug( 'Response is: ' . print_r( $response, true ) );
+            Log::debug( 'Response is: ' . print_r( $response, true ) );
 
             // Check if enhanced mode is enabled
             global $bearsamppConfig;
             $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
             
-            Util::logDebug('Enhanced mode: ' . ($enhancedMode ? 'enabled' : 'disabled'));
+            Log::debug('Enhanced mode: ' . ($enhancedMode ? 'enabled' : 'disabled'));
             
             // If installation was successful and enhanced mode is enabled, update config
             if (isset($response['success']) && $enhancedMode == 1) {
                 // Step 1: Update config FIRST (so reload can pick up the new version)
-                Util::logDebug('Enhanced mode enabled - Updating config for module: ' . $module . ' version: ' . $version);
+                Log::debug('Enhanced mode enabled - Updating config for module: ' . $module . ' version: ' . $version);
                 $configUpdated = $this->updateModuleConfig($module, $version);
                 
                 if ($configUpdated) {
                     // Step 2: Trigger reload AFTER config update (reload will apply the new version)
-                    Util::logDebug('Config updated successfully, triggering reload to apply changes...');
+                    Log::debug('Config updated successfully, triggering reload to apply changes...');
                     
                     // Send progress update to user - temporarily stop output buffering
                     $obLevel = ob_get_level();
@@ -496,20 +496,20 @@ class QuickPick
                     }
                     
                     // Note: User must manually reload from tray menu to activate the new version
-                    Util::logDebug('Installation complete - user must manually reload from tray menu');
+                    Log::debug('Installation complete - user must manually reload from tray menu');
                     $response['reload_required'] = true;
                 } else {
-                    Util::logError('Config update failed for module: ' . $module);
+                    Log::error('Config update failed for module: ' . $module);
                     $response['reload_triggered'] = false;
                 }
             } else if (isset($response['success']) && $enhancedMode == 0) {
-                Util::logDebug('Enhanced mode disabled - skipping config update');
+                Log::debug('Enhanced mode disabled - skipping config update');
             }
 
             return $response;
         }
         else {
-            Util::logError( 'No internet connection available.' );
+            Log::error( 'No internet connection available.' );
 
             return ['error' => 'No internet connection'];
         }
@@ -525,20 +525,20 @@ class QuickPick
      */
     public function fetchAndUnzipModule(string $moduleUrl, string $module): array
 {
-    Util::logDebug("$module is: " . $module);
+    Log::debug("$module is: " . $module);
 
     global $bearsamppRoot, $bearsamppCore;
     $tmpDir = $bearsamppRoot->getTmpPath();
-    Util::logDebug('Temporary Directory: ' . $tmpDir);
+    Log::debug('Temporary Directory: ' . $tmpDir);
 
     $fileName = basename($moduleUrl);
-    Util::logDebug('File Name: ' . $fileName);
+    Log::debug('File Name: ' . $fileName);
 
     $tmpFilePath = $tmpDir . '/' . $fileName;
-    Util::logDebug('File Path: ' . $tmpFilePath);
+    Log::debug('File Path: ' . $tmpFilePath);
 
     $moduleName = str_replace('module-', '', $module);
-    Util::logDebug('Module Name: ' . $moduleName);
+    Log::debug('Module Name: ' . $moduleName);
 
     // Find the correct module key by searching through the modules array
     // This handles proper capitalization for all module types
@@ -551,16 +551,16 @@ class QuickPick
     }
     
     if (!$moduleKey) {
-        Util::logError("Module not found in modules array: $moduleName");
+        Log::error("Module not found in modules array: $moduleName");
         return ['error' => 'Module configuration not found'];
     }
     
     $moduleType = $this->modules[$moduleKey]['type'];
-    Util::logDebug('Module Type: ' . $moduleType);
+    Log::debug('Module Type: ' . $moduleType);
 
     // Get module type
     $destination = $this->getModuleDestinationPath($moduleType, $moduleName);
-    Util::logDebug('Destination: ' . $destination);
+    Log::debug('Destination: ' . $destination);
 
     // Retrieve the file path from the URL using the bearsamppCore module,
     // passing the module URL and temporary file path, with the use Progress Bar parameter set to true.
@@ -568,13 +568,13 @@ class QuickPick
 
     // Check if $result is false
     if ($result === false) {
-        Util::logError('Failed to retrieve file from URL: ' . $moduleUrl);
+        Log::error('Failed to retrieve file from URL: ' . $moduleUrl);
         return ['error' => 'Failed to retrieve file from URL'];
     }
 
     // Determine the file extension and call the appropriate unzipping function
     $fileExtension = pathinfo($tmpFilePath, PATHINFO_EXTENSION);
-    Util::logDebug('File extension: ' . $fileExtension);
+    Log::debug('File extension: ' . $fileExtension);
 
     if ($fileExtension === '7z' || $fileExtension === 'zip') {
         // Send phase indicator for extraction
@@ -596,7 +596,7 @@ class QuickPick
             return ['error' => 'Failed to unzip file. File: ' . $tmpFilePath . ' could not be unzipped', 'Destination: ' . $destination];
         }
     } else {
-        Util::logError('Unsupported file extension: ' . $fileExtension);
+        Log::error('Unsupported file extension: ' . $fileExtension);
         return ['error' => 'Unsupported file extension'];
     }
 
@@ -642,7 +642,7 @@ class QuickPick
      */
     private function regenerateMenuSafe(): string
     {
-        Util::logDebug('Regenerating menu (AJAX-safe mode)...');
+        Log::debug('Regenerating menu (AJAX-safe mode)...');
         
         // Suppress errors temporarily during menu generation
         $oldErrorReporting = error_reporting();
@@ -655,14 +655,14 @@ class QuickPick
             // Restore error reporting
             error_reporting($oldErrorReporting);
             
-            Util::logDebug('Menu regenerated successfully');
+            Log::debug('Menu regenerated successfully');
             return $menuContent;
             
         } catch (Exception $e) {
             // Restore error reporting
             error_reporting($oldErrorReporting);
             
-            Util::logWarning('Error during menu regeneration: ' . $e->getMessage());
+            Log::warning('Error during menu regeneration: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -695,7 +695,7 @@ class QuickPick
             }
             
             if (!$moduleKey) {
-                Util::logError("Module not found in modules array: $moduleName");
+                Log::error("Module not found in modules array: $moduleName");
                 return false;
             }
             
@@ -705,20 +705,20 @@ class QuickPick
             // For all types, use the lowercase name for the config key
             $configSection = strtolower($moduleKey);
             
-            Util::logDebug("Updating config for module: $module (key: $moduleKey, type: $moduleType) to version: $version");
-            Util::logDebug("Config section: $configSection");
+            Log::debug("Updating config for module: $module (key: $moduleKey, type: $moduleType) to version: $version");
+            Log::debug("Config section: $configSection");
             
             // Update the configuration file
             // The Config class expects a flat key like "nodejsVersion" not a section
             $configKey = $configSection . 'Version';
             $bearsamppConfig->replace($configKey, $version);
             
-            Util::logInfo("Successfully updated $configSection version to $version in bearsampp.conf");
+            Log::info("Successfully updated $configSection version to $version in bearsampp.conf");
             
             return true;
             
         } catch (Exception $e) {
-            Util::logError("Failed to update module config: " . $e->getMessage());
+            Log::error("Failed to update module config: " . $e->getMessage());
             return false;
         }
     }

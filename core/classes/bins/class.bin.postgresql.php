@@ -56,7 +56,7 @@ class BinPostgresql extends Module
      */
     public function __construct($id, $type)
     {
-        Util::logInitClass( $this );
+        Log::initClass( $this );
         $this->reload( $id, $type );
     }
 
@@ -69,7 +69,7 @@ class BinPostgresql extends Module
     public function reload($id = null, $type = null)
     {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
-        Util::logReloadClass( $this );
+        Log::reloadClass( $this );
 
         $this->name    = $bearsamppLang->getValue( Lang::POSTGRESQL );
         $this->version = $bearsamppConfig->getRaw( self::ROOT_CFG_VERSION );
@@ -94,22 +94,22 @@ class BinPostgresql extends Module
         }
 
         if ( !$this->enable ) {
-            Util::logInfo( $this->name . ' is not enabled!' );
+            Log::info( $this->name . ' is not enabled!' );
 
             return;
         }
         if ( !is_dir( $this->currentPath ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->currentPath ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->currentPath ) );
 
             return;
         }
         if ( !is_dir( $this->symlinkPath ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->symlinkPath ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->symlinkPath ) );
 
             return;
         }
         if ( !is_file( $this->bearsamppConf ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->bearsamppConf ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->bearsamppConf ) );
 
             return;
         }
@@ -121,42 +121,42 @@ class BinPostgresql extends Module
         }
 
         if ( !is_file( $this->ctlExe ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->ctlExe ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->ctlExe ) );
 
             return;
         }
         if ( !is_file( $this->cliExe ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->cliExe ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->cliExe ) );
 
             return;
         }
         if ( !is_file( $this->dumpExe ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->dumpExe ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->dumpExe ) );
 
             return;
         }
         if ( !is_file( $this->dumpAllExe ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->dumpAllExe ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->dumpAllExe ) );
 
             return;
         }
         if ( !is_file( $this->conf ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->conf ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->conf ) );
 
             return;
         }
         if ( !is_file( $this->hbaConf ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->hbaConf ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->hbaConf ) );
 
             return;
         }
         if ( !is_numeric( $this->port ) || $this->port <= 0 ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_PORT, $this->port ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_PORT, $this->port ) );
 
             return;
         }
         if ( empty( $this->rootUser ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_ROOT_USER, $this->rootUser ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_ROOT_USER, $this->rootUser ) );
 
             return;
         }
@@ -209,7 +209,7 @@ class BinPostgresql extends Module
         global $bearsamppWinbinder;
 
         if ( !Util::isValidPort( $port ) ) {
-            Util::logError( $this->getName() . ' port not valid: ' . $port );
+            Log::error( $this->getName() . ' port not valid: ' . $port );
 
             return false;
         }
@@ -230,7 +230,7 @@ class BinPostgresql extends Module
             return true;
         }
 
-        Util::logDebug( $this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse );
+        Log::debug( $this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse );
 
         return $isPortInUse;
     }
@@ -247,13 +247,13 @@ class BinPostgresql extends Module
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
         if (!Util::isValidPort($port)) {
-            Util::logError($this->getName() . ' port not valid: ' . $port);
+            Log::error($this->getName() . ' port not valid: ' . $port);
             return false;
         }
 
         $dbLink = @pg_connect("host=127.0.0.1 port=$port user={$this->rootUser} password={$this->rootPwd}");
         if (!$dbLink) {
-            Util::logDebug($this->getName() . ' connection failed: ' . pg_last_error());
+            Log::debug($this->getName() . ' connection failed: ' . pg_last_error());
             return $this->handleNonPostgresUsage($port, $showWindow, $boxTitle);
         }
 
@@ -263,7 +263,7 @@ class BinPostgresql extends Module
         pg_close($dbLink);
 
         if ($isPostgres) {
-            Util::logDebug($this->getName() . " port $port is used by PostgreSQL");
+            Log::debug($this->getName() . " port $port is used by PostgreSQL");
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxInfo(
                     sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY), $port, 'PostgreSQL'),
@@ -284,7 +284,7 @@ class BinPostgresql extends Module
         global $bearsamppLang, $bearsamppWinbinder;
 
         if (Util::isPortInUse($port)) {
-            Util::logDebug($this->getName() . " port $port used by non-PostgreSQL service");
+            Log::debug($this->getName() . " port $port used by non-PostgreSQL service");
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxWarning(
                     sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY_ANOTHER_DBMS), $port),
@@ -294,7 +294,7 @@ class BinPostgresql extends Module
             return false;
         }
 
-        Util::logDebug($this->getName() . " port $port not in use");
+        Log::debug($this->getName() . " port $port not in use");
         if ($showWindow) {
             $bearsamppWinbinder->messageBoxError(
                 sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED), $port),
@@ -395,7 +395,7 @@ class BinPostgresql extends Module
      */
     public function switchVersion($version, $showWindow = false)
     {
-        Util::logDebug( 'Switch ' . $this->name . ' version to ' . $version );
+        Log::debug( 'Switch ' . $this->name . ' version to ' . $version );
 
         return $this->updateConfig( $version, 0, $showWindow );
     }
@@ -418,7 +418,7 @@ class BinPostgresql extends Module
         }
 
         $version = $version == null ? $this->version : $version;
-        Util::logDebug( ($sub > 0 ? str_repeat( ' ', 2 * $sub ) : '') . 'Update ' . $this->name . ' ' . $version . ' config' );
+        Log::debug( ($sub > 0 ? str_repeat( ' ', 2 * $sub ) : '') . 'Update ' . $this->name . ' ' . $version . ' config' );
 
         $boxTitle = sprintf( $bearsamppLang->getValue( Lang::SWITCH_VERSION_TITLE ), $this->getName(), $version );
 
@@ -431,7 +431,7 @@ class BinPostgresql extends Module
         }
 
         if ( !file_exists( $conf ) || !file_exists( $bearsamppConf ) ) {
-            Util::logError( 'bearsampp config files not found for ' . $this->getName() . ' ' . $version );
+            Log::error( 'bearsampp config files not found for ' . $this->getName() . ' ' . $version );
             if ( $showWindow ) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf( $bearsamppLang->getValue( Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR ), $this->getName() . ' ' . $version ),
@@ -444,7 +444,7 @@ class BinPostgresql extends Module
 
         $bearsamppConfRaw = parse_ini_file( $bearsamppConf );
         if ( $bearsamppConfRaw === false || !isset( $bearsamppConfRaw[self::ROOT_CFG_VERSION] ) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version ) {
-            Util::logError( 'bearsampp config file malformed for ' . $this->getName() . ' ' . $version );
+            Log::error( 'bearsampp config file malformed for ' . $this->getName() . ' ' . $version );
             if ( $showWindow ) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf( $bearsamppLang->getValue( Lang::BEARSAMPP_CONF_MALFORMED_ERROR ), $this->getName() . ' ' . $version ),
@@ -577,7 +577,7 @@ class BinPostgresql extends Module
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
         if ( $enabled == Config::ENABLED && !is_dir( $this->currentPath ) ) {
-            Util::logDebug( $this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath );
+            Log::debug( $this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath );
             if ( $showWindow ) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf( $bearsamppLang->getValue( Lang::ENABLE_BUNDLE_NOT_EXIST ), $this->getName(), $this->getVersion(), $this->currentPath ),
@@ -587,7 +587,7 @@ class BinPostgresql extends Module
             $enabled = Config::DISABLED;
         }
 
-        Util::logInfo( $this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled') );
+        Log::info( $this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled') );
         $this->enable = $enabled == Config::ENABLED;
         $bearsamppConfig->replace( self::ROOT_CFG_ENABLE, $enabled );
 

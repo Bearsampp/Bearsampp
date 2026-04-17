@@ -44,7 +44,7 @@ class Apps
      */
     public function reload()
     {
-        Util::logInfo('Reload apps');
+        Log::info('Reload apps');
         foreach ($this->getAll() as $app) {
             $app->reload();
         }
@@ -57,7 +57,7 @@ class Apps
      */
     public function update()
     {
-        Util::logInfo('Update apps config');
+        Log::info('Update apps config');
         foreach ($this->getAll() as $tool) {
             $tool->update();
         }

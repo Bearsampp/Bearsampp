@@ -45,8 +45,9 @@ class Root
         $this->initErrorHandling();
 
         // External classes
+        require_once $this->getCorePath() . '/classes/class.log.php';
         require_once $this->getCorePath() . '/classes/class.util.php';
-        Util::logSeparator();
+        Log::init();
 
         // Autoloader
         require_once $this->getCorePath() . '/classes/class.autoloader.php';
@@ -64,6 +65,7 @@ class Root
         self::loadWinbinder();
         self::loadRegistry();
         self::loadHomepage();
+        Log::separator();
 
         // Init
         if ($this->isRoot) {
@@ -366,17 +368,6 @@ class Root
     public function getBatchLogFilePath($aetrayPath = false)
     {
         return $this->getLogsPath($aetrayPath) . '/bearsampp-batch.log';
-    }
-
-    /**
-     * Gets the path to the VBS log file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The VBS log file path.
-     */
-    public function getVbsLogFilePath($aetrayPath = false)
-    {
-        return $this->getLogsPath($aetrayPath) . '/bearsampp-vbs.log';
     }
 
     /**

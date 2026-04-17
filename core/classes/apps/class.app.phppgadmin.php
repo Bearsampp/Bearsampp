@@ -37,7 +37,7 @@ class AppPhppgadmin extends Module
      * @param string $type The type of the module.
      */
     public function __construct($id, $type) {
-        Util::logInitClass($this);
+        Log::initClass($this);
         $this->reload($id, $type);
     }
 
@@ -49,7 +49,7 @@ class AppPhppgadmin extends Module
      */
     public function reload($id = null, $type = null) {
         global $bearsamppConfig, $bearsamppLang;
-        Util::logReloadClass($this);
+        Log::reloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::PHPPGADMIN);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
@@ -60,21 +60,21 @@ class AppPhppgadmin extends Module
         }
 
         if (!$this->enable) {
-            Util::logInfo($this->name . ' is not enabled!');
+            Log::info($this->name . ' is not enabled!');
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
         if (!is_file($this->bearsamppConf)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
         }
         if (!is_file($this->conf)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
         }
     }
 
@@ -94,7 +94,7 @@ class AppPhppgadmin extends Module
         }
 
         $version = $version == null ? $this->version : $version;
-        Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
+        Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
 
         $alias = $bearsamppRoot->getAliasPath() . '/phppgadmin.conf';
         if (is_file($alias)) {
@@ -103,7 +103,7 @@ class AppPhppgadmin extends Module
                 '/^<Directory\s.*/' => '<Directory "' . $this->getSymlinkPath() . '/">',
             ));
         } else {
-            Util::logError($this->getName() . ' alias not found : ' . $alias);
+            Log::error($this->getName() . ' alias not found : ' . $alias);
         }
 
         if ($bearsamppBins->getPostgresql()->isEnable()) {

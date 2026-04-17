@@ -36,7 +36,7 @@ class ToolPowerShell extends Module
      * @param string $type The type of the module.
      */
     public function __construct($id, $type) {
-        Util::logInitClass($this);
+        Log::initClass($this);
         $this->reload($id, $type);
     }
 
@@ -48,7 +48,7 @@ class ToolPowerShell extends Module
      */
     public function reload($id = null, $type = null) {
         global $bearsamppConfig, $bearsamppLang;
-        Util::logReloadClass($this);
+        Log::reloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::POWERSHELL);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
@@ -63,33 +63,33 @@ class ToolPowerShell extends Module
         }
 
         if (!$this->enable) {
-            Util::logInfo($this->name . ' is not enabled!');
+            Log::info($this->name . ' is not enabled!');
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
         if (!is_file($this->bearsamppConf)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
         }
         if (!is_file($this->exe)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
         }
         if (!is_file($this->launchExe)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->launchExe));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->launchExe));
         }
         if (!is_file($this->conf)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
         }
         if (!is_numeric($this->rows) || $this->rows <= 0) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_ROWS, $this->rows));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_ROWS, $this->rows));
         }
         if (!is_numeric($this->cols) || $this->cols <= 0) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_COLS, $this->cols));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_COLS, $this->cols));
         }
     }
 

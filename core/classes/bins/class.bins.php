@@ -33,7 +33,7 @@ class Bins
      */
     public function __construct()
     {
-        Util::logInitClass($this);
+        Log::initClass($this);
     }
 
     /**
@@ -42,7 +42,7 @@ class Bins
      */
     public function reload()
     {
-        Util::logInfo('Reload bins');
+        Log::info('Reload bins');
         foreach ($this->getAll() as $bin) {
             $bin->reload();
         }
@@ -54,7 +54,7 @@ class Bins
      */
     public function update()
     {
-        Util::logInfo('Update bins config');
+        Log::info('Update bins config');
         foreach ($this->getAll() as $bin) {
             $bin->update();
         }
@@ -204,6 +204,26 @@ class Bins
             $this->xlight = new BinXlight('xlight', self::TYPE);
         }
         return $this->xlight;
+    }
+
+    /**
+     * Finds a bin by its display name.
+     *
+     * Iterates over all bins and returns the one whose getName() matches the
+     * provided string. Returns null if no bin matches, so callers can handle
+     * unrecognised names without branching on each individual service.
+     *
+     * @param string $name The display name to look up (as returned by getName()).
+     * @return object|null The matching bin object, or null if not found.
+     */
+    public function getBinByName(string $name): ?object
+    {
+        foreach ($this->getAll() as $bin) {
+            if ($bin->getName() === $name) {
+                return $bin;
+            }
+        }
+        return null;
     }
 
     /**
