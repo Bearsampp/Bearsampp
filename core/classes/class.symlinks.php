@@ -64,7 +64,7 @@ class Symlinks
         // Normalize paths for comparison
         $normalizedPath = realpath($path);
         if ($normalizedPath === false) {
-            Util::logError('Failed to resolve path: ' . $path);
+            Log::error('Failed to resolve path: ' . $path);
             return false;
         }
 
@@ -86,7 +86,7 @@ class Symlinks
             }
         }
 
-        Util::logError('Path is outside allowed symlink directories: ' . $path);
+        Log::error('Path is outside allowed symlink directories: ' . $path);
         return false;
     }
 
@@ -122,23 +122,23 @@ class Symlinks
     {
         // Validate path is within allowed directories
         if (!self::isPathWithinAllowedBase($path)) {
-            Util::logError('Symlink removal blocked - path not in allowed directories: ' . $path);
+            Log::error('Symlink removal blocked - path not in allowed directories: ' . $path);
             return false;
         }
 
         // Check if path exists
         if (!file_exists($path) && !is_link($path)) {
-            Util::logDebug('Symlink does not exist: ' . $path);
+            Log::debug('Symlink does not exist: ' . $path);
             return false;
         }
 
         // If it's a symlink, use unlink (works for symlinks regardless of target)
         if (self::isSymlink($path)) {
             if (@unlink($path)) {
-                Util::logDebug('Safely removed symlink: ' . $path);
+                Log::debug('Safely removed symlink: ' . $path);
                 return true;
             } else {
-                Util::logError('Failed to remove symlink: ' . $path);
+                Log::error('Failed to remove symlink: ' . $path);
                 return false;
             }
         }
@@ -148,7 +148,7 @@ class Symlinks
             // Double-check: ensure we're not attempting recursive deletion
             $items = @scandir($path);
             if ($items === false) {
-                Util::logError('Cannot read directory contents: ' . $path);
+                Log::error('Cannot read directory contents: ' . $path);
                 return false;
             }
 
@@ -156,23 +156,23 @@ class Symlinks
             $realItems = array_diff($items, ['.', '..']);
 
             if (!empty($realItems)) {
-                Util::logWarning('Directory is not empty - refusing to delete: ' . $path .
+                Log::warning('Directory is not empty - refusing to delete: ' . $path .
                     ' (contains ' . count($realItems) . ' items)');
                 return false;
             }
 
             // Directory is empty, safe to remove
             if (@rmdir($path)) {
-                Util::logDebug('Safely removed empty directory: ' . $path);
+                Log::debug('Safely removed empty directory: ' . $path);
                 return true;
             } else {
-                Util::logError('Failed to remove empty directory: ' . $path);
+                Log::error('Failed to remove empty directory: ' . $path);
                 return false;
             }
         }
 
         // Regular files should not be deleted here
-        Util::logWarning('Path is a regular file, not a symlink - refusing deletion: ' . $path);
+        Log::warning('Path is a regular file, not a symlink - refusing deletion: ' . $path);
         return false;
     }
 
@@ -224,7 +224,7 @@ class Symlinks
 
         // Fix for PHP 8.2: Add null checks before accessing array elements
         if (!is_array($array) || empty($array)) {
-            Util::logError('Current symlinks array is not initialized or empty.');
+            Log::error('Current symlinks array is not initialized or empty.');
             return;
         }
 

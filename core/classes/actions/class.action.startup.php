@@ -39,7 +39,7 @@ class ActionStartup
 
         // Admin check is now performed in root.php before ActionStartup is instantiated
         // This prevents screen flashes and ensures the check happens before any WinBinder initialization
-        Util::logInfo('Administrator privileges confirmed - proceeding with startup');
+        Log::info('Administrator privileges confirmed - proceeding with startup');
 
         // Init
         $this->splash    = new Splash();
@@ -78,22 +78,22 @@ class ActionStartup
     {
         global $bearsamppRoot, $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppTools, $bearsamppApps, $bearsamppWinbinder;
 
-        Util::logTrace('Starting processWindow method');
+        Log::trace('Starting processWindow method');
 
         // Admin check is now performed in the constructor before anything else
         // No need to check again here
 
         // Rotation logs
-        Util::logTrace('Performing log rotation');
+        Log::trace('Performing log rotation');
         $this->rotationLogs();
 
         // Clean
-        Util::logTrace('Starting cleanup operations');
+        Log::trace('Starting cleanup operations');
         $this->cleanTmpFolders();
         $this->cleanOldBehaviors();
 
         // List procs
-        Util::logTrace('Listing running processes');
+        Log::trace('Listing running processes');
         if ($bearsamppRoot->getProcs() !== false) {
             $this->writeLog('List procs:');
             $listProcs = array();
@@ -105,113 +105,113 @@ class ActionStartup
             foreach ($listProcs as $proc) {
                 $this->writeLog($proc);
             }
-            Util::logTrace('Found ' . count($listProcs) . ' running processes');
+            Log::trace('Found ' . count($listProcs) . ' running processes');
         } else {
-            Util::logTrace('No processes found or unable to retrieve process list');
+            Log::trace('No processes found or unable to retrieve process list');
         }
 
         // List modules
-        Util::logTrace('Listing bins modules');
+        Log::trace('Listing bins modules');
         $this->writeLog('List bins modules:');
         foreach ($bearsamppBins->getAll() as $module) {
             if (!$module->isEnable()) {
                 $this->writeLog('-> ' . $module->getName() . ': ' . $bearsamppLang->getValue(Lang::DISABLED));
-                Util::logTrace('Bin module ' . $module->getName() . ' is disabled');
+                Log::trace('Bin module ' . $module->getName() . ' is disabled');
             } else {
                 $this->writeLog('-> ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
-                Util::logTrace('Bin module ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
+                Log::trace('Bin module ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
             }
         }
 
-        Util::logTrace('Listing tools modules');
+        Log::trace('Listing tools modules');
         $this->writeLog('List tools modules:');
         foreach ($bearsamppTools->getAll() as $module) {
             if (!$module->isEnable()) {
                 $this->writeLog('-> ' . $module->getName() . ': ' . $bearsamppLang->getValue(Lang::DISABLED));
-                Util::logTrace('Tool module ' . $module->getName() . ' is disabled');
+                Log::trace('Tool module ' . $module->getName() . ' is disabled');
             } else {
                 $this->writeLog('-> ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
-                Util::logTrace('Tool module ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
+                Log::trace('Tool module ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
             }
         }
 
-        Util::logTrace('Listing apps modules');
+        Log::trace('Listing apps modules');
         $this->writeLog('List apps modules:');
         foreach ($bearsamppApps->getAll() as $module) {
             if (!$module->isEnable()) {
                 $this->writeLog('-> ' . $module->getName() . ': ' . $bearsamppLang->getValue(Lang::DISABLED));
-                Util::logTrace('App module ' . $module->getName() . ' is disabled');
+                Log::trace('App module ' . $module->getName() . ' is disabled');
             } else {
                 $this->writeLog('-> ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
-                Util::logTrace('App module ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
+                Log::trace('App module ' . $module->getName() . ': ' . $module->getVersion() . ' (' . $module->getRelease() . ')');
             }
         }
 
         // Kill old instances
-        Util::logTrace('Killing old instances');
+        Log::trace('Killing old instances');
         $this->killOldInstances();
 
         // Prepare app
-        Util::logTrace('Preparing application - refreshing hostname');
+        Log::trace('Preparing application - refreshing hostname');
         $this->refreshHostname();
 
-        Util::logTrace('Checking launch startup settings');
+        Log::trace('Checking launch startup settings');
         $this->checkLaunchStartup();
 
-        Util::logTrace('Checking browser configuration');
+        Log::trace('Checking browser configuration');
         $this->checkBrowser();
 
-        Util::logTrace('Gathering system information');
+        Log::trace('Gathering system information');
         $this->sysInfos();
 
-        Util::logTrace('Refreshing aliases');
+        Log::trace('Refreshing aliases');
         $this->refreshAliases();
 
-        Util::logTrace('Refreshing virtual hosts');
+        Log::trace('Refreshing virtual hosts');
         $this->refreshVhosts();
 
         // Check app path
-        Util::logTrace('Checking application path');
+        Log::trace('Checking application path');
         $this->checkPath();
 
-        Util::logTrace('Scanning folders');
+        Log::trace('Scanning folders');
         $this->scanFolders();
 
-        Util::logTrace('Changing paths in files');
+        Log::trace('Changing paths in files');
         $this->changePath();
 
-        Util::logTrace('Saving current path');
+        Log::trace('Saving current path');
         $this->savePath();
 
         // Check BEARSAMPP_PATH, BEARSAMPP_BINS and System Path reg keys
-        Util::logTrace('Checking PATH registry key');
+        Log::trace('Checking PATH registry key');
         $this->checkPathRegKey();
 
-        Util::logTrace('Checking BINS registry key');
+        Log::trace('Checking BINS registry key');
         $this->checkBinsRegKey();
 
-        Util::logTrace('Checking System PATH registry key');
+        Log::trace('Checking System PATH registry key');
         $this->checkSystemPathRegKey();
 
         // Update config
-        Util::logTrace('Updating configuration');
+        Log::trace('Updating configuration');
         $this->updateConfig();
 
         // Create SSL certificates
-        Util::logTrace('Creating SSL certificates');
+        Log::trace('Creating SSL certificates');
         $this->createSslCrts();
 
         // Install
-        Util::logTrace('Installing services');
+        Log::trace('Installing services');
         $this->installServices();
 
         // Actions if everything OK
         if (!$this->restart && empty($this->error)) {
-            Util::logTrace('Startup completed successfully - refreshing Git repositories');
+            Log::trace('Startup completed successfully - refreshing Git repositories');
             $this->refreshGitRepos();
             $startupTime = round(Util::getMicrotime() - $this->startTime, 3);
             $this->writeLog('Started in ' . $startupTime . 's');
-            Util::logTrace('Application started successfully in ' . $startupTime . ' seconds');
+            Log::trace('Application started successfully in ' . $startupTime . ' seconds');
 
             // Log total startup time in VERBOSE_TRACE mode (mode 3)
             global $bearsamppConfig;
@@ -219,15 +219,15 @@ class ActionStartup
                 $minutes = floor($startupTime / 60);  // floor() returns int-compatible value
                 $seconds = fmod($startupTime, 60);
                 $formattedTime = sprintf('%d:%05.2f', $minutes, $seconds);
-                Util::logTrace('=== TOTAL STARTUP TIME: ' . $formattedTime . ' ===');
+                Log::trace('=== TOTAL STARTUP TIME: ' . $formattedTime . ' ===');
             }
         } else {
-            Util::logTrace('Startup issues detected - incrementing progress bar');
+            Log::trace('Startup issues detected - incrementing progress bar');
             $this->splash->incrProgressBar(2);
         }
 
         if ($this->restart) {
-            Util::logTrace('Restart required - preparing to restart application');
+            Log::trace('Restart required - preparing to restart application');
             $this->writeLog(APP_TITLE . ' has to be restarted');
             $this->splash->setTextLoading(
                 sprintf(
@@ -236,33 +236,33 @@ class ActionStartup
                 )
             );
 
-            Util::logTrace('Deleting all services before restart');
+            Log::trace('Deleting all services before restart');
             foreach ($bearsamppBins->getServices() as $sName => $service) {
-                Util::logTrace('Deleting service: ' . $sName);
+                Log::trace('Deleting service: ' . $sName);
                 $service->delete();
             }
 
-            Util::logTrace('Setting execution action to RESTART');
+            Log::trace('Setting execution action to RESTART');
             $bearsamppCore->setExec(ActionExec::RESTART);
         }
 
         if (!empty($this->error)) {
-            Util::logTrace('Errors occurred during startup: ' . $this->error);
+            Log::trace('Errors occurred during startup: ' . $this->error);
             $this->writeLog('Error: ' . $this->error);
             $bearsamppWinbinder->messageBoxError($this->error, $bearsamppLang->getValue(Lang::STARTUP_ERROR_TITLE));
         }
 
-        Util::logTrace('Starting loading screen');
+        Log::trace('Starting loading screen');
         // Moved Util::startLoading() to after splash window destruction to prevent double progress bars
 
         // Give the loading window time to initialize before we terminate this process
-        Util::logTrace('Waiting for loading window to initialize');
+        Log::trace('Waiting for loading window to initialize');
         usleep(500000); // 500ms delay to allow loading window to start
 
-        Util::logTrace('Loading process started');
+        Log::trace('Loading process started');
 
         // Closing cli to finish startup
-        Util::logTrace('Finishing startup process');
+        Log::trace('Finishing startup process');
 
         // Safely reset WinBinder and destroy the splash window
         $bearsamppWinbinder->destroyWindow($window);
@@ -272,7 +272,7 @@ class ActionStartup
         Util::startLoading();
 
         // Exit this startup process cleanly - the loading window will continue running
-        Util::logTrace('Exiting startup process cleanly');
+        Log::trace('Exiting startup process cleanly');
         exit(0);
 
     }
@@ -285,13 +285,13 @@ class ActionStartup
     {
         global $bearsamppRoot, $bearsamppCore, $bearsamppConfig, $bearsamppLang, $bearsamppBins;
 
-        Util::logTrace("Starting log rotation process");
+        Log::trace("Starting log rotation process");
         $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_ROTATION_LOGS_TEXT));
         $this->splash->incrProgressBar();
 
         $archivesPath = $bearsamppRoot->getLogsPath() . '/archives';
         if (!is_dir($archivesPath)) {
-            Util::logTrace("Creating archives directory: " . $archivesPath);
+            Log::trace("Creating archives directory: " . $archivesPath);
             mkdir($archivesPath, 0777, true);
             return;
         }
@@ -301,27 +301,27 @@ class ActionStartup
         $archiveScriptsPath = $archiveLogsPath . '/scripts';
 
         // Create archive folders
-        Util::logTrace("Creating archive directories for current rotation");
+        Log::trace("Creating archive directories for current rotation");
         if (!is_dir($archiveLogsPath)) {
-            Util::logTrace("Creating logs archive directory: " . $archiveLogsPath);
+            Log::trace("Creating logs archive directory: " . $archiveLogsPath);
             mkdir($archiveLogsPath, 0777, true);
         } else {
-            Util::logTrace("Logs archive directory already exists: " . $archiveLogsPath);
+            Log::trace("Logs archive directory already exists: " . $archiveLogsPath);
         }
 
         if (!is_dir($archiveScriptsPath)) {
-            Util::logTrace("Creating scripts archive directory: " . $archiveScriptsPath);
+            Log::trace("Creating scripts archive directory: " . $archiveScriptsPath);
             mkdir($archiveScriptsPath, 0777, true);
         } else {
-            Util::logTrace("Scripts archive directory already exists: " . $archiveScriptsPath);
+            Log::trace("Scripts archive directory already exists: " . $archiveScriptsPath);
         }
 
         // Count archives
-        Util::logTrace("Counting existing archives");
+        Log::trace("Counting existing archives");
         $archives = array();
         $handle = @opendir($archivesPath);
         if (!$handle) {
-            Util::logTrace("Failed to open archives directory: " . $archivesPath);
+            Log::trace("Failed to open archives directory: " . $archivesPath);
             return;
         }
 
@@ -333,14 +333,14 @@ class ActionStartup
         }
         closedir($handle);
         sort($archives);
-        Util::logTrace("Found " . count($archives) . " existing archives");
+        Log::trace("Found " . count($archives) . " existing archives");
 
         // Remove old archives
         if (count($archives) > $bearsamppConfig->getMaxLogsArchives()) {
             $total = count($archives) - $bearsamppConfig->getMaxLogsArchives();
-            Util::logTrace("Removing " . $total . " old archives");
+            Log::trace("Removing " . $total . " old archives");
             for ($i = 0; $i < $total; $i++) {
-                Util::logTrace("Deleting old archive: " . $archives[$i]);
+                Log::trace("Deleting old archive: " . $archives[$i]);
                 Util::deleteFolder($archives[$i]);
             }
         }
@@ -353,7 +353,7 @@ class ActionStartup
 
             $handle = @fopen($filePath, 'r+');
             if ($handle === false) {
-                Util::logTrace("File appears to be locked: " . $filePath);
+                Log::trace("File appears to be locked: " . $filePath);
                 return true; // File is locked
             }
 
@@ -362,11 +362,11 @@ class ActionStartup
         };
 
         // Logs
-        Util::logTrace("Archiving log files");
+        Log::trace("Archiving log files");
         $srcPath = $bearsamppRoot->getLogsPath();
         $handle = @opendir($srcPath);
         if (!$handle) {
-            Util::logTrace("Failed to open logs directory: " . $srcPath);
+            Log::trace("Failed to open logs directory: " . $srcPath);
             return;
         }
 
@@ -383,7 +383,7 @@ class ActionStartup
 
             // Check if file is locked before attempting to copy
             if ($isFileLocked($sourceFile)) {
-                Util::logTrace("Skipping locked log file: " . $file);
+                Log::trace("Skipping locked log file: " . $file);
                 $logsSkipped++;
                 continue;
             }
@@ -391,25 +391,25 @@ class ActionStartup
             try {
                 if (copy($sourceFile, $destFile)) {
                     $logsCopied++;
-                    Util::logTrace("Archived log file: " . $file);
+                    Log::trace("Archived log file: " . $file);
                 } else {
                     $logsSkipped++;
-                    Util::logTrace("Failed to copy log file: " . $file);
+                    Log::trace("Failed to copy log file: " . $file);
                 }
             } catch (Exception $e) {
                 $logsSkipped++;
-                Util::logTrace("Exception copying log file " . $file . ": " . $e->getMessage());
+                Log::trace("Exception copying log file " . $file . ": " . $e->getMessage());
             }
         }
         closedir($handle);
-        Util::logTrace("Logs archived: " . $logsCopied . " copied, " . $logsSkipped . " skipped");
+        Log::trace("Logs archived: " . $logsCopied . " copied, " . $logsSkipped . " skipped");
 
         // Scripts
-        Util::logTrace("Archiving script files");
+        Log::trace("Archiving script files");
         $srcPath = $bearsamppCore->getTmpPath();
         $handle = @opendir($srcPath);
         if (!$handle) {
-            Util::logTrace("Failed to open tmp directory: " . $srcPath);
+            Log::trace("Failed to open tmp directory: " . $srcPath);
             return;
         }
 
@@ -426,7 +426,7 @@ class ActionStartup
 
             // Check if file is locked before attempting to copy
             if ($isFileLocked($sourceFile)) {
-                Util::logTrace("Skipping locked script file: " . $file);
+                Log::trace("Skipping locked script file: " . $file);
                 $scriptsSkipped++;
                 continue;
             }
@@ -434,25 +434,25 @@ class ActionStartup
             try {
                 if (copy($sourceFile, $destFile)) {
                     $scriptsCopied++;
-                    Util::logTrace("Archived script file: " . $file);
+                    Log::trace("Archived script file: " . $file);
                 } else {
                     $scriptsSkipped++;
-                    Util::logTrace("Failed to copy script file: " . $file);
+                    Log::trace("Failed to copy script file: " . $file);
                 }
             } catch (Exception $e) {
                 $scriptsSkipped++;
-                Util::logTrace("Exception copying script file " . $file . ": " . $e->getMessage());
+                Log::trace("Exception copying script file " . $file . ": " . $e->getMessage());
             }
         }
         closedir($handle);
-        Util::logTrace("Scripts archived: " . $scriptsCopied . " copied, " . $scriptsSkipped . " skipped");
+        Log::trace("Scripts archived: " . $scriptsCopied . " copied, " . $scriptsSkipped . " skipped");
 
         // Purge logs - only delete files that aren't locked
-        Util::logTrace("Purging log files");
+        Log::trace("Purging log files");
         $logsPath = $bearsamppRoot->getLogsPath();
         $handle = @opendir($logsPath);
         if (!$handle) {
-            Util::logTrace("Failed to open logs directory for purging: " . $logsPath);
+            Log::trace("Failed to open logs directory for purging: " . $logsPath);
             return;
         }
 
@@ -468,7 +468,7 @@ class ActionStartup
 
             // Check if file is locked before attempting to delete
             if ($isFileLocked($filePath)) {
-                Util::logTrace("Skipping locked log file during purge: " . $file);
+                Log::trace("Skipping locked log file during purge: " . $file);
                 $logsPurgeSkipped++;
                 continue;
             }
@@ -476,20 +476,20 @@ class ActionStartup
             try {
                 if (file_exists($filePath) && unlink($filePath)) {
                     $logsDeleted++;
-                    Util::logTrace("Purged log file: " . $file);
+                    Log::trace("Purged log file: " . $file);
                 } else {
                     $logsPurgeSkipped++;
-                    Util::logTrace("Failed to purge log file: " . $file);
+                    Log::trace("Failed to purge log file: " . $file);
                 }
             } catch (Exception $e) {
                 $logsPurgeSkipped++;
-                Util::logTrace("Exception purging log file " . $file . ": " . $e->getMessage());
+                Log::trace("Exception purging log file " . $file . ": " . $e->getMessage());
             }
         }
         closedir($handle);
-        Util::logTrace("Logs purged: " . $logsDeleted . " deleted, " . $logsPurgeSkipped . " skipped");
+        Log::trace("Logs purged: " . $logsDeleted . " deleted, " . $logsPurgeSkipped . " skipped");
 
-        Util::logTrace("Log rotation completed");
+        Log::trace("Log rotation completed");
     }
 
     /**
@@ -697,8 +697,8 @@ class ActionStartup
 
         // Performance optimization: Skip scan if path hasn't changed
         if ($lastPath === $currentPath) {
-            Util::logDebug('Path unchanged, skipping file scan (performance optimization)');
-            Util::logTrace('Last path: "' . $lastPath . '" matches current path: "' . $currentPath . '"');
+            Log::debug('Path unchanged, skipping file scan (performance optimization)');
+            Log::trace('Last path: "' . $lastPath . '" matches current path: "' . $currentPath . '"');
             $this->filesToScan = [];
             $this->writeLog('Files to scan: 0 (path unchanged - scan skipped)');
 
@@ -708,8 +708,8 @@ class ActionStartup
         }
 
         // Path changed, perform full scan
-        Util::logDebug('Path changed, performing full file scan');
-        Util::logTrace('Last path: "' . $lastPath . '" differs from current path: "' . $currentPath . '"');
+        Log::debug('Path changed, performing full file scan');
+        Log::trace('Last path: "' . $lastPath . '" differs from current path: "' . $currentPath . '"');
         $this->writeLog('Path changed detected - performing full scan');
 
         $scanStartTime = Util::getMicrotime();
@@ -893,10 +893,10 @@ class ActionStartup
     {
         global $bearsamppLang, $bearsamppBins, $bearsamppRoot;
 
-        Util::logTrace('Starting installServices method');
+        Log::trace('Starting installServices method');
 
         if (!$this->restart) {
-            Util::logTrace('Normal startup mode - processing services');
+            Log::trace('Normal startup mode - processing services');
 
             // Admin check is now performed at the very beginning of processWindow()
             // No need to check again here
@@ -904,11 +904,11 @@ class ActionStartup
             // Service Installation
             $this->installServicesSequential($bearsamppBins, $bearsamppLang);
         } else {
-            Util::logTrace('Restart mode - skipping service installation');
+            Log::trace('Restart mode - skipping service installation');
             $this->splash->incrProgressBar(self::GAUGE_SERVICES * count($bearsamppBins->getServices()));
         }
 
-        Util::logTrace('Completed installServices method');
+        Log::trace('Completed installServices method');
     }
 
     /**
@@ -921,7 +921,7 @@ class ActionStartup
      */
     private function installServicesSequential($bearsamppBins, $bearsamppLang)
     {
-        Util::logTrace('Starting sequential service installation');
+        Log::trace('Starting sequential service installation');
         $installStartTime = Util::getMicrotime();
 
         // Step 1: Check and prepare all services
@@ -934,14 +934,14 @@ class ActionStartup
         foreach ($bearsamppBins->getServices() as $sName => $service) {
             $currentServiceIndex++;
 
-            Util::logTrace('Preparing service: ' . $sName);
+            Log::trace('Preparing service: ' . $sName);
 
             // prepareService() increments 1 step
             $serviceInfo = $this->prepareService($sName, $service, $bearsamppBins, $bearsamppLang, $currentServiceIndex, $totalServiceCount);
 
             if ($serviceInfo['restart']) {
                 $this->writeLog('Need restart: installService ' . $serviceInfo['bin']->getName());
-                Util::logTrace('Restart required for service: ' . $serviceInfo['bin']->getName());
+                Log::trace('Restart required for service: ' . $serviceInfo['bin']->getName());
                 $this->restart = true;
                 // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
                 $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
@@ -966,7 +966,7 @@ class ActionStartup
 
         // Step 2: Start all services sequentially with progress updates
         if (!empty($servicesToStart)) {
-            Util::logTrace('Starting ' . count($servicesToStart) . ' services sequentially');
+            Log::trace('Starting ' . count($servicesToStart) . ' services sequentially');
 
             $serviceCount = 0;
             $totalServices = count($servicesToStart);
@@ -980,7 +980,7 @@ class ActionStartup
                 $this->splash->setTextLoading('Starting ' . $name . ' (' . $serviceCount . '/' . $totalServices . ')');
                 $this->splash->incrProgressBar();
 
-                Util::logTrace('Starting service: ' . $sName);
+                Log::trace('Starting service: ' . $sName);
                 $serviceStartTime = Util::getMicrotime();
 
                 // Start the service
@@ -990,7 +990,7 @@ class ActionStartup
 
                 if ($success) {
                     $this->writeLog($name . ' service started in ' . $duration . 's');
-                    Util::logTrace('Service ' . $name . ' started successfully in ' . $duration . ' seconds');
+                    Log::trace('Service ' . $name . ' started successfully in ' . $duration . ' seconds');
 
                     // Update splash after successful start
                     $this->splash->setTextLoading($name . ' started successfully');
@@ -1002,7 +1002,7 @@ class ActionStartup
 
                     $serviceErrors[$sName] = $serviceInfo;
                     $serviceErrors[$sName]['error'] = $error;
-                    Util::logTrace('Service ' . $name . ' failed to start: ' . $error);
+                    Log::trace('Service ' . $name . ' failed to start: ' . $error);
 
                     // Run syntax check if available
                     if (!empty($serviceInfo['syntaxCheckCmd'])) {
@@ -1025,7 +1025,7 @@ class ActionStartup
         // Step 3: Report any errors
         foreach ($serviceErrors as $sName => $serviceInfo) {
             if (!empty($serviceInfo['error'])) {
-                Util::logTrace('Service error occurred for ' . $sName . ': ' . $serviceInfo['error']);
+                Log::trace('Service error occurred for ' . $sName . ': ' . $serviceInfo['error']);
                 if (!empty($this->error)) {
                     $this->error .= PHP_EOL . PHP_EOL;
                 }
@@ -1035,7 +1035,7 @@ class ActionStartup
 
         $installDuration = round(Util::getMicrotime() - $installStartTime, 3);
         $this->writeLog('Service installation completed in ' . $installDuration . 's');
-        Util::logTrace('Service installation completed in ' . $installDuration . ' seconds');
+        Log::trace('Service installation completed in ' . $installDuration . ' seconds');
     }
 
     /**
@@ -1086,7 +1086,7 @@ class ActionStartup
 
             // Pre-initialize MySQL data if needed
             if (!file_exists($bin->getDataDir()) || count(glob($bin->getDataDir() . '/*')) === 0) {
-                Util::logTrace('Pre-initializing MySQL data directory');
+                Log::trace('Pre-initializing MySQL data directory');
                 $bin->initData();
             }
         } elseif ($sName == BinMariadb::SERVICE_NAME) {
@@ -1123,7 +1123,7 @@ class ActionStartup
         } else if ($sName == BinMysql::SERVICE_NAME) {
             $serviceInfos = $this->checkMySQLServiceWithTimeout($service, $bin);
             if ($serviceInfos === false && $service->isInstalled()) {
-                Util::logTrace('MySQL service appears to be hanging, forcing restart');
+                Log::trace('MySQL service appears to be hanging, forcing restart');
                 Win32Ps::killBins(['mysqld.exe']);
                 $service->delete();
                 $serviceToRemove = true;
@@ -1132,10 +1132,10 @@ class ActionStartup
             try {
                 $serviceInfos = $service->infos();
             } catch (\Exception $e) {
-                Util::logTrace("Exception during service check: " . $e->getMessage());
+                Log::trace("Exception during service check: " . $e->getMessage());
                 $serviceInfos = false;
             } catch (\Throwable $e) {
-                Util::logTrace("Throwable during service check: " . $e->getMessage());
+                Log::trace("Throwable during service check: " . $e->getMessage());
                 $serviceInfos = false;
             }
         }
@@ -1178,7 +1178,7 @@ class ActionStartup
             if ($service->isRunning()) {
                 // Service is already running and owns the port - this is OK
                 $this->writeLog($name . ' service already running on port ' . $port);
-                Util::logTrace('Service ' . $name . ' already running - no need to start');
+                Log::trace('Service ' . $name . ' already running - no need to start');
                 $serviceInfo['needsStart'] = false;
                 return $serviceInfo;
             }
@@ -1226,7 +1226,7 @@ class ActionStartup
      */
     private function checkApacheServiceWithTimeout($service)
     {
-        Util::logTrace('Starting specialized Apache service check with timeout protection');
+        Log::trace('Starting specialized Apache service check with timeout protection');
 
         // Set a timeout for the Apache service check
         $serviceCheckStartTime = microtime(true);
@@ -1239,7 +1239,7 @@ class ActionStartup
             // First try a quick check if the service exists in the list
             $serviceList = Win32Service::getServices();
             if (is_array($serviceList) && isset($serviceList[$service->getName()])) {
-                Util::logTrace('Apache service found in service list, getting details');
+                Log::trace('Apache service found in service list, getting details');
 
                 // Service exists, now try to get its details with timeout protection
                 $startTime = microtime(true);
@@ -1247,20 +1247,20 @@ class ActionStartup
 
                 // Check if we've exceeded our timeout
                 if (microtime(true) - $serviceCheckStartTime > $serviceCheckTimeout) {
-                    Util::logTrace("Apache service check timeout exceeded, assuming service needs reinstall");
+                    Log::trace("Apache service check timeout exceeded, assuming service needs reinstall");
                     return false;
                 }
             } else {
-                Util::logTrace('Apache service not found in service list');
+                Log::trace('Apache service not found in service list');
                 return false;
             }
 
             return $serviceInfos;
         } catch (\Exception $e) {
-            Util::logTrace("Exception during Apache service check: " . $e->getMessage());
+            Log::trace("Exception during Apache service check: " . $e->getMessage());
             return false;
         } catch (\Throwable $e) {
-            Util::logTrace("Throwable during Apache service check: " . $e->getMessage());
+            Log::trace("Throwable during Apache service check: " . $e->getMessage());
             return false;
         }
     }
@@ -1275,7 +1275,7 @@ class ActionStartup
      */
     private function checkMySQLServiceWithTimeout($service, $bin)
     {
-        Util::logTrace('Starting specialized MySQL service check with timeout protection');
+        Log::trace('Starting specialized MySQL service check with timeout protection');
 
         // Set a timeout for the MySQL service check
         $serviceCheckStartTime = microtime(true);
@@ -1288,27 +1288,27 @@ class ActionStartup
             // First check if the service exists in the list
             $serviceList = Win32Service::getServices();
             if (is_array($serviceList) && isset($serviceList[$service->getName()])) {
-                Util::logTrace('MySQL service found in service list, getting details');
+                Log::trace('MySQL service found in service list, getting details');
 
                 // Service exists, now try to get its details with timeout protection
                 $serviceInfos = $service->infos();
 
                 // Check if we've exceeded our timeout
                 if (microtime(true) - $serviceCheckStartTime > $serviceCheckTimeout) {
-                    Util::logTrace("MySQL service check timeout exceeded, assuming service needs reinstall");
+                    Log::trace("MySQL service check timeout exceeded, assuming service needs reinstall");
                     return false;
                 }
             } else {
-                Util::logTrace('MySQL service not found in service list');
+                Log::trace('MySQL service not found in service list');
                 return false;
             }
 
             return $serviceInfos;
         } catch (\Exception $e) {
-            Util::logTrace("Exception during MySQL service check: " . $e->getMessage());
+            Log::trace("Exception during MySQL service check: " . $e->getMessage());
             return false;
         } catch (\Throwable $e) {
-            Util::logTrace("Throwable during MySQL service check: " . $e->getMessage());
+            Log::trace("Throwable during MySQL service check: " . $e->getMessage());
             return false;
         }
     }
@@ -1321,6 +1321,6 @@ class ActionStartup
     private function writeLog($log)
     {
         global $bearsamppRoot;
-        Util::logDebug( $log, $bearsamppRoot->getStartupLogFilePath() );
+        Log::debug( $log, $bearsamppRoot->getStartupLogFilePath() );
     }
 }

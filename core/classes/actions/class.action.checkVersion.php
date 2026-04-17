@@ -125,10 +125,10 @@ class ActionCheckVersion
                 if ($latestVersionInfo && isset($latestVersionInfo['html_url'])) {
                     $browserPath = $bearsamppConfig->getBrowser();
                     if (!$bearsamppWinbinder->exec($browserPath, $latestVersionInfo['html_url'])) {
-                        Util::logError("Failed to open browser at path: $browserPath with URL: " . $latestVersionInfo['html_url']);
+                        Log::error("Failed to open browser at path: $browserPath with URL: " . $latestVersionInfo['html_url']);
                     }
                 } else {
-                    Util::logError("Failed to retrieve latest version info or 'html_url' not set.");
+                    Log::error("Failed to retrieve latest version info or 'html_url' not set.");
                 }
                 break;
             case IDCLOSE:
@@ -136,7 +136,7 @@ class ActionCheckVersion
                 $bearsamppWinbinder->destroyWindow($window);
                 break;
             default:
-                Util::logError("Unhandled window control ID: $id");
+                Log::error("Unhandled window control ID: $id");
         }
     }
 }

@@ -45,61 +45,61 @@ class ActionLoading
         global $bearsamppCore, $bearsamppLang, $bearsamppWinbinder;
 
         $currentPid = Win32Ps::getCurrentPid();
-        Util::logTrace('ActionLoading constructor started - PID: ' . $currentPid);
+        Log::trace('ActionLoading constructor started - PID: ' . $currentPid);
 
         $bearsamppWinbinder->reset();
-        Util::logTrace('WinBinder reset complete');
+        Log::trace('WinBinder reset complete');
         
         $bearsamppCore->addLoadingPid($currentPid);
-        Util::logTrace('Loading PID added to tracking file: ' . $currentPid);
+        Log::trace('Loading PID added to tracking file: ' . $currentPid);
 
         // Screen information
-        Util::logTrace('Getting screen information');
+        Log::trace('Getting screen information');
         $screenArea = explode(' ', $bearsamppWinbinder->getSystemInfo(WinBinder::SYSINFO_WORKAREA));
         $screenWidth = intval($screenArea[2]);
         $screenHeight = intval($screenArea[3]);
         $xPos = $screenWidth - self::WINDOW_WIDTH;
         $yPos = $screenHeight - self::WINDOW_HEIGHT - 5;
-        Util::logTrace('Screen dimensions: ' . $screenWidth . 'x' . $screenHeight . ', Window position: (' . $xPos . ',' . $yPos . ')');
+        Log::trace('Screen dimensions: ' . $screenWidth . 'x' . $screenHeight . ', Window position: (' . $xPos . ',' . $yPos . ')');
 
         // Create the window and progress bar
-        Util::logTrace('Creating loading window...');
+        Log::trace('Creating loading window...');
         $this->wbWindow = $bearsamppWinbinder->createWindow(null, ToolDialog, null, $xPos, $yPos, self::WINDOW_WIDTH, self::WINDOW_HEIGHT, WBC_TOP, null);
         
         // Check if window was created successfully
         if ($this->wbWindow === false || $this->wbWindow === null) {
-            Util::logError('CRITICAL: Failed to create loading window - window handle is: ' . var_export($this->wbWindow, true));
-            Util::logError('WinBinder extension loaded: ' . (extension_loaded('winbinder') ? 'YES' : 'NO'));
-            Util::logError('wb_create_window function exists: ' . (function_exists('wb_create_window') ? 'YES' : 'NO'));
+            Log::error('CRITICAL: Failed to create loading window - window handle is: ' . var_export($this->wbWindow, true));
+            Log::error('WinBinder extension loaded: ' . (extension_loaded('winbinder') ? 'YES' : 'NO'));
+            Log::error('wb_create_window function exists: ' . (function_exists('wb_create_window') ? 'YES' : 'NO'));
             return;
         }
         
-        Util::logTrace('Loading window created successfully - handle: ' . $this->wbWindow);
+        Log::trace('Loading window created successfully - handle: ' . $this->wbWindow);
         
         // CRITICAL: wb_set_visible() must be called AFTER window creation in PHP 8.4
         // The WS_VISIBLE flag during creation doesn't work
-        Util::logTrace('Making window visible with wb_set_visible()');
+        Log::trace('Making window visible with wb_set_visible()');
         wb_set_visible($this->wbWindow, true);
-        Util::logTrace('Window set to visible');
+        Log::trace('Window set to visible');
         
-        Util::logTrace('Drawing image...');
+        Log::trace('Drawing image...');
         $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/bearsampp.bmp');
-        Util::logTrace('Image drawn');
+        Log::trace('Image drawn');
         
-        Util::logTrace('Creating progress bar...');
+        Log::trace('Creating progress bar...');
         $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE + 1, 42, 24, self::WINDOW_WIDTH - 62, 15);
-        Util::logTrace('Progress bar created: ' . var_export($this->wbProgressBar, true));
+        Log::trace('Progress bar created: ' . var_export($this->wbProgressBar, true));
         
-        Util::logTrace('Drawing initial text...');
+        Log::trace('Drawing initial text...');
         $this->wbLabel = $bearsamppWinbinder->drawText($this->wbWindow, '', 42, 0, self::WINDOW_WIDTH - 64, 25);
-        Util::logTrace('Label created: ' . var_export($this->wbLabel, true));
+        Log::trace('Label created: ' . var_export($this->wbLabel, true));
 
         // Set the handler and start the main loop
-        Util::logTrace('Setting window handler...');
+        Log::trace('Setting window handler...');
         $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processLoading', 10);
-        Util::logTrace('Handler set, starting main loop...');
+        Log::trace('Handler set, starting main loop...');
         $bearsamppWinbinder->mainLoop();
-        Util::logTrace('Main loop exited');
+        Log::trace('Main loop exited');
     }
 
     /**
@@ -165,24 +165,24 @@ class ActionLoading
             // Check if all services have started successfully
             $allServicesStarted = $this->checkAllServicesStarted();
             if ($allServicesStarted) {
-                Util::logTrace('All services started successfully');
+                Log::trace('All services started successfully');
                 break;
             }
 
             $iterations++;
-            Util::logTrace('Loading iteration ' . $iterations . ' completed, checking services again');
+            Log::trace('Loading iteration ' . $iterations . ' completed, checking services again');
         }
 
         if ($iterations >= $maxIterations) {
-            Util::logTrace('Maximum iterations reached (' . $maxIterations . '), some services may not have started properly');
+            Log::trace('Maximum iterations reached (' . $maxIterations . '), some services may not have started properly');
         }
         
         if ((microtime(true) - $startTime) >= $maxLoadingTime) {
-            Util::logTrace('Loading timeout reached (' . $maxLoadingTime . ' seconds), some services may not have started properly');
+            Log::trace('Loading timeout reached (' . $maxLoadingTime . ' seconds), some services may not have started properly');
         }
         
         // Close the loading window
-        Util::logTrace('Closing loading window');
+        Log::trace('Closing loading window');
         Win32Ps::kill(Win32Ps::getCurrentPid());
     }
 
@@ -240,13 +240,13 @@ class ActionLoading
     {
         global $bearsamppBins, $bearsamppCore, $bearsamppRoot;
         
-        Util::logTrace('Checking if all services have started successfully');
+        Log::trace('Checking if all services have started successfully');
         
         $allStarted = true;
         foreach ($bearsamppBins->getServices() as $sName => $service) {
             // Skip if service is not enabled
             if (!$service->isEnable()) {
-                Util::logTrace('Service ' . $sName . ' is disabled, skipping check');
+                Log::trace('Service ' . $sName . ' is disabled, skipping check');
                 continue;
             }
             
@@ -285,24 +285,24 @@ class ActionLoading
                     $result = file_get_contents($tempFile);
                     $serviceRunning = ($result === '1');
                     unlink($tempFile);
-                    Util::logTrace('Service ' . $sName . ' status check: ' . ($serviceRunning ? 'running' : 'not running'));
+                    Log::trace('Service ' . $sName . ' status check: ' . ($serviceRunning ? 'running' : 'not running'));
                 } else {
-                    Util::logTrace('Service ' . $sName . ' status check timed out');
+                    Log::trace('Service ' . $sName . ' status check timed out');
                     $serviceRunning = false;
                 }
             } catch (\Exception $e) {
-                Util::logTrace('Exception during service status check for ' . $sName . ': ' . $e->getMessage());
+                Log::trace('Exception during service status check for ' . $sName . ': ' . $e->getMessage());
                 $serviceRunning = false;
             }
             
             if (!$serviceRunning) {
-                Util::logTrace('Service ' . $sName . ' is not running');
+                Log::trace('Service ' . $sName . ' is not running');
                 $allStarted = false;
                 break;
             }
         }
         
-        Util::logTrace('All services started check result: ' . ($allStarted ? 'true' : 'false'));
+        Log::trace('All services started check result: ' . ($allStarted ? 'true' : 'false'));
         return $allStarted;
     }
 }

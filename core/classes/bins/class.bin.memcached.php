@@ -39,7 +39,7 @@ class BinMemcached extends Module
      * @param string $type The type of the module.
      */
     public function __construct($id, $type) {
-        Util::logInitClass($this);
+        Log::initClass($this);
         $this->reload($id, $type);
     }
 
@@ -51,7 +51,7 @@ class BinMemcached extends Module
      */
     public function reload($id = null, $type = null) {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
-        Util::logReloadClass($this);
+        Log::reloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::MEMCACHED);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
@@ -68,31 +68,31 @@ class BinMemcached extends Module
         }
 
         if (!$this->enable) {
-            Util::logInfo($this->name . ' is not enabled!');
+            Log::info($this->name . ' is not enabled!');
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
             return;
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
         if (!is_file($this->bearsamppConf)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
             return;
         }
         if (!is_file($this->exe)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
             return;
         }
         if (empty($this->memory)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_MEMORY, $this->memory));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_MEMORY, $this->memory));
             return;
         }
         if (empty($this->port)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_PORT, $this->port));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_PORT, $this->port));
             return;
         }
 
@@ -168,7 +168,7 @@ class BinMemcached extends Module
         global $bearsamppWinbinder;
 
         if (!Util::isValidPort($port)) {
-            Util::logError($this->getName() . ' port not valid: ' . $port);
+            Log::error($this->getName() . ' port not valid: ' . $port);
             return false;
         }
 
@@ -188,7 +188,7 @@ class BinMemcached extends Module
             return true;
         }
 
-        Util::logDebug($this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse);
+        Log::debug($this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse);
         return $isPortInUse;
     }
 
@@ -204,7 +204,7 @@ class BinMemcached extends Module
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
         if (!Util::isValidPort($port)) {
-            Util::logError($this->getName() . ' port not valid: ' . $port);
+            Log::error($this->getName() . ' port not valid: ' . $port);
             return false;
         }
 
@@ -220,7 +220,7 @@ class BinMemcached extends Module
             if ($response && strpos($response, 'VERSION') === 0) {
                 // Extract version from response (format: "VERSION x.x.x")
                 $version = trim(substr($response, 8));
-                Util::logDebug($this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $version);
+                Log::debug($this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $version);
                 if ($showWindow) {
                     $bearsamppWinbinder->messageBoxInfo(
                         sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY), $port, $this->getName() . ' ' . $version),
@@ -230,7 +230,7 @@ class BinMemcached extends Module
                 return true;
             } else {
                 // Port is open but not responding as memcached
-                Util::logDebug($this->getName() . ' port ' . $port . ' is open but not responding as memcached');
+                Log::debug($this->getName() . ' port ' . $port . ' is open but not responding as memcached');
                 if ($showWindow) {
                     $bearsamppWinbinder->messageBoxWarning(
                         sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port),
@@ -241,7 +241,7 @@ class BinMemcached extends Module
             }
         } else {
             // Port is not open
-            Util::logDebug($this->getName() . ' port ' . $port . ' is not open');
+            Log::debug($this->getName() . ' port ' . $port . ' is not open');
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED), $port),
@@ -260,7 +260,7 @@ class BinMemcached extends Module
      * @return bool True if the version was successfully switched, false otherwise.
      */
     public function switchVersion($version, $showWindow = false) {
-        Util::logDebug('Switch ' . $this->name . ' version to ' . $version);
+        Log::debug('Switch ' . $this->name . ' version to ' . $version);
         return $this->updateConfig($version, 0, $showWindow);
     }
 
@@ -280,13 +280,13 @@ class BinMemcached extends Module
         }
 
         $version = $version == null ? $this->version : $version;
-        Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
+        Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
 
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
         $bearsamppConf = str_replace('memcached' . $this->getVersion(), 'memcached' . $version, $this->bearsamppConf);
         if (!file_exists($bearsamppConf)) {
-            Util::logError('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
+            Log::error('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
@@ -298,7 +298,7 @@ class BinMemcached extends Module
 
         $bearsamppConfRaw = parse_ini_file($bearsamppConf);
         if ($bearsamppConfRaw === false || !isset($bearsamppConfRaw[self::ROOT_CFG_VERSION]) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version) {
-            Util::logError('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
+            Log::error('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
@@ -345,7 +345,7 @@ class BinMemcached extends Module
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
         if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
-            Util::logDebug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
+            Log::debug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
@@ -355,7 +355,7 @@ class BinMemcached extends Module
             $enabled = Config::DISABLED;
         }
 
-        Util::logInfo($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
+        Log::info($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
         $this->enable = $enabled == Config::ENABLED;
         $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
 

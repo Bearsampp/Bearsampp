@@ -47,7 +47,7 @@ class Batch
     private static function writeLog($log)
     {
         global $bearsamppRoot;
-        Util::logDebug($log, $bearsamppRoot->getBatchLogFilePath());
+        Log::debug($log, $bearsamppRoot->getBatchLogFilePath());
     }
 
     /**
@@ -125,11 +125,11 @@ class Batch
         $content .= '"' . $bearsamppRoot->getExeFilePath() . '" -quit -id={bearsampp}' . PHP_EOL;
         if ($restart) {
             $basename = 'restartApp';
-            Util::logInfo('Restart App');
+            Log::info('Restart App');
             $content .= '"' . $bearsamppCore->getPhpExe() . '" "' . Core::isRoot_FILE . '" "' . Action::RESTART . '"' . PHP_EOL;
         } else {
             $basename = 'exitApp';
-            Util::logInfo('Exit App');
+            Log::info('Exit App');
         }
 
         Win32Ps::killBins();
@@ -185,7 +185,7 @@ class Batch
     public static function initializeMysql($path)
     {
         if (!file_exists($path . '/init.bat')) {
-            Util::logWarning($path . '/init.bat does not exist');
+            Log::warning($path . '/init.bat does not exist');
             return;
         }
         self::exec('initializeMysql', 'CMD /C "' . $path . '/init.bat"', 60);
@@ -239,7 +239,7 @@ class Batch
     public static function initializePostgresql($path)
     {
         if (!file_exists($path . '/init.bat')) {
-            Util::logWarning($path . '/init.bat does not exist');
+            Log::warning($path . '/init.bat does not exist');
             return;
         }
         self::exec('initializePostgresql', 'CMD /C "' . $path . '/init.bat"', 15);
@@ -253,7 +253,7 @@ class Batch
     public static function initializeMariadb($path)
     {
         if (!file_exists($path . '/init.bat')) {
-            Util::logWarning($path . '/init.bat does not exist');
+            Log::warning($path . '/init.bat does not exist');
             return;
         }
         self::exec('initializeMariadb', 'CMD /C "' . $path . '/init.bat"', 60);

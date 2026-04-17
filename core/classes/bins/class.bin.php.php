@@ -103,7 +103,7 @@ class BinPhp extends Module
      * @param string $type The type of the module.
      */
     public function __construct($id, $type) {
-        Util::logInitClass($this);
+        Log::initClass($this);
         $this->reload($id, $type);
     }
 
@@ -115,7 +115,7 @@ class BinPhp extends Module
      */
     public function reload($id = null, $type = null) {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppBins, $bearsamppLang;
-        Util::logReloadClass($this);
+        Log::reloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::PHP);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
@@ -133,32 +133,32 @@ class BinPhp extends Module
         }
 
         if (!$this->enable) {
-            Util::logInfo($this->name . ' is not enabled!');
+            Log::info($this->name . ' is not enabled!');
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
             return;
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
         if (!is_file($this->bearsamppConf)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
             return;
         }
         if (!is_file($this->cliExe)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cliExe));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cliExe));
         }
         if (!is_file($this->cliSilentExe)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cliSilentExe));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cliSilentExe));
         }
         if (!is_file($this->conf)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
         }
         if (!is_file($this->pearExe)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->pearExe));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->pearExe));
         }
     }
 
@@ -170,7 +170,7 @@ class BinPhp extends Module
      * @return bool True if the switch was successful, false otherwise.
      */
     public function switchVersion($version, $showWindow = false) {
-        Util::logDebug('Switch ' . $this->name . ' version to ' . $version);
+        Log::debug('Switch ' . $this->name . ' version to ' . $version);
         return $this->updateConfig($version, 0, $showWindow);
     }
 
@@ -190,23 +190,23 @@ class BinPhp extends Module
         }
 
         $version = $version == null ? $this->version : $version;
-        Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
+        Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
 
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
         $conf = str_replace('php' . $this->getVersion(), 'php' . $version, $this->getConf());
-        Util::logTrace('Current php version found: ' . $conf);
+        Log::trace('Current php version found: ' . $conf);
         $bearsamppConf = str_replace('php' . $this->getVersion(), 'php' . $version, $this->bearsamppConf);
-        Util::logTrace('Current bearsampp.conf php version found: ' . $bearsamppConf);
+        Log::trace('Current bearsampp.conf php version found: ' . $bearsamppConf);
 
         $tsDll = $this->getTsDll($version);
         $apachePhpModulePath = $this->getApacheModule($bearsamppBins->getApache()->getVersion(), $version);
 
-        Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'PHP TsDll found: ' . $tsDll);
-        Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'PHP Apache module found: ' . $apachePhpModulePath);
+        Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'PHP TsDll found: ' . $tsDll);
+        Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'PHP Apache module found: ' . $apachePhpModulePath);
 
         if (!file_exists($conf) || !file_exists($bearsamppConf)) {
-            Util::logError('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
+            Log::error('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
@@ -218,7 +218,7 @@ class BinPhp extends Module
 
         $bearsamppConfRaw = parse_ini_file($bearsamppConf);
         if ($bearsamppConfRaw === false || !isset($bearsamppConfRaw[self::ROOT_CFG_VERSION]) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version) {
-            Util::logError('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
+            Log::error('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
@@ -229,7 +229,7 @@ class BinPhp extends Module
         }
 
         if ($tsDll === false || $apachePhpModulePath === false) {
-            Util::logDebug($this->getName() . ' ' . $version . ' does not seem to be compatible with Apache ' . $bearsamppBins->getApache()->getVersion());
+            Log::debug($this->getName() . ' ' . $version . ' does not seem to be compatible with Apache ' . $bearsamppBins->getApache()->getVersion());
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::PHP_INCPT), $version, $bearsamppBins->getApache()->getVersion()),
@@ -240,7 +240,7 @@ class BinPhp extends Module
         }
 
         // bearsampp.conf
-        Util::logTrace('Calling Set Version for php...');
+        Log::trace('Calling Set Version for php...');
         $this->setVersion($version);
 
         // conf
@@ -638,11 +638,11 @@ class BinPhp extends Module
     public function setVersion($version) {
         global $bearsamppConfig;
         $this->version = $version;
-        Util::logTrace('Setting php version in .conf to: ' . $this->version);
+        Log::trace('Setting php version in .conf to: ' . $this->version);
         $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
-        Util::logTrace('Reloading php version...');
+        Log::trace('Reloading php version...');
         $this->reload();
-        Util::logTrace('Reloading of php version complete');
+        Log::trace('Reloading of php version complete');
     }
 
     /**
@@ -655,7 +655,7 @@ class BinPhp extends Module
         global $bearsamppConfig, $bearsamppBins, $bearsamppLang, $bearsamppWinbinder;
 
         if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
-            Util::logDebug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
+            Log::debug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
@@ -665,7 +665,7 @@ class BinPhp extends Module
             $enabled = Config::DISABLED;
         }
 
-        Util::logInfo($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
+        Log::info($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
         $this->enable = $enabled == Config::ENABLED;
         $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
 

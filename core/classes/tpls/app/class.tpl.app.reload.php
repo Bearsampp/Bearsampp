@@ -62,16 +62,16 @@ class TplAppReload
      */
     public static function triggerReload($args = null): string
     {
-        Util::logTrace('ENTERING triggerReload..');
+        Log::trace('ENTERING triggerReload..');
 
         try {
             new ActionReload($args);
             $actionContent = self::getActionReload();
-            Util::logTrace('Generated reload actions: ' . $actionContent);
+            Log::trace('Generated reload actions: ' . $actionContent);
             return $actionContent;
 
         } catch (Exception $e) {
-            Util::logError('Reload failed: ' . $e->getMessage());
+            Log::error('Reload failed: ' . $e->getMessage());
             return '';
         }
     }

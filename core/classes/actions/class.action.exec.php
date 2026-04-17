@@ -40,37 +40,37 @@ class ActionExec
     {
         global $bearsamppCore;
 
-        Util::logTrace('ActionExec constructor called');
+        Log::trace('ActionExec constructor called');
 
         $execFile = $bearsamppCore->getExec();
-        Util::logTrace('Checking for exec file: ' . $execFile);
+        Log::trace('Checking for exec file: ' . $execFile);
 
         if (file_exists($execFile)) {
-            Util::logTrace('Exec file exists');
+            Log::trace('Exec file exists');
 
             $action = file_get_contents($execFile);
-            Util::logTrace('Action read from exec file: "' . $action . '"');
+            Log::trace('Action read from exec file: "' . $action . '"');
 
             if ($action == self::QUIT) {
-                Util::logTrace('Executing quit action');
+                Log::trace('Executing quit action');
                 Batch::exitApp();
             } elseif ($action == self::RESTART) {
-                Util::logTrace('Executing restart action');
+                Log::trace('Executing restart action');
                 Batch::restartApp();
             } else {
-                Util::logTrace('Unknown action: "' . $action . '"');
+                Log::trace('Unknown action: "' . $action . '"');
             }
 
             // Do NOT delete the exec file yet if it's a restart,
             // as we need the next instance to know it's a restart.
             // ActionStartup will handle the unlinking.
             if ($action != self::RESTART) {
-                Util::logTrace('Deleting exec file');
+                Log::trace('Deleting exec file');
                 $unlinkResult = @unlink($execFile);
-                Util::logTrace('Unlink result: ' . ($unlinkResult ? 'success' : 'failed'));
+                Log::trace('Unlink result: ' . ($unlinkResult ? 'success' : 'failed'));
             }
         } else {
-            Util::logTrace('Exec file does not exist: ' . $execFile);
+            Log::trace('Exec file does not exist: ' . $execFile);
         }
     }
 }

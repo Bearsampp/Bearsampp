@@ -84,7 +84,7 @@ class Win32Native
      */
     public static function getProcessList($properties = [])
     {
-        Util::logDebug('getProcessList: Listing processes (COM/WMI)');
+        Log::debug('getProcessList: Listing processes (COM/WMI)');
 
         $startTime = microtime(true);
 
@@ -120,13 +120,13 @@ class Win32Native
             }
 
             $duration = round((microtime(true) - $startTime) * 1000, 2);
-            Util::logDebug('getProcessList: Found ' . count($result) . ' processes in ' . $duration . 'ms (COM/WMI)');
+            Log::debug('getProcessList: Found ' . count($result) . ' processes in ' . $duration . 'ms (COM/WMI)');
 
             return $result;
 
         } catch (Exception $e) {
             self::resetConnections();
-            Util::logError('getProcessList: COM exception: ' . $e->getMessage());
+            Log::error('getProcessList: COM exception: ' . $e->getMessage());
             return [];
         }
     }
@@ -142,11 +142,11 @@ class Win32Native
     {
         // Validate PID
         if (!is_numeric($pid) || $pid <= 0) {
-            Util::logError('killProcess: Invalid PID: ' . $pid);
+            Log::error('killProcess: Invalid PID: ' . $pid);
             return false;
         }
 
-        Util::logDebug('killProcess: Killing process PID ' . $pid . ' (COM/WMI)');
+        Log::debug('killProcess: Killing process PID ' . $pid . ' (COM/WMI)');
 
         $startTime = microtime(true);
 
@@ -170,29 +170,29 @@ class Win32Native
             $duration = round((microtime(true) - $startTime) * 1000, 2);
 
             if (!$found) {
-                Util::logDebug('killProcess: Process ' . $pid . ' not found');
+                Log::debug('killProcess: Process ' . $pid . ' not found');
                 return false;
             }
 
             // Check if Terminate() returned success (0 = success)
             if ($terminateResult !== 0) {
-                Util::logError('killProcess: Terminate() failed with status code: ' . $terminateResult);
+                Log::error('killProcess: Terminate() failed with status code: ' . $terminateResult);
                 return false;
             }
 
             // Additional verification: check if process still exists after a short delay
             usleep(100000); // Wait 100ms for termination to take effect
             if (self::processExists($pid)) {
-                Util::logError('killProcess: Process ' . $pid . ' still exists after termination attempt');
+                Log::error('killProcess: Process ' . $pid . ' still exists after termination attempt');
                 return false;
             }
 
-            Util::logDebug('killProcess: Successfully killed process ' . $pid . ' in ' . $duration . 'ms (COM/WMI)');
+            Log::debug('killProcess: Successfully killed process ' . $pid . ' in ' . $duration . 'ms (COM/WMI)');
             return true;
 
         } catch (Exception $e) {
             self::resetConnections();
-            Util::logError('killProcess: COM exception: ' . $e->getMessage());
+            Log::error('killProcess: COM exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -266,7 +266,7 @@ class Win32Native
 
         } catch (Exception $e) {
             self::resetConnections();
-            Util::logError('getProcessInfo: COM exception: ' . $e->getMessage());
+            Log::error('getProcessInfo: COM exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -317,7 +317,7 @@ class Win32Native
 
         } catch (Exception $e) {
             self::resetConnections();
-            Util::logError('findProcessesByName: COM exception: ' . $e->getMessage());
+            Log::error('findProcessesByName: COM exception: ' . $e->getMessage());
             return [];
         }
     }
@@ -375,7 +375,7 @@ class Win32Native
         $hive = self::mapRegistryHive($hive);
         $regPath = $hive . '\\' . $key;
 
-        Util::logDebug('registryExists: Checking ' . $regPath . ($value !== null ? '\\' . $value : ' (key)') . ' (COM)');
+        Log::debug('registryExists: Checking ' . $regPath . ($value !== null ? '\\' . $value : ' (key)') . ' (COM)');
 
         try {
             if ($value === null) {
@@ -413,7 +413,7 @@ class Win32Native
                     $rc = $wmi->EnumKey($hConst, $parentKey, $subKeys);
                     
                     if ($rc !== 0 || !is_array($subKeys)) {
-                        Util::logDebug('registryExists: Key not found (EnumKey failed)');
+                        Log::debug('registryExists: Key not found (EnumKey failed)');
                         return false;
                     }
                     
@@ -427,16 +427,16 @@ class Win32Native
                     }
                     
                     if ($exists) {
-                        Util::logDebug('registryExists: Key found');
+                        Log::debug('registryExists: Key found');
                         return true;
                     } else {
-                        Util::logDebug('registryExists: Key not found');
+                        Log::debug('registryExists: Key not found');
                         return false;
                     }
 
                 } catch (Exception $e) {
                     self::$wmiStdRegProv = null;
-                    Util::logError('registryExists: StdRegProv exception during key check: ' . $e->getMessage());
+                    Log::error('registryExists: StdRegProv exception during key check: ' . $e->getMessage());
                     return false;
                 }
             } else {
@@ -446,17 +446,17 @@ class Win32Native
                     $shell = self::getWscriptShell();
                     $valuePath = $regPath . '\\' . $value;
                     $shell->RegRead($valuePath);
-                    Util::logDebug('registryExists: Value found');
+                    Log::debug('registryExists: Value found');
                     return true;
                 } catch (Exception $e) {
-                    Util::logDebug('registryExists: Value not found');
+                    Log::debug('registryExists: Value not found');
                     return false;
                 }
             }
 
         } catch (Exception $e) {
             self::resetConnections();
-            Util::logError('registryExists: COM exception: ' . $e->getMessage());
+            Log::error('registryExists: COM exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -482,7 +482,7 @@ class Win32Native
             $regPath .= '\\';
         }
 
-        Util::logDebug('registryGetValue: Reading ' . $regPath . ' (COM)');
+        Log::debug('registryGetValue: Reading ' . $regPath . ' (COM)');
 
         $startTime = microtime(true);
 
@@ -498,11 +498,11 @@ class Win32Native
                 $result = (string)$result;
             }
 
-            Util::logDebug('registryGetValue: Found value in ' . $duration . 'ms (COM)');
+            Log::debug('registryGetValue: Found value in ' . $duration . 'ms (COM)');
             return $result;
 
         } catch (Exception $e) {
-            Util::logDebug('registryGetValue: Value not found');
+            Log::debug('registryGetValue: Value not found');
             return null;
         }
     }
@@ -526,11 +526,11 @@ class Win32Native
         // Validate type
         $validTypes = ['REG_SZ', 'REG_EXPAND_SZ', 'REG_DWORD', 'REG_BINARY'];
         if (!in_array($type, $validTypes)) {
-            Util::logError('registrySetValue: Invalid type: ' . $type);
+            Log::error('registrySetValue: Invalid type: ' . $type);
             return false;
         }
 
-        Util::logDebug('registrySetValue: Writing ' . $regPath . ' (' . $type . ') (COM)');
+        Log::debug('registrySetValue: Writing ' . $regPath . ' (' . $type . ') (COM)');
 
         $startTime = microtime(true);
 
@@ -546,13 +546,13 @@ class Win32Native
             $shell->RegWrite($regPath, $data, $type);
 
             $duration = round((microtime(true) - $startTime) * 1000, 2);
-            Util::logDebug('registrySetValue: Successfully wrote value in ' . $duration . 'ms (COM)');
+            Log::debug('registrySetValue: Successfully wrote value in ' . $duration . 'ms (COM)');
 
             return true;
 
         } catch (Exception $e) {
             self::resetConnections();
-            Util::logError('registrySetValue: COM exception: ' . $e->getMessage());
+            Log::error('registrySetValue: COM exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -571,7 +571,7 @@ class Win32Native
         $hive = self::mapRegistryHive($hive);
         $regPath = $hive . '\\' . $key . '\\' . $value;
 
-        Util::logDebug('registryDeleteValue: Deleting ' . $regPath . ' (COM)');
+        Log::debug('registryDeleteValue: Deleting ' . $regPath . ' (COM)');
 
         $startTime = microtime(true);
 
@@ -582,7 +582,7 @@ class Win32Native
             $shell->RegDelete($regPath);
 
             $duration = round((microtime(true) - $startTime) * 1000, 2);
-            Util::logDebug('registryDeleteValue: Successfully deleted value in ' . $duration . 'ms (COM)');
+            Log::debug('registryDeleteValue: Successfully deleted value in ' . $duration . 'ms (COM)');
 
             return true;
 
@@ -591,12 +591,12 @@ class Win32Native
             $errorMsg = $e->getMessage();
             if (strpos($errorMsg, 'Unable to remove') !== false ||
                 strpos($errorMsg, 'Invalid root') !== false) {
-                Util::logDebug('registryDeleteValue: Value does not exist (already deleted)');
+                Log::debug('registryDeleteValue: Value does not exist (already deleted)');
                 return true;
             }
 
             self::resetConnections();
-            Util::logError('registryDeleteValue: COM exception: ' . $e->getMessage());
+            Log::error('registryDeleteValue: COM exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -614,7 +614,7 @@ class Win32Native
         $hive = self::mapRegistryHive($hive);
         $regPath = $hive . '\\' . $key . '\\';
 
-        Util::logDebug('registryDeleteKey: Deleting ' . $regPath . ' (COM)');
+        Log::debug('registryDeleteKey: Deleting ' . $regPath . ' (COM)');
 
         try {
             $shell = self::getWscriptShell();
@@ -622,7 +622,7 @@ class Win32Native
             // Delete the key (note the trailing backslash)
             $shell->RegDelete($regPath);
 
-            Util::logDebug('registryDeleteKey: Successfully deleted key (COM)');
+            Log::debug('registryDeleteKey: Successfully deleted key (COM)');
             return true;
 
         } catch (Exception $e) {
@@ -630,12 +630,12 @@ class Win32Native
             $errorMsg = $e->getMessage();
             if (strpos($errorMsg, 'Unable to remove') !== false ||
                 strpos($errorMsg, 'Invalid root') !== false) {
-                Util::logDebug('registryDeleteKey: Key does not exist (already deleted)');
+                Log::debug('registryDeleteKey: Key does not exist (already deleted)');
                 return true;
             }
 
             self::resetConnections();
-            Util::logError('registryDeleteKey: COM exception: ' . $e->getMessage());
+            Log::error('registryDeleteKey: COM exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -653,7 +653,7 @@ class Win32Native
      */
     public static function getSpecialFolderPath($folderName)
     {
-        Util::logDebug('getSpecialFolderPath: Getting ' . $folderName . ' path (COM)');
+        Log::debug('getSpecialFolderPath: Getting ' . $folderName . ' path (COM)');
 
         $startTime = microtime(true);
 
@@ -668,16 +668,16 @@ class Win32Native
             if ($path && !empty($path)) {
                 // Convert to Unix-style path
                 $path = str_replace('\\', '/', $path);
-                Util::logDebug('getSpecialFolderPath: Found ' . $folderName . ' in ' . $duration . 'ms (COM)');
+                Log::debug('getSpecialFolderPath: Found ' . $folderName . ' in ' . $duration . 'ms (COM)');
                 return $path;
             } else {
-                Util::logDebug('getSpecialFolderPath: ' . $folderName . ' not found');
+                Log::debug('getSpecialFolderPath: ' . $folderName . ' not found');
                 return false;
             }
 
         } catch (Exception $e) {
             self::resetConnections();
-            Util::logError('getSpecialFolderPath: COM exception: ' . $e->getMessage());
+            Log::error('getSpecialFolderPath: COM exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -695,7 +695,7 @@ class Win32Native
      */
     public static function createShortcut($shortcutPath, $targetPath, $workingDir = '', $description = '', $iconPath = '')
     {
-        Util::logDebug('createShortcut: Creating shortcut at ' . $shortcutPath . ' (COM)');
+        Log::debug('createShortcut: Creating shortcut at ' . $shortcutPath . ' (COM)');
 
         $startTime = microtime(true);
 
@@ -724,13 +724,13 @@ class Win32Native
             $shortcut->Save();
 
             $duration = round((microtime(true) - $startTime) * 1000, 2);
-            Util::logDebug('createShortcut: Successfully created shortcut in ' . $duration . 'ms (COM)');
+            Log::debug('createShortcut: Successfully created shortcut in ' . $duration . 'ms (COM)');
 
             return true;
 
         } catch (Exception $e) {
             self::resetConnections();
-            Util::logError('createShortcut: COM exception: ' . $e->getMessage());
+            Log::error('createShortcut: COM exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -748,13 +748,13 @@ class Win32Native
      */
     public static function countFilesFolders($path)
     {
-        Util::logDebug('countFilesFolders: Counting in ' . $path . ' (Native PHP)');
+        Log::debug('countFilesFolders: Counting in ' . $path . ' (Native PHP)');
 
         $startTime = microtime(true);
 
         try {
             if (!is_dir($path)) {
-                Util::logError('countFilesFolders: Path is not a directory: ' . $path);
+                Log::error('countFilesFolders: Path is not a directory: ' . $path);
                 return false;
             }
 
@@ -772,17 +772,17 @@ class Win32Native
                 }
             } catch (Exception $e) {
                 // If RecursiveIterator fails, fall back to manual recursion
-                Util::logDebug('countFilesFolders: RecursiveIterator failed, using manual recursion');
+                Log::debug('countFilesFolders: RecursiveIterator failed, using manual recursion');
                 $count = self::countFilesFoldersManual($path);
             }
 
             $duration = round((microtime(true) - $startTime) * 1000, 2);
-            Util::logDebug('countFilesFolders: Counted ' . $count . ' items in ' . $duration . 'ms (Native PHP)');
+            Log::debug('countFilesFolders: Counted ' . $count . ' items in ' . $duration . 'ms (Native PHP)');
 
             return $count;
 
         } catch (Exception $e) {
-            Util::logError('countFilesFolders: Exception: ' . $e->getMessage());
+            Log::error('countFilesFolders: Exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -834,7 +834,7 @@ class Win32Native
      */
     public static function countFilesFoldersCOM($path)
     {
-        Util::logDebug('countFilesFoldersCOM: Counting in ' . $path . ' (COM/FSO)');
+        Log::debug('countFilesFoldersCOM: Counting in ' . $path . ' (COM/FSO)');
 
         $startTime = microtime(true);
 
@@ -842,19 +842,19 @@ class Win32Native
             $fso = new COM("Scripting.FileSystemObject");
 
             if (!$fso->FolderExists($path)) {
-                Util::logError('countFilesFoldersCOM: Path does not exist: ' . $path);
+                Log::error('countFilesFoldersCOM: Path does not exist: ' . $path);
                 return false;
             }
 
             $count = self::countFolderItemsCOM($fso, $path);
 
             $duration = round((microtime(true) - $startTime) * 1000, 2);
-            Util::logDebug('countFilesFoldersCOM: Counted ' . $count . ' items in ' . $duration . 'ms (COM/FSO)');
+            Log::debug('countFilesFoldersCOM: Counted ' . $count . ' items in ' . $duration . 'ms (COM/FSO)');
 
             return $count;
 
         } catch (Exception $e) {
-            Util::logError('countFilesFoldersCOM: COM exception: ' . $e->getMessage());
+            Log::error('countFilesFoldersCOM: COM exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -902,7 +902,7 @@ class Win32Native
      */
     public static function getServiceInfo($serviceName, $properties = [])
     {
-        Util::logDebug('getServiceInfo: Getting info for service ' . $serviceName . ' (COM/WMI)');
+        Log::debug('getServiceInfo: Getting info for service ' . $serviceName . ' (COM/WMI)');
 
         $startTime = microtime(true);
 
@@ -947,18 +947,18 @@ class Win32Native
                 }
 
                 $duration = round((microtime(true) - $startTime) * 1000, 2);
-                Util::logDebug('getServiceInfo: Found service in ' . $duration . 'ms (COM/WMI)');
+                Log::debug('getServiceInfo: Found service in ' . $duration . 'ms (COM/WMI)');
 
                 return $result;
             }
 
             // Service not found
-            Util::logDebug('getServiceInfo: Service not found');
+            Log::debug('getServiceInfo: Service not found');
             return false;
 
         } catch (Exception $e) {
             self::resetConnections();
-            Util::logError('getServiceInfo: COM exception: ' . $e->getMessage());
+            Log::error('getServiceInfo: COM exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -972,7 +972,7 @@ class Win32Native
      */
     public static function listServices($properties = [])
     {
-        Util::logDebug('listServices: Listing all services (COM/WMI)');
+        Log::debug('listServices: Listing all services (COM/WMI)');
 
         $startTime = microtime(true);
 
@@ -1008,13 +1008,13 @@ class Win32Native
             }
 
             $duration = round((microtime(true) - $startTime) * 1000, 2);
-            Util::logDebug('listServices: Found ' . count($result) . ' services in ' . $duration . 'ms (COM/WMI)');
+            Log::debug('listServices: Found ' . count($result) . ' services in ' . $duration . 'ms (COM/WMI)');
 
             return $result;
 
         } catch (Exception $e) {
             self::resetConnections();
-            Util::logError('listServices: COM exception: ' . $e->getMessage());
+            Log::error('listServices: COM exception: ' . $e->getMessage());
             return [];
         }
     }
@@ -1093,7 +1093,7 @@ class Win32Native
      */
     public static function getDefaultBrowser()
     {
-        Util::logDebug('getDefaultBrowser: Reading default browser (COM)');
+        Log::debug('getDefaultBrowser: Reading default browser (COM)');
 
         $startTime = microtime(true);
 
@@ -1101,7 +1101,7 @@ class Win32Native
         $browserPath = self::registryGetValue('HKLM', 'SOFTWARE\\Classes\\http\\shell\\open\\command', '');
 
         if ($browserPath === null) {
-            Util::logDebug('getDefaultBrowser: No default browser found');
+            Log::debug('getDefaultBrowser: No default browser found');
             return false;
         }
 
@@ -1117,7 +1117,7 @@ class Win32Native
             $path = str_replace('"', '', $path);
         }
 
-        Util::logDebug('getDefaultBrowser: Found browser in ' . $duration . 'ms (COM)');
+        Log::debug('getDefaultBrowser: Found browser in ' . $duration . 'ms (COM)');
         return $path;
     }
 
@@ -1129,7 +1129,7 @@ class Win32Native
      */
     public static function getInstalledBrowsers()
     {
-        Util::logDebug('getInstalledBrowsers: Enumerating installed browsers (Hybrid - No VBS)');
+        Log::debug('getInstalledBrowsers: Enumerating installed browsers (Hybrid - No VBS)');
 
         $startTime = microtime(true);
         $browsers = [];
@@ -1199,7 +1199,7 @@ class Win32Native
                         $exePath = self::extractBrowserExecutablePath($commandPath);
 
                         if ($exePath && !in_array($exePath, $browsers)) {
-                            Util::logDebug('getInstalledBrowsers: Found ' . $browserName . ': ' . $exePath);
+                            Log::debug('getInstalledBrowsers: Found ' . $browserName . ': ' . $exePath);
                             $browsers[] = $exePath;
                         }
                     }
@@ -1211,7 +1211,7 @@ class Win32Native
         }
 
         $duration = round((microtime(true) - $startTime) * 1000, 2);
-        Util::logDebug('getInstalledBrowsers: Found ' . count($browsers) . ' browser(s) in ' . $duration . 'ms (Hybrid - No VBS)');
+        Log::debug('getInstalledBrowsers: Found ' . count($browsers) . ' browser(s) in ' . $duration . 'ms (Hybrid - No VBS)');
 
         // Always return an array (possibly empty) to simplify call sites
         return $browsers;

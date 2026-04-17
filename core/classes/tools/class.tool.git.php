@@ -39,7 +39,7 @@ class ToolGit extends Module
      * @param string $type The type of the module.
      */
     public function __construct($id, $type) {
-        Util::logInitClass($this);
+        Log::initClass($this);
         $this->reload($id, $type);
     }
 
@@ -51,7 +51,7 @@ class ToolGit extends Module
      */
     public function reload($id = null, $type = null) {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
-        Util::logReloadClass($this);
+        Log::reloadClass($this);
 
         $this->name = $bearsamppLang->getValue(Lang::GIT);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
@@ -67,27 +67,27 @@ class ToolGit extends Module
         }
 
         if (!$this->enable) {
-            Util::logInfo($this->name . ' is not enabled!');
+            Log::info($this->name . ' is not enabled!');
             return;
         }
         if (!is_dir($this->currentPath)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
         }
         if (!is_dir($this->symlinkPath)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
             return;
         }
         if (!is_file($this->bearsamppConf)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
         }
         if (!is_file($this->reposFile)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->reposFile));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->reposFile));
         }
         if (!is_file($this->exe)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
         }
         if (!is_file($this->bash)) {
-            Util::logError(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->bash));
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->bash));
         }
 
         if (is_file($this->reposFile)) {
@@ -101,7 +101,7 @@ class ToolGit extends Module
                 if (is_dir($repo)) {
                     $rebuildRepos[] = Util::formatUnixPath($repo);
                 } else {
-                    Util::logWarning($this->name . ' repository not found: ' . $repo);
+                    Log::warning($this->name . ' repository not found: ' . $repo);
                 }
             }
             $this->repos = $rebuildRepos;
@@ -124,7 +124,7 @@ class ToolGit extends Module
         }
 
         $version = $version == null ? $this->version : $version;
-        Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
+        Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
 
         if (file_exists($this->getSymlinkPath() . '/post-install.bat')) {
             $bearsamppWinbinder->exec($this->getBash(), '--no-needs-console --hide --no-cd --command=' . $this->getSymlinkPath() . '/post-install.bat', true);

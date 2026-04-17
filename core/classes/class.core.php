@@ -191,7 +191,7 @@ class Core
 
         $filePath = $this->getResourcesPath() . '/' . self::APP_VERSION;
         if ( !is_file( $filePath ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), APP_TITLE, $filePath ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), APP_TITLE, $filePath ) );
 
             return null;
         }
@@ -496,7 +496,7 @@ class Core
         $sevenZipPath = $this->getLibsPath() . '/7zip/7za.exe';
 
         if ( !file_exists( $sevenZipPath ) ) {
-            Util::logError( '7za.exe not found at: ' . $sevenZipPath );
+            Log::error( '7za.exe not found at: ' . $sevenZipPath );
 
             return false;
         }
@@ -505,48 +505,48 @@ class Core
         $testOutput = CommandRunner::exec($sevenZipPath, ['t', $filePath, '-y', '-bsp1']);
         preg_match('/Files: (\d+)/', $testOutput !== false ? $testOutput : '', $matches);
         $numFiles = isset($matches[1]) ? (int) $matches[1] : 0;
-        Util::logTrace('Number of files to be extracted: ' . $numFiles);
+        Log::trace('Number of files to be extracted: ' . $numFiles);
 
         // Extract the archive, streaming progress line-by-line
         $returnVar = CommandRunner::stream(
             $sevenZipPath,
             ['x', $filePath, '-y', '-bsp1', '-bb0', '-o' . $destination],
             function (string $line) use ($progressCallback) {
-                Util::logTrace("Processing line: $line");
+                Log::trace("Processing line: $line");
                 if ($line === 'Everything is Ok') {
                     if ($progressCallback) {
-                        Util::logTrace('Extraction progress: 100%');
+                        Log::trace('Extraction progress: 100%');
                         call_user_func($progressCallback, 100);
                     }
                 } elseif ($progressCallback && preg_match('/(?:^|\s)(\d+)%/', $line, $matches)) {
                     $currentPercentage = intval($matches[1]);
-                    Util::logTrace("Extraction progress: $currentPercentage%");
+                    Log::trace("Extraction progress: $currentPercentage%");
                     call_user_func($progressCallback, $currentPercentage);
                 } else {
-                    Util::logTrace("Line did not match pattern: $line");
+                    Log::trace("Line did not match pattern: $line");
                 }
             }
         );
 
         if ($returnVar === false) {
-            Util::logError('Failed to open process for: ' . $sevenZipPath);
+            Log::error('Failed to open process for: ' . $sevenZipPath);
             return ['error' => 'Failed to open process', 'numFiles' => $numFiles];
         }
 
-        Util::logTrace('Command return value: ' . $returnVar);
+        Log::trace('Command return value: ' . $returnVar);
 
         if ($returnVar === 0 && $progressCallback) {
-            Util::logTrace('Extraction completed successfully. Setting progress to 100%');
+            Log::trace('Extraction completed successfully. Setting progress to 100%');
             call_user_func($progressCallback, 100);
             usleep(100000); // 100 milliseconds
         }
 
         if ($returnVar === 0) {
-            Util::logDebug('Successfully unzipped file to: ' . $destination);
+            Log::debug('Successfully unzipped file to: ' . $destination);
             return ['success' => true, 'numFiles' => $numFiles];
         }
 
-        Util::logError('Failed to unzip file. Command return value: ' . $returnVar);
+        Log::error('Failed to unzip file. Command return value: ' . $returnVar);
         return ['error' => 'Failed to unzip file', 'numFiles' => $numFiles];
     }
 
@@ -569,7 +569,7 @@ class Core
         // Open the URL for reading
         $inputStream = @fopen( $moduleUrl, 'rb' );
         if ( $inputStream === false ) {
-            Util::logError( 'Error fetching content from URL: ' . $moduleUrl );
+            Log::error( 'Error fetching content from URL: ' . $moduleUrl );
 
             return ['error' => 'Error fetching module'];
         }
@@ -577,7 +577,7 @@ class Core
         // Open the file for writing
         $outputStream = @fopen( $filePath, 'wb' );
         if ( $outputStream === false ) {
-            Util::logError( 'Error opening file for writing: ' . $filePath );
+            Log::error( 'Error opening file for writing: ' . $filePath );
             fclose( $inputStream );
 
             return ['error' => 'Error saving module'];

@@ -36,8 +36,8 @@ class ActionQuit
     {
         global $bearsamppCore, $bearsamppLang, $bearsamppBins, $bearsamppWinbinder, $arrayOfCurrents;
 
-        Util::logInfo('ActionQuit constructor called - starting exit process');
-        Util::logDebug('Number of services to stop: ' . count($bearsamppBins->getServices()));
+        Log::info('ActionQuit constructor called - starting exit process');
+        Log::debug('Number of services to stop: ' . count($bearsamppBins->getServices()));
 
         // Start splash screen
         $this->splash = new Splash();
@@ -47,17 +47,17 @@ class ActionQuit
             sprintf( $bearsamppLang->getValue( Lang::EXIT_LEAVING_TEXT ), APP_TITLE . ' ' . $bearsamppCore->getAppVersion() )
         );
 
-        Util::logDebug('Splash screen initialized');
+        Log::debug('Splash screen initialized');
 
         // Set handler for the splash screen window
         $bearsamppWinbinder->setHandler( $this->splash->getWbWindow(), $this, 'processWindow', 2000 );
-        Util::logDebug('Window handler set, starting main loop');
+        Log::debug('Window handler set, starting main loop');
 
         $bearsamppWinbinder->mainLoop();
-        Util::logDebug('Main loop exited');
+        Log::debug('Main loop exited');
 
         $bearsamppWinbinder->reset();
-        Util::logInfo('ActionQuit constructor completed');
+        Log::info('ActionQuit constructor completed');
     }
 
 
@@ -140,7 +140,7 @@ class ActionQuit
     {
         global $bearsamppBins, $bearsamppLang, $bearsamppWinbinder;
 
-        Util::logInfo('Starting graceful shutdown process with optimized service order');
+        Log::info('Starting graceful shutdown process with optimized service order');
 
         // Get all available services
         $allServices = $bearsamppBins->getServices();
@@ -148,20 +148,20 @@ class ActionQuit
         // Get optimal shutdown order
         $shutdownOrder = $this->getServiceShutdownOrder();
 
-        Util::logDebug('Service shutdown order: ' . implode(' -> ', $shutdownOrder));
+        Log::debug('Service shutdown order: ' . implode(' -> ', $shutdownOrder));
 
         // Stop services in optimal order
         foreach ($shutdownOrder as $sName) {
             // Check if this service exists and is installed
             if (!isset($allServices[$sName])) {
-                Util::logDebug('Service not found in available services: ' . $sName);
+                Log::debug('Service not found in available services: ' . $sName);
                 continue;
             }
 
             $service = $allServices[$sName];
             $displayName = $this->getServiceDisplayName($sName, $service);
 
-            Util::logInfo('Stopping service: ' . $displayName);
+            Log::info('Stopping service: ' . $displayName);
 
             $this->splash->incrProgressBar();
             $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::EXIT_REMOVE_SERVICE_TEXT), $displayName));
@@ -170,9 +170,9 @@ class ActionQuit
             $result = $service->delete();
 
             if ($result) {
-                Util::logInfo('Successfully stopped and removed service: ' . $displayName);
+                Log::info('Successfully stopped and removed service: ' . $displayName);
             } else {
-                Util::logWarning('Failed to stop/remove service: ' . $displayName . ' (may not be installed)');
+                Log::warning('Failed to stop/remove service: ' . $displayName . ' (may not be installed)');
             }
         }
 
@@ -180,7 +180,7 @@ class ActionQuit
         foreach ($allServices as $sName => $service) {
             if (!in_array($sName, $shutdownOrder)) {
                 $displayName = $this->getServiceDisplayName($sName, $service);
-                Util::logWarning('Stopping unlisted service: ' . $displayName);
+                Log::warning('Stopping unlisted service: ' . $displayName);
 
                 $this->splash->incrProgressBar();
                 $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::EXIT_REMOVE_SERVICE_TEXT), $displayName));
@@ -188,7 +188,7 @@ class ActionQuit
             }
         }
 
-        Util::logInfo('All services stopped successfully');
+        Log::info('All services stopped successfully');
 
         // Purge "current" symlinks
         $this->splash->setTextLoading('Removing symlinks...');
@@ -237,7 +237,7 @@ class ActionQuit
         $currentPid = Win32Ps::getCurrentPid();
         $startTime = microtime(true);
 
-        Util::logTrace('Starting PHP process termination (excluding PID: ' . $excludePid . ')');
+        Log::trace('Starting PHP process termination (excluding PID: ' . $excludePid . ')');
 
         // Get list of loading PIDs to exclude from termination
         $loadingPids = array();
@@ -246,14 +246,14 @@ class ActionQuit
             foreach ($pids as $pid) {
                 $loadingPids[] = intval(trim($pid));
             }
-            Util::logTrace('Loading PIDs to preserve: ' . implode(', ', $loadingPids));
+            Log::trace('Loading PIDs to preserve: ' . implode(', ', $loadingPids));
         }
 
         $targets = ['php-win.exe', 'php.exe'];
         foreach (Win32Ps::getListProcs() as $proc) {
             // Check if we've exceeded our timeout
             if (microtime(true) - $startTime > $timeout) {
-                Util::logTrace('Process termination timeout exceeded, continuing with remaining operations');
+                Log::trace('Process termination timeout exceeded, continuing with remaining operations');
                 break;
             }
 
@@ -262,11 +262,11 @@ class ActionQuit
 
             // Skip if this is the excluded PID or a loading window PID
             if (in_array($exe, $targets) && $pid != $excludePid && !in_array($pid, $loadingPids)) {
-                Util::logTrace('Terminating PHP process: ' . $pid);
+                Log::trace('Terminating PHP process: ' . $pid);
                 Win32Ps::kill($pid);
                 usleep(100000); // 100ms delay between terminations
             } elseif (in_array($pid, $loadingPids)) {
-                Util::logTrace('Preserving loading window process: ' . $pid);
+                Log::trace('Preserving loading window process: ' . $pid);
             }
         }
 
@@ -276,30 +276,30 @@ class ActionQuit
         }
 
         try {
-            Util::logTrace('Initiating self-termination for PID: ' . $currentPid);
+            Log::trace('Initiating self-termination for PID: ' . $currentPid);
             // Add a timeout wrapper around the killProc call
             $killSuccess = Win32Native::killProcess($currentPid);
             if (!$killSuccess) {
-                Util::logTrace('Self-termination via Win32Native::killProcess failed, using alternative method');
+                Log::trace('Self-termination via Win32Native::killProcess failed, using alternative method');
             }
         } catch (\Exception $e) {
-            Util::logTrace('Exception during self-termination: ' . $e->getMessage());
+            Log::trace('Exception during self-termination: ' . $e->getMessage());
         }
 
         // Destroy window after process termination
         // Fix for PHP 8.2: Check if window is not null before destroying
         if ($window && $bearsamppWinbinder) {
             try {
-                Util::logTrace('Destroying window');
+                Log::trace('Destroying window');
                 $bearsamppWinbinder->destroyWindow($window);
             } catch (\Exception $e) {
-                Util::logTrace('Exception during window destruction: ' . $e->getMessage());
+                Log::trace('Exception during window destruction: ' . $e->getMessage());
             }
         }
 
         // Force exit if still running after timeout
         if (microtime(true) - $startTime > $timeout * 1.5) {
-            Util::logTrace('Forcing exit due to timeout');
+            Log::trace('Forcing exit due to timeout');
             exit(0);
         }
     }
@@ -312,7 +312,7 @@ class ActionQuit
      */
     private function verifyServicesStoppedAndCleanup($services)
     {
-        Util::logInfo('Verifying all services are stopped...');
+        Log::info('Verifying all services are stopped...');
 
         $results = [
             'all_stopped' => true,
@@ -336,38 +336,38 @@ class ActionQuit
                 ];
 
                 if ($isRunning) {
-                    Util::logWarning('Service still running after shutdown: ' . $displayName);
+                    Log::warning('Service still running after shutdown: ' . $displayName);
                     $results['still_running'][] = $displayName;
                     $results['all_stopped'] = false;
 
                     // Attempt to force stop
-                    Util::logInfo('Attempting to force stop: ' . $displayName);
+                    Log::info('Attempting to force stop: ' . $displayName);
                     $service->stop();
                     usleep(500000); // Wait 500ms
 
                     // Verify again
                     if ($service->isRunning()) {
-                        Util::logError('Failed to force stop service: ' . $displayName);
+                        Log::error('Failed to force stop service: ' . $displayName);
                     } else {
-                        Util::logInfo('Successfully force stopped service: ' . $displayName);
+                        Log::info('Successfully force stopped service: ' . $displayName);
                     }
                 } elseif ($isInstalled) {
-                    Util::logDebug('Service stopped but still installed: ' . $displayName);
+                    Log::debug('Service stopped but still installed: ' . $displayName);
                 } else {
-                    Util::logDebug('Service verified stopped and removed: ' . $displayName);
+                    Log::debug('Service verified stopped and removed: ' . $displayName);
                 }
 
             } catch (\Exception $e) {
-                Util::logError('Failed to verify service status for ' . $displayName . ': ' . $e->getMessage());
+                Log::error('Failed to verify service status for ' . $displayName . ': ' . $e->getMessage());
                 $results['verification_failed'][] = $displayName;
                 $results['all_stopped'] = false;
             }
         }
 
         if ($results['all_stopped']) {
-            Util::logInfo('All services verified stopped successfully');
+            Log::info('All services verified stopped successfully');
         } else {
-            Util::logWarning('Some services could not be verified as stopped');
+            Log::warning('Some services could not be verified as stopped');
         }
 
         return $results;
@@ -382,7 +382,7 @@ class ActionQuit
     {
         global $bearsamppRoot;
 
-        Util::logInfo('Verifying symlinks are removed...');
+        Log::info('Verifying symlinks are removed...');
 
         $results = [
             'success' => true,
@@ -404,7 +404,7 @@ class ActionQuit
 
         foreach ($symlinkPaths as $path) {
             if (file_exists($path) || is_link($path)) {
-                Util::logWarning('Symlink still exists: ' . $path);
+                Log::warning('Symlink still exists: ' . $path);
                 $results['remaining'][] = basename($path);
                 $results['success'] = false;
 
@@ -418,22 +418,22 @@ class ActionQuit
 
                     // Verify removal
                     if (!file_exists($path)) {
-                        Util::logInfo('Successfully removed remaining symlink: ' . $path);
+                        Log::info('Successfully removed remaining symlink: ' . $path);
                         $results['remaining'] = array_diff($results['remaining'], [basename($path)]);
                         if (empty($results['remaining'])) {
                             $results['success'] = true;
                         }
                     }
                 } catch (\Exception $e) {
-                    Util::logError('Failed to remove symlink ' . $path . ': ' . $e->getMessage());
+                    Log::error('Failed to remove symlink ' . $path . ': ' . $e->getMessage());
                 }
             }
         }
 
         if ($results['success']) {
-            Util::logInfo('All symlinks verified removed');
+            Log::info('All symlinks verified removed');
         } else {
-            Util::logWarning('Some symlinks could not be removed: ' . implode(', ', $results['remaining']));
+            Log::warning('Some symlinks could not be removed: ' . implode(', ', $results['remaining']));
         }
 
         return $results;
@@ -448,7 +448,7 @@ class ActionQuit
     {
         global $bearsamppCore;
 
-        Util::logInfo('Cleaning up temporary files...');
+        Log::info('Cleaning up temporary files...');
 
         $results = [
             'success' => true,
@@ -460,7 +460,7 @@ class ActionQuit
         $tmpPath = $bearsamppCore->getTmpPath();
 
         if (!is_dir($tmpPath)) {
-            Util::logDebug('Temp directory does not exist: ' . $tmpPath);
+            Log::debug('Temp directory does not exist: ' . $tmpPath);
             return $results;
         }
 
@@ -468,7 +468,7 @@ class ActionQuit
             $files = glob($tmpPath . '/*');
 
             if ($files === false) {
-                Util::logWarning('Failed to list temporary files');
+                Log::warning('Failed to list temporary files');
                 return $results;
             }
 
@@ -486,32 +486,32 @@ class ActionQuit
                         if (@unlink($file)) {
                             $results['cleaned']++;
                             $results['size_freed'] += $size;
-                            Util::logDebug('Removed temp file: ' . $basename);
+                            Log::debug('Removed temp file: ' . $basename);
                         } else {
                             $results['failed'][] = $basename;
                             $results['success'] = false;
-                            Util::logWarning('Failed to remove temp file: ' . $basename);
+                            Log::warning('Failed to remove temp file: ' . $basename);
                         }
                     } elseif (is_dir($file)) {
                         // Don't remove directories, just files
-                        Util::logDebug('Skipping temp directory: ' . $basename);
+                        Log::debug('Skipping temp directory: ' . $basename);
                     }
                 } catch (\Exception $e) {
                     $results['failed'][] = $basename;
                     $results['success'] = false;
-                    Util::logError('Error removing temp file ' . $basename . ': ' . $e->getMessage());
+                    Log::error('Error removing temp file ' . $basename . ': ' . $e->getMessage());
                 }
             }
 
             $sizeMB = round($results['size_freed'] / 1024 / 1024, 2);
-            Util::logInfo('Cleaned up ' . $results['cleaned'] . ' temporary files (' . $sizeMB . ' MB freed)');
+            Log::info('Cleaned up ' . $results['cleaned'] . ' temporary files (' . $sizeMB . ' MB freed)');
 
             if (!empty($results['failed'])) {
-                Util::logWarning('Failed to clean up ' . count($results['failed']) . ' files');
+                Log::warning('Failed to clean up ' . count($results['failed']) . ' files');
             }
 
         } catch (\Exception $e) {
-            Util::logError('Error during temp file cleanup: ' . $e->getMessage());
+            Log::error('Error during temp file cleanup: ' . $e->getMessage());
             $results['success'] = false;
         }
 
@@ -527,7 +527,7 @@ class ActionQuit
     {
         global $bearsamppRoot;
 
-        Util::logInfo('Checking for orphaned processes...');
+        Log::info('Checking for orphaned processes...');
 
         $orphaned = [
             'found' => false,
@@ -559,7 +559,7 @@ class ActionQuit
 
                     // Skip the main Bearsampp executable
                     if (strtolower($processName) === 'bearsampp.exe') {
-                        Util::logDebug('Skipping main Bearsampp process: ' . $processName . ' (PID: ' . $pid . ')');
+                        Log::debug('Skipping main Bearsampp process: ' . $processName . ' (PID: ' . $pid . ')');
                         continue;
                     }
 
@@ -571,26 +571,26 @@ class ActionQuit
                         'path' => $exePath
                     ];
 
-                    Util::logWarning('Found orphaned process: ' . $processName . ' (PID: ' . $pid . ')');
+                    Log::warning('Found orphaned process: ' . $processName . ' (PID: ' . $pid . ')');
 
                     // Attempt to kill orphaned process
                     try {
                         Win32Ps::kill($pid);
-                        Util::logInfo('Terminated orphaned process: ' . $processName . ' (PID: ' . $pid . ')');
+                        Log::info('Terminated orphaned process: ' . $processName . ' (PID: ' . $pid . ')');
                     } catch (\Exception $e) {
-                        Util::logError('Failed to terminate orphaned process ' . $processName . ': ' . $e->getMessage());
+                        Log::error('Failed to terminate orphaned process ' . $processName . ': ' . $e->getMessage());
                     }
                 }
             }
 
             if (!$orphaned['found']) {
-                Util::logInfo('No orphaned processes found');
+                Log::info('No orphaned processes found');
             } else {
-                Util::logWarning('Found ' . count($orphaned['processes']) . ' orphaned process(es)');
+                Log::warning('Found ' . count($orphaned['processes']) . ' orphaned process(es)');
             }
 
         } catch (\Exception $e) {
-            Util::logError('Error checking for orphaned processes: ' . $e->getMessage());
+            Log::error('Error checking for orphaned processes: ' . $e->getMessage());
         }
 
         return $orphaned;
@@ -664,7 +664,7 @@ class ActionQuit
      */
     private function performQuickCleanupVerification($services)
     {
-        Util::logInfo('Performing quick cleanup verification...');
+        Log::info('Performing quick cleanup verification...');
 
         $startTime = microtime(true);
         $maxTime = 2; // Maximum 2 seconds for verification
@@ -675,7 +675,7 @@ class ActionQuit
 
             // Check if we're running out of time
             if (microtime(true) - $startTime > $maxTime) {
-                Util::logDebug('Cleanup verification timeout reached, skipping remaining checks');
+                Log::debug('Cleanup verification timeout reached, skipping remaining checks');
                 return;
             }
 
@@ -685,18 +685,18 @@ class ActionQuit
             // Log summary
             if ($tempCleanup['cleaned'] > 0) {
                 $sizeMB = round($tempCleanup['size_freed'] / 1024 / 1024, 2);
-                Util::logInfo('Quick cleanup: ' . $tempCleanup['cleaned'] . ' temp files removed (' . $sizeMB . ' MB freed)');
+                Log::info('Quick cleanup: ' . $tempCleanup['cleaned'] . ' temp files removed (' . $sizeMB . ' MB freed)');
             }
 
             if ($orphanedProcesses['found']) {
-                Util::logInfo('Quick cleanup: ' . count($orphanedProcesses['processes']) . ' orphaned process(es) terminated');
+                Log::info('Quick cleanup: ' . count($orphanedProcesses['processes']) . ' orphaned process(es) terminated');
             }
 
             $duration = round(microtime(true) - $startTime, 2);
-            Util::logInfo('Quick cleanup verification completed in ' . $duration . ' seconds');
+            Log::info('Quick cleanup verification completed in ' . $duration . ' seconds');
 
         } catch (\Exception $e) {
-            Util::logWarning('Quick cleanup verification failed: ' . $e->getMessage());
+            Log::warning('Quick cleanup verification failed: ' . $e->getMessage());
         }
     }
 }

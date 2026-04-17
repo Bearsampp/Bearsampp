@@ -91,7 +91,7 @@ abstract class Module
                 }
                 Batch::removeSymlink($dest);
             } elseif (is_file($dest)) {
-                Util::logError('Removing . ' . $this->symlinkPath . ' file. It should not be a regular file');
+                Log::error('Removing . ' . $this->symlinkPath . ' file. It should not be a regular file');
                 unlink($dest);
             } elseif (is_dir($dest)) {
                 // Never recursively delete here: this path is expected to be a symlink.
@@ -100,7 +100,7 @@ abstract class Module
                 if (!$it->valid()) {
                     rmdir($dest);
                 } else {
-                    Util::logError($this->symlinkPath . ' should be a symlink to ' . $this->currentPath . '. Please remove this dir and restart bearsampp.');
+                    Log::error($this->symlinkPath . ' should be a symlink to ' . $this->currentPath . '. Please remove this dir and restart bearsampp.');
                     return;
                 }
             }
@@ -154,7 +154,7 @@ abstract class Module
      */
     protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
         $version = $version == null ? $this->version : $version;
-        Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
+        Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
     }
 
     /**

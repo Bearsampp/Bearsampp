@@ -67,7 +67,7 @@ class Nssm
      */
     public function __construct($name)
     {
-        Util::logInitClass( $this );
+        Log::initClass( $this );
         $this->name = $name;
     }
 
@@ -79,7 +79,7 @@ class Nssm
     private function writeLog($log)
     {
         global $bearsamppRoot;
-        Util::logDebug( $log, $bearsamppRoot->getNssmLogFilePath() );
+        Log::debug( $log, $bearsamppRoot->getNssmLogFilePath() );
     }
 
     /**
@@ -90,7 +90,7 @@ class Nssm
     private function writeLogInfo($log)
     {
         global $bearsamppRoot;
-        Util::logInfo( $log, $bearsamppRoot->getNssmLogFilePath() );
+        Log::info( $log, $bearsamppRoot->getNssmLogFilePath() );
     }
 
     /**
@@ -101,7 +101,7 @@ class Nssm
     private function writeLogError($log)
     {
         global $bearsamppRoot;
-        Util::logError( $log, $bearsamppRoot->getNssmLogFilePath() );
+        Log::error( $log, $bearsamppRoot->getNssmLogFilePath() );
     }
 
     /**

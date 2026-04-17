@@ -56,7 +56,7 @@ class Registry
      */
     public function __construct()
     {
-        Util::logInitClass($this);
+        Log::initClass($this);
         $this->latestError = null;
     }
 
@@ -68,7 +68,7 @@ class Registry
     private function writeLog($log)
     {
         global $bearsamppRoot;
-        Util::logDebug($log, $bearsamppRoot->getRegistryLogFilePath());
+        Log::debug($log, $bearsamppRoot->getRegistryLogFilePath());
     }
 
     /**

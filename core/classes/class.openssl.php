@@ -59,11 +59,11 @@ class OpenSsl
         $batch .= 'IF EXIST ' . $pubPath . ' IF EXIST ' . $crtPath . ' SET RESULT=OK' . PHP_EOL;
         $batch .= 'ECHO %RESULT%';
 
-        Util::logTrace('Creating SSL Certificate for "' . $name . '"');
+        Log::trace('Creating SSL Certificate for "' . $name . '"');
         $result = Batch::exec('createCertificate', $batch);
 
         $success = isset($result[0]) && $result[0] == 'OK';
-        Util::logTrace('SSL Certificate generation for "' . $name . '": ' . ($success ? 'SUCCESS' : 'FAILURE'));
+        Log::trace('SSL Certificate generation for "' . $name . '": ' . ($success ? 'SUCCESS' : 'FAILURE'));
 
         return $success;
     }

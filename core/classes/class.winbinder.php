@@ -68,7 +68,7 @@ class WinBinder
     public function __construct()
     {
         global $bearsamppCore;
-        Util::logInitClass($this);
+        Log::initClass($this);
 
         $this->defaultTitle = APP_TITLE . ' ' . $bearsamppCore->getAppVersion();
         $this->reset();
@@ -380,7 +380,7 @@ class WinBinder
     private static function writeLog($log): void
     {
         global $bearsamppRoot;
-        Util::logDebug($log, $bearsamppRoot->getWinbinderLogFilePath());
+        Log::debug($log, $bearsamppRoot->getWinbinderLogFilePath());
     }
 
     /**

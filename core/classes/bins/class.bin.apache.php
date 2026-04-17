@@ -60,7 +60,7 @@ class BinApache extends Module
      */
     public function __construct($id, $type)
     {
-        Util::logInitClass( $this );
+        Log::initClass( $this );
         $this->reload( $id, $type );
     }
 
@@ -73,7 +73,7 @@ class BinApache extends Module
     public function reload($id = null, $type = null)
     {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
-        Util::logReloadClass( $this );
+        Log::reloadClass( $this );
 
         $this->name    = $bearsamppLang->getValue( Lang::APACHE );
         $this->version = $bearsamppConfig->getRaw( self::ROOT_CFG_VERSION );
@@ -96,52 +96,52 @@ class BinApache extends Module
         }
 
         if ( !$this->enable ) {
-            Util::logInfo( $this->name . ' is not enabled!' );
+            Log::info( $this->name . ' is not enabled!' );
 
             return;
         }
         if ( !is_dir( $this->currentPath ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->currentPath ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->currentPath ) );
 
             return;
         }
         if ( !is_dir( $this->symlinkPath ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->symlinkPath ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->symlinkPath ) );
 
             return;
         }
         if ( !is_file( $this->bearsamppConf ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->bearsamppConf ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->bearsamppConf ) );
 
             return;
         }
         if ( !is_file( $this->sslConf ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->sslConf ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->sslConf ) );
 
             return;
         }
         if ( !is_file( $this->exe ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->exe ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->exe ) );
 
             return;
         }
         if ( !is_file( $this->conf ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->conf ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->conf ) );
 
             return;
         }
         if ( !is_numeric( $this->port ) || $this->port <= 0 ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_PORT, $this->port ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_PORT, $this->port ) );
 
             return;
         }
         if ( !is_numeric( $this->sslPort ) || $this->sslPort <= 0 ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_SSL_PORT, $this->sslPort ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_SSL_PORT, $this->sslPort ) );
 
             return;
         }
         if ( !is_file( $this->opensslExe ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->opensslExe ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->opensslExe ) );
 
             return;
         }
@@ -193,7 +193,7 @@ class BinApache extends Module
         global $bearsamppWinbinder;
 
         if ( !Util::isValidPort( $port ) ) {
-            Util::logError( $this->getName() . ' port not valid: ' . $port );
+            Log::error( $this->getName() . ' port not valid: ' . $port );
 
             return false;
         }
@@ -214,7 +214,7 @@ class BinApache extends Module
             return true;
         }
 
-        Util::logDebug( $this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse );
+        Log::debug( $this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse );
 
         return $isPortInUse;
     }
@@ -234,7 +234,7 @@ class BinApache extends Module
         $boxTitle = sprintf( $bearsamppLang->getValue( Lang::CHECK_PORT_TITLE ), $this->getName(), $port );
 
         if ( !Util::isValidPort( $port ) ) {
-            Util::logError( $this->getName() . ' port not valid: ' . $port );
+            Log::error( $this->getName() . ' port not valid: ' . $port );
 
             return false;
         }
@@ -243,7 +243,7 @@ class BinApache extends Module
         if ( !empty( $headers ) ) {
             foreach ( $headers as $row ) {
                 if ( Util::startWith( $row, 'Server: ' ) || Util::startWith( $row, 'server: ' ) ) {
-                    Util::logDebug( $this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . str_replace( 'Server: ', '', str_replace( 'server: ', '', trim( $row ) ) ) );
+                    Log::debug( $this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . str_replace( 'Server: ', '', str_replace( 'server: ', '', trim( $row ) ) ) );
                     if ( $showWindow ) {
                         $bearsamppWinbinder->messageBoxInfo(
                             sprintf( $bearsamppLang->getValue( Lang::PORT_USED_BY ), $port, str_replace( 'Server: ', '', str_replace( 'server: ', '', trim( $row ) ) ) ),
@@ -254,7 +254,7 @@ class BinApache extends Module
                     return true;
                 }
             }
-            Util::logDebug( $this->getName() . ' port ' . $port . ' is used by another application' );
+            Log::debug( $this->getName() . ' port ' . $port . ' is used by another application' );
             if ( $showWindow ) {
                 $bearsamppWinbinder->messageBoxWarning(
                     sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED_BY ), $port ),
@@ -263,7 +263,7 @@ class BinApache extends Module
             }
         }
         else {
-            Util::logDebug( $this->getName() . ' port ' . $port . ' is not used' );
+            Log::debug( $this->getName() . ' port ' . $port . ' is not used' );
             if ( $showWindow ) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED ), $port ),
@@ -285,7 +285,7 @@ class BinApache extends Module
      */
     public function switchVersion($version, $showWindow = false)
     {
-        Util::logDebug( 'Switch ' . $this->name . ' version to ' . $version );
+        Log::debug( 'Switch ' . $this->name . ' version to ' . $version );
 
         return $this->updateConfig( $version, 0, $showWindow );
     }
@@ -308,7 +308,7 @@ class BinApache extends Module
         }
 
         $version = $version == null ? $this->version : $version;
-        Util::logDebug( ($sub > 0 ? str_repeat( ' ', 2 * $sub ) : '') . 'Update ' . $this->name . ' ' . $version . ' config' );
+        Log::debug( ($sub > 0 ? str_repeat( ' ', 2 * $sub ) : '') . 'Update ' . $this->name . ' ' . $version . ' config' );
 
         $boxTitle = sprintf( $bearsamppLang->getValue( Lang::SWITCH_VERSION_TITLE ), $this->getName(), $version );
 
@@ -325,11 +325,11 @@ class BinApache extends Module
         $apachePhpModulePath = $bearsamppBins->getPhp()->getApacheModule( $version );
         $apachePhpModuleDll  = basename( $apachePhpModulePath );
 
-        Util::logDebug( ($sub > 0 ? str_repeat( ' ', 2 * $sub ) : '') . 'PHP TsDll found: ' . $tsDll );
-        Util::logDebug( ($sub > 0 ? str_repeat( ' ', 2 * $sub ) : '') . 'PHP Apache module found: ' . $apachePhpModulePath );
+        Log::debug( ($sub > 0 ? str_repeat( ' ', 2 * $sub ) : '') . 'PHP TsDll found: ' . $tsDll );
+        Log::debug( ($sub > 0 ? str_repeat( ' ', 2 * $sub ) : '') . 'PHP Apache module found: ' . $apachePhpModulePath );
 
         if ( !file_exists( $conf ) || !file_exists( $bearsamppConf ) ) {
-            Util::logError( 'bearsampp config files not found for ' . $this->getName() . ' ' . $version );
+            Log::error( 'bearsampp config files not found for ' . $this->getName() . ' ' . $version );
             if ( $showWindow ) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf( $bearsamppLang->getValue( Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR ), $this->getName() . ' ' . $version ),
@@ -342,7 +342,7 @@ class BinApache extends Module
 
         $bearsamppConfRaw = parse_ini_file( $bearsamppConf );
         if ( $bearsamppConfRaw === false || !isset( $bearsamppConfRaw[self::ROOT_CFG_VERSION] ) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version ) {
-            Util::logError( 'bearsampp config file malformed for ' . $this->getName() . ' ' . $version );
+            Log::error( 'bearsampp config file malformed for ' . $this->getName() . ' ' . $version );
             if ( $showWindow ) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf( $bearsamppLang->getValue( Lang::BEARSAMPP_CONF_MALFORMED_ERROR ), $this->getName() . ' ' . $version ),
@@ -354,7 +354,7 @@ class BinApache extends Module
         }
 
         if ( $tsDll === false || $apachePhpModulePath === false ) {
-            Util::logDebug( $this->getName() . ' ' . $version . ' does not seem to be compatible with PHP ' . $bearsamppBins->getPhp()->getVersion() );
+            Log::debug( $this->getName() . ' ' . $version . ' does not seem to be compatible with PHP ' . $bearsamppBins->getPhp()->getVersion() );
             if ( $showWindow ) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf( $bearsamppLang->getValue( Lang::APACHE_INCPT ), $version, $bearsamppBins->getPhp()->getVersion() ),
@@ -369,7 +369,7 @@ class BinApache extends Module
         $this->setVersion( $version );
 
         // conf
-        Util::logDebug( 'httpd.conf = ' . $conf );
+        Log::debug( 'httpd.conf = ' . $conf );
         Util::replaceInFile( $conf, array(
             // PHP module
             '/^#?PHPIniDir\s.*/'                          => ($bearsamppBins->getPhp()->isEnable() ? '' : '#') . 'PHPIniDir "' . $bearsamppBins->getPhp()->getSymlinkPath() . '"',
@@ -783,9 +783,9 @@ class BinApache extends Module
         $offlineContent = $this->getOfflineContent();
 
         $conf = file_get_contents( $this->getConf() );
-        Util::logTrace( 'refreshConf ' . $this->getConf() );
+        Log::trace( 'refreshConf ' . $this->getConf() );
         preg_match( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $conf, $matches );
-        Util::logTrace( isset( $matches[1] ) ? print_r( $matches[1], true ) : 'N/A' );
+        Log::trace( isset( $matches[1] ) ? print_r( $matches[1], true ) : 'N/A' );
 
         if ( $putOnline ) {
             $conf = preg_replace( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $onlineContent, $conf, -1, $count );
@@ -794,12 +794,12 @@ class BinApache extends Module
             $conf = preg_replace( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $offlineContent, $conf, -1, $count );
         }
         file_put_contents( $this->getConf(), $conf );
-        Util::logDebug( 'Refresh ' . $this->getConf() . ': ' . $count . ' occurrence(s) replaced' );
+        Log::debug( 'Refresh ' . $this->getConf() . ': ' . $count . ' occurrence(s) replaced' );
 
         $sslConf = file_get_contents( $this->getSslConf() );
-        Util::logTrace( 'refreshConf ' . $this->getSslConf() );
+        Log::trace( 'refreshConf ' . $this->getSslConf() );
         preg_match( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $sslConf, $matches );
-        Util::logTrace( isset( $matches[1] ) ? print_r( $matches[1], true ) : 'N/A' );
+        Log::trace( isset( $matches[1] ) ? print_r( $matches[1], true ) : 'N/A' );
 
         if ( $putOnline ) {
             $sslConf = preg_replace( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $onlineContent, $sslConf, -1, $count );
@@ -808,7 +808,7 @@ class BinApache extends Module
             $sslConf = preg_replace( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $offlineContent, $sslConf, -1, $count );
         }
         file_put_contents( $this->getSslConf(), $sslConf );
-        Util::logDebug( 'Refresh ' . $this->getSslConf() . ': ' . $count . ' occurrence(s) replaced' );
+        Log::debug( 'Refresh ' . $this->getSslConf() . ': ' . $count . ' occurrence(s) replaced' );
     }
 
     /**
@@ -829,9 +829,9 @@ class BinApache extends Module
 
         foreach ( $this->getAlias() as $alias ) {
             $aliasConf = file_get_contents( $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf' );
-            Util::logTrace( 'refreshAlias ' . $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf' );
+            Log::trace( 'refreshAlias ' . $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf' );
             preg_match( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $aliasConf, $matches );
-            Util::logTrace( isset( $matches[1] ) ? print_r( $matches[1], true ) : 'N/A' );
+            Log::trace( isset( $matches[1] ) ? print_r( $matches[1], true ) : 'N/A' );
 
             if ( $putOnline ) {
                 $aliasConf = preg_replace( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $onlineContent, $aliasConf, -1, $count );
@@ -840,7 +840,7 @@ class BinApache extends Module
                 $aliasConf = preg_replace( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $offlineContent, $aliasConf, -1, $count );
             }
             file_put_contents( $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf', $aliasConf );
-            Util::logDebug( 'Refresh ' . $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf: ' . $count . ' occurrence(s) replaced' );
+            Log::debug( 'Refresh ' . $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf: ' . $count . ' occurrence(s) replaced' );
         }
 
         // Homepage
@@ -865,9 +865,9 @@ class BinApache extends Module
 
         foreach ( $this->getVhosts() as $vhost ) {
             $vhostConf = file_get_contents( $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf' );
-            Util::logTrace( 'refreshVhost ' . $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf' );
+            Log::trace( 'refreshVhost ' . $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf' );
             preg_match( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $vhostConf, $matches );
-            Util::logTrace( isset( $matches[1] ) ? print_r( $matches[1], true ) : 'N/A' );
+            Log::trace( isset( $matches[1] ) ? print_r( $matches[1], true ) : 'N/A' );
 
             if ( $putOnline ) {
                 $vhostConf = preg_replace( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $onlineContent, $vhostConf, -1, $count );
@@ -876,7 +876,7 @@ class BinApache extends Module
                 $vhostConf = preg_replace( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $offlineContent, $vhostConf, -1, $count );
             }
             file_put_contents( $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf', $vhostConf );
-            Util::logDebug( 'Refresh ' . $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf: ' . $count . ' occurrence(s) replaced' );
+            Log::debug( 'Refresh ' . $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf: ' . $count . ' occurrence(s) replaced' );
         }
     }
 
@@ -895,7 +895,7 @@ class BinApache extends Module
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
         if ( $enabled == Config::ENABLED && !is_dir( $this->currentPath ) ) {
-            Util::logDebug( $this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath );
+            Log::debug( $this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath );
             if ( $showWindow ) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf( $bearsamppLang->getValue( Lang::ENABLE_BUNDLE_NOT_EXIST ), $this->getName(), $this->getVersion(), $this->currentPath ),
@@ -905,7 +905,7 @@ class BinApache extends Module
             $enabled = Config::DISABLED;
         }
 
-        Util::logInfo( $this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled') );
+        Log::info( $this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled') );
         $this->enable = $enabled == Config::ENABLED;
         $bearsamppConfig->replace( self::ROOT_CFG_ENABLE, $enabled );
 

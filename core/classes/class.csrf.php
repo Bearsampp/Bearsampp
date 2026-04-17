@@ -85,7 +85,7 @@ class Csrf
             // Generate cryptographically secure random token
             $token = bin2hex(random_bytes(32));
         } catch (Exception $e) {
-            Util::logError('Failed to generate CSRF token: ' . $e->getMessage());
+            Log::error('Failed to generate CSRF token: ' . $e->getMessage());
             // Fallback to less secure but functional method
             $token = hash('sha256', uniqid('bearsampp_csrf_', true) . microtime(true));
         }
@@ -101,7 +101,7 @@ class Csrf
         }
 
         // Log token generation without exposing token material
-        Util::logDebug('CSRF token generated successfully');
+        Log::debug('CSRF token generated successfully');
 
         return $token;
     }
@@ -147,26 +147,26 @@ class Csrf
 
         // Check if token is provided
         if (empty($token) || !is_string($token)) {
-            Util::logWarning('CSRF validation failed: No token provided');
+            Log::warning('CSRF validation failed: No token provided');
             return false;
         }
 
         // Check if token exists in session
         if (!isset($_SESSION[self::SESSION_KEY][$token])) {
-            Util::logWarning('CSRF validation failed: Token not found in session');
+            Log::warning('CSRF validation failed: Token not found in session');
             return false;
         }
 
         // Check if token is expired
         $tokenTimestamp = $_SESSION[self::SESSION_KEY][$token];
         if (time() - $tokenTimestamp > self::TOKEN_EXPIRATION) {
-            Util::logWarning('CSRF validation failed: Token expired');
+            Log::warning('CSRF validation failed: Token expired');
             unset($_SESSION[self::SESSION_KEY][$token]);
             return false;
         }
 
         // Token is valid
-        Util::logDebug('CSRF token validated successfully');
+        Log::debug('CSRF token validated successfully');
 
         // Remove token if one-time use is requested
         if ($removeAfterValidation) {
@@ -205,7 +205,7 @@ class Csrf
             }
         }
 
-        Util::logWarning('CSRF validation failed: No token in request');
+        Log::warning('CSRF validation failed: No token in request');
         return false;
     }
 
@@ -266,7 +266,7 @@ class Csrf
         }
 
         if ($removed > 0) {
-            Util::logDebug("Cleaned up $removed expired CSRF tokens");
+            Log::debug("Cleaned up $removed expired CSRF tokens");
         }
 
         return $removed;

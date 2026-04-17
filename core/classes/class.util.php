@@ -13,10 +13,11 @@
  * - Cleaning and retrieving command line, GET, and POST variables based on type specifications.
  * - String manipulation methods to check if strings contain, start with, or end with specified substrings.
  * - File and directory management functions for deleting, clearing, or finding files and directories.
- * - Logging functionalities tailored for different levels of verbosity (ERROR, WARNING, INFO, DEBUG, TRACE).
  * - System utilities for handling registry operations, managing environment variables, and executing system commands.
  * - Network utilities to validate IPs, domains, and manage HTTP requests.
  * - Helper functions for encoding, decoding, and file operations.
+ *
+ * Logging is handled by the Log class. @see Log
  *
  * This class is designed to be used as a helper or utility class where methods are accessed statically.
  * This means you do not need to instantiate it to use the methods, but can simply call them using the Util::methodName() syntax.
@@ -24,7 +25,6 @@
  * Usage Example:
  * ```
  * $cleanedData = Util::cleanGetVar('data', 'text');
- * Util::logError('An error occurred');
  * $isAvailable = Util::isValidIp('192.168.1.1');
  * ```
  *
@@ -33,43 +33,6 @@
  */
 class Util
 {
-    /**
-     * This code snippet defines constants for logging levels.
-     */
-    const LOG_ERROR = 'ERROR';
-    const LOG_WARNING = 'WARNING';
-    const LOG_INFO = 'INFO';
-    const LOG_DEBUG = 'DEBUG';
-    const LOG_TRACE = 'TRACE';
-
-    /**
-     * Log buffer for batching log writes
-     * @var array
-     */
-    private static $logBuffer = [];
-
-    /**
-     * Maximum number of log entries to buffer before flushing
-     * @var int
-     */
-    private static $logBufferSize = 50;
-
-    /**
-     * Flag to track if shutdown handler is registered
-     * @var bool
-     */
-    private static $shutdownRegistered = false;
-
-    /**
-     * Statistics for monitoring log buffer effectiveness
-     * @var array
-     */
-    private static $logStats = [
-        'buffered' => 0,
-        'flushed' => 0,
-        'writes' => 0
-    ];
-
     /**
      * Cache for file scan results
      * @var array|null
@@ -216,7 +179,7 @@ class Util
         $sanitized = preg_replace('/[^0-9]/', '', (string)$pid);
 
         if (empty($sanitized)) {
-            self::logWarning('Invalid PID provided: ' . var_export($pid, true));
+            Log::warning('Invalid PID provided: ' . var_export($pid, true));
             return false;
         }
 
@@ -224,7 +187,7 @@ class Util
 
         // Validate range (PIDs are positive integers)
         if ($pidInt <= 0 || $pidInt > 2147483647) {
-            self::logWarning('PID out of valid range: ' . $pidInt);
+            Log::warning('PID out of valid range: ' . $pidInt);
             return false;
         }
 
@@ -244,7 +207,7 @@ class Util
 
         // Require strictly digits to avoid silently changing meaning
         if ($portStr === '' || !preg_match('/^\d+$/', $portStr)) {
-            self::logWarning('Invalid port provided: ' . var_export($port, true));
+            Log::warning('Invalid port provided: ' . var_export($port, true));
             return false;
         }
 
@@ -252,7 +215,7 @@ class Util
 
         // Validate range (1-65535)
         if ($portInt < 1 || $portInt > 65535) {
-            self::logWarning('Port out of valid range: ' . $portInt);
+            Log::warning('Port out of valid range: ' . $portInt);
             return false;
         }
 
@@ -269,7 +232,7 @@ class Util
     public static function sanitizeServiceName($serviceName)
     {
         if (!is_string($serviceName) || empty($serviceName)) {
-            self::logWarning('Invalid service name: not a string or empty');
+            Log::warning('Invalid service name: not a string or empty');
             return false;
         }
 
@@ -277,7 +240,7 @@ class Util
         $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $serviceName);
 
         if (empty($sanitized)) {
-            self::logWarning('Service name became empty after sanitization: ' . $serviceName);
+            Log::warning('Service name became empty after sanitization: ' . $serviceName);
             return false;
         }
 
@@ -308,7 +271,7 @@ class Util
         // Check for path traversal attempts (but allow environment variables)
         $pathWithoutEnvVars = preg_replace('/%[^%]+%/', '', $sanitized);
         if (strpos($pathWithoutEnvVars, '..') !== false) {
-            self::logWarning('Path traversal attempt detected: ' . $path);
+            Log::warning('Path traversal attempt detected: ' . $path);
             return false;
         }
 
@@ -426,7 +389,7 @@ class Util
                 $randomString .= $characters[$randomIndex];
             }
         } catch (Exception $e) {
-            self::logError('Failed to generate cryptographically secure random string: ' . $e->getMessage());
+            Log::error('Failed to generate cryptographically secure random string: ' . $e->getMessage());
             throw $e;
         }
 
@@ -447,7 +410,7 @@ class Util
         try {
             return bin2hex(random_bytes($length));
         } catch (Exception $e) {
-            self::logError('Failed to generate secure token: ' . $e->getMessage());
+            Log::error('Failed to generate secure token: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -466,7 +429,7 @@ class Util
         try {
             return random_bytes($length);
         } catch (Exception $e) {
-            self::logError('Failed to generate secure bytes: ' . $e->getMessage());
+            Log::error('Failed to generate secure bytes: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -722,10 +685,10 @@ class Util
                                 $replace = str_replace('{{' . $paramsMatch . '}}', $matches[$paramsMatch], $replace);
                             }
                         }
-                        self::logTrace('Replace in file ' . $path . ' :');
-                        self::logTrace('## line_num: ' . trim($nb));
-                        self::logTrace('## old: ' . trim($line));
-                        self::logTrace('## new: ' . trim($replace));
+                        Log::trace('Replace in file ' . $path . ' :');
+                        Log::trace('## line_num: ' . trim($nb));
+                        Log::trace('## old: ' . trim($line));
+                        Log::trace('## new: ' . trim($replace));
                         fwrite($fp, $replace . PHP_EOL);
 
                         $replaceDone = true;
@@ -791,7 +754,7 @@ class Util
                 Registry::ENV_KEY,
                 Registry::APP_BINS_REG_ENTRY
             );
-            self::logDebug('App reg key from registry: ' . $value);
+            Log::debug('App reg key from registry: ' . $value);
         } else {
             global $bearsamppBins, $bearsamppTools;
             $value = '';
@@ -832,7 +795,7 @@ class Util
                 $value .= $bearsamppTools->getRuby()->getSymlinkPath() . '/bin;';
             }
             $value = self::formatWindowsPath($value);
-            self::logDebug('Generated app bins reg key: ' . $value);
+            Log::debug('Generated app bins reg key: ' . $value);
         }
 
         return $value;
@@ -1003,257 +966,6 @@ class Util
 
         // Return true if the file doesn't exist (already disabled)
         return true;
-    }
-
-    /**
-     * Logs a message to a specified file or default log file based on the log type.
-     * Implements buffering to reduce file I/O operations and improve performance.
-     *
-     * @param   string       $data  The message to log.
-     * @param   string       $type  The type of log message: 'ERROR', 'WARNING', 'INFO', 'DEBUG', or 'TRACE'.
-     * @param   string|null  $file  The file path to write the log message to. If null, uses default log file based on type.
-     */
-    private static function log($data, $type, $file = null)
-    {
-        global $bearsamppRoot, $bearsamppCore, $bearsamppConfig;
-
-        // Safety check: if globals aren't initialized, use error_log as fallback
-        if (!isset($bearsamppRoot) || !isset($bearsamppCore) || !isset($bearsamppConfig)) {
-            error_log('[' . $type . '] ' . $data);
-            return;
-        }
-
-        // Register shutdown handler on first log call
-        if (!self::$shutdownRegistered) {
-            register_shutdown_function([__CLASS__, 'flushLogBuffer']);
-            self::$shutdownRegistered = true;
-        }
-
-        $file = $file == null ? ($type == self::LOG_ERROR ? $bearsamppRoot->getErrorLogFilePath() : $bearsamppRoot->getLogFilePath()) : $file;
-        if (!$bearsamppRoot->isRoot()) {
-            $file = $bearsamppRoot->getHomepageLogFilePath();
-        }
-
-        $verbose                         = array();
-        $verbose[Config::VERBOSE_SIMPLE] = $type == self::LOG_ERROR || $type == self::LOG_WARNING;
-        $verbose[Config::VERBOSE_REPORT] = $verbose[Config::VERBOSE_SIMPLE] || $type == self::LOG_INFO;
-        $verbose[Config::VERBOSE_DEBUG]  = $verbose[Config::VERBOSE_REPORT] || $type == self::LOG_DEBUG;
-        $verbose[Config::VERBOSE_TRACE]  = $verbose[Config::VERBOSE_DEBUG] || $type == self::LOG_TRACE;
-
-        $writeLog = false;
-        if ($bearsamppConfig->getLogsVerbose() == Config::VERBOSE_SIMPLE && $verbose[Config::VERBOSE_SIMPLE]) {
-            $writeLog = true;
-        } elseif ($bearsamppConfig->getLogsVerbose() == Config::VERBOSE_REPORT && $verbose[Config::VERBOSE_REPORT]) {
-            $writeLog = true;
-        } elseif ($bearsamppConfig->getLogsVerbose() == Config::VERBOSE_DEBUG && $verbose[Config::VERBOSE_DEBUG]) {
-            $writeLog = true;
-        } elseif ($bearsamppConfig->getLogsVerbose() == Config::VERBOSE_TRACE && $verbose[Config::VERBOSE_TRACE]) {
-            $writeLog = true;
-        }
-
-        if ($writeLog) {
-            // Add to buffer instead of writing immediately
-            self::$logBuffer[] = [
-                'file' => $file,
-                'data' => $data,
-                'type' => $type,
-                'time' => time()
-            ];
-            self::$logStats['buffered']++;
-
-            // Flush if buffer is full or if it's an error (errors should be written immediately)
-            if (count(self::$logBuffer) >= self::$logBufferSize || $type == self::LOG_ERROR) {
-                self::flushLogBuffer();
-            }
-        }
-    }
-
-    /**
-     * Flushes the log buffer to disk.
-     * Groups log entries by file to minimize file operations.
-     *
-     * @return void
-     */
-    public static function flushLogBuffer()
-    {
-        if (empty(self::$logBuffer)) {
-            return;
-        }
-
-        global $bearsamppCore;
-
-        // Group logs by file
-        $logsByFile = [];
-        foreach (self::$logBuffer as $log) {
-            if (!isset($logsByFile[$log['file']])) {
-                $logsByFile[$log['file']] = [];
-            }
-            $logsByFile[$log['file']][] = $log;
-        }
-
-        // Write all logs at once per file
-        foreach ($logsByFile as $file => $logs) {
-            $content = '';
-            foreach ($logs as $log) {
-                $content .= '[' . date('Y-m-d H:i:s', $log['time']) . '] # ' .
-                           APP_TITLE . ' ' . $bearsamppCore->getAppVersion() . ' # ' .
-                           $log['type'] . ': ' . $log['data'] . PHP_EOL;
-            }
-
-            // Use LOCK_EX to prevent race conditions
-            @file_put_contents($file, $content, FILE_APPEND | LOCK_EX);
-            self::$logStats['writes']++;
-        }
-
-        self::$logStats['flushed'] += count(self::$logBuffer);
-        self::$logBuffer = [];
-    }
-
-    /**
-     * Gets the current log buffer statistics.
-     * Useful for monitoring and debugging log buffer effectiveness.
-     *
-     * @return array Array containing buffered, flushed, and writes counts
-     */
-    public static function getLogStats()
-    {
-        return self::$logStats;
-    }
-
-    /**
-     * Sets the log buffer size.
-     * Allows dynamic adjustment of buffer size based on application needs.
-     *
-     * @param int $size The new buffer size
-     * @return void
-     */
-    public static function setLogBufferSize($size)
-    {
-        if ($size > 0 && $size <= 1000) {
-            self::$logBufferSize = $size;
-        }
-    }
-
-    /**
-     * Gets the current log buffer size.
-     *
-     * @return int The current buffer size
-     */
-    public static function getLogBufferSize()
-    {
-        return self::$logBufferSize;
-    }
-
-    /**
-     * Appends a separator line to multiple log files if they do not already end with it.
-     * This function ensures that each log file ends with a clear separator for better readability.
-     *
-     * @global object $bearsamppRoot An object that provides paths to various log files.
-     */
-    public static function logSeparator()
-    {
-        global $bearsamppRoot;
-
-        $logs = array(
-            $bearsamppRoot->getLogFilePath(),
-            $bearsamppRoot->getErrorLogFilePath(),
-            $bearsamppRoot->getServicesLogFilePath(),
-            $bearsamppRoot->getRegistryLogFilePath(),
-            $bearsamppRoot->getStartupLogFilePath(),
-            $bearsamppRoot->getBatchLogFilePath(),
-            $bearsamppRoot->getWinbinderLogFilePath(),
-        );
-
-        $separator = '========================================================================================' . PHP_EOL;
-        foreach ($logs as $log) {
-            if (!file_exists($log)) {
-                continue; // Skip to the next iteration if the file does not exist
-            }
-            $logContent = @file_get_contents($log);
-            if ($logContent !== false && !self::endWith($logContent, $separator)) {
-                file_put_contents($log, $separator, FILE_APPEND);
-            }
-        }
-    }
-
-    /**
-     * Logs trace information.
-     * This function is a wrapper around the generic log function for trace-level messages.
-     *
-     * @param   mixed        $data  The data to log.
-     * @param   string|null  $file  Optional. The file path to log to. If not provided, a default path is used.
-     */
-    public static function logTrace($data, $file = null)
-    {
-        self::log($data, self::LOG_TRACE, $file);
-    }
-
-    /**
-     * Logs debug information.
-     * This function is a wrapper around the generic log function for debug-level messages.
-     *
-     * @param   mixed        $data  The data to log.
-     * @param   string|null  $file  Optional. The file path to log to. If not provided, a default path is used.
-     */
-    public static function logDebug($data, $file = null)
-    {
-        self::log($data, self::LOG_DEBUG, $file);
-    }
-
-    /**
-     * Logs informational messages.
-     * This function is a wrapper around the generic log function for informational messages.
-     *
-     * @param   mixed        $data  The data to log.
-     * @param   string|null  $file  Optional. The file path to log to. If not provided, a default path is used.
-     */
-    public static function logInfo($data, $file = null)
-    {
-        self::log($data, self::LOG_INFO, $file);
-    }
-
-    /**
-     * Logs warning messages.
-     * This function is a wrapper around the generic log function for warning-level messages.
-     *
-     * @param   mixed        $data  The data to log.
-     * @param   string|null  $file  Optional. The file path to log to. If not provided, a default path is used.
-     */
-    public static function logWarning($data, $file = null)
-    {
-        self::log($data, self::LOG_WARNING, $file);
-    }
-
-    /**
-     * Logs error messages.
-     * This function is a wrapper around the generic log function for error-level messages.
-     *
-     * @param   mixed        $data  The data to log.
-     * @param   string|null  $file  Optional. The file path to log to. If not provided, a default path is used.
-     */
-    public static function logError($data, $file = null)
-    {
-        self::log($data, self::LOG_ERROR, $file);
-    }
-
-    /**
-     * Logs the initialization of a class instance.
-     *
-     * @param   object  $classInstance  The instance of the class to log.
-     */
-    public static function logInitClass($classInstance)
-    {
-        self::logTrace('Init ' . get_class($classInstance));
-    }
-
-    /**
-     * Logs the reloading of a class instance.
-     *
-     * @param   object  $classInstance  The instance of the class to log.
-     */
-    public static function logReloadClass($classInstance)
-    {
-        self::logTrace('Reload ' . get_class($classInstance));
     }
 
     /**
@@ -1479,18 +1191,18 @@ class Util
     {
         global $bearsamppCore, $bearsamppWinbinder;
 
-        self::logTrace('startLoading() called');
-        self::logTrace('PHP executable: ' . $bearsamppCore->getPhpExe());
-        self::logTrace('Root file: ' . Core::isRoot_FILE);
-        self::logTrace('Action: ' . Action::LOADING);
+        Log::trace('startLoading() called');
+        Log::trace('PHP executable: ' . $bearsamppCore->getPhpExe());
+        Log::trace('Root file: ' . Core::isRoot_FILE);
+        Log::trace('Action: ' . Action::LOADING);
 
         $command = Core::isRoot_FILE . ' ' . Action::LOADING;
-        self::logTrace('Executing command: ' . $bearsamppCore->getPhpExe() . ' ' . $command);
+        Log::trace('Executing command: ' . $bearsamppCore->getPhpExe() . ' ' . $command);
 
         $result = $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), $command);
-        self::logTrace('exec() returned: ' . var_export($result, true));
+        Log::trace('exec() returned: ' . var_export($result, true));
 
-        self::logTrace('startLoading() completed');
+        Log::trace('startLoading() completed');
     }
 
     /**
@@ -1558,13 +1270,13 @@ class Util
             $cachedResult = self::getFileScanCache($cacheKey);
             if ($cachedResult !== false) {
                 self::$fileScanStats['hits']++;
-                self::logDebug('File scan cache HIT (saved expensive scan operation)');
+                Log::debug('File scan cache HIT (saved expensive scan operation)');
                 return $cachedResult;
             }
         }
 
         self::$fileScanStats['misses']++;
-        self::logDebug('File scan cache MISS (performing full scan)');
+        Log::debug('File scan cache MISS (performing full scan)');
 
         // Perform the actual scan
         $startTime = self::getMicrotime();
@@ -1577,11 +1289,11 @@ class Util
             foreach ($findFiles as $findFile) {
                 $result[] = $findFile;
             }
-            self::logDebug($pathToScan['path'] . ' scanned in ' . round(self::getMicrotime() - $pathStartTime, 3) . 's');
+            Log::debug($pathToScan['path'] . ' scanned in ' . round(self::getMicrotime() - $pathStartTime, 3) . 's');
         }
 
         $totalTime = round(self::getMicrotime() - $startTime, 3);
-        self::logInfo('Full file scan completed in ' . $totalTime . 's (' . count($result) . ' files found)');
+        Log::info('Full file scan completed in ' . $totalTime . 's (' . count($result) . ' files found)');
 
         // Store in cache if enabled
         if ($useCache) {
@@ -1632,7 +1344,7 @@ class Util
 
             // Verify file integrity before unserializing
             if (!self::verifyCacheIntegrity($fileContents, $cacheKey)) {
-                self::logWarning('File scan cache integrity check failed for key: ' . $cacheKey . '. Possible tampering detected.');
+                Log::warning('File scan cache integrity check failed for key: ' . $cacheKey . '. Possible tampering detected.');
                 @unlink($cacheFile);
                 return false;
             }
@@ -1656,7 +1368,7 @@ class Util
                 }
             } else {
                 // Invalid cache structure, delete file
-                self::logWarning('Invalid cache structure detected for key: ' . $cacheKey);
+                Log::warning('Invalid cache structure detected for key: ' . $cacheKey);
                 @unlink($cacheFile);
             }
         }
@@ -1695,7 +1407,7 @@ class Util
         if (isset($bearsamppRoot)) {
             $cacheFile = $bearsamppRoot->getTmpPath() . '/filescan_cache_' . $cacheKey . '.dat';
             @file_put_contents($cacheFile, serialize($cacheData), LOCK_EX);
-            self::logDebug('File scan results cached to: ' . $cacheFile);
+            Log::debug('File scan results cached to: ' . $cacheFile);
         }
     }
 
@@ -1727,7 +1439,7 @@ class Util
                     self::$cacheIntegrityKey = bin2hex(random_bytes(32));
                     @file_put_contents($keyFile, self::$cacheIntegrityKey, LOCK_EX);
                 } catch (Exception $e) {
-                    self::logError('Failed to generate cache integrity key: ' . $e->getMessage());
+                    Log::error('Failed to generate cache integrity key: ' . $e->getMessage());
                     // Fallback to a less secure but functional key
                     self::$cacheIntegrityKey = hash('sha256', uniqid('bearsampp_cache_', true));
                 }
@@ -1802,7 +1514,7 @@ class Util
                 foreach ($cacheFiles as $cacheFile) {
                     @unlink($cacheFile);
                 }
-                self::logInfo('Cleared ' . count($cacheFiles) . ' file scan cache files');
+                Log::info('Cleared ' . count($cacheFiles) . ' file scan cache files');
             }
         }
 
@@ -1835,7 +1547,7 @@ class Util
     {
         if ($seconds > 0 && $seconds <= 86400) { // Max 24 hours
             self::$fileScanCacheDuration = $seconds;
-            self::logDebug('File scan cache duration set to ' . $seconds . ' seconds');
+            Log::debug('File scan cache duration set to ' . $seconds . ' seconds');
         }
     }
 
@@ -2135,7 +1847,7 @@ class Util
             }
         }
 
-        self::logDebug('changePath() completed: ' . $result['countChangedFiles'] . ' files changed, ' . $result['countChangedOcc'] . ' total occurrences');
+        Log::debug('changePath() completed: ' . $result['countChangedFiles'] . ' files changed, ' . $result['countChangedOcc'] . ' total occurrences');
 
         return $result;
     }
@@ -2151,7 +1863,7 @@ class Util
     {
         $result = self::getApiJson($url);
         if (empty($result)) {
-            self::logError('Cannot retrieve latest github info for: ' . $result . ' RESULT');
+            Log::error('Cannot retrieve latest github info for: ' . $result . ' RESULT');
 
             return null;
         }
@@ -2161,13 +1873,13 @@ class Util
             $tagName     = $resultArray['tag_name'];
             $downloadUrl = $resultArray['assets'][0]['browser_download_url'];
             $name        = $resultArray['name'];
-            self::logDebug('Latest version tag name: ' . $tagName);
-            self::logDebug('Download URL: ' . $downloadUrl);
-            self::logDebug('Name: ' . $name);
+            Log::debug('Latest version tag name: ' . $tagName);
+            Log::debug('Download URL: ' . $downloadUrl);
+            Log::debug('Name: ' . $name);
 
             return ['version' => $tagName, 'html_url' => $downloadUrl, 'name' => $name];
         } else {
-            self::logError('Tag name, download URL, or name not found in the response: ' . $result);
+            Log::error('Tag name, download URL, or name not found in the response: ' . $result);
 
             return null;
         }
@@ -2305,9 +2017,9 @@ class Util
             }
             $result = $rebuildResult;
 
-            self::logDebug('getHttpHeaders:');
+            Log::debug('getHttpHeaders:');
             foreach ($result as $header) {
-                self::logDebug('-> ' . $header);
+                Log::debug('-> ' . $header);
             }
         }
 
@@ -2374,7 +2086,7 @@ class Util
             return $result;
         }
 
-        self::logTrace('getCurlHttpHeaders:' . $response);
+        Log::trace('getCurlHttpHeaders:' . $response);
         $responseHeaders = explode("\r\n\r\n", $response, 2);
         if (!isset($responseHeaders[0]) || empty($responseHeaders[0])) {
             return $result;
@@ -2424,9 +2136,9 @@ class Util
             }
             $result = $rebuildResult;
 
-            self::logDebug('getHeaders:');
+            Log::debug('getHeaders:');
             foreach ($result as $header) {
-                self::logDebug('-> ' . $header);
+                Log::debug('-> ' . $header);
             }
         }
 
@@ -2453,7 +2165,7 @@ class Util
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $data = curl_exec($ch);
         if (curl_errno($ch)) {
-            Util::logError('CURL Error: ' . curl_error($ch));
+            Log::error('CURL Error: ' . curl_error($ch));
         }
 
         // curl_close() is deprecated in PHP 8.5+ as it has no effect since PHP 8.0
@@ -2551,7 +2263,7 @@ class Util
             if (!$service->isInstalled()) {
                 $service->create();
                 if ($service->start()) {
-                    self::logInfo(sprintf('%s service successfully installed. (name: %s ; port: %s)', $name, $service->getName(), $port));
+                    Log::info(sprintf('%s service successfully installed. (name: %s ; port: %s)', $name, $service->getName(), $port));
                     if ($showWindow) {
                         $bearsamppWinbinder->messageBoxInfo(
                             sprintf($bearsamppLang->getValue(Lang::SERVICE_INSTALLED), $name, $service->getName(), $port),
@@ -2570,13 +2282,13 @@ class Util
                             $serviceErrorLog .= sprintf(' (conf errors detected : %s)', $cmdSyntaxCheck['content']);
                         }
                     }
-                    self::logError($serviceErrorLog);
+                    Log::error($serviceErrorLog);
                     if ($showWindow) {
                         $bearsamppWinbinder->messageBoxError($serviceError, $boxTitle);
                     }
                 }
             } else {
-                self::logWarning(sprintf('%s service already installed', $name));
+                Log::warning(sprintf('%s service already installed', $name));
                 if ($showWindow) {
                     $bearsamppWinbinder->messageBoxWarning(
                         sprintf($bearsamppLang->getValue(Lang::SERVICE_ALREADY_INSTALLED), $name),
@@ -2587,7 +2299,7 @@ class Util
                 return true;
             }
         } elseif ($service->isRunning()) {
-            self::logWarning(sprintf('%s service already installed and running', $name));
+            Log::warning(sprintf('%s service already installed and running', $name));
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxWarning(
                     sprintf($bearsamppLang->getValue(Lang::SERVICE_ALREADY_INSTALLED), $name),
@@ -2597,7 +2309,7 @@ class Util
 
             return true;
         } else {
-            self::logError(sprintf('Port %s is used by an other application : %s', $port, $isPortInUse));
+            Log::error(sprintf('Port %s is used by an other application : %s', $port, $isPortInUse));
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port, $isPortInUse),
@@ -2620,23 +2332,23 @@ class Util
     public static function removeService($service, $name)
     {
         if (!($service instanceof Win32Service)) {
-            self::logError('$service not an instance of Win32Service');
+            Log::error('$service not an instance of Win32Service');
 
             return false;
         }
 
         if ($service->isInstalled()) {
             if ($service->delete()) {
-                self::logInfo(sprintf('%s service successfully removed', $name));
+                Log::info(sprintf('%s service successfully removed', $name));
 
                 return true;
             } else {
-                self::logError(sprintf('Error during the uninstallation of %s service', $name));
+                Log::error(sprintf('Error during the uninstallation of %s service', $name));
 
                 return false;
             }
         } else {
-            self::logWarning(sprintf('%s service does not exist', $name));
+            Log::warning(sprintf('%s service does not exist', $name));
         }
 
         return true;
@@ -2673,7 +2385,7 @@ class Util
                     $serviceErrorLog .= sprintf(' (conf errors detected : %s)', $cmdSyntaxCheck['content']);
                 }
             }
-            self::logError($serviceErrorLog);
+            Log::error($serviceErrorLog);
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError($serviceError, $boxTitle);
             }
@@ -2779,7 +2491,7 @@ class Util
                 if (is_dir($path)) {
                     $result .= self::formatUnixPath($path) . ';';
                 } else {
-                    self::logWarning('Path not found in nssmEnvPaths.dat: ' . $path);
+                    Log::warning('Path not found in nssmEnvPaths.dat: ' . $path);
                 }
             }
         }
@@ -2829,7 +2541,7 @@ class Util
         // Get key string
         $stringPhrase = @file_get_contents($stringfile);
         if ($stringPhrase === false) {
-            Util::logDebug("Failed to read the file at path: {$stringfile}");
+            Log::debug("Failed to read the file at path: {$stringfile}");
 
             return false;
         }
@@ -2839,7 +2551,7 @@ class Util
         // Read the encrypted data from the file
         $encryptedData = file_get_contents($encryptedFile);
         if ($encryptedData === false) {
-            Util::logDebug("Failed to read the file at path: {$encryptedFile}");
+            Log::debug("Failed to read the file at path: {$encryptedFile}");
 
             return false;
         }
@@ -2847,7 +2559,7 @@ class Util
         // Decode the base64 encoded data
         $data = base64_decode($encryptedData);
         if ($data === false) {
-            Util::logDebug("Failed to decode the data from path: {$encryptedFile}");
+            Log::debug("Failed to decode the data from path: {$encryptedFile}");
 
             return false;
         }
@@ -2860,7 +2572,7 @@ class Util
         // Decrypt the data
         $decrypted = openssl_decrypt($encrypted, $method, $stringKey, 0, $iv);
         if ($decrypted === false) {
-            Util::logDebug("Decryption failed for data from path: {$encryptedFile}");
+            Log::debug("Decryption failed for data from path: {$encryptedFile}");
 
             return false;
         }

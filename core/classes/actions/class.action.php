@@ -93,7 +93,7 @@ class Action
 
             $this->current = null;
             if (class_exists($actionClass)) {
-                Util::logDebug('Start ' . $actionClass);
+                Log::debug('Start ' . $actionClass);
                 $this->current = new $actionClass($args);
             }
         }
@@ -114,7 +114,7 @@ class Action
     {
         $actionClass = 'Action' . ucfirst($actionName);
         if (class_exists($actionClass)) {
-            Util::logDebug('Start ' . $actionClass);
+            Log::debug('Start ' . $actionClass);
             new $actionClass($actionArgs);
         }
     }

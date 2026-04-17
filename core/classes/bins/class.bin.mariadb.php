@@ -51,7 +51,7 @@ class BinMariadb extends Module
      */
     public function __construct($id, $type)
     {
-        Util::logInitClass( $this );
+        Log::initClass( $this );
         $this->reload( $id, $type );
     }
 
@@ -64,7 +64,7 @@ class BinMariadb extends Module
     public function reload($id = null, $type = null)
     {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
-        Util::logReloadClass( $this );
+        Log::reloadClass( $this );
 
         $this->name    = $bearsamppLang->getValue( Lang::MARIADB );
         $this->version = $bearsamppConfig->getRaw( self::ROOT_CFG_VERSION );
@@ -85,52 +85,52 @@ class BinMariadb extends Module
         }
 
         if ( !$this->enable ) {
-            Util::logInfo( $this->name . ' is not enabled!' );
+            Log::info( $this->name . ' is not enabled!' );
 
             return;
         }
         if ( !is_dir( $this->currentPath ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->currentPath ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->currentPath ) );
 
             return;
         }
         if ( !is_dir( $this->symlinkPath ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->symlinkPath ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->symlinkPath ) );
 
             return;
         }
         if ( !is_file( $this->bearsamppConf ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->bearsamppConf ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->bearsamppConf ) );
 
             return;
         }
         if ( !is_file( $this->exe ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->exe ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->exe ) );
 
             return;
         }
         if ( !is_file( $this->conf ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->conf ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->conf ) );
 
             return;
         }
         if ( !is_numeric( $this->port ) || $this->port <= 0 ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_PORT, $this->port ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_PORT, $this->port ) );
 
             return;
         }
         if ( empty( $this->rootUser ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_ROOT_USER, $this->rootUser ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_ROOT_USER, $this->rootUser ) );
 
             return;
         }
         if ( !is_file( $this->cliExe ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->cliExe ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->cliExe ) );
 
             return;
         }
         if ( !is_file( $this->admin ) ) {
-            Util::logError( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->admin ) );
+            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->admin ) );
 
             return;
         }
@@ -184,7 +184,7 @@ class BinMariadb extends Module
         global $bearsamppWinbinder;
 
         if ( !Util::isValidPort( $port ) ) {
-            Util::logError( $this->getName() . ' port not valid: ' . $port );
+            Log::error( $this->getName() . ' port not valid: ' . $port );
 
             return false;
         }
@@ -205,7 +205,7 @@ class BinMariadb extends Module
             return true;
         }
 
-        Util::logDebug( $this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse );
+        Log::debug( $this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse );
 
         return $isPortInUse;
     }
@@ -224,7 +224,7 @@ class BinMariadb extends Module
         $boxTitle = sprintf( $bearsamppLang->getValue( Lang::CHECK_PORT_TITLE ), $this->getName(), $port );
 
         if ( !Util::isValidPort( $port ) ) {
-            Util::logError( $this->getName() . ' port not valid: ' . $port );
+            Log::error( $this->getName() . ' port not valid: ' . $port );
 
             return false;
         }
@@ -256,7 +256,7 @@ class BinMariadb extends Module
                         }
                     }
                     if ( !$isMariadb ) {
-                        Util::logDebug( $this->getName() . ' port used by another DBMS: ' . $port );
+                        Log::debug( $this->getName() . ' port used by another DBMS: ' . $port );
                         if ( $showWindow ) {
                             $bearsamppWinbinder->messageBoxWarning(
                                 sprintf( $bearsamppLang->getValue( Lang::PORT_USED_BY_ANOTHER_DBMS ), $port ),
@@ -265,7 +265,7 @@ class BinMariadb extends Module
                         }
                     }
                     else {
-                        Util::logDebug( $this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $version );
+                        Log::debug( $this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $version );
                         if ( $showWindow ) {
                             $bearsamppWinbinder->messageBoxInfo(
                                 sprintf( $bearsamppLang->getValue( Lang::PORT_USED_BY ), $port, $this->getName() . ' ' . $version ),
@@ -279,7 +279,7 @@ class BinMariadb extends Module
                 mysqli_close( $dbLink );
             }
             else {
-                Util::logDebug( $this->getName() . ' port ' . $port . ' is used by another application' );
+                Log::debug( $this->getName() . ' port ' . $port . ' is used by another application' );
                 if ( $showWindow ) {
                     $bearsamppWinbinder->messageBoxWarning(
                         sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED_BY ), $port ),
@@ -289,7 +289,7 @@ class BinMariadb extends Module
             }
         }
         else {
-            Util::logDebug( $this->getName() . ' port ' . $port . ' is not used' );
+            Log::debug( $this->getName() . ' port ' . $port . ' is not used' );
             if ( $showWindow ) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED ), $port ),
@@ -419,7 +419,7 @@ class BinMariadb extends Module
      */
     public function switchVersion($version, $showWindow = false)
     {
-        Util::logDebug( 'Switch ' . $this->name . ' version to ' . $version );
+        Log::debug( 'Switch ' . $this->name . ' version to ' . $version );
 
         return $this->updateConfig( $version, 0, $showWindow );
     }
@@ -441,7 +441,7 @@ class BinMariadb extends Module
         }
 
         $version = $version == null ? $this->version : $version;
-        Util::logDebug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
+        Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
 
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
@@ -449,7 +449,7 @@ class BinMariadb extends Module
         $bearsamppConf = str_replace('mariadb' . $this->getVersion(), 'mariadb' . $version, $this->bearsamppConf);
 
         if (!file_exists($conf) || !file_exists($bearsamppConf)) {
-            Util::logError('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
+            Log::error('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
@@ -461,7 +461,7 @@ class BinMariadb extends Module
 
         $bearsamppConfRaw = parse_ini_file($bearsamppConf);
         if ($bearsamppConfRaw === false || !isset($bearsamppConfRaw[self::ROOT_CFG_VERSION]) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version) {
-            Util::logError('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
+            Log::error('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
                     sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
@@ -557,7 +557,7 @@ public function setEnable($enabled, $showWindow = false) {
     global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
     if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
-        Util::logDebug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
+        Log::debug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
         if ($showWindow) {
             $bearsamppWinbinder->messageBoxError(
                 sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
@@ -567,7 +567,7 @@ public function setEnable($enabled, $showWindow = false) {
         $enabled = Config::DISABLED;
     }
 
-    Util::logInfo($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
+    Log::info($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
     $this->enable = $enabled == Config::ENABLED;
     $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
 
@@ -700,7 +700,7 @@ public function getDataDir()
  */
 public function initData($path = null, $version = null)
 {
-    Util::logTrace( 'Starting MariaDB data initialization' );
+    Log::trace( 'Starting MariaDB data initialization' );
     $startTime = microtime( true );
 
     $path    = $path != null ? $path : $this->getCurrentPath();
@@ -708,29 +708,29 @@ public function initData($path = null, $version = null)
     $dataDir = $path . '/data';
 
     if ( is_dir( $dataDir . '/mysql' ) ) {
-        Util::logTrace( 'MariaDB data directory already initialized' );
+        Log::trace( 'MariaDB data directory already initialized' );
 
         return true;
     }
 
     if ( !is_dir( $dataDir ) ) {
         @mkdir( $dataDir, 0777, true );
-        Util::logTrace( 'Created MariaDB data directory' );
+        Log::trace( 'Created MariaDB data directory' );
     }
 
     // Check for init.bat first
     if ( file_exists( $path . '/init.bat' ) ) {
-        Util::logTrace( 'Initializing MariaDB via init.bat' );
+        Log::trace( 'Initializing MariaDB via init.bat' );
         try {
             Batch::initializeMariadb( $path );
         } catch ( \Throwable $e ) {
-            Util::logTrace( 'Error during MariaDB initialization via Batch: ' . $e->getMessage() );
+            Log::trace( 'Error during MariaDB initialization via Batch: ' . $e->getMessage() );
 
             return false;
         }
     } else {
         // Use mariadb-install-db.exe
-        Util::logTrace( 'Initializing MariaDB via mariadb-install-db.exe' );
+        Log::trace( 'Initializing MariaDB via mariadb-install-db.exe' );
         $installDbExe = $path . '/bin/mariadb-install-db.exe';
         if ( !file_exists( $installDbExe ) ) {
             $installDbExe = $path . '/bin/mysql_install_db.exe';
@@ -743,12 +743,12 @@ public function initData($path = null, $version = null)
             try {
                 Batch::exec( 'initializeMariadb', $cmd, 60 );
             } catch ( \Throwable $e ) {
-                Util::logTrace( 'Error during MariaDB initialization via mariadb-install-db: ' . $e->getMessage() );
+                Log::trace( 'Error during MariaDB initialization via mariadb-install-db: ' . $e->getMessage() );
 
                 return false;
             }
         } else {
-            Util::logError( 'MariaDB initialization failed: No init.bat or mariadb-install-db.exe found' );
+            Log::error( 'MariaDB initialization failed: No init.bat or mariadb-install-db.exe found' );
 
             return false;
         }
@@ -756,13 +756,13 @@ public function initData($path = null, $version = null)
 
     // Verify initialization
     if ( !is_dir( $dataDir . '/mysql' ) ) {
-        Util::logTrace( 'MariaDB initialization appears to have failed: mysql directory still missing' );
+        Log::trace( 'MariaDB initialization appears to have failed: mysql directory still missing' );
 
         return false;
     }
 
     $totalTime = round( microtime( true ) - $startTime, 2 );
-    Util::logTrace( "MariaDB initialization completed in {$totalTime}s" );
+    Log::trace( "MariaDB initialization completed in {$totalTime}s" );
 
     return true;
 }

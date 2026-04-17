@@ -33,7 +33,7 @@ class Bins
      */
     public function __construct()
     {
-        Util::logInitClass($this);
+        Log::initClass($this);
     }
 
     /**
@@ -42,7 +42,7 @@ class Bins
      */
     public function reload()
     {
-        Util::logInfo('Reload bins');
+        Log::info('Reload bins');
         foreach ($this->getAll() as $bin) {
             $bin->reload();
         }
@@ -54,7 +54,7 @@ class Bins
      */
     public function update()
     {
-        Util::logInfo('Update bins config');
+        Log::info('Update bins config');
         foreach ($this->getAll() as $bin) {
             $bin->update();
         }
