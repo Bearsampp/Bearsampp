@@ -132,9 +132,11 @@ class Symlinks
             return false;
         }
 
-        // If it's a symlink, use unlink (works for symlinks regardless of target)
+        // If it's a symlink, remove it appropriately.
+        // On Windows, directory junctions report as is_link() === true but require rmdir(), not unlink().
         if (self::isSymlink($path)) {
-            if (@unlink($path)) {
+            $removed = is_dir($path) ? @rmdir($path) : @unlink($path);
+            if ($removed) {
                 Log::debug('Safely removed symlink: ' . $path);
                 return true;
             } else {
