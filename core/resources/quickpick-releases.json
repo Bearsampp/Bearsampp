@@ -1550,7 +1550,7 @@
       {
         "version": "8.5.5",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.4.18/bearsampp-php-8.5.5-2026.4.18.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "8.5.3",
@@ -1570,7 +1570,7 @@
       {
         "version": "8.4.20",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.4.18/bearsampp-php-8.4.20-2026.4.18.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "8.4.18",
