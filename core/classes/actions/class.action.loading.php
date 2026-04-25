@@ -232,76 +232,40 @@ class ActionLoading
     }
 
     /**
-     * Checks if all services have started successfully
-     * 
-     * @return bool True if all services are running, false otherwise
+     * Checks if all services have started successfully.
+     * Uses Win32Native::getServiceState() (WMI) directly instead of spawning a
+     * background PHP process and polling a temp file.
+     *
+     * @return bool True if all enabled services are running, false otherwise
      */
     private function checkAllServicesStarted()
     {
-        global $bearsamppBins, $bearsamppCore, $bearsamppRoot;
-        
+        global $bearsamppBins;
+
         Log::trace('Checking if all services have started successfully');
-        
+
+        // getServices() already filters to enabled-only services
         $allStarted = true;
         foreach ($bearsamppBins->getServices() as $sName => $service) {
-            // Skip if service is not enabled
-            if (!$service->isEnable()) {
-                Log::trace('Service ' . $sName . ' is disabled, skipping check');
-                continue;
-            }
-            
-            // Update the loading text to show which service we're checking
             $serviceName = $service->getName();
             $this->updateLoadingText('Checking ' . $serviceName . '...');
-            
-            // Add timeout for service status check
-            $checkStartTime = microtime(true);
-            $checkTimeout = 5; // 5 seconds timeout
-            $serviceRunning = false;
-            
+
             try {
-                // Use a non-blocking check with timeout
-                $tempFile = $bearsamppCore->getTmpPath() . '/service_check_' . uniqid() . '.tmp';
-                
-                // Start a background process to check the service
-                $checkCmd = 'php -r "' .
-                    'require \'' . $bearsamppRoot->getLibsPath() . '/classes/class.win32service.php\'; ' .
-                    '$service = new Win32Service(\'' . $service->getName() . '\'); ' .
-                    '$status = $service->status(); ' .
-                    'file_put_contents(\'' . $tempFile . '\', $status == Win32Service::STATE_RUNNING ? \'1\' : \'0\'); ' .
-                    'exit(0);" > nul 2>&1';
-                
-                // Execute the command in background
-                CommandRunner::background($checkCmd);
-                
-                // Wait for the result with timeout
-                $startWait = microtime(true);
-                while (!file_exists($tempFile) && (microtime(true) - $startWait < $checkTimeout)) {
-                    usleep(100000); // 100ms
-                }
-                
-                // Check if we got a result
-                if (file_exists($tempFile)) {
-                    $result = file_get_contents($tempFile);
-                    $serviceRunning = ($result === '1');
-                    unlink($tempFile);
-                    Log::trace('Service ' . $sName . ' status check: ' . ($serviceRunning ? 'running' : 'not running'));
-                } else {
-                    Log::trace('Service ' . $sName . ' status check timed out');
-                    $serviceRunning = false;
-                }
-            } catch (\Exception $e) {
+                $state = Win32Native::getServiceState($serviceName);
+                $serviceRunning = ($state === 'Running');
+                Log::trace('Service ' . $sName . ' status check: ' . ($serviceRunning ? 'running' : 'not running') . ' (state: ' . var_export($state, true) . ')');
+            } catch (\Throwable $e) {
                 Log::trace('Exception during service status check for ' . $sName . ': ' . $e->getMessage());
                 $serviceRunning = false;
             }
-            
+
             if (!$serviceRunning) {
                 Log::trace('Service ' . $sName . ' is not running');
                 $allStarted = false;
                 break;
             }
         }
-        
+
         Log::trace('All services started check result: ' . ($allStarted ? 'true' : 'false'));
         return $allStarted;
     }
