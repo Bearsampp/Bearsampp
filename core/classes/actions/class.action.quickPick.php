@@ -778,6 +778,17 @@ class QuickPick
 
             // Check if the license key is valid
             if ( $this->checkDownloadId() ): ?>
+                <div class = "enhanced-mode-toggle">
+                    <label class = "form-check-label me-2" for = "enhancedQuickPickSwitch">
+                        Enhanced Mode
+                    </label>
+                    <div class = "form-check form-switch mb-0">
+                        <input class = "form-check-input" type = "checkbox" role = "switch" id = "enhancedQuickPickSwitch"
+                               <?php echo $enhancedMode == 1 ? 'checked' : ''; ?>
+                               data-bs-toggle = "tooltip" data-bs-placement = "bottom"
+                               title = "Toggle between enhanced (auto-config update) and standard QuickPick mode">
+                    </div>
+                </div>
                 <div id = 'quickPickContainer'>
                     <div class = 'quickpick'>
 
@@ -832,7 +843,7 @@ class QuickPick
                     </div>
                 </div>
             <?php else: ?>
-                <div id = "subscribeContainer" class = "text-center mt-3 pe-3">
+                <div id = "subscribeContainer" class = "text-center">
                     <a href = "<?php echo Util::getWebsiteUrl( 'subscribe' ); ?>" class = "btn btn-dark d-inline-flex align-items-center">
                         <img src = "<?php echo $imagesPath . 'subscribe.svg'; ?>" alt = "Subscribe Icon" class = "me-2">
                         Subscribe to QuickPick now
@@ -842,7 +853,7 @@ class QuickPick
         }
         else {
             ?>
-            <div id = "InternetState" class = "text-center mt-3 pe-3">
+            <div id = "InternetState" class = "text-center">
                 <img src = "<?php echo $imagesPath . 'no-wifi-icon.svg'; ?>" alt = "No Wifi Icon" class = "me-2">
                 <span>No internet present</span>
             </div>

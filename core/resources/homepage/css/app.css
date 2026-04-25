@@ -509,28 +509,9 @@ nav.navbar .svg-inline--fa.fa-discord {
     }
 }
 
-/* Social icons wrapper - add padding top */
+/* Social icons wrapper */
 .social-icons-wrapper {
-    padding-top: 2rem;
-}
-
-/* Adjust padding for different screen sizes */
-@media (min-width: 1367px) and (orientation: landscape) {
-    .social-icons-wrapper {
-        padding-top: 1.5rem;
-    }
-}
-
-@media (min-width: 1025px) and (max-width: 1366px) and (orientation: landscape) {
-    .social-icons-wrapper {
-        padding-top: 1.5rem;
-    }
-}
-
-@media (min-width: 768px) and (max-width: 1200px) {
-    .social-icons-wrapper {
-        padding-top: 1.5rem;
-    }
+    padding-top: 0;
 }
 
 .svg-inline--fa.fa-cloud-arrow-down {
@@ -571,10 +552,16 @@ nav.navbar .svg-inline--fa.fa-discord {
     min-width: 165px;
 }
 
+div#subscribeContainer {
+    color: white;
+    display: inline-flex;
+    overflow: hidden;
+    padding: 0;
+}
+
 div#InternetState {
     color: white;
     display: inline-flex;
-    margin-right: 50px;
     padding: 0;
 }
 
