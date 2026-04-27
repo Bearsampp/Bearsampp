@@ -35,6 +35,14 @@ repos = [
     'Bearsampp/module-xlight'
 ]
 
+# Track statistics
+stats = {
+    'total_repos': len(repos),
+    'processed_repos': 0,
+    'failed_repos': [],
+    'total_versions': 0
+}
+
 combined_data = []
 
 # GitHub API headers - add token if you have one to increase rate limits
@@ -321,6 +329,7 @@ try:
                         
                         print(f"Processing release {release['tag_name']} in {repo} with {len(seven_z_assets)} .7z assets")
                         
+                        found_valid_asset = False
                         for asset in seven_z_assets:
                             try:
                                 asset_url = asset['browser_download_url']
@@ -333,6 +342,8 @@ try:
                                 if version_number.startswith('unknown-'):
                                     print(f"Skipping asset with unknown version: {asset_name}")
                                     continue
+                                
+                                found_valid_asset = True
                                 
                                 # Extract date from asset name or use release date
                                 asset_date = extract_date_from_asset(asset_name, asset_url, created_at)
@@ -376,6 +387,9 @@ try:
                                 print(f"Error processing asset {asset.get('name', 'unknown')}: {e}")
                                 traceback.print_exc()
                                 continue
+                        
+                        if not found_valid_asset:
+                            print(f"No valid .7z assets with version patterns found in release {release['tag_name']}")
                     except Exception as e:
                         print(f"Error processing release {release.get('tag_name', 'unknown')}: {e}")
                         traceback.print_exc()
@@ -407,7 +421,7 @@ try:
                         version_data.sort(key=lambda x: normalize_version(x['version']), reverse=True)
 
                 # Debug: Print the final sorted version data
-                print(f"DEBUG: Final sorted version_data for {module_name}:")
+                print(f"DEBUG: Final sorted version_data for {module_name}: {len(version_data)} versions")
                 for item in version_data:
                     print(f"  {item['version']}: {item['url']}")
 
@@ -415,14 +429,22 @@ try:
                     'module': module_name,
                     'versions': version_data
                 })
+                stats['processed_repos'] += 1
+                stats['total_versions'] += len(version_data)
             else:
                 print(f"Failed to fetch releases for {repo_path}: {response.status_code}")
+                stats['failed_repos'].append(f"{repo_path} (HTTP {response.status_code})")
         except Exception as e:
             print(f"Error processing repo {repo_path}: {e}")
             traceback.print_exc()
+            stats['failed_repos'].append(f"{repo_path} (Error: {str(e)})")
             continue
 
     print("Release processing completed")
+    print(f"Summary: Processed {stats['processed_repos']}/{stats['total_repos']} repositories")
+    print(f"Total versions found: {stats['total_versions']}")
+    if stats['failed_repos']:
+        print(f"Failed repositories: {', '.join(stats['failed_repos'])}")
 
 except Exception as e:
     print(f"Error during release processing: {e}")

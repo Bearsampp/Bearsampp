@@ -68,6 +68,8 @@ jobs:
           if [[ -n $(git status -s) ]]; then
             echo "changes=true" >> $GITHUB_OUTPUT
             echo "Changes detected"
+            echo "### Changes to quickpick-releases.json:"
+            git diff core/resources/quickpick-releases.json
           else
             echo "changes=false" >> $GITHUB_OUTPUT
             echo "No changes detected"
@@ -83,7 +85,10 @@ jobs:
           branch: update-releases
           base: main
           title: 'Update combined releases JSON'
-          body: 'This PR updates the combined releases JSON file.'
+          body: |
+            This PR updates the combined releases JSON file with the latest versions from module repositories.
+            
+            Verified by automated workflow.
           commit-message: 'Update quickpick combined releases JSON'
           delete-branch: true
 
@@ -103,10 +108,12 @@ jobs:
           if ! gh pr merge --merge --auto --admin "${{ steps.cpr.outputs.pull-request-number }}"; then
             echo "Auto-merge failed or not available. Attempting direct merge..."
             # Wait a moment for any background processes
-            sleep 5
+            sleep 10
             # Ensure we don't fail the step if direct merge fails, but log it
             if ! gh pr merge --merge --admin "${{ steps.cpr.outputs.pull-request-number }}"; then
               echo "::warning ::Direct merge failed. Manual intervention may be required."
+              echo "Checking PR status..."
+              gh pr view "${{ steps.cpr.outputs.pull-request-number }}"
             fi
           fi
         env:
