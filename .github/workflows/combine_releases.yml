@@ -105,21 +105,31 @@ jobs:
           echo "Attempting to approve PR..."
           gh pr review --approve "$PR_NUMBER" || echo "Could not approve PR (possibly self-approval or permissions), continuing..."
           
-          # Check if PR is still open and mergeable
-          echo "Checking PR status..."
-          gh pr view "$PR_NUMBER" --json state,mergeable,mergeStateStatus
+          # Check repo settings and PR status
+          echo "Checking repository and PR status..."
+          gh repo view --json autoMergeAllowed,branchProtectionRules
+          gh pr view "$PR_NUMBER" --json state,mergeable,mergeStateStatus,statusCheckRollup
           
           # Attempt to enable auto-merge
           echo "Attempting to enable auto-merge..."
           if ! gh pr merge --merge --auto --admin "$PR_NUMBER"; then
-            echo "Auto-merge failed or not available. Attempting direct merge..."
+            echo "Auto-merge failed or not available. Checking why..."
+            
             # Wait a moment for any background processes
-            sleep 10
-            # Ensure we don't fail the step if direct merge fails, but log it
+            echo "Waiting 30 seconds before manual merge attempt..."
+            sleep 30
+            
+            # Final PR status check before direct merge
+            gh pr view "$PR_NUMBER" --json state,mergeable,mergeStateStatus
+            
+            # Attempt direct merge
+            echo "Attempting direct merge..."
             if ! gh pr merge --merge --admin "$PR_NUMBER"; then
               echo "::warning ::Direct merge failed. Manual intervention may be required."
-              echo "Final PR status check:"
+              echo "PR Details:"
               gh pr view "$PR_NUMBER"
+              echo "Recent checks:"
+              gh pr check "$PR_NUMBER" || echo "No checks found."
             fi
           fi
         env:

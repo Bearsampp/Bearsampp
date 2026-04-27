@@ -13,6 +13,7 @@ output_path = 'core/resources/quickpick-releases.json'
 
 # GitHub repositories to fetch releases from
 repos = [
+    'Bearsampp/module-adminer',
     'Bearsampp/module-apache',
     'Bearsampp/module-bruno',
     'Bearsampp/module-composer',
@@ -32,6 +33,7 @@ repos = [
     'Bearsampp/module-powershell',
     'Bearsampp/module-python',
     'Bearsampp/module-ruby',
+    'Bearsampp/module-svn',
     'Bearsampp/module-xlight'
 ]
 
