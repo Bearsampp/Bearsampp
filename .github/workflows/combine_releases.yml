@@ -19,8 +19,8 @@ on:
   
   # Run monthly to catch any missed updates
   schedule:
-    # Run daily at midnight
-    - cron: '0 0 * * *'
+    # Run on the 1st day of each month at midnight
+    - cron: '0 0 1 * *'
 
 permissions:
   pull-requests: write
