@@ -73,13 +73,22 @@ jobs:
             echo "No changes detected"
           fi
 
-      - name: Commit and push changes
+      - name: Create Pull Request
         if: steps.git-check.outputs.changes == 'true'
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add core/resources/quickpick-releases.json
-          git commit -m "Update combined releases JSON"
-          git push origin main
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GH_PAT }}
+          author: Bearsampp <support@bearsampp.com>
+          branch: update-releases
+          base: main
+          title: 'Update combined releases JSON'
+          body: 'This PR updates the combined releases JSON file.'
+          commit-message: 'Update quickpick combined releases JSON'
+          delete-branch: true
+
+      - name: Enable Pull Request Automerge
+        if: steps.git-check.outputs.changes == 'true'
+        run: gh pr merge --merge --auto --admin "${{ steps.cpr.outputs.pull-request-number }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
