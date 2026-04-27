@@ -344,14 +344,16 @@ try:
                                 # We prefer 'stable' over 'prerelease', and newer date if same status
                                 if version_number in version_assets:
                                     existing_data, existing_date = version_assets[version_number]
-                                    new_status = 'prerelease' if is_prerelease else 'stable'
-                                    existing_status = existing_data['status']
+                                    new_is_prerelease = is_prerelease
+                                    existing_is_prerelease = existing_data['prerelease']
                                     
                                     should_replace = False
-                                    if new_status == 'stable' and existing_status == 'prerelease':
+                                    # Preference 1: Stable over Prerelease
+                                    if not new_is_prerelease and existing_is_prerelease:
                                         print(f"Replacing prerelease {module_name} {version_number} with stable release")
                                         should_replace = True
-                                    elif new_status == existing_status and asset_date > existing_date:
+                                    # Preference 2: Newer date if same status
+                                    elif new_is_prerelease == existing_is_prerelease and asset_date > existing_date:
                                         print(f"Replacing {module_name} version {version_number} with newer asset: {asset_name}")
                                         should_replace = True
                                     
@@ -359,7 +361,7 @@ try:
                                         version_assets[version_number] = ({
                                             'version': version_number,
                                             'url': asset_url,
-                                            'status': new_status
+                                            'prerelease': new_is_prerelease
                                         }, asset_date)
                                     else:
                                         print(f"Skipping asset for {module_name} version {version_number}: {asset_name} (better or newer already exists)")
@@ -368,7 +370,7 @@ try:
                                     version_assets[version_number] = ({
                                         'version': version_number,
                                         'url': asset_url,
-                                        'status': 'prerelease' if is_prerelease else 'stable'
+                                        'prerelease': is_prerelease
                                     }, asset_date)
                             except Exception as e:
                                 print(f"Error processing asset {asset.get('name', 'unknown')}: {e}")
