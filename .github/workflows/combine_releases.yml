@@ -88,9 +88,11 @@ jobs:
           delete-branch: true
 
       - name: Enable Pull Request Automerge
-        if: steps.git-check.outputs.changes == 'true'
+        if: steps.cpr.outputs.pull-request-operation != 'none'
         run: |
-          gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
-          gh pr merge --merge --auto --admin "${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+          gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}" || echo "Could not approve PR (possibly self-approval), continuing..."
+          gh pr merge --merge --auto --admin "${{ steps.cpr.outputs.pull-request-number }}" || gh pr merge --merge --admin "${{ steps.cpr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
