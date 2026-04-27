@@ -46,17 +46,17 @@ if os.environ.get('GH_PAT'):
 else:
     print("No GitHub PAT found, using unauthenticated requests")
 
-# Rate limiting helper
-def make_api_request(url, headers):
+# Rate limiting and pagination helper
+def make_api_request(url, headers, params=None):
     try:
-        response = requests.get(url, headers=headers, timeout=30)
+        response = requests.get(url, headers=headers, params=params, timeout=30)
         if response.status_code == 429:  # Rate limit exceeded
             reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
             current_time = int(time.time())
             sleep_time = max(reset_time - current_time + 1, 1)
             print(f"Rate limit exceeded. Waiting for {sleep_time} seconds...")
             time.sleep(sleep_time)
-            return make_api_request(url, headers)  # Retry after waiting
+            return make_api_request(url, headers, params)  # Retry after waiting
         return response
     except Exception as e:
         print(f"Error making API request to {url}: {e}")
@@ -169,6 +169,13 @@ def extract_version_from_asset(asset_name, module_short_name, tag_name):
             if version_match:
                 version_number = version_match.group(1)
                 print(f"Extracted version {version_number} from asset {asset_name} using X.Y pattern")
+                return version_number
+        
+            # Try to match a single digit (like "7" for powershell 7)
+            version_match = re.search(r'(\d+)', version_with_possible_suffix)
+            if version_match:
+                version_number = version_match.group(1)
+                print(f"Extracted version {version_number} from asset {asset_name} using single digit pattern")
                 return version_number
             
             # If no version pattern found, use the whole string before the first hyphen
@@ -287,23 +294,38 @@ try:
 
             owner, repo = parts
 
-            # Use GitHub API to fetch releases
-            api_url = f"https://api.github.com/repos/{owner}/{repo}/releases"
-            print(f"Fetching releases from {api_url}")
-            response = make_api_request(api_url, headers)
+            # Use GitHub API to fetch releases with pagination
+            all_releases = []
+            page = 1
+            while True:
+                api_url = f"https://api.github.com/repos/{owner}/{repo}/releases"
+                params = {'per_page': 100, 'page': page}
+                print(f"Fetching releases from {api_url} (page {page})")
+                response = make_api_request(api_url, headers, params=params)
 
-            if response is None:
-                print(f"Failed to fetch releases for {repo_path}: No response")
-                continue
+                if response is None:
+                    print(f"Failed to fetch releases for {repo_path}: No response")
+                    break
 
-            if response.status_code == 200:
-                releases = response.json()
+                if response.status_code == 200:
+                    page_releases = response.json()
+                    if not page_releases:
+                        break
+                    all_releases.extend(page_releases)
+                    if len(page_releases) < 100:
+                        break
+                    page += 1
+                else:
+                    print(f"Failed to fetch releases for {repo_path}: {response.status_code}")
+                    break
+
+            if all_releases:
                 module_name = repo
                 
                 # Dictionary to store the newest asset for each version
                 version_assets = {}  # {version: (asset_data, date)}
                 
-                for release in releases:
+                for release in all_releases:
                     try:
                         # Find .7z assets
                         seven_z_assets = [asset for asset in release['assets']
@@ -337,6 +359,16 @@ try:
                                 # Extract date from asset name or use release date
                                 asset_date = extract_date_from_asset(asset_name, asset_url, created_at)
                                 
+                                # Check if release is actually a prerelease
+                                # If the tag name contains "preview", "rc", "alpha", "beta", it's a prerelease
+                                # even if the GitHub flag says otherwise (or vice-versa)
+                                if any(x in release['tag_name'].lower() for x in ['preview', 'rc', 'alpha', 'beta']):
+                                    is_prerelease = True
+                                elif any(x in asset_name.lower() for x in ['preview', 'rc', 'alpha', 'beta']):
+                                    is_prerelease = True
+                                else:
+                                    is_prerelease = release['prerelease']
+
                                 # Debug: Print what we're about to store
                                 print(f"DEBUG: For asset {asset_name}, extracted version={version_number}, date={asset_date}")
                                 
