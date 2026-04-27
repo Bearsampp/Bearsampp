@@ -340,18 +340,29 @@ try:
                                 # Debug: Print what we're about to store
                                 print(f"DEBUG: For asset {asset_name}, extracted version={version_number}, date={asset_date}")
                                 
-                                # Check if we already have this version and if this asset is newer
+                                # Check if we already have this version and if this asset is better
+                                # We prefer 'stable' over 'prerelease', and newer date if same status
                                 if version_number in version_assets:
-                                    existing_date = version_assets[version_number][1]
-                                    if asset_date > existing_date:
+                                    existing_data, existing_date = version_assets[version_number]
+                                    new_status = 'prerelease' if is_prerelease else 'stable'
+                                    existing_status = existing_data['status']
+                                    
+                                    should_replace = False
+                                    if new_status == 'stable' and existing_status == 'prerelease':
+                                        print(f"Replacing prerelease {module_name} {version_number} with stable release")
+                                        should_replace = True
+                                    elif new_status == existing_status and asset_date > existing_date:
                                         print(f"Replacing {module_name} version {version_number} with newer asset: {asset_name}")
+                                        should_replace = True
+                                    
+                                    if should_replace:
                                         version_assets[version_number] = ({
                                             'version': version_number,
                                             'url': asset_url,
-                                            'status': 'prerelease' if is_prerelease else 'stable'
+                                            'status': new_status
                                         }, asset_date)
                                     else:
-                                        print(f"Skipping older asset for {module_name} version {version_number}: {asset_name}")
+                                        print(f"Skipping asset for {module_name} version {version_number}: {asset_name} (better or newer already exists)")
                                 else:
                                     print(f"Added {module_name} version {version_number} from asset {asset_name}")
                                     version_assets[version_number] = ({
