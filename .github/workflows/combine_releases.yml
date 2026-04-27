@@ -92,7 +92,22 @@ jobs:
         run: |
           echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
-          gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}" || echo "Could not approve PR (possibly self-approval), continuing..."
-          gh pr merge --merge --auto --admin "${{ steps.cpr.outputs.pull-request-number }}" || gh pr merge --merge --admin "${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Operation - ${{ steps.cpr.outputs.pull-request-operation }}"
+          
+          # Attempt to approve the PR
+          echo "Attempting to approve PR..."
+          gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}" || echo "Could not approve PR (possibly self-approval or permissions), continuing..."
+          
+          # Attempt to enable auto-merge
+          echo "Attempting to enable auto-merge..."
+          if ! gh pr merge --merge --auto --admin "${{ steps.cpr.outputs.pull-request-number }}"; then
+            echo "Auto-merge failed or not available. Attempting direct merge..."
+            # Wait a moment for any background processes
+            sleep 5
+            # Ensure we don't fail the step if direct merge fails, but log it
+            if ! gh pr merge --merge --admin "${{ steps.cpr.outputs.pull-request-number }}"; then
+              echo "::warning ::Direct merge failed. Manual intervention may be required."
+            fi
+          fi
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
