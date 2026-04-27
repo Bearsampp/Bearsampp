@@ -89,6 +89,8 @@ jobs:
 
       - name: Enable Pull Request Automerge
         if: steps.git-check.outputs.changes == 'true'
-        run: gh pr merge --merge --auto --admin "${{ steps.cpr.outputs.pull-request-number }}"
+        run: |
+          gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
+          gh pr merge --merge --auto --admin "${{ steps.cpr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
