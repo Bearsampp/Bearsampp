@@ -120,10 +120,9 @@ def extract_version_from_asset(asset_name, module_short_name, tag_name):
         
         # General pattern for all modules: bearsampp-{module}-{version}-{date}.7z
         # The optional (?:-\d+)? captures a revision integer (e.g. the "1" in 4.0.2-1)
-        # when present. The required -\d{4}\. suffix anchors to the 4-digit year that
-        # always opens the date field, preventing the year itself from being mistaken
-        # for a revision.
-        standard_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)+(?:-\\d+)?)-\\d{{4}}\\."
+        # when present. The required -(\d{4}[\.-].*) suffix anchors to the date field
+        # which usually starts with a 4-digit year followed by . or -
+        standard_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)+(?:-\\d+)?)-(\\d{{4}}[\\.-].*)\\.7z"
         print(f"Trying standard pattern: {standard_pattern}")
         standard_match = re.search(standard_pattern, asset_name)
         if standard_match:
