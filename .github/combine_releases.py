@@ -67,6 +67,7 @@ def make_api_request(url, headers):
             return make_api_request(url, headers)  # Retry after waiting
         return response
     except Exception as e:
+        # Avoid flooding logs with traceback for common connection issues
         print(f"Error making API request to {url}: {e}")
         return None
 
@@ -319,7 +320,7 @@ try:
 
                         # Skip releases without .7z assets
                         if not seven_z_assets:
-                            print(f"Skipping release {release['tag_name']} in {repo} - no .7z assets found")
+                            # Reduced logging for skipped releases
                             continue
 
                         # Process all .7z assets in this release
@@ -340,7 +341,7 @@ try:
                                 
                                 # Skip assets with unknown version
                                 if version_number.startswith('unknown-'):
-                                    print(f"Skipping asset with unknown version: {asset_name}")
+                                    # Reduced logging for skipped unknown assets
                                     continue
                                 
                                 found_valid_asset = True

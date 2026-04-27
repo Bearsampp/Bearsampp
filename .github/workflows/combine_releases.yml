@@ -93,27 +93,33 @@ jobs:
           delete-branch: true
 
       - name: Enable Pull Request Automerge
-        if: steps.cpr.outputs.pull-request-operation != 'none'
+        if: steps.cpr.outputs.pull-request-operation != 'none' && steps.cpr.outputs.pull-request-operation != ''
         run: |
           echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
           echo "Operation - ${{ steps.cpr.outputs.pull-request-operation }}"
           
+          PR_NUMBER="${{ steps.cpr.outputs.pull-request-number }}"
+          
           # Attempt to approve the PR
           echo "Attempting to approve PR..."
-          gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}" || echo "Could not approve PR (possibly self-approval or permissions), continuing..."
+          gh pr review --approve "$PR_NUMBER" || echo "Could not approve PR (possibly self-approval or permissions), continuing..."
+          
+          # Check if PR is still open and mergeable
+          echo "Checking PR status..."
+          gh pr view "$PR_NUMBER" --json state,mergeable,mergeStateStatus
           
           # Attempt to enable auto-merge
           echo "Attempting to enable auto-merge..."
-          if ! gh pr merge --merge --auto --admin "${{ steps.cpr.outputs.pull-request-number }}"; then
+          if ! gh pr merge --merge --auto --admin "$PR_NUMBER"; then
             echo "Auto-merge failed or not available. Attempting direct merge..."
             # Wait a moment for any background processes
             sleep 10
             # Ensure we don't fail the step if direct merge fails, but log it
-            if ! gh pr merge --merge --admin "${{ steps.cpr.outputs.pull-request-number }}"; then
+            if ! gh pr merge --merge --admin "$PR_NUMBER"; then
               echo "::warning ::Direct merge failed. Manual intervention may be required."
-              echo "Checking PR status..."
-              gh pr view "${{ steps.cpr.outputs.pull-request-number }}"
+              echo "Final PR status check:"
+              gh pr view "$PR_NUMBER"
             fi
           fi
         env:
