@@ -132,7 +132,10 @@ class TplAppTools
         // Console
         $resultItems .= TplAestan::getItemPowerShell(
             $bearsamppLang->getValue(Lang::CONSOLE),
-            TplAestan::GLYPH_POWERSHELL
+            TplAestan::GLYPH_POWERSHELL,
+            null,
+            $bearsamppTools->getPowerShell()->getTabTitleDefault(),
+            $bearsamppRoot->getRootPath()
         ) . PHP_EOL;
 
         // HostsEditor

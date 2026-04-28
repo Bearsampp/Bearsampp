@@ -142,38 +142,38 @@ class TplAestan
     {
         global $bearsamppTools;
 
-        // PowerShell uses the launch batch file which handles the command execution
-        // We use Windows Terminal command-line arguments:
-        // --title or -w for window title
-        // --startingDirectory or -d for starting directory
-        $launchExe = $bearsamppTools->getPowerShell()->getLaunchExe();
-        
-        // Build the parameters using Windows Terminal switches
-        $params = '';
-        
-        // Add title if provided (using -w for compatibility)
-        if ($title != null) {
-            $params .= '--title ""' . $title . '""';
-        }
-        
-        // Add starting directory if provided (using -d for compatibility)
-        if ($initDir != null) {
-            if (!empty($params)) $params .= ' ';
-            $params .= '--startingDirectory ""' . $initDir . '""';
-        }
-        
-        // Add command to execute if provided
-        if ($command != null) {
-            if (!empty($params)) $params .= ' ';
-            $params .= '--command ""' . $command . '""';
+        if ($title === null) {
+            $title = $bearsamppTools->getPowerShell()->getTabTitleDefault();
         }
 
-        return self::getItemExe(
-            $caption,
-            $launchExe,
-            $glyph,
-            $params
-        );
+        // Launch pwsh.exe directly — no powershell.bat wrapper, no cmd.exe, no flashing window.
+        // Registry font settings are pre-written during reload by TplPowerShell::process().
+        $pwsh = $bearsamppTools->getPowerShell()->getExe();
+        $profilePath = Util::formatWindowsPath($bearsamppTools->getPowerShell()->getConf());
+
+        // Build the inline PowerShell -Command string.
+        // Single-quoted strings are used for paths/titles so backslashes need no escaping.
+        // $Host and [Console] are PowerShell syntax; no shell variable expansion occurs here
+        // because Aestan calls CreateProcess directly (no cmd.exe intermediary).
+        $psCommand = '[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;' .
+                     '[Console]::InputEncoding=[System.Text.Encoding]::UTF8;' .
+                     '$Host.UI.RawUI.WindowTitle=\'' . $title . '\';';
+
+        if ($command !== null) {
+            $psCommand .= $command . ';';
+        }
+
+        $psCommand .= '. \'' . $profilePath . '\'';
+
+        // Build pwsh.exe argument string using Aestan's "" escaping for embedded double quotes.
+        // -WorkingDirectory sets the initial directory (PowerShell 7+), avoiding Set-Location.
+        $params = '-NoExit -NoProfile';
+        if ($initDir !== null) {
+            $params .= ' -WorkingDirectory ""' . $initDir . '""';
+        }
+        $params .= ' -Command ""' . $psCommand . '""';
+
+        return self::getItemExe($caption, $pwsh, $glyph, $params);
     }
 
     /**
