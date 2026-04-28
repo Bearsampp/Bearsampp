@@ -49,8 +49,83 @@ class TplPowerShell
      */
     public static function process()
     {
-        // PowerShell uses profile scripts (Microsoft.PowerShell_profile.ps1)
-        // and Oh My Posh for configuration - no processing needed here
+        global $bearsamppTools;
+
+        $fontName = 'CaskaydiaMono NF'; // Default Nerd Font
+
+        // Collect all console window titles that need font configuration
+        $titles = [];
+        $titles[] = $bearsamppTools->getPowerShell()->getTabTitleDefault();
+        $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePowershell();
+        $titles[] = 'Console';
+        $titles[] = 'Bearsampp Powershell Console'; // Fallback casing
+
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePear(); } catch (Exception $e) {}
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleMysql(); } catch (Exception $e) {}
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleMariadb(); } catch (Exception $e) {}
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePostgresql(); } catch (Exception $e) {}
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleGit(); } catch (Exception $e) {}
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleNodejs(); } catch (Exception $e) {}
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleComposer(); } catch (Exception $e) {}
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePython(); } catch (Exception $e) {}
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleRuby(); } catch (Exception $e) {}
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePerl(); } catch (Exception $e) {}
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleGhostscript(); } catch (Exception $e) {}
+        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleNgrok(); } catch (Exception $e) {}
+
+        // Also include generic/short titles
+        $shortTitles = ["Composer", "Ghostscript", "ngrok", "PEAR", "Perl", "Ruby", "Git", "Python", "MariaDB", "MySQL", "PostgreSQL", "Node.js"];
+        $allTitles = array_unique(array_merge($titles, $shortTitles));
+
+        // Build a single .reg file with all HKCU Console font settings.
+        // This replaces ~140 individual exec("reg add ...") calls, each of which
+        // would spawn a separate process and potentially flash a console window.
+        $regContent = "Windows Registry Editor Version 5.00\r\n";
+
+        // Global HKCU\Console defaults
+        $regContent .= "\r\n[HKEY_CURRENT_USER\\Console]\r\n";
+        $regContent .= '"FaceName"="' . $fontName . '"' . "\r\n";
+        $regContent .= '"FontFamily"=dword:00000036' . "\r\n";
+        $regContent .= '"CodePage"=dword:0000fde9' . "\r\n";
+
+        // Per-title settings
+        foreach ($allTitles as $title) {
+            if (empty($title)) continue;
+            $regContent .= "\r\n[HKEY_CURRENT_USER\\Console\\" . $title . "]\r\n";
+            $regContent .= '"FaceName"="' . $fontName . '"' . "\r\n";
+            $regContent .= '"FontFamily"=dword:00000036' . "\r\n";
+            $regContent .= '"FontSize"=dword:00100000' . "\r\n";
+            $regContent .= '"FontWeight"=dword:00000190' . "\r\n";
+            $regContent .= '"CodePage"=dword:0000fde9' . "\r\n";
+            $regContent .= '"ScreenBufferSize"=dword:0bb8006e' . "\r\n";
+            $regContent .= '"WindowSize"=dword:001e006e' . "\r\n";
+        }
+
+        // Register as a valid TrueType console font (HKCU only — no elevation needed)
+        $regContent .= "\r\n[HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Console\\TrueTypeFont]\r\n";
+        $regContent .= '"0"="' . $fontName . '"' . "\r\n";
+        $regContent .= '"00"="' . $fontName . '"' . "\r\n";
+        $regContent .= '"000"="' . $fontName . '"' . "\r\n";
+
+        // Write and import the .reg file in a single process — zero flashing windows
+        $tmpReg = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'bearsampp_console_font.reg';
+
+        $bytes = file_put_contents($tmpReg, $regContent);
+        if ($bytes === false || $bytes === 0) {
+            return false;
+        }
+
+        $cmd = 'reg import "' . $tmpReg . '"';
+        $output = [];
+        $exitCode = 0;
+        exec($cmd, $output, $exitCode);
+
+        @unlink($tmpReg);
+
+        if ($exitCode !== 0) {
+            return false;
+        }
+
         return true;
     }
 

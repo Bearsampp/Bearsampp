@@ -13,6 +13,7 @@ output_path = 'core/resources/quickpick-releases.json'
 
 # GitHub repositories to fetch releases from
 repos = [
+    'Bearsampp/module-adminer',
     'Bearsampp/module-apache',
     'Bearsampp/module-bruno',
     'Bearsampp/module-composer',
@@ -32,8 +33,17 @@ repos = [
     'Bearsampp/module-powershell',
     'Bearsampp/module-python',
     'Bearsampp/module-ruby',
+    'Bearsampp/module-svn',
     'Bearsampp/module-xlight'
 ]
+
+# Track statistics
+stats = {
+    'total_repos': len(repos),
+    'processed_repos': 0,
+    'failed_repos': [],
+    'total_versions': 0
+}
 
 combined_data = []
 
@@ -59,6 +69,7 @@ def make_api_request(url, headers):
             return make_api_request(url, headers)  # Retry after waiting
         return response
     except Exception as e:
+        # Avoid flooding logs with traceback for common connection issues
         print(f"Error making API request to {url}: {e}")
         return None
 
@@ -111,10 +122,9 @@ def extract_version_from_asset(asset_name, module_short_name, tag_name):
         
         # General pattern for all modules: bearsampp-{module}-{version}-{date}.7z
         # The optional (?:-\d+)? captures a revision integer (e.g. the "1" in 4.0.2-1)
-        # when present. The required -\d{4}\. suffix anchors to the 4-digit year that
-        # always opens the date field, preventing the year itself from being mistaken
-        # for a revision.
-        standard_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)+(?:-\\d+)?)-\\d{{4}}\\."
+        # when present. The required -(\d{4}[\.-].*) suffix anchors to the date field
+        # which usually starts with a 4-digit year followed by . or -
+        standard_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)+(?:-\\d+)?)-(\\d{{4}}[\\.-].*)\\.7z"
         print(f"Trying standard pattern: {standard_pattern}")
         standard_match = re.search(standard_pattern, asset_name)
         if standard_match:
@@ -311,7 +321,7 @@ try:
 
                         # Skip releases without .7z assets
                         if not seven_z_assets:
-                            print(f"Skipping release {release['tag_name']} in {repo} - no .7z assets found")
+                            # Reduced logging for skipped releases
                             continue
 
                         # Process all .7z assets in this release
@@ -321,6 +331,7 @@ try:
                         
                         print(f"Processing release {release['tag_name']} in {repo} with {len(seven_z_assets)} .7z assets")
                         
+                        found_valid_asset = False
                         for asset in seven_z_assets:
                             try:
                                 asset_url = asset['browser_download_url']
@@ -331,8 +342,10 @@ try:
                                 
                                 # Skip assets with unknown version
                                 if version_number.startswith('unknown-'):
-                                    print(f"Skipping asset with unknown version: {asset_name}")
+                                    # Reduced logging for skipped unknown assets
                                     continue
+                                
+                                found_valid_asset = True
                                 
                                 # Extract date from asset name or use release date
                                 asset_date = extract_date_from_asset(asset_name, asset_url, created_at)
@@ -340,18 +353,31 @@ try:
                                 # Debug: Print what we're about to store
                                 print(f"DEBUG: For asset {asset_name}, extracted version={version_number}, date={asset_date}")
                                 
-                                # Check if we already have this version and if this asset is newer
+                                # Check if we already have this version and if this asset is better
+                                # We prefer 'stable' over 'prerelease', and newer date if same status
                                 if version_number in version_assets:
-                                    existing_date = version_assets[version_number][1]
-                                    if asset_date > existing_date:
+                                    existing_data, existing_date = version_assets[version_number]
+                                    new_is_prerelease = is_prerelease
+                                    existing_is_prerelease = existing_data['prerelease']
+                                    
+                                    should_replace = False
+                                    # Preference 1: Stable over Prerelease
+                                    if not new_is_prerelease and existing_is_prerelease:
+                                        print(f"Replacing prerelease {module_name} {version_number} with stable release")
+                                        should_replace = True
+                                    # Preference 2: Newer date if same status
+                                    elif new_is_prerelease == existing_is_prerelease and asset_date > existing_date:
                                         print(f"Replacing {module_name} version {version_number} with newer asset: {asset_name}")
+                                        should_replace = True
+                                    
+                                    if should_replace:
                                         version_assets[version_number] = ({
                                             'version': version_number,
                                             'url': asset_url,
-                                            'prerelease': is_prerelease
+                                            'prerelease': new_is_prerelease
                                         }, asset_date)
                                     else:
-                                        print(f"Skipping older asset for {module_name} version {version_number}: {asset_name}")
+                                        print(f"Skipping asset for {module_name} version {version_number}: {asset_name} (better or newer already exists)")
                                 else:
                                     print(f"Added {module_name} version {version_number} from asset {asset_name}")
                                     version_assets[version_number] = ({
@@ -363,6 +389,9 @@ try:
                                 print(f"Error processing asset {asset.get('name', 'unknown')}: {e}")
                                 traceback.print_exc()
                                 continue
+                        
+                        if not found_valid_asset:
+                            print(f"No valid .7z assets with version patterns found in release {release['tag_name']}")
                     except Exception as e:
                         print(f"Error processing release {release.get('tag_name', 'unknown')}: {e}")
                         traceback.print_exc()
@@ -394,7 +423,7 @@ try:
                         version_data.sort(key=lambda x: normalize_version(x['version']), reverse=True)
 
                 # Debug: Print the final sorted version data
-                print(f"DEBUG: Final sorted version_data for {module_name}:")
+                print(f"DEBUG: Final sorted version_data for {module_name}: {len(version_data)} versions")
                 for item in version_data:
                     print(f"  {item['version']}: {item['url']}")
 
@@ -402,14 +431,22 @@ try:
                     'module': module_name,
                     'versions': version_data
                 })
+                stats['processed_repos'] += 1
+                stats['total_versions'] += len(version_data)
             else:
                 print(f"Failed to fetch releases for {repo_path}: {response.status_code}")
+                stats['failed_repos'].append(f"{repo_path} (HTTP {response.status_code})")
         except Exception as e:
             print(f"Error processing repo {repo_path}: {e}")
             traceback.print_exc()
+            stats['failed_repos'].append(f"{repo_path} (Error: {str(e)})")
             continue
 
     print("Release processing completed")
+    print(f"Summary: Processed {stats['processed_repos']}/{stats['total_repos']} repositories")
+    print(f"Total versions found: {stats['total_versions']}")
+    if stats['failed_repos']:
+        print(f"Failed repositories: {', '.join(stats['failed_repos'])}")
 
 except Exception as e:
     print(f"Error during release processing: {e}")

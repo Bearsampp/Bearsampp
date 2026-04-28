@@ -158,9 +158,9 @@ class ToolPowerShell extends Module
      */
     public function getShell($args = null) {
         if (empty($args)) {
-            return 'cmd /k &quot;' . Util::formatWindowsPath($this->launchExe) . '&quot;';
+            return 'cmd /c &quot;' . Util::formatWindowsPath($this->launchExe) . '&quot;';
         } else {
-            return 'cmd /k &quot;&quot;' . Util::formatWindowsPath($this->getLaunchExe()) . '&quot; &amp; ' . Util::formatWindowsPath($args) . '&quot;';
+            return 'cmd /c &quot;&quot;' . Util::formatWindowsPath($this->getLaunchExe()) . '&quot; &amp; ' . Util::formatWindowsPath($args) . '&quot;';
         }
     }
 
@@ -170,7 +170,7 @@ class ToolPowerShell extends Module
      * @return string The default tab title.
      */
     public function getTabTitleDefault() {
-        return 'Bearsampp Powershell Console';
+        return 'Bearsampp PowerShell Console';
     }
 
     /**

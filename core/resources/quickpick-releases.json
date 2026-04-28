@@ -1,5 +1,25 @@
 [
   {
+    "module": "module-adminer",
+    "versions": [
+      {
+        "version": "5.2.1",
+        "url": "https://github.com/Bearsampp/module-adminer/releases/download/2025.5.2/bearsampp-adminer-5.2.1-2025.4.26.7z",
+        "prerelease": true
+      },
+      {
+        "version": "4.8.1",
+        "url": "https://github.com/Bearsampp/module-adminer/releases/download/2022.7.07/bearsampp-adminer-4.8.1-2022.7.07.7z",
+        "prerelease": false
+      },
+      {
+        "version": "4.6.1",
+        "url": "https://github.com/Bearsampp/module-adminer/releases/download/r4/bearsampp-adminer-4.6.1-2022.7.07.7z",
+        "prerelease": false
+      }
+    ]
+  },
+  {
     "module": "module-apache",
     "versions": [
       {
@@ -2288,14 +2308,19 @@
     "module": "module-powershell",
     "versions": [
       {
+        "version": "7.6.1",
+        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.4.24/bearsampp-powershell-7.6.1-2026.4.24.7z",
+        "prerelease": false
+      },
+      {
         "version": "7.6.0",
-        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.4.18/bearsampp-powershell-7.6.0-2026.4.18.7z",
-        "prerelease": true
+        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.4.18/bearsampp-powershell-7.6.0-2026.4.24.7z",
+        "prerelease": false
       },
       {
         "version": "7.5.4",
-        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.4.18/bearsampp-powershell-7.5.4-2026.4.18.7z",
-        "prerelease": true
+        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.4.18/bearsampp-powershell-7.5.4-2026.4.24.7z",
+        "prerelease": false
       }
     ]
   },
