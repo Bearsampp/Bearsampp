@@ -536,11 +536,11 @@ class ActionQuit
 
         try {
             $procs = Win32Ps::getListProcs();
-            $bearsamppPath = strtolower(Util::formatUnixPath($bearsamppRoot->getRootPath()));
+            $bearsamppPath = strtolower(UtilPath::formatUnixPath($bearsamppRoot->getRootPath()));
             $currentPid = Win32Ps::getCurrentPid();
 
             foreach ($procs as $proc) {
-                $exePath = strtolower(Util::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]));
+                $exePath = strtolower(UtilPath::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]));
                 $pid = $proc[Win32Ps::PROCESS_ID];
 
                 // Skip current process

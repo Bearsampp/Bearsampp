@@ -211,7 +211,7 @@ class BinXlight extends Module
 
         $headers = Util::getHeaders('127.0.0.1', $port);
         if (!empty($headers)) {
-            if (Util::contains($headers[0], 'Xlight')) {
+            if (UtilString::contains($headers[0], 'Xlight')) {
                 Log::debug($this->getName() . ' port ' . $port . ' is used by: ' . str_replace('220 ', '', $headers[0]));
                 if ($showWindow) {
                     $bearsamppWinbinder->messageBoxInfo(

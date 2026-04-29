@@ -158,9 +158,9 @@ class ToolPowerShell extends Module
      */
     public function getShell($args = null) {
         if (empty($args)) {
-            return 'cmd /c &quot;' . Util::formatWindowsPath($this->launchExe) . '&quot;';
+            return 'cmd /c &quot;' . UtilPath::formatWindowsPath($this->launchExe) . '&quot;';
         } else {
-            return 'cmd /c &quot;&quot;' . Util::formatWindowsPath($this->getLaunchExe()) . '&quot; &amp; ' . Util::formatWindowsPath($args) . '&quot;';
+            return 'cmd /c &quot;&quot;' . UtilPath::formatWindowsPath($this->getLaunchExe()) . '&quot; &amp; ' . UtilPath::formatWindowsPath($args) . '&quot;';
         }
     }
 

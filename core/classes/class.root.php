@@ -41,12 +41,16 @@ class Root
         set_time_limit(0);
         clearstatcache();
 
+        // External classes required for error handling and path utilities
+        require_once $this->getCorePath() . '/classes/class.util.path.php';
+
         // Error log
         $this->initErrorHandling();
 
         // External classes
         require_once $this->getCorePath() . '/classes/class.log.php';
         require_once $this->getCorePath() . '/classes/class.util.php';
+        require_once $this->getCorePath() . '/classes/class.util.string.php';
         Log::init();
 
         // Autoloader
@@ -534,7 +538,7 @@ class Root
             return;
         }
 
-        $errfile = Util::formatUnixPath($errfile);
+        $errfile = UtilPath::formatUnixPath($errfile);
         $errfile = str_replace($this->getRootPath(), '', $errfile);
 
         if (!defined('E_DEPRECATED')) {

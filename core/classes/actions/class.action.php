@@ -81,7 +81,7 @@ class Action
     public function process()
     {
         if ($this->exists()) {
-            $action = Util::cleanArgv(1);
+            $action = UtilInput::cleanArgv(1);
             $actionClass = 'Action' . ucfirst($action);
 
             $args = array();

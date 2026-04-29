@@ -37,7 +37,7 @@ class Homepage
     {
         Log::initClass($this);
 
-        $page = Util::cleanGetVar('p');
+        $page = UtilInput::cleanGetVar('p');
         $this->page = !empty($page) && in_array($page, $this->pageList) ? $page : self::PAGE_INDEX;
     }
 

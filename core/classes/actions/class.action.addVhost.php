@@ -43,7 +43,7 @@ class ActionAddVhost extends ActionDialogBase
         global $bearsamppRoot, $bearsamppLang;
 
         $initServerName = 'test.local';
-        $initDocumentRoot = Util::formatWindowsPath($bearsamppRoot->getWwwPath()) . '\\' . $initServerName;
+        $initDocumentRoot = UtilPath::formatWindowsPath($bearsamppRoot->getWwwPath()) . '\\' . $initServerName;
 
         $this->wbLabelServerName = $bearsamppWinbinder->createLabel(
             $this->wbWindow,

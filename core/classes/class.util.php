@@ -10,13 +10,14 @@
 
 /**
  * Utility class providing a wide range of static methods for various purposes including:
- * - Cleaning and retrieving command line, GET, and POST variables based on type specifications.
- * - String manipulation methods to check if strings contain, start with, or end with specified substrings.
+ * - Input cleaning and sanitization have been moved to UtilInput. @see UtilInput
+ * - String manipulation methods have been moved to UtilString. @see UtilString
  * - File and directory management functions for deleting, clearing, or finding files and directories.
  * - System utilities for handling registry operations, managing environment variables, and executing system commands.
  * - Network utilities to validate IPs, domains, and manage HTTP requests.
  * - Helper functions for encoding, decoding, and file operations.
  *
+ * Path formatting (formatWindowsPath / formatUnixPath) has been moved to UtilPath. @see UtilPath
  * Logging is handled by the Log class. @see Log
  *
  * This class is designed to be used as a helper or utility class where methods are accessed statically.
@@ -24,7 +25,7 @@
  *
  * Usage Example:
  * ```
- * $cleanedData = Util::cleanGetVar('data', 'text');
+ * $cleanedData = UtilInput::cleanGetVar('data', 'text');
  * $isAvailable = Util::isValidIp('192.168.1.1');
  * ```
  *
@@ -61,378 +62,6 @@ class Util
      * @var string|null
      */
     private static $cacheIntegrityKey = null;
-
-    /**
-     * Cache for path formatting operations to avoid redundant string replacements
-     * @var array
-     */
-    private static $pathFormatCache = [];
-
-    /**
-     * Maximum size for path format cache to prevent memory issues
-     * @var int
-     */
-    private static $pathFormatCacheMaxSize = 500;
-
-    /**
-     * Statistics for monitoring path format cache effectiveness
-     * @var array
-     */
-    private static $pathFormatStats = [
-        'unix_hits' => 0,
-        'unix_misses' => 0,
-        'windows_hits' => 0,
-        'windows_misses' => 0
-    ];
-
-    /**
-     * Cleans and returns a specific command line argument based on the type specified.
-     *
-     * @param   string  $name  The index of the argument in the $_SERVER['argv'] array.
-     * @param   string  $type  The type of the argument to return: 'text', 'numeric', 'boolean', or 'array'.
-     *
-     * @return mixed Returns the cleaned argument based on the type or false if the argument is not set.
-     */
-    public static function cleanArgv($name, $type = 'text')
-    {
-        if (isset($_SERVER['argv'])) {
-            if ($type == 'text') {
-                return (isset($_SERVER['argv'][$name]) && !empty($_SERVER['argv'][$name])) ? trim($_SERVER['argv'][$name]) : '';
-            } elseif ($type == 'numeric') {
-                return (isset($_SERVER['argv'][$name]) && is_numeric($_SERVER['argv'][$name])) ? intval($_SERVER['argv'][$name]) : '';
-            } elseif ($type == 'boolean') {
-                return (isset($_SERVER['argv'][$name])) ? true : false;
-            } elseif ($type == 'array') {
-                return (isset($_SERVER['argv'][$name]) && is_array($_SERVER['argv'][$name])) ? $_SERVER['argv'][$name] : array();
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Cleans and returns a specific $_GET variable based on the type specified.
-     *
-     * @param   string  $name  The name of the $_GET variable.
-     * @param   string  $type  The type of the variable to return: 'text', 'numeric', 'boolean', or 'array'.
-     *
-     * @return mixed Returns the cleaned $_GET variable based on the type or false if the variable is not set.
-     */
-    public static function cleanGetVar($name, $type = 'text')
-    {
-        if (is_string($name)) {
-            if ($type == 'text') {
-                $value = (isset($_GET[$name]) && !empty($_GET[$name])) ? $_GET[$name] : '';
-                // Additional sanitization: remove null bytes and control characters
-                return filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            } elseif ($type == 'numeric') {
-                return (isset($_GET[$name]) && is_numeric($_GET[$name])) ? intval($_GET[$name]) : '';
-            } elseif ($type == 'boolean') {
-                return (isset($_GET[$name])) ? true : false;
-            } elseif ($type == 'array') {
-                return (isset($_GET[$name]) && is_array($_GET[$name])) ? $_GET[$name] : array();
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Cleans and returns a specific $_POST variable based on the type specified.
-     *
-     * @param   string  $name  The name of the $_POST variable.
-     * @param   string  $type  The type of the variable to return: 'text', 'number', 'float', 'boolean', 'array', or 'content'.
-     *
-     * @return mixed Returns the cleaned $_POST variable based on the type or false if the variable is not set.
-     */
-    public static function cleanPostVar($name, $type = 'text')
-    {
-        if (is_string($name)) {
-            if ($type == 'text') {
-                return (isset($_POST[$name]) && !empty($_POST[$name])) ? trim($_POST[$name]) : '';
-            } elseif ($type == 'number') {
-                return (isset($_POST[$name]) && is_numeric($_POST[$name])) ? intval($_POST[$name]) : '';
-            } elseif ($type == 'float') {
-                return (isset($_POST[$name]) && is_numeric($_POST[$name])) ? floatval($_POST[$name]) : '';
-            } elseif ($type == 'boolean') {
-                return (isset($_POST[$name])) ? true : false;
-            } elseif ($type == 'array') {
-                return (isset($_POST[$name]) && is_array($_POST[$name])) ? $_POST[$name] : array();
-            } elseif ($type == 'content') {
-                return (isset($_POST[$name]) && !empty($_POST[$name])) ? trim($_POST[$name]) : '';
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Sanitizes a process ID (PID) by removing all non-numeric characters.
-     * This prevents command injection through PID parameters.
-     *
-     * @param   mixed  $pid  The PID to sanitize
-     * @return int|false Returns the sanitized PID as integer, or false if invalid
-     */
-    public static function sanitizePID($pid)
-    {
-        // Remove all non-numeric characters
-        $sanitized = preg_replace('/[^0-9]/', '', (string)$pid);
-
-        if (empty($sanitized)) {
-            Log::warning('Invalid PID provided: ' . var_export($pid, true));
-            return false;
-        }
-
-        $pidInt = (int)$sanitized;
-
-        // Validate range (PIDs are positive integers)
-        if ($pidInt <= 0 || $pidInt > 2147483647) {
-            Log::warning('PID out of valid range: ' . $pidInt);
-            return false;
-        }
-
-        return $pidInt;
-    }
-
-    /**
-     * Sanitizes a port number by ensuring it's a valid integer in the correct range.
-     * This prevents command injection through port parameters.
-     *
-     * @param   mixed  $port  The port to sanitize
-     * @return int|false Returns the sanitized port as integer, or false if invalid
-     */
-    public static function sanitizePort($port)
-    {
-        $portStr = trim((string)$port);
-
-        // Require strictly digits to avoid silently changing meaning
-        if ($portStr === '' || !preg_match('/^\d+$/', $portStr)) {
-            Log::warning('Invalid port provided: ' . var_export($port, true));
-            return false;
-        }
-
-        $portInt = (int)$portStr;
-
-        // Validate range (1-65535)
-        if ($portInt < 1 || $portInt > 65535) {
-            Log::warning('Port out of valid range: ' . $portInt);
-            return false;
-        }
-
-        return $portInt;
-    }
-
-    /**
-     * Sanitizes a service name by removing dangerous characters.
-     * Allows only alphanumeric characters, underscores, and hyphens.
-     *
-     * @param   string  $serviceName  The service name to sanitize
-     * @return string|false Returns the sanitized service name, or false if invalid
-     */
-    public static function sanitizeServiceName($serviceName)
-    {
-        if (!is_string($serviceName) || empty($serviceName)) {
-            Log::warning('Invalid service name: not a string or empty');
-            return false;
-        }
-
-        // Remove all characters except alphanumeric, underscore, and hyphen
-        $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $serviceName);
-
-        if (empty($sanitized)) {
-            Log::warning('Service name became empty after sanitization: ' . $serviceName);
-            return false;
-        }
-
-        // Limit length to 256 characters (Windows service name limit)
-        if (strlen($sanitized) > 256) {
-            $sanitized = substr($sanitized, 0, 256);
-        }
-
-        return $sanitized;
-    }
-
-    /**
-     * Sanitizes a file path by removing null bytes and checking for path traversal attempts.
-     * This is a basic sanitization - paths should still be validated before use.
-     *
-     * @param   string  $path  The path to sanitize
-     * @return string|false Returns the sanitized path, or false if dangerous patterns detected
-     */
-    public static function sanitizePath($path)
-    {
-        if (!is_string($path) || empty($path)) {
-            return false;
-        }
-
-        // Remove null bytes
-        $sanitized = str_replace("\0", '', $path);
-
-        // Check for path traversal attempts (but allow environment variables)
-        $pathWithoutEnvVars = preg_replace('/%[^%]+%/', '', $sanitized);
-        if (strpos($pathWithoutEnvVars, '..') !== false) {
-            Log::warning('Path traversal attempt detected: ' . $path);
-            return false;
-        }
-
-        // Remove dangerous characters that could be used for command injection
-        // But preserve valid path characters including : for drive letters and ; for PATH
-        $sanitized = preg_replace('/[<>"|?*\x00-\x1F]/', '', $sanitized);
-
-        return $sanitized;
-    }
-
-    /**
-     * Sanitizes output for display to prevent XSS attacks.
-     * Escapes HTML special characters.
-     *
-     * @param   string  $output  The output to sanitize
-     * @return string Returns the sanitized output safe for HTML display
-     */
-    public static function sanitizeOutput($output)
-    {
-        if (!is_string($output)) {
-            return '';
-        }
-
-        // Remove null bytes
-        $output = str_replace("\0", '', $output);
-
-        // Escape HTML special characters
-        return htmlspecialchars($output, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-    }
-
-    /**
-     * Checks if a string contains a specified substring.
-     *
-     * @param   string  $string  The string to search in.
-     * @param   string  $search  The substring to search for.
-     *
-     * @return bool Returns true if the substring is found in the string, otherwise false.
-     */
-    public static function contains($string, $search)
-    {
-        if (!empty($string) && !empty($search)) {
-            $result = stripos($string, $search);
-            if ($result !== false) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if a string starts with a specified substring.
-     *
-     * @param   string  $string  The string to check.
-     * @param   string  $search  The substring to look for at the start of the string.
-     *
-     * @return bool Returns true if the string starts with the search substring, otherwise false.
-     */
-    public static function startWith($string, $search)
-    {
-        // Return false if string is NULL or empty
-        if ($string === null || $string === '') {
-            return false;
-        }
-
-        $length = strlen($search);
-
-        return (substr($string, 0, $length) === $search);
-    }
-
-    /**
-     * Checks if a string ends with a specified substring.
-     *
-     * This method trims the right side whitespace of the input string before checking
-     * if it ends with the specified search substring.
-     *
-     * @param   string  $string  The string to check.
-     * @param   string  $search  The substring to look for at the end of the string.
-     *
-     * @return bool Returns true if the string ends with the search substring, otherwise false.
-     */
-    public static function endWith($string, $search)
-    {
-        $length = strlen($search);
-        $start  = $length * -1;
-
-        return (substr($string, $start) === $search);
-    }
-
-    /**
-     * Generates a cryptographically secure random string of specified length and character set.
-     *
-     * @param   int   $length       The length of the random string to generate.
-     * @param   bool  $withNumeric  Whether to include numeric characters in the random string.
-     *
-     * @return string Returns the generated random string.
-     * @throws Exception If an appropriate source of randomness cannot be found.
-     */
-    public static function random($length = 32, $withNumeric = true)
-    {
-        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        if ($withNumeric) {
-            $characters .= '0123456789';
-        }
-
-        $charactersLength = strlen($characters);
-        $randomString = '';
-
-        try {
-            for ($i = 0; $i < $length; $i++) {
-                // Use cryptographically secure random_int() instead of rand()
-                $randomIndex = random_int(0, $charactersLength - 1);
-                $randomString .= $characters[$randomIndex];
-            }
-        } catch (Exception $e) {
-            Log::error('Failed to generate cryptographically secure random string: ' . $e->getMessage());
-            throw $e;
-        }
-
-        return $randomString;
-    }
-
-    /**
-     * Generates a cryptographically secure random token as a hexadecimal string.
-     * This is ideal for security tokens, session IDs, CSRF tokens, etc.
-     *
-     * @param   int  $length  The length in bytes (output will be double this in hex characters).
-     *
-     * @return string Returns a hexadecimal string of cryptographically secure random bytes.
-     * @throws Exception If an appropriate source of randomness cannot be found.
-     */
-    public static function generateSecureToken($length = 32)
-    {
-        try {
-            return bin2hex(random_bytes($length));
-        } catch (Exception $e) {
-            Log::error('Failed to generate secure token: ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
-     * Generates a cryptographically secure random bytes string.
-     * Useful for encryption keys, initialization vectors, etc.
-     *
-     * @param   int  $length  The length in bytes.
-     *
-     * @return string Returns raw binary random bytes.
-     * @throws Exception If an appropriate source of randomness cannot be found.
-     */
-    public static function generateSecureBytes($length = 32)
-    {
-        try {
-            return random_bytes($length);
-        } catch (Exception $e) {
-            Log::error('Failed to generate secure bytes: ' . $e->getMessage());
-            throw $e;
-        }
-    }
 
     /**
      * Recursively deletes files from a specified directory while excluding certain files.
@@ -549,7 +178,7 @@ class Util
                     break;
                 }
             } elseif ($file == $findFile) {
-                $result = self::formatUnixPath($startPath . '/' . $file);
+                $result = UtilPath::formatUnixPath($startPath . '/' . $file);
                 break;
             }
         }
@@ -794,7 +423,7 @@ class Util
             if ($bearsamppTools->getRuby()->isEnable()) {
                 $value .= $bearsamppTools->getRuby()->getSymlinkPath() . '/bin;';
             }
-            $value = self::formatWindowsPath($value);
+            $value = UtilPath::formatWindowsPath($value);
             Log::debug('Generated app bins reg key: ' . $value);
         }
 
@@ -1012,137 +641,13 @@ class Util
                     $result[] = $tmpResult;
                 }
             } elseif (is_file($startPath . '/' . $checkFile) && !in_array($startPath, $result)) {
-                $result[] = self::formatUnixPath($startPath);
+                $result[] = UtilPath::formatUnixPath($startPath);
             }
         }
 
         closedir($handle);
 
         return $result;
-    }
-
-    /**
-     * Converts a Unix-style path to a Windows-style path with caching.
-     * This is a Windows application, so paths use backslashes (\) as separators.
-     *
-     * Performance optimization: Caches results to avoid redundant string replacements
-     * for frequently used paths (e.g., root paths, bin paths).
-     *
-     * @param   string  $path  The Unix-style path to convert.
-     *
-     * @return string Returns the converted Windows-style path.
-     */
-    public static function formatWindowsPath($path)
-    {
-        // Return early for empty strings
-        if (empty($path)) {
-            return $path;
-        }
-
-        // Check cache first
-        $cacheKey = 'w_' . $path;
-        if (isset(self::$pathFormatCache[$cacheKey])) {
-            self::$pathFormatStats['windows_hits']++;
-            return self::$pathFormatCache[$cacheKey];
-        }
-
-        self::$pathFormatStats['windows_misses']++;
-
-        // Perform the conversion
-        $result = str_replace('/', '\\', $path);
-
-        // Store in cache if under size limit
-        if (count(self::$pathFormatCache) < self::$pathFormatCacheMaxSize) {
-            self::$pathFormatCache[$cacheKey] = $result;
-        } else {
-            // Cache is full - implement LRU by removing first 10% of entries
-            $removeCount = (int)(self::$pathFormatCacheMaxSize * 0.1);
-            self::$pathFormatCache = array_slice(self::$pathFormatCache, $removeCount, null, true);
-            self::$pathFormatCache[$cacheKey] = $result;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Converts a Windows-style path to a Unix-style path with caching.
-     * Unix-style paths use forward slashes (/) as separators.
-     *
-     * Performance optimization: Caches results to avoid redundant string replacements
-     * for frequently used paths (e.g., root paths, bin paths).
-     *
-     * @param   string  $path  The Windows-style path to convert.
-     *
-     * @return string Returns the converted Unix-style path.
-     */
-    public static function formatUnixPath($path)
-    {
-        // Return early for empty strings
-        if (empty($path)) {
-            return $path;
-        }
-
-        // Check cache first
-        $cacheKey = 'u_' . $path;
-        if (isset(self::$pathFormatCache[$cacheKey])) {
-            self::$pathFormatStats['unix_hits']++;
-            return self::$pathFormatCache[$cacheKey];
-        }
-
-        self::$pathFormatStats['unix_misses']++;
-
-        // Perform the conversion
-        $result = str_replace('\\', '/', $path);
-
-        // Store in cache if under size limit
-        if (count(self::$pathFormatCache) < self::$pathFormatCacheMaxSize) {
-            self::$pathFormatCache[$cacheKey] = $result;
-        } else {
-            // Cache is full - implement LRU by removing first 10% of entries
-            $removeCount = (int)(self::$pathFormatCacheMaxSize * 0.1);
-            self::$pathFormatCache = array_slice(self::$pathFormatCache, $removeCount, null, true);
-            self::$pathFormatCache[$cacheKey] = $result;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Gets path format cache statistics.
-     * Useful for monitoring cache effectiveness and tuning cache size.
-     *
-     * @return array Array containing unix_hits, unix_misses, windows_hits, windows_misses
-     */
-    public static function getPathFormatStats()
-    {
-        return self::$pathFormatStats;
-    }
-
-    /**
-     * Clears the path format cache.
-     * Useful when paths change or for testing purposes.
-     *
-     * @return void
-     */
-    public static function clearPathFormatCache()
-    {
-        self::$pathFormatCache = [];
-        self::$pathFormatStats = [
-            'unix_hits' => 0,
-            'unix_misses' => 0,
-            'windows_hits' => 0,
-            'windows_misses' => 0
-        ];
-    }
-
-    /**
-     * Gets the current size of the path format cache.
-     *
-     * @return int Number of cached path conversions
-     */
-    public static function getPathFormatCacheSize()
-    {
-        return count(self::$pathFormatCache);
     }
 
     /**
@@ -1769,15 +1274,15 @@ class Util
                 }
             } elseif (is_file($startPath . '/' . $file)) {
                 foreach ($includes as $include) {
-                    if (self::startWith($include, '!')) {
+                    if (UtilString::startWith($include, '!')) {
                         $include = ltrim($include, '!');
-                        if (self::startWith($file, '.') && !self::endWith($file, $include)) {
-                            $result[] = self::formatUnixPath($startPath . '/' . $file);
+                        if (UtilString::startWith($file, '.') && !UtilString::endWith($file, $include)) {
+                            $result[] = UtilPath::formatUnixPath($startPath . '/' . $file);
                         } elseif ($file != $include) {
-                            $result[] = self::formatUnixPath($startPath . '/' . $file);
+                            $result[] = UtilPath::formatUnixPath($startPath . '/' . $file);
                         }
-                    } elseif (self::endWith($file, $include) || $file == $include || empty($include)) {
-                        $result[] = self::formatUnixPath($startPath . '/' . $file);
+                    } elseif (UtilString::endWith($file, $include) || $file == $include || empty($include)) {
+                        $result[] = UtilPath::formatUnixPath($startPath . '/' . $file);
                     }
                 }
             }
@@ -1806,10 +1311,10 @@ class Util
         );
 
         $rootPath           = $rootPath != null ? $rootPath : $bearsamppRoot->getRootPath();
-        $unixOldPath        = self::formatUnixPath($bearsamppCore->getLastPathContent());
-        $windowsOldPath     = self::formatWindowsPath($bearsamppCore->getLastPathContent());
-        $unixCurrentPath    = self::formatUnixPath($rootPath);
-        $windowsCurrentPath = self::formatWindowsPath($rootPath);
+        $unixOldPath        = UtilPath::formatUnixPath($bearsamppCore->getLastPathContent());
+        $windowsOldPath     = UtilPath::formatWindowsPath($bearsamppCore->getLastPathContent());
+        $unixCurrentPath    = UtilPath::formatUnixPath($rootPath);
+        $windowsCurrentPath = UtilPath::formatWindowsPath($rootPath);
 
         foreach ($filesToScan as $fileToScan) {
             $tmpCountChangedOcc = 0;
@@ -1989,7 +1494,7 @@ class Util
     {
         $processor = self::getProcessorRegKey();
 
-        return self::contains($processor, 'x86');
+        return UtilString::contains($processor, 'x86');
     }
 
     /**
@@ -2222,18 +1727,6 @@ class Util
         return preg_match('/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i', $domainName)
             && preg_match('/^.{1,253}$/', $domainName)
             && preg_match('/^[^\.]{1,63}(\.[^\.]{1,63})*$/', $domainName);
-    }
-
-    /**
-     * Checks if a string is alphanumeric.
-     *
-     * @param   string  $string  The string to check.
-     *
-     * @return bool Returns true if the string is alphanumeric, false otherwise.
-     */
-    public static function isAlphanumeric($string)
-    {
-        return ctype_alnum($string);
     }
 
     /**
@@ -2489,7 +1982,7 @@ class Util
                     $path = $bearsamppRoot->getRootPath() . '/' . $path;
                 }
                 if (is_dir($path)) {
-                    $result .= self::formatUnixPath($path) . ';';
+                    $result .= UtilPath::formatUnixPath($path) . ';';
                 } else {
                     Log::warning('Path not found in nssmEnvPaths.dat: ' . $path);
                 }
@@ -2514,12 +2007,12 @@ class Util
     {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppWinbinder;
 
-        $folderPath = $bearsamppRoot->getTmpPath() . '/openFileContent-' . self::random();
+        $folderPath = $bearsamppRoot->getTmpPath() . '/openFileContent-' . UtilString::random();
         if (!is_dir($folderPath)) {
             mkdir($folderPath, 0777, true);
         }
 
-        $filepath = self::formatWindowsPath($folderPath . '/' . $caption);
+        $filepath = UtilPath::formatWindowsPath($folderPath . '/' . $caption);
         file_put_contents($filepath, $content);
 
         $bearsamppWinbinder->exec($bearsamppConfig->getNotepad(), '"' . $filepath . '"');

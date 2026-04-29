@@ -40,7 +40,7 @@ class ActionGenSslCertificate
         global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
 
         $initServerName = 'test.local';
-        $initDocumentRoot = Util::formatWindowsPath($bearsamppRoot->getSslPath());
+        $initDocumentRoot = UtilPath::formatWindowsPath($bearsamppRoot->getSslPath());
 
         $bearsamppWinbinder->reset();
         $this->wbWindow = $bearsamppWinbinder->createAppWindow($bearsamppLang->getValue(Lang::GENSSL_TITLE), 490, 160, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP);
@@ -91,7 +91,7 @@ class ActionGenSslCertificate
                 $bearsamppWinbinder->setProgressBarMax($this->wbProgressBar, self::GAUGE_SAVE + 1);
                 $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
 
-                $target = Util::formatUnixPath($target);
+                $target = UtilPath::formatUnixPath($target);
                 if ($bearsamppOpenSsl->createCrt($name, $target)) {
                     $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
                     $bearsamppWinbinder->messageBoxInfo(

@@ -137,7 +137,7 @@ class BinMariadb extends Module
 
         $this->service->setDisplayName( APP_TITLE . ' ' . $this->getName() );
         $this->service->setBinPath( $this->exe );
-        $this->service->setParams( '--defaults-file="' . Util::formatWindowsPath($this->conf) . '" ' . self::SERVICE_NAME );
+        $this->service->setParams( '--defaults-file="' . UtilPath::formatWindowsPath($this->conf) . '" ' . self::SERVICE_NAME );
         $this->service->setStartType( Win32Service::SERVICE_DEMAND_START );
         $this->service->setErrorControl( Win32Service::SERVER_ERROR_NORMAL );
     }
@@ -248,7 +248,7 @@ class BinMariadb extends Module
                             $version = explode( '-', $row[1] );
                             $version = count( $version ) > 1 ? $version[0] : $row[1];
                         }
-                        if ( $row[0] == 'version_comment' && Util::startWith( strtolower( $row[1] ), 'mariadb' ) ) {
+                        if ( $row[0] == 'version_comment' && UtilString::startWith( strtolower( $row[1] ), 'mariadb' ) ) {
                             $isMariadb = true;
                         }
                         if ( $isMariadb && $version !== false ) {
@@ -515,7 +515,7 @@ public function getCmdLineOutput($cmd) {
     if (file_exists($bin)) {
         $tmpResult = Batch::exec('mariadbGetCmdLineOutput', '"' . $bin . '" ' . $cmd . ' ' . $outputFrom, 5);
         if ($tmpResult !== false && is_array($tmpResult)) {
-            $result['syntaxOk'] = empty($tmpResult) || !Util::contains(trim($tmpResult[count($tmpResult) - 1]), '[ERROR]');
+            $result['syntaxOk'] = empty($tmpResult) || !UtilString::contains(trim($tmpResult[count($tmpResult) - 1]), '[ERROR]');
             for ($i = 0; $i < $removeLines; $i++) {
                 unset($tmpResult[$i]);
             }
@@ -737,8 +737,8 @@ public function initData($path = null, $version = null)
         }
 
         if ( file_exists( $installDbExe ) ) {
-            $cmd = '"' . Util::formatWindowsPath( $installDbExe ) . '"';
-            $cmd .= ' --datadir="' . Util::formatWindowsPath( $dataDir ) . '"';
+            $cmd = '"' . UtilPath::formatWindowsPath( $installDbExe ) . '"';
+            $cmd .= ' --datadir="' . UtilPath::formatWindowsPath( $dataDir ) . '"';
 
             try {
                 Batch::exec( 'initializeMariadb', $cmd, 60 );

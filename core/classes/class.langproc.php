@@ -82,7 +82,7 @@ class LangProc
         }
 
         while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && Util::endWith($file, '.lang')) {
+            if ($file != "." && $file != ".." && UtilString::endWith($file, '.lang')) {
                 $result[] = str_replace('.lang', '', $file);
             }
         }

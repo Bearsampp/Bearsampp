@@ -1046,7 +1046,7 @@ class Win32Service
      */
     public function setBinPath($binPath): void
     {
-        $this->binPath = str_replace( '"', '', Util::formatWindowsPath( $binPath ) );
+        $this->binPath = str_replace( '"', '', UtilPath::formatWindowsPath( $binPath ) );
     }
 
     /**

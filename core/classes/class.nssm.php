@@ -547,7 +547,7 @@ class Nssm
      */
     public function setBinPath($binPath)
     {
-        $this->binPath = str_replace( '"', '', Util::formatWindowsPath( $binPath ) );
+        $this->binPath = str_replace( '"', '', UtilPath::formatWindowsPath( $binPath ) );
     }
 
     /**
@@ -647,7 +647,7 @@ class Nssm
      */
     public function setEnvironmentExtra($environmentExtra)
     {
-        $this->environmentExtra = Util::formatWindowsPath( $environmentExtra );
+        $this->environmentExtra = UtilPath::formatWindowsPath( $environmentExtra );
     }
 
     /**

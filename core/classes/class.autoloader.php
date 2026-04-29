@@ -107,22 +107,25 @@ class Autoloader
     {
         $file = $rootPath . '/classes/class.' . $class . '.php';
 
-        if (Util::startWith($class, 'bin')) {
+        if (in_array($class, ['utilpath', 'utilstring', 'utilinput'], true)) {
+            $class = substr_replace($class, '.', 4, 0);
+            $file = $rootPath . '/classes/class.' . $class . '.php';
+        } elseif (UtilString::startWith($class, 'bin')) {
             $class = $class != 'bins' ? substr_replace($class, '.', 3, 0) : $class;
             $file = $rootPath . '/classes/bins/class.' . $class . '.php';
-        } elseif (Util::startWith($class, 'tool')) {
+        } elseif (UtilString::startWith($class, 'tool')) {
             $class = $class != 'tools' ? substr_replace($class, '.', 4, 0) : $class;
             $file = $rootPath . '/classes/tools/class.' . $class . '.php';
-        } elseif (Util::startWith($class, 'app')) {
+        } elseif (UtilString::startWith($class, 'app')) {
             $class = $class != 'apps' ? substr_replace($class, '.', 3, 0) : $class;
             $file = $rootPath . '/classes/apps/class.' . $class . '.php';
-        } elseif (Util::startWith($class, 'action')) {
+        } elseif (UtilString::startWith($class, 'action')) {
             $class = $class != 'action' ? substr_replace($class, '.', 6, 0) : $class;
             $file = $rootPath . '/classes/actions/class.' . $class . '.php';
-        } elseif (Util::startWith($class, 'tplapp') && $class != 'tplapp') {
+        } elseif (UtilString::startWith($class, 'tplapp') && $class != 'tplapp') {
             $class = substr_replace(substr_replace($class, '.', 3, 0), '.', 7, 0);
             $file = $rootPath . '/classes/tpls/app/class.' . $class . '.php';
-        } elseif (Util::startWith($class, 'tpl')) {
+        } elseif (UtilString::startWith($class, 'tpl')) {
             $class = $class != 'tpls' ? substr_replace($class, '.', 3, 0) : $class;
             $file = $rootPath . '/classes/tpls/class.' . $class . '.php';
         }

@@ -99,7 +99,7 @@ class ToolGit extends Module
                     $repo = $bearsamppRoot->getRootPath() . '/' . $repo;
                 }
                 if (is_dir($repo)) {
-                    $rebuildRepos[] = Util::formatUnixPath($repo);
+                    $rebuildRepos[] = UtilPath::formatUnixPath($repo);
                 } else {
                     Log::warning($this->name . ' repository not found: ' . $repo);
                 }

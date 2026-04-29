@@ -154,12 +154,12 @@ class Win32Ps
      */
     public static function findByPath($path)
     {
-        $path = Util::formatUnixPath($path);
+        $path = UtilPath::formatUnixPath($path);
         if (!empty($path) && is_file($path)) {
             $procs = self::getListProcs();
             if ($procs !== false) {
                 foreach ($procs as $proc) {
-                    $unixExePath = Util::formatUnixPath($proc[self::EXECUTABLE_PATH]);
+                    $unixExePath = UtilPath::formatUnixPath($proc[self::EXECUTABLE_PATH]);
                     if ($unixExePath == $path) {
                         return $proc;
                     }
@@ -201,8 +201,8 @@ class Win32Ps
 
         if ($procs !== false && $procs !== null) {
             foreach ($procs as $proc) {
-                $unixExePath = Util::formatUnixPath($proc[self::EXECUTABLE_PATH]);
-                $unixCommandPath = Util::formatUnixPath($proc[self::COMMAND_LINE]);
+                $unixExePath = UtilPath::formatUnixPath($proc[self::EXECUTABLE_PATH]);
+                $unixCommandPath = UtilPath::formatUnixPath($proc[self::COMMAND_LINE]);
 
                 // Not kill current PID (PHP)
                 if ($proc[self::PROCESS_ID] == self::getCurrentPid()) {
@@ -215,12 +215,12 @@ class Win32Ps
                 }
 
                 // Not kill inside www
-                if (Util::startWith($unixExePath, $bearsamppRoot->getWwwPath() . '/') || Util::contains($unixCommandPath, $bearsamppRoot->getWwwPath() . '/')) {
+                if (UtilString::startWith($unixExePath, $bearsamppRoot->getWwwPath() . '/') || UtilString::contains($unixCommandPath, $bearsamppRoot->getWwwPath() . '/')) {
                     continue;
                 }
 
                 // Not kill external process
-                if (!Util::startWith($unixExePath, $bearsamppRoot->getRootPath() . '/') && !Util::contains($unixCommandPath, $bearsamppRoot->getRootPath() . '/')) {
+                if (!UtilString::startWith($unixExePath, $bearsamppRoot->getRootPath() . '/') && !UtilString::contains($unixCommandPath, $bearsamppRoot->getRootPath() . '/')) {
                     continue;
                 }
 

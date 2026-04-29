@@ -77,7 +77,7 @@ class ActionEditVhost extends ActionDialogBase
         $filePath = $bearsamppRoot->getVhostsPath() . '/' . $this->initValue . '.conf';
         $fileContent = file_get_contents($filePath);
         preg_match('/DocumentRoot\s+"(.*)"/', $fileContent, $matchDocumentRoot);
-        $initDocumentRoot = Util::formatWindowsPath(trim($matchDocumentRoot[1]));
+        $initDocumentRoot = UtilPath::formatWindowsPath(trim($matchDocumentRoot[1]));
 
         $this->wbLabelServerName = $bearsamppWinbinder->createLabel(
             $this->wbWindow,

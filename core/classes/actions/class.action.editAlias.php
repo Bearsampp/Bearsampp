@@ -68,7 +68,7 @@ class ActionEditAlias extends ActionDialogBase
         $filePath = $bearsamppRoot->getAliasPath() . '/' . $this->initValue . '.conf';
         $fileContent = file_get_contents($filePath);
         preg_match('/^Alias \/' . $this->initValue . ' "(.+)"/', $fileContent, $match);
-        $initDest = Util::formatWindowsPath($match[1]);
+        $initDest = UtilPath::formatWindowsPath($match[1]);
         $apachePortUri = $bearsamppBins->getApache()->getPort() != 80 ? ':' . $bearsamppBins->getApache()->getPort() : '';
 
         $this->wbLabelName = $bearsamppWinbinder->createLabel(

@@ -59,7 +59,7 @@ class TplAppLogs
 
         // Read log files from the directory
         while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && Util::endWith($file, '.log')) {
+            if ($file != "." && $file != ".." && UtilString::endWith($file, '.log')) {
                 $files[] = $file;
             }
         }

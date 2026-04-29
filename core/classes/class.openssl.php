@@ -35,7 +35,7 @@ class OpenSsl
         $extContent .= 'subjectAltName=DNS:*.' . $name . ',DNS:' . $name . PHP_EOL;
 
         // tmp openssl.cfg
-        $conf = $bearsamppCore->getTmpPath() . '/openssl_' . $name . '_' . Util::random() . '.cfg';
+        $conf = $bearsamppCore->getTmpPath() . '/openssl_' . $name . '_' . UtilString::random() . '.cfg';
         file_put_contents($conf, file_get_contents($bearsamppCore->getOpenSslConf()) . $extContent);
 
         // Properly quote the config path for batch commands
