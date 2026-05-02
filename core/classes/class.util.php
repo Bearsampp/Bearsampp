@@ -1924,7 +1924,7 @@ class Util
      * @param string|null $path The file path (required for 'raw' type).
      * @return string|false The generated URL or false on invalid input.
      */
-    public static function getGithubUrl($type = 'user', $user = 'Bearsampp', $repo = null, $branch = null, $path = null) {
+    public static function getGithubUrl($type = 'user', $user = APP_GITHUB_USER, $repo = null, $branch = null, $path = null) {
         if (empty($user) || !is_string($user)) {
             return false;
         }
