@@ -1968,7 +1968,7 @@ class Util
      */
     public static function getGithubUserUrl()
     {
-        return self::getGithubUrl('user', 'Bearsampp');
+        return self::getGithubUrl('user', APP_GITHUB_USER);
     }
 
     /**
