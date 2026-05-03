@@ -34,34 +34,6 @@
  */
 class Util
 {
-    /**
-     * Cache for file scan results
-     * @var array|null
-     */
-    private static $fileScanCache = null;
-
-    /**
-     * Cache validity duration in seconds (default: 1 hour)
-     * @var int
-     */
-    private static $fileScanCacheDuration = 3600;
-
-    /**
-     * Statistics for monitoring file scan cache effectiveness
-     * @var array
-     */
-    private static $fileScanStats = [
-        'hits' => 0,
-        'misses' => 0,
-        'invalidations' => 0
-    ];
-
-    /**
-     * Secret key for cache file integrity verification
-     * Generated once per session to prevent cache tampering
-     * @var string|null
-     */
-    private static $cacheIntegrityKey = null;
 
     /**
      * Recursively deletes files from a specified directory while excluding certain files.
@@ -797,15 +769,15 @@ class Util
 
         // Try to get from cache if enabled and not forcing refresh
         if ($useCache && !$forceRefresh) {
-            $cachedResult = self::getFileScanCache($cacheKey);
+            $cachedResult = Cache::get($cacheKey);
             if ($cachedResult !== false) {
-                self::$fileScanStats['hits']++;
+                Cache::recordHit();
                 Log::debug('File scan cache HIT (saved expensive scan operation)');
                 return $cachedResult;
             }
         }
 
-        self::$fileScanStats['misses']++;
+        Cache::recordMiss();
         Log::debug('File scan cache MISS (performing full scan)');
 
         // Perform the actual scan
@@ -827,269 +799,13 @@ class Util
 
         // Store in cache if enabled
         if ($useCache) {
-            self::setFileScanCache($cacheKey, $result);
+            Cache::set($cacheKey, $result);
         }
 
         return $result;
     }
 
-    /**
-     * Gets cached file scan results if valid.
-     * Includes integrity verification to prevent cache tampering.
-     *
-     * @param   string  $cacheKey  The cache key to retrieve.
-     *
-     * @return array|false Returns cached results or false if cache is invalid/missing.
-     */
-    private static function getFileScanCache($cacheKey)
-    {
-        global $bearsamppRoot;
 
-        // Check if we have in-memory cache first
-        if (self::$fileScanCache !== null && isset(self::$fileScanCache[$cacheKey])) {
-            $cache = self::$fileScanCache[$cacheKey];
-
-            // Check if cache is still valid
-            if (time() - $cache['timestamp'] < self::$fileScanCacheDuration) {
-                return $cache['data'];
-            } else {
-                self::$fileScanStats['invalidations']++;
-                unset(self::$fileScanCache[$cacheKey]);
-            }
-        }
-
-        // Try to load from file cache
-        if (!isset($bearsamppRoot)) {
-            return false;
-        }
-
-        $cacheFile = $bearsamppRoot->getTmpPath() . '/filescan_cache_' . $cacheKey . '.dat';
-
-        if (file_exists($cacheFile)) {
-            $fileContents = @file_get_contents($cacheFile);
-
-            if ($fileContents === false) {
-                return false;
-            }
-
-            // Verify file integrity before unserializing
-            if (!self::verifyCacheIntegrity($fileContents, $cacheKey)) {
-                Log::warning('File scan cache integrity check failed for key: ' . $cacheKey . '. Possible tampering detected.');
-                @unlink($cacheFile);
-                return false;
-            }
-
-            $cacheData = @unserialize($fileContents);
-
-            if ($cacheData !== false && isset($cacheData['timestamp']) && isset($cacheData['data']) && isset($cacheData['hmac'])) {
-                // Check if file cache is still valid
-                if (time() - $cacheData['timestamp'] < self::$fileScanCacheDuration) {
-                    // Store in memory cache for faster subsequent access
-                    if (self::$fileScanCache === null) {
-                        self::$fileScanCache = [];
-                    }
-                    self::$fileScanCache[$cacheKey] = $cacheData;
-
-                    return $cacheData['data'];
-                } else {
-                    // Cache expired, delete file
-                    self::$fileScanStats['invalidations']++;
-                    @unlink($cacheFile);
-                }
-            } else {
-                // Invalid cache structure, delete file
-                Log::warning('Invalid cache structure detected for key: ' . $cacheKey);
-                @unlink($cacheFile);
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Stores file scan results in cache with integrity protection.
-     *
-     * @param   string  $cacheKey  The cache key to store under.
-     * @param   array   $data      The scan results to cache.
-     *
-     * @return void
-     */
-    private static function setFileScanCache($cacheKey, $data)
-    {
-        global $bearsamppRoot;
-
-        // Generate HMAC for integrity verification
-        $hmac = self::generateCacheHMAC($data, $cacheKey);
-
-        $cacheData = [
-            'timestamp' => time(),
-            'data' => $data,
-            'hmac' => $hmac
-        ];
-
-        // Store in memory cache
-        if (self::$fileScanCache === null) {
-            self::$fileScanCache = [];
-        }
-        self::$fileScanCache[$cacheKey] = $cacheData;
-
-        // Store in file cache
-        if (isset($bearsamppRoot)) {
-            $cacheFile = $bearsamppRoot->getTmpPath() . '/filescan_cache_' . $cacheKey . '.dat';
-            @file_put_contents($cacheFile, serialize($cacheData), LOCK_EX);
-            Log::debug('File scan results cached to: ' . $cacheFile);
-        }
-    }
-
-    /**
-     * Generates or retrieves the cache integrity key.
-     * This key is unique per session to prevent cross-session cache tampering.
-     *
-     * @return string The cache integrity key
-     */
-    private static function getCacheIntegrityKey()
-    {
-        if (self::$cacheIntegrityKey === null) {
-            global $bearsamppRoot;
-
-            // Try to load existing key from session file
-            if (isset($bearsamppRoot)) {
-                $keyFile = $bearsamppRoot->getTmpPath() . '/cache_integrity.key';
-
-                if (file_exists($keyFile)) {
-                    $key = @file_get_contents($keyFile);
-                    if ($key !== false && strlen($key) === 64) {
-                        self::$cacheIntegrityKey = $key;
-                        return self::$cacheIntegrityKey;
-                    }
-                }
-
-                // Generate new key if none exists or invalid
-                try {
-                    self::$cacheIntegrityKey = bin2hex(random_bytes(32));
-                    @file_put_contents($keyFile, self::$cacheIntegrityKey, LOCK_EX);
-                } catch (Exception $e) {
-                    Log::error('Failed to generate cache integrity key: ' . $e->getMessage());
-                    // Fallback to a less secure but functional key
-                    self::$cacheIntegrityKey = hash('sha256', uniqid('bearsampp_cache_', true));
-                }
-            } else {
-                // Fallback if bearsamppRoot not available
-                try {
-                    self::$cacheIntegrityKey = bin2hex(random_bytes(32));
-                } catch (Exception $e) {
-                    self::$cacheIntegrityKey = hash('sha256', uniqid('bearsampp_cache_', true));
-                }
-            }
-        }
-
-        return self::$cacheIntegrityKey;
-    }
-
-    /**
-     * Generates HMAC for cache data integrity verification.
-     *
-     * @param   array   $data      The data to generate HMAC for
-     * @param   string  $cacheKey  The cache key
-     *
-     * @return string The HMAC hash
-     */
-    private static function generateCacheHMAC($data, $cacheKey)
-    {
-        $key = self::getCacheIntegrityKey();
-        $message = serialize($data) . $cacheKey;
-        return hash_hmac('sha256', $message, $key);
-    }
-
-    /**
-     * Verifies cache file integrity using HMAC.
-     *
-     * @param   string  $fileContents  The serialized cache file contents
-     * @param   string  $cacheKey      The cache key
-     *
-     * @return bool True if integrity check passes, false otherwise
-     */
-    private static function verifyCacheIntegrity($fileContents, $cacheKey)
-    {
-        $cacheData = @unserialize($fileContents);
-
-        if ($cacheData === false || !isset($cacheData['hmac']) || !isset($cacheData['data'])) {
-            return false;
-        }
-
-        $expectedHmac = self::generateCacheHMAC($cacheData['data'], $cacheKey);
-
-        // Use hash_equals to prevent timing attacks
-        return hash_equals($expectedHmac, $cacheData['hmac']);
-    }
-
-    /**
-     * Clears all file scan caches.
-     *
-     * @return void
-     */
-    public static function clearFileScanCache()
-    {
-        global $bearsamppRoot;
-
-        // Clear memory cache
-        self::$fileScanCache = null;
-
-        // Clear file caches
-        if (isset($bearsamppRoot)) {
-            $tmpPath = $bearsamppRoot->getTmpPath();
-            $cacheFiles = glob($tmpPath . '/filescan_cache_*.dat');
-
-            if ($cacheFiles !== false) {
-                foreach ($cacheFiles as $cacheFile) {
-                    @unlink($cacheFile);
-                }
-                Log::info('Cleared ' . count($cacheFiles) . ' file scan cache files');
-            }
-        }
-
-        // Reset stats
-        self::$fileScanStats = [
-            'hits' => 0,
-            'misses' => 0,
-            'invalidations' => 0
-        ];
-    }
-
-    /**
-     * Gets file scan cache statistics.
-     *
-     * @return array Array containing hits, misses, and invalidations counts
-     */
-    public static function getFileScanStats()
-    {
-        return self::$fileScanStats;
-    }
-
-    /**
-     * Sets the file scan cache duration.
-     *
-     * @param   int  $seconds  Cache duration in seconds (default: 3600 = 1 hour).
-     *
-     * @return void
-     */
-    public static function setFileScanCacheDuration($seconds)
-    {
-        if ($seconds > 0 && $seconds <= 86400) { // Max 24 hours
-            self::$fileScanCacheDuration = $seconds;
-            Log::debug('File scan cache duration set to ' . $seconds . ' seconds');
-        }
-    }
-
-    /**
-     * Gets the current file scan cache duration.
-     *
-     * @return int Cache duration in seconds
-     */
-    public static function getFileScanCacheDuration()
-    {
-        return self::$fileScanCacheDuration;
-    }
 
     /**
      * Retrieves a list of directories and file types to scan within the BEARSAMPP environment.
