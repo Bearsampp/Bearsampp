@@ -1749,9 +1749,7 @@ class Util
      */
     public static function isValidDomainName($domainName)
     {
-        return preg_match('/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i', $domainName)
-            && preg_match('/^.{1,253}$/', $domainName)
-            && preg_match('/^[^\.]{1,63}(\.[^\.]{1,63})*$/', $domainName);
+        return filter_var($domainName, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false;
     }
 
     /**
