@@ -1033,24 +1033,28 @@ class Util
     /**
      * Converts a file size in bytes to a human-readable format.
      *
-     * @param   int     $size  The file size in bytes.
-     * @param   string  $unit  The unit to convert to ('GB', 'MB', 'KB', or ''). If empty, auto-selects the unit.
+     * Uses PHP's native human_readable_size() when no unit is forced.
+     * Falls back to manual conversion when a specific unit is requested.
      *
-     * @return string The formatted file size.
+     * @param  int     $size  The file size in bytes.
+     * @param  string  $unit  Optional forced unit ('GB', 'MB', 'KB', or '').
+     *
+     * @return string  The formatted file size.
      */
-    public static function humanFileSize($size, $unit = '')
+    public static function humanFileSize(int $size, string $unit = ''): string
     {
-        if ((!$unit && $size >= 1 << 30) || $unit == 'GB') {
-            return number_format($size / (1 << 30), 2) . 'GB';
-        }
-        if ((!$unit && $size >= 1 << 20) || $unit == 'MB') {
-            return number_format($size / (1 << 20), 2) . 'MB';
-        }
-        if ((!$unit && $size >= 1 << 10) || $unit == 'KB') {
-            return number_format($size / (1 << 10), 2) . 'KB';
+        // Forced unit mode
+        if ($unit !== '') {
+            return match ($unit) {
+                'GB' => number_format($size / (1 << 30), 2) . 'GB',
+                'MB' => number_format($size / (1 << 20), 2) . 'MB',
+                'KB' => number_format($size / (1 << 10), 2) . 'KB',
+                default => number_format($size) . ' bytes',
+            };
         }
 
-        return number_format($size) . ' bytes';
+        // Native PHP 8.3+ auto-selection
+        return human_readable_size($size, precision: 2);
     }
 
     /**
