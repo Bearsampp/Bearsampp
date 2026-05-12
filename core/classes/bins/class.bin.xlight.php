@@ -209,7 +209,7 @@ class BinXlight extends Module
             return false;
         }
 
-        $headers = Util::getHeaders('127.0.0.1', $port);
+        $headers = HttpClient::getHeaders('127.0.0.1', $port);
         if (!empty($headers)) {
             if (UtilString::contains($headers[0], 'Xlight')) {
                 Log::debug($this->getName() . ' port ' . $port . ' is used by: ' . str_replace('220 ', '', $headers[0]));

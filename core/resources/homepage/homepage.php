@@ -148,7 +148,7 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
 <nav class = "navbar navbar-expand-md navbar-light bg-dark fixed-top" role = "navigation">
     <div class = "container-fluid d-flex justify-content-between align-items-center">
         <div class = "d-inline-block">
-            <a class = "navbar-brand" href = "<?php echo Util::getWebsiteUrl(); ?>" aria-label = 'Home'>
+            <a class = "navbar-brand" href = "<?php echo HttpClient::getWebsiteUrl(); ?>" aria-label = 'Home'>
                 <img class = "p-1" alt = "<?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?>"
                      src = "<?php echo $imagesPath . 'header-logo.png'; ?>">
             </a>
@@ -186,11 +186,11 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
                         <i class = "fa-brands fa-facebook"></i>
                     </a>
                     <a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php echo $bearsamppLang->getValue( Lang::GITHUB ); ?>" target = "_blank"
-                       href = "<?php echo Util::getGithubUrl(); ?>" aria-label = "GitHub">
+                       href = "<?php echo HttpClient::getGithubUrl(); ?>" aria-label = "GitHub">
                         <i class = "fa-brands fa-github"></i>
                     </a>
                     <a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php echo $bearsamppLang->getValue( Lang::DONATE ); ?>" target = "_blank"
-                       href = "<?php echo Util::getWebsiteUrl( 'donate' ); ?>"><img class = "donate" src = "<?php echo $imagesPath . 'donate.png'; ?>" alt = 'Donation Icon' />
+                       href = "<?php echo HttpClient::getWebsiteUrl( 'donate' ); ?>"><img class = "donate" src = "<?php echo $imagesPath . 'donate.png'; ?>" alt = 'Donation Icon' />
                     </a>
                 </div>
             </div>

@@ -54,15 +54,15 @@ class ActionAbout
 
         // Add hyperlinks
         $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::WEBSITE) . ' :', 80, $yPos, 100, 15);
-        $this->wbLinkHomepage = $bearsamppWinbinder->createHyperLink($this->wbWindow, Util::getWebsiteUrlNoUtm(), 180, $yPos, 300, 15, WBC_LINES);
+        $this->wbLinkHomepage = $bearsamppWinbinder->createHyperLink($this->wbWindow, HttpClient::getWebsiteUrlNoUtm(), 180, $yPos, 300, 15, WBC_LINES);
         $yPos                 += 20;
 
         $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::DONATE) . ' :', 80, $yPos, 100, 15);
-        $this->wbLinkDonate = $bearsamppWinbinder->createHyperLink($this->wbWindow, Util::getWebsiteUrlNoUtm('donate'), 180, $yPos, 300, 15, WBC_LINES);
+        $this->wbLinkDonate = $bearsamppWinbinder->createHyperLink($this->wbWindow, HttpClient::getWebsiteUrlNoUtm('donate'), 180, $yPos, 300, 15, WBC_LINES);
         $yPos               += 20;
 
         $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::GITHUB) . ' :', 80, $yPos, 100, 15);
-        $this->wbLinkGithub = $bearsamppWinbinder->createHyperLink($this->wbWindow, Util::getGithubUserUrl(), 180, $yPos, 300, 15, WBC_LINES);
+        $this->wbLinkGithub = $bearsamppWinbinder->createHyperLink($this->wbWindow, HttpClient::getGithubUserUrl(), 180, $yPos, 300, 15, WBC_LINES);
         $yPos               += 10;
 
         $this->wbBtnOk = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_OK), 390, 180);
@@ -89,13 +89,13 @@ class ActionAbout
 
         switch ($id) {
             case $this->wbLinkHomepage[WinBinder::CTRL_ID]:
-                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getWebsiteUrl());
+                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), HttpClient::getWebsiteUrl());
                 break;
             case $this->wbLinkDonate[WinBinder::CTRL_ID]:
-                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getWebsiteUrl('donate'));
+                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), HttpClient::getWebsiteUrl('donate'));
                 break;
             case $this->wbLinkGithub[WinBinder::CTRL_ID]:
-                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), Util::getGithubUserUrl());
+                $bearsamppWinbinder->exec($bearsamppConfig->getBrowser(), HttpClient::getGithubUserUrl());
                 break;
             case IDCLOSE:
             case $this->wbBtnOk[WinBinder::CTRL_ID]:

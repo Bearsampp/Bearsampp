@@ -66,7 +66,7 @@ class TplAppNodejs
         // Download
         $resultItems .= TplAestan::getItemLink(
             $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
-            Util::getWebsiteUrl('module/nodejs', '#releases'),
+            HttpClient::getWebsiteUrl('module/nodejs', '#releases'),
             false,
             TplAestan::GLYPH_BROWSER
         ) . PHP_EOL;

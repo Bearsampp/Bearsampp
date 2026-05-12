@@ -31,6 +31,7 @@ class ActionEnable
             if ($bin !== null) {
                 $bin->setEnable($args[1], true);
             }
+            Util::stopLoading();
         }
     }
 }

@@ -259,7 +259,7 @@ class BinMailpit extends Module
             return false;
         }
 
-        $headers = Util::getHeaders( $this->listen, $port );
+        $headers = HttpClient::getHeaders( $this->listen, $port );
         if ( !empty( $headers ) ) {
             if ( UtilString::contains( $headers[0], 'Mailpit' ) ) {
                 Log::debug( $this->getName() . ' port ' . $port . ' is used by: ' . str_replace( '220 ', '', $headers[0] ) );

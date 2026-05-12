@@ -30,6 +30,7 @@ class ActionCheckVersion
     private $currentVersion;
     private $latestVersion;
     private $githubLatestVersionUrl;
+    private $didStartLoading = false;
 
     /**
      * Constructor for the ActionCheckVersion class.
@@ -45,19 +46,52 @@ class ActionCheckVersion
 
         // Start loading only if the exec file doesn't exist or if we're doing a menu check
         if (!file_exists($bearsamppCore->getExec()) || $isMenuCheck) {
-            Util::startLoading();
+            if ($isMenuCheck) {
+                Log::debug('ActionCheckVersion: Manual check detected, starting loading');
+                Util::startLoading();
+                $this->didStartLoading = true;
+            }
             $this->currentVersion = $bearsamppCore->getAppVersion();
+            Log::debug('ActionCheckVersion: Current version: ' . $this->currentVersion);
 
             // Assuming getLatestVersion now returns an array with version and URL
-            $githubVersionData = Util::getLatestVersion(APP_GITHUB_LATEST_URL);
+            $githubVersionData = HttpClient::getLatestVersion(APP_GITHUB_LATEST_URL);
+            Log::debug('ActionCheckVersion: GitHub version data: ' . var_export($githubVersionData, true));
 
             if ($githubVersionData != null && isset($githubVersionData['version'], $githubVersionData['html_url'])) {
                 $githubLatestVersion = $githubVersionData['version'];
                 $this->githubLatestVersionUrl = $githubVersionData['html_url']; // URL of the latest version
+                Log::debug('ActionCheckVersion: GitHub latest version: ' . $githubLatestVersion);
                 if (version_compare($this->currentVersion, $githubLatestVersion, '<')) {
+                    Log::debug('ActionCheckVersion: Update available, showing update window');
                     $this->showVersionUpdateWindow($bearsamppLang, $bearsamppWinbinder, $bearsamppCore, $githubLatestVersion);
                 } elseif ($isMenuCheck) {
+                    Log::debug('ActionCheckVersion: Version is up to date, showing OK message box');
                     $this->showVersionOkMessageBox($bearsamppLang, $bearsamppWinbinder);
+                } else {
+                    Log::debug('ActionCheckVersion: Version is up to date (background check)');
+                    if ($this->didStartLoading) {
+                        Util::stopLoading();
+                    }
+                }
+            } elseif ($isMenuCheck) {
+                Log::debug('ActionCheckVersion: Failed to retrieve version data during manual check');
+                // If it's a menu check but we couldn't get version data, we must stop loading
+                if ($this->didStartLoading) {
+                    Util::stopLoading();
+                }
+                Log::debug('ActionCheckVersion: Showing error message box');
+                $bearsamppWinbinder->messageBoxError(
+                    'Failed to retrieve version data from GitHub during manual check.',
+                    $bearsamppLang->getValue(Lang::CHECK_VERSION_TITLE)
+                );
+                Log::debug('ActionCheckVersion: Error message box returned');
+                Log::error('Failed to retrieve version data from GitHub during manual check.');
+            } else {
+                Log::debug('ActionCheckVersion: Failed to retrieve version data (background check)');
+                // Not a menu check, only stop loading if we started it
+                if ($this->didStartLoading) {
+                    Util::stopLoading();
                 }
             }
         }
@@ -99,11 +133,14 @@ class ActionCheckVersion
      */
     private function showVersionOkMessageBox($lang, $winbinder)
     {
+        Log::debug('ActionCheckVersion: Calling Util::stopLoading() in showVersionOkMessageBox');
         Util::stopLoading();
+        Log::debug('ActionCheckVersion: Calling messageBoxInfo');
         $winbinder->messageBoxInfo(
             $lang->getValue(Lang::CHECK_VERSION_LATEST_TEXT),
             $lang->getValue(Lang::CHECK_VERSION_TITLE)
         );
+        Log::debug('ActionCheckVersion: messageBoxInfo returned');
     }
 
     /**
@@ -121,7 +158,7 @@ class ActionCheckVersion
 
         switch ($id) {
             case $this->wbLinkFull[WinBinder::CTRL_ID]:
-                $latestVersionInfo = Util::getLatestVersion(APP_GITHUB_LATEST_URL);
+                $latestVersionInfo = HttpClient::getLatestVersion(APP_GITHUB_LATEST_URL);
                 if ($latestVersionInfo && isset($latestVersionInfo['html_url'])) {
                     $browserPath = $bearsamppConfig->getBrowser();
                     if (!$bearsamppWinbinder->exec($browserPath, $latestVersionInfo['html_url'])) {

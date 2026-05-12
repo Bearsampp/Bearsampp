@@ -101,7 +101,7 @@ class QuickPick
     {
         // Remove 'module-' prefix if present
         $moduleName = str_replace('module-', '', $moduleName);
-        
+
         // Find the correct module key by searching through the modules array
         // This handles proper capitalization for all module types
         foreach ($this->modules as $key => $moduleInfo) {
@@ -109,7 +109,7 @@ class QuickPick
                 return $key;
             }
         }
-        
+
         return null;
     }
 
@@ -460,7 +460,7 @@ class QuickPick
             return ['error' => 'Module URL not found'];
         }
 
-        $state = Util::checkInternetState();
+        $state = HttpClient::checkInternetState();
         if ( $state ) {
             $response = $this->fetchAndUnzipModule( $moduleUrl, $module );
             Log::debug( 'Response is: ' . print_r( $response, true ) );
@@ -468,33 +468,33 @@ class QuickPick
             // Check if enhanced mode is enabled
             global $bearsamppConfig;
             $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
-            
+
             Log::debug('Enhanced mode: ' . ($enhancedMode ? 'enabled' : 'disabled'));
-            
+
             // If installation was successful and enhanced mode is enabled, update config
             if (isset($response['success']) && $enhancedMode == 1) {
                 // Step 1: Update config FIRST (so reload can pick up the new version)
                 Log::debug('Enhanced mode enabled - Updating config for module: ' . $module . ' version: ' . $version);
                 $configUpdated = $this->updateModuleConfig($module, $version);
-                
+
                 if ($configUpdated) {
                     // Step 2: Trigger reload AFTER config update (reload will apply the new version)
                     Log::debug('Config updated successfully, triggering reload to apply changes...');
-                    
+
                     // Send progress update to user - temporarily stop output buffering
                     $obLevel = ob_get_level();
                     while (ob_get_level() > 0) {
                         ob_end_flush();
                     }
-                    
+
                     echo json_encode(['phase' => 'updating', 'message' => 'Updating system configuration...']);
                     flush();
-                    
+
                     // Restart output buffering
                     for ($i = 0; $i < $obLevel; $i++) {
                         ob_start();
                     }
-                    
+
                     // Note: User must manually reload from tray menu to activate the new version
                     Log::debug('Installation complete - user must manually reload from tray menu');
                     $response['reload_required'] = true;
@@ -549,12 +549,12 @@ class QuickPick
             break;
         }
     }
-    
+
     if (!$moduleKey) {
         Log::error("Module not found in modules array: $moduleName");
         return ['error' => 'Module configuration not found'];
     }
-    
+
     $moduleType = $this->modules[$moduleKey]['type'];
     Log::debug('Module Type: ' . $moduleType);
 
@@ -643,25 +643,25 @@ class QuickPick
     private function regenerateMenuSafe(): string
     {
         Log::debug('Regenerating menu (AJAX-safe mode)...');
-        
+
         // Suppress errors temporarily during menu generation
         $oldErrorReporting = error_reporting();
         error_reporting($oldErrorReporting & ~E_WARNING);
-        
+
         try {
             // Generate the menu content
             $menuContent = TplApp::process();
-            
+
             // Restore error reporting
             error_reporting($oldErrorReporting);
-            
+
             Log::debug('Menu regenerated successfully');
             return $menuContent;
-            
+
         } catch (Exception $e) {
             // Restore error reporting
             error_reporting($oldErrorReporting);
-            
+
             Log::warning('Error during menu regeneration: ' . $e->getMessage());
             throw $e;
         }
@@ -680,10 +680,10 @@ class QuickPick
     {
         try {
             $bearsamppConfig = new Config();
-            
+
             // Remove 'module-' prefix if present and normalize the module name
             $moduleName = str_replace('module-', '', $module);
-            
+
             // Find the correct module key by searching through the modules array
             // This handles proper capitalization for all module types
             $moduleKey = null;
@@ -693,30 +693,30 @@ class QuickPick
                     break;
                 }
             }
-            
+
             if (!$moduleKey) {
                 Log::error("Module not found in modules array: $moduleName");
                 return false;
             }
-            
+
             $moduleType = $this->modules[$moduleKey]['type'];
-            
+
             // Map module names to their config section names
             // For all types, use the lowercase name for the config key
             $configSection = strtolower($moduleKey);
-            
+
             Log::debug("Updating config for module: $module (key: $moduleKey, type: $moduleType) to version: $version");
             Log::debug("Config section: $configSection");
-            
+
             // Update the configuration file
             // The Config class expects a flat key like "nodejsVersion" not a section
             $configKey = $configSection . 'Version';
             $bearsamppConfig->replace($configKey, $version);
-            
+
             Log::info("Successfully updated $configSection version to $version in bearsampp.conf");
-            
+
             return true;
-            
+
         } catch (Exception $e) {
             Log::error("Failed to update module config: " . $e->getMessage());
             return false;
@@ -774,7 +774,7 @@ class QuickPick
         $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
 
         ob_start();
-        if ( Util::checkInternetState() ) {
+        if ( HttpClient::checkInternetState() ) {
 
             // Check if the license key is valid
             if ( $this->checkDownloadId() ): ?>
@@ -844,7 +844,7 @@ class QuickPick
                 </div>
             <?php else: ?>
                 <div id = "subscribeContainer" class = "text-center">
-                    <a href = "<?php echo Util::getWebsiteUrl( 'subscribe' ); ?>" class = "btn btn-dark d-inline-flex align-items-center">
+                    <a href = "<?php echo HttpClient::getWebsiteUrl( 'subscribe' ); ?>" class = "btn btn-dark d-inline-flex align-items-center">
                         <img src = "<?php echo $imagesPath . 'subscribe.svg'; ?>" alt = "Subscribe Icon" class = "me-2">
                         Subscribe to QuickPick now
                     </a>

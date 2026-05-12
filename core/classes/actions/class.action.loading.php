@@ -49,9 +49,22 @@ class ActionLoading
 
         $bearsamppWinbinder->reset();
         Log::trace('WinBinder reset complete');
-        
+
         $bearsamppCore->addLoadingPid($currentPid);
         Log::trace('Loading PID added to tracking file: ' . $currentPid);
+
+        // Check for already running loading processes
+        $pidFile = $bearsamppCore->getLoadingPid();
+        if (file_exists($pidFile)) {
+            $pids = file($pidFile);
+            foreach ($pids as $pid) {
+                $pid = trim($pid);
+                if (!empty($pid) && $pid != $currentPid) {
+                    Log::trace('ActionLoading: Found another loading process (PID ' . $pid . '), killing it');
+                    Win32Ps::kill($pid);
+                }
+            }
+        }
 
         // Screen information
         Log::trace('Getting screen information');
@@ -65,7 +78,7 @@ class ActionLoading
         // Create the window and progress bar
         Log::trace('Creating loading window...');
         $this->wbWindow = $bearsamppWinbinder->createWindow(null, ToolDialog, null, $xPos, $yPos, self::WINDOW_WIDTH, self::WINDOW_HEIGHT, WBC_TOP, null);
-        
+
         // Check if window was created successfully
         if ($this->wbWindow === false || $this->wbWindow === null) {
             Log::error('CRITICAL: Failed to create loading window - window handle is: ' . var_export($this->wbWindow, true));
@@ -73,23 +86,23 @@ class ActionLoading
             Log::error('wb_create_window function exists: ' . (function_exists('wb_create_window') ? 'YES' : 'NO'));
             return;
         }
-        
+
         Log::trace('Loading window created successfully - handle: ' . $this->wbWindow);
-        
+
         // CRITICAL: wb_set_visible() must be called AFTER window creation in PHP 8.4
         // The WS_VISIBLE flag during creation doesn't work
         Log::trace('Making window visible with wb_set_visible()');
         wb_set_visible($this->wbWindow, true);
         Log::trace('Window set to visible');
-        
+
         Log::trace('Drawing image...');
         $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/bearsampp.bmp');
         Log::trace('Image drawn');
-        
+
         Log::trace('Creating progress bar...');
         $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE + 1, 42, 24, self::WINDOW_WIDTH - 62, 15);
         Log::trace('Progress bar created: ' . var_export($this->wbProgressBar, true));
-        
+
         Log::trace('Drawing initial text...');
         $this->wbLabel = $bearsamppWinbinder->drawText($this->wbWindow, '', 42, 0, self::WINDOW_WIDTH - 64, 25);
         Log::trace('Label created: ' . var_export($this->wbLabel, true));
@@ -155,10 +168,10 @@ class ActionLoading
 
             for ($i = 0; $i < self::GAUGE && (microtime(true) - $startTime) < $maxLoadingTime; $i++) {
                 $this->incrProgressBar();
-                
+
                 // Check for status file updates to show current service being processed
                 $this->updateLabelFromStatusFile();
-                
+
                 usleep(100000);
             }
 
@@ -176,11 +189,11 @@ class ActionLoading
         if ($iterations >= $maxIterations) {
             Log::trace('Maximum iterations reached (' . $maxIterations . '), some services may not have started properly');
         }
-        
+
         if ((microtime(true) - $startTime) >= $maxLoadingTime) {
             Log::trace('Loading timeout reached (' . $maxLoadingTime . ' seconds), some services may not have started properly');
         }
-        
+
         // Close the loading window
         Log::trace('Closing loading window');
         Win32Ps::kill(Win32Ps::getCurrentPid());
@@ -188,13 +201,13 @@ class ActionLoading
 
     /**
      * Updates the loading text on the window
-     * 
+     *
      * @param string $text The text to display
      */
     private function updateLoadingText($text)
     {
         global $bearsamppWinbinder;
-        
+
         if ($this->wbLabel) {
             wb_set_text($this->wbLabel, $text);
             wb_refresh($this->wbWindow);
@@ -208,9 +221,9 @@ class ActionLoading
     private function updateLabelFromStatusFile()
     {
         global $bearsamppCore, $bearsamppWinbinder;
-        
+
         $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
-        
+
         if (file_exists($statusFile)) {
             $content = @file_get_contents($statusFile);
             if ($content !== false && !empty($content)) {

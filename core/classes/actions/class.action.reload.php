@@ -70,5 +70,8 @@ class ActionReload
 
         // Rebuild _commons.js content
         $bearsamppHomepage->refreshCommonsJsContent();
+
+        // Stop loading process
+        Util::stopLoading();
     }
 }

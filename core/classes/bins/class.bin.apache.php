@@ -239,7 +239,7 @@ class BinApache extends Module
             return false;
         }
 
-        $headers = Util::getHttpHeaders( 'http' . ($ssl ? 's' : '') . '://localhost:' . $port . '/' . $bearsamppHomepage->getResourcesPath() . '/ping.php' );
+        $headers = HttpClient::getHttpHeaders( 'http' . ($ssl ? 's' : '') . '://localhost:' . $port . '/' . $bearsamppHomepage->getResourcesPath() . '/ping.php' );
         if ( !empty( $headers ) ) {
             foreach ( $headers as $row ) {
                 if ( UtilString::startWith( $row, 'Server: ' ) || UtilString::startWith( $row, 'server: ' ) ) {
