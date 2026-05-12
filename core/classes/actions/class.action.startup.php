@@ -755,12 +755,12 @@ class ActionStartup
         $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_REGISTRY_TEXT ), Registry::APP_PATH_REG_ENTRY ) );
         $this->splash->incrProgressBar();
 
-        $currentAppPathRegKey = Util::getAppPathRegKey();
+        $currentAppPathRegKey = $bearsamppRegistry->getAppPathRegKey();
         $genAppPathRegKey     = UtilPath::formatWindowsPath( $bearsamppRoot->getRootPath() );
         $this->writeLog( 'Current app path reg key: ' . $currentAppPathRegKey );
         $this->writeLog( 'Gen app path reg key: ' . $genAppPathRegKey );
         if ( $currentAppPathRegKey != $genAppPathRegKey ) {
-            if ( !Util::setAppPathRegKey( $genAppPathRegKey ) ) {
+            if ( !$bearsamppRegistry->setAppPathRegKey( $genAppPathRegKey ) ) {
                 if ( !empty( $this->error ) ) {
                     $this->error .= PHP_EOL . PHP_EOL;
                 }
@@ -788,12 +788,12 @@ class ActionStartup
         $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_REGISTRY_TEXT ), Registry::APP_BINS_REG_ENTRY ) );
         $this->splash->incrProgressBar();
 
-        $currentAppBinsRegKey = Util::getAppBinsRegKey();
-        $genAppBinsRegKey     = Util::getAppBinsRegKey( false );
+        $currentAppBinsRegKey = $bearsamppRegistry->getAppBinsRegKey();
+        $genAppBinsRegKey     = $bearsamppRegistry->getAppBinsRegKey( false );
         $this->writeLog( 'Current app bins reg key: ' . $currentAppBinsRegKey );
         $this->writeLog( 'Gen app bins reg key: ' . $genAppBinsRegKey );
         if ( $currentAppBinsRegKey != $genAppBinsRegKey ) {
-            if ( !Util::setAppBinsRegKey( $genAppBinsRegKey ) ) {
+            if ( !$bearsamppRegistry->setAppBinsRegKey( $genAppBinsRegKey ) ) {
                 if ( !empty( $this->error ) ) {
                     $this->error .= PHP_EOL . PHP_EOL;
                 }
@@ -821,7 +821,7 @@ class ActionStartup
         $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_REGISTRY_TEXT ), Registry::SYSPATH_REG_ENTRY ) );
         $this->splash->incrProgressBar();
 
-        $currentSysPathRegKey = Util::getSysPathRegKey();
+        $currentSysPathRegKey = $bearsamppRegistry->getSysPathRegKey();
         $this->writeLog( 'Current system PATH: ' . $currentSysPathRegKey );
 
         $newSysPathRegKey = str_replace( '%' . Registry::APP_BINS_REG_ENTRY . '%;', '', $currentSysPathRegKey );
@@ -830,7 +830,7 @@ class ActionStartup
         $this->writeLog( 'New system PATH: ' . $newSysPathRegKey );
 
         if ( $currentSysPathRegKey != $newSysPathRegKey ) {
-            if ( !Util::setSysPathRegKey( $newSysPathRegKey ) ) {
+            if ( !$bearsamppRegistry->setSysPathRegKey( $newSysPathRegKey ) ) {
                 if ( !empty( $this->error ) ) {
                     $this->error .= PHP_EOL . PHP_EOL;
                 }
@@ -844,8 +844,8 @@ class ActionStartup
         }
         else {
             $this->writeLog( 'Refresh system PATH: ' . $currentSysPathRegKey );
-            Util::setSysPathRegKey( str_replace( '%' . Registry::APP_BINS_REG_ENTRY . '%', '', $currentSysPathRegKey ) );
-            Util::setSysPathRegKey( $currentSysPathRegKey );
+            $bearsamppRegistry->setSysPathRegKey( str_replace( '%' . Registry::APP_BINS_REG_ENTRY . '%', '', $currentSysPathRegKey ) );
+            $bearsamppRegistry->setSysPathRegKey( $currentSysPathRegKey );
         }
     }
 

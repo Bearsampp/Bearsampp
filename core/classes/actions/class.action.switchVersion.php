@@ -25,7 +25,7 @@ class ActionSwitchVersion
 
     const GAUGE_SERVICES = 1;
     const GAUGE_OTHERS = 7;
-    
+
     // Configuration sections
     const CONFIG_SECTION_APACHE = 'apache';
     const CONFIG_SECTION_PHP = 'php';
@@ -36,7 +36,7 @@ class ActionSwitchVersion
     const CONFIG_SECTION_MEMCACHED = 'memcached';
     const CONFIG_SECTION_MAILPIT = 'mailpit';
     const CONFIG_SECTION_XLIGHT = 'xlight';
-    
+
     // Configuration keys
     const CONFIG_KEY_VERSION = 'version';
 
@@ -278,7 +278,8 @@ class ActionSwitchVersion
         $this->updateConfigVersion();
 
         // Store current registry value for comparison
-        $currentRegValue = Util::getAppBinsRegKey(false);
+        global $bearsamppRegistry;
+        $currentRegValue = $bearsamppRegistry->getAppBinsRegKey(false);
         $regEntry = Registry::APP_BINS_REG_ENTRY;
 
         Log::trace(sprintf(
@@ -295,7 +296,7 @@ class ActionSwitchVersion
         $this->bearsamppSplash->incrProgressBar(2);
 
         // Perform the registry update
-        $newRegValue = Util::setAppBinsRegKey($currentRegValue);
+        $newRegValue = $bearsamppRegistry->setAppBinsRegKey($currentRegValue);
         Log::trace(sprintf(
             'Registry update completed | Key: %s | New value: %s | Previous value: %s',
             $regEntry,
@@ -304,7 +305,7 @@ class ActionSwitchVersion
         ));
 
         $this->bearsamppSplash->setTextLoading($bearsamppLang->getValue(Lang::SWITCH_VERSION_RESET_SERVICES));
-        
+
         // For version switches, services are properly restarted above
         // No additional service reset/delete is needed
         // The service is now running with the new version
@@ -316,7 +317,7 @@ class ActionSwitchVersion
         if ($remainingServicesCount > 0) {
             $this->bearsamppSplash->incrProgressBar($remainingServicesCount);
         }
-        
+
         Log::trace('Version switch process completed successfully');
 
         Log::trace('Creating modal...');
@@ -328,7 +329,7 @@ class ActionSwitchVersion
         Log::trace('Destroying splash window...');
         $bearsamppWinbinder->destroyWindow($window);
     }
-    
+
     /**
      * Updates the configuration file with the new version of the binary
      * This ensures version persistence across restarts
@@ -338,7 +339,7 @@ class ActionSwitchVersion
         $bearsamppConfig = new Config();
         $configSection = '';
         $version = $this->version; // Ensure version is available in scope
-        
+
         // Determine the correct configuration section based on binary type
         if ($this->bin->getName() == $GLOBALS['bearsamppBins']->getApache()->getName()) {
             $configSection = self::CONFIG_SECTION_APACHE;
@@ -368,7 +369,7 @@ class ActionSwitchVersion
             $configSection = self::CONFIG_SECTION_XLIGHT;
             Log::trace(sprintf('Switch %s version to %s', $configSection, $version));
         }
-        
+
         // Update the configuration if a valid section was found
         if (!empty($configSection)) {
             Log::trace('Updating .ini file...');
@@ -380,7 +381,7 @@ class ActionSwitchVersion
                 $trayMenu = TrayMenu::getInstance();
                 if (method_exists($trayMenu, 'updateSectionVersion')) {
                     $trayMenu->updateSectionVersion(
-                        strtoupper($configSection), 
+                        strtoupper($configSection),
                         $version
                     );
                 }

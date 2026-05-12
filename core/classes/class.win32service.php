@@ -371,7 +371,8 @@ class Win32Service
         if ( $this->getNssm() instanceof Nssm ) {
             Log::trace("Using NSSM for service installation");
 
-            $nssmEnvPath = Util::getAppBinsRegKey( false );
+            global $bearsamppRegistry;
+            $nssmEnvPath = $bearsamppRegistry->getAppBinsRegKey( false );
             Log::trace("NSSM environment path (bins): " . $nssmEnvPath);
 
             $nssmEnvPath .= Util::getNssmEnvPaths();

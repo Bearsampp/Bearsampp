@@ -229,6 +229,161 @@ class Registry
     }
 
     /**
+     * Retrieves or generates the application binaries registry key.
+     *
+     * @param   bool  $fromRegistry  Determines whether to retrieve the key from the registry or generate it.
+     *
+     * @return string Returns the application binaries registry key.
+     */
+    public function getAppBinsRegKey($fromRegistry = true)
+    {
+        if ($fromRegistry) {
+            $value = $this->getValue(
+                self::HKEY_LOCAL_MACHINE,
+                self::ENV_KEY,
+                self::APP_BINS_REG_ENTRY
+            );
+            Log::debug('App reg key from registry: ' . $value);
+        } else {
+            global $bearsamppBins, $bearsamppTools;
+            $value = '';
+            if ($bearsamppBins->getApache()->isEnable()) {
+                $value .= $bearsamppBins->getApache()->getSymlinkPath() . '/bin;';
+            }
+            if ($bearsamppBins->getPhp()->isEnable()) {
+                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . ';';
+                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/pear;';
+                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/deps;';
+                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/imagick;';
+            }
+            if ($bearsamppBins->getNodejs()->isEnable()) {
+                $value .= $bearsamppBins->getNodejs()->getSymlinkPath() . ';';
+            }
+            if ($bearsamppTools->getComposer()->isEnable()) {
+                $value .= $bearsamppTools->getComposer()->getSymlinkPath() . ';';
+                $value .= $bearsamppTools->getComposer()->getSymlinkPath() . '/vendor/bin;';
+            }
+            if ($bearsamppTools->getGhostscript()->isEnable()) {
+                $value .= $bearsamppTools->getGhostscript()->getSymlinkPath() . '/bin;';
+            }
+            if ($bearsamppTools->getGit()->isEnable()) {
+                $value .= $bearsamppTools->getGit()->getSymlinkPath() . '/bin;';
+            }
+            if ($bearsamppTools->getNgrok()->isEnable()) {
+                $value .= $bearsamppTools->getNgrok()->getSymlinkPath() . ';';
+            }
+            if ($bearsamppTools->getPerl()->isEnable()) {
+                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/perl/site/bin;';
+                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/perl/bin;';
+                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/c/bin;';
+            }
+            if ($bearsamppTools->getPython()->isEnable()) {
+                $value .= $bearsamppTools->getPython()->getSymlinkPath() . '/bin;';
+            }
+            if ($bearsamppTools->getRuby()->isEnable()) {
+                $value .= $bearsamppTools->getRuby()->getSymlinkPath() . '/bin;';
+            }
+            $value = UtilPath::formatWindowsPath($value);
+            Log::debug('Generated app bins reg key: ' . $value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Sets the application binaries registry key.
+     *
+     * @param   string  $value  The new value for the application binaries.
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function setAppBinsRegKey($value)
+    {
+        return $this->setStringValue(
+            self::HKEY_LOCAL_MACHINE,
+            self::ENV_KEY,
+            self::APP_BINS_REG_ENTRY,
+            $value
+        );
+    }
+
+    /**
+     * Retrieves the application path from the registry.
+     *
+     * @return mixed The value of the application path registry key or false on error.
+     */
+    public function getAppPathRegKey()
+    {
+        return $this->getValue(
+            self::HKEY_LOCAL_MACHINE,
+            self::ENV_KEY,
+            self::APP_PATH_REG_ENTRY
+        );
+    }
+
+    /**
+     * Sets the application path in the registry.
+     *
+     * @param   string  $value  The new value for the application path.
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function setAppPathRegKey($value)
+    {
+        return $this->setStringValue(
+            self::HKEY_LOCAL_MACHINE,
+            self::ENV_KEY,
+            self::APP_PATH_REG_ENTRY,
+            $value
+        );
+    }
+
+    /**
+     * Retrieves the system path from the registry.
+     *
+     * @return mixed The value of the system path registry key or false on error.
+     */
+    public function getSysPathRegKey()
+    {
+        return $this->getValue(
+            self::HKEY_LOCAL_MACHINE,
+            self::ENV_KEY,
+            self::SYSPATH_REG_ENTRY
+        );
+    }
+
+    /**
+     * Sets the system path in the registry.
+     *
+     * @param   string  $value  The new value for the system path.
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function setSysPathRegKey($value)
+    {
+        return $this->setExpandStringValue(
+            self::HKEY_LOCAL_MACHINE,
+            self::ENV_KEY,
+            self::SYSPATH_REG_ENTRY,
+            $value
+        );
+    }
+
+    /**
+     * Retrieves the processor identifier from the registry.
+     *
+     * @return mixed The value of the processor identifier registry key or false on error.
+     */
+    public function getProcessorRegKey()
+    {
+        return $this->getValue(
+            self::HKEY_LOCAL_MACHINE,
+            self::PROCESSOR_REG_SUBKEY,
+            self::PROCESSOR_REG_ENTRY
+        );
+    }
+
+    /**
      * Retrieves the latest error message.
      *
      * @return string|null The latest error message, or null if no error occurred.
