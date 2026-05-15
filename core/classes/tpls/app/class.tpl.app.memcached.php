@@ -278,3 +278,4 @@ class TplAppMemcached
             TplAppReload::getActionReload();
     }
 }
+

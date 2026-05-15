@@ -144,7 +144,7 @@ class WinBinder
         } else {
             $this->writeLog('Window created successfully: handle=' . $window);
             // Set tiny window icon
-            $this->setImage($window, $bearsamppCore->getIconsPath() . '/app.ico');
+            $this->setImage($window, Path::getIconsPath() . '/app.ico');
         }
 
         return $window;
@@ -1199,3 +1199,4 @@ function __winbinderEventHandler($window, $id, $ctrl, $param1, $param2)
         array($window, $id, $ctrl, $param1, $param2)
     );
 }
+

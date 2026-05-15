@@ -390,3 +390,4 @@ class ActionSwitchVersion
         Log::trace('Returning to parent call');
     }
 }
+

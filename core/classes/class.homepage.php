@@ -87,10 +87,10 @@ class Homepage
      *
      * @return string The homepage directory path.
      */
-    public function getHomepagePath()
+    public function getWebHomepagePath()
     {
         global $bearsamppCore;
-        return $bearsamppCore->getResourcesPath(false) . '/homepage';
+        return Path::getResourcesPath(false) . '/homepage';
     }
 
     /**
@@ -98,9 +98,9 @@ class Homepage
      *
      * @return string The images directory path.
      */
-    public function getImagesPath()
+    public function getWebImagesPath()
     {
-        return $this->getResourcesPath(false) . '/img/';
+        return $this->getWebResourcesPath() . '/img/';
     }
 
     /**
@@ -108,9 +108,9 @@ class Homepage
      *
      * @return string The icons directory path.
      */
-    public function getIconsPath()
+    public function getWebIconsPath()
     {
-        return $this->getResourcesPath(false) . '/img/icons/';
+        return $this->getWebResourcesPath() . '/img/icons/';
     }
 
     /**
@@ -118,7 +118,7 @@ class Homepage
      *
      * @return string The resources directory path.
      */
-    public function getResourcesPath()
+    public function getWebResourcesPath()
     {
         global $bearsamppCore;
         return md5(APP_TITLE);
@@ -132,7 +132,7 @@ class Homepage
     public function getResourcesUrl()
     {
         global $bearsamppRoot;
-        return $bearsamppRoot->getLocalUrl($this->getResourcesPath());
+        return $bearsamppRoot->getLocalUrl($this->getWebResourcesPath());
     }
 
     /**
@@ -145,11 +145,11 @@ class Homepage
         global $bearsamppBins;
 
         $result = $bearsamppBins->getApache()->getAliasContent(
-            $this->getResourcesPath(),
-            $this->getHomepagePath()
+            $this->getWebResourcesPath(),
+            $this->getWebHomepagePath()
         );
 
-        return file_put_contents($this->getHomepagePath() . '/alias.conf', $result) !== false;
+        return file_put_contents($this->getWebHomepagePath() . '/alias.conf', $result) !== false;
     }
 
     /**
@@ -157,9 +157,10 @@ class Homepage
      */
     public function refreshCommonsJsContent()
     {
-        Util::replaceInFile($this->getHomepagePath() . '/js/_commons.js', array(
-            '/^\s\surl:.*/' => '  url: "' . $this->getResourcesPath() . '/ajax.php"',
-            '/AJAX_URL.*=.*/' => 'const AJAX_URL = "' . $this->getResourcesPath() . '/ajax.php"',
+        Util::replaceInFile($this->getWebHomepagePath() . '/js/_commons.js', array(
+            '/^\s\surl:.*/' => '  url: "' . $this->getWebResourcesPath() . '/ajax.php"',
+            '/AJAX_URL.*=.*/' => 'const AJAX_URL = "' . $this->getWebResourcesPath() . '/ajax.php"',
         ));
     }
 }
+

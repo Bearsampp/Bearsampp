@@ -351,3 +351,4 @@ class Cache
         self::$fileScanStats['misses']++;
     }
 }
+

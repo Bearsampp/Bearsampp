@@ -96,7 +96,7 @@ class ActionLoading
         Log::trace('Window set to visible');
 
         Log::trace('Drawing image...');
-        $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/bearsampp.bmp');
+        $bearsamppWinbinder->drawImage($this->wbWindow, Path::getImagesPath() . '/bearsampp.bmp');
         Log::trace('Image drawn');
 
         Log::trace('Creating progress bar...');
@@ -126,7 +126,7 @@ class ActionLoading
 
         for ($i = 0; $i < $nb; $i++) {
             $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
-            $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/bearsampp.bmp', 4, 2, 32, 32);
+            $bearsamppWinbinder->drawImage($this->wbWindow, Path::getImagesPath() . '/bearsampp.bmp', 4, 2, 32, 32);
         }
 
         $bearsamppWinbinder->wait();
@@ -222,7 +222,7 @@ class ActionLoading
     {
         global $bearsamppCore, $bearsamppWinbinder;
 
-        $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
+        $statusFile = Path::getTmpPath() . '/loading_status.txt';
 
         if (file_exists($statusFile)) {
             $content = @file_get_contents($statusFile);
@@ -283,3 +283,4 @@ class ActionLoading
         return $allStarted;
     }
 }
+

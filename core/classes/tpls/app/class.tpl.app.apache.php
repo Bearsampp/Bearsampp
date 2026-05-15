@@ -513,3 +513,4 @@ class TplAppApache
             TplAppReload::getActionReload();
     }
 }
+

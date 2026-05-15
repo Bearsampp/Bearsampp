@@ -101,3 +101,4 @@ class ToolComposer extends Module
         return $this->exe;
     }
 }
+

@@ -265,3 +265,4 @@ class Config
         return ['valid' => true];
     }
 }
+

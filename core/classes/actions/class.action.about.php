@@ -67,7 +67,7 @@ class ActionAbout
 
         $this->wbBtnOk = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_OK), 390, 180);
 
-        $this->wbImage = $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/about.bmp');
+        $this->wbImage = $bearsamppWinbinder->drawImage($this->wbWindow, Path::getImagesPath() . '/about.bmp');
 
         $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
         $bearsamppWinbinder->mainLoop();
@@ -104,3 +104,4 @@ class ActionAbout
         }
     }
 }
+

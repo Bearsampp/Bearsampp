@@ -98,7 +98,7 @@ class ActionStartup
             $this->writeLog('List procs:');
             $listProcs = array();
             foreach ($bearsamppRoot->getProcs() as $proc) {
-                $unixExePath = UtilPath::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]);
+                $unixExePath = Path::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]);
                 $listProcs[] = '-> ' . basename($unixExePath) . ' (PID ' . $proc[Win32Ps::PROCESS_ID] . ') in ' . $unixExePath;
             }
             sort($listProcs);
@@ -406,7 +406,7 @@ class ActionStartup
 
         // Scripts
         Log::trace("Archiving script files");
-        $srcPath = $bearsamppCore->getTmpPath();
+        $srcPath = Path::getTmpPath();
         $handle = @opendir($srcPath);
         if (!$handle) {
             Log::trace("Failed to open tmp directory: " . $srcPath);
@@ -504,7 +504,7 @@ class ActionStartup
 
         $this->writeLog( 'Clear tmp folders' );
         Util::clearFolder( $bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore') );
-        Util::clearFolder( $bearsamppCore->getTmpPath(), array('.gitignore') );
+        Util::clearFolder( Path::getTmpPath(), array('.gitignore') );
 
         // Ensure opcache directory exists for persistent file cache
         $opcachePath = $bearsamppRoot->getTmpPath() . DIRECTORY_SEPARATOR . 'opcache';
@@ -567,7 +567,7 @@ class ActionStartup
             $this->writeLog( 'Procs killed:' );
             $procsKilledSort = array();
             foreach ( $procsKilled as $proc ) {
-                $unixExePath       = UtilPath::formatUnixPath( $proc[Win32Ps::EXECUTABLE_PATH] );
+                $unixExePath       = Path::formatUnixPath( $proc[Win32Ps::EXECUTABLE_PATH] );
                 $procsKilledSort[] = '-> ' . basename( $unixExePath ) . ' (PID ' . $proc[Win32Ps::PROCESS_ID] . ') in ' . $unixExePath;
             }
             sort( $procsKilledSort );
@@ -741,7 +741,7 @@ class ActionStartup
     {
         global $bearsamppCore;
 
-        file_put_contents( $bearsamppCore->getLastPath(), $this->rootPath );
+        file_put_contents( Path::getLastPath(), $this->rootPath );
         $this->writeLog( 'Save current path: ' . $this->rootPath );
     }
 
@@ -756,7 +756,7 @@ class ActionStartup
         $this->splash->incrProgressBar();
 
         $currentAppPathRegKey = $bearsamppRegistry->getAppPathRegKey();
-        $genAppPathRegKey     = UtilPath::formatWindowsPath( $bearsamppRoot->getRootPath() );
+        $genAppPathRegKey     = Path::formatWindowsPath( $bearsamppRoot->getRootPath() );
         $this->writeLog( 'Current app path reg key: ' . $currentAppPathRegKey );
         $this->writeLog( 'Gen app path reg key: ' . $genAppPathRegKey );
         if ( $currentAppPathRegKey != $genAppPathRegKey ) {
@@ -1324,3 +1324,4 @@ class ActionStartup
         Log::debug( $log, $bearsamppRoot->getStartupLogFilePath() );
     }
 }
+

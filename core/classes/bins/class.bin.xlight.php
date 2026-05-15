@@ -410,3 +410,4 @@ class BinXlight extends Module
         $this->replace(self::LOCAL_CFG_PORT, $port);
     }
 }
+

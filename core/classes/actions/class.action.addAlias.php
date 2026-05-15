@@ -214,3 +214,4 @@ class ActionAddAlias extends ActionDialogBase
         }
     }
 }
+

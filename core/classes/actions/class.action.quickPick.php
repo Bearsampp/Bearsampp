@@ -69,7 +69,7 @@ class QuickPick
     public function __construct()
     {
         global $bearsamppCore;
-        $this->jsonFilePath = $bearsamppCore->getResourcesPath() . '/quickpick-releases.json';
+        $this->jsonFilePath = Path::getResourcesPath() . '/quickpick-releases.json';
     }
 
     /**
@@ -863,3 +863,4 @@ class QuickPick
         return ob_get_clean();
     }
 }
+

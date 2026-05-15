@@ -283,7 +283,7 @@ class Registry
             if ($bearsamppTools->getRuby()->isEnable()) {
                 $value .= $bearsamppTools->getRuby()->getSymlinkPath() . '/bin;';
             }
-            $value = UtilPath::formatWindowsPath($value);
+            $value = Path::formatWindowsPath($value);
             Log::debug('Generated app bins reg key: ' . $value);
         }
 
@@ -393,3 +393,4 @@ class Registry
         return $this->latestError;
     }
 }
+

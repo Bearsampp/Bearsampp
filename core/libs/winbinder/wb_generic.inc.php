@@ -169,3 +169,4 @@ function parse_ini($initext, $changecase=TRUE, $convertwords=TRUE)
 	}
 	return $section;
 }
+

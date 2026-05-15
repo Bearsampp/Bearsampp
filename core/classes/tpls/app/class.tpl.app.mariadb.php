@@ -344,3 +344,4 @@ class TplAppMariadb
             TplAppReload::getActionReload();
     }
 }
+

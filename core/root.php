@@ -167,3 +167,4 @@ if ($bearsamppRoot->isRoot()) {
  */
 global $bearsamppLang;
 $locale = $bearsamppLang->getValue('locale');
+

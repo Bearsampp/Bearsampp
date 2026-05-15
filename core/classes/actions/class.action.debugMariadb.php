@@ -61,3 +61,4 @@ class ActionDebugMariadb extends ActionDebugBase
         ];
     }
 }
+

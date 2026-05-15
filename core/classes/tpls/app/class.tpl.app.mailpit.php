@@ -280,3 +280,4 @@ class TplAppMailpit
             TplAppReload::getActionReload();
     }
 }
+

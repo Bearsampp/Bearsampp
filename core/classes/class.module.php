@@ -80,8 +80,8 @@ abstract class Module
      */
     private function createSymlink()
     {
-        $src = UtilPath::formatWindowsPath($this->currentPath);
-        $dest = UtilPath::formatWindowsPath($this->symlinkPath);
+        $src = Path::formatWindowsPath($this->currentPath);
+        $dest = Path::formatWindowsPath($this->symlinkPath);
 
         if(file_exists($dest)) {
             if (is_link($dest)) {
@@ -263,3 +263,4 @@ abstract class Module
         return $this->enable;
     }
 }
+

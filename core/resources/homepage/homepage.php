@@ -43,19 +43,16 @@ global $bearsamppLang, $bearsamppCore, $bearsamppHomepage, $bearsamppConfig, $be
 /**
  * Set the base path for resources, ensuring there is a trailing slash.
  */
-$resourcesPath = rtrim( $bearsamppHomepage->getResourcesPath(), '/' ) . '/';
+$resourcesPath = rtrim( $bearsamppHomepage->getWebResourcesPath(), '/' ) . '/';
 
 /**
  * Define paths for icons and images used in the homepage.
  */
-$iconsPath  = $bearsamppHomepage->getIconsPath();
-$imagesPath = $bearsamppHomepage->getImagesPath();
+$iconsPath  = $bearsamppHomepage->getWebIconsPath();
+$imagesPath = $bearsamppHomepage->getWebImagesPath();
 
 // Instantiate the QuickPick class
 $quickPick = new QuickPick();
-
-$ajaxUrl = $bearsamppCore->getAjaxPath() . '/ajax.getmodule_versions.php';
-
 
 /**
  * Retrieve and store the localized string for the 'Download More' label.
@@ -230,3 +227,4 @@ foreach ( $jsFiles as $file ) {
 ?>
 </body>
 </html>
+

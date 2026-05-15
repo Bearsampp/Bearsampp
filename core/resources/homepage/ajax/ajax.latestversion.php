@@ -90,3 +90,4 @@ if (version_compare($bearsamppCurrentVersion, $githubLatestVersion, '<')) {
  * @return void Outputs the JSON-encoded result.
  */
 echo json_encode($result);
+

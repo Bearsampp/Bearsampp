@@ -343,3 +343,4 @@ class Log
         self::trace('Reload ' . get_class($classInstance));
     }
 }
+

@@ -134,3 +134,4 @@ class Action
             && !empty($_SERVER['argv'][1]);
     }
 }
+

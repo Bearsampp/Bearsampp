@@ -68,3 +68,4 @@ class ActionSwitchOnline
         $bearsamppBins->getApache()->refreshVhosts($putOnline);
     }
 }
+

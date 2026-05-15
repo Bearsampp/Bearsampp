@@ -265,3 +265,4 @@ class TplAppXlight
             TplAppReload::getActionReload();
     }
 }
+

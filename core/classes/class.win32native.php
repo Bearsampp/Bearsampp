@@ -1260,3 +1260,4 @@ class Win32Native
         return false;
     }
 }
+

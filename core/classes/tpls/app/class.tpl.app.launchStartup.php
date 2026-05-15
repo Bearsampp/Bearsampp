@@ -58,3 +58,4 @@ class TplAppLaunchStartup
             TplAppReload::getActionReload() . PHP_EOL;
     }
 }
+

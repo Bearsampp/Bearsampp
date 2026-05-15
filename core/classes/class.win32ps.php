@@ -154,12 +154,12 @@ class Win32Ps
      */
     public static function findByPath($path)
     {
-        $path = UtilPath::formatUnixPath($path);
+        $path = Path::formatUnixPath($path);
         if (!empty($path) && is_file($path)) {
             $procs = self::getListProcs();
             if ($procs !== false) {
                 foreach ($procs as $proc) {
-                    $unixExePath = UtilPath::formatUnixPath($proc[self::EXECUTABLE_PATH]);
+                    $unixExePath = Path::formatUnixPath($proc[self::EXECUTABLE_PATH]);
                     if ($unixExePath == $path) {
                         return $proc;
                     }
@@ -201,8 +201,8 @@ class Win32Ps
 
         if ($procs !== false && $procs !== null) {
             foreach ($procs as $proc) {
-                $unixExePath = UtilPath::formatUnixPath($proc[self::EXECUTABLE_PATH]);
-                $unixCommandPath = UtilPath::formatUnixPath($proc[self::COMMAND_LINE]);
+                $unixExePath = Path::formatUnixPath($proc[self::EXECUTABLE_PATH]);
+                $unixCommandPath = Path::formatUnixPath($proc[self::COMMAND_LINE]);
 
                 // Not kill current PID (PHP)
                 if ($proc[self::PROCESS_ID] == self::getCurrentPid()) {
@@ -232,3 +232,4 @@ class Win32Ps
         return $killed;
     }
 }
+

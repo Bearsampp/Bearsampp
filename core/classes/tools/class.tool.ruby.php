@@ -124,3 +124,4 @@ class ToolRuby extends Module
         return $this->consoleExe;
     }
 }
+

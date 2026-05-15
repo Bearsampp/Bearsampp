@@ -893,3 +893,4 @@ class BinMysql extends Module
         return $this->dataDir;
     }
 }
+

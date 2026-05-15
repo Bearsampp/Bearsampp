@@ -28,15 +28,15 @@ class OpenSsl
         $pubPath = '"' . $destPath . '/' . $name . '.pub"';
         $crtPath = '"' . $destPath . '/' . $name . '.crt"';
         $extension = 'SAN';
-        $exe = '"' . $bearsamppCore->getOpenSslExe() . '"';
+        $exe = '"' . Path::getOpenSslExe() . '"';
 
         // ext
         $extContent = PHP_EOL . '[' . $extension . ']' . PHP_EOL;
         $extContent .= 'subjectAltName=DNS:*.' . $name . ',DNS:' . $name . PHP_EOL;
 
         // tmp openssl.cfg
-        $conf = $bearsamppCore->getTmpPath() . '/openssl_' . $name . '_' . UtilString::random() . '.cfg';
-        file_put_contents($conf, file_get_contents($bearsamppCore->getOpenSslConf()) . $extContent);
+        $conf = Path::getTmpPath() . '/openssl_' . $name . '_' . UtilString::random() . '.cfg';
+        file_put_contents($conf, file_get_contents(Path::getOpenSslConf()) . $extContent);
 
         // Properly quote the config path for batch commands
         $confPath = '"' . $conf . '"';
@@ -102,3 +102,4 @@ class OpenSsl
         return @unlink($ppkPath) && @unlink($pubPath) && @unlink($crtPath);
     }
 }
+

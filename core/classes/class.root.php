@@ -42,7 +42,7 @@ class Root
         clearstatcache();
 
         // External classes required for error handling and path utilities
-        require_once $this->getCorePath() . '/classes/class.util.path.php';
+        require_once $this->getCorePath() . '/classes/class.path.php';
 
         // Error log
         $this->initErrorHandling();
@@ -538,7 +538,7 @@ class Root
             return;
         }
 
-        $errfile = UtilPath::formatUnixPath($errfile);
+        $errfile = Path::formatUnixPath($errfile);
         $errfile = str_replace($this->getRootPath(), '', $errfile);
 
         if (!defined('E_DEPRECATED')) {

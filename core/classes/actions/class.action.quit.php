@@ -457,7 +457,7 @@ class ActionQuit
             'size_freed' => 0
         ];
 
-        $tmpPath = $bearsamppCore->getTmpPath();
+        $tmpPath = Path::getTmpPath();
 
         if (!is_dir($tmpPath)) {
             Log::debug('Temp directory does not exist: ' . $tmpPath);
@@ -536,11 +536,11 @@ class ActionQuit
 
         try {
             $procs = Win32Ps::getListProcs();
-            $bearsamppPath = strtolower(UtilPath::formatUnixPath($bearsamppRoot->getRootPath()));
+            $bearsamppPath = strtolower(Path::formatUnixPath($bearsamppRoot->getRootPath()));
             $currentPid = Win32Ps::getCurrentPid();
 
             foreach ($procs as $proc) {
-                $exePath = strtolower(UtilPath::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]));
+                $exePath = strtolower(Path::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]));
                 $pid = $proc[Win32Ps::PROCESS_ID];
 
                 // Skip current process
@@ -700,3 +700,4 @@ class ActionQuit
         }
     }
 }
+

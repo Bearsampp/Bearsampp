@@ -243,3 +243,4 @@ class UtilInput
         return htmlspecialchars($output, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
 }
+

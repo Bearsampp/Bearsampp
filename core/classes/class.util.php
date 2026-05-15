@@ -17,7 +17,7 @@
  * - Network utilities to validate IPs, domains, and manage HTTP requests.
  * - Helper functions for encoding, decoding, and file operations.
  *
- * Path formatting (formatWindowsPath / formatUnixPath) has been moved to UtilPath. @see UtilPath
+ * Path formatting (formatWindowsPath / formatUnixPath) has been moved to Path. @see Path
  * Logging is handled by the Log class. @see Log
  *
  * This class is designed to be used as a helper or utility class where methods are accessed statically.
@@ -150,7 +150,7 @@ class Util
                     break;
                 }
             } elseif ($file == $findFile) {
-                $result = UtilPath::formatUnixPath($startPath . '/' . $file);
+                $result = Path::formatUnixPath($startPath . '/' . $file);
                 break;
             }
         }
@@ -393,7 +393,7 @@ class Util
         $targetPath = $bearsamppRoot->getExeFilePath();
         $workingDir = $bearsamppRoot->getRootPath();
         $description = APP_TITLE . ' ' . $bearsamppCore->getAppVersion();
-        $iconPath = $bearsamppCore->getIconsPath() . '/app.ico';
+        $iconPath = Path::getIconsPath() . '/app.ico';
 
         return Win32Native::createShortcut($shortcutPath, $targetPath, $workingDir, $description, $iconPath);
     }
@@ -460,7 +460,7 @@ class Util
                     $result[] = $tmpResult;
                 }
             } elseif (is_file($startPath . '/' . $checkFile) && !in_array($startPath, $result)) {
-                $result[] = UtilPath::formatUnixPath($startPath);
+                $result[] = Path::formatUnixPath($startPath);
             }
         }
 
@@ -533,14 +533,14 @@ class Util
         global $bearsamppCore, $bearsamppWinbinder;
 
         Log::trace('startLoading() called');
-        Log::trace('PHP executable: ' . $bearsamppCore->getPhpExe());
+        Log::trace('PHP executable: ' . Path::getPhpExe());
         Log::trace('Root file: ' . Core::isRoot_FILE);
         Log::trace('Action: ' . Action::LOADING);
 
         $command = Core::isRoot_FILE . ' ' . Action::LOADING;
-        Log::trace('Executing command: ' . $bearsamppCore->getPhpExe() . ' ' . $command);
+        Log::trace('Executing command: ' . Path::getPhpExe() . ' ' . $command);
 
-        $result = $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), $command);
+        $result = $bearsamppWinbinder->exec(Path::getPhpExe(), $command);
         Log::trace('exec() returned: ' . var_export($result, true));
 
         Log::trace('startLoading() completed');
@@ -574,7 +574,7 @@ class Util
     {
         global $bearsamppCore;
 
-        $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
+        $statusFile = Path::getTmpPath() . '/loading_status.txt';
         file_put_contents($statusFile, json_encode(['text' => $text]));
     }
 
@@ -585,7 +585,7 @@ class Util
     {
         global $bearsamppCore;
 
-        $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
+        $statusFile = Path::getTmpPath() . '/loading_status.txt';
         if (file_exists($statusFile)) {
             @unlink($statusFile);
         }
@@ -691,14 +691,14 @@ class Util
 
         // OpenSSL
         $paths[] = array(
-            'path'      => $bearsamppCore->getOpenSslPath(),
+            'path'      => Path::getOpenSslPath(),
             'includes'  => array('openssl.cfg'),
             'recursive' => false
         );
 
         // Homepage
         $paths[] = array(
-            'path'      => $bearsamppCore->getResourcesPath() . '/homepage',
+            'path'      => Path::getResourcesPath() . '/homepage',
             'includes'  => array('alias.conf'),
             'recursive' => false
         );
@@ -857,12 +857,12 @@ class Util
                     if (UtilString::startWith($include, '!')) {
                         $include = ltrim($include, '!');
                         if (UtilString::startWith($file, '.') && !UtilString::endWith($file, $include)) {
-                            $result[] = UtilPath::formatUnixPath($startPath . '/' . $file);
+                            $result[] = Path::formatUnixPath($startPath . '/' . $file);
                         } elseif ($file != $include) {
-                            $result[] = UtilPath::formatUnixPath($startPath . '/' . $file);
+                            $result[] = Path::formatUnixPath($startPath . '/' . $file);
                         }
                     } elseif (UtilString::endWith($file, $include) || $file == $include || empty($include)) {
-                        $result[] = UtilPath::formatUnixPath($startPath . '/' . $file);
+                        $result[] = Path::formatUnixPath($startPath . '/' . $file);
                     }
                 }
             }
@@ -891,10 +891,10 @@ class Util
         );
 
         $rootPath           = $rootPath != null ? $rootPath : $bearsamppRoot->getRootPath();
-        $unixOldPath        = UtilPath::formatUnixPath($bearsamppCore->getLastPathContent());
-        $windowsOldPath     = UtilPath::formatWindowsPath($bearsamppCore->getLastPathContent());
-        $unixCurrentPath    = UtilPath::formatUnixPath($rootPath);
-        $windowsCurrentPath = UtilPath::formatWindowsPath($rootPath);
+        $unixOldPath        = Path::formatUnixPath($bearsamppCore->getLastPathContent());
+        $windowsOldPath     = Path::formatWindowsPath($bearsamppCore->getLastPathContent());
+        $unixCurrentPath    = Path::formatUnixPath($rootPath);
+        $windowsCurrentPath = Path::formatWindowsPath($rootPath);
 
         foreach ($filesToScan as $fileToScan) {
             $tmpCountChangedOcc = 0;
@@ -1615,7 +1615,7 @@ class Util
             $paths .= $bearsamppTools->getRuby()->getSymlinkPath() . '/bin;';
         }
 
-        return UtilPath::formatWindowsPath($paths);
+        return Path::formatWindowsPath($paths);
     }
 
     /**
@@ -1630,7 +1630,7 @@ class Util
     {
         global $bearsamppCore, $bearsamppConfig;
 
-        $tmpFile = $bearsamppCore->getTmpPath() . '/' . $caption . '.txt';
+        $tmpFile = Path::getTmpPath() . '/' . $caption . '.txt';
         file_put_contents($tmpFile, $content);
 
         // Open the file with the configured editor from bearsampp.conf

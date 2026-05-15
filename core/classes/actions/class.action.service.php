@@ -179,3 +179,4 @@ class ActionService
         Util::removeService( $service, $name );
     }
 }
+

@@ -86,3 +86,4 @@ foreach ($bearsamppBins->getPhp()->getExtensionsFromConf() as $extName => $extSt
  * Outputs the result array as a JSON-encoded string.
  */
 echo json_encode($result);
+

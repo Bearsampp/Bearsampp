@@ -141,14 +141,14 @@ class TplAppTools
         // HostsEditor
         $resultItems .= TplAestan::getItemExe(
             $bearsamppLang->getValue(Lang::HOSTSEDITOR),
-            $bearsamppCore->getHostsEditorExe(),
+            Path::getHostsEditorExe(),
             TplAestan::GLYPH_HOSTSEDITOR
         ) . PHP_EOL;
 
         // Pwgen password manager
         $resultItems .= TplAestan::getItemExe(
                 $bearsamppLang->getValue(Lang::PWGEN),
-                $bearsamppCore->getPwgenExe(),
+                Path::getPwgenExe(),
                 TplAestan::GLYPH_PWGEN
             ) . PHP_EOL;
 
@@ -174,3 +174,4 @@ class TplAppTools
         return TplApp::getActionRun(Action::GEN_SSL_CERTIFICATE);
     }
 }
+

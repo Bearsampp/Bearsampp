@@ -638,3 +638,4 @@ function _bit_test($v, $t)
 {
     return (($v & $t) == $t);
 }
+

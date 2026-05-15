@@ -340,3 +340,4 @@ class TplAppPhp
             TplAppReload::getActionReload() . PHP_EOL;
     }
 }
+

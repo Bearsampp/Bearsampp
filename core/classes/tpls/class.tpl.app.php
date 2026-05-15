@@ -123,7 +123,7 @@ class TplApp
         }
 
         $result = 'Action: run; ' .
-            'FileName: "' . $bearsamppCore->getPhpExe(true) . '"; ' .
+            'FileName: "' . Path::getPhpExe(true) . '"; ' .
             'Parameters: "' . Core::isRoot_FILE . ' ' . $action . $argImp . '"; ' .
             'WorkingDir: "' . $bearsamppRoot->getCorePath(true) . '"';
 
@@ -391,3 +391,4 @@ class TplApp
             PHP_EOL . $tplOnline[self::SECTION_CONTENT];
     }
 }
+

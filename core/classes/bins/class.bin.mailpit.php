@@ -523,3 +523,4 @@ class BinMailpit extends Module
         return $this->replace( self::LOCAL_CFG_LISTEN, $this->listen );
     }
 }
+

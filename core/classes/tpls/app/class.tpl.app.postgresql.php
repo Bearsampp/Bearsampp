@@ -309,3 +309,4 @@ class TplAppPostgresql
             TplAppReload::getActionReload();
     }
 }
+

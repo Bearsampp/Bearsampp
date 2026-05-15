@@ -24,3 +24,4 @@ require_once $_mainpath . '/wb_constants.inc.php';
 require_once $_mainpath . '/wb_resources.inc.php';
 require_once $_mainpath . '/wb_windows.inc.php';
 require_once $_mainpath . '/wb_generic.inc.php';
+

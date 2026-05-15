@@ -46,3 +46,4 @@ class ActionRefreshRepos
         Util::stopLoading();
     }
 }
+

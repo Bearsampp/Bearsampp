@@ -180,3 +180,4 @@ function FreeImage_Rescale($dib, $dst_width, $dst_height, $filter=0)
 //-------------------------------------------------------------------------- END
 
 ?>
+

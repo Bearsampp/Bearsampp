@@ -239,7 +239,7 @@ class BinApache extends Module
             return false;
         }
 
-        $headers = HttpClient::getHttpHeaders( 'http' . ($ssl ? 's' : '') . '://localhost:' . $port . '/' . $bearsamppHomepage->getResourcesPath() . '/ping.php' );
+        $headers = HttpClient::getHttpHeaders( 'http' . ($ssl ? 's' : '') . '://localhost:' . $port . '/' . $bearsamppHomepage->getWebResourcesPath() . '/ping.php' );
         if ( !empty( $headers ) ) {
             foreach ( $headers as $row ) {
                 if ( UtilString::startWith( $row, 'Server: ' ) || UtilString::startWith( $row, 'server: ' ) ) {
@@ -708,7 +708,7 @@ class BinApache extends Module
      */
     public function getAliasContent($name, $dest)
     {
-        $dest = UtilPath::formatUnixPath( $dest );
+        $dest = Path::formatUnixPath( $dest );
 
         return 'Alias /' . $name . ' "' . $dest . '"' . PHP_EOL . PHP_EOL .
             '<Directory "' . $dest . '">' . PHP_EOL .
@@ -730,7 +730,7 @@ class BinApache extends Module
     {
         global $bearsamppRoot;
 
-        $documentRoot = UtilPath::formatUnixPath( $documentRoot );
+        $documentRoot = Path::formatUnixPath( $documentRoot );
 
         return '<VirtualHost *:' . $this->getPort() . '>' . PHP_EOL .
             '    ServerAdmin webmaster@' . $serverName . PHP_EOL .

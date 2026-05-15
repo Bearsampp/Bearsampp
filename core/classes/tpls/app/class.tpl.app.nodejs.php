@@ -190,3 +190,4 @@ class TplAppNodejs
         ) . PHP_EOL . TplAppReload::getActionReload() . PHP_EOL;
     }
 }
+

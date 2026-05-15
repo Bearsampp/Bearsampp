@@ -147,3 +147,4 @@ class AppPhpmyadmin extends Module
         return $this->conf;
     }
 }
+

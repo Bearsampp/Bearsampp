@@ -345,3 +345,4 @@ class TplAppMysql
             TplAppReload::getActionReload();
     }
 }
+

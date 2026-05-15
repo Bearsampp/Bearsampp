@@ -735,3 +735,4 @@ class BinPhp extends Module
         }
         return file_exists($cacheFile) ? file_get_contents($cacheFile) : null;
     }}
+

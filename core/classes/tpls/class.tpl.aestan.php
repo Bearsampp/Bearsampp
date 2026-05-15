@@ -149,7 +149,7 @@ class TplAestan
         // Launch pwsh.exe directly — no powershell.bat wrapper, no cmd.exe, no flashing window.
         // Registry font settings are pre-written during reload by TplPowerShell::process().
         $pwsh = $bearsamppTools->getPowerShell()->getExe();
-        $profilePath = UtilPath::formatWindowsPath($bearsamppTools->getPowerShell()->getConf());
+        $profilePath = Path::formatWindowsPath($bearsamppTools->getPowerShell()->getConf());
 
         // Build the inline PowerShell -Command string.
         // Single-quoted strings are used for paths/titles so backslashes need no escaping.
@@ -475,3 +475,4 @@ class TplAestan
             'SeparatorsSeparatorStyle=caption' . PHP_EOL;
     }
 }
+

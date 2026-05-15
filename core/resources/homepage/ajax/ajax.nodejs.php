@@ -52,3 +52,4 @@ foreach ($bearsamppBins->getNodejs()->getVersionList() as $version) {
 
 // Output the result as a JSON-encoded string
 echo json_encode($result);
+

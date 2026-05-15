@@ -137,7 +137,7 @@ class BinMariadb extends Module
 
         $this->service->setDisplayName( APP_TITLE . ' ' . $this->getName() );
         $this->service->setBinPath( $this->exe );
-        $this->service->setParams( '--defaults-file="' . UtilPath::formatWindowsPath($this->conf) . '" ' . self::SERVICE_NAME );
+        $this->service->setParams( '--defaults-file="' . Path::formatWindowsPath($this->conf) . '" ' . self::SERVICE_NAME );
         $this->service->setStartType( Win32Service::SERVICE_DEMAND_START );
         $this->service->setErrorControl( Win32Service::SERVER_ERROR_NORMAL );
     }
@@ -737,8 +737,8 @@ public function initData($path = null, $version = null)
         }
 
         if ( file_exists( $installDbExe ) ) {
-            $cmd = '"' . UtilPath::formatWindowsPath( $installDbExe ) . '"';
-            $cmd .= ' --datadir="' . UtilPath::formatWindowsPath( $dataDir ) . '"';
+            $cmd = '"' . Path::formatWindowsPath( $installDbExe ) . '"';
+            $cmd .= ' --datadir="' . Path::formatWindowsPath( $dataDir ) . '"';
 
             try {
                 Batch::exec( 'initializeMariadb', $cmd, 60 );
@@ -767,3 +767,4 @@ public function initData($path = null, $version = null)
     return true;
 }
 }
+
