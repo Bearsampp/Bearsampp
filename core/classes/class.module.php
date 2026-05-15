@@ -15,6 +15,9 @@ abstract class Module
 {
     const BUNDLE_RELEASE = 'bundleRelease';
 
+    private static $configCache = array();
+    private static $skipSymlinkCreation = false;
+
     private $type;
     private $id;
 
@@ -67,9 +70,22 @@ abstract class Module
         $this->symlinkPath = $this->rootPath . '/current';
         $this->enable = is_dir($this->currentPath);
         $this->bearsamppConf = $this->currentPath . '/bearsampp.conf';
-        $this->bearsamppConfRaw = @parse_ini_file($this->bearsamppConf);
 
-        if ($bearsamppRoot->isRoot()) {
+        // Use disk cache (warm starts) + memory cache (within session)
+        $cacheKey = md5($this->bearsamppConf);
+        if (!isset(self::$configCache[$cacheKey])) {
+            // CacheManager handles both disk cache and parsing
+            $this->bearsamppConfRaw = CacheManager::load(
+                $this->bearsamppConf,
+                function($path) { return @parse_ini_file($path) ?: []; },
+                $cacheKey
+            );
+            self::$configCache[$cacheKey] = $this->bearsamppConfRaw;
+        } else {
+            $this->bearsamppConfRaw = self::$configCache[$cacheKey];
+        }
+
+        if ($bearsamppRoot->isRoot() && !self::$skipSymlinkCreation) {
             $this->createSymlink();
         }
     }
@@ -83,19 +99,20 @@ abstract class Module
         $src = Path::formatWindowsPath($this->currentPath);
         $dest = Path::formatWindowsPath($this->symlinkPath);
 
-        if(file_exists($dest)) {
-            if (is_link($dest)) {
-                $target = readlink($dest);
-                if ($target == $src) {
-                    return;
-                }
-                Batch::removeSymlink($dest);
-            } elseif (is_file($dest)) {
+        if (is_link($dest)) {
+            if (readlink($dest) === $src) {
+                return;
+            }
+            Batch::removeSymlink($dest);
+            Batch::createSymlink($src, $dest);
+            return;
+        }
+
+        if (file_exists($dest)) {
+            if (is_file($dest)) {
                 Log::error('Removing . ' . $this->symlinkPath . ' file. It should not be a regular file');
                 unlink($dest);
             } elseif (is_dir($dest)) {
-                // Never recursively delete here: this path is expected to be a symlink.
-                // Only remove empty directories; otherwise abort to avoid data loss.
                 $it = new \FilesystemIterator($dest);
                 if (!$it->valid()) {
                     rmdir($dest);
@@ -133,6 +150,11 @@ abstract class Module
         }
 
         file_put_contents($this->bearsamppConf, $content);
+
+        // Invalidate both memory cache and disk cache
+        $cacheKey = md5($this->bearsamppConf);
+        unset(self::$configCache[$cacheKey]);
+        CacheManager::invalidate($this->bearsamppConf);
     }
 
     /**
@@ -261,6 +283,28 @@ abstract class Module
      */
     public function isEnable() {
         return $this->enable;
+    }
+
+    /**
+     * Skip symlink creation during module reload
+     * Useful for performance optimization during service checking phase
+     *
+     * @param bool $skip True to skip symlink creation
+     * @return void
+     */
+    public static function setSkipSymlinkCreation(bool $skip): void
+    {
+        self::$skipSymlinkCreation = $skip;
+    }
+
+    /**
+     * Check if symlink creation is being skipped
+     *
+     * @return bool True if symlink creation is skipped
+     */
+    public static function isSkippingSymlinkCreation(): bool
+    {
+        return self::$skipSymlinkCreation;
     }
 }
 

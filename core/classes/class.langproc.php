@@ -46,12 +46,15 @@ class LangProc
         global $bearsamppCore, $bearsamppConfig;
         $this->raw = null;
 
-        $this->current = $bearsamppConfig->getDefaultLang();
-        if (!empty($this->current) && in_array($this->current, $this->getList())) {
-            $this->current = $bearsamppConfig->getLang();
-        }
+        $this->current = $bearsamppConfig->getLang();
+        $langPath = Path::getLangsPath() . '/' . $this->current . '.lang';
 
-        $this->raw = parse_ini_file(Path::getLangsPath() . '/' . $this->current . '.lang');
+        if (file_exists($langPath)) {
+            $this->raw = parse_ini_file($langPath);
+        } else {
+            $this->current = $bearsamppConfig->getDefaultLang();
+            $this->raw = parse_ini_file(Path::getLangsPath() . '/' . $this->current . '.lang');
+        }
     }
 
     /**

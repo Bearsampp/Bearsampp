@@ -924,6 +924,9 @@ class ActionStartup
         Log::trace('Starting sequential service installation');
         $installStartTime = Util::getMicrotime();
 
+        // Skip symlink creation during checking phase for performance
+        Module::setSkipSymlinkCreation(true);
+
         // Step 1: Check and prepare all services
         $servicesToStart = [];
         $serviceErrors = [];
@@ -963,6 +966,11 @@ class ActionStartup
                 $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
             }
         }
+
+        // Re-enable symlink creation and reload bins with symlinks created
+        Module::setSkipSymlinkCreation(false);
+        Log::trace('Re-enabling symlink creation after service checking');
+        $bearsamppBins->reload();
 
         // Step 2: Start all services sequentially with progress updates
         if (!empty($servicesToStart)) {
@@ -1118,7 +1126,11 @@ class ActionStartup
         $serviceAlreadyInstalled = false;
         $serviceToRemove = false;
 
-        if ($sName == BinApache::SERVICE_NAME) {
+        // Skip service checks for disabled services
+        if (!$bin->isEnable()) {
+            Log::trace('Skipping service check for disabled bin: ' . $bin->getName());
+            $serviceInfos = false;
+        } else if ($sName == BinApache::SERVICE_NAME) {
             $serviceInfos = $this->checkApacheServiceWithTimeout($service);
         } else if ($sName == BinMysql::SERVICE_NAME) {
             $serviceInfos = $this->checkMySQLServiceWithTimeout($service, $bin);
@@ -1230,7 +1242,7 @@ class ActionStartup
 
         // Set a timeout for the Apache service check
         $serviceCheckStartTime = microtime(true);
-        $serviceCheckTimeout = 10; // 10 seconds timeout
+        $serviceCheckTimeout = 3; // 3 seconds timeout
 
         try {
             // Use a non-blocking approach to check service
@@ -1279,7 +1291,7 @@ class ActionStartup
 
         // Set a timeout for the MySQL service check
         $serviceCheckStartTime = microtime(true);
-        $serviceCheckTimeout = 8; // 8 seconds timeout
+        $serviceCheckTimeout = 3; // 3 seconds timeout
 
         try {
             // Use a non-blocking approach to check service
