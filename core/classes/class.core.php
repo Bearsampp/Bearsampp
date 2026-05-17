@@ -29,7 +29,7 @@ class Core
     const OPENSSL_CONF = 'openssl.cfg';
     const HOSTSEDITOR_EXE = 'hEdit_x64.exe';
     const LN_EXE = 'ln.exe';
-    const PWGEN_EXE = "PWGenPortable.exe";
+    const PWGEN_EXE = "PwTech.exe";
 
     const APP_VERSION = 'version.dat';
     const LAST_PATH = 'lastPath.dat';
@@ -287,4 +287,3 @@ class Core
         return ['success' => true];
     }
 }
-
