@@ -41,15 +41,15 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-i
 global $bearsamppLang, $bearsamppCore, $bearsamppHomepage, $bearsamppConfig, $bearsamppRoot;
 
 /**
- * Set the base path for resources, ensuring there is a trailing slash.
+ * Set the base path for resources, ensuring there is NO trailing slash.
  */
-$resourcesPath = rtrim( $bearsamppHomepage->getWebResourcesPath(), '/' ) . '/';
+$resourcesPath = Path::getWebResourcesPath();
 
 /**
  * Define paths for icons and images used in the homepage.
  */
-$iconsPath  = $bearsamppHomepage->getWebIconsPath();
-$imagesPath = $bearsamppHomepage->getWebImagesPath();
+$iconsPath  = $resourcesPath . '/img/icons/';
+$imagesPath = $resourcesPath . '/img/';
 
 // Instantiate the QuickPick class
 $quickPick = new QuickPick();
@@ -113,7 +113,7 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
      * Loop through CSS files and include them in the page.
      */
     foreach ( $cssFiles as $file ) {
-        echo '<link href="' . $resourcesPath . $file . '" rel="stylesheet">' . PHP_EOL;
+        echo '<link href="' . $resourcesPath . '/' . ltrim($file, '/') . '" rel="stylesheet">' . PHP_EOL;
     }
     ?>
 
@@ -222,9 +222,8 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
 
 <?php
 foreach ( $jsFiles as $file ) {
-    echo '<script src="' . $resourcesPath . $file . '"></script>' . PHP_EOL;
+    echo '<script src="' . $resourcesPath . '/' . ltrim($file, '/') . '"></script>' . PHP_EOL;
 }
 ?>
 </body>
 </html>
-

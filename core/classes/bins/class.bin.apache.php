@@ -230,7 +230,7 @@ class BinApache extends Module
      */
     public function checkPort($port, $ssl = false, $showWindow = false)
     {
-        global $bearsamppLang, $bearsamppWinbinder, $bearsamppHomepage;
+        global $bearsamppLang, $bearsamppWinbinder;
         $boxTitle = sprintf( $bearsamppLang->getValue( Lang::CHECK_PORT_TITLE ), $this->getName(), $port );
 
         if ( !Util::isValidPort( $port ) ) {
@@ -239,7 +239,7 @@ class BinApache extends Module
             return false;
         }
 
-        $headers = HttpClient::getHttpHeaders( 'http' . ($ssl ? 's' : '') . '://localhost:' . $port . '/' . $bearsamppHomepage->getWebResourcesPath() . '/ping.php' );
+        $headers = HttpClient::getHttpHeaders( 'http' . ($ssl ? 's' : '') . '://localhost:' . $port . '/' . Path::getWebResourcesPath() . '/ping.php' );
         if ( !empty( $headers ) ) {
             foreach ( $headers as $row ) {
                 if ( UtilString::startWith( $row, 'Server: ' ) || UtilString::startWith( $row, 'server: ' ) ) {

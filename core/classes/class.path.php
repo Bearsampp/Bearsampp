@@ -226,6 +226,47 @@ class Path
     }
 
     /**
+     * Retrieves the web resources path.
+     *
+     * @return string The web resources path.
+     */
+    public static function getWebResourcesPath()
+    {
+        return rtrim(md5(APP_TITLE), '/');
+    }
+
+    /**
+     * Retrieves the web images path.
+     *
+     * @return string The web images path.
+     */
+    public static function getWebImagesPath()
+    {
+        return self::getWebResourcesPath() . '/img';
+    }
+
+    /**
+     * Retrieves the web icons path.
+     *
+     * @return string The web icons path.
+     */
+    public static function getWebIconsPath()
+    {
+        return self::getWebImagesPath() . '/icons';
+    }
+
+    /**
+     * Retrieves the URL to the web resources.
+     *
+     * @return string The web resources URL.
+     */
+    public static function getWebResourcesUrl()
+    {
+        global $bearsamppRoot;
+        return $bearsamppRoot->getLocalUrl(self::getWebResourcesPath());
+    }
+
+    /**
      * Retrieves the path to the scripts.
      *
      * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
