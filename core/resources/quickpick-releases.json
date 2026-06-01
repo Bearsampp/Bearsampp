@@ -205,7 +205,7 @@
       {
         "version": "2.10.0",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2026.5.31/bearsampp-composer-2.10.0-2026.5.31.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "2.9.5",
