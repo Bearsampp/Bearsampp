@@ -1103,6 +1103,11 @@
     "module": "module-memcached",
     "versions": [
       {
+        "version": "1.6.42",
+        "url": "https://github.com/Bearsampp/module-memcached/releases/download/2026.6.2/bearsampp-memcached-1.6.42-2026.6.2.7z",
+        "prerelease": true
+      },
+      {
         "version": "1.6.41",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2026.3.7/bearsampp-memcached-1.6.41-2026.3.7.7z",
         "prerelease": false
