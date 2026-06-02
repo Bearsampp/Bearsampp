@@ -633,6 +633,11 @@
     "module": "module-mariadb",
     "versions": [
       {
+        "version": "12.3.2",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.6.2/bearsampp-mariadb-12.3.2-2026.6.2.7z",
+        "prerelease": true
+      },
+      {
         "version": "12.2.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.3.7/bearsampp-mariadb-12.2.2-2026.3.7.7z",
         "prerelease": false
@@ -646,6 +651,11 @@
         "version": "12.0.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.8.21/bearsampp-mariadb-12.0.2-2025.8.21.7z",
         "prerelease": false
+      },
+      {
+        "version": "11.8.8",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.6.2/bearsampp-mariadb-11.8.8-2026.6.2.7z",
+        "prerelease": true
       },
       {
         "version": "11.8.6",
@@ -686,6 +696,11 @@
         "version": "11.5.1",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.6.25/bearsampp-mariadb-11.5.1-RC-2024.6.25.7z",
         "prerelease": false
+      },
+      {
+        "version": "11.4.12",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.6.2/bearsampp-mariadb-11.4.12-2026.6.2.7z",
+        "prerelease": true
       },
       {
         "version": "11.4.9",
@@ -786,6 +801,11 @@
         "version": "11.0.1",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.4.20/bearsampp-mariadb-11.0.1-RC-2024.4.18.7z",
         "prerelease": false
+      },
+      {
+        "version": "10.11.18",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.6.2/bearsampp-mariadb-10.11.18-2026.6.2.7z",
+        "prerelease": true
       },
       {
         "version": "10.11.15",
@@ -931,6 +951,11 @@
         "version": "10.7.6",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.4.20/bearsampp-mariadb-10.7.6-2024.4.18.7z",
         "prerelease": false
+      },
+      {
+        "version": "10.6.27",
+        "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.6.2/bearsampp-mariadb-10.6.27-2026.6.2.7z",
+        "prerelease": true
       },
       {
         "version": "10.6.24",
