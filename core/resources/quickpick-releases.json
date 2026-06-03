@@ -1343,6 +1343,11 @@
     "module": "module-ngrok",
     "versions": [
       {
+        "version": "3.39.6",
+        "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2026.6.2/bearsampp-ngrok-3.39.6-2026.6.2.7z",
+        "prerelease": true
+      },
+      {
         "version": "3.35.0",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/Ngrok-3.35.0/bearsampp-ngrok-3.35.0-2026.1.15.7z",
         "prerelease": true
@@ -1372,6 +1377,11 @@
   {
     "module": "module-nodejs",
     "versions": [
+      {
+        "version": "26.3.0",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.6.2/bearsampp-nodejs-26.3.0-2026.6.2.7z",
+        "prerelease": true
+      },
       {
         "version": "25.9.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.4.12/bearsampp-nodejs-25.9.0-2026.4.12.7z",
