@@ -1380,7 +1380,7 @@
       {
         "version": "26.3.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.6.2/bearsampp-nodejs-26.3.0-2026.6.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "25.9.0",
