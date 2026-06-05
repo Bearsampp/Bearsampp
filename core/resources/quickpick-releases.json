@@ -2443,6 +2443,11 @@
     "module": "module-python",
     "versions": [
       {
+        "version": "3.14.5",
+        "url": "https://github.com/Bearsampp/module-python/releases/download/2026.6.3/bearsampp-python-3.14.5-2026.6.3.7z",
+        "prerelease": true
+      },
+      {
         "version": "3.14.4",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2026.4.12/bearsampp-python-3.14.4-2026.4.12.7z",
         "prerelease": false
