@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'core/resources/quickpick-releases.json'
   
   # Run on release events in the main repository
   release:
@@ -21,6 +23,10 @@ on:
   schedule:
     # Run on the 1st day of each month at midnight
     - cron: '0 0 1 * *'
+
+concurrency:
+  group: combine-releases-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   pull-requests: write
