@@ -413,6 +413,11 @@
     "module": "module-git",
     "versions": [
       {
+        "version": "2.54.0",
+        "url": "https://github.com/Bearsampp/module-git/releases/download/2026.5.31/bearsampp-git-2.54.0-2026.5.31.7z",
+        "prerelease": true
+      },
+      {
         "version": "2.53.0.2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2026.4.12/bearsampp-git-2.53.0.2-2026.4.12.7z",
         "prerelease": false
@@ -1105,7 +1110,7 @@
       {
         "version": "1.6.42",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2026.6.2/bearsampp-memcached-1.6.42-2026.6.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "1.6.41",
