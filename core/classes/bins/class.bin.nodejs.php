@@ -276,3 +276,4 @@ class BinNodejs extends Module
         return $this->launch;
     }
 }
+

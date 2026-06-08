@@ -54,11 +54,11 @@ $csrfProtectedEndpoints = [
 /**
  * Clean and retrieve the 'proc' POST variable.
  *
- * Util::cleanPostVar is assumed to be a method that sanitizes the input to prevent security issues such as SQL injection or XSS.
+ * UtilInput::cleanPostVar is assumed to be a method that sanitizes the input to prevent security issues such as SQL injection or XSS.
  *
  * @var string $proc The cleaned 'proc' parameter from the POST request.
  */
-$proc = Util::cleanPostVar('proc', 'text');  // Ensure 'proc' is cleaned and read correctly
+$proc = UtilInput::cleanPostVar('proc', 'text');  // Ensure 'proc' is cleaned and read correctly
 
 /**
  * Validate CSRF token for protected endpoints
@@ -99,3 +99,4 @@ if (isset($procMap[$proc]) && file_exists($procMap[$proc])) {
     }
     echo json_encode(['error' => $errorMessage]);
 }
+

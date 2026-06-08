@@ -105,3 +105,4 @@ class ToolGhostscript extends Module
         return $this->exeConsole;
     }
 }
+

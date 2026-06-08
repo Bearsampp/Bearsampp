@@ -76,3 +76,4 @@ EOD;
         Log::trace('Reload action: ' . $reloadAction);
     }
 }
+

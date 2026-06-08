@@ -46,12 +46,15 @@ class LangProc
         global $bearsamppCore, $bearsamppConfig;
         $this->raw = null;
 
-        $this->current = $bearsamppConfig->getDefaultLang();
-        if (!empty($this->current) && in_array($this->current, $this->getList())) {
-            $this->current = $bearsamppConfig->getLang();
-        }
+        $this->current = $bearsamppConfig->getLang();
+        $langPath = Path::getLangsPath() . '/' . $this->current . '.lang';
 
-        $this->raw = parse_ini_file($bearsamppCore->getLangsPath() . '/' . $this->current . '.lang');
+        if (file_exists($langPath)) {
+            $this->raw = parse_ini_file($langPath);
+        } else {
+            $this->current = $bearsamppConfig->getDefaultLang();
+            $this->raw = parse_ini_file(Path::getLangsPath() . '/' . $this->current . '.lang');
+        }
     }
 
     /**
@@ -76,13 +79,13 @@ class LangProc
         global $bearsamppCore;
         $result = array();
 
-        $handle = @opendir($bearsamppCore->getLangsPath());
+        $handle = @opendir(Path::getLangsPath());
         if (!$handle) {
             return $result;
         }
 
         while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && Util::endWith($file, '.lang')) {
+            if ($file != "." && $file != ".." && UtilString::endWith($file, '.lang')) {
                 $result[] = str_replace('.lang', '', $file);
             }
         }
@@ -119,3 +122,4 @@ class LangProc
         return str_replace($replace, $with, $this->raw[$key]);
     }
 }
+

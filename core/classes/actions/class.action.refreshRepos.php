@@ -41,5 +41,9 @@ class ActionRefreshRepos
                 $bearsamppTools->getGit()->findRepos(false);
             }
         }
+
+        // Stop the loading process
+        Util::stopLoading();
     }
 }
+

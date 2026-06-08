@@ -95,3 +95,4 @@ class TplAppLogsVerbose
             TplAppReload::getActionReload();
     }
 }
+

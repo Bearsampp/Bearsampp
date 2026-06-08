@@ -54,3 +54,4 @@ class TplAppBrowser
             TplAppReload::getActionReload();
     }
 }
+

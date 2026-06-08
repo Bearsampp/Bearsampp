@@ -106,3 +106,4 @@ class Apps
         return $this->phppgadmin;
     }
 }
+

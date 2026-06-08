@@ -918,17 +918,11 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
             }
         }
 
-        def fullTokens = [
-            'BIN_APACHE_ENABLE': '1',
-            'BIN_PHP_ENABLE': '1',
-            'BIN_MYSQL_ENABLE': '1',
-            'BIN_MARIADB_ENABLE': '1',
-            'BIN_POSTGRESQL_ENABLE': '1',
-            'BIN_NODEJS_ENABLE': '1',
-            'BIN_XLIGHT_ENABLE': '1',
-            'BIN_MAILPIT_ENABLE': '1',
-            'BIN_MEMCACHED_ENABLE': '1'
-        ]
+        // Load configuration from buildFull.ini
+        def buildConfig = loadBuildConfig("${projectDir}/buildFull.ini")
+        
+        // Generate enable tokens from config
+        def fullTokens = getEnableTokens(buildConfig)
 
         def confContent = file("${releaseBasePath}/bearsampp.conf").text
         fullTokens.each { token, value ->
@@ -936,31 +930,59 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
         }
         file("${releaseTarget}/bearsampp.conf").text = confContent
 
-        println "Downloading binaries..."
+        // Comment out unused apps and tools (bins are handled by enable flags)
+        def confFile = file("${releaseTarget}/bearsampp.conf")
+        def toComment = getModulesToComment(buildConfig)
+        if (!toComment.isEmpty()) {
+            commentOutConfigLines(confFile, toComment)
+        }
+
+        // Download ALL bins (even disabled ones) because the app needs their config files
+        // Only download enabled apps and tools
+        def appsToDownload = getModulesToDownload(buildConfig, 'apps')
+        def toolsToDownload = getModulesToDownload(buildConfig, 'tools')
+
+        println "Downloading binaries (all bins needed for config files)..."
         downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
-        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight"))
-        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
+        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
+        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
         downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb"))
         downloadModule(binPostgresqlUrl, binPostgresqlVersion, file("${releaseTarget}/bin/postgresql"))
-        downloadModule(binMemcachedUrl, binMemcachedVersion, file("${releaseTarget}/bin/memcached"))
-        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
         downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
-        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
+        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight"))
+        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
+        downloadModule(binMemcachedUrl, binMemcachedVersion, file("${releaseTarget}/bin/memcached"))
 
-        println "Downloading applications..."
-        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin"))
-        downloadModule(appPhppgadminUrl, appPhppgadminVersion, file("${releaseTarget}/apps/phppgadmin"))
+        println "Downloading applications (only enabled)..."
+        def appUrls = [
+            phpmyadmin: [url: appPhpmyadminUrl, version: appPhpmyadminVersion],
+            phppgadmin: [url: appPhppgadminUrl, version: appPhppgadminVersion]
+        ]
+        appsToDownload.each { moduleName ->
+            def moduleInfo = appUrls[moduleName]
+            if (moduleInfo) {
+                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/apps/${moduleName}"))
+            }
+        }
 
-        println "Downloading tools..."
-        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
-        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
-        downloadModule(toolPowershellUrl, toolPowershellVersion, file("${releaseTarget}/tools/powershell"))
-        downloadModule(toolGhostscriptUrl, toolGhostscriptVersion, file("${releaseTarget}/tools/ghostscript"))
-        downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
-        downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok"))
-        downloadModule(toolPerlUrl, toolPerlVersion, file("${releaseTarget}/tools/perl"))
-        downloadModule(toolPythonUrl, toolPythonVersion, file("${releaseTarget}/tools/python"))
-        downloadModule(toolRubyUrl, toolRubyVersion, file("${releaseTarget}/tools/ruby"))
+        println "Downloading tools (only enabled)..."
+        def toolUrls = [
+            bruno: [url: toolBrunoUrl, version: toolBrunoVersion],
+            composer: [url: toolComposerUrl, version: toolComposerVersion],
+            powershell: [url: toolPowershellUrl, version: toolPowershellVersion],
+            ghostscript: [url: toolGhostscriptUrl, version: toolGhostscriptVersion],
+            git: [url: toolGitUrl, version: toolGitVersion],
+            ngrok: [url: toolNgrokUrl, version: toolNgrokVersion],
+            perl: [url: toolPerlUrl, version: toolPerlVersion],
+            python: [url: toolPythonUrl, version: toolPythonVersion],
+            ruby: [url: toolRubyUrl, version: toolRubyVersion]
+        ]
+        toolsToDownload.each { moduleName ->
+            def moduleInfo = toolUrls[moduleName]
+            if (moduleInfo) {
+                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/tools/${moduleName}"))
+            }
+        }
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")
@@ -1029,25 +1051,52 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
             commentOutConfigLines(confFile, toComment)
         }
 
-        println "Downloading binaries..."
+        // Download ALL bins (even disabled ones) because the app needs their config files
+        // Only download enabled apps and tools
+        def appsToDownload = getModulesToDownload(buildConfig, 'apps')
+        def toolsToDownload = getModulesToDownload(buildConfig, 'tools')
+
+        println "Downloading binaries (all bins needed for config files)..."
         downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
+        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
+        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
+        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb"))
+        downloadModule(binPostgresqlUrl, binPostgresqlVersion, file("${releaseTarget}/bin/postgresql"))
+        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
         downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight"))
         downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
-        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb"))
-        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
-        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
-        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
+        downloadModule(binMemcachedUrl, binMemcachedVersion, file("${releaseTarget}/bin/memcached"))
 
-        println "Downloading applications..."
-        downloadModule(appPhpmyadminUrl, appPhpmyadminVersion, file("${releaseTarget}/apps/phpmyadmin"))
+        println "Downloading applications (only enabled)..."
+        def appUrls = [
+            phpmyadmin: [url: appPhpmyadminUrl, version: appPhpmyadminVersion],
+            phppgadmin: [url: appPhppgadminUrl, version: appPhppgadminVersion]
+        ]
+        appsToDownload.each { moduleName ->
+            def moduleInfo = appUrls[moduleName]
+            if (moduleInfo) {
+                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/apps/${moduleName}"))
+            }
+        }
 
-        println "Downloading tools..."
-        downloadModule(toolBrunoUrl, toolBrunoVersion, file("${releaseTarget}/tools/bruno"))
-        downloadModule(toolComposerUrl, toolComposerVersion, file("${releaseTarget}/tools/composer"))
-        downloadModule(toolPowershellUrl, toolPowershellVersion, file("${releaseTarget}/tools/powershell"))
-        downloadModule(toolGitUrl, toolGitVersion, file("${releaseTarget}/tools/git"))
-        downloadModule(toolNgrokUrl, toolNgrokVersion, file("${releaseTarget}/tools/ngrok"))
-        downloadModule(toolPerlUrl, toolPerlVersion, file("${releaseTarget}/tools/perl"))
+        println "Downloading tools (only enabled)..."
+        def toolUrls = [
+            bruno: [url: toolBrunoUrl, version: toolBrunoVersion],
+            composer: [url: toolComposerUrl, version: toolComposerVersion],
+            powershell: [url: toolPowershellUrl, version: toolPowershellVersion],
+            ghostscript: [url: toolGhostscriptUrl, version: toolGhostscriptVersion],
+            git: [url: toolGitUrl, version: toolGitVersion],
+            ngrok: [url: toolNgrokUrl, version: toolNgrokVersion],
+            perl: [url: toolPerlUrl, version: toolPerlVersion],
+            python: [url: toolPythonUrl, version: toolPythonVersion],
+            ruby: [url: toolRubyUrl, version: toolRubyVersion]
+        ]
+        toolsToDownload.each { moduleName ->
+            def moduleInfo = toolUrls[moduleName]
+            if (moduleInfo) {
+                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/tools/${moduleName}"))
+            }
+        }
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")

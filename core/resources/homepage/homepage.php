@@ -41,21 +41,18 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-i
 global $bearsamppLang, $bearsamppCore, $bearsamppHomepage, $bearsamppConfig, $bearsamppRoot;
 
 /**
- * Set the base path for resources, ensuring there is a trailing slash.
+ * Set the base path for resources, ensuring there is NO trailing slash.
  */
-$resourcesPath = rtrim( $bearsamppHomepage->getResourcesPath(), '/' ) . '/';
+$resourcesPath = Path::getWebResourcesPath();
 
 /**
  * Define paths for icons and images used in the homepage.
  */
-$iconsPath  = $bearsamppHomepage->getIconsPath();
-$imagesPath = $bearsamppHomepage->getImagesPath();
+$iconsPath  = $resourcesPath . '/img/icons/';
+$imagesPath = $resourcesPath . '/img/';
 
 // Instantiate the QuickPick class
 $quickPick = new QuickPick();
-
-$ajaxUrl = $bearsamppCore->getAjaxPath() . '/ajax.getmodule_versions.php';
-
 
 /**
  * Retrieve and store the localized string for the 'Download More' label.
@@ -116,7 +113,7 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
      * Loop through CSS files and include them in the page.
      */
     foreach ( $cssFiles as $file ) {
-        echo '<link href="' . $resourcesPath . $file . '" rel="stylesheet">' . PHP_EOL;
+        echo '<link href="' . $resourcesPath . '/' . ltrim($file, '/') . '" rel="stylesheet">' . PHP_EOL;
     }
     ?>
 
@@ -148,7 +145,7 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
 <nav class = "navbar navbar-expand-md navbar-light bg-dark fixed-top" role = "navigation">
     <div class = "container-fluid d-flex justify-content-between align-items-center">
         <div class = "d-inline-block">
-            <a class = "navbar-brand" href = "<?php echo Util::getWebsiteUrl(); ?>" aria-label = 'Home'>
+            <a class = "navbar-brand" href = "<?php echo HttpClient::getWebsiteUrl(); ?>" aria-label = 'Home'>
                 <img class = "p-1" alt = "<?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?>"
                      src = "<?php echo $imagesPath . 'header-logo.png'; ?>">
             </a>
@@ -186,11 +183,11 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
                         <i class = "fa-brands fa-facebook"></i>
                     </a>
                     <a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php echo $bearsamppLang->getValue( Lang::GITHUB ); ?>" target = "_blank"
-                       href = "<?php echo Util::getGithubUrl(); ?>" aria-label = "GitHub">
+                       href = "<?php echo HttpClient::getGithubUrl(); ?>" aria-label = "GitHub">
                         <i class = "fa-brands fa-github"></i>
                     </a>
                     <a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php echo $bearsamppLang->getValue( Lang::DONATE ); ?>" target = "_blank"
-                       href = "<?php echo Util::getWebsiteUrl( 'donate' ); ?>"><img class = "donate" src = "<?php echo $imagesPath . 'donate.png'; ?>" alt = 'Donation Icon' />
+                       href = "<?php echo HttpClient::getWebsiteUrl( 'donate' ); ?>"><img class = "donate" src = "<?php echo $imagesPath . 'donate.png'; ?>" alt = 'Donation Icon' />
                     </a>
                 </div>
             </div>
@@ -225,7 +222,7 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
 
 <?php
 foreach ( $jsFiles as $file ) {
-    echo '<script src="' . $resourcesPath . $file . '"></script>' . PHP_EOL;
+    echo '<script src="' . $resourcesPath . '/' . ltrim($file, '/') . '"></script>' . PHP_EOL;
 }
 ?>
 </body>

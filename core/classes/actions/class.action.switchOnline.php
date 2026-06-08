@@ -31,6 +31,7 @@ class ActionSwitchOnline
             $this->switchAlias($putOnline);
             $this->switchVhosts($putOnline);
             $bearsamppConfig->replace(Config::CFG_ONLINE, $args[0]);
+            Util::stopLoading();
         }
     }
 
@@ -67,3 +68,4 @@ class ActionSwitchOnline
         $bearsamppBins->getApache()->refreshVhosts($putOnline);
     }
 }
+

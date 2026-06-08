@@ -61,3 +61,4 @@ foreach ($bearsamppBins->getPostgresql()->getVersionList() as $version) {
 
 // Encode the result array in JSON format and output it
 echo json_encode($result);
+

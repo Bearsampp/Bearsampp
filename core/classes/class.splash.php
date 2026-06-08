@@ -68,7 +68,7 @@ class Splash
         // The WS_VISIBLE flag during creation doesn't work
         wb_set_visible($this->wbWindow, true);
         
-        $this->wbImage = $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/bearsampp.bmp');
+        $this->wbImage = $bearsamppWinbinder->drawImage($this->wbWindow, Path::getImagesPath() . '/bearsampp.bmp');
         $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, $gauge + 1, 42, 24, 390, 15);
 
         $this->setTextLoading($text);
@@ -98,7 +98,7 @@ class Splash
         global $bearsamppCore, $bearsamppWinbinder;
 
         for ($i = 0; $i < $nb; $i++) {
-            $bearsamppWinbinder->drawImage($this->wbWindow, $bearsamppCore->getImagesPath() . '/bearsampp.bmp', 4, 4, 32, 32);
+            $bearsamppWinbinder->drawImage($this->wbWindow, Path::getImagesPath() . '/bearsampp.bmp', 4, 4, 32, 32);
             $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
         }
 
@@ -116,3 +116,4 @@ class Splash
         return $this->wbWindow;
     }
 }
+

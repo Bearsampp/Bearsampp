@@ -59,3 +59,4 @@ class ActionManualRestart
         Util::stopLoading();
     }
 }
+

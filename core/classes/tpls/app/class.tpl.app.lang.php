@@ -87,3 +87,4 @@ class TplAppLang
             TplAppReload::getActionReload();
     }
 }
+

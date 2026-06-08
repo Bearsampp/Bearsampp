@@ -29,7 +29,7 @@ $result = array(
 );
 
 // Template for download link
-$dlMoreTpl = '<a href="' . Util::getWebsiteUrl( 'module/%s', '#releases' ) . '" target="_blank" title="' . $downloadTitle . '"><span class="float-end download-icon-wrapper"><i class="fa-solid fa-cloud-arrow-down"></i></span></a>';
+$dlMoreTpl = '<a href="' . HttpClient::getWebsiteUrl( 'module/%s', '#releases' ) . '" target="_blank" title="' . $downloadTitle . '"><span class="float-end download-icon-wrapper"><i class="fa-solid fa-cloud-arrow-down"></i></span></a>';
 
 try {
     /**
@@ -220,3 +220,4 @@ catch ( Exception $e ) {
 
 // Output the result as JSON
 echo json_encode( $result );
+

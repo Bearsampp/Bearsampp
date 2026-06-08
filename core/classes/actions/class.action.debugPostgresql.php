@@ -61,3 +61,4 @@ class ActionDebugPostgresql extends ActionDebugBase
         return false;
     }
 }
+

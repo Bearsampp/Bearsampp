@@ -597,3 +597,4 @@ class TplPowerShell
         return "Title: $title | Shell: $shell | InitDir: $initDir";
     }
 }
+

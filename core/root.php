@@ -24,11 +24,9 @@ const QUICKPICK_API_KEY = '4abe15e5-95f2-4663-ad12-eadb245b28b4';
 const QUICKPICK_API_URL = 'https://bearsampp.com/index.php?option=com_osmembership&task=api.get_active_plan_ids&api_key=';
 
 // URL where quickpick-releases.json lives
-const QUICKPICK_JSON_URL = 'https://raw.githubusercontent.com/Bearsampp/Bearsampp/main/core/resources/quickpick-releases.json';
+const QUICKPICK_JSON_URL = 'https://raw.githubusercontent.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . '/main/core/resources/quickpick-releases.json';
 
-/**
- * CRITICAL: Check for elevation IMMEDIATELY - must be FAST to minimize console window visibility
- */
+// CRITICAL: Check for elevation IMMEDIATELY - must be FAST to minimize console window visibility
 if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === 'startup') {
     $flagFile = sys_get_temp_dir() . '/bearsampp_no_admin.lock';
 
@@ -152,9 +150,14 @@ $bearsamppAction->process();
 
 /**
  * Checks if the current user has root privileges and stops loading if true.
+ * We must NOT stop loading if the current action is actually 'loading'.
  */
 if ($bearsamppRoot->isRoot()) {
-    Util::stopLoading();
+    $currentAction = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : '';
+    if ($currentAction !== Action::LOADING) {
+        Log::debug('root.php: script ending, calling Util::stopLoading() for action: ' . $currentAction);
+        Util::stopLoading();
+    }
 }
 
 /**

@@ -260,3 +260,4 @@ class Bins
         return $result;
     }
 }
+

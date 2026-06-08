@@ -259,9 +259,9 @@ class BinMailpit extends Module
             return false;
         }
 
-        $headers = Util::getHeaders( $this->listen, $port );
+        $headers = HttpClient::getHeaders( $this->listen, $port );
         if ( !empty( $headers ) ) {
-            if ( Util::contains( $headers[0], 'Mailpit' ) ) {
+            if ( UtilString::contains( $headers[0], 'Mailpit' ) ) {
                 Log::debug( $this->getName() . ' port ' . $port . ' is used by: ' . str_replace( '220 ', '', $headers[0] ) );
                 if ( $showWindow ) {
                     $bearsamppWinbinder->messageBoxInfo(
@@ -523,3 +523,4 @@ class BinMailpit extends Module
         return $this->replace( self::LOCAL_CFG_LISTEN, $this->listen );
     }
 }
+

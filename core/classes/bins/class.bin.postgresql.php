@@ -730,3 +730,4 @@ class BinPostgresql extends Module
         $this->replace( self::LOCAL_CFG_ROOT_PWD, $rootPwd );
     }
 }
+

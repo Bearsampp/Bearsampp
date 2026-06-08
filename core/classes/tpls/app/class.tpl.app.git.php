@@ -158,3 +158,4 @@ class TplAppGit
             TplAppReload::getActionReload() . PHP_EOL;
     }
 }
+

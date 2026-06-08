@@ -98,7 +98,7 @@ class ActionStartup
             $this->writeLog('List procs:');
             $listProcs = array();
             foreach ($bearsamppRoot->getProcs() as $proc) {
-                $unixExePath = Util::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]);
+                $unixExePath = Path::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]);
                 $listProcs[] = '-> ' . basename($unixExePath) . ' (PID ' . $proc[Win32Ps::PROCESS_ID] . ') in ' . $unixExePath;
             }
             sort($listProcs);
@@ -406,7 +406,7 @@ class ActionStartup
 
         // Scripts
         Log::trace("Archiving script files");
-        $srcPath = $bearsamppCore->getTmpPath();
+        $srcPath = Path::getTmpPath();
         $handle = @opendir($srcPath);
         if (!$handle) {
             Log::trace("Failed to open tmp directory: " . $srcPath);
@@ -504,7 +504,7 @@ class ActionStartup
 
         $this->writeLog( 'Clear tmp folders' );
         Util::clearFolder( $bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore') );
-        Util::clearFolder( $bearsamppCore->getTmpPath(), array('.gitignore') );
+        Util::clearFolder( Path::getTmpPath(), array('.gitignore') );
 
         // Ensure opcache directory exists for persistent file cache
         $opcachePath = $bearsamppRoot->getTmpPath() . DIRECTORY_SEPARATOR . 'opcache';
@@ -567,7 +567,7 @@ class ActionStartup
             $this->writeLog( 'Procs killed:' );
             $procsKilledSort = array();
             foreach ( $procsKilled as $proc ) {
-                $unixExePath       = Util::formatUnixPath( $proc[Win32Ps::EXECUTABLE_PATH] );
+                $unixExePath       = Path::formatUnixPath( $proc[Win32Ps::EXECUTABLE_PATH] );
                 $procsKilledSort[] = '-> ' . basename( $unixExePath ) . ' (PID ' . $proc[Win32Ps::PROCESS_ID] . ') in ' . $unixExePath;
             }
             sort( $procsKilledSort );
@@ -741,7 +741,7 @@ class ActionStartup
     {
         global $bearsamppCore;
 
-        file_put_contents( $bearsamppCore->getLastPath(), $this->rootPath );
+        file_put_contents( Path::getLastPath(), $this->rootPath );
         $this->writeLog( 'Save current path: ' . $this->rootPath );
     }
 
@@ -755,12 +755,12 @@ class ActionStartup
         $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_REGISTRY_TEXT ), Registry::APP_PATH_REG_ENTRY ) );
         $this->splash->incrProgressBar();
 
-        $currentAppPathRegKey = Util::getAppPathRegKey();
-        $genAppPathRegKey     = Util::formatWindowsPath( $bearsamppRoot->getRootPath() );
+        $currentAppPathRegKey = $bearsamppRegistry->getAppPathRegKey();
+        $genAppPathRegKey     = Path::formatWindowsPath( $bearsamppRoot->getRootPath() );
         $this->writeLog( 'Current app path reg key: ' . $currentAppPathRegKey );
         $this->writeLog( 'Gen app path reg key: ' . $genAppPathRegKey );
         if ( $currentAppPathRegKey != $genAppPathRegKey ) {
-            if ( !Util::setAppPathRegKey( $genAppPathRegKey ) ) {
+            if ( !$bearsamppRegistry->setAppPathRegKey( $genAppPathRegKey ) ) {
                 if ( !empty( $this->error ) ) {
                     $this->error .= PHP_EOL . PHP_EOL;
                 }
@@ -788,12 +788,12 @@ class ActionStartup
         $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_REGISTRY_TEXT ), Registry::APP_BINS_REG_ENTRY ) );
         $this->splash->incrProgressBar();
 
-        $currentAppBinsRegKey = Util::getAppBinsRegKey();
-        $genAppBinsRegKey     = Util::getAppBinsRegKey( false );
+        $currentAppBinsRegKey = $bearsamppRegistry->getAppBinsRegKey();
+        $genAppBinsRegKey     = $bearsamppRegistry->getAppBinsRegKey( false );
         $this->writeLog( 'Current app bins reg key: ' . $currentAppBinsRegKey );
         $this->writeLog( 'Gen app bins reg key: ' . $genAppBinsRegKey );
         if ( $currentAppBinsRegKey != $genAppBinsRegKey ) {
-            if ( !Util::setAppBinsRegKey( $genAppBinsRegKey ) ) {
+            if ( !$bearsamppRegistry->setAppBinsRegKey( $genAppBinsRegKey ) ) {
                 if ( !empty( $this->error ) ) {
                     $this->error .= PHP_EOL . PHP_EOL;
                 }
@@ -821,7 +821,7 @@ class ActionStartup
         $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_REGISTRY_TEXT ), Registry::SYSPATH_REG_ENTRY ) );
         $this->splash->incrProgressBar();
 
-        $currentSysPathRegKey = Util::getSysPathRegKey();
+        $currentSysPathRegKey = $bearsamppRegistry->getSysPathRegKey();
         $this->writeLog( 'Current system PATH: ' . $currentSysPathRegKey );
 
         $newSysPathRegKey = str_replace( '%' . Registry::APP_BINS_REG_ENTRY . '%;', '', $currentSysPathRegKey );
@@ -830,7 +830,7 @@ class ActionStartup
         $this->writeLog( 'New system PATH: ' . $newSysPathRegKey );
 
         if ( $currentSysPathRegKey != $newSysPathRegKey ) {
-            if ( !Util::setSysPathRegKey( $newSysPathRegKey ) ) {
+            if ( !$bearsamppRegistry->setSysPathRegKey( $newSysPathRegKey ) ) {
                 if ( !empty( $this->error ) ) {
                     $this->error .= PHP_EOL . PHP_EOL;
                 }
@@ -844,8 +844,8 @@ class ActionStartup
         }
         else {
             $this->writeLog( 'Refresh system PATH: ' . $currentSysPathRegKey );
-            Util::setSysPathRegKey( str_replace( '%' . Registry::APP_BINS_REG_ENTRY . '%', '', $currentSysPathRegKey ) );
-            Util::setSysPathRegKey( $currentSysPathRegKey );
+            $bearsamppRegistry->setSysPathRegKey( str_replace( '%' . Registry::APP_BINS_REG_ENTRY . '%', '', $currentSysPathRegKey ) );
+            $bearsamppRegistry->setSysPathRegKey( $currentSysPathRegKey );
         }
     }
 
@@ -924,6 +924,9 @@ class ActionStartup
         Log::trace('Starting sequential service installation');
         $installStartTime = Util::getMicrotime();
 
+        // Skip symlink creation during checking phase for performance
+        Module::setSkipSymlinkCreation(true);
+
         // Step 1: Check and prepare all services
         $servicesToStart = [];
         $serviceErrors = [];
@@ -963,6 +966,11 @@ class ActionStartup
                 $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
             }
         }
+
+        // Re-enable symlink creation and reload bins with symlinks created
+        Module::setSkipSymlinkCreation(false);
+        Log::trace('Re-enabling symlink creation after service checking');
+        $bearsamppBins->reload();
 
         // Step 2: Start all services sequentially with progress updates
         if (!empty($servicesToStart)) {
@@ -1118,7 +1126,11 @@ class ActionStartup
         $serviceAlreadyInstalled = false;
         $serviceToRemove = false;
 
-        if ($sName == BinApache::SERVICE_NAME) {
+        // Skip service checks for disabled services
+        if (!$bin->isEnable()) {
+            Log::trace('Skipping service check for disabled bin: ' . $bin->getName());
+            $serviceInfos = false;
+        } else if ($sName == BinApache::SERVICE_NAME) {
             $serviceInfos = $this->checkApacheServiceWithTimeout($service);
         } else if ($sName == BinMysql::SERVICE_NAME) {
             $serviceInfos = $this->checkMySQLServiceWithTimeout($service, $bin);
@@ -1230,7 +1242,7 @@ class ActionStartup
 
         // Set a timeout for the Apache service check
         $serviceCheckStartTime = microtime(true);
-        $serviceCheckTimeout = 10; // 10 seconds timeout
+        $serviceCheckTimeout = 3; // 3 seconds timeout
 
         try {
             // Use a non-blocking approach to check service
@@ -1279,7 +1291,7 @@ class ActionStartup
 
         // Set a timeout for the MySQL service check
         $serviceCheckStartTime = microtime(true);
-        $serviceCheckTimeout = 8; // 8 seconds timeout
+        $serviceCheckTimeout = 3; // 3 seconds timeout
 
         try {
             // Use a non-blocking approach to check service
@@ -1324,3 +1336,4 @@ class ActionStartup
         Log::debug( $log, $bearsamppRoot->getStartupLogFilePath() );
     }
 }
+

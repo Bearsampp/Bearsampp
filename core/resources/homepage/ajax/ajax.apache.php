@@ -124,3 +124,4 @@ foreach ($bearsamppBins->getApache()->getVhostsUrl() as $vhost => $enabled) {
  * Output the result array as a JSON-encoded string.
  */
 echo json_encode($result);
+

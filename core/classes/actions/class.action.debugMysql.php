@@ -60,3 +60,4 @@ class ActionDebugMysql extends ActionDebugBase
         ];
     }
 }
+

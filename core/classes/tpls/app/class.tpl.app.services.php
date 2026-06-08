@@ -93,3 +93,4 @@ class TplAppServices
         return TplApp::getActionRun(Action::RESTART_ALL_SERVICES, array());
     }
 }
+

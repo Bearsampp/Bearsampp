@@ -71,3 +71,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Send the JSON response
 echo json_encode($response);
 exit;
+

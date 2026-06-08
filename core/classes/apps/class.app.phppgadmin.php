@@ -140,3 +140,4 @@ class AppPhppgadmin extends Module
         return $this->conf;
     }
 }
+

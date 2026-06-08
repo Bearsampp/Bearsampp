@@ -28,3 +28,4 @@ class ActionRestart
             $bearsamppLang->getValue(Lang::RESTART_TITLE));
     }
 }
+

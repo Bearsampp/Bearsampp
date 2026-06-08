@@ -600,3 +600,4 @@ if (!function_exists('wb_create_items')) {
             }
         }
     }
+

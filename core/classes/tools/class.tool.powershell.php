@@ -158,9 +158,9 @@ class ToolPowerShell extends Module
      */
     public function getShell($args = null) {
         if (empty($args)) {
-            return 'cmd /c &quot;' . Util::formatWindowsPath($this->launchExe) . '&quot;';
+            return 'cmd /c &quot;' . Path::formatWindowsPath($this->launchExe) . '&quot;';
         } else {
-            return 'cmd /c &quot;&quot;' . Util::formatWindowsPath($this->getLaunchExe()) . '&quot; &amp; ' . Util::formatWindowsPath($args) . '&quot;';
+            return 'cmd /c &quot;&quot;' . Path::formatWindowsPath($this->getLaunchExe()) . '&quot; &amp; ' . Path::formatWindowsPath($args) . '&quot;';
         }
     }
 
@@ -307,3 +307,4 @@ class ToolPowerShell extends Module
         return $bearsamppLang->getValue(Lang::NGROK) . ' ' . $bearsamppTools->getNgrok()->getVersion();
     }
 }
+

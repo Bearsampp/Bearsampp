@@ -59,3 +59,4 @@ foreach ($bearsamppBins->getMailpit()->getVersionList() as $version) {
 
 // Output the result as a JSON-encoded array
 echo json_encode($result);
+

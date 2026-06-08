@@ -10,13 +10,14 @@
 
 /**
  * Utility class providing a wide range of static methods for various purposes including:
- * - Cleaning and retrieving command line, GET, and POST variables based on type specifications.
- * - String manipulation methods to check if strings contain, start with, or end with specified substrings.
+ * - Input cleaning and sanitization have been moved to UtilInput. @see UtilInput
+ * - String manipulation methods have been moved to UtilString. @see UtilString
  * - File and directory management functions for deleting, clearing, or finding files and directories.
  * - System utilities for handling registry operations, managing environment variables, and executing system commands.
  * - Network utilities to validate IPs, domains, and manage HTTP requests.
  * - Helper functions for encoding, decoding, and file operations.
  *
+ * Path formatting (formatWindowsPath / formatUnixPath) has been moved to Path. @see Path
  * Logging is handled by the Log class. @see Log
  *
  * This class is designed to be used as a helper or utility class where methods are accessed statically.
@@ -24,7 +25,7 @@
  *
  * Usage Example:
  * ```
- * $cleanedData = Util::cleanGetVar('data', 'text');
+ * $cleanedData = UtilInput::cleanGetVar('data', 'text');
  * $isAvailable = Util::isValidIp('192.168.1.1');
  * ```
  *
@@ -33,406 +34,6 @@
  */
 class Util
 {
-    /**
-     * Cache for file scan results
-     * @var array|null
-     */
-    private static $fileScanCache = null;
-
-    /**
-     * Cache validity duration in seconds (default: 1 hour)
-     * @var int
-     */
-    private static $fileScanCacheDuration = 3600;
-
-    /**
-     * Statistics for monitoring file scan cache effectiveness
-     * @var array
-     */
-    private static $fileScanStats = [
-        'hits' => 0,
-        'misses' => 0,
-        'invalidations' => 0
-    ];
-
-    /**
-     * Secret key for cache file integrity verification
-     * Generated once per session to prevent cache tampering
-     * @var string|null
-     */
-    private static $cacheIntegrityKey = null;
-
-    /**
-     * Cache for path formatting operations to avoid redundant string replacements
-     * @var array
-     */
-    private static $pathFormatCache = [];
-
-    /**
-     * Maximum size for path format cache to prevent memory issues
-     * @var int
-     */
-    private static $pathFormatCacheMaxSize = 500;
-
-    /**
-     * Statistics for monitoring path format cache effectiveness
-     * @var array
-     */
-    private static $pathFormatStats = [
-        'unix_hits' => 0,
-        'unix_misses' => 0,
-        'windows_hits' => 0,
-        'windows_misses' => 0
-    ];
-
-    /**
-     * Cleans and returns a specific command line argument based on the type specified.
-     *
-     * @param   string  $name  The index of the argument in the $_SERVER['argv'] array.
-     * @param   string  $type  The type of the argument to return: 'text', 'numeric', 'boolean', or 'array'.
-     *
-     * @return mixed Returns the cleaned argument based on the type or false if the argument is not set.
-     */
-    public static function cleanArgv($name, $type = 'text')
-    {
-        if (isset($_SERVER['argv'])) {
-            if ($type == 'text') {
-                return (isset($_SERVER['argv'][$name]) && !empty($_SERVER['argv'][$name])) ? trim($_SERVER['argv'][$name]) : '';
-            } elseif ($type == 'numeric') {
-                return (isset($_SERVER['argv'][$name]) && is_numeric($_SERVER['argv'][$name])) ? intval($_SERVER['argv'][$name]) : '';
-            } elseif ($type == 'boolean') {
-                return (isset($_SERVER['argv'][$name])) ? true : false;
-            } elseif ($type == 'array') {
-                return (isset($_SERVER['argv'][$name]) && is_array($_SERVER['argv'][$name])) ? $_SERVER['argv'][$name] : array();
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Cleans and returns a specific $_GET variable based on the type specified.
-     *
-     * @param   string  $name  The name of the $_GET variable.
-     * @param   string  $type  The type of the variable to return: 'text', 'numeric', 'boolean', or 'array'.
-     *
-     * @return mixed Returns the cleaned $_GET variable based on the type or false if the variable is not set.
-     */
-    public static function cleanGetVar($name, $type = 'text')
-    {
-        if (is_string($name)) {
-            if ($type == 'text') {
-                $value = (isset($_GET[$name]) && !empty($_GET[$name])) ? $_GET[$name] : '';
-                // Additional sanitization: remove null bytes and control characters
-                return filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            } elseif ($type == 'numeric') {
-                return (isset($_GET[$name]) && is_numeric($_GET[$name])) ? intval($_GET[$name]) : '';
-            } elseif ($type == 'boolean') {
-                return (isset($_GET[$name])) ? true : false;
-            } elseif ($type == 'array') {
-                return (isset($_GET[$name]) && is_array($_GET[$name])) ? $_GET[$name] : array();
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Cleans and returns a specific $_POST variable based on the type specified.
-     *
-     * @param   string  $name  The name of the $_POST variable.
-     * @param   string  $type  The type of the variable to return: 'text', 'number', 'float', 'boolean', 'array', or 'content'.
-     *
-     * @return mixed Returns the cleaned $_POST variable based on the type or false if the variable is not set.
-     */
-    public static function cleanPostVar($name, $type = 'text')
-    {
-        if (is_string($name)) {
-            if ($type == 'text') {
-                return (isset($_POST[$name]) && !empty($_POST[$name])) ? trim($_POST[$name]) : '';
-            } elseif ($type == 'number') {
-                return (isset($_POST[$name]) && is_numeric($_POST[$name])) ? intval($_POST[$name]) : '';
-            } elseif ($type == 'float') {
-                return (isset($_POST[$name]) && is_numeric($_POST[$name])) ? floatval($_POST[$name]) : '';
-            } elseif ($type == 'boolean') {
-                return (isset($_POST[$name])) ? true : false;
-            } elseif ($type == 'array') {
-                return (isset($_POST[$name]) && is_array($_POST[$name])) ? $_POST[$name] : array();
-            } elseif ($type == 'content') {
-                return (isset($_POST[$name]) && !empty($_POST[$name])) ? trim($_POST[$name]) : '';
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Sanitizes a process ID (PID) by removing all non-numeric characters.
-     * This prevents command injection through PID parameters.
-     *
-     * @param   mixed  $pid  The PID to sanitize
-     * @return int|false Returns the sanitized PID as integer, or false if invalid
-     */
-    public static function sanitizePID($pid)
-    {
-        // Remove all non-numeric characters
-        $sanitized = preg_replace('/[^0-9]/', '', (string)$pid);
-
-        if (empty($sanitized)) {
-            Log::warning('Invalid PID provided: ' . var_export($pid, true));
-            return false;
-        }
-
-        $pidInt = (int)$sanitized;
-
-        // Validate range (PIDs are positive integers)
-        if ($pidInt <= 0 || $pidInt > 2147483647) {
-            Log::warning('PID out of valid range: ' . $pidInt);
-            return false;
-        }
-
-        return $pidInt;
-    }
-
-    /**
-     * Sanitizes a port number by ensuring it's a valid integer in the correct range.
-     * This prevents command injection through port parameters.
-     *
-     * @param   mixed  $port  The port to sanitize
-     * @return int|false Returns the sanitized port as integer, or false if invalid
-     */
-    public static function sanitizePort($port)
-    {
-        $portStr = trim((string)$port);
-
-        // Require strictly digits to avoid silently changing meaning
-        if ($portStr === '' || !preg_match('/^\d+$/', $portStr)) {
-            Log::warning('Invalid port provided: ' . var_export($port, true));
-            return false;
-        }
-
-        $portInt = (int)$portStr;
-
-        // Validate range (1-65535)
-        if ($portInt < 1 || $portInt > 65535) {
-            Log::warning('Port out of valid range: ' . $portInt);
-            return false;
-        }
-
-        return $portInt;
-    }
-
-    /**
-     * Sanitizes a service name by removing dangerous characters.
-     * Allows only alphanumeric characters, underscores, and hyphens.
-     *
-     * @param   string  $serviceName  The service name to sanitize
-     * @return string|false Returns the sanitized service name, or false if invalid
-     */
-    public static function sanitizeServiceName($serviceName)
-    {
-        if (!is_string($serviceName) || empty($serviceName)) {
-            Log::warning('Invalid service name: not a string or empty');
-            return false;
-        }
-
-        // Remove all characters except alphanumeric, underscore, and hyphen
-        $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $serviceName);
-
-        if (empty($sanitized)) {
-            Log::warning('Service name became empty after sanitization: ' . $serviceName);
-            return false;
-        }
-
-        // Limit length to 256 characters (Windows service name limit)
-        if (strlen($sanitized) > 256) {
-            $sanitized = substr($sanitized, 0, 256);
-        }
-
-        return $sanitized;
-    }
-
-    /**
-     * Sanitizes a file path by removing null bytes and checking for path traversal attempts.
-     * This is a basic sanitization - paths should still be validated before use.
-     *
-     * @param   string  $path  The path to sanitize
-     * @return string|false Returns the sanitized path, or false if dangerous patterns detected
-     */
-    public static function sanitizePath($path)
-    {
-        if (!is_string($path) || empty($path)) {
-            return false;
-        }
-
-        // Remove null bytes
-        $sanitized = str_replace("\0", '', $path);
-
-        // Check for path traversal attempts (but allow environment variables)
-        $pathWithoutEnvVars = preg_replace('/%[^%]+%/', '', $sanitized);
-        if (strpos($pathWithoutEnvVars, '..') !== false) {
-            Log::warning('Path traversal attempt detected: ' . $path);
-            return false;
-        }
-
-        // Remove dangerous characters that could be used for command injection
-        // But preserve valid path characters including : for drive letters and ; for PATH
-        $sanitized = preg_replace('/[<>"|?*\x00-\x1F]/', '', $sanitized);
-
-        return $sanitized;
-    }
-
-    /**
-     * Sanitizes output for display to prevent XSS attacks.
-     * Escapes HTML special characters.
-     *
-     * @param   string  $output  The output to sanitize
-     * @return string Returns the sanitized output safe for HTML display
-     */
-    public static function sanitizeOutput($output)
-    {
-        if (!is_string($output)) {
-            return '';
-        }
-
-        // Remove null bytes
-        $output = str_replace("\0", '', $output);
-
-        // Escape HTML special characters
-        return htmlspecialchars($output, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-    }
-
-    /**
-     * Checks if a string contains a specified substring.
-     *
-     * @param   string  $string  The string to search in.
-     * @param   string  $search  The substring to search for.
-     *
-     * @return bool Returns true if the substring is found in the string, otherwise false.
-     */
-    public static function contains($string, $search)
-    {
-        if (!empty($string) && !empty($search)) {
-            $result = stripos($string, $search);
-            if ($result !== false) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if a string starts with a specified substring.
-     *
-     * @param   string  $string  The string to check.
-     * @param   string  $search  The substring to look for at the start of the string.
-     *
-     * @return bool Returns true if the string starts with the search substring, otherwise false.
-     */
-    public static function startWith($string, $search)
-    {
-        // Return false if string is NULL or empty
-        if ($string === null || $string === '') {
-            return false;
-        }
-
-        $length = strlen($search);
-
-        return (substr($string, 0, $length) === $search);
-    }
-
-    /**
-     * Checks if a string ends with a specified substring.
-     *
-     * This method trims the right side whitespace of the input string before checking
-     * if it ends with the specified search substring.
-     *
-     * @param   string  $string  The string to check.
-     * @param   string  $search  The substring to look for at the end of the string.
-     *
-     * @return bool Returns true if the string ends with the search substring, otherwise false.
-     */
-    public static function endWith($string, $search)
-    {
-        $length = strlen($search);
-        $start  = $length * -1;
-
-        return (substr($string, $start) === $search);
-    }
-
-    /**
-     * Generates a cryptographically secure random string of specified length and character set.
-     *
-     * @param   int   $length       The length of the random string to generate.
-     * @param   bool  $withNumeric  Whether to include numeric characters in the random string.
-     *
-     * @return string Returns the generated random string.
-     * @throws Exception If an appropriate source of randomness cannot be found.
-     */
-    public static function random($length = 32, $withNumeric = true)
-    {
-        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        if ($withNumeric) {
-            $characters .= '0123456789';
-        }
-
-        $charactersLength = strlen($characters);
-        $randomString = '';
-
-        try {
-            for ($i = 0; $i < $length; $i++) {
-                // Use cryptographically secure random_int() instead of rand()
-                $randomIndex = random_int(0, $charactersLength - 1);
-                $randomString .= $characters[$randomIndex];
-            }
-        } catch (Exception $e) {
-            Log::error('Failed to generate cryptographically secure random string: ' . $e->getMessage());
-            throw $e;
-        }
-
-        return $randomString;
-    }
-
-    /**
-     * Generates a cryptographically secure random token as a hexadecimal string.
-     * This is ideal for security tokens, session IDs, CSRF tokens, etc.
-     *
-     * @param   int  $length  The length in bytes (output will be double this in hex characters).
-     *
-     * @return string Returns a hexadecimal string of cryptographically secure random bytes.
-     * @throws Exception If an appropriate source of randomness cannot be found.
-     */
-    public static function generateSecureToken($length = 32)
-    {
-        try {
-            return bin2hex(random_bytes($length));
-        } catch (Exception $e) {
-            Log::error('Failed to generate secure token: ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
-     * Generates a cryptographically secure random bytes string.
-     * Useful for encryption keys, initialization vectors, etc.
-     *
-     * @param   int  $length  The length in bytes.
-     *
-     * @return string Returns raw binary random bytes.
-     * @throws Exception If an appropriate source of randomness cannot be found.
-     */
-    public static function generateSecureBytes($length = 32)
-    {
-        try {
-            return random_bytes($length);
-        } catch (Exception $e) {
-            Log::error('Failed to generate secure bytes: ' . $e->getMessage());
-            throw $e;
-        }
-    }
 
     /**
      * Recursively deletes files from a specified directory while excluding certain files.
@@ -549,7 +150,7 @@ class Util
                     break;
                 }
             } elseif ($file == $findFile) {
-                $result = self::formatUnixPath($startPath . '/' . $file);
+                $result = Path::formatUnixPath($startPath . '/' . $file);
                 break;
             }
         }
@@ -704,11 +305,12 @@ class Util
     }
 
     /**
-     * Retrieves a list of version directories within a specified path.
+     * Gets the list of version directories in the specified path.
+     * Returns version suffixes by stripping the common prefix (basename of path) if present.
      *
-     * @param   string  $path  The path to search for version directories.
+     * @param   string  $path  The directory path to scan for version directories.
      *
-     * @return array|false Returns a sorted array of version names, or false if the directory cannot be opened.
+     * @return array|false Returns a sorted array of version suffixes, or false if the directory cannot be opened.
      */
     public static function getVersionList($path)
     {
@@ -719,10 +321,17 @@ class Util
             return false;
         }
 
+        $prefix = basename($path);
+
         while (false !== ($file = readdir($handle))) {
             $filePath = $path . '/' . $file;
             if ($file != '.' && $file != '..' && is_dir($filePath) && $file != 'current') {
-                $result[] = str_replace(basename($path), '', $file);
+                if (strpos($file, $prefix) === 0) {
+                    $version = substr($file, strlen($prefix));
+                } else {
+                    $version = $file;
+                }
+                $result[] = $version;
             }
         }
 
@@ -744,167 +353,6 @@ class Util
         return ((float)$usec + (float)$sec);
     }
 
-    public static function getAppBinsRegKey($fromRegistry = true)
-    {
-        global $bearsamppRegistry;
-
-        if ($fromRegistry) {
-            $value = $bearsamppRegistry->getValue(
-                Registry::HKEY_LOCAL_MACHINE,
-                Registry::ENV_KEY,
-                Registry::APP_BINS_REG_ENTRY
-            );
-            Log::debug('App reg key from registry: ' . $value);
-        } else {
-            global $bearsamppBins, $bearsamppTools;
-            $value = '';
-            if ($bearsamppBins->getApache()->isEnable()) {
-                $value .= $bearsamppBins->getApache()->getSymlinkPath() . '/bin;';
-            }
-            if ($bearsamppBins->getPhp()->isEnable()) {
-                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . ';';
-                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/pear;';
-                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/deps;';
-                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/imagick;';
-            }
-            if ($bearsamppBins->getNodejs()->isEnable()) {
-                $value .= $bearsamppBins->getNodejs()->getSymlinkPath() . ';';
-            }
-            if ($bearsamppTools->getComposer()->isEnable()) {
-                $value .= $bearsamppTools->getComposer()->getSymlinkPath() . ';';
-                $value .= $bearsamppTools->getComposer()->getSymlinkPath() . '/vendor/bin;';
-            }
-            if ($bearsamppTools->getGhostscript()->isEnable()) {
-                $value .= $bearsamppTools->getGhostscript()->getSymlinkPath() . '/bin;';
-            }
-            if ($bearsamppTools->getGit()->isEnable()) {
-                $value .= $bearsamppTools->getGit()->getSymlinkPath() . '/bin;';
-            }
-            if ($bearsamppTools->getNgrok()->isEnable()) {
-                $value .= $bearsamppTools->getNgrok()->getSymlinkPath() . ';';
-            }
-            if ($bearsamppTools->getPerl()->isEnable()) {
-                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/perl/site/bin;';
-                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/perl/bin;';
-                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/c/bin;';
-            }
-            if ($bearsamppTools->getPython()->isEnable()) {
-                $value .= $bearsamppTools->getPython()->getSymlinkPath() . '/bin;';
-            }
-            if ($bearsamppTools->getRuby()->isEnable()) {
-                $value .= $bearsamppTools->getRuby()->getSymlinkPath() . '/bin;';
-            }
-            $value = self::formatWindowsPath($value);
-            Log::debug('Generated app bins reg key: ' . $value);
-        }
-
-        return $value;
-    }
-
-    /**
-     * Retrieves or generates the application binaries registry key.
-     *
-     * @param   bool  $fromRegistry  Determines whether to retrieve the key from the registry or generate it.
-     *
-     * @return string Returns the application binaries registry key.
-     */
-    public static function setAppBinsRegKey($value)
-    {
-        global $bearsamppRegistry;
-
-        return $bearsamppRegistry->setStringValue(
-            Registry::HKEY_LOCAL_MACHINE,
-            Registry::ENV_KEY,
-            Registry::APP_BINS_REG_ENTRY,
-            $value
-        );
-    }
-
-    /**
-     * Retrieves the application path from the registry.
-     *
-     * @return mixed The value of the application path registry key or false on error.
-     */
-    public static function getAppPathRegKey()
-    {
-        global $bearsamppRegistry;
-
-        return $bearsamppRegistry->getValue(
-            Registry::HKEY_LOCAL_MACHINE,
-            Registry::ENV_KEY,
-            Registry::APP_PATH_REG_ENTRY
-        );
-    }
-
-    /**
-     * Sets the application path in the registry.
-     *
-     * @param   string  $value  The new value for the application path.
-     *
-     * @return bool True on success, false on failure.
-     */
-    public static function setAppPathRegKey($value)
-    {
-        global $bearsamppRegistry;
-
-        return $bearsamppRegistry->setStringValue(
-            Registry::HKEY_LOCAL_MACHINE,
-            Registry::ENV_KEY,
-            Registry::APP_PATH_REG_ENTRY,
-            $value
-        );
-    }
-
-    /**
-     * Retrieves the system path from the registry.
-     *
-     * @return mixed The value of the system path registry key or false on error.
-     */
-    public static function getSysPathRegKey()
-    {
-        global $bearsamppRegistry;
-
-        return $bearsamppRegistry->getValue(
-            Registry::HKEY_LOCAL_MACHINE,
-            Registry::ENV_KEY,
-            Registry::SYSPATH_REG_ENTRY
-        );
-    }
-
-    /**
-     * Sets the system path in the registry.
-     *
-     * @param   string  $value  The new value for the system path.
-     *
-     * @return bool True on success, false on failure.
-     */
-    public static function setSysPathRegKey($value)
-    {
-        global $bearsamppRegistry;
-
-        return $bearsamppRegistry->setExpandStringValue(
-            Registry::HKEY_LOCAL_MACHINE,
-            Registry::ENV_KEY,
-            Registry::SYSPATH_REG_ENTRY,
-            $value
-        );
-    }
-
-    /**
-     * Retrieves the processor identifier from the registry.
-     *
-     * @return mixed The value of the processor identifier registry key or false on error.
-     */
-    public static function getProcessorRegKey()
-    {
-        global $bearsamppRegistry;
-
-        return $bearsamppRegistry->getValue(
-            Registry::HKEY_LOCAL_MACHINE,
-            Registry::PROCESSOR_REG_SUBKEY,
-            Registry::PROCESSOR_REG_ENTRY
-        );
-    }
 
     /**
      * Retrieves the path for the startup link file.
@@ -945,7 +393,7 @@ class Util
         $targetPath = $bearsamppRoot->getExeFilePath();
         $workingDir = $bearsamppRoot->getRootPath();
         $description = APP_TITLE . ' ' . $bearsamppCore->getAppVersion();
-        $iconPath = $bearsamppCore->getIconsPath() . '/app.ico';
+        $iconPath = Path::getIconsPath() . '/app.ico';
 
         return Win32Native::createShortcut($shortcutPath, $targetPath, $workingDir, $description, $iconPath);
     }
@@ -1012,137 +460,13 @@ class Util
                     $result[] = $tmpResult;
                 }
             } elseif (is_file($startPath . '/' . $checkFile) && !in_array($startPath, $result)) {
-                $result[] = self::formatUnixPath($startPath);
+                $result[] = Path::formatUnixPath($startPath);
             }
         }
 
         closedir($handle);
 
         return $result;
-    }
-
-    /**
-     * Converts a Unix-style path to a Windows-style path with caching.
-     * This is a Windows application, so paths use backslashes (\) as separators.
-     *
-     * Performance optimization: Caches results to avoid redundant string replacements
-     * for frequently used paths (e.g., root paths, bin paths).
-     *
-     * @param   string  $path  The Unix-style path to convert.
-     *
-     * @return string Returns the converted Windows-style path.
-     */
-    public static function formatWindowsPath($path)
-    {
-        // Return early for empty strings
-        if (empty($path)) {
-            return $path;
-        }
-
-        // Check cache first
-        $cacheKey = 'w_' . $path;
-        if (isset(self::$pathFormatCache[$cacheKey])) {
-            self::$pathFormatStats['windows_hits']++;
-            return self::$pathFormatCache[$cacheKey];
-        }
-
-        self::$pathFormatStats['windows_misses']++;
-
-        // Perform the conversion
-        $result = str_replace('/', '\\', $path);
-
-        // Store in cache if under size limit
-        if (count(self::$pathFormatCache) < self::$pathFormatCacheMaxSize) {
-            self::$pathFormatCache[$cacheKey] = $result;
-        } else {
-            // Cache is full - implement LRU by removing first 10% of entries
-            $removeCount = (int)(self::$pathFormatCacheMaxSize * 0.1);
-            self::$pathFormatCache = array_slice(self::$pathFormatCache, $removeCount, null, true);
-            self::$pathFormatCache[$cacheKey] = $result;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Converts a Windows-style path to a Unix-style path with caching.
-     * Unix-style paths use forward slashes (/) as separators.
-     *
-     * Performance optimization: Caches results to avoid redundant string replacements
-     * for frequently used paths (e.g., root paths, bin paths).
-     *
-     * @param   string  $path  The Windows-style path to convert.
-     *
-     * @return string Returns the converted Unix-style path.
-     */
-    public static function formatUnixPath($path)
-    {
-        // Return early for empty strings
-        if (empty($path)) {
-            return $path;
-        }
-
-        // Check cache first
-        $cacheKey = 'u_' . $path;
-        if (isset(self::$pathFormatCache[$cacheKey])) {
-            self::$pathFormatStats['unix_hits']++;
-            return self::$pathFormatCache[$cacheKey];
-        }
-
-        self::$pathFormatStats['unix_misses']++;
-
-        // Perform the conversion
-        $result = str_replace('\\', '/', $path);
-
-        // Store in cache if under size limit
-        if (count(self::$pathFormatCache) < self::$pathFormatCacheMaxSize) {
-            self::$pathFormatCache[$cacheKey] = $result;
-        } else {
-            // Cache is full - implement LRU by removing first 10% of entries
-            $removeCount = (int)(self::$pathFormatCacheMaxSize * 0.1);
-            self::$pathFormatCache = array_slice(self::$pathFormatCache, $removeCount, null, true);
-            self::$pathFormatCache[$cacheKey] = $result;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Gets path format cache statistics.
-     * Useful for monitoring cache effectiveness and tuning cache size.
-     *
-     * @return array Array containing unix_hits, unix_misses, windows_hits, windows_misses
-     */
-    public static function getPathFormatStats()
-    {
-        return self::$pathFormatStats;
-    }
-
-    /**
-     * Clears the path format cache.
-     * Useful when paths change or for testing purposes.
-     *
-     * @return void
-     */
-    public static function clearPathFormatCache()
-    {
-        self::$pathFormatCache = [];
-        self::$pathFormatStats = [
-            'unix_hits' => 0,
-            'unix_misses' => 0,
-            'windows_hits' => 0,
-            'windows_misses' => 0
-        ];
-    }
-
-    /**
-     * Gets the current size of the path format cache.
-     *
-     * @return int Number of cached path conversions
-     */
-    public static function getPathFormatCacheSize()
-    {
-        return count(self::$pathFormatCache);
     }
 
     /**
@@ -1158,6 +482,23 @@ class Util
         $data = file_get_contents($path);
 
         return 'data:image/' . $type . ';base64,' . base64_encode($data);
+    }
+
+    /**
+     * Converts data between UTF-8 and Windows-1252 encodings.
+     *
+     * @param   string  $data      The data to convert.
+     * @param   string  $direction The conversion direction: 'to_cp1252' or 'to_utf8'. Defaults to 'to_cp1252'.
+     *
+     * @return string The converted data.
+     */
+    public static function convertEncoding($data, $direction = 'to_cp1252')
+    {
+        if ($direction === 'to_utf8') {
+            return self::cp1252ToUtf8($data);
+        } else {
+            return self::utf8ToCp1252($data);
+        }
     }
 
     /**
@@ -1192,14 +533,14 @@ class Util
         global $bearsamppCore, $bearsamppWinbinder;
 
         Log::trace('startLoading() called');
-        Log::trace('PHP executable: ' . $bearsamppCore->getPhpExe());
+        Log::trace('PHP executable: ' . Path::getPhpExe());
         Log::trace('Root file: ' . Core::isRoot_FILE);
         Log::trace('Action: ' . Action::LOADING);
 
         $command = Core::isRoot_FILE . ' ' . Action::LOADING;
-        Log::trace('Executing command: ' . $bearsamppCore->getPhpExe() . ' ' . $command);
+        Log::trace('Executing command: ' . Path::getPhpExe() . ' ' . $command);
 
-        $result = $bearsamppWinbinder->exec($bearsamppCore->getPhpExe(), $command);
+        $result = $bearsamppWinbinder->exec(Path::getPhpExe(), $command);
         Log::trace('exec() returned: ' . var_export($result, true));
 
         Log::trace('startLoading() completed');
@@ -1233,7 +574,7 @@ class Util
     {
         global $bearsamppCore;
 
-        $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
+        $statusFile = Path::getTmpPath() . '/loading_status.txt';
         file_put_contents($statusFile, json_encode(['text' => $text]));
     }
 
@@ -1244,7 +585,7 @@ class Util
     {
         global $bearsamppCore;
 
-        $statusFile = $bearsamppCore->getTmpPath() . '/loading_status.txt';
+        $statusFile = Path::getTmpPath() . '/loading_status.txt';
         if (file_exists($statusFile)) {
             @unlink($statusFile);
         }
@@ -1267,15 +608,15 @@ class Util
 
         // Try to get from cache if enabled and not forcing refresh
         if ($useCache && !$forceRefresh) {
-            $cachedResult = self::getFileScanCache($cacheKey);
+            $cachedResult = Cache::get($cacheKey);
             if ($cachedResult !== false) {
-                self::$fileScanStats['hits']++;
+                Cache::recordHit();
                 Log::debug('File scan cache HIT (saved expensive scan operation)');
                 return $cachedResult;
             }
         }
 
-        self::$fileScanStats['misses']++;
+        Cache::recordMiss();
         Log::debug('File scan cache MISS (performing full scan)');
 
         // Perform the actual scan
@@ -1297,269 +638,13 @@ class Util
 
         // Store in cache if enabled
         if ($useCache) {
-            self::setFileScanCache($cacheKey, $result);
+            Cache::set($cacheKey, $result);
         }
 
         return $result;
     }
 
-    /**
-     * Gets cached file scan results if valid.
-     * Includes integrity verification to prevent cache tampering.
-     *
-     * @param   string  $cacheKey  The cache key to retrieve.
-     *
-     * @return array|false Returns cached results or false if cache is invalid/missing.
-     */
-    private static function getFileScanCache($cacheKey)
-    {
-        global $bearsamppRoot;
 
-        // Check if we have in-memory cache first
-        if (self::$fileScanCache !== null && isset(self::$fileScanCache[$cacheKey])) {
-            $cache = self::$fileScanCache[$cacheKey];
-
-            // Check if cache is still valid
-            if (time() - $cache['timestamp'] < self::$fileScanCacheDuration) {
-                return $cache['data'];
-            } else {
-                self::$fileScanStats['invalidations']++;
-                unset(self::$fileScanCache[$cacheKey]);
-            }
-        }
-
-        // Try to load from file cache
-        if (!isset($bearsamppRoot)) {
-            return false;
-        }
-
-        $cacheFile = $bearsamppRoot->getTmpPath() . '/filescan_cache_' . $cacheKey . '.dat';
-
-        if (file_exists($cacheFile)) {
-            $fileContents = @file_get_contents($cacheFile);
-
-            if ($fileContents === false) {
-                return false;
-            }
-
-            // Verify file integrity before unserializing
-            if (!self::verifyCacheIntegrity($fileContents, $cacheKey)) {
-                Log::warning('File scan cache integrity check failed for key: ' . $cacheKey . '. Possible tampering detected.');
-                @unlink($cacheFile);
-                return false;
-            }
-
-            $cacheData = @unserialize($fileContents);
-
-            if ($cacheData !== false && isset($cacheData['timestamp']) && isset($cacheData['data']) && isset($cacheData['hmac'])) {
-                // Check if file cache is still valid
-                if (time() - $cacheData['timestamp'] < self::$fileScanCacheDuration) {
-                    // Store in memory cache for faster subsequent access
-                    if (self::$fileScanCache === null) {
-                        self::$fileScanCache = [];
-                    }
-                    self::$fileScanCache[$cacheKey] = $cacheData;
-
-                    return $cacheData['data'];
-                } else {
-                    // Cache expired, delete file
-                    self::$fileScanStats['invalidations']++;
-                    @unlink($cacheFile);
-                }
-            } else {
-                // Invalid cache structure, delete file
-                Log::warning('Invalid cache structure detected for key: ' . $cacheKey);
-                @unlink($cacheFile);
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Stores file scan results in cache with integrity protection.
-     *
-     * @param   string  $cacheKey  The cache key to store under.
-     * @param   array   $data      The scan results to cache.
-     *
-     * @return void
-     */
-    private static function setFileScanCache($cacheKey, $data)
-    {
-        global $bearsamppRoot;
-
-        // Generate HMAC for integrity verification
-        $hmac = self::generateCacheHMAC($data, $cacheKey);
-
-        $cacheData = [
-            'timestamp' => time(),
-            'data' => $data,
-            'hmac' => $hmac
-        ];
-
-        // Store in memory cache
-        if (self::$fileScanCache === null) {
-            self::$fileScanCache = [];
-        }
-        self::$fileScanCache[$cacheKey] = $cacheData;
-
-        // Store in file cache
-        if (isset($bearsamppRoot)) {
-            $cacheFile = $bearsamppRoot->getTmpPath() . '/filescan_cache_' . $cacheKey . '.dat';
-            @file_put_contents($cacheFile, serialize($cacheData), LOCK_EX);
-            Log::debug('File scan results cached to: ' . $cacheFile);
-        }
-    }
-
-    /**
-     * Generates or retrieves the cache integrity key.
-     * This key is unique per session to prevent cross-session cache tampering.
-     *
-     * @return string The cache integrity key
-     */
-    private static function getCacheIntegrityKey()
-    {
-        if (self::$cacheIntegrityKey === null) {
-            global $bearsamppRoot;
-
-            // Try to load existing key from session file
-            if (isset($bearsamppRoot)) {
-                $keyFile = $bearsamppRoot->getTmpPath() . '/cache_integrity.key';
-
-                if (file_exists($keyFile)) {
-                    $key = @file_get_contents($keyFile);
-                    if ($key !== false && strlen($key) === 64) {
-                        self::$cacheIntegrityKey = $key;
-                        return self::$cacheIntegrityKey;
-                    }
-                }
-
-                // Generate new key if none exists or invalid
-                try {
-                    self::$cacheIntegrityKey = bin2hex(random_bytes(32));
-                    @file_put_contents($keyFile, self::$cacheIntegrityKey, LOCK_EX);
-                } catch (Exception $e) {
-                    Log::error('Failed to generate cache integrity key: ' . $e->getMessage());
-                    // Fallback to a less secure but functional key
-                    self::$cacheIntegrityKey = hash('sha256', uniqid('bearsampp_cache_', true));
-                }
-            } else {
-                // Fallback if bearsamppRoot not available
-                try {
-                    self::$cacheIntegrityKey = bin2hex(random_bytes(32));
-                } catch (Exception $e) {
-                    self::$cacheIntegrityKey = hash('sha256', uniqid('bearsampp_cache_', true));
-                }
-            }
-        }
-
-        return self::$cacheIntegrityKey;
-    }
-
-    /**
-     * Generates HMAC for cache data integrity verification.
-     *
-     * @param   array   $data      The data to generate HMAC for
-     * @param   string  $cacheKey  The cache key
-     *
-     * @return string The HMAC hash
-     */
-    private static function generateCacheHMAC($data, $cacheKey)
-    {
-        $key = self::getCacheIntegrityKey();
-        $message = serialize($data) . $cacheKey;
-        return hash_hmac('sha256', $message, $key);
-    }
-
-    /**
-     * Verifies cache file integrity using HMAC.
-     *
-     * @param   string  $fileContents  The serialized cache file contents
-     * @param   string  $cacheKey      The cache key
-     *
-     * @return bool True if integrity check passes, false otherwise
-     */
-    private static function verifyCacheIntegrity($fileContents, $cacheKey)
-    {
-        $cacheData = @unserialize($fileContents);
-
-        if ($cacheData === false || !isset($cacheData['hmac']) || !isset($cacheData['data'])) {
-            return false;
-        }
-
-        $expectedHmac = self::generateCacheHMAC($cacheData['data'], $cacheKey);
-
-        // Use hash_equals to prevent timing attacks
-        return hash_equals($expectedHmac, $cacheData['hmac']);
-    }
-
-    /**
-     * Clears all file scan caches.
-     *
-     * @return void
-     */
-    public static function clearFileScanCache()
-    {
-        global $bearsamppRoot;
-
-        // Clear memory cache
-        self::$fileScanCache = null;
-
-        // Clear file caches
-        if (isset($bearsamppRoot)) {
-            $tmpPath = $bearsamppRoot->getTmpPath();
-            $cacheFiles = glob($tmpPath . '/filescan_cache_*.dat');
-
-            if ($cacheFiles !== false) {
-                foreach ($cacheFiles as $cacheFile) {
-                    @unlink($cacheFile);
-                }
-                Log::info('Cleared ' . count($cacheFiles) . ' file scan cache files');
-            }
-        }
-
-        // Reset stats
-        self::$fileScanStats = [
-            'hits' => 0,
-            'misses' => 0,
-            'invalidations' => 0
-        ];
-    }
-
-    /**
-     * Gets file scan cache statistics.
-     *
-     * @return array Array containing hits, misses, and invalidations counts
-     */
-    public static function getFileScanStats()
-    {
-        return self::$fileScanStats;
-    }
-
-    /**
-     * Sets the file scan cache duration.
-     *
-     * @param   int  $seconds  Cache duration in seconds (default: 3600 = 1 hour).
-     *
-     * @return void
-     */
-    public static function setFileScanCacheDuration($seconds)
-    {
-        if ($seconds > 0 && $seconds <= 86400) { // Max 24 hours
-            self::$fileScanCacheDuration = $seconds;
-            Log::debug('File scan cache duration set to ' . $seconds . ' seconds');
-        }
-    }
-
-    /**
-     * Gets the current file scan cache duration.
-     *
-     * @return int Cache duration in seconds
-     */
-    public static function getFileScanCacheDuration()
-    {
-        return self::$fileScanCacheDuration;
-    }
 
     /**
      * Retrieves a list of directories and file types to scan within the BEARSAMPP environment.
@@ -1606,14 +691,14 @@ class Util
 
         // OpenSSL
         $paths[] = array(
-            'path'      => $bearsamppCore->getOpenSslPath(),
+            'path'      => Path::getOpenSslPath(),
             'includes'  => array('openssl.cfg'),
             'recursive' => false
         );
 
         // Homepage
         $paths[] = array(
-            'path'      => $bearsamppCore->getResourcesPath() . '/homepage',
+            'path'      => Path::getResourcesPath() . '/homepage',
             'includes'  => array('alias.conf'),
             'recursive' => false
         );
@@ -1769,15 +854,15 @@ class Util
                 }
             } elseif (is_file($startPath . '/' . $file)) {
                 foreach ($includes as $include) {
-                    if (self::startWith($include, '!')) {
+                    if (UtilString::startWith($include, '!')) {
                         $include = ltrim($include, '!');
-                        if (self::startWith($file, '.') && !self::endWith($file, $include)) {
-                            $result[] = self::formatUnixPath($startPath . '/' . $file);
+                        if (UtilString::startWith($file, '.') && !UtilString::endWith($file, $include)) {
+                            $result[] = Path::formatUnixPath($startPath . '/' . $file);
                         } elseif ($file != $include) {
-                            $result[] = self::formatUnixPath($startPath . '/' . $file);
+                            $result[] = Path::formatUnixPath($startPath . '/' . $file);
                         }
-                    } elseif (self::endWith($file, $include) || $file == $include || empty($include)) {
-                        $result[] = self::formatUnixPath($startPath . '/' . $file);
+                    } elseif (UtilString::endWith($file, $include) || $file == $include || empty($include)) {
+                        $result[] = Path::formatUnixPath($startPath . '/' . $file);
                     }
                 }
             }
@@ -1806,10 +891,10 @@ class Util
         );
 
         $rootPath           = $rootPath != null ? $rootPath : $bearsamppRoot->getRootPath();
-        $unixOldPath        = self::formatUnixPath($bearsamppCore->getLastPathContent());
-        $windowsOldPath     = self::formatWindowsPath($bearsamppCore->getLastPathContent());
-        $unixCurrentPath    = self::formatUnixPath($rootPath);
-        $windowsCurrentPath = self::formatWindowsPath($rootPath);
+        $unixOldPath        = Path::formatUnixPath($bearsamppCore->getLastPathContent());
+        $windowsOldPath     = Path::formatWindowsPath($bearsamppCore->getLastPathContent());
+        $unixCurrentPath    = Path::formatUnixPath($rootPath);
+        $windowsCurrentPath = Path::formatWindowsPath($rootPath);
 
         foreach ($filesToScan as $fileToScan) {
             $tmpCountChangedOcc = 0;
@@ -1886,24 +971,11 @@ class Util
     }
 
     /**
-     * Constructs a website URL without UTM parameters.
-     *
-     * @param   string  $path      Optional path to append to the base URL.
-     * @param   string  $fragment  Optional fragment to append to the URL.
-     *
-     * @return string The constructed URL without UTM parameters.
-     */
-    public static function getWebsiteUrlNoUtm($path = '', $fragment = '')
-    {
-        return self::getWebsiteUrl($path, $fragment, false);
-    }
-
-    /**
      * Constructs a complete website URL with optional path, fragment, and UTM source parameters.
      *
      * @param   string  $path       Optional path to append to the base URL.
      * @param   string  $fragment   Optional fragment to append to the URL.
-     * @param   bool    $utmSource  Whether to include UTM source parameters.
+     * @param   bool    $utmSource  Whether to include UTM source parameters. Defaults to true.
      *
      * @return string The constructed URL.
      */
@@ -1926,15 +998,16 @@ class Util
     }
 
     /**
-     * Constructs the URL to the changelog page, optionally including UTM parameters.
+     * Constructs a website URL without UTM parameters.
      *
-     * @param   bool  $utmSource  Whether to include UTM source parameters.
+     * @param   string  $path      Optional path to append to the base URL.
+     * @param   string  $fragment  Optional fragment to append to the URL.
      *
-     * @return string The URL to the changelog page.
+     * @return string The constructed URL without UTM parameters.
      */
-    public static function getChangelogUrl($utmSource = true)
+    public static function getWebsiteUrlNoUtm($path = '', $fragment = '')
     {
-        return self::getWebsiteUrl('doc/changelog', null, $utmSource);
+        return self::getWebsiteUrl($path, $fragment, false);
     }
 
     /**
@@ -1960,24 +1033,28 @@ class Util
     /**
      * Converts a file size in bytes to a human-readable format.
      *
-     * @param   int     $size  The file size in bytes.
-     * @param   string  $unit  The unit to convert to ('GB', 'MB', 'KB', or ''). If empty, auto-selects the unit.
+     * Uses PHP's native human_readable_size() when no unit is forced.
+     * Falls back to manual conversion when a specific unit is requested.
      *
-     * @return string The formatted file size.
+     * @param  int     $size  The file size in bytes.
+     * @param  string  $unit  Optional forced unit ('GB', 'MB', 'KB', or '').
+     *
+     * @return string  The formatted file size.
      */
-    public static function humanFileSize($size, $unit = '')
+    public static function humanFileSize(int $size, string $unit = ''): string
     {
-        if ((!$unit && $size >= 1 << 30) || $unit == 'GB') {
-            return number_format($size / (1 << 30), 2) . 'GB';
-        }
-        if ((!$unit && $size >= 1 << 20) || $unit == 'MB') {
-            return number_format($size / (1 << 20), 2) . 'MB';
-        }
-        if ((!$unit && $size >= 1 << 10) || $unit == 'KB') {
-            return number_format($size / (1 << 10), 2) . 'KB';
+        // Forced unit mode
+        if ($unit !== '') {
+            return match ($unit) {
+                'GB' => number_format($size / (1 << 30), 2) . 'GB',
+                'MB' => number_format($size / (1 << 20), 2) . 'MB',
+                'KB' => number_format($size / (1 << 10), 2) . 'KB',
+                default => number_format($size) . ' bytes',
+            };
         }
 
-        return number_format($size) . ' bytes';
+        // Native PHP 8.3+ auto-selection
+        return human_readable_size($size, precision: 2);
     }
 
     /**
@@ -1987,9 +1064,10 @@ class Util
      */
     public static function is32BitsOs()
     {
-        $processor = self::getProcessorRegKey();
+        global $bearsamppRegistry;
+        $processor = $bearsamppRegistry->getProcessorRegKey();
 
-        return self::contains($processor, 'x86');
+        return UtilString::contains($processor, 'x86');
     }
 
     /**
@@ -2219,21 +1297,7 @@ class Util
      */
     public static function isValidDomainName($domainName)
     {
-        return preg_match('/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i', $domainName)
-            && preg_match('/^.{1,253}$/', $domainName)
-            && preg_match('/^[^\.]{1,63}(\.[^\.]{1,63})*$/', $domainName);
-    }
-
-    /**
-     * Checks if a string is alphanumeric.
-     *
-     * @param   string  $string  The string to check.
-     *
-     * @return bool Returns true if the string is alphanumeric, false otherwise.
-     */
-    public static function isAlphanumeric($string)
-    {
-        return ctype_alnum($string);
+        return filter_var($domainName, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false;
     }
 
     /**
@@ -2397,206 +1461,60 @@ class Util
     }
 
     /**
-     * Constructs a GitHub user URL with an optional path.
+     * Generates various GitHub URLs based on the specified type.
      *
-     * @param   string|null  $part  Optional path to append to the URL.
-     *
-     * @return string The full GitHub user URL.
+     * @param string $type The type of URL ('user', 'repo', 'raw'). Defaults to 'user'.
+     * @param string $user The GitHub username. Defaults to 'Bearsampp'.
+     * @param string|null $repo The repository name (required for 'repo' and 'raw' types).
+     * @param string|null $branch The branch name (required for 'raw' type).
+     * @param string|null $path The file path (required for 'raw' type).
+     * @return string|false The generated URL or false on invalid input.
      */
-    public static function getGithubUserUrl($part = null)
-    {
-        $part = !empty($part) ? '/' . $part : null;
-
-        return 'https://github.com/' . APP_GITHUB_USER . $part;
-    }
-
-    /**
-     * Constructs a GitHub repository URL with an optional path.
-     *
-     * @param   string|null  $part  Optional path to append to the URL.
-     *
-     * @return string The full GitHub repository URL.
-     */
-    public static function getGithubUrl($part = null)
-    {
-        $part = !empty($part) ? '/' . $part : null;
-
-        return self::getGithubUserUrl(APP_GITHUB_REPO . $part);
-    }
-
-    /**
-     * Constructs a URL for raw content from a GitHub repository.
-     *
-     * @param   string  $file  The file path to append to the base URL.
-     *
-     * @return string The full URL to the raw content on GitHub.
-     */
-    public static function getGithubRawUrl($file)
-    {
-        $file = !empty($file) ? '/' . $file : null;
-
-        return 'https://raw.githubusercontent.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . '/main' . $file;
-    }
-
-    /**
-     * Retrieves a list of folders from a specified directory, excluding certain directories.
-     *
-     * @param   string  $path  The directory path from which to list folders.
-     *
-     * @return array|bool An array of folder names, or false if the directory cannot be opened.
-     */
-    public static function getFolderList($path)
-    {
-        $result = array();
-
-        $handle = @opendir($path);
-        if (!$handle) {
+    public static function getGithubUrl($type = 'user', $user = APP_GITHUB_USER, $repo = null, $branch = null, $path = null) {
+        if (empty($user) || !is_string($user)) {
             return false;
         }
 
-        while (false !== ($file = readdir($handle))) {
-            $filePath = $path . '/' . $file;
-            if ($file != '.' && $file != '..' && is_dir($filePath) && $file != 'current') {
-                $result[] = $file;
-            }
-        }
+        // Encode as URL path segment (not query encoding)
+        $user = rawurlencode($user);
 
-        closedir($handle);
+        switch ($type) {
+            case 'user':
+                return "https://github.com/{$user}";
 
-        return $result;
-    }
-
-    /**
-     * Retrieves and formats environment paths from a data file.
-     * Paths are verified to be directories and formatted to Unix style.
-     * Warnings are logged for paths that do not exist.
-     *
-     * @return string A semicolon-separated string of formatted environment paths.
-     * @global object $bearsamppRoot Global object containing root path methods.
-     */
-    public static function getNssmEnvPaths()
-    {
-        global $bearsamppRoot;
-
-        $result           = '';
-        $nssmEnvPathsFile = $bearsamppRoot->getRootPath() . '/nssmEnvPaths.dat';
-
-        if (is_file($nssmEnvPathsFile)) {
-            $paths = explode(PHP_EOL, file_get_contents($nssmEnvPathsFile));
-            foreach ($paths as $path) {
-                $path = trim($path);
-                if (stripos($path, ':') === false) {
-                    $path = $bearsamppRoot->getRootPath() . '/' . $path;
+            case 'repo':
+                if (empty($repo) || !is_string($repo)) {
+                    return false;
                 }
-                if (is_dir($path)) {
-                    $result .= self::formatUnixPath($path) . ';';
-                } else {
-                    Log::warning('Path not found in nssmEnvPaths.dat: ' . $path);
+                $repo = rawurlencode($repo);
+                return "https://github.com/{$user}/{$repo}";
+
+            case 'raw':
+                if (empty($repo) || empty($branch) || empty($path) || !is_string($repo) || !is_string($branch) || !is_string($path)) {
+                    return false;
                 }
-            }
-        }
+                $repo = rawurlencode($repo);
+                $branch = rawurlencode($branch);
 
-        return $result;
+                $path = ltrim($path, '/');
+                $segments = array_map('rawurlencode', explode('/', $path));
+                $pathEncoded = implode('/', $segments);
+
+                return "https://raw.githubusercontent.com/{$user}/{$repo}/{$branch}/{$pathEncoded}";
+
+            default:
+                return false;
+        }
     }
 
     /**
-     * Opens a file with a given caption and content in the default text editor.
-     * The file is created in a temporary directory with a unique name.
+     * Gets the GitHub user URL for Bearsampp.
      *
-     * @param   string  $caption            The filename to use when saving the content.
-     * @param   string  $content            The content to write to the file.
-     *
-     * @global object   $bearsamppRoot      Global object to access temporary path.
-     * @global object   $bearsamppConfig    Global configuration object.
-     * @global object   $bearsamppWinbinder Global object to execute external programs.
+     * @return string The GitHub user URL.
      */
-    public static function openFileContent($caption, $content)
+    public static function getGithubUserUrl()
     {
-        global $bearsamppRoot, $bearsamppConfig, $bearsamppWinbinder;
-
-        $folderPath = $bearsamppRoot->getTmpPath() . '/openFileContent-' . self::random();
-        if (!is_dir($folderPath)) {
-            mkdir($folderPath, 0777, true);
-        }
-
-        $filepath = self::formatWindowsPath($folderPath . '/' . $caption);
-        file_put_contents($filepath, $content);
-
-        $bearsamppWinbinder->exec($bearsamppConfig->getNotepad(), '"' . $filepath . '"');
-    }
-
-    /**
-     * Decrypts a file encrypted with a specified method and returns the content.
-     *
-     * @return string|false Decrypted content or false on failure.
-     */
-    public static function decryptFile()
-    {
-        global $bearsamppCore, $bearsamppConfig;
-
-        $stringfile = $bearsamppCore->getResourcesPath() . '/string.dat';
-        $encryptedFile = $bearsamppCore->getResourcesPath() . '/github.dat';
-        $method        = 'AES-256-CBC'; // The same encryption method used
-
-        // Get key string
-        $stringPhrase = @file_get_contents($stringfile);
-        if ($stringPhrase === false) {
-            Log::debug("Failed to read the file at path: {$stringfile}");
-
-            return false;
-        }
-
-        $stringKey = convert_uudecode($stringPhrase);
-
-        // Read the encrypted data from the file
-        $encryptedData = file_get_contents($encryptedFile);
-        if ($encryptedData === false) {
-            Log::debug("Failed to read the file at path: {$encryptedFile}");
-
-            return false;
-        }
-
-        // Decode the base64 encoded data
-        $data = base64_decode($encryptedData);
-        if ($data === false) {
-            Log::debug("Failed to decode the data from path: {$encryptedFile}");
-
-            return false;
-        }
-
-        // Extract the IV which was prepended to the encrypted data
-        $ivLength  = openssl_cipher_iv_length($method);
-        $iv        = substr($data, 0, $ivLength);
-        $encrypted = substr($data, $ivLength);
-
-        // Decrypt the data
-        $decrypted = openssl_decrypt($encrypted, $method, $stringKey, 0, $iv);
-        if ($decrypted === false) {
-            Log::debug("Decryption failed for data from path: {$encryptedFile}");
-
-            return false;
-        }
-
-        return $decrypted;
-    }
-
-    /**
-     * Sets up a cURL header array using a decrypted GitHub Personal Access Token.
-     *
-     * @return array The header array for cURL with authorization and other necessary details.
-     */
-    public static function setupCurlHeaderWithToken()
-    {
-        // Usage
-        global $bearsamppCore, $bearsamppConfig;
-        $Token = self::decryptFile();
-
-        return [
-            'Accept: application/vnd.github+json',
-            'Authorization: Token ' . $Token,
-            'User-Agent: ' . APP_GITHUB_USERAGENT,
-            'X-GitHub-Api-Version: 2022-11-28'
-        ];
+        return self::getGithubUrl('user', APP_GITHUB_USER);
     }
 
     /**
@@ -2617,5 +1535,120 @@ class Util
         } else {
             return false; // Internet connection is not active
         }
+    }
+
+    /**
+     * Gets the list of folders in the specified path.
+     *
+     * @param   string  $path  The directory path to scan for folders.
+     *
+     * @return array|false Returns a sorted array of folder names, or false if the directory cannot be opened.
+     */
+    public static function getFolderList($path)
+    {
+        $result = array();
+
+        $handle = @opendir($path);
+        if (!$handle) {
+            return false;
+        }
+
+        while (false !== ($file = readdir($handle))) {
+            $filePath = $path . '/' . $file;
+            if ($file != '.' && $file != '..' && is_dir($filePath) && $file != 'current') {
+                $result[] = $file;
+            }
+        }
+
+        closedir($handle);
+        natcasesort($result);
+
+        return $result;
+    }
+
+    /**
+     * Gets the NSSM environment paths.
+     *
+     * @return string The NSSM environment paths string.
+     */
+    public static function getNssmEnvPaths()
+    {
+        global $bearsamppBins, $bearsamppTools;
+
+        $paths = '';
+
+        // Add paths for enabled bins
+        if ($bearsamppBins->getApache()->isEnable()) {
+            $paths .= $bearsamppBins->getApache()->getSymlinkPath() . '/bin;';
+        }
+        if ($bearsamppBins->getPhp()->isEnable()) {
+            $paths .= $bearsamppBins->getPhp()->getSymlinkPath() . ';';
+            $paths .= $bearsamppBins->getPhp()->getSymlinkPath() . '/pear;';
+            $paths .= $bearsamppBins->getPhp()->getSymlinkPath() . '/deps;';
+            $paths .= $bearsamppBins->getPhp()->getSymlinkPath() . '/imagick;';
+        }
+        if ($bearsamppBins->getNodejs()->isEnable()) {
+            $paths .= $bearsamppBins->getNodejs()->getSymlinkPath() . ';';
+        }
+        if ($bearsamppTools->getComposer()->isEnable()) {
+            $paths .= $bearsamppTools->getComposer()->getSymlinkPath() . ';';
+            $paths .= $bearsamppTools->getComposer()->getSymlinkPath() . '/vendor/bin;';
+        }
+        if ($bearsamppTools->getGhostscript()->isEnable()) {
+            $paths .= $bearsamppTools->getGhostscript()->getSymlinkPath() . '/bin;';
+        }
+        if ($bearsamppTools->getGit()->isEnable()) {
+            $paths .= $bearsamppTools->getGit()->getSymlinkPath() . '/bin;';
+        }
+        if ($bearsamppTools->getNgrok()->isEnable()) {
+            $paths .= $bearsamppTools->getNgrok()->getSymlinkPath() . ';';
+        }
+        if ($bearsamppTools->getPerl()->isEnable()) {
+            $paths .= $bearsamppTools->getPerl()->getSymlinkPath() . '/perl/site/bin;';
+            $paths .= $bearsamppTools->getPerl()->getSymlinkPath() . '/perl/bin;';
+            $paths .= $bearsamppTools->getPerl()->getSymlinkPath() . '/c/bin;';
+        }
+        if ($bearsamppTools->getPython()->isEnable()) {
+            $paths .= $bearsamppTools->getPython()->getSymlinkPath() . '/bin;';
+        }
+        if ($bearsamppTools->getRuby()->isEnable()) {
+            $paths .= $bearsamppTools->getRuby()->getSymlinkPath() . '/bin;';
+        }
+
+        return Path::formatWindowsPath($paths);
+    }
+
+    /**
+     * Opens the given content in a temporary file using the editor configured in bearsampp.conf.
+     *
+     * @param   string  $caption  The caption/title for the temporary file.
+     * @param   string  $content  The content to write to the temporary file.
+     *
+     * @return void
+     */
+    public static function openFileContent($caption, $content)
+    {
+        global $bearsamppCore, $bearsamppConfig;
+
+        $tmpFile = Path::getTmpPath() . '/' . $caption . '.txt';
+        file_put_contents($tmpFile, $content);
+
+        // Open the file with the configured editor from bearsampp.conf
+        $editor = $bearsamppConfig->getNotepad();
+        $bearsamppCore->getWinbinder()->exec($editor, '"' . $tmpFile . '"');
+    }
+
+    /**
+     * Sets up cURL headers with token for API requests.
+     *
+     * @return array The array of cURL headers.
+     */
+    public static function setupCurlHeaderWithToken()
+    {
+        // Return headers with User-Agent, which is required by GitHub API
+        return array(
+            'User-Agent: ' . APP_GITHUB_USERAGENT . ' (https://github.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . ')',
+            'Accept: application/vnd.github.v3+json'
+        );
     }
 }

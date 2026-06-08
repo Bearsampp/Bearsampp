@@ -36,7 +36,7 @@ $bearsamppCurrentVersion = $bearsamppCore->getAppVersion();
  *
  * @return array|null Returns an array with version data or null if retrieval fails.
  */
-$githubVersionData = Util::getLatestVersion(APP_GITHUB_LATEST_URL);
+$githubVersionData = HttpClient::getLatestVersion(APP_GITHUB_LATEST_URL);
 Log::debug('GitHub Version Data: ' . print_r($githubVersionData, true));
 
 if (!empty($githubVersionData)) {
@@ -90,3 +90,4 @@ if (version_compare($bearsamppCurrentVersion, $githubLatestVersion, '<')) {
  * @return void Outputs the JSON-encoded result.
  */
 echo json_encode($result);
+

@@ -28,3 +28,4 @@ class Win32ServiceException extends \Exception
         parent::__construct($message, $code, $previous);
     }
 }
+

@@ -67,7 +67,7 @@ class TplAppMailpit
         // Download
         $resultItems .= TplAestan::getItemLink(
                 $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
-                Util::getWebsiteUrl('module/mailpit', '#releases'),
+                HttpClient::getWebsiteUrl('module/mailpit', '#releases'),
                 false,
                 TplAestan::GLYPH_BROWSER
             ) . PHP_EOL;
@@ -280,3 +280,4 @@ class TplAppMailpit
             TplAppReload::getActionReload();
     }
 }
+

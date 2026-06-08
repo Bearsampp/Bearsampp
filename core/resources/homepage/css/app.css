@@ -292,14 +292,14 @@ nav.navbar .svg-inline--fa.fa-discord {
     .quickpick-menu-wrapper {
         margin: 0 auto !important;
     }
-    
+
     /* Center the collapse container on mobile */
     .collapse.navbar-collapse.icons {
         display: flex !important;
         justify-content: center !important;
         width: 100% !important;
     }
-    
+
     /* Stack Enhanced Mode and QuickPick vertically on mobile PORTRAIT */
     .quickpick-menu {
         flex-direction: column !important;
@@ -309,12 +309,12 @@ nav.navbar .svg-inline--fa.fa-discord {
         flex-wrap: wrap !important;
         margin: 0 auto !important;
     }
-    
+
     /* Portrait mode - center the toggle */
     .enhanced-mode-toggle {
         justify-content: center !important;
     }
-    
+
     /* Container for Enhanced Mode toggle and QuickPick dropdown */
     .quickpick-controls {
         display: flex !important;
@@ -325,7 +325,7 @@ nav.navbar .svg-inline--fa.fa-discord {
         width: 100%;
         margin: 0 auto !important;
     }
-    
+
     /* Enhanced Mode Toggle - responsive positioning */
     #quickPickContainer {
         display: flex;
@@ -337,7 +337,7 @@ nav.navbar .svg-inline--fa.fa-discord {
         padding: 0; /* Remove padding that might cause offset */
         overflow: visible; /* Ensure dropdown can overflow the container */
     }
-    
+
     .quickpick {
         margin-right: 0 !important;
         margin-left: 0 !important;
@@ -348,7 +348,7 @@ nav.navbar .svg-inline--fa.fa-discord {
         justify-content: center;
         background-color: transparent !important; /* Remove dark background on mobile */
     }
-    
+
     .custom-select {
         width: auto !important; /* Keep original size (inner size) */
         min-width: 165px; /* Match desktop min-width */
@@ -356,7 +356,7 @@ nav.navbar .svg-inline--fa.fa-discord {
         margin: 0 auto; /* Center the select button container */
         position: relative; /* Ensure it's the anchor for the absolute dropdown */
     }
-    
+
     .select-dropdown {
         left: 50%;
         right: auto;
@@ -366,20 +366,20 @@ nav.navbar .svg-inline--fa.fa-discord {
         width: 320px; /* Fixed width for the menu on mobile */
         max-width: 90vw; /* Ensure it doesn't overflow the screen */
     }
-    
+
     .custom-select.active .select-dropdown {
         transform: scaleY(1) translateX(-50%); /* Keep both transforms */
     }
-    
+
     .custom-select .select-button {
         justify-content: center !important; /* Center text on mobile */
     }
-    
+
     .custom-select .selected-value {
         text-align: center !important; /* Center text */
         padding-right: 0 !important;
     }
-    
+
     .custom-select .arrow {
         position: absolute;
         right: 1em;
@@ -387,16 +387,16 @@ nav.navbar .svg-inline--fa.fa-discord {
         transform: translateY(-50%);
         transition: transform ease-in-out 0.3s;
     }
-    
+
     .custom-select.active .arrow {
         transform: translateY(-50%) rotate(180deg);
     }
-    
+
     .enhanced-mode-toggle {
         margin: 0 auto !important;
         justify-content: center !important;
     }
-    
+
     /* Hide social icons wrapper on mobile */
     .social-icons-wrapper {
         display: none !important;
@@ -409,7 +409,7 @@ nav.navbar .svg-inline--fa.fa-discord {
         padding-right: 15px;
         padding-left: 15px;
     }
-    
+
     /* Stack Enhanced Mode toggle above QuickPick on tablets */
     .quickpick-menu {
         flex-direction: column !important;
@@ -417,7 +417,7 @@ nav.navbar .svg-inline--fa.fa-discord {
         justify-content: center !important;
         gap: 8px !important;
     }
-    
+
     .quickpick-controls {
         display: flex !important;
         flex-direction: column !important;
@@ -426,17 +426,17 @@ nav.navbar .svg-inline--fa.fa-discord {
         gap: 8px !important;
         width: 100%;
     }
-    
+
     .enhanced-mode-toggle {
         margin-right: 0 !important;
         justify-content: center !important;
     }
-    
+
     /* Reduce margins on tablet to fit content */
     .collapse.navbar-collapse.icons .d-flex {
         margin-right: 15px !important;
     }
-    
+
     /* Reduce Enhanced Mode toggle spacing on tablet */
     .collapse.navbar-collapse.icons .d-flex > div:first-child {
         margin-right: 10px !important;
@@ -455,13 +455,13 @@ nav.navbar .svg-inline--fa.fa-discord {
     .quickpick-controls {
         margin-right: 20px;
     }
-    
+
     /* Ensure social icons don't get cut off */
     .social-icons-wrapper {
         flex-shrink: 0 !important;
         min-width: auto !important;
     }
-    
+
     /* Ensure navbar has enough padding for icons */
     .collapse.navbar-collapse.icons .d-flex {
         margin-right: 20px !important;
@@ -476,13 +476,13 @@ nav.navbar .svg-inline--fa.fa-discord {
         width: 0 !important;
         overflow: hidden !important;
     }
-    
+
     /* Keep Enhanced Mode toggle visible and remove right margin */
     .collapse.navbar-collapse.icons .d-flex > div:first-child {
         display: flex !important;
         margin-right: 0 !important;
     }
-    
+
     /* Reduce icons container margin */
     .collapse.navbar-collapse.icons .d-flex {
         margin-right: 15px !important;
@@ -494,13 +494,13 @@ nav.navbar .svg-inline--fa.fa-discord {
     #quickPickContainer {
         display: block;
     }
-    
+
     /* Enhanced toggle inline with icons */
     .enhanced-quickpick-toggle {
         display: flex !important;
         align-items: center;
     }
-    
+
     /* Ensure icons container displays as flex to keep everything inline */
     .collapse.navbar-collapse.icons .d-flex {
         display: flex !important;
@@ -585,7 +585,7 @@ div#InternetState {
     width: 100%;
     font-size: 16px;
     background-color: #fff;
-    padding: 0.675em 1em;
+    padding: 0.5em 1em;
     border: 1px solid #caced1;
     border-radius: 0.25rem;
     cursor: pointer;

@@ -100,3 +100,4 @@ class ToolNgrok extends Module
         return $this->exe;
     }
 }
+

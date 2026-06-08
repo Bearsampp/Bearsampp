@@ -37,7 +37,7 @@ class Homepage
     {
         Log::initClass($this);
 
-        $page = Util::cleanGetVar('p');
+        $page = UtilInput::cleanGetVar('p');
         $this->page = !empty($page) && in_array($page, $this->pageList) ? $page : self::PAGE_INDEX;
     }
 
@@ -83,59 +83,6 @@ class Homepage
     }
 
     /**
-     * Gets the path to the homepage directory.
-     *
-     * @return string The homepage directory path.
-     */
-    public function getHomepagePath()
-    {
-        global $bearsamppCore;
-        return $bearsamppCore->getResourcesPath(false) . '/homepage';
-    }
-
-    /**
-     * Gets the path to the images directory.
-     *
-     * @return string The images directory path.
-     */
-    public function getImagesPath()
-    {
-        return $this->getResourcesPath(false) . '/img/';
-    }
-
-    /**
-     * Gets the path to the icons directory.
-     *
-     * @return string The icons directory path.
-     */
-    public function getIconsPath()
-    {
-        return $this->getResourcesPath(false) . '/img/icons/';
-    }
-
-    /**
-     * Gets the path to the resources directory.
-     *
-     * @return string The resources directory path.
-     */
-    public function getResourcesPath()
-    {
-        global $bearsamppCore;
-        return md5(APP_TITLE);
-    }
-
-    /**
-     * Gets the URL to the resources directory.
-     *
-     * @return string The resources directory URL.
-     */
-    public function getResourcesUrl()
-    {
-        global $bearsamppRoot;
-        return $bearsamppRoot->getLocalUrl($this->getResourcesPath());
-    }
-
-    /**
      * Refreshes the alias content by updating the alias configuration file.
      *
      * @return bool True if the alias content was successfully refreshed, false otherwise.
@@ -145,11 +92,11 @@ class Homepage
         global $bearsamppBins;
 
         $result = $bearsamppBins->getApache()->getAliasContent(
-            $this->getResourcesPath(),
-            $this->getHomepagePath()
+            Path::getWebResourcesPath(),
+            Path::getHomepagePath()
         );
 
-        return file_put_contents($this->getHomepagePath() . '/alias.conf', $result) !== false;
+        return file_put_contents(Path::getHomepagePath() . '/alias.conf', $result) !== false;
     }
 
     /**
@@ -157,9 +104,9 @@ class Homepage
      */
     public function refreshCommonsJsContent()
     {
-        Util::replaceInFile($this->getHomepagePath() . '/js/_commons.js', array(
-            '/^\s\surl:.*/' => '  url: "' . $this->getResourcesPath() . '/ajax.php"',
-            '/AJAX_URL.*=.*/' => 'const AJAX_URL = "' . $this->getResourcesPath() . '/ajax.php"',
+        Util::replaceInFile(Path::getHomepagePath() . '/js/_commons.js', array(
+            '/^\s\surl:.*/' => '  url: "' . Path::getWebResourcesPath() . '/ajax.php"',
+            '/AJAX_URL.*=.*/' => 'const AJAX_URL = "' . Path::getWebResourcesPath() . '/ajax.php"',
         ));
     }
 }

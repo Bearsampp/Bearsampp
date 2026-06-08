@@ -54,3 +54,4 @@ class TplAppExit
         return TplApp::getActionRun(Action::QUIT) . PHP_EOL . 'Action: exit';
     }
 }
+

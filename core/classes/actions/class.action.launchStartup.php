@@ -38,6 +38,8 @@ class ActionLaunchStartup
                 Util::disableLaunchStartup();
             }
             $bearsamppConfig->replace(Config::CFG_LAUNCH_STARTUP, $args[0]);
+            Util::stopLoading();
         }
     }
 }
+

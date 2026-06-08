@@ -60,7 +60,7 @@ class TplAppXlight
         // Download
         $resultItems .= TplAestan::getItemLink(
                 $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
-                Util::getWebsiteUrl('module/xlight', '#releases'),
+                HttpClient::getWebsiteUrl('module/xlight', '#releases'),
                 false,
                 TplAestan::GLYPH_BROWSER
             ) . PHP_EOL;
@@ -265,3 +265,4 @@ class TplAppXlight
             TplAppReload::getActionReload();
     }
 }
+

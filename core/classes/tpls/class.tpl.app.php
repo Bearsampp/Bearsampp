@@ -123,7 +123,7 @@ class TplApp
         }
 
         $result = 'Action: run; ' .
-            'FileName: "' . $bearsamppCore->getPhpExe(true) . '"; ' .
+            'FileName: "' . Path::getPhpExe(true) . '"; ' .
             'Parameters: "' . Core::isRoot_FILE . ' ' . $action . $argImp . '"; ' .
             'WorkingDir: "' . $bearsamppRoot->getCorePath(true) . '"';
 
@@ -281,7 +281,7 @@ class TplApp
                 array(ActionCheckVersion::DISPLAY_OK),
                 array($bearsamppLang->getValue(Lang::MENU_CHECK_UPDATE), TplAestan::GLYPH_UPDATE)
             ) . PHP_EOL .
-            TplAestan::getItemLink($bearsamppLang->getValue(Lang::HELP), Util::getWebsiteUrl('documentation/faqs')) . PHP_EOL .
+            TplAestan::getItemLink($bearsamppLang->getValue(Lang::HELP), HttpClient::getWebsiteUrl('documentation/faqs')) . PHP_EOL .
 
             TplAestan::getItemSeparator() . PHP_EOL .
             TplAppClearFolders::process() . PHP_EOL .
@@ -391,3 +391,4 @@ class TplApp
             PHP_EOL . $tplOnline[self::SECTION_CONTENT];
     }
 }
+
