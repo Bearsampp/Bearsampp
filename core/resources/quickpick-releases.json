@@ -2140,7 +2140,7 @@
       {
         "version": "18.4",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-18.4-2025.6.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "18.3",
@@ -2155,7 +2155,7 @@
       {
         "version": "17.10",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-17.10-2025.6.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "17.9",
@@ -2190,7 +2190,7 @@
       {
         "version": "16.14",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-16.14-2025.6.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "16.13",
@@ -2230,7 +2230,7 @@
       {
         "version": "15.18",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-15.18-2025.6.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "15.17",
@@ -2280,7 +2280,7 @@
       {
         "version": "14.23",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-14.23-2025.6.2.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "14.22",
@@ -2515,7 +2515,7 @@
       {
         "version": "4.0.5-1",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2026.6.5/bearsampp-ruby-4.0.5-1-2026.6.5.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "4.0.2-1",
