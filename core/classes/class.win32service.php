@@ -107,7 +107,7 @@ class Win32Service
     private function writeLog($log): void
     {
         global $bearsamppRoot;
-        Log::debug( $log, $bearsamppRoot->getServicesLogFilePath() );
+        Log::debug( $log, Path::getServicesLogFilePath() );
     }
 
     /**

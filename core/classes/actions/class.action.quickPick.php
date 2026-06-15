@@ -528,7 +528,7 @@ class QuickPick
     Log::debug("$module is: " . $module);
 
     global $bearsamppRoot, $bearsamppCore;
-    $tmpDir = $bearsamppRoot->getTmpPath();
+    $tmpDir = Path::getTmpPath();
     Log::debug('Temporary Directory: ' . $tmpDir);
 
     $fileName = basename($moduleUrl);
@@ -619,13 +619,13 @@ class QuickPick
     {
         global $bearsamppRoot;
         if ( $moduleType === 'application' ) {
-            $destination = $bearsamppRoot->getAppsPath() . '/' . strtolower( $moduleName ) . '/';
+            $destination = Path::getAppsPath() . '/' . strtolower( $moduleName ) . '/';
         }
         elseif ( $moduleType === 'binary' ) {
-            $destination = $bearsamppRoot->getBinPath() . '/' . strtolower( $moduleName ) . '/';
+            $destination = Path::getBinPath() . '/' . strtolower( $moduleName ) . '/';
         }
         elseif ( $moduleType === 'tools' ) {
-            $destination = $bearsamppRoot->getToolsPath() . '/' . strtolower( $moduleName ) . '/';
+            $destination = Path::getToolsPath() . '/' . strtolower( $moduleName ) . '/';
         }
         else {
             $destination = '';

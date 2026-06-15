@@ -100,7 +100,7 @@ class TplAppNodejs
                 TplAestan::GLYPH_NODEJS,
                 null,
                 $bearsamppTools->getPowerShell()->getTabTitleNodejs(),
-                $bearsamppRoot->getWwwPath(),
+                Path::getWwwPath(),
                 null
             ) . PHP_EOL;
 

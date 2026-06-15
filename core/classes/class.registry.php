@@ -68,7 +68,7 @@ class Registry
     private function writeLog($log)
     {
         global $bearsamppRoot;
-        Log::debug($log, $bearsamppRoot->getRegistryLogFilePath());
+        Log::debug($log, Path::getRegistryLogFilePath());
     }
 
     /**

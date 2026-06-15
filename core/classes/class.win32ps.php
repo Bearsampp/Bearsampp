@@ -210,17 +210,17 @@ class Win32Ps
                 }
 
                 // Not kill bearsampp
-                if ($unixExePath == $bearsamppRoot->getExeFilePath()) {
+                if ($unixExePath == Path::getExeFilePath()) {
                     continue;
                 }
 
                 // Not kill inside www
-                if (UtilString::startWith($unixExePath, $bearsamppRoot->getWwwPath() . '/') || UtilString::contains($unixCommandPath, $bearsamppRoot->getWwwPath() . '/')) {
+                if (UtilString::startWith($unixExePath, Path::getWwwPath() . '/') || UtilString::contains($unixCommandPath, Path::getWwwPath() . '/')) {
                     continue;
                 }
 
                 // Not kill external process
-                if (!UtilString::startWith($unixExePath, $bearsamppRoot->getRootPath() . '/') && !UtilString::contains($unixCommandPath, $bearsamppRoot->getRootPath() . '/')) {
+                if (!UtilString::startWith($unixExePath, Path::getRootPath() . '/') && !UtilString::contains($unixCommandPath, Path::getRootPath() . '/')) {
                     continue;
                 }
 

@@ -133,7 +133,7 @@ class ActionExt
 
         if (!Util::isLaunched()) {
             $this->addLog('Starting ' . APP_TITLE);
-            $bearsamppWinbinder->exec($bearsamppRoot->getExeFilePath(), null, false);
+            $bearsamppWinbinder->exec(Path::getExeFilePath(), null, false);
         } else {
             $this->addLog(APP_TITLE . ' already started');
             $this->setStatus(self::STATUS_WARNING);
@@ -179,7 +179,7 @@ class ActionExt
 
         if (!Util::isLaunched()) {
             $this->addLog(APP_TITLE . ' is not started.');
-            $bearsamppWinbinder->exec($bearsamppRoot->getExeFilePath(), null, false);
+            $bearsamppWinbinder->exec(Path::getExeFilePath(), null, false);
             $this->addLog('Start ' . APP_TITLE);
             $this->setStatus(self::STATUS_WARNING);
             return;

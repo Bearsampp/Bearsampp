@@ -175,7 +175,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleDefault(),
                 null, // self::ICON_APP - Icon not supported in native PowerShell console
                 $bearsamppTools->getPowerShell()->getShell(),
-                $bearsamppRoot->getRootPath()
+                Path::getRootPath()
             ) . PHP_EOL;
     }
 
@@ -200,7 +200,7 @@ class TplPowerShell
                     $bearsamppTools->getPowerShell()->getTabTitlePowershell(),
                     null, // self::ICON_POWERSHELL - Icon not supported in native PowerShell console
                     $powerShellPath,
-                    $bearsamppRoot->getRootPath()
+                    Path::getRootPath()
                 ) . PHP_EOL;
         }
 
@@ -351,7 +351,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleGit(),
                 null, // self::ICON_GIT - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -380,7 +380,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleNodejs(),
                 null, // self::ICON_NODEJS - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -408,7 +408,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleComposer(),
                 null, // self::ICON_COMPOSER - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -436,7 +436,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitlePython(),
                 null, // self::ICON_PYTHON - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -480,7 +480,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleRuby(),
                 null, // self::ICON_RUBY - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -508,7 +508,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitlePerl(),
                 null, // self::ICON_PERL - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -538,7 +538,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleGhostscript(),
                 null, // self::ICON_GHOSTSCRIPT - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -568,7 +568,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleNgrok(),
                 null, // self::ICON_NGROK - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -597,4 +597,3 @@ class TplPowerShell
         return "Title: $title | Shell: $shell | InitDir: $initDir";
     }
 }
-

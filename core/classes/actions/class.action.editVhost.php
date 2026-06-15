@@ -54,7 +54,7 @@ class ActionEditVhost extends ActionDialogBase
             return false;
         }
 
-        $filePath = $bearsamppRoot->getVhostsPath() . '/' . $args[0] . '.conf';
+        $filePath = Path::getVhostsPath() . '/' . $args[0] . '.conf';
         if (!file_exists($filePath)) {
             return false;
         }
@@ -74,7 +74,7 @@ class ActionEditVhost extends ActionDialogBase
         global $bearsamppRoot, $bearsamppLang;
 
         // Load existing vhost data
-        $filePath = $bearsamppRoot->getVhostsPath() . '/' . $this->initValue . '.conf';
+        $filePath = Path::getVhostsPath() . '/' . $this->initValue . '.conf';
         $fileContent = file_get_contents($filePath);
         preg_match('/DocumentRoot\s+"(.*)"/', $fileContent, $matchDocumentRoot);
         $initDocumentRoot = Path::formatWindowsPath(trim($matchDocumentRoot[1]));
@@ -140,7 +140,7 @@ class ActionEditVhost extends ActionDialogBase
         global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
 
         // Only check if name changed
-        if ($values['serverName'] != $this->initValue && is_file($bearsamppRoot->getVhostsPath() . '/' . $values['serverName'] . '.conf')) {
+        if ($values['serverName'] != $this->initValue && is_file(Path::getVhostsPath() . '/' . $values['serverName'] . '.conf')) {
             $bearsamppWinbinder->messageBoxError(
                 sprintf($bearsamppLang->getValue(Lang::VHOST_ALREADY_EXISTS), $values['serverName']),
                 $this->getDialogTitle()
@@ -157,7 +157,7 @@ class ActionEditVhost extends ActionDialogBase
 
         // Remove old vhost and certificate
         $bearsamppOpenSsl->removeCrt($this->initValue);
-        @unlink($bearsamppRoot->getVhostsPath() . '/' . $this->initValue . '.conf');
+        @unlink(Path::getVhostsPath() . '/' . $this->initValue . '.conf');
 
         // Create new SSL certificate
         if (!$bearsamppOpenSsl->createCrt($values['serverName'])) {
@@ -166,7 +166,7 @@ class ActionEditVhost extends ActionDialogBase
 
         // Create new vhost configuration file
         return file_put_contents(
-            $bearsamppRoot->getVhostsPath() . '/' . $values['serverName'] . '.conf',
+            Path::getVhostsPath() . '/' . $values['serverName'] . '.conf',
             $bearsamppBins->getApache()->getVhostContent($values['serverName'], $values['documentRoot'])
         ) !== false;
     }
@@ -176,7 +176,7 @@ class ActionEditVhost extends ActionDialogBase
         global $bearsamppRoot, $bearsamppOpenSsl;
 
         return $bearsamppOpenSsl->removeCrt($this->initValue) &&
-               @unlink($bearsamppRoot->getVhostsPath() . '/' . $this->initValue . '.conf');
+               @unlink(Path::getVhostsPath() . '/' . $this->initValue . '.conf');
     }
 
     protected function getSaveSuccessMessage($values)
@@ -213,7 +213,7 @@ class ActionEditVhost extends ActionDialogBase
         global $bearsamppRoot, $bearsamppLang;
         return sprintf(
             $bearsamppLang->getValue(Lang::VHOST_REMOVE_ERROR),
-            $bearsamppRoot->getVhostsPath() . '/' . $this->initValue . '.conf'
+            Path::getVhostsPath() . '/' . $this->initValue . '.conf'
         );
     }
 

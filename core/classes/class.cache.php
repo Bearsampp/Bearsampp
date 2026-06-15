@@ -85,7 +85,7 @@ class Cache
             return false;
         }
 
-        $cacheFile = $bearsamppRoot->getTmpPath() . '/filescan_cache_' . $cacheKey . '.dat';
+        $cacheFile = Path::getTmpPath() . '/filescan_cache_' . $cacheKey . '.dat';
 
         if (file_exists($cacheFile)) {
             $fileContents = @file_get_contents($cacheFile);
@@ -165,7 +165,7 @@ class Cache
 
         // Store in file cache
         if (isset($bearsamppRoot)) {
-            $cacheFile = $bearsamppRoot->getTmpPath() . '/filescan_cache_' . $cacheKey . '.dat';
+            $cacheFile = Path::getTmpPath() . '/filescan_cache_' . $cacheKey . '.dat';
             // JSON is used instead of serialize() to eliminate the PHP object-injection
             // attack surface entirely – no magic methods can fire during json_decode().
             @file_put_contents($cacheFile, json_encode($cacheData), LOCK_EX);
@@ -186,7 +186,7 @@ class Cache
 
             // Try to load existing key from session file
             if (isset($bearsamppRoot)) {
-                $keyFile = $bearsamppRoot->getTmpPath() . '/cache_integrity.key';
+                $keyFile = Path::getTmpPath() . '/cache_integrity.key';
 
                 if (file_exists($keyFile)) {
                     $key = @file_get_contents($keyFile);
@@ -277,7 +277,7 @@ class Cache
 
         // Clear file caches
         if (isset($bearsamppRoot)) {
-            $tmpPath = $bearsamppRoot->getTmpPath();
+            $tmpPath = Path::getTmpPath();
             $cacheFiles = glob($tmpPath . '/filescan_cache_*.dat');
 
             if ($cacheFiles !== false) {
