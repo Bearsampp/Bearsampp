@@ -83,9 +83,9 @@ class BinApache extends Module
         $this->service     = new Win32Service( self::SERVICE_NAME );
         $this->modulesPath = $this->symlinkPath . '/modules';
         $this->sslConf     = $this->symlinkPath . '/conf/extra/httpd-ssl.conf';
-        $this->accessLog   = Path::getLogsPath() . '/apache_access.log';
-        $this->rewriteLog  = Path::getLogsPath() . '/apache_rewrite.log';
-        $this->errorLog    = Path::getLogsPath() . '/apache_error.log';
+        $this->accessLog   = $bearsamppRoot->getLogsPath() . '/apache_access.log';
+        $this->rewriteLog  = $bearsamppRoot->getLogsPath() . '/apache_rewrite.log';
+        $this->errorLog    = $bearsamppRoot->getLogsPath() . '/apache_error.log';
 
         if ( $this->bearsamppConfRaw !== false ) {
             $this->exe        = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
@@ -387,13 +387,13 @@ class BinApache extends Module
 
         // vhosts
         foreach ( $this->getVhosts() as $vhost ) {
-            Util::replaceInFile( Path::getVhostsPath() . '/' . $vhost . '.conf', array(
+            Util::replaceInFile( $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf', array(
                 '/^<VirtualHost\s+([a-zA-Z0-9.*]+):(\d+)>$/' => '<VirtualHost {{1}}:' . $this->port . '>$'
             ) );
         }
 
         // www .htaccess
-        Util::replaceInFile( Path::getWwwPath() . '/.htaccess', array(
+        Util::replaceInFile( $bearsamppRoot->getWwwPath() . '/.htaccess', array(
             '/(.*)http:\/\/localhost(.*)/' => '{{1}}http://localhost' . ($this->port != 80 ? ':' . $this->port : '') . '/$1 [QSA,R=301,L]',
         ) );
 
@@ -508,7 +508,7 @@ class BinApache extends Module
         global $bearsamppRoot;
         $result = array();
 
-        $handle = @opendir( Path::getAliasPath() );
+        $handle = @opendir( $bearsamppRoot->getAliasPath() );
         if ( !$handle ) {
             return $result;
         }
@@ -535,7 +535,7 @@ class BinApache extends Module
         global $bearsamppRoot;
         $result = array();
 
-        $handle = @opendir( Path::getVhostsPath() );
+        $handle = @opendir( $bearsamppRoot->getVhostsPath() );
         if ( !$handle ) {
             return $result;
         }
@@ -563,7 +563,7 @@ class BinApache extends Module
         $result = array();
 
         foreach ( $this->getVhosts() as $vhost ) {
-            $vhostContent = file( Path::getVhostsPath() . '/' . $vhost . '.conf' );
+            $vhostContent = file( $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf' );
             foreach ( $vhostContent as $vhostLine ) {
                 $vhostLine = trim( $vhostLine );
                 $enabled   = !UtilString::startWith( $vhostLine, '#' );
@@ -592,13 +592,13 @@ class BinApache extends Module
         global $bearsamppRoot;
         $result = array();
 
-        $handle = @opendir( Path::getWwwPath() );
+        $handle = @opendir( $bearsamppRoot->getWwwPath() );
         if ( !$handle ) {
             return $result;
         }
 
         while ( false !== ($file = readdir( $handle )) ) {
-            if ( $file != '.' && $file != '..' && is_dir( Path::getWwwPath() . '/' . $file ) ) {
+            if ( $file != '.' && $file != '..' && is_dir( $bearsamppRoot->getWwwPath() . '/' . $file ) ) {
                 $result[] = $file;
             }
         }
@@ -736,8 +736,8 @@ class BinApache extends Module
             '    ServerAdmin webmaster@' . $serverName . PHP_EOL .
             '    DocumentRoot "' . $documentRoot . '"' . PHP_EOL .
             '    ServerName ' . $serverName . PHP_EOL .
-            '    ErrorLog "' . Path::getLogsPath() . '/' . $serverName . '_error.log"' . PHP_EOL .
-            '    CustomLog "' . Path::getLogsPath() . '/' . $serverName . '_access.log" combined' . PHP_EOL . PHP_EOL .
+            '    ErrorLog "' . $bearsamppRoot->getLogsPath() . '/' . $serverName . '_error.log"' . PHP_EOL .
+            '    CustomLog "' . $bearsamppRoot->getLogsPath() . '/' . $serverName . '_access.log" combined' . PHP_EOL . PHP_EOL .
             '    <Directory "' . $documentRoot . '">' . PHP_EOL .
             '        Options Indexes FollowSymLinks MultiViews' . PHP_EOL .
             '        AllowOverride all' . PHP_EOL .
@@ -749,15 +749,15 @@ class BinApache extends Module
             '    DocumentRoot "' . $documentRoot . '"' . PHP_EOL .
             '    ServerName ' . $serverName . PHP_EOL .
             '    ServerAdmin webmaster@' . $serverName . PHP_EOL .
-            '    ErrorLog "' . Path::getLogsPath() . '/' . $serverName . '_error.log"' . PHP_EOL .
-            '    TransferLog "' . Path::getLogsPath() . '/' . $serverName . '_access.log"' . PHP_EOL . PHP_EOL .
+            '    ErrorLog "' . $bearsamppRoot->getLogsPath() . '/' . $serverName . '_error.log"' . PHP_EOL .
+            '    TransferLog "' . $bearsamppRoot->getLogsPath() . '/' . $serverName . '_access.log"' . PHP_EOL . PHP_EOL .
             '    SSLEngine on' . PHP_EOL .
             '    SSLProtocol all -SSLv2' . PHP_EOL .
             '    SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5' . PHP_EOL .
-            '    SSLCertificateFile "' . Path::getSslPath() . '/' . $serverName . '.crt"' . PHP_EOL .
-            '    SSLCertificateKeyFile "' . Path::getSslPath() . '/' . $serverName . '.pub"' . PHP_EOL .
+            '    SSLCertificateFile "' . $bearsamppRoot->getSslPath() . '/' . $serverName . '.crt"' . PHP_EOL .
+            '    SSLCertificateKeyFile "' . $bearsamppRoot->getSslPath() . '/' . $serverName . '.pub"' . PHP_EOL .
             '    BrowserMatch "MSIE [2-5]" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0' . PHP_EOL .
-            '    CustomLog "' . Path::getLogsPath() . '/' . $serverName . '_sslreq.log" "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"' . PHP_EOL . PHP_EOL .
+            '    CustomLog "' . $bearsamppRoot->getLogsPath() . '/' . $serverName . '_sslreq.log" "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"' . PHP_EOL . PHP_EOL .
             '    <Directory "' . $documentRoot . '">' . PHP_EOL .
             '        SSLOptions +StdEnvVars' . PHP_EOL .
             '        Options Indexes FollowSymLinks MultiViews' . PHP_EOL .
@@ -828,8 +828,8 @@ class BinApache extends Module
         $offlineContent = $this->getOfflineContent();
 
         foreach ( $this->getAlias() as $alias ) {
-            $aliasConf = file_get_contents( Path::getAliasPath() . '/' . $alias . '.conf' );
-            Log::trace( 'refreshAlias ' . Path::getAliasPath() . '/' . $alias . '.conf' );
+            $aliasConf = file_get_contents( $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf' );
+            Log::trace( 'refreshAlias ' . $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf' );
             preg_match( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $aliasConf, $matches );
             Log::trace( isset( $matches[1] ) ? print_r( $matches[1], true ) : 'N/A' );
 
@@ -839,8 +839,8 @@ class BinApache extends Module
             else {
                 $aliasConf = preg_replace( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $offlineContent, $aliasConf, -1, $count );
             }
-            file_put_contents( Path::getAliasPath() . '/' . $alias . '.conf', $aliasConf );
-            Log::debug( 'Refresh ' . Path::getAliasPath() . '/' . $alias . '.conf: ' . $count . ' occurrence(s) replaced' );
+            file_put_contents( $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf', $aliasConf );
+            Log::debug( 'Refresh ' . $bearsamppRoot->getAliasPath() . '/' . $alias . '.conf: ' . $count . ' occurrence(s) replaced' );
         }
 
         // Homepage
@@ -864,8 +864,8 @@ class BinApache extends Module
         $offlineContent = $this->getOfflineContent();
 
         foreach ( $this->getVhosts() as $vhost ) {
-            $vhostConf = file_get_contents( Path::getVhostsPath() . '/' . $vhost . '.conf' );
-            Log::trace( 'refreshVhost ' . Path::getVhostsPath() . '/' . $vhost . '.conf' );
+            $vhostConf = file_get_contents( $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf' );
+            Log::trace( 'refreshVhost ' . $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf' );
             preg_match( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $vhostConf, $matches );
             Log::trace( isset( $matches[1] ) ? print_r( $matches[1], true ) : 'N/A' );
 
@@ -875,8 +875,8 @@ class BinApache extends Module
             else {
                 $vhostConf = preg_replace( '/' . self::TAG_START_SWITCHONLINE . '(.*?)' . self::TAG_END_SWITCHONLINE . '/s', $offlineContent, $vhostConf, -1, $count );
             }
-            file_put_contents( Path::getVhostsPath() . '/' . $vhost . '.conf', $vhostConf );
-            Log::debug( 'Refresh ' . Path::getVhostsPath() . '/' . $vhost . '.conf: ' . $count . ' occurrence(s) replaced' );
+            file_put_contents( $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf', $vhostConf );
+            Log::debug( 'Refresh ' . $bearsamppRoot->getVhostsPath() . '/' . $vhost . '.conf: ' . $count . ' occurrence(s) replaced' );
         }
     }
 

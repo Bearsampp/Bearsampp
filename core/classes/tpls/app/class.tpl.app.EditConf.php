@@ -25,7 +25,7 @@ class TplAppEditConf
 
         return TplAestan::getItemNotepad(
             sprintf($bearsamppLang->getValue(Lang::MENU_EDIT_CONF), "bearsampp.conf"),
-            Path::getConfigFilePath()
+            $bearsamppRoot->getConfigFilePath()
         ) . PHP_EOL;
     }
 }

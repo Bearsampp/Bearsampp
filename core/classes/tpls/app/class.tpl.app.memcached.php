@@ -93,7 +93,7 @@ class TplAppMemcached
             $resultActions .= $tplService[TplApp::SECTION_CONTENT];
 
             // Update environment PATH
-            $resultItems .= TplAestan::getItemNotepad($bearsamppLang->getValue(Lang::MENU_UPDATE_ENV_PATH), Path::getRootPath() . '/nssmEnvPaths.dat') . PHP_EOL;
+            $resultItems .= TplAestan::getItemNotepad($bearsamppLang->getValue(Lang::MENU_UPDATE_ENV_PATH), $bearsamppRoot->getRootPath() . '/nssmEnvPaths.dat') . PHP_EOL;
 
             // Log
             $resultItems .= TplAestan::getItemNotepad($bearsamppLang->getValue(Lang::MENU_LOGS), $bearsamppBins->getMemcached()->getLog()) . PHP_EOL;

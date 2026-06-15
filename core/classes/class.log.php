@@ -85,33 +85,19 @@ class Log
             return;
         }
 
-        // If Path class is not yet available, we must fall back to direct path access
-        // to avoid circular dependencies during early bootstrap.
-        if (!class_exists('Path', false)) {
-            if ($file === null) {
-                $file = $type === self::ERROR
-                    ? $bearsamppRoot->path . '/logs/bearsampp-error.log'
-                    : $bearsamppRoot->path . '/logs/bearsampp.log';
-
-                if (!$bearsamppRoot->isRoot()) {
-                    $file = $bearsamppRoot->path . '/logs/bearsampp-homepage.log';
-                }
-            }
-        } else {
-            // Resolve default file path only when the caller did not supply one
-            if ($file === null) {
-                $file = $type === self::ERROR
-                    ? Path::getErrorLogFilePath()
-                    : Path::getLogFilePath();
-
-                if (!$bearsamppRoot->isRoot()) {
-                    $file = Path::getHomepageLogFilePath();
-                }
-            }
-        }
-        
         // Lazily register the shutdown handler if init() was not called explicitly
         self::init();
+
+        // Resolve default file path only when the caller did not supply one
+        if ($file === null) {
+            $file = $type === self::ERROR
+                ? $bearsamppRoot->getErrorLogFilePath()
+                : $bearsamppRoot->getLogFilePath();
+
+            if (!$bearsamppRoot->isRoot()) {
+                $file = $bearsamppRoot->getHomepageLogFilePath();
+            }
+        }
 
         $verbose                         = [];
         $verbose[Config::VERBOSE_SIMPLE] = $type === self::ERROR || $type === self::WARNING;
@@ -252,17 +238,21 @@ class Log
 
     /**
      * Appends a separator line to each log file that does not already end with one.
+     *
+     * @global object $bearsamppRoot
      */
     public static function separator()
     {
+        global $bearsamppRoot;
+
         $logs = [
-                Path::getLogFilePath(),
-                Path::getErrorLogFilePath(),
-                Path::getServicesLogFilePath(),
-                Path::getRegistryLogFilePath(),
-                Path::getStartupLogFilePath(),
-                Path::getBatchLogFilePath(),
-                Path::getWinbinderLogFilePath(),
+            $bearsamppRoot->getLogFilePath(),
+            $bearsamppRoot->getErrorLogFilePath(),
+            $bearsamppRoot->getServicesLogFilePath(),
+            $bearsamppRoot->getRegistryLogFilePath(),
+            $bearsamppRoot->getStartupLogFilePath(),
+            $bearsamppRoot->getBatchLogFilePath(),
+            $bearsamppRoot->getWinbinderLogFilePath(),
         ];
 
         $separator = '========================================================================================' . PHP_EOL;
@@ -353,3 +343,4 @@ class Log
         self::trace('Reload ' . get_class($classInstance));
     }
 }
+

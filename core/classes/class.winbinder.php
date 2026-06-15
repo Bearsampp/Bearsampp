@@ -380,7 +380,7 @@ class WinBinder
     private static function writeLog($log): void
     {
         global $bearsamppRoot;
-        Log::debug($log, Path::getWinbinderLogFilePath());
+        Log::debug($log, $bearsamppRoot->getWinbinderLogFilePath());
     }
 
     /**

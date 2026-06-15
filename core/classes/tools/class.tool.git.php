@@ -96,7 +96,7 @@ class ToolGit extends Module
             foreach ($this->repos as $repo) {
                 $repo = trim($repo);
                 if (stripos($repo, ':') === false) {
-                    $repo = Path::getRootPath() . '/' . $repo;
+                    $repo = $bearsamppRoot->getRootPath() . '/' . $repo;
                 }
                 if (is_dir($repo)) {
                     $rebuildRepos[] = Path::formatUnixPath($repo);

@@ -43,7 +43,7 @@ class ActionAddVhost extends ActionDialogBase
         global $bearsamppRoot, $bearsamppLang;
 
         $initServerName = 'test.local';
-        $initDocumentRoot = Path::formatWindowsPath(Path::getWwwPath()) . '\\' . $initServerName;
+        $initDocumentRoot = Path::formatWindowsPath($bearsamppRoot->getWwwPath()) . '\\' . $initServerName;
 
         $this->wbLabelServerName = $bearsamppWinbinder->createLabel(
             $this->wbWindow,
@@ -105,7 +105,7 @@ class ActionAddVhost extends ActionDialogBase
     {
         global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
 
-        if (is_file(Path::getVhostsPath() . '/' . $values['serverName'] . '.conf')) {
+        if (is_file($bearsamppRoot->getVhostsPath() . '/' . $values['serverName'] . '.conf')) {
             $bearsamppWinbinder->messageBoxError(
                 sprintf($bearsamppLang->getValue(Lang::VHOST_ALREADY_EXISTS), $values['serverName']),
                 $this->getDialogTitle()
@@ -127,7 +127,7 @@ class ActionAddVhost extends ActionDialogBase
 
         // Create vhost configuration file
         return file_put_contents(
-            Path::getVhostsPath() . '/' . $values['serverName'] . '.conf',
+            $bearsamppRoot->getVhostsPath() . '/' . $values['serverName'] . '.conf',
             $bearsamppBins->getApache()->getVhostContent($values['serverName'], $values['documentRoot'])
         ) !== false;
     }

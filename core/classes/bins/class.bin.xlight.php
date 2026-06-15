@@ -60,7 +60,7 @@ class BinXlight extends Module
 
         $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
         $this->service = new Win32Service(self::SERVICE_NAME);
-        $this->log = Path::getLogsPath() . '/xlight.log';
+        $this->log = $bearsamppRoot->getLogsPath() . '/xlight.log';
 
         if ($this->bearsamppConfRaw !== false) {
             $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
@@ -102,8 +102,8 @@ class BinXlight extends Module
         $nssm->setBinPath($this->exe);
         $nssm->setParams(sprintf(self::SERVICE_PARAMS, $this->SslPort, $this->port));
         $nssm->setStart(Nssm::SERVICE_DEMAND_START);
-        $nssm->setStdout(Path::getLogsPath() . '/xlight.log');
-        $nssm->setStderr(Path::getLogsPath() . '/xlight.error.log');
+        $nssm->setStdout($bearsamppRoot->getLogsPath() . '/xlight.log');
+        $nssm->setStderr($bearsamppRoot->getLogsPath() . '/xlight.error.log');
 
         $this->service->setNssm($nssm);
     }

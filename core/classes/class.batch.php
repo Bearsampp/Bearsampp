@@ -47,7 +47,7 @@ class Batch
     private static function writeLog($log)
     {
         global $bearsamppRoot;
-        Log::debug($log, Path::getBatchLogFilePath());
+        Log::debug($log, $bearsamppRoot->getBatchLogFilePath());
     }
 
     /**
@@ -122,7 +122,7 @@ class Batch
         global $bearsamppRoot, $bearsamppCore;
 
         $content = 'PING 1.1.1.1 -n 1 -w 2000 > nul' . PHP_EOL;
-        $content .= '"' . Path::getExeFilePath() . '" -quit -id={bearsampp}' . PHP_EOL;
+        $content .= '"' . $bearsamppRoot->getExeFilePath() . '" -quit -id={bearsampp}' . PHP_EOL;
         if ($restart) {
             $basename = 'restartApp';
             Log::info('Restart App');
@@ -174,7 +174,7 @@ class Batch
     public static function refreshEnvVars()
     {
         global $bearsamppRoot, $bearsamppCore;
-        self::execStandalone('refreshEnvVars', '"' . Path::getSetEnvExe() . '" -a ' . Registry::APP_PATH_REG_ENTRY . ' "' . Path::formatWindowsPath(Path::getRootPath()) . '"');
+        self::execStandalone('refreshEnvVars', '"' . Path::getSetEnvExe() . '" -a ' . Registry::APP_PATH_REG_ENTRY . ' "' . Path::formatWindowsPath($bearsamppRoot->getRootPath()) . '"');
     }
 
     /**

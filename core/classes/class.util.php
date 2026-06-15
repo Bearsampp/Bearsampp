@@ -390,8 +390,8 @@ class Util
             return false;
         }
 
-        $targetPath = Path::getExeFilePath();
-        $workingDir = Path::getRootPath();
+        $targetPath = $bearsamppRoot->getExeFilePath();
+        $workingDir = $bearsamppRoot->getRootPath();
         $description = APP_TITLE . ' ' . $bearsamppCore->getAppVersion();
         $iconPath = Path::getIconsPath() . '/app.ico';
 
@@ -677,14 +677,14 @@ class Util
 
         // Alias
         $paths[] = array(
-            'path'      => Path::getAliasPath(),
+            'path'      => $bearsamppRoot->getAliasPath(),
             'includes'  => array(''),
             'recursive' => false
         );
 
         // Vhosts
         $paths[] = array(
-            'path'      => Path::getVhostsPath(),
+            'path'      => $bearsamppRoot->getVhostsPath(),
             'includes'  => array(''),
             'recursive' => false
         );
@@ -890,7 +890,7 @@ class Util
             'countChangedFiles' => 0
         );
 
-        $rootPath           = $rootPath != null ? $rootPath : Path::getRootPath();
+        $rootPath           = $rootPath != null ? $rootPath : $bearsamppRoot->getRootPath();
         $unixOldPath        = Path::formatUnixPath($bearsamppCore->getLastPathContent());
         $windowsOldPath     = Path::formatWindowsPath($bearsamppCore->getLastPathContent());
         $unixCurrentPath    = Path::formatUnixPath($rootPath);

@@ -20,7 +20,7 @@ class OpenSsl
     public function createCrt($name, $destPath = null)
     {
         global $bearsamppRoot, $bearsamppCore;
-        $destPath = empty($destPath) ? Path::getSslPath() : $destPath;
+        $destPath = empty($destPath) ? $bearsamppRoot->getSslPath() : $destPath;
 
         $subject = '"/C=US/O=Bearsampp/CN=' . $name . '"';
         $password = 'pass:bearsampp';
@@ -78,9 +78,9 @@ class OpenSsl
     {
         global $bearsamppRoot;
 
-        $ppkPath = Path::getSslPath() . '/' . $name . '.ppk';
-        $pubPath = Path::getSslPath() . '/' . $name . '.pub';
-        $crtPath = Path::getSslPath() . '/' . $name . '.crt';
+        $ppkPath = $bearsamppRoot->getSslPath() . '/' . $name . '.ppk';
+        $pubPath = $bearsamppRoot->getSslPath() . '/' . $name . '.pub';
+        $crtPath = $bearsamppRoot->getSslPath() . '/' . $name . '.crt';
 
         return is_file($ppkPath) && is_file($pubPath) && is_file($crtPath);
     }
@@ -95,10 +95,11 @@ class OpenSsl
     {
         global $bearsamppRoot;
 
-        $ppkPath = Path::getSslPath() . '/' . $name . '.ppk';
-        $pubPath = Path::getSslPath() . '/' . $name . '.pub';
-        $crtPath = Path::getSslPath() . '/' . $name . '.crt';
+        $ppkPath = $bearsamppRoot->getSslPath() . '/' . $name . '.ppk';
+        $pubPath = $bearsamppRoot->getSslPath() . '/' . $name . '.pub';
+        $crtPath = $bearsamppRoot->getSslPath() . '/' . $name . '.crt';
 
         return @unlink($ppkPath) && @unlink($pubPath) && @unlink($crtPath);
     }
 }
+

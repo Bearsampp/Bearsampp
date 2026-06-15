@@ -159,288 +159,6 @@ class Path
     {
         return count(self::$pathFormatCache);
     }
-
-    /**
-     * Formats a path for AeTrayMenu.
-     *
-     * @param string $path The path to format.
-     * @return string The formatted path.
-     */
-    public static function aetrayPath($path)
-    {
-        global $bearsamppRoot;
-        $rootPath = self::getRootPath();
-        $path = str_replace($rootPath, '', $path);
-        return '%AeTrayMenuPath%' . substr($path, 1, strlen($path));
-    }
-
-    /**
-     * Gets the root path, optionally formatted for AeTrayMenu.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The root path.
-     */
-    public static function getRootPath($aetrayPath = false)
-    {
-        global $bearsamppRoot;
-        $path = dirname($bearsamppRoot->path);
-        return $aetrayPath ? self::aetrayPath($path) : $path;
-    }
-
-    /**
-     * Gets the path to the alias directory.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The alias path.
-     */
-    public static function getAliasPath($aetrayPath = false)
-    {
-        return self::getRootPath($aetrayPath) . '/alias';
-    }
-
-    /**
-     * Gets the path to the apps directory.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The apps path.
-     */
-    public static function getAppsPath($aetrayPath = false)
-    {
-        return self::getRootPath($aetrayPath) . '/apps';
-    }
-
-    /**
-     * Gets the path to the bin directory.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The bin path.
-     */
-    public static function getBinPath($aetrayPath = false)
-    {
-        return self::getRootPath($aetrayPath) . '/bin';
-    }
-
-    /**
-     * Gets the path to the core directory.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The core path.
-     */
-    public static function getCorePath($aetrayPath = false)
-    {
-        global $bearsamppRoot;
-        return $aetrayPath ? self::aetrayPath($bearsamppRoot->path) : $bearsamppRoot->path;
-    }
-
-    /**
-     * Gets the path to the logs directory.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The logs path.
-     */
-    public static function getLogsPath($aetrayPath = false)
-    {
-        return self::getRootPath($aetrayPath) . '/logs';
-    }
-
-    /**
-     * Gets the path to the SSL directory.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The SSL path.
-     */
-    public static function getSslPath($aetrayPath = false)
-    {
-        return self::getRootPath($aetrayPath) . '/ssl';
-    }
-
-    /**
-     * Gets the path to the tools directory.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The tools path.
-     */
-    public static function getToolsPath($aetrayPath = false)
-    {
-        return self::getRootPath($aetrayPath) . '/tools';
-    }
-
-    /**
-     * Gets the path to the virtual hosts directory.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The virtual hosts path.
-     */
-    public static function getVhostsPath($aetrayPath = false)
-    {
-        return self::getRootPath($aetrayPath) . '/vhosts';
-    }
-
-    /**
-     * Gets the path to the WWW directory.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The WWW path.
-     */
-    public static function getWwwPath($aetrayPath = false)
-    {
-        return self::getRootPath($aetrayPath) . '/www';
-    }
-
-    /**
-     * Gets the path to the executable file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The executable file path.
-     */
-    public static function getExeFilePath($aetrayPath = false)
-    {
-        return self::getRootPath($aetrayPath) . '/bearsampp.exe';
-    }
-
-    /**
-     * Gets the path to the configuration file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The configuration file path.
-     */
-    public static function getConfigFilePath($aetrayPath = false)
-    {
-        return self::getRootPath($aetrayPath) . '/bearsampp.conf';
-    }
-
-    /**
-     * Gets the path to the INI file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The INI file path.
-     */
-    public static function getIniFilePath($aetrayPath = false)
-    {
-        return self::getRootPath($aetrayPath) . '/bearsampp.ini';
-    }
-
-    /**
-     * Gets the path to the SSL configuration file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The SSL configuration file path.
-     */
-    public static function getSslConfPath($aetrayPath = false)
-    {
-        return self::getSslPath($aetrayPath) . '/openssl.cnf';
-    }
-
-    /**
-     * Gets the path to the log file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The log file path.
-     */
-    public static function getLogFilePath($aetrayPath = false)
-    {
-        return self::getLogsPath($aetrayPath) . '/bearsampp.log';
-    }
-
-    /**
-     * Gets the path to the error log file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The error log file path.
-     */
-    public static function getErrorLogFilePath($aetrayPath = false)
-    {
-        return self::getLogsPath($aetrayPath) . '/bearsampp-error.log';
-    }
-
-    /**
-     * Gets the path to the homepage log file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The homepage log file path.
-     */
-    public static function getHomepageLogFilePath($aetrayPath = false)
-    {
-        return self::getLogsPath($aetrayPath) . '/bearsampp-homepage.log';
-    }
-
-    /**
-     * Gets the path to the services log file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The services log file path.
-     */
-    public static function getServicesLogFilePath($aetrayPath = false)
-    {
-        return self::getLogsPath($aetrayPath) . '/bearsampp-services.log';
-    }
-
-    /**
-     * Gets the path to the registry log file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The registry log file path.
-     */
-    public static function getRegistryLogFilePath($aetrayPath = false)
-    {
-        return self::getLogsPath($aetrayPath) . '/bearsampp-registry.log';
-    }
-
-    /**
-     * Gets the path to the startup log file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The startup log file path.
-     */
-    public static function getStartupLogFilePath($aetrayPath = false)
-    {
-        return self::getLogsPath($aetrayPath) . '/bearsampp-startup.log';
-    }
-
-    /**
-     * Gets the path to the batch log file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The batch log file path.
-     */
-    public static function getBatchLogFilePath($aetrayPath = false)
-    {
-        return self::getLogsPath($aetrayPath) . '/bearsampp-batch.log';
-    }
-
-    /**
-     * Gets the path to the Winbinder log file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The Winbinder log file path.
-     */
-    public static function getWinbinderLogFilePath($aetrayPath = false)
-    {
-        return self::getLogsPath($aetrayPath) . '/bearsampp-winbinder.log';
-    }
-
-    /**
-     * Gets the path to the NSSM log file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The NSSM log file path.
-     */
-    public static function getNssmLogFilePath($aetrayPath = false)
-    {
-        return self::getLogsPath($aetrayPath) . '/bearsampp-nssm.log';
-    }
-
-    /**
-     * Gets the path to the homepage file.
-     *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
-     * @return string The homepage file path.
-     */
-    public static function getHomepageFilePath($aetrayPath = false)
-    {
-        return self::getWwwPath($aetrayPath) . '/index.php';
-    }
-
     /**
      * Retrieves the path to the language files.
      *
@@ -450,7 +168,9 @@ class Path
      */
     public static function getLangsPath($aetrayPath = false)
     {
-        return self::getCorePath( $aetrayPath ) . '/langs';
+        global $bearsamppRoot;
+
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/langs';
     }
 
     /**
@@ -462,7 +182,9 @@ class Path
      */
     public static function getLibsPath($aetrayPath = false)
     {
-        return self::getCorePath( $aetrayPath ) . '/libs';
+        global $bearsamppRoot;
+
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/libs';
     }
 
     /**
@@ -474,7 +196,9 @@ class Path
      */
     public static function getResourcesPath($aetrayPath = false)
     {
-        return self::getCorePath( $aetrayPath ) . '/resources';
+        global $bearsamppRoot;
+
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/resources';
     }
 
     /**
@@ -551,7 +275,9 @@ class Path
      */
     public static function getScriptsPath($aetrayPath = false)
     {
-        return self::getCorePath( $aetrayPath ) . '/scripts';
+        global $bearsamppRoot;
+
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/scripts';
     }
 
     /**
@@ -599,7 +325,9 @@ class Path
      */
     public static function getTmpPath($aetrayPath = false)
     {
-        return self::getCorePath( $aetrayPath ) . '/tmp';
+        global $bearsamppRoot;
+
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/tmp';
     }
 
     /**
@@ -611,7 +339,9 @@ class Path
      */
     public static function getisRootFilePath($aetrayPath = false)
     {
-        return self::getCorePath( $aetrayPath ) . '/' . Core::isRoot_FILE;
+        global $bearsamppRoot;
+
+        return $bearsamppRoot->getCorePath( $aetrayPath ) . '/' . Core::isRoot_FILE;
     }
 
     /**

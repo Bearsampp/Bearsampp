@@ -389,48 +389,37 @@ class ActionQuit
             'remaining' => []
         ];
 
-        // Check the same current-symlink paths that Symlinks::deleteCurrentSymlinks() manages
-        $binPath   = Path::getBinPath();
-        $appsPath  = Path::getAppsPath();
-        $toolsPath = Path::getToolsPath();
+        // Check common symlink locations
         $symlinkPaths = [
-            $binPath   . '/apache/current',
-            $binPath   . '/php/current',
-            $binPath   . '/mysql/current',
-            $binPath   . '/mariadb/current',
-            $binPath   . '/postgresql/current',
-            $binPath   . '/nodejs/current',
-            $binPath   . '/memcached/current',
-            $binPath   . '/mailpit/current',
-            $binPath   . '/xlight/current',
-            $appsPath  . '/phpmyadmin/current',
-            $appsPath  . '/phppgadmin/current',
-            $toolsPath . '/composer/current',
-            $toolsPath . '/powershell/current',
-            $toolsPath . '/ghostscript/current',
-            $toolsPath . '/git/current',
-            $toolsPath . '/ngrok/current',
-            $toolsPath . '/perl/current',
-            $toolsPath . '/python/current',
-            $toolsPath . '/ruby/current',
-            $toolsPath . '/bruno/current',
+            $bearsamppRoot->getCurrentPath() . '/apache',
+            $bearsamppRoot->getCurrentPath() . '/php',
+            $bearsamppRoot->getCurrentPath() . '/mysql',
+            $bearsamppRoot->getCurrentPath() . '/mariadb',
+            $bearsamppRoot->getCurrentPath() . '/postgresql',
+            $bearsamppRoot->getCurrentPath() . '/nodejs',
+            $bearsamppRoot->getCurrentPath() . '/memcached',
+            $bearsamppRoot->getCurrentPath() . '/mailpit',
+            $bearsamppRoot->getCurrentPath() . '/xlight'
         ];
 
         foreach ($symlinkPaths as $path) {
-            if (is_link($path)) {
+            if (file_exists($path) || is_link($path)) {
                 Log::warning('Symlink still exists: ' . $path);
-                $results['remaining'][] = $path;
+                $results['remaining'][] = basename($path);
                 $results['success'] = false;
 
                 // Attempt to remove it
                 try {
-                    // On Windows, directory junctions require rmdir(); fall back if unlink() fails
-                    @unlink($path) || @rmdir($path);
+                    if (is_link($path)) {
+                        @unlink($path);
+                    } elseif (is_dir($path)) {
+                        @rmdir($path);
+                    }
 
                     // Verify removal
-                    if (!is_link($path) && !file_exists($path)) {
+                    if (!file_exists($path)) {
                         Log::info('Successfully removed remaining symlink: ' . $path);
-                        $results['remaining'] = array_diff($results['remaining'], [$path]);
+                        $results['remaining'] = array_diff($results['remaining'], [basename($path)]);
                         if (empty($results['remaining'])) {
                             $results['success'] = true;
                         }
@@ -547,7 +536,7 @@ class ActionQuit
 
         try {
             $procs = Win32Ps::getListProcs();
-            $bearsamppPath = strtolower(Path::formatUnixPath(Path::getRootPath()));
+            $bearsamppPath = strtolower(Path::formatUnixPath($bearsamppRoot->getRootPath()));
             $currentPid = Win32Ps::getCurrentPid();
 
             foreach ($procs as $proc) {
@@ -711,3 +700,4 @@ class ActionQuit
         }
     }
 }
+

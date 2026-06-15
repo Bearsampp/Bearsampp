@@ -30,7 +30,7 @@ class ActionRebuildini
         global $bearsamppRoot, $bearsamppCore;
 
         // Step 0: Delete the existing bearsampp.ini file
-        $iniFilePath = Path::getIniFilePath();
+        $iniFilePath = $bearsamppRoot->getIniFilePath();
 
         if (file_exists($iniFilePath)) {
             unlink($iniFilePath);

@@ -73,7 +73,7 @@ class BinMysql extends Module
 
         $this->enable   = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
         $this->service  = new Win32Service(self::SERVICE_NAME);
-        $this->errorLog = Path::getLogsPath() . '/mysql.log';
+        $this->errorLog = $bearsamppRoot->getLogsPath() . '/mysql.log';
 
         if ($this->bearsamppConfRaw !== false) {
             $this->exe      = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];

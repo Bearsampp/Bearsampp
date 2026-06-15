@@ -52,7 +52,7 @@ class TplAppLogs
         $files = array();
 
         // Open the logs directory
-        $handle = @opendir(Path::getLogsPath());
+        $handle = @opendir($bearsamppRoot->getLogsPath());
         if (!$handle) {
             return '';
         }
@@ -71,7 +71,7 @@ class TplAppLogs
         // Generate menu items for each log file
         $result = '';
         foreach ($files as $file) {
-            $result .= TplAestan::getItemNotepad(basename($file), Path::getLogsPath() . '/' . $file) . PHP_EOL;
+            $result .= TplAestan::getItemNotepad(basename($file), $bearsamppRoot->getLogsPath() . '/' . $file) . PHP_EOL;
         }
         return $result;
     }

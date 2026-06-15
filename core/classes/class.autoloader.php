@@ -80,7 +80,7 @@ class Autoloader
 
         self::$stats['misses']++;
 
-        $rootPath = $bearsamppRoot->path;
+        $rootPath = $bearsamppRoot->getCorePath();
         $file = $this->resolveClassPath($class, $rootPath);
 
         if (!file_exists($file)) {
@@ -193,3 +193,4 @@ class Autoloader
         return spl_autoload_unregister(array($this, 'load'));
     }
 }
+

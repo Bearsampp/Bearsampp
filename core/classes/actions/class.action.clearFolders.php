@@ -36,13 +36,13 @@ class ActionClearFolders
          * certain essential items such as 'cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache',
          * 'pip', 'opcache' and '.gitignore'. This ensures that important data and configurations are not lost.
          *
-         * @param string Path::getTmpPath() The root temporary path to be cleared.
+         * @param string $bearsamppRoot->getTmpPath() The root temporary path to be cleared.
          * @param array $exclusions List of folders and files to be excluded from deletion.
          */
-        Util::clearFolder(Path::getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore'));
+        Util::clearFolder($bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore'));
 
         // Clear logs
-        Util::clearFolder(Path::getLogsPath(), array('mariadb.log', 'mailpit.err.log', 'mailpit.out.log', 'memcached.err.log', 'memcached.out.log', 'mysql.log', 'postgresql.log', 'xlight.error.log', 'xlight.log', '.gitignore') );
+        Util::clearFolder($bearsamppRoot->getLogsPath(), array('mariadb.log', 'mailpit.err.log', 'mailpit.out.log', 'memcached.err.log', 'memcached.out.log', 'mysql.log', 'postgresql.log', 'xlight.error.log', 'xlight.log', '.gitignore') );
 
         /**
          * Clears the core temporary path.

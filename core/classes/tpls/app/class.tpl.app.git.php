@@ -78,7 +78,7 @@ class TplAppGit
                 TplAestan::GLYPH_GIT,
                 null,
                 $bearsamppTools->getPowerShell()->getTabTitleGit(),
-                Path::getWwwPath(),
+                $bearsamppRoot->getWwwPath(),
                 null
             ) . PHP_EOL .
             TplAestan::getItemExe(

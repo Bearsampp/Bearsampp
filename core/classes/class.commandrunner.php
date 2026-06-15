@@ -34,7 +34,7 @@ class CommandRunner
     private static function writeLog(string $log): void
     {
         global $bearsamppRoot;
-        Log::debug($log, Path::getBatchLogFilePath());
+        Log::debug($log, $bearsamppRoot->getBatchLogFilePath());
     }
 
     /**
