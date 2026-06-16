@@ -248,40 +248,40 @@ class Registry
             global $bearsamppBins, $bearsamppTools;
             $value = '';
             if ($bearsamppBins->getApache()->isEnable()) {
-                $value .= $bearsamppBins->getApache()->getSymlinkPath() . '/bin;';
+                $value .= Path::getModuleSymlinkPath($bearsamppBins->getApache()) . '/bin;';
             }
             if ($bearsamppBins->getPhp()->isEnable()) {
-                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . ';';
-                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/pear;';
-                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/deps;';
-                $value .= $bearsamppBins->getPhp()->getSymlinkPath() . '/imagick;';
+                $value .= Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . ';';
+                $value .= Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/pear;';
+                $value .= Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/deps;';
+                $value .= Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/imagick;';
             }
             if ($bearsamppBins->getNodejs()->isEnable()) {
-                $value .= $bearsamppBins->getNodejs()->getSymlinkPath() . ';';
+                $value .= Path::getModuleSymlinkPath($bearsamppBins->getNodejs()) . ';';
             }
             if ($bearsamppTools->getComposer()->isEnable()) {
-                $value .= $bearsamppTools->getComposer()->getSymlinkPath() . ';';
-                $value .= $bearsamppTools->getComposer()->getSymlinkPath() . '/vendor/bin;';
+                $value .= Path::getModuleSymlinkPath($bearsamppTools->getComposer()) . ';';
+                $value .= Path::getModuleSymlinkPath($bearsamppTools->getComposer()) . '/vendor/bin;';
             }
             if ($bearsamppTools->getGhostscript()->isEnable()) {
-                $value .= $bearsamppTools->getGhostscript()->getSymlinkPath() . '/bin;';
+                $value .= Path::getModuleSymlinkPath($bearsamppTools->getGhostscript()) . '/bin;';
             }
             if ($bearsamppTools->getGit()->isEnable()) {
-                $value .= $bearsamppTools->getGit()->getSymlinkPath() . '/bin;';
+                $value .= Path::getModuleSymlinkPath($bearsamppTools->getGit()) . '/bin;';
             }
             if ($bearsamppTools->getNgrok()->isEnable()) {
-                $value .= $bearsamppTools->getNgrok()->getSymlinkPath() . ';';
+                $value .= Path::getModuleSymlinkPath($bearsamppTools->getNgrok()) . ';';
             }
             if ($bearsamppTools->getPerl()->isEnable()) {
-                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/perl/site/bin;';
-                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/perl/bin;';
-                $value .= $bearsamppTools->getPerl()->getSymlinkPath() . '/c/bin;';
+                $value .= Path::getModuleSymlinkPath($bearsamppTools->getPerl()) . '/perl/site/bin;';
+                $value .= Path::getModuleSymlinkPath($bearsamppTools->getPerl()) . '/perl/bin;';
+                $value .= Path::getModuleSymlinkPath($bearsamppTools->getPerl()) . '/c/bin;';
             }
             if ($bearsamppTools->getPython()->isEnable()) {
-                $value .= $bearsamppTools->getPython()->getSymlinkPath() . '/bin;';
+                $value .= Path::getModuleSymlinkPath($bearsamppTools->getPython()) . '/bin;';
             }
             if ($bearsamppTools->getRuby()->isEnable()) {
-                $value .= $bearsamppTools->getRuby()->getSymlinkPath() . '/bin;';
+                $value .= Path::getModuleSymlinkPath($bearsamppTools->getRuby()) . '/bin;';
             }
             $value = Path::formatWindowsPath($value);
             Log::debug('Generated app bins reg key: ' . $value);
@@ -393,4 +393,3 @@ class Registry
         return $this->latestError;
     }
 }
-

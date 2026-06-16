@@ -20,6 +20,7 @@ class TplAppTools
     // Constants for menu and action identifiers
     const MENU = 'tools';
     const ACTION_GEN_SSL_CERTIFICATE = 'genSslCertificate';
+    const ACTION_DEL_SSL_CERTIFICATE = 'delSslCertificate';
 
     /**
      * Generates the main Tools menu with options to access various tools.
@@ -102,7 +103,7 @@ class TplAppTools
             TplAestan::GLYPH_PEAR,
             null,
             $bearsamppTools->getPowerShell()->getTabTitlePear(),
-            $bearsamppBins->getPhp()->getSymlinkPath() . '/pear',
+            Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/pear',
             null
         ) . PHP_EOL;
 
@@ -152,6 +153,9 @@ class TplAppTools
                 TplAestan::GLYPH_PWGEN
             ) . PHP_EOL;
 
+        // Line Separator
+        $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
+
         // Generate SSL Certificate
         $tplGenSslCertificate = TplApp::getActionMulti(
             self::ACTION_GEN_SSL_CERTIFICATE, null,
@@ -159,7 +163,16 @@ class TplAppTools
             false, get_called_class()
         );
         $resultItems .= $tplGenSslCertificate[TplApp::SECTION_CALL] . PHP_EOL;
-        $resultActions .= $tplGenSslCertificate[TplApp::SECTION_CONTENT];
+        $resultActions .= $tplGenSslCertificate[TplApp::SECTION_CONTENT] . PHP_EOL;
+
+        // Delete SSL Certificate
+        $tplDelSslCertificate = TplApp::getActionMulti(
+            self::ACTION_DEL_SSL_CERTIFICATE, null,
+            array($bearsamppLang->getValue(Lang::DELSSL_TITLE), TplAestan::GLYPH_TRASHCAN),
+            false, get_called_class()
+        );
+        $resultItems .= $tplDelSslCertificate[TplApp::SECTION_CALL] . PHP_EOL;
+        $resultActions .= $tplDelSslCertificate[TplApp::SECTION_CONTENT];
 
         return $resultItems . PHP_EOL . $resultActions;
     }
@@ -173,5 +186,14 @@ class TplAppTools
     {
         return TplApp::getActionRun(Action::GEN_SSL_CERTIFICATE);
     }
-}
 
+    /**
+     * Generates the action to delete an SSL certificate.
+     *
+     * @return string The generated action to delete an SSL certificate.
+     */
+    public static function getActionDelSslCertificate()
+    {
+        return TplApp::getActionRun(Action::DEL_SSL_CERTIFICATE);
+    }
+}

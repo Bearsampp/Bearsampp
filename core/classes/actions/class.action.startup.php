@@ -474,12 +474,25 @@ class ActionStartup
             }
 
             try {
-                if (file_exists($filePath) && unlink($filePath)) {
-                    $logsDeleted++;
-                    Log::trace("Purged log file: " . $file);
+                if (is_link($filePath)) {
+                    if (@unlink($filePath)) {
+                        $logsDeleted++;
+                        Log::trace("Purged log symlink: " . $file);
+                    } else {
+                        $logsPurgeSkipped++;
+                        Log::trace("Failed to purge log symlink: " . $file);
+                    }
+                } elseif (file_exists($filePath)) {
+                    if (@unlink($filePath)) {
+                        $logsDeleted++;
+                        Log::trace("Purged log file: " . $file);
+                    } else {
+                        $logsPurgeSkipped++;
+                        Log::trace("Failed to purge log file: " . $file);
+                    }
                 } else {
                     $logsPurgeSkipped++;
-                    Log::trace("Failed to purge log file: " . $file);
+                    Log::trace("Log file already removed or does not exist: " . $file);
                 }
             } catch (Exception $e) {
                 $logsPurgeSkipped++;
@@ -729,7 +742,7 @@ class ActionStartup
         $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_CHANGE_PATH_TEXT ), $this->rootPath ) );
         $this->splash->incrProgressBar();
 
-        $result = Util::changePath( $this->filesToScan, $this->rootPath );
+        $result = Path::changePath( $this->filesToScan, $this->rootPath );
         $this->writeLog( 'Nb files changed: ' . $result['countChangedFiles'] );
         $this->writeLog( 'Nb occurences changed: ' . $result['countChangedOcc'] );
     }
@@ -867,17 +880,50 @@ class ActionStartup
     }
 
     /**
-     * Creates SSL certificates if they do not already exist.
+     * Creates SSL certificates if they do not already exist or are expired.
      * Logs the creation process.
      */
     private function createSslCrts()
     {
-        global $bearsamppLang, $bearsamppOpenSsl;
+        global $bearsamppLang, $bearsamppOpenSsl, $bearsamppBins;
 
         $this->splash->incrProgressBar();
-        if ( !$bearsamppOpenSsl->existsCrt( 'localhost' ) ) {
-            $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_GEN_SSL_CRT_TEXT ), 'localhost' ) );
-            $bearsamppOpenSsl->createCrt( 'localhost' );
+
+        // Always ensure localhost exists and is valid
+        if ($bearsamppOpenSsl->isExpired('localhost')) {
+            Log::info('SSL certificate for "localhost" is missing or expired. Checking if creation is necessary...');
+            $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_GEN_SSL_CRT_TEXT), 'localhost'));
+            
+            // Only create if NOT present or REALLY expired
+            // (isExpired already returns true if missing)
+            $bearsamppOpenSsl->createCrt('localhost');
+            
+            // Re-verify after creation to log success/failure
+            if ($bearsamppOpenSsl->isExpired('localhost')) {
+                Log::error('FAILED to create/verify localhost SSL certificate.');
+            } else {
+                Log::info('Successfully verified localhost SSL certificate.');
+            }
+        } else {
+            Log::trace('SSL certificate for "localhost" is valid.');
+        }
+
+        // Also check all Apache vhosts
+        $apache = $bearsamppBins->getApache();
+        if ($apache) {
+            $vhosts = $apache->getVhosts();
+            Log::trace('Checking SSL certificates for ' . count($vhosts) . ' vhosts');
+            foreach ($vhosts as $vhost) {
+                if ($bearsamppOpenSsl->isExpired($vhost)) {
+                    Log::info('SSL certificate for "' . $vhost . '" is missing or expired. Creating new one...');
+                    $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_GEN_SSL_CRT_TEXT), $vhost));
+                    $bearsamppOpenSsl->createCrt($vhost);
+                } else {
+                    Log::trace('SSL certificate for "' . $vhost . '" is valid.');
+                }
+            }
+        } else {
+            Log::trace('Apache module not found, skipping vhost SSL check');
         }
     }
 
@@ -925,52 +971,54 @@ class ActionStartup
         $installStartTime = Util::getMicrotime();
 
         // Skip symlink creation during checking phase for performance
-        Module::setSkipSymlinkCreation(true);
+        Symlinks::setSkipSymlinkCreation(true);
 
-        // Step 1: Check and prepare all services
-        $servicesToStart = [];
-        $serviceErrors = [];
+        try {
+            // Step 1: Check and prepare all services
+            $servicesToStart = [];
+            $serviceErrors = [];
 
-        $totalServiceCount = count($bearsamppBins->getServices());
-        $currentServiceIndex = 0;
+            $totalServiceCount = count($bearsamppBins->getServices());
+            $currentServiceIndex = 0;
 
-        foreach ($bearsamppBins->getServices() as $sName => $service) {
-            $currentServiceIndex++;
+            foreach ($bearsamppBins->getServices() as $sName => $service) {
+                $currentServiceIndex++;
 
-            Log::trace('Preparing service: ' . $sName);
+                Log::trace('Preparing service: ' . $sName);
 
-            // prepareService() increments 1 step
-            $serviceInfo = $this->prepareService($sName, $service, $bearsamppBins, $bearsamppLang, $currentServiceIndex, $totalServiceCount);
+                // prepareService() increments 1 step
+                $serviceInfo = $this->prepareService($sName, $service, $bearsamppBins, $bearsamppLang, $currentServiceIndex, $totalServiceCount);
 
-            if ($serviceInfo['restart']) {
-                $this->writeLog('Need restart: installService ' . $serviceInfo['bin']->getName());
-                Log::trace('Restart required for service: ' . $serviceInfo['bin']->getName());
-                $this->restart = true;
-                // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
-                $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
-                continue;
+                if ($serviceInfo['restart']) {
+                    $this->writeLog('Need restart: installService ' . $serviceInfo['bin']->getName());
+                    Log::trace('Restart required for service: ' . $serviceInfo['bin']->getName());
+                    $this->restart = true;
+                    // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
+                    $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
+                    continue;
+                }
+
+                if (!empty($serviceInfo['error'])) {
+                    $serviceErrors[$sName] = $serviceInfo;
+                    // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
+                    $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
+                    continue;
+                }
+
+                if ($serviceInfo['needsStart']) {
+                    $servicesToStart[$sName] = $serviceInfo;
+                } else {
+                    // Service already running or doesn't need to start
+                    // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
+                    $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
+                }
             }
-
-            if (!empty($serviceInfo['error'])) {
-                $serviceErrors[$sName] = $serviceInfo;
-                // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
-                $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
-                continue;
-            }
-
-            if ($serviceInfo['needsStart']) {
-                $servicesToStart[$sName] = $serviceInfo;
-            } else {
-                // Service already running or doesn't need to start
-                // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
-                $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
-            }
+        } finally {
+            // Re-enable symlink creation and reload bins with symlinks created
+            Symlinks::setSkipSymlinkCreation(false);
+            Log::trace('Re-enabling symlink creation after service checking');
+            $bearsamppBins->reload();
         }
-
-        // Re-enable symlink creation and reload bins with symlinks created
-        Module::setSkipSymlinkCreation(false);
-        Log::trace('Re-enabling symlink creation after service checking');
-        $bearsamppBins->reload();
 
         // Step 2: Start all services sequentially with progress updates
         if (!empty($servicesToStart)) {
@@ -1336,4 +1384,3 @@ class ActionStartup
         Log::debug( $log, $bearsamppRoot->getStartupLogFilePath() );
     }
 }
-

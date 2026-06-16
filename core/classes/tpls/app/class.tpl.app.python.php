@@ -52,7 +52,7 @@ class TplAppPython
             TplAestan::GLYPH_PYTHON,
             null,
             $bearsamppTools->getPowerShell()->getTabTitlePython(),
-            $bearsamppTools->getPython()->getSymlinkPath(),
+            Path::getModuleSymlinkPath($bearsamppTools->getPython()),
             null
         ) . PHP_EOL;
 
@@ -66,4 +66,3 @@ class TplAppPython
         return $resultItems;
     }
 }
-

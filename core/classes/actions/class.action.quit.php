@@ -408,16 +408,12 @@ class ActionQuit
                 $results['remaining'][] = basename($path);
                 $results['success'] = false;
 
-                // Attempt to remove it
+                // Attempt to remove it using robust method
                 try {
-                    if (is_link($path)) {
-                        @unlink($path);
-                    } elseif (is_dir($path)) {
-                        @rmdir($path);
-                    }
+                    $removed = \Symlinks::safeRemoveSymlink($path);
 
                     // Verify removal
-                    if (!file_exists($path)) {
+                    if ($removed && !file_exists($path) && !is_link($path)) {
                         Log::info('Successfully removed remaining symlink: ' . $path);
                         $results['remaining'] = array_diff($results['remaining'], [basename($path)]);
                         if (empty($results['remaining'])) {
@@ -482,7 +478,17 @@ class ActionQuit
                 try {
                     $size = is_file($file) ? filesize($file) : 0;
 
-                    if (is_file($file)) {
+                    if (is_link($file)) {
+                        if (@unlink($file) || @rmdir($file)) {
+                            $results['cleaned']++;
+                            $results['size_freed'] += $size;
+                            Log::debug('Removed temp symlink: ' . $basename);
+                        } else {
+                            $results['failed'][] = $basename;
+                            $results['success'] = false;
+                            Log::warning('Failed to remove temp symlink: ' . $basename);
+                        }
+                    } elseif (is_file($file)) {
                         if (@unlink($file)) {
                             $results['cleaned']++;
                             $results['size_freed'] += $size;
@@ -493,8 +499,15 @@ class ActionQuit
                             Log::warning('Failed to remove temp file: ' . $basename);
                         }
                     } elseif (is_dir($file)) {
-                        // Don't remove directories, just files
-                        Log::debug('Skipping temp directory: ' . $basename);
+                        Util::deleteFolder($file);
+                        if (!file_exists($file)) {
+                            $results['cleaned']++;
+                            Log::debug('Removed temp directory: ' . $basename);
+                        } else {
+                            $results['failed'][] = $basename;
+                            $results['success'] = false;
+                            Log::warning('Failed to remove temp directory: ' . $basename);
+                        }
                     }
                 } catch (\Exception $e) {
                     $results['failed'][] = $basename;
@@ -700,4 +713,3 @@ class ActionQuit
         }
     }
 }
-

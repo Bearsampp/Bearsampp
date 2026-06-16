@@ -201,7 +201,7 @@ class Batch
         global $bearsamppBins;
 
         $cmd = '"' . Path::formatWindowsPath($bearsamppBins->getPostgresql()->getCtlExe()) . '" register -N "' . BinPostgresql::SERVICE_NAME . '"';
-        $cmd .= ' -U "LocalSystem" -D "' . Path::formatWindowsPath($bearsamppBins->getPostgresql()->getSymlinkPath()) . '\\data"';
+        $cmd .= ' -U "LocalSystem" -D "' . Path::formatWindowsPath(Path::getModuleSymlinkPath($bearsamppBins->getPostgresql())) . '\\data"';
         $cmd .= ' -l "' . Path::formatWindowsPath($bearsamppBins->getPostgresql()->getErrorLog()) . '" -w';
         self::exec('installPostgresqlService', $cmd, true, false);
 
@@ -513,4 +513,3 @@ class Batch
         return Path::formatWindowsPath(Path::getTmpPath() . '/' . (!empty($customName) ? $customName . '-' : '') . UtilString::random() . $ext);
     }
 }
-

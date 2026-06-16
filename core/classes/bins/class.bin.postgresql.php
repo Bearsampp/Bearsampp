@@ -422,7 +422,7 @@ class BinPostgresql extends Module
 
         $boxTitle = sprintf( $bearsamppLang->getValue( Lang::SWITCH_VERSION_TITLE ), $this->getName(), $version );
 
-        $currentPath   = str_replace( 'postgresql' . $this->getVersion(), 'postgresql' . $version, $this->getCurrentPath() );
+        $currentPath   = str_replace( 'postgresql' . $this->getVersion(), 'postgresql' . $version, Path::getModuleCurrentPath($this) );
         $conf          = str_replace( 'postgresql' . $this->getVersion(), 'postgresql' . $version, $this->getConf() );
         $bearsamppConf = str_replace( 'postgresql' . $this->getVersion(), 'postgresql' . $version, $this->bearsamppConf );
 
@@ -476,7 +476,7 @@ class BinPostgresql extends Module
      */
     public function initData($path = null)
     {
-        $path = $path != null ? $path : $this->getCurrentPath();
+        $path = $path != null ? $path : Path::getModuleCurrentPath($this);
 
         if ( file_exists( $path . '/data' ) ) {
             // Even if it exists, ensure placeholders are replaced in the whole folder
@@ -488,7 +488,7 @@ class BinPostgresql extends Module
                 )
             ) );
             if ( !empty( $filesToScan ) ) {
-                Util::changePath( $filesToScan );
+                Path::changePath( $filesToScan );
             }
             return;
         }
@@ -504,7 +504,7 @@ class BinPostgresql extends Module
             )
         ) );
         if ( !empty( $filesToScan ) ) {
-            Util::changePath( $filesToScan );
+            Path::changePath( $filesToScan );
         }
     }
 
@@ -730,4 +730,3 @@ class BinPostgresql extends Module
         $this->replace( self::LOCAL_CFG_ROOT_PWD, $rootPwd );
     }
 }
-

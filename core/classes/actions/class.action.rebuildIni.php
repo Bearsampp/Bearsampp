@@ -32,8 +32,12 @@ class ActionRebuildini
         // Step 0: Delete the existing bearsampp.ini file
         $iniFilePath = $bearsamppRoot->getIniFilePath();
 
-        if (file_exists($iniFilePath)) {
-            unlink($iniFilePath);
+        if (is_link($iniFilePath)) {
+            @unlink($iniFilePath);
+        } elseif (file_exists($iniFilePath)) {
+            @unlink($iniFilePath);
+        } else {
+            Log::trace('bearsampp.ini already deleted or missing: ' . $iniFilePath);
         }
 
         // Process and update the bearsampp.ini file
@@ -45,12 +49,18 @@ ServiceCheckInterval=1
 TrayIconAllRunning=16
 TrayIconSomeRunning=17
 TrayIconNoneRunning=18
-ID={Bearsampp}
+ID={bearsampp}
 AboutHeader=Bearsampp
 AboutVersion=Version @RELEASE_VERSION@
 
 [Services]
+Name: bearsamppmailpit
+Name: bearsamppmemcached
 Name: bearsamppapache
+Name: bearsamppmysql
+Name: bearsamppmariadb
+Name: bearsampppostgresql
+Name: bearsamppxlight
 
 [Messages]
 AllRunningHint=All services running
@@ -76,4 +86,3 @@ EOD;
         Log::trace('Reload action: ' . $reloadAction);
     }
 }
-

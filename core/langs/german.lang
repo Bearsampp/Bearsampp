@@ -329,6 +329,11 @@ genSslPath = "Zielordner auswählen:"
 genSslCreated = "SSL-Zertifikat '%s' erfolgreich erstellt."
 genSslCreatedError = "SSL-Zertifikat konnte nicht erstellt werden."
 
+; Action del SSL certificate
+delSslTitle = "SSL-Zertifikat löschen"
+delSslDeleted = "SSL-Zertifikat '%s' erfolgreich gelöscht."
+delSslDeletedError = "SSL-Zertifikat konnte nicht gelöscht werden."
+
 ; Action Restart
 restartTitle = "Neustart"
 restartText = "Bitte starten Sie %s neu, um die neuen Einstellungen anzuwenden"

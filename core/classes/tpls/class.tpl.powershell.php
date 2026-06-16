@@ -194,7 +194,7 @@ class TplPowerShell
     {
         global $bearsamppRoot, $bearsamppTools;
 
-        $powerShellPath = Util::getPowerShellPath();
+        $powerShellPath = Path::getPowerShellPath();
         if ($powerShellPath !== false) {
             return self::getTab(
                     $bearsamppTools->getPowerShell()->getTabTitlePowershell(),
@@ -231,7 +231,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitlePear(),
                 null, // self::ICON_PEAR - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppBins->getPhp()->getSymlinkPath() . '/pear'
+                Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/pear'
             ) . PHP_EOL;
     }
 
@@ -261,7 +261,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleMysql(),
                 null, // self::ICON_DB - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppBins->getMysql()->getSymlinkPath()
+                Path::getModuleSymlinkPath($bearsamppBins->getMysql())
             ) . PHP_EOL;
     }
 
@@ -291,7 +291,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleMariadb(),
                 null, // self::ICON_DB - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppBins->getMariadb()->getSymlinkPath()
+                Path::getModuleSymlinkPath($bearsamppBins->getMariadb())
             ) . PHP_EOL;
     }
 
@@ -323,7 +323,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitlePostgresql(),
                 null, // self::ICON_DB - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppBins->getPostgresql()->getSymlinkPath()
+                Path::getModuleSymlinkPath($bearsamppBins->getPostgresql())
             ) . PHP_EOL;
     }
 

@@ -38,7 +38,7 @@ class ActionSwitchPhpExtension
             }
 
             $phpiniContentOr = file_get_contents($bearsamppBins->getPhp()->getConf());
-            if ($phpiniContent == $phpiniContentOr && file_exists($bearsamppBins->getPhp()->getSymlinkPath() . '/ext/php_' . $args[0] . '.dll')) {
+            if ($phpiniContent == $phpiniContentOr && file_exists(Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/ext/php_' . $args[0] . '.dll')) {
                 $extsIni       = $bearsamppBins->getPhp()->getExtensionsFromConf();
                 $latestExt     = (end($extsIni) == '0' ? ';' : '');
                 $latestExt     .= 'extension=' . key($extsIni);
@@ -53,4 +53,3 @@ class ActionSwitchPhpExtension
         }
     }
 }
-

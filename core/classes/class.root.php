@@ -548,7 +548,9 @@ class Root
     public static function loadTools()
     {
         global $bearsamppTools;
-        $bearsamppTools = new Tools();
+        if (!isset($bearsamppTools)) {
+            $bearsamppTools = new Tools();
+        }
     }
 
     /**

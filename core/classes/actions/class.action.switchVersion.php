@@ -59,10 +59,10 @@ class ActionSwitchVersion
                 $this->currentVersion = $bearsamppBins->getApache()->getVersion();
                 $this->service        = $bearsamppBins->getApache()->getService();
                 $this->changePort     = true;
-                $folderList           = Util::getFolderList($bearsamppBins->getApache()->getRootPath());
+                $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getApache()));
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
-                        'path'      => $bearsamppBins->getApache()->getRootPath() . '/' . $folder,
+                        'path'      => Path::getModuleRootPath($bearsamppBins->getApache()) . '/' . $folder,
                         'includes'  => array('.ini', '.conf'),
                         'recursive' => true
                     );
@@ -72,10 +72,10 @@ class ActionSwitchVersion
                 $this->currentVersion = $bearsamppBins->getPhp()->getVersion();
                 $this->service        = $bearsamppBins->getApache()->getService();
                 $this->changePort     = false;
-                $folderList           = Util::getFolderList($bearsamppBins->getPhp()->getRootPath());
+                $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getPhp()));
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
-                        'path'      => $bearsamppBins->getPhp()->getRootPath() . '/' . $folder,
+                        'path'      => Path::getModuleRootPath($bearsamppBins->getPhp()) . '/' . $folder,
                         'includes'  => array('.php', '.bat', '.ini', '.reg', '.inc'),
                         'recursive' => true
                     );
@@ -85,10 +85,10 @@ class ActionSwitchVersion
                 $this->currentVersion = $bearsamppBins->getMysql()->getVersion();
                 $this->service        = $bearsamppBins->getMysql()->getService();
                 $this->changePort     = true;
-                $folderList           = Util::getFolderList($bearsamppBins->getMysql()->getRootPath());
+                $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getMysql()));
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
-                        'path'      => $bearsamppBins->getMysql()->getRootPath() . '/' . $folder,
+                        'path'      => Path::getModuleRootPath($bearsamppBins->getMysql()) . '/' . $folder,
                         'includes'  => array('my.ini'),
                         'recursive' => false
                     );
@@ -98,10 +98,10 @@ class ActionSwitchVersion
                 $this->currentVersion = $bearsamppBins->getMariadb()->getVersion();
                 $this->service        = $bearsamppBins->getMariadb()->getService();
                 $this->changePort     = true;
-                $folderList           = Util::getFolderList($bearsamppBins->getMariadb()->getRootPath());
+                $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getMariadb()));
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
-                        'path'      => $bearsamppBins->getMariadb()->getRootPath() . '/' . $folder,
+                        'path'      => Path::getModuleRootPath($bearsamppBins->getMariadb()) . '/' . $folder,
                         'includes'  => array('my.ini'),
                         'recursive' => false
                     );
@@ -111,10 +111,10 @@ class ActionSwitchVersion
                 $this->currentVersion = $bearsamppBins->getPostgresql()->getVersion();
                 $this->service        = $bearsamppBins->getPostgresql()->getService();
                 $this->changePort     = true;
-                $folderList           = Util::getFolderList($bearsamppBins->getPostgresql()->getRootPath());
+                $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getPostgresql()));
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
-                        'path'      => $bearsamppBins->getPostgresql()->getRootPath() . '/' . $folder,
+                        'path'      => Path::getModuleRootPath($bearsamppBins->getPostgresql()) . '/' . $folder,
                         'includes'  => array( '.conf', '.bat'),
                         'recursive' => true
                     );
@@ -124,15 +124,15 @@ class ActionSwitchVersion
                 $this->currentVersion = $bearsamppBins->getNodejs()->getVersion();
                 $this->service        = null;
                 $this->changePort     = false;
-                $folderList           = Util::getFolderList($bearsamppBins->getNodejs()->getRootPath());
+                $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getNodejs()));
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
-                        'path'      => $bearsamppBins->getNodejs()->getRootPath() . '/' . $folder . '/etc',
+                        'path'      => Path::getModuleRootPath($bearsamppBins->getNodejs()) . '/' . $folder . '/etc',
                         'includes'  => array('npmrc'),
                         'recursive' => true
                     );
                     $this->pathsToScan[] = array(
-                        'path'      => $bearsamppBins->getNodejs()->getRootPath() . '/' . $folder . '/node_modules/npm',
+                        'path'      => Path::getModuleRootPath($bearsamppBins->getNodejs()) . '/' . $folder . '/node_modules/npm',
                         'includes'  => array('npmrc'),
                         'recursive' => false
                     );
@@ -147,10 +147,10 @@ class ActionSwitchVersion
                 $this->currentVersion = $bearsamppBins->getMailpit()->getVersion();
                 $this->service        = $bearsamppBins->getMailpit()->getService();
                 $this->changePort     = false;
-                $folderList           = Util::getFolderList($bearsamppBins->getMailpit()->getRootPath());
+                $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getMailpit()));
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
-                        'path'      => $bearsamppBins->getMailpit()->getRootPath() . '/' . $folder,
+                        'path'      => Path::getModuleRootPath($bearsamppBins->getMailpit()) . '/' . $folder,
                         'includes'  => array('.conf'),
                         'recursive' => true
                     );
@@ -160,10 +160,10 @@ class ActionSwitchVersion
                 $this->currentVersion = $bearsamppBins->getXlight()->getVersion();
                 $this->service        = $bearsamppBins->getXlight()->getService();
                 $this->changePort     = true;
-                $folderList           = Util::getFolderList($bearsamppBins->getXlight()->getRootPath());
+                $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getXlight()));
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
-                        'path'      => $bearsamppBins->getXlight()->getRootPath() . '/' . $folder,
+                        'path'      => Path::getModuleRootPath($bearsamppBins->getXlight()) . '/' . $folder,
                         'includes'  => array('.conf, ftpd.hosts, ftpd.option, ftpd.password, ftpd.rules, ftpd.users, .ini'),
                         'recursive' => true
                     );
@@ -207,7 +207,7 @@ class ActionSwitchVersion
         // scan folder
         $this->bearsamppSplash->incrProgressBar();
         if (!empty($this->pathsToScan)) {
-            Util::changePath(Util::getFilesToScan($this->pathsToScan));
+            Path::changePath(Util::getFilesToScan($this->pathsToScan));
         }
 
         // switch
@@ -390,4 +390,3 @@ class ActionSwitchVersion
         Log::trace('Returning to parent call');
     }
 }
-

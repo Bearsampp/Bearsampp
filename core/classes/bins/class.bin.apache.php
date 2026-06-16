@@ -372,10 +372,10 @@ class BinApache extends Module
         Log::debug( 'httpd.conf = ' . $conf );
         Util::replaceInFile( $conf, array(
             // PHP module
-            '/^#?PHPIniDir\s.*/'                          => ($bearsamppBins->getPhp()->isEnable() ? '' : '#') . 'PHPIniDir "' . $bearsamppBins->getPhp()->getSymlinkPath() . '"',
-            '/^#?LoadFile\s.*php.ts\.dll.*/'              => ($bearsamppBins->getPhp()->isEnable() ? '' : '#') . (!file_exists( $bearsamppBins->getPhp()->getSymlinkPath() . '/' . $tsDll ) ? '#' : '') . 'LoadFile "' . $bearsamppBins->getPhp()->getSymlinkPath() . '/' . $tsDll . '"',
-            '/^#?LoadModule\sphp.*/'                      => ($bearsamppBins->getPhp()->isEnable() ? '' : '#') . 'LoadModule ' . $apachePhpModuleName . ' "' . $bearsamppBins->getPhp()->getSymlinkPath() . '/' . $apachePhpModuleDll . '"',
-            '/^#?LoadModule\sphp_*/'                      => ($bearsamppBins->getPhp()->isEnable() ? '' : '#') . 'LoadModule ' . $apachePhpModuleName . ' "' . $bearsamppBins->getPhp()->getSymlinkPath() . '/' . $apachePhpModuleDll . '"',
+            '/^#?PHPIniDir\s.*/'                          => ($bearsamppBins->getPhp()->isEnable() ? '' : '#') . 'PHPIniDir "' . Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '"',
+            '/^#?LoadFile\s.*php.ts\.dll.*/'              => ($bearsamppBins->getPhp()->isEnable() ? '' : '#') . (!file_exists( Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/' . $tsDll ) ? '#' : '') . 'LoadFile "' . Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/' . $tsDll . '"',
+            '/^#?LoadModule\sphp.*/'                      => ($bearsamppBins->getPhp()->isEnable() ? '' : '#') . 'LoadModule ' . $apachePhpModuleName . ' "' . Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/' . $apachePhpModuleDll . '"',
+            '/^#?LoadModule\sphp_*/'                      => ($bearsamppBins->getPhp()->isEnable() ? '' : '#') . 'LoadModule ' . $apachePhpModuleName . ' "' . Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/' . $apachePhpModuleDll . '"',
 
 
             // Port

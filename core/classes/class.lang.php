@@ -347,6 +347,11 @@ class Lang
     const GENSSL_CREATED = 'genSslCreated';
     const GENSSL_CREATED_ERROR = 'genSslCreatedError';
 
+    // Action del SSL certificate
+    const DELSSL_TITLE = 'delSslTitle';
+    const DELSSL_DELETED = 'delSslDeleted';
+    const DELSSL_DELETED_ERROR = 'delSslDeletedError';
+
     // Action restart
     const RESTART_TITLE = 'restartTitle';
     const RESTART_TEXT = 'restartText';
@@ -706,6 +711,11 @@ class Lang
             self::GENSSL_CREATED,
             self::GENSSL_CREATED_ERROR,
 
+            // Action del SSL certificate
+            self::DELSSL_TITLE,
+            self::DELSSL_DELETED,
+            self::DELSSL_DELETED_ERROR,
+
             // Action restart
             self::RESTART_TITLE,
             self::RESTART_TEXT,
@@ -742,4 +752,3 @@ class Lang
         );
     }
 }
-

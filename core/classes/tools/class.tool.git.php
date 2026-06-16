@@ -126,8 +126,8 @@ class ToolGit extends Module
         $version = $version == null ? $this->version : $version;
         Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
 
-        if (file_exists($this->getSymlinkPath() . '/post-install.bat')) {
-            $bearsamppWinbinder->exec($this->getBash(), '--no-needs-console --hide --no-cd --command=' . $this->getSymlinkPath() . '/post-install.bat', true);
+        if (file_exists(Path::getModuleSymlinkPath($this) . '/post-install.bat')) {
+            $bearsamppWinbinder->exec($this->getBash(), '--no-needs-console --hide --no-cd --command="' . Path::getModuleSymlinkPath($this) . '/post-install.bat"', true);
         }
 
         $bearsamppWinbinder->exec($this->getExe(), 'config --global core.autocrlf false', true);
@@ -230,4 +230,3 @@ class ToolGit extends Module
         ));
     }
 }
-
