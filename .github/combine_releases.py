@@ -101,9 +101,39 @@ def version_tuple(v):
         return (0,)
 
 # Helper function to extract version from asset name
-def extract_version_from_asset(asset_name, module_short_name, tag_name):
+def fetch_module_versions_from_properties(owner, repo):
+    try:
+        # Use main branch for releases.properties
+        url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/releases.properties"
+        print(f"Fetching releases.properties from {url}")
+        
+        response = requests.get(url, timeout=30)
+        if response.status_code == 200:
+            properties = {}
+            for line in response.text.splitlines():
+                line = line.strip()
+                if line and '=' in line and not line.startswith('#'):
+                    # The format is version = url
+                    parts = line.split('=', 1)
+                    if len(parts) == 2:
+                        v = parts[0].strip()
+                        u = parts[1].strip()
+                        properties[u] = v
+            print(f"Successfully parsed {len(properties)} versions from releases.properties")
+            return properties
+        else:
+            print(f"releases.properties not found in {repo} (HTTP {response.status_code})")
+            return {}
+    except Exception as e:
+        print(f"Error fetching/parsing releases.properties for {repo}: {e}")
+        return {}
+
+def extract_version_from_asset(asset_name, module_short_name, tag_name, property_versions=None):
     try:
         print(f"Extracting version from asset: {asset_name} for module: {module_short_name}")
+        
+        # Check if we have this asset's URL in our property versions (if property_versions was passed)
+        # Note: We don't have the URL yet in this function, so we'll handle this in the main loop
         
         # Special case for Ngrok version 3 - only for the specific older asset
         if module_short_name == 'ngrok' and asset_name == 'bearsampp-ngrok-3-2022.07.14.7z':
@@ -313,6 +343,9 @@ try:
                 releases = response.json()
                 module_name = repo
                 
+                # Fetch versions from releases.properties if available
+                property_versions = fetch_module_versions_from_properties(owner, repo)
+                
                 # Dictionary to store the newest asset for each version
                 version_assets = {}  # {version: (asset_data, date)}
                 
@@ -340,8 +373,15 @@ try:
                                 asset_url = asset['browser_download_url']
                                 asset_name = asset['name']
                                 
-                                # Extract version from the asset name
-                                version_number = extract_version_from_asset(asset_name, module_short_name, release['tag_name'])
+                                # First, try to get version from releases.properties mapping
+                                version_number = None
+                                if asset_url in property_versions:
+                                    version_number = property_versions[asset_url]
+                                    print(f"Extracted version {version_number} from releases.properties mapping for {asset_name}")
+                                
+                                # Fallback to regex extraction if not found in properties
+                                if not version_number:
+                                    version_number = extract_version_from_asset(asset_name, module_short_name, release['tag_name'])
                                 
                                 # Skip assets with unknown version
                                 if version_number.startswith('unknown-'):
