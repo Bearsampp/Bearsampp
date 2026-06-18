@@ -124,7 +124,8 @@ def extract_version_from_asset(asset_name, module_short_name, tag_name):
         # The optional (?:-\d+)? captures a revision integer (e.g. the "1" in 4.0.2-1)
         # when present. The required -(\d{4}[\.-].*) suffix anchors to the date field
         # which usually starts with a 4-digit year followed by . or -
-        standard_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)+(?:-\\d+)?)-(\\d{{4}}[\\.-].*)\\.7z"
+        # Improved version part: (\d+(?:\.\d+)*(?:-[a-zA-Z0-9]+)?) to support RC, beta, etc.
+        standard_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)*(?:-[a-zA-Z0-9]+)?)-(\\d{{4}}[\\.-].*)\\.7z"
         print(f"Trying standard pattern: {standard_pattern}")
         standard_match = re.search(standard_pattern, asset_name)
         if standard_match:
@@ -133,7 +134,8 @@ def extract_version_from_asset(asset_name, module_short_name, tag_name):
             return version_number
         
         # Try alternative pattern: bearsampp-{module}-{version}.7z (no date)
-        alt_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)+)\\.7z"
+        # Support alphanumeric components here too
+        alt_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)*(?:-[a-zA-Z0-9]+)?)\\.7z"
         print(f"Trying alternative pattern: {alt_pattern}")
         alt_match = re.search(alt_pattern, asset_name)
         if alt_match:
@@ -167,15 +169,16 @@ def extract_version_from_asset(asset_name, module_short_name, tag_name):
                 return '3.0'
             
             # Extract the version number from the string
-            # First try to match X.Y.Z pattern
-            version_match = re.search(r'(\d+\.\d+\.\d+)', version_with_possible_suffix)
+            # First try to match X.Y.Z-Suffix or X.Y.Z pattern
+            # Using anchor ^ and checking for date-like suffix to avoid picking up the date
+            version_match = re.search(r'^(\d+\.\d+\.\d+(?:-[a-zA-Z0-9]+)?)', version_with_possible_suffix)
             if version_match:
                 version_number = version_match.group(1)
                 print(f"Extracted version {version_number} from asset {asset_name} using X.Y.Z pattern")
                 return version_number
             
-            # Try to match X.Y pattern
-            version_match = re.search(r'(\d+\.\d+)', version_with_possible_suffix)
+            # Try to match X.Y-Suffix or X.Y pattern
+            version_match = re.search(r'^(\d+\.\d+(?:-[a-zA-Z0-9]+)?)', version_with_possible_suffix)
             if version_match:
                 version_number = version_match.group(1)
                 print(f"Extracted version {version_number} from asset {asset_name} using X.Y pattern")
