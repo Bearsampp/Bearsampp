@@ -46,7 +46,7 @@ class ActionEditAlias extends ActionDialogBase
             return false;
         }
 
-        $filePath = $bearsamppRoot->getAliasPath() . '/' . $args[0] . '.conf';
+        $filePath = Path::getAliasPath() . '/' . $args[0] . '.conf';
         if (!file_exists($filePath)) {
             return false;
         }
@@ -65,7 +65,7 @@ class ActionEditAlias extends ActionDialogBase
         global $bearsamppRoot, $bearsamppLang, $bearsamppBins;
 
         // Load existing alias data
-        $filePath = $bearsamppRoot->getAliasPath() . '/' . $this->initValue . '.conf';
+        $filePath = Path::getAliasPath() . '/' . $this->initValue . '.conf';
         $fileContent = file_get_contents($filePath);
         preg_match('/^Alias \/' . $this->initValue . ' "(.+)"/', $fileContent, $match);
         $initDest = Path::formatWindowsPath($match[1]);
@@ -132,7 +132,7 @@ class ActionEditAlias extends ActionDialogBase
         global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
 
         // Only check if name changed
-        if ($values['name'] != $this->initValue && is_file($bearsamppRoot->getAliasPath() . '/' . $values['name'] . '.conf')) {
+        if ($values['name'] != $this->initValue && is_file(Path::getAliasPath() . '/' . $values['name'] . '.conf')) {
             $bearsamppWinbinder->messageBoxError(
                 sprintf($bearsamppLang->getValue(Lang::ALIAS_ALREADY_EXISTS), $values['name']),
                 $this->getDialogTitle()
@@ -148,7 +148,7 @@ class ActionEditAlias extends ActionDialogBase
         global $bearsamppRoot, $bearsamppBins;
 
         return file_put_contents(
-            $bearsamppRoot->getAliasPath() . '/' . $values['name'] . '.conf',
+            Path::getAliasPath() . '/' . $values['name'] . '.conf',
             $bearsamppBins->getApache()->getAliasContent($values['name'], $values['dest'])
         ) !== false;
     }
@@ -157,7 +157,7 @@ class ActionEditAlias extends ActionDialogBase
     {
         global $bearsamppRoot;
 
-        return @unlink($bearsamppRoot->getAliasPath() . '/' . $this->initValue . '.conf');
+        return @unlink(Path::getAliasPath() . '/' . $this->initValue . '.conf');
     }
 
     protected function getSaveSuccessMessage($values)
@@ -197,7 +197,7 @@ class ActionEditAlias extends ActionDialogBase
         global $bearsamppRoot, $bearsamppLang;
         return sprintf(
             $bearsamppLang->getValue(Lang::ALIAS_REMOVE_ERROR),
-            $bearsamppRoot->getAliasPath() . '/' . $this->initValue . '.conf'
+            Path::getAliasPath() . '/' . $this->initValue . '.conf'
         );
     }
 

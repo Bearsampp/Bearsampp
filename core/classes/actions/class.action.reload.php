@@ -57,7 +57,7 @@ class ActionReload
         }
 
         // Process and update the bearsampp.ini file
-        file_put_contents($bearsamppRoot->getIniFilePath(), Util::utf8ToCp1252(TplApp::process()));
+        file_put_contents(Path::getIniFilePath(), Util::utf8ToCp1252(TplApp::process()));
 
         // Process and update the PowerShell configuration
         TplPowerShell::process();

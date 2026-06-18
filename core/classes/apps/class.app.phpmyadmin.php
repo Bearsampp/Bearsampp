@@ -98,7 +98,7 @@ class AppPhpmyadmin extends Module
         $version = $version == null ? $this->version : $version;
         Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
 
-        $alias = $bearsamppRoot->getAliasPath() . '/phpmyadmin.conf';
+        $alias = Path::getAliasPath() . '/phpmyadmin.conf';
         if (is_file($alias)) {
             Util::replaceInFile($alias, array(
                 '/^Alias\s\/phpmyadmin\s.*/' => 'Alias /phpmyadmin "' . Path::getModuleSymlinkPath($this) . '/"',

@@ -91,11 +91,11 @@ class Log
         // Resolve default file path only when the caller did not supply one
         if ($file === null) {
             $file = $type === self::ERROR
-                ? $bearsamppRoot->getErrorLogFilePath()
-                : $bearsamppRoot->getLogFilePath();
+                ? Path::getErrorLogFilePath()
+                : Path::getLogFilePath();
 
             if (!$bearsamppRoot->isRoot()) {
-                $file = $bearsamppRoot->getHomepageLogFilePath();
+                $file = Path::getHomepageLogFilePath();
             }
         }
 
@@ -173,7 +173,7 @@ class Log
 
             $written = @file_put_contents($file, $content, FILE_APPEND | LOCK_EX);
             if ($written === false) {
-                // File write failed — ensure entries are not silently lost
+                // File write failed â€” ensure entries are not silently lost
                 foreach ($logs as $log) {
                     error_log('[' . $log['type'] . '] ' . $log['data'] . ' (target: ' . $file . ')');
                 }
@@ -216,7 +216,7 @@ class Log
     /**
      * Sets the log buffer size.
      *
-     * @param   int  $size  New buffer size (1–1000).
+     * @param   int  $size  New buffer size (1â€“1000).
      * @return void
      */
     public static function setBufferSize($size)
@@ -246,13 +246,13 @@ class Log
         global $bearsamppRoot;
 
         $logs = [
-            $bearsamppRoot->getLogFilePath(),
-            $bearsamppRoot->getErrorLogFilePath(),
-            $bearsamppRoot->getServicesLogFilePath(),
-            $bearsamppRoot->getRegistryLogFilePath(),
-            $bearsamppRoot->getStartupLogFilePath(),
-            $bearsamppRoot->getBatchLogFilePath(),
-            $bearsamppRoot->getWinbinderLogFilePath(),
+            Path::getLogFilePath(),
+            Path::getErrorLogFilePath(),
+            Path::getServicesLogFilePath(),
+            Path::getRegistryLogFilePath(),
+            Path::getStartupLogFilePath(),
+            Path::getBatchLogFilePath(),
+            Path::getWinbinderLogFilePath(),
         ];
 
         $separator = '========================================================================================' . PHP_EOL;

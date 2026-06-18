@@ -398,8 +398,8 @@ class Util
             return false;
         }
 
-        $targetPath = $bearsamppRoot->getExeFilePath();
-        $workingDir = $bearsamppRoot->getRootPath();
+        $targetPath = Path::getExeFilePath();
+        $workingDir = Path::getRootPath();
         $description = APP_TITLE . ' ' . $bearsamppCore->getAppVersion();
         $iconPath = Path::getIconsPath() . '/app.ico';
 
@@ -672,14 +672,14 @@ class Util
 
         // Alias
         $paths[] = array(
-            'path'      => $bearsamppRoot->getAliasPath(),
+            'path'      => Path::getAliasPath(),
             'includes'  => array(''),
             'recursive' => false
         );
 
         // Vhosts
         $paths[] = array(
-            'path'      => $bearsamppRoot->getVhostsPath(),
+            'path'      => Path::getVhostsPath(),
             'includes'  => array(''),
             'recursive' => false
         );

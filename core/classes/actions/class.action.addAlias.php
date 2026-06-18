@@ -106,7 +106,7 @@ class ActionAddAlias extends ActionDialogBase
     {
         global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
 
-        if (is_file($bearsamppRoot->getAliasPath() . '/' . $values['name'] . '.conf')) {
+        if (is_file(Path::getAliasPath() . '/' . $values['name'] . '.conf')) {
             $bearsamppWinbinder->messageBoxError(
                 sprintf($bearsamppLang->getValue(Lang::ALIAS_ALREADY_EXISTS), $values['name']),
                 $this->getDialogTitle()
@@ -122,7 +122,7 @@ class ActionAddAlias extends ActionDialogBase
         global $bearsamppRoot, $bearsamppBins;
 
         return file_put_contents(
-            $bearsamppRoot->getAliasPath() . '/' . $values['name'] . '.conf',
+            Path::getAliasPath() . '/' . $values['name'] . '.conf',
             $bearsamppBins->getApache()->getAliasContent($values['name'], $values['dest'])
         ) !== false;
     }
