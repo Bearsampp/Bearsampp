@@ -71,7 +71,7 @@ class TplAppGit
         );
 
         /* get path for git gui */
-        $gitgui = $bearsamppTools->getGit()->getSymlinkPath() . '/cmd';
+        $gitgui = Path::getModuleSymlinkPath($bearsamppTools->getGit()) . '/cmd';
 
         return TplAestan::getItemPowerShell(
                 $bearsamppLang->getValue(Lang::GIT_CONSOLE),
@@ -158,4 +158,3 @@ class TplAppGit
             TplAppReload::getActionReload() . PHP_EOL;
     }
 }
-

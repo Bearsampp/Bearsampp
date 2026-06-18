@@ -329,6 +329,11 @@ genSslPath = "Sélectionnez le répertoire cible :"
 genSslCreated = "Certificat SSL '%s' créé avec succès."
 genSslCreatedError = "Impossible de créer le certificat SSL."
 
+; Action del SSL certificate
+delSslTitle = "Supprimer le certificat SSL"
+delSslDeleted = "Certificat SSL '%s' supprimé avec succès."
+delSslDeletedError = "Impossible de supprimer le certificat SSL."
+
 ; Action Restart
 restartTitle = "Redémarrer"
 restartText = "Veuillez redémarrez %s pour appliquer les nouveaux paramètres"

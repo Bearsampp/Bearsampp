@@ -329,6 +329,11 @@ genSslPath = "Cél könyvtár kiválasztása"
 genSslCreated = "SSL tanusítvány '%s' sikeresen létrehozva"
 genSslCreatedError = "SSL tanusítvány nem lett létrehozva"
 
+; Action del SSL certificate
+delSslTitle = "SSL tanusítvány törlése"
+delSslDeleted = "SSL tanusítvány '%s' sikeresen törölve"
+delSslDeletedError = "SSL tanusítvány nem lett törölve"
+
 ; Action Restart
 restartTitle = "Újraindítás"
 restartText = "%s ujraindítása az új beállításokhoz"

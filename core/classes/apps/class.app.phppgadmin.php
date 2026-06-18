@@ -99,8 +99,8 @@ class AppPhppgadmin extends Module
         $alias = $bearsamppRoot->getAliasPath() . '/phppgadmin.conf';
         if (is_file($alias)) {
             Util::replaceInFile($alias, array(
-                '/^Alias\s\/phppgadmin\s.*/' => 'Alias /phppgadmin "' . $this->getSymlinkPath() . '/"',
-                '/^<Directory\s.*/' => '<Directory "' . $this->getSymlinkPath() . '/">',
+                '/^Alias\s\/phppgadmin\s.*/' => 'Alias /phppgadmin "' . Path::getModuleSymlinkPath($this) . '/"',
+                '/^<Directory\s.*/' => '<Directory "' . Path::getModuleSymlinkPath($this) . '/">',
             ));
         } else {
             Log::error($this->getName() . ' alias not found : ' . $alias);
@@ -140,4 +140,3 @@ class AppPhppgadmin extends Module
         return $this->conf;
     }
 }
-

@@ -324,10 +324,15 @@ checkVersionChangelogText = "#Before updating please read the changelog : "
 checkVersionLatestText = "Du har hämtat den senaste versionen av Bearsampp"
 
 ; Action gen SSL certificate
-genSslTitle = "#Generate SSL certificate"
-genSslPath = "#Select the target folder :"
-genSslCreated = "#SSL certificate '%s' successfully created."
-genSslCreatedError = "#Unable to create SSL certificate."
+genSslTitle = "Generera SSL-certifikat"
+genSslPath = "Välj målmapp:"
+genSslCreated = "SSL-certifikat '%s' har skapats framgångsrikt."
+genSslCreatedError = "Det går inte att skapa SSL-certifikat."
+
+; Action del SSL certificate
+delSslTitle = "Ta bort SSL-certifikat"
+delSslDeleted = "SSL-certifikat '%s' har tagits bort framgångsrikt."
+delSslDeletedError = "Det går inte att ta bort SSL-certifikat."
 
 ; Action Restart
 restartTitle = "#Restart"

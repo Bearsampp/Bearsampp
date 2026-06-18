@@ -531,7 +531,7 @@ class BinMysql extends Module
 
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
-        $currentPath   = str_replace('mysql' . $this->getVersion(), 'mysql' . $version, $this->getCurrentPath());
+        $currentPath   = str_replace('mysql' . $this->getVersion(), 'mysql' . $version, Path::getModuleCurrentPath($this));
         $conf          = str_replace('mysql' . $this->getVersion(), 'mysql' . $version, $this->getConf());
         $bearsamppConf = str_replace('mysql' . $this->getVersion(), 'mysql' . $version, $this->bearsamppConf);
 
@@ -595,7 +595,7 @@ class BinMysql extends Module
         Log::trace('Starting MySQL data initialization');
         $startTime = microtime(true);
 
-        $path          = $path != null ? $path : $this->getCurrentPath();
+        $path          = $path != null ? $path : Path::getModuleCurrentPath($this);
         $version       = $version != null ? $version : $this->getVersion();
         $dataDir       = $path . '/data';
         $perfSchemaDir = $dataDir . '/performance_schema';
@@ -893,4 +893,3 @@ class BinMysql extends Module
         return $this->dataDir;
     }
 }
-

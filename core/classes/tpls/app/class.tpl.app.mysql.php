@@ -105,7 +105,7 @@ class TplAppMysql
                 TplAestan::GLYPH_POWERSHELL,
                 null,
                 $bearsamppTools->getPowerShell()->getTabTitleMysql(),
-                $bearsamppBins->getMysql()->getSymlinkPath(),
+                Path::getModuleSymlinkPath($bearsamppBins->getMysql()),
                 null
             ) . PHP_EOL;
 
@@ -345,4 +345,3 @@ class TplAppMysql
             TplAppReload::getActionReload();
     }
 }
-

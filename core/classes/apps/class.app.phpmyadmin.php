@@ -101,8 +101,8 @@ class AppPhpmyadmin extends Module
         $alias = $bearsamppRoot->getAliasPath() . '/phpmyadmin.conf';
         if (is_file($alias)) {
             Util::replaceInFile($alias, array(
-                '/^Alias\s\/phpmyadmin\s.*/' => 'Alias /phpmyadmin "' . $this->getSymlinkPath() . '/"',
-                '/^<Directory\s.*/' => '<Directory "' . $this->getSymlinkPath() . '/">',
+                '/^Alias\s\/phpmyadmin\s.*/' => 'Alias /phpmyadmin "' . Path::getModuleSymlinkPath($this) . '/"',
+                '/^<Directory\s.*/' => '<Directory "' . Path::getModuleSymlinkPath($this) . '/">',
             ));
         } else {
             Log::error($this->getName() . ' alias not found : ' . $alias);
@@ -147,4 +147,3 @@ class AppPhpmyadmin extends Module
         return $this->conf;
     }
 }
-

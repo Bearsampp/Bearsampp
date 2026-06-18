@@ -31,6 +31,7 @@ class Action
     const ENABLE = 'enable';
     const EXEC = 'exec';
     const GEN_SSL_CERTIFICATE = 'genSslCertificate';
+    const DEL_SSL_CERTIFICATE = 'delSslCertificate';
     const LAUNCH_STARTUP = 'launchStartup';
     const MANUAL_RESTART = 'manualRestart';
     const LOADING = 'loading';
@@ -95,6 +96,14 @@ class Action
             if (class_exists($actionClass)) {
                 Log::debug('Start ' . $actionClass);
                 $this->current = new $actionClass($args);
+            } elseif ($action == self::GEN_SSL_CERTIFICATE) {
+                global $bearsamppRoot, $bearsamppOpenSsl;
+                $bearsamppRoot->loadOpenSsl();
+                $bearsamppOpenSsl->genSslCertificate();
+            } elseif ($action == self::DEL_SSL_CERTIFICATE) {
+                global $bearsamppRoot, $bearsamppOpenSsl;
+                $bearsamppRoot->loadOpenSsl();
+                $bearsamppOpenSsl->delSslCertificate();
             }
         }
     }
@@ -134,4 +143,3 @@ class Action
             && !empty($_SERVER['argv'][1]);
     }
 }
-

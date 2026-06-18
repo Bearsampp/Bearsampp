@@ -97,7 +97,7 @@ class TplAppMariadb
             $resultItems .= TplAestan::getItemPowerShell(
                 $bearsamppLang->getValue(Lang::CONSOLE),
                 TplAestan::GLYPH_POWERSHELL,
-                null, $bearsamppTools->getPowerShell()->getTabTitleMariadb(), $bearsamppBins->getMariadb()->getSymlinkPath(), null
+                null, $bearsamppTools->getPowerShell()->getTabTitleMariadb(), Path::getModuleSymlinkPath($bearsamppBins->getMariadb()), null
             ) . PHP_EOL;
 
             // Conf
@@ -344,4 +344,3 @@ class TplAppMariadb
             TplAppReload::getActionReload();
     }
 }
-

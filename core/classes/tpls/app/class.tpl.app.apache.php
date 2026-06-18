@@ -35,6 +35,8 @@ class TplAppApache
     const ACTION_EDIT_ALIAS = 'editAlias';
     const ACTION_ADD_VHOST = 'addVhost';
     const ACTION_EDIT_VHOST = 'editVhost';
+    const ACTION_GEN_SSL_CERTIFICATE = 'genSslCertificate';
+    const ACTION_DEL_SSL_CERTIFICATE = 'delSslCertificate';
 
     /**
      * Generates the main Apache menu with options to enable/disable Apache and access submenus.
@@ -114,7 +116,7 @@ class TplAppApache
             // Vhosts
             $tplVhosts = TplApp::getMenu($bearsamppLang->getValue(Lang::VIRTUAL_HOSTS), self::MENU_VHOSTS, get_called_class());
             $resultItems .= $tplVhosts[TplApp::SECTION_CALL] . PHP_EOL;
-            $resultActions .= $tplVhosts[TplApp::SECTION_CONTENT];
+            $resultActions .= $tplVhosts[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Conf
             $resultItems .= TplAestan::getItemNotepad(basename($bearsamppBins->getApache()->getConf()), $bearsamppBins->getApache()->getConf()) . PHP_EOL;
@@ -512,5 +514,5 @@ class TplAppApache
         return TplApp::getActionRun(Action::EDIT_VHOST, array($vhost)) . PHP_EOL .
             TplAppReload::getActionReload();
     }
-}
 
+}

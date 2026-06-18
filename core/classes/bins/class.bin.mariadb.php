@@ -703,7 +703,7 @@ public function initData($path = null, $version = null)
     Log::trace( 'Starting MariaDB data initialization' );
     $startTime = microtime( true );
 
-    $path    = $path != null ? $path : $this->getCurrentPath();
+    $path    = $path != null ? $path : Path::getModuleCurrentPath($this);
     $version = $version != null ? $version : $this->getVersion();
     $dataDir = $path . '/data';
 
@@ -767,4 +767,3 @@ public function initData($path = null, $version = null)
     return true;
 }
 }
-

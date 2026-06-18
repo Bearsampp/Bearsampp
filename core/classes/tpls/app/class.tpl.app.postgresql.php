@@ -98,7 +98,7 @@ class TplAppPostgresql
             $resultItems .= TplAestan::getItemPowerShell(
                 $bearsamppLang->getValue(Lang::CONSOLE),
                 TplAestan::GLYPH_POWERSHELL,
-                null, $bearsamppTools->getPowerShell()->getTabTitlePostgresql(), $bearsamppBins->getPostgresql()->getSymlinkPath(), null
+                null, $bearsamppTools->getPowerShell()->getTabTitlePostgresql(), Path::getModuleSymlinkPath($bearsamppBins->getPostgresql()), null
             ) . PHP_EOL;
 
             // Conf
@@ -309,4 +309,3 @@ class TplAppPostgresql
             TplAppReload::getActionReload();
     }
 }
-
