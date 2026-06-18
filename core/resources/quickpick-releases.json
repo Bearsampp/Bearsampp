@@ -2138,6 +2138,11 @@
     "module": "module-postgresql",
     "versions": [
       {
+        "version": "2024.9.18",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.9.18/bearsampp-postgresql-17.0-RC1-2024.9.18.7z",
+        "prerelease": false
+      },
+      {
         "version": "18.4",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-18.4-2025.6.2.7z",
         "prerelease": false
