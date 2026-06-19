@@ -9,14 +9,15 @@
  */
 
 /**
- * Log class providing static logging methods with buffered I/O.
+ * Log class providing static logging methods with buffered and asynchronous I/O.
  *
  * Supports five log levels (TRACE, DEBUG, INFO, WARNING, ERROR), a separator
  * utility, class-lifecycle helpers, and a configurable write buffer to reduce
- * file-system pressure.
+ * file-system pressure. Also supports asynchronous logging to decouple I/O
+ * operations from the main process.
  *
  * Call Log::init() once during bootstrap (after globals are available) to register
- * the shutdown flush handler.
+ * the shutdown flush handler and initialize async logging.
  *
  * Usage:
  * ```
@@ -47,11 +48,24 @@ class Log
         'buffered' => 0,
         'flushed'  => 0,
         'writes'   => 0,
+        'async'    => 0,
     ];
 
+    /** @var string Directory for async log queues */
+    private static $asyncQueueDir = null;
+
+    /** @var bool Whether async logging is enabled */
+    private static $asyncEnabled = true;
+
+    /** @var int Maximum number of queue files to process in one batch */
+    private static $maxAsyncQueueBatch = 5;
+
     /**
-     * Registers the shutdown flush handler.
+     * Registers the shutdown flush handler and initializes async logging.
      * Call once during bootstrap after globals are initialised.
+     *
+     * Automatically disables async logging when TRACE verbosity is enabled,
+     * to ensure live log monitoring shows logs immediately.
      *
      * @return void
      */
@@ -59,7 +73,69 @@ class Log
     {
         if (!self::$shutdownRegistered) {
             register_shutdown_function([__CLASS__, 'flush']);
+            register_shutdown_function([__CLASS__, 'processAsyncQueue']);
             self::$shutdownRegistered = true;
+
+            // Initialize async queue directory
+            self::initializeAsyncQueue();
+
+            // Auto-disable async when TRACE logging is enabled (for live log monitoring)
+            self::checkVerbosityAndAdjustAsync();
+        }
+    }
+
+    /**
+     * Check logging verbosity and adjust async settings accordingly.
+     * Disables async when TRACE level is enabled for real-time log visibility.
+     * Also optimizes buffer size for better responsiveness during debugging.
+     *
+     * @return void
+     */
+    private static function checkVerbosityAndAdjustAsync()
+    {
+        global $bearsamppConfig;
+
+        try {
+            if (!isset($bearsamppConfig)) {
+                return;
+            }
+
+            $verbosity = $bearsamppConfig->getLogsVerbose();
+
+            // Disable async and reduce buffer size for DEBUG/TRACE logging
+            // This ensures live log monitoring shows logs immediately
+            if ($verbosity === Config::VERBOSE_TRACE) {
+                self::$asyncEnabled = false;
+                // Use smaller buffer for TRACE to flush more frequently (every 10 entries)
+                self::$logBufferSize = 10;
+            } elseif ($verbosity === Config::VERBOSE_DEBUG) {
+                self::$asyncEnabled = false;
+                // For DEBUG level, use moderate buffer size (25 entries)
+                self::$logBufferSize = 25;
+            }
+            // For INFO and REPORT levels, use default buffer size (50) with async enabled
+        } catch (Exception $e) {
+            // Silently fail - this is just an optimization
+        }
+    }
+
+    /**
+     * Initialize async queue directory.
+     *
+     * @return void
+     */
+    private static function initializeAsyncQueue()
+    {
+        try {
+            // Set up queue directory in tmp
+            self::$asyncQueueDir = Path::getTmpPath() . '/log-queue';
+
+            // Create queue directory if it doesn't exist
+            if (!is_dir(self::$asyncQueueDir)) {
+                @mkdir(self::$asyncQueueDir, 0755, true);
+            }
+        } catch (Exception $e) {
+            self::$asyncEnabled = false;
         }
     }
 
@@ -125,17 +201,27 @@ class Log
             ];
             self::$logStats['buffered']++;
 
-            // Flush immediately for errors, or when the buffer is full
-            if ($type === self::ERROR || count(self::$logBuffer) >= self::$logBufferSize) {
+            // Flush immediately for:
+            // 1. Errors (always)
+            // 2. TRACE/DEBUG level logs (for real-time visibility during debugging)
+            // 3. When buffer reaches the configured size limit
+            $debugVerbosity = $bearsamppConfig->getLogsVerbose();
+            $isDebugMode = ($debugVerbosity === Config::VERBOSE_TRACE || $debugVerbosity === Config::VERBOSE_DEBUG);
+            $shouldFlush = $type === self::ERROR ||
+                          $isDebugMode ||
+                          count(self::$logBuffer) >= self::$logBufferSize;
+
+            if ($shouldFlush) {
                 self::flush();
             }
         }
     }
 
     /**
-     * Flushes the log buffer to disk.
+     * Flushes the log buffer to disk using async writes when available.
      * Groups entries by file to minimise file operations.
-     * Falls back to error_log() if globals are unavailable or a write fails.
+     * Uses async logging to avoid blocking the main process on I/O.
+     * Falls back to synchronous writes or error_log() if needed.
      *
      * @return void
      */
@@ -145,7 +231,7 @@ class Log
             return;
         }
 
-        global $bearsamppCore;
+        global $bearsamppCore, $bearsamppConfig;
 
         // If the core global is gone (e.g. during an abnormal shutdown), fall back to error_log
         if (!isset($bearsamppCore)) {
@@ -155,6 +241,19 @@ class Log
             self::$logStats['flushed'] += count(self::$logBuffer);
             self::$logBuffer = [];
             return;
+        }
+
+        // Check if DEBUG or TRACE logging is active and force sync writes
+        $forceSync = false;
+        try {
+            if (isset($bearsamppConfig)) {
+                $verbosity = $bearsamppConfig->getLogsVerbose();
+                if ($verbosity === Config::VERBOSE_TRACE || $verbosity === Config::VERBOSE_DEBUG) {
+                    $forceSync = true;
+                }
+            }
+        } catch (Exception $e) {
+            // Ignore errors checking config
         }
 
         // Group logs by destination file
@@ -171,6 +270,21 @@ class Log
                             $log['type'] . ': ' . $log['data'] . PHP_EOL;
             }
 
+            // Use sync writes if TRACE is enabled or async is disabled
+            if (!$forceSync && self::$asyncEnabled) {
+                // Queue for async processing (non-blocking)
+                $queued = self::queueAsyncWrite($file, $content);
+
+                if ($queued) {
+                    // Successfully queued, content will be written in background
+                    self::$logStats['async']++;
+                    self::$logStats['writes']++;
+                    continue;
+                }
+                // If async queueing failed, fall through to sync write
+            }
+
+            // Synchronous write (immediate for TRACE, fallback for others)
             $written = @file_put_contents($file, $content, FILE_APPEND | LOCK_EX);
             if ($written === false) {
                 // File write failed â€” ensure entries are not silently lost
@@ -187,6 +301,174 @@ class Log
     }
 
     /**
+     * Queue a log entry for asynchronous writing.
+     * Returns immediately without blocking on I/O.
+     *
+     * @param string $file Target log file path
+     * @param string $content Log content to write
+     * @return bool True if queued successfully
+     */
+    private static function queueAsyncWrite($file, $content)
+    {
+        if (!self::$asyncEnabled || !is_dir(self::$asyncQueueDir)) {
+            return false;
+        }
+
+        try {
+            // Create a unique queue file for this write
+            $queueFile = self::$asyncQueueDir . '/' . uniqid('log_', true) . '.queue';
+
+            // Queue entry contains the target file and content
+            $queueEntry = [
+                'file' => $file,
+                'content' => $content,
+                'timestamp' => time(),
+            ];
+
+            // Write queue entry (this is a small, fast operation)
+            $serialized = serialize($queueEntry);
+            $written = @file_put_contents($queueFile, $serialized, LOCK_EX);
+
+            return ($written !== false);
+        } catch (Exception $e) {
+            // Silently fail - this is async so we don't want to interrupt main process
+            return false;
+        }
+    }
+
+    /**
+     * Process all queued log entries immediately (public method for manual flushing).
+     * Useful for live log monitoring or ensuring logs are written before critical operations.
+     *
+     * Can be called at any time to flush pending async log writes.
+     *
+     * @return int Number of queue files processed
+     */
+    public static function flushAsyncQueue()
+    {
+        return self::processAsyncQueue();
+    }
+
+    /**
+     * Process all queued log entries at shutdown.
+     * Ensures any remaining queued logs are written before exit.
+     *
+     * @return int Number of queue files processed
+     */
+    public static function processAsyncQueue()
+    {
+        if (!is_dir(self::$asyncQueueDir)) {
+            return 0;
+        }
+
+        $processed = 0;
+
+        try {
+            $queueFiles = glob(self::$asyncQueueDir . '/*.queue');
+
+            if (empty($queueFiles)) {
+                return 0;
+            }
+
+            // Group entries by target file
+            $entriesByFile = [];
+
+            foreach ($queueFiles as $queueFile) {
+                try {
+                    // Read and deserialize queue entry
+                    $serialized = @file_get_contents($queueFile);
+                    if ($serialized === false) {
+                        continue;
+                    }
+
+                    $entry = @unserialize($serialized, ['allowed_classes' => false]);
+                    if ($entry === false || !isset($entry['file']) || !isset($entry['content'])) {
+                        // Invalid queue entry, remove it
+                        @unlink($queueFile);
+                        continue;
+                    }
+
+                    // Group by target file
+                    $targetFile = $entry['file'];
+                    if (!isset($entriesByFile[$targetFile])) {
+                        $entriesByFile[$targetFile] = [];
+                    }
+
+                    $entriesByFile[$targetFile][] = $entry['content'];
+                    $processed++;
+
+                    // Remove the processed queue file
+                    @unlink($queueFile);
+
+                } catch (Exception $e) {
+                    // Skip bad entries
+                    @unlink($queueFile);
+                }
+            }
+
+            // Write all accumulated entries to their target files
+            foreach ($entriesByFile as $targetFile => $contents) {
+                try {
+                    $combined = implode('', $contents);
+                    @file_put_contents($targetFile, $combined, FILE_APPEND | LOCK_EX);
+                } catch (Exception $e) {
+                    // Log write failed - use error_log as fallback
+                    error_log('Failed to write to ' . $targetFile);
+                }
+            }
+
+            // Clean up any stale queue files
+            self::cleanupStaleAsyncQueue(3600);
+
+        } catch (Exception $e) {
+            // Silently fail
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Clean up stale queue files that weren't processed.
+     * Prevents queue directory from filling up with old entries.
+     *
+     * @param int $maxAge Maximum age in seconds
+     * @return int Number of files removed
+     */
+    private static function cleanupStaleAsyncQueue($maxAge)
+    {
+        if (!is_dir(self::$asyncQueueDir)) {
+            return 0;
+        }
+
+        $removed = 0;
+        $now = time();
+
+        try {
+            $queueFiles = @glob(self::$asyncQueueDir . '/*.queue');
+
+            if (!is_array($queueFiles)) {
+                return 0;
+            }
+
+            foreach ($queueFiles as $queueFile) {
+                try {
+                    // Remove files older than maxAge
+                    if ($now - @filemtime($queueFile) > $maxAge) {
+                        @unlink($queueFile);
+                        $removed++;
+                    }
+                } catch (Exception $e) {
+                    // Skip
+                }
+            }
+        } catch (Exception $e) {
+            // Ignore cleanup errors
+        }
+
+        return $removed;
+    }
+
+    /**
      * Clears the buffer and resets statistics.
      * Useful in tests or when re-initialising the application.
      *
@@ -200,7 +482,54 @@ class Log
             'buffered' => 0,
             'flushed'  => 0,
             'writes'   => 0,
+            'async'    => 0,
         ];
+    }
+
+    /**
+     * Enable or disable async logging.
+     *
+     * @param bool $enabled
+     * @return void
+     */
+    public static function setAsyncEnabled($enabled)
+    {
+        self::$asyncEnabled = (bool)$enabled;
+    }
+
+    /**
+     * Check if async logging is enabled.
+     *
+     * @return bool
+     */
+    public static function isAsyncEnabled()
+    {
+        return self::$asyncEnabled;
+    }
+
+    /**
+     * Get the async queue directory path.
+     *
+     * @return string|null
+     */
+    public static function getAsyncQueueDir()
+    {
+        return self::$asyncQueueDir;
+    }
+
+    /**
+     * Get current async queue size.
+     *
+     * @return int
+     */
+    public static function getAsyncQueueSize()
+    {
+        if (!is_dir(self::$asyncQueueDir)) {
+            return 0;
+        }
+
+        $files = @glob(self::$asyncQueueDir . '/*.queue');
+        return is_array($files) ? count($files) : 0;
     }
 
     /**

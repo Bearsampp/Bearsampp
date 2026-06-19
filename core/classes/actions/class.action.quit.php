@@ -199,6 +199,10 @@ class ActionQuit
         $this->splash->setTextLoading($bearsamppLang->getValue(Lang::EXIT_STOP_OTHER_PROCESS_TEXT));
         Win32Ps::killBins(true);
 
+        // Explicitly kill NodeJS if still running (it's not a Windows service)
+        Log::trace('Explicitly terminating NodeJS processes');
+        Win32Ps::killBins(['node.exe']);
+
         // Perform cleanup verification in background (non-blocking)
         $this->splash->setTextLoading('Performing cleanup verification...');
         $this->performQuickCleanupVerification($allServices);
