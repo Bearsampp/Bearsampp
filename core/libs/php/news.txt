@@ -1,6 +1,287 @@
 PHP                                                                        NEWS
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-12 Feb 2026, PHP 8.5.3
+04 Jun 2026, PHP 8.5.7
+
+- CLI:
+  . Fixed bug GH-21901 (Stale getopt() optional value). (onthebed)
+
+- Date:
+  . Fixed bug GH-18422 (int overflow in php_date_llabs). (iliaal)
+
+- DOM:
+  . Fixed bug GH-22077 (UAF in custom XPath function).
+    (afflerbach/David Carlier)
+
+- Opcache:
+  . Fixed tracing JIT crash when a VM interrupt is handled during an observed
+    user function call. (Levi Morrison)
+  . Fixed bug GH-21746 (Segfault with tracing JIT). (Arnaud)
+  . Fixed bug GH-22004 (Assertion failure at ext/opcache/jit/zend_jit_trace.c).
+    (Arnaud)
+  . Fixed tailcall VM crash when a VM interrupt is handled from a VM helper.
+    (Levi Morrison, Arnaud)
+
+- OpenSSL:
+  . Fix compatibility issues with OpenSSL 4.0. (jordikroon, Remi)
+
+- Standard:
+  . Fixed bug GH-21689 (version_compare() incorrectly handles versions ending
+    with a dot). (timwolla)
+
+- URI:
+  . Fixed CVE-2026-44927 (In uriparser before 1.0.2, there is pointer
+    difference truncation to int in various places). (CVE-2026-44927)
+    (Sebastian Pipping)
+  . Fixed CVE-2026-44928 (In uriparser before 1.0.2, the function family
+    EqualsUri can misclassify two unequal URIs as equal). (CVE-2026-44928)
+    (Sebastian Pipping)
+
+07 May 2026, PHP 8.5.6
+
+- Core:
+  . Fixed bug GH-19983 (GC assertion failure with fibers, generators and
+    destructors). (iliaal)
+  . Fixed ZEND_API mismatch on zend_ce_closure forward decl for Windows+Clang.
+    (henderkes)
+  . Fixed bug GH-21504 (Incorrect RC-handling for ZEND_EXT_STMT op1). (ilutov)
+  . Fixed bug GH-21478 (Forward property operations to real instance for
+    initialized lazy proxies). (iliaal)
+  . Fixed bug GH-21605 (Missing addref for Countable::count()). (ilutov)
+  . Fixed bug GH-21699 (Assertion failure in shutdown_executor when resolving
+    self::/parent::/static:: callables if the error handler throws). (macoaure)
+  . Fixed bug GH-21603 (Missing addref for __unset). (ilutov)
+  . Fixed bug GH-21760 (Trait with class constant name conflict against
+    enum case causes SEGV). (Pratik Bhujel)
+
+- CLI:
+  . Fixed bug GH-21754 (`--rf` command line option with a method triggers
+    ext/reflection deprecation warnings). (DanielEScherzer)
+
+- Curl:
+  . Add support for brotli and zstd on Windows. (Shivam Mathur)
+
+- DOM:
+  . Fixed GHSA-4jhr-8w89-j733 and GH-21566 (Dom\XMLDocument::C14N() emits
+    duplicate xmlns declarations after setAttributeNS()). (CVE-2026-7263)
+    (David Carlier)
+
+- FPM:
+  . Fixed GHSA-7qg2-v9fj-4mwv (XSS within status endpoint). (CVE-2026-6735)
+    (Jakub Zelenka)
+
+- Iconv:
+  . Fixed bug GH-17399 (iconv memory leak on bailout). (iliaal)
+
+- Lexbor:
+  . Upgrade to lexbor v2.7.0. (CVE-2026-29078, CVE-2026-29079)
+    (ndossche, ilutov)
+
+- MBString:
+  . Fixed GHSA-wm6j-2649-pv75 (Null pointer dereference in
+    php_mb_check_encoding() via mb_ereg_search_init()). (CVE-2026-7259)
+    (vi3tL0u1s)
+  . Fixed GHSA-74r9-qxhc-fx53 (Out-of-bounds access in mbfl_name2encoding_ex()).
+    (CVE-2026-6104) (ilutov)
+
+- Opcache:
+  . Fixed bug GH-21158 (JIT: Assertion jit->ra[var].flags & (1<<0) failed in
+    zend_jit_use_reg). (Arnaud)
+  . Fixed bug GH-21593 (Borked function JIT JMPNZ smart branch). (ilutov)
+  . Fixed bug GH-21460 (COND optimization regression). (Dmitry, Arnaud)
+  . Fixed faulty returns out of zend_try block in zend_jit_trace(). (ilutov)
+
+- OpenSSL:
+  . Fix memory leak regression in openssl_pbkdf2(). (ndossche)
+  . Fix a bunch of memory leaks and crashes on edge cases. (ndossche)
+
+- PDO_Firebird:
+  . Fixed GHSA-w476-322c-wpvm (SQL injection via NUL bytes in quoted strings).
+    (CVE-2025-14179) (SakiTakamachi)
+
+- PDO_PGSQL:
+  . Fixed bug GH-21683 (pdo_pgsql throws with ATTR_PREFETCH=0
+    on empty result set). (thomasschiet)
+
+- Phar:
+  . Restore is_link handler in phar_intercept_functions_shutdown. (iliaal)
+  . Fixed bug GH-21797 (phar: NULL dereference in Phar::webPhar() when
+    SCRIPT_NAME is absent from SAPI environment). (iliaal)
+  . Fix memory leak in Phar::offsetGet(). (iliaal)
+  . Fix memory leak in phar_add_file(). (iliaal)
+  . Fixed bug GH-21799 (phar: propagate phar_stream_flush return value from
+    phar_stream_close). (iliaal)
+  . Fix memory leak in phar_verify_signature() when md_ctx is invalid.
+    (JarneClauw)
+
+- Random:
+  . Fixed bug GH-21731 (Random\Engine\Xoshiro256StarStar::__unserialize()
+    accepts all-zero state). (iliaal)
+
+- Session:
+  . Fixed memory leak when session GC callback return a refcounted value.
+    (jorgsowa)
+
+- SOAP:
+  . Fixed GHSA-85c2-q967-79q5 (Stale SOAP_GLOBAL(ref_map) pointer with Apache
+    Map). (CVE-2026-6722) (ilutov)
+  . Fixed GHSA-m33r-qmcv-p97q (Use-after-free after header parsing failure with
+    SOAP_PERSISTENCE_SESSION). (CVE-2026-7261) (ilutov)
+  . Fixed GHSA-hmxp-6pc4-f3vv (Broken Apache map value NULL check).
+    (CVE-2026-7262) (ilutov)
+
+- SPL:
+  . Fixed bug GH-21499 (RecursiveArrayIterator getChildren UAF after parent
+    free). (Girgias)
+  . Fix concurrent iteration and deletion issues in SplObjectStorage.
+    (ndossche)
+
+- Sqlite3:
+  . Fixed wrong free list comparator pointer type. (David Carlier)
+
+- Standard:
+  . Fixed GHSA-96wq-48vp-hh57 (Signed integer overflow of char array offset).
+    (CVE-2026-7568) (TimWolla)
+  . Fixed GHSA-m8rr-4c36-8gq4 (Consistently pass unsigned char to ctype.h
+    functions). (CVE-2026-7258) (ilutov)
+
+- Streams:
+  . Fixed bug GH-21468 (Segfault in file_get_contents w/ a https URL
+    and a proxy set). (ndossche)
+
+- URI:
+  . Fixed CVE-2026-42371 (uriparser before 1.0.1 has numeric truncation in
+    text range comparison). (CVE-2026-42371) (Joshua W. Windle)
+
+26 Mar 2026, PHP 8.5.5
+
+- Core:
+  . Fixed bug GH-20672 (Incorrect property_info sizing for locally shadowed
+    trait properties). (ilutov)
+  . Fixed bugs GH-20875, GH-20873, GH-20854 (Propagate IN_GET guard in
+    get_property_ptr_ptr for lazy proxies). (iliaal)
+
+- Bz2:
+  . Fix truncation of total output size causing erroneous errors. (ndossche)
+
+- DOM:
+  . Fixed bug GH-21486 (Dom\HTMLDocument parser mangles xml:space and
+    xml:lang attributes). (ndossche)
+
+- FFI:
+  . Fixed resource leak in FFI::cdef() onsymbol resolution failure.
+    (David Carlier)
+
+- GD:
+  . Fixed bug GH-21431 (phpinfo() to display libJPEG 10.0 support).
+    (David Carlier)
+
+- Opcache:
+  . Fixed bug GH-21052 (Preloaded constant erroneously propagated to file-cached
+    script). (ilutov)
+  . Fixed bug GH-20838 (JIT compiler produces wrong arithmetic results).
+    (Dmitry, iliaal)
+  . Fixed bug GH-21267 (JIT tracing: infinite loop on FETCH_OBJ_R with
+    IS_UNDEF property in polymorphic context). (Dmitry, iliaal)
+  . Fixed bug GH-21395 (uaf in jit). (ndossche)
+
+- OpenSSL:
+  . Fixed bug GH-21083 (Skip private_key_bits validation for EC/curve-based
+    keys). (iliaal)
+  . Fix missing error propagation for BIO_printf() calls. (ndossche)
+
+- PCNTL:
+  . Fixed signal handler installation on AIX by bumping the storage size of the
+    num_signals global. (Calvin Buckley)
+
+- PCRE:
+  . Fixed re-entrancy issue on php_pcre_match_impl, php_pcre_replace_impl,
+    php_pcre_split_impl, and php_pcre_grep_impl. (David Carlier)
+
+- Phar:
+  . Fixed bug GH-21333 (use after free when unlinking entries during iteration
+    of a compressed phar). (David Carlier)
+
+- SNMP:
+  . Fixed bug GH-21336 (SNMP::setSecurity() undefined behavior with
+    NULL arguments). (David Carlier)
+
+- SOAP:
+  . Fixed Set-Cookie parsing bug wrong offset while scanning attributes.
+    (David Carlier)
+
+- SPL:
+  . Fixed bug GH-21454 (missing write lock validation in SplHeap).
+    (ndossche)
+
+- Standard:
+  . Fixed bug GH-20906 (Assertion failure when messing up output buffers).
+    (ndossche)
+  . Fixed bug GH-20627 (Cannot identify some avif images with getimagesize).
+    (y-guyon)
+
+- Sysvshm:
+  . Fix memory leak in shm_get_var() when variable is corrupted. (ndossche)
+
+- XSL:
+  . Fix GH-21357 (XSLTProcessor works with DOMDocument, but fails with
+    Dom\XMLDocument). (ndossche)
+  . Fixed bug GH-21496 (UAF in dom_objects_free_storage).
+    (David Carlier/ndossche)
+
+12 Mar 2026, PHP 8.5.4
+
+- Core:
+  . Fixed bug GH-21029 (zend_mm_heap corrupted on Aarch64, LTO builds). (Arnaud)
+  . Fixed bug GH-21059 (Segfault when preloading constant AST closure). (ilutov)
+  . Fixed bug GH-21072 (Crash on (unset) cast in constant expression).
+    (arshidkv12)
+  . Fix deprecation now showing when accessing null key of an array with JIT.
+    (alexandre-daubois)
+  . Fixed bug GH-20657 (Assertion failure in zend_lazy_object_get_info triggered
+    by setRawValueWithoutLazyInitialization() and newLazyGhost()). (Arnaud)
+  . Fixed bug GH-20504 (Assertion failure in zend_get_property_guard when
+    accessing properties on Reflection LazyProxy via isset()). (Arnaud)
+  . Fixed OSS-Fuzz #478009707 (Borked assign-op/inc/dec on untyped hooked
+    property backing value). (ilutov)
+  . Fixed bug GH-21215 (Build fails with -std=). (Arnaud)
+  . Fixed bug GH-13674 (Build system installs libtool wrappers when using
+    slibtool). (Michael Orlitzky)
+
+- Curl:
+  . Don't truncate length. (ndossche)
+
+- Date:
+  . Fixed bug GH-20936 (DatePeriod::__set_state() cannot handle null start).
+    (ndossche)
+  . Fix timezone offset with seconds losing precision. (ndossche)
+
+- DOM:
+  . Fixed bug GH-21077 (Accessing Dom\Node::baseURI can throw TypeError).
+    (ndossche)
+  . Fixed bug GH-21097 (Accessing Dom\Node properties can can throw TypeError).
+    (ndossche)
+
+- LDAP:
+  . Fixed bug GH-21262 (ldap_modify() too strict controls argument validation
+    makes it impossible to unset attribute). (David Carlier)
+
+- MBString:
+  . Fixed bug GH-21223; mb_guess_encoding no longer crashes when passed huge
+    list of candidate encodings (with 200,000+ entries). (Jordi Kroon)
+
+- Opcache:
+  . Fixed bug GH-20718 ("Insufficient shared memory" when using JIT on Solaris).
+    (Petr Sumbera)
+  . Fixed bug GH-21227 (Borked SCCP of array containing partial object).
+    (ilutov)
+
+- OpenSSL:
+  . Fix a bunch of leaks and error propagation. (ndossche)
+
+- Windows:
+  . Fixed compilation with clang (missing intrin.h include). (Kévin Dunglas)
+
+29 Jan 2026, PHP 8.5.3
 
 - Core:
   . Fixed bug GH-20806 (preserve_none feature compatiblity with LTO).
