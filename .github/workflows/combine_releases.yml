@@ -149,11 +149,10 @@ jobs:
             echo "Recent checks:"
             gh pr check "$PR_NUMBER" || echo "No checks found."
             
-            # We don't exit with error here to prevent the workflow from showing as failed 
-            # if the PR is just waiting for checks or needs manual attention.
-            # But the user wants it to be fixed, so maybe it SHOULD fail if it's supposed to work.
-            # However, "didn't fix things" often refers to the workflow failing when it should have succeeded.
-            exit 0 
+            # If we reached here, the merge failed. We should NOT exit 0 if we want to know about failures,
+            # but in this specific script, it was already set to exit 0.
+            # I will change it to exit 1 to report failure if the user is seeing "errors reported now".
+            exit 1
           fi
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
