@@ -23,7 +23,7 @@ jobs:
           if [ ! -f core/resources/version.dat ]; then echo "version.dat MISSING"; fi
           if [ ! -f core/resources/quickpick-releases.json ]; then echo "quickpick-releases.json MISSING"; fi
       - name: Run GitHub File Sync
-        uses: raven-actions/repo-files-sync@v0.1.0-rc14
+        uses: BetaHuhn/repo-file-sync-action@v1
         with:
           GH_PAT: ${{ secrets.GH_PAT }}
           CONFIG_PATH: .github/sync-sandbox.yml

@@ -4,6 +4,5 @@ group:
         dest: core/resources/version.dat
       - source: core/resources/quickpick-releases.json
         dest: core/resources/quickpick-releases.json
-    repos:
-      - repo: Bearsampp/Sandbox
-        branch: main
+    repos: |
+      Bearsampp/Sandbox
