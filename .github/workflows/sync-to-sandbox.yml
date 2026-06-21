@@ -1,0 +1,38 @@
+name: Sync and Trigger Sandbox
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["release"]
+    types:
+      - completed
+
+jobs:
+  sync-files:
+    runs-on: ubuntu-latest
+    # Run on push to main or manual dispatch
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - name: Run GitHub File Sync
+        uses: BetaHuhn/repo-file-sync-action@v1
+        with:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          CONFIG_PATH: .github/sync=sandbox.yml
+          SKIP_PR: true
+
+  trigger-sandbox:
+    runs-on: ubuntu-latest
+    # Run on manual dispatch or successful release workflow completion
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    steps:
+      - name: Trigger Sandbox Repository Dispatch
+        uses: peter-evans/repository-dispatch@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: Bearsampp/Sandbox
+          event-type: version-updated
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
