@@ -32,4 +32,4 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           repository: Bearsampp/Sandbox
           event-type: version-updated
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "triggering_workflow": "Quickpick Combine Releases"}'

@@ -56,6 +56,18 @@ if os.environ.get('GH_PAT'):
 else:
     print("No GitHub PAT found, using unauthenticated requests")
 
+# Helper function to sanitize strings by removing null bytes and other problematic characters
+def sanitize_string(s):
+    if s is None:
+        return None
+    if isinstance(s, str):
+        # Remove null bytes and other common non-printable characters that might cause issues
+        # Also remove any literal \0 or \u0000 strings just in case
+        s = s.replace('\0', '').replace('\\0', '').replace('\\u0000', '')
+        # Remove any other control characters except newline and carriage return
+        return "".join(ch for ch in s if ord(ch) >= 32 or ch in '\n\r')
+    return s
+
 # Rate limiting helper
 def make_api_request(url, headers):
     try:
@@ -109,8 +121,10 @@ def fetch_module_versions_from_properties(owner, repo):
         
         response = requests.get(url, timeout=30)
         if response.status_code == 200:
+            # Sanitize the entire content
+            content = sanitize_string(response.text)
             properties = {}
-            for line in response.text.splitlines():
+            for line in content.splitlines():
                 line = line.strip()
                 if line and '=' in line and not line.startswith('#'):
                     # The format is version = url
@@ -341,6 +355,21 @@ try:
 
             if response.status_code == 200:
                 releases = response.json()
+                
+                # Sanitize all strings in the releases data
+                if isinstance(releases, list):
+                    for release in releases:
+                        if 'tag_name' in release:
+                            release['tag_name'] = sanitize_string(release['tag_name'])
+                        if 'created_at' in release:
+                            release['created_at'] = sanitize_string(release['created_at'])
+                        if 'assets' in release:
+                            for asset in release['assets']:
+                                if 'name' in asset:
+                                    asset['name'] = sanitize_string(asset['name'])
+                                if 'browser_download_url' in asset:
+                                    asset['browser_download_url'] = sanitize_string(asset['browser_download_url'])
+                
                 module_name = repo
                 
                 # Fetch versions from releases.properties if available
