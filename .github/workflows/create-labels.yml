@@ -2,7 +2,7 @@ name: Create labels
 
 on:
   workflow_run:
-    workflows: ["Sync and Trigger Sandbox"]
+    workflows: ["Sync Files"]
     types:
       - completed
 
