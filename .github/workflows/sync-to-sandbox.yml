@@ -15,7 +15,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
       - name: Run GitHub File Sync
-        uses: raven-actions/repo-files-sync@v0.1.0
+        uses: raven-actions/repo-files-sync@v0.1.0-rc14
         with:
           GH_PAT: ${{ secrets.GH_PAT }}
           CONFIG_PATH: .github/sync-sandbox.yml
