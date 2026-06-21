@@ -1411,5 +1411,82 @@ tasks.named('wrapper') {
     enabled = false
 }
 
+// Task: postBuildSync
+task postBuildSync {
+    group = 'build'
+    description = 'Sync bearsampp.exe to sandbox and run fix-icon.bat'
+
+    doLast {
+        println "\n*** Post-Build Sync to Sandbox ***"
+        
+        def sandboxDir = file("${projectDir}/../sandbox")
+        def sourceExe = file("${projectDir}/base/bearsampp.exe")
+        def destExe = file("${sandboxDir}/bearsampp.exe")
+        
+        if (!sourceExe.exists()) {
+            println "ERROR: Source executable not found at ${sourceExe}"
+            return
+        }
+        
+        if (!sandboxDir.exists()) {
+            println "ERROR: Sandbox directory not found at ${sandboxDir}"
+            return
+        }
+
+        println "* Copying bearsampp.exe to sandbox..."
+        copy {
+            from sourceExe
+            into sandboxDir
+        }
+        
+        if (destExe.exists()) {
+            println "* bearsampp.exe successfully copied to ${sandboxDir}"
+            
+            def fixIconBat = file("${sandboxDir}/fix-icon.bat")
+            if (fixIconBat.exists()) {
+                println "* Running fix-icon.bat in sandbox..."
+                def process = new ProcessBuilder('cmd', '/c', 'fix-icon.bat')
+                    .directory(sandboxDir)
+                    .redirectErrorStream(true)
+                    .start()
+                
+                process.inputStream.eachLine { println "  > ${it}" }
+                process.waitFor()
+                
+                if (process.exitValue() == 0) {
+                    println "* fix-icon.bat executed successfully"
+                    
+                    // New step: Copy app.ico from current project to sandbox root as favicon.ico
+                    def sourceFavicon = file("${projectDir}/core/resources/homepage/img/icons/app.ico")
+                    def destFavicon = file("${sandboxDir}/favicon.ico")
+                    
+                    if (sourceFavicon.exists()) {
+                        println "* Copying app.ico from current project to sandbox root as favicon.ico..."
+                        copy {
+                            from sourceFavicon
+                            into sandboxDir
+                            rename { 'favicon.ico' }
+                        }
+                        println "* favicon.ico successfully updated in ${sandboxDir} from ${sourceFavicon}"
+                    } else {
+                        println "WARNING: Source app.ico not found at ${sourceFavicon}"
+                    }
+                    
+                    println "* SUCCESS: bearsampp.exe synced and icons fixed in sandbox"
+                } else {
+                    println "* ERROR: fix-icon.bat failed with exit code ${process.exitValue()}"
+                }
+            } else {
+                println "WARNING: fix-icon.bat not found in ${sandboxDir}"
+            }
+        } else {
+            println "ERROR: Failed to copy bearsampp.exe to sandbox"
+        }
+    }
+}
+
 // Default task
 defaultTasks 'release'
+
+// Finalize all build tasks with postBuildSync
+[buildFull, buildBasic, buildLite].each { it.finalizedBy postBuildSync }
