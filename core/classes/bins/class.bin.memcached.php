@@ -59,7 +59,7 @@ class BinMemcached extends Module
 
         $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
         $this->service = new Win32Service(self::SERVICE_NAME);
-        $this->log = $bearsamppRoot->getLogsPath() . '/memcached.log';
+        $this->log = Path::getLogsPath() . '/memcached.log';
 
         if ($this->bearsamppConfRaw !== false) {
             $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
@@ -101,8 +101,8 @@ class BinMemcached extends Module
         $nssm->setBinPath($this->exe);
         $nssm->setParams(sprintf(self::SERVICE_PARAMS, $this->memory, $this->port));
         $nssm->setStart(Nssm::SERVICE_DEMAND_START);
-        $nssm->setStdout($bearsamppRoot->getLogsPath() . '/memcached.out.log');
-        $nssm->setStderr($bearsamppRoot->getLogsPath() . '/memcached.err.log');
+        $nssm->setStdout(Path::getLogsPath() . '/memcached.out.log');
+        $nssm->setStderr(Path::getLogsPath() . '/memcached.err.log');
 
         $this->service->setNssm($nssm);
     }

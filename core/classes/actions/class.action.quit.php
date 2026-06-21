@@ -199,6 +199,10 @@ class ActionQuit
         $this->splash->setTextLoading($bearsamppLang->getValue(Lang::EXIT_STOP_OTHER_PROCESS_TEXT));
         Win32Ps::killBins(true);
 
+        // Explicitly kill NodeJS if still running (it's not a Windows service)
+        Log::trace('Explicitly terminating NodeJS processes');
+        Win32Ps::killBins(['node.exe']);
+
         // Perform cleanup verification in background (non-blocking)
         $this->splash->setTextLoading('Performing cleanup verification...');
         $this->performQuickCleanupVerification($allServices);
@@ -391,15 +395,15 @@ class ActionQuit
 
         // Check common symlink locations
         $symlinkPaths = [
-            $bearsamppRoot->getCurrentPath() . '/apache',
-            $bearsamppRoot->getCurrentPath() . '/php',
-            $bearsamppRoot->getCurrentPath() . '/mysql',
-            $bearsamppRoot->getCurrentPath() . '/mariadb',
-            $bearsamppRoot->getCurrentPath() . '/postgresql',
-            $bearsamppRoot->getCurrentPath() . '/nodejs',
-            $bearsamppRoot->getCurrentPath() . '/memcached',
-            $bearsamppRoot->getCurrentPath() . '/mailpit',
-            $bearsamppRoot->getCurrentPath() . '/xlight'
+            Path::getRootPath() . '/apache',
+            Path::getRootPath() . '/php',
+            Path::getRootPath() . '/mysql',
+            Path::getRootPath() . '/mariadb',
+            Path::getRootPath() . '/postgresql',
+            Path::getRootPath() . '/nodejs',
+            Path::getRootPath() . '/memcached',
+            Path::getRootPath() . '/mailpit',
+            Path::getRootPath() . '/xlight'
         ];
 
         foreach ($symlinkPaths as $path) {
@@ -549,7 +553,7 @@ class ActionQuit
 
         try {
             $procs = Win32Ps::getListProcs();
-            $bearsamppPath = strtolower(Path::formatUnixPath($bearsamppRoot->getRootPath()));
+            $bearsamppPath = strtolower(Path::formatUnixPath(Path::getRootPath()));
             $currentPid = Win32Ps::getCurrentPid();
 
             foreach ($procs as $proc) {

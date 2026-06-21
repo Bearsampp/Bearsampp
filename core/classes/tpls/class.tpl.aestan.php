@@ -190,7 +190,7 @@ class TplAestan
         global $bearsamppRoot, $bearsamppConfig;
 
         if ($local) {
-            $link = $bearsamppRoot->getLocalUrl($link);
+            $link = Path::getLocalUrl($link);
         }
 
         return self::getItemExe(

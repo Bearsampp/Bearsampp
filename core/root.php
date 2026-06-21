@@ -138,6 +138,7 @@ if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1]
  * Includes the Root class file and creates an instance of Root.
  * Registers the root directory of the application.
  */
+require_once dirname(__FILE__) . '/classes/class.path.php';
 require_once dirname(__FILE__) . '/classes/class.root.php';
 $bearsamppRoot = new Root(dirname(__FILE__));
 $bearsamppRoot->register();

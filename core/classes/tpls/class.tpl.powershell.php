@@ -101,13 +101,13 @@ class TplPowerShell
             $regContent .= '"WindowSize"=dword:001e006e' . "\r\n";
         }
 
-        // Register as a valid TrueType console font (HKCU only — no elevation needed)
+        // Register as a valid TrueType console font (HKCU only â€” no elevation needed)
         $regContent .= "\r\n[HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Console\\TrueTypeFont]\r\n";
         $regContent .= '"0"="' . $fontName . '"' . "\r\n";
         $regContent .= '"00"="' . $fontName . '"' . "\r\n";
         $regContent .= '"000"="' . $fontName . '"' . "\r\n";
 
-        // Write and import the .reg file in a single process — zero flashing windows
+        // Write and import the .reg file in a single process â€” zero flashing windows
         $tmpReg = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'bearsampp_console_font.reg';
 
         $bytes = file_put_contents($tmpReg, $regContent);
@@ -175,7 +175,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleDefault(),
                 null, // self::ICON_APP - Icon not supported in native PowerShell console
                 $bearsamppTools->getPowerShell()->getShell(),
-                $bearsamppRoot->getRootPath()
+                Path::getRootPath()
             ) . PHP_EOL;
     }
 
@@ -200,7 +200,7 @@ class TplPowerShell
                     $bearsamppTools->getPowerShell()->getTabTitlePowershell(),
                     null, // self::ICON_POWERSHELL - Icon not supported in native PowerShell console
                     $powerShellPath,
-                    $bearsamppRoot->getRootPath()
+                    Path::getRootPath()
                 ) . PHP_EOL;
         }
 
@@ -351,7 +351,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleGit(),
                 null, // self::ICON_GIT - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -380,7 +380,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleNodejs(),
                 null, // self::ICON_NODEJS - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -408,7 +408,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleComposer(),
                 null, // self::ICON_COMPOSER - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -436,7 +436,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitlePython(),
                 null, // self::ICON_PYTHON - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -480,7 +480,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleRuby(),
                 null, // self::ICON_RUBY - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -508,7 +508,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitlePerl(),
                 null, // self::ICON_PERL - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -538,7 +538,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleGhostscript(),
                 null, // self::ICON_GHOSTSCRIPT - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 
@@ -568,7 +568,7 @@ class TplPowerShell
                 $bearsamppTools->getPowerShell()->getTabTitleNgrok(),
                 null, // self::ICON_NGROK - Icon not supported in native PowerShell console
                 $shell,
-                $bearsamppRoot->getWwwPath()
+                Path::getWwwPath()
             ) . PHP_EOL;
     }
 

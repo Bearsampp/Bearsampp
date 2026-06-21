@@ -66,7 +66,7 @@ class BinMailpit extends Module
 
         $this->enable  = $this->enable && $bearsamppConfig->getRaw( self::ROOT_CFG_ENABLE );
         $this->service = new Win32Service( self::SERVICE_NAME );
-        $this->log     = $bearsamppRoot->getLogsPath() . '/mailpit.log';
+        $this->log     = Path::getLogsPath() . '/mailpit.log';
 
         if ( $this->bearsamppConfRaw !== false ) {
             $this->exe      = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
@@ -127,8 +127,8 @@ class BinMailpit extends Module
         $nssm->setBinPath( $this->exe );
         $nssm->setParams( sprintf( self::SERVICE_PARAMS, $this->listen, $this->uiPort, $this->listen, $this->smtpPort, $this->webRoot ) );
         $nssm->setStart( Nssm::SERVICE_DEMAND_START );
-        $nssm->setStdout( $bearsamppRoot->getLogsPath() . '/mailpit.out.log' );
-        $nssm->setStderr( $bearsamppRoot->getLogsPath() . '/mailpit.err.log' );
+        $nssm->setStdout( Path::getLogsPath() . '/mailpit.out.log' );
+        $nssm->setStderr( Path::getLogsPath() . '/mailpit.err.log' );
 
         $this->service->setNssm( $nssm );
     }

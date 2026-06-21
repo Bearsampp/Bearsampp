@@ -51,7 +51,7 @@ class Config
         global $bearsamppRoot;
 
         // Set current timezone to match whats in .conf
-        $this->raw = parse_ini_file($bearsamppRoot->getConfigFilePath());
+        $this->raw = parse_ini_file(Path::getConfigFilePath());
         date_default_timezone_set($this->getTimezone());
     }
 
@@ -87,14 +87,14 @@ class Config
         global $bearsamppRoot;
 
         Log::trace('Replace config:');
-        $content = file_get_contents($bearsamppRoot->getConfigFilePath());
+        $content = file_get_contents(Path::getConfigFilePath());
         foreach ($params as $key => $value) {
             $content = preg_replace('/^' . $key . '\s=\s.*/m', $key . ' = ' . '"' . $value.'"', $content, -1, $count);
             Log::trace('## ' . $key . ': ' . $value . ' (' . $count . ' replacements done)');
             $this->raw[$key] = $value;
         }
 
-        file_put_contents($bearsamppRoot->getConfigFilePath(), $content);
+        file_put_contents(Path::getConfigFilePath(), $content);
     }
 
     /**

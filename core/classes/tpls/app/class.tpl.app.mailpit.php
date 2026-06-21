@@ -99,7 +99,7 @@ class TplAppMailpit
                     $bearsamppLang->getValue(Lang::MAILPIT),
                     $bearsamppConfig->getBrowser(),
                     TplAestan::GLYPH_WEB_PAGE,
-                    $bearsamppRoot->getLocalUrl() . ':' . $bearsamppBins->getMailpit()->getUiPort() . '/' . $bearsamppBins->getMailpit()->getWebRoot()
+                    Path::getLocalUrl() . ':' . $bearsamppBins->getMailpit()->getUiPort() . '/' . $bearsamppBins->getMailpit()->getWebRoot()
                 ) . PHP_EOL;
 
             // Log
@@ -210,7 +210,7 @@ class TplAppMailpit
                 array(sprintf($bearsamppLang->getValue(Lang::MENU_CHECK_PORT), $bearsamppBins->getMailpit()->getSmtpPort()), TplAestan::GLYPH_LIGHT)
             ) . PHP_EOL .
             $tplChangePort[TplApp::SECTION_CALL] . PHP_EOL .
-            TplAestan::getItemNotepad($bearsamppLang->getValue(Lang::MENU_UPDATE_ENV_PATH), $bearsamppRoot->getRootPath() . '/nssmEnvPaths.dat') . PHP_EOL;
+            TplAestan::getItemNotepad($bearsamppLang->getValue(Lang::MENU_UPDATE_ENV_PATH), Path::getRootPath() . '/nssmEnvPaths.dat') . PHP_EOL;
 
         if (!$isInstalled) {
             $tplInstallService = TplApp::getActionMulti(

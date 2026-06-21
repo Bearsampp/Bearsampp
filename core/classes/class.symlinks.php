@@ -137,9 +137,9 @@ class Symlinks
         }
 
         $allowedBases = [
-            realpath($bearsamppRoot->getAppsPath()),
-            realpath($bearsamppRoot->getBinPath()),
-            realpath($bearsamppRoot->getToolsPath())
+            realpath(Path::getAppsPath()),
+            realpath(Path::getBinPath()),
+            realpath(Path::getToolsPath())
         ];
 
         foreach ($allowedBases as $base) {
@@ -250,9 +250,9 @@ class Symlinks
         global $bearsamppRoot, $bearsamppCore;
 
         // Check to see if purging is necessary
-        $appsPath  = $bearsamppRoot->getAppsPath();
-        $binPath   = $bearsamppRoot->getBinPath();
-        $toolsPath = $bearsamppRoot->getToolsPath();
+        $appsPath  = Path::getAppsPath();
+        $binPath   = Path::getBinPath();
+        $toolsPath = Path::getToolsPath();
 
         $array = [
             self::APACHE_SYMLINK => $binPath . '/apache/current',

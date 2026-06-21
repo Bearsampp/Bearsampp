@@ -184,9 +184,9 @@ class OpenSsl
     {
         global $bearsamppRoot;
 
-        $ppkPath = $bearsamppRoot->getSslPath() . '/' . $name . '.ppk';
-        $pubPath = $bearsamppRoot->getSslPath() . '/' . $name . '.pub';
-        $crtPath = $bearsamppRoot->getSslPath() . '/' . $name . '.crt';
+        $ppkPath = Path::getSslPath() . '/' . $name . '.ppk';
+        $pubPath = Path::getSslPath() . '/' . $name . '.pub';
+        $crtPath = Path::getSslPath() . '/' . $name . '.crt';
 
         return is_file($ppkPath) && is_file($pubPath) && is_file($crtPath);
     }

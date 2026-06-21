@@ -79,7 +79,7 @@ class Homepage
     public function getPageUrl($query)
     {
         global $bearsamppRoot;
-        return $bearsamppRoot->getLocalUrl($this->getPageQuery($query));
+        return Path::getLocalUrl($this->getPageQuery($query));
     }
 
     /**
@@ -105,8 +105,8 @@ class Homepage
     public function refreshCommonsJsContent()
     {
         Util::replaceInFile(Path::getHomepagePath() . '/js/_commons.js', array(
-            '/^\s\surl:.*/' => '  url: "' . Path::getWebResourcesPath() . '/ajax.php"',
-            '/AJAX_URL.*=.*/' => 'const AJAX_URL = "' . Path::getWebResourcesPath() . '/ajax.php"',
+            '/^\s\surl:.*/' => '  url: "' . Path::getWebResourcesUrl() . '/ajax.php",',
+            '/AJAX_URL.*=.*/' => 'const AJAX_URL = "' . Path::getWebResourcesUrl() . '/ajax.php"',
         ));
     }
 }
