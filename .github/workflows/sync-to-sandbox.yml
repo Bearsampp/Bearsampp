@@ -16,6 +16,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          ref: main
+      - name: Verify files exist
+        run: |
+          ls -R core/resources/
+          if [ ! -f core/resources/version.dat ]; then echo "version.dat MISSING"; fi
+          if [ ! -f core/resources/quickpick-releases.json ]; then echo "quickpick-releases.json MISSING"; fi
       - name: Run GitHub File Sync
         uses: raven-actions/repo-files-sync@v0.1.0-rc14
         with:
