@@ -1,10 +1,8 @@
 group:
-
-    # Sandbox update versions
-    - files:
-          - source: core/resources/version.dat
-            dest: core/resources/version.dat
-          - source: core/resources/quickpick-releases.json
-            dest: core/resources/quickpick-releases.json
-      repos: |
-          Bearsampp/Sandbox
+  - files:
+      - source: core/resources/version.dat
+        dest: core/resources/version.dat
+      - source: core/resources/quickpick-releases.json
+        dest: core/resources/quickpick-releases.json
+    repos:
+      - Bearsampp/Sandbox
