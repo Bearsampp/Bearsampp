@@ -97,6 +97,10 @@ ext {
     toolPowershellUrl = 'https://github.com/Bearsampp/module-powershell/releases'
     toolPythonUrl = 'https://github.com/Bearsampp/module-python/releases'
     toolRubyUrl = 'https://github.com/Bearsampp/module-ruby/releases'
+
+    // mkcert
+    mkcertReleaseApiUrl = 'https://api.github.com/repos/FiloSottile/mkcert/releases/latest'
+    mkcertFallbackUrl = 'https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe'
 }
 
 // Helper function to download and extract modules
@@ -176,6 +180,44 @@ def downloadModule(String releasesUrl, String version, File destDir) {
         destDir.mkdirs()
         println "WARNING: Created empty directory as fallback"
     }
+}
+
+// Helper function to download mkcert executable
+def downloadMkcert(File destFile) {
+    destFile.parentFile.mkdirs()
+
+    def mkcertUrl = ''
+    try {
+        def response = new URL(mkcertReleaseApiUrl).getText(
+            requestProperties: [
+                'Accept': 'application/vnd.github+json',
+                'User-Agent': 'Bearsampp-build'
+            ]
+        )
+        def releaseData = new groovy.json.JsonSlurper().parseText(response)
+        def winAsset = releaseData?.assets?.find { asset ->
+            asset?.name?.endsWith('windows-amd64.exe')
+        }
+        if (winAsset?.browser_download_url) {
+            mkcertUrl = winAsset.browser_download_url
+            println "Found latest mkcert download URL: ${mkcertUrl}"
+        }
+    } catch (Exception e) {
+        println "WARNING: Failed to fetch latest mkcert metadata: ${e.message}"
+    }
+
+    if (!mkcertUrl) {
+        mkcertUrl = mkcertFallbackUrl
+        println "Using mkcert fallback URL: ${mkcertUrl}"
+    }
+
+    ant.get(src: mkcertUrl, dest: destFile, usetimestamp: true)
+
+    if (!destFile.exists()) {
+        throw new GradleException("Failed to download mkcert.exe to ${destFile}")
+    }
+
+    println "mkcert downloaded to: ${destFile}"
 }
 
 // Helper function to compress using 7-Zip
@@ -731,6 +773,10 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         } else {
             println "openssl.cfg already exists."
         }
+
+        def mkcertExe = file("${releaseBasePath}/core/libs/mkcert/mkcert.exe")
+        println "Downloading mkcert.exe..."
+        downloadMkcert(mkcertExe)
 
         // Debug: Check what files exist in base/ before copying
         println "Checking base directory contents..."
