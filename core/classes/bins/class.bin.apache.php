@@ -755,7 +755,7 @@ class BinApache extends Module
             '    SSLProtocol all -SSLv2' . PHP_EOL .
             '    SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5' . PHP_EOL .
             '    SSLCertificateFile "' . Path::getSslPath() . '/' . $serverName . '.crt"' . PHP_EOL .
-            '    SSLCertificateKeyFile "' . Path::getSslPath() . '/' . $serverName . '.pub"' . PHP_EOL .
+            '    SSLCertificateKeyFile "' . Path::getSslPath() . '/' . $serverName . '.ppk"' . PHP_EOL .
             '    BrowserMatch "MSIE [2-5]" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0' . PHP_EOL .
             '    CustomLog "' . Path::getLogsPath() . '/' . $serverName . '_sslreq.log" "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"' . PHP_EOL . PHP_EOL .
             '    <Directory "' . $documentRoot . '">' . PHP_EOL .

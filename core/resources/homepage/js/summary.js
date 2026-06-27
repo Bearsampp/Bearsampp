@@ -6,75 +6,14 @@
  * Github: https://github.com/Bearsampp
  */
 
-async function getSummaryStatus() {
-    const url = AJAX_URL;
-    const proc = 'summary';
-    const senddata = new URLSearchParams();
-    senddata.append(`proc`, proc);
-    const options = {
-        method: 'POST',
-        body: senddata
-    }
-    let response = await fetch(url, options);
-    if (!response.ok) {
-        console.log('Error receiving from ajax.php');
-    } else {
-        let myajaxresponse = await response.text();
-        let data;
-        try {
-            data = JSON.parse(myajaxresponse);
-        } catch (error) {
-            console.error('Failed to parse response:', error);
-        }
-        let q = document.querySelector('.summary-binapache');
-        let ql = q.querySelector('.loader');
-        ql.remove();
-        q.insertAdjacentHTML('beforeend', data.binapache);
-
-        q = document.querySelector('.summary-binxlight');
-        ql = q.querySelector('.loader');
-        ql.remove();
-        q.insertAdjacentHTML('beforeend', data.binxlight);
-
-        q = document.querySelector('.summary-binmailpit');
-        ql = q.querySelector('.loader');
-        ql.remove();
-        q.insertAdjacentHTML('beforeend', data.binmailpit);
-
-        q = document.querySelector('.summary-binmariadb');
-        ql = q.querySelector('.loader');
-        ql.remove();
-        q.insertAdjacentHTML('beforeend', data.binmariadb);
-
-        q = document.querySelector('.summary-binmysql');
-        ql = q.querySelector('.loader');
-        ql.remove();
-        q.insertAdjacentHTML('beforeend', data.binmysql);
-
-        q = document.querySelector('.summary-binpostgresql');
-        q.insertAdjacentHTML('beforeend', data.binpostgresql);
-        ql = q.querySelector('.loader');
-        ql.remove();
-
-        q = document.querySelector('.summary-binmemcached');
-        ql = q.querySelector('.loader');
-        ql.remove();
-        q.insertAdjacentHTML('beforeend', data.binmemcached);
-
-        q = document.querySelector('.summary-binnodejs');
-        ql = q.querySelector('.loader');
-        ql.remove();
-        q.insertAdjacentHTML('beforeend', data.binnodejs);
-
-        q = document.querySelector('.summary-binphp');
-        ql = q.querySelector('.loader');
-        ql.remove();
-        q.insertAdjacentHTML('beforeend', data.binphp);
-    }
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    if (document.querySelector('.summary').className === 'row summary') {
-        getSummaryStatus();
-    }
-})
+createStatusFetcher('summary', [
+  { data: 'binapache', selector: 'binapache' },
+  { data: 'binxlight', selector: 'binxlight' },
+  { data: 'binmailpit', selector: 'binmailpit' },
+  { data: 'binmariadb', selector: 'binmariadb' },
+  { data: 'binmysql', selector: 'binmysql' },
+  { data: 'binpostgresql', selector: 'binpostgresql' },
+  { data: 'binmemcached', selector: 'binmemcached' },
+  { data: 'binnodejs', selector: 'binnodejs' },
+  { data: 'binphp', selector: 'binphp' }
+]);

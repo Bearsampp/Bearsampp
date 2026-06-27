@@ -19,8 +19,11 @@
  * @link       https://bearsampp.com
  */
 
-// Set appropriate headers for AJAX response
-header('Content-Type: application/json');
+        // Set headers for JSON streaming
+        header('Content-Type: application/json');
+        header('X-Content-Type-Options: nosniff');
+        header('Cache-Control: no-cache');
+        header('Connection: keep-alive');
 
 // Initialize response array
 $response = array();
@@ -35,8 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Only load the QuickPick class when needed
         include_once __DIR__ . '/../../../classes/actions/class.action.quickPick.php';
         
-        // Start output buffering to capture any unwanted output
-        ob_start();
+        // Ensure any output buffering is cleared and we're ready for streaming
+        while (ob_get_level() > 0) {
+            ob_end_flush();
+        }
         
         try {
             global $bearsamppConfig;
@@ -88,9 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $response = ['error' => 'Exception: ' . $e->getMessage()];
             error_log('Exception in QuickPick: ' . $e->getMessage());
         }
-        
-        // End output buffering and discard any remaining output
-        ob_end_clean();
     } else {
         $response = ['error' => 'Invalid module or version.'];
     }
@@ -98,7 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = ['error' => 'Invalid request method.'];
 }
 
-// Send the JSON response
-echo json_encode($response);
+// Send the final JSON response - followed by newline to be consistent with progress chunks
+echo json_encode($response) . PHP_EOL;
 exit;
-

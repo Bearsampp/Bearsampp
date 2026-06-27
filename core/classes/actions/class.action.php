@@ -30,6 +30,7 @@ class Action
     const EDIT_VHOST = 'editVhost';
     const ENABLE = 'enable';
     const EXEC = 'exec';
+    const MAKE_ROOT_CA = 'makeRootCA';
     const GEN_SSL_CERTIFICATE = 'genSslCertificate';
     const DEL_SSL_CERTIFICATE = 'delSslCertificate';
     const LAUNCH_STARTUP = 'launchStartup';
@@ -100,6 +101,10 @@ class Action
                 global $bearsamppRoot, $bearsamppOpenSsl;
                 $bearsamppRoot->loadOpenSsl();
                 $bearsamppOpenSsl->genSslCertificate();
+            } elseif ($action == self::MAKE_ROOT_CA) {
+                global $bearsamppRoot, $bearsamppOpenSsl;
+                $bearsamppRoot->loadOpenSsl();
+                $bearsamppOpenSsl->makeRootCa();
             } elseif ($action == self::DEL_SSL_CERTIFICATE) {
                 global $bearsamppRoot, $bearsamppOpenSsl;
                 $bearsamppRoot->loadOpenSsl();

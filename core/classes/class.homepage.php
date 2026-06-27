@@ -39,6 +39,9 @@ class Homepage
 
         $page = UtilInput::cleanGetVar('p');
         $this->page = !empty($page) && in_array($page, $this->pageList) ? $page : self::PAGE_INDEX;
+
+        // Ensure JS files are always up to date with the current URL/protocol
+        $this->refreshCommonsJsContent();
     }
 
     /**
@@ -100,13 +103,10 @@ class Homepage
     }
 
     /**
-     * Refreshes the commons JavaScript content by updating the _commons.js file.
+     * Refreshes the commons JavaScript content by updating the _commons.js and quickpick.js files.
      */
     public function refreshCommonsJsContent()
     {
-        Util::replaceInFile(Path::getHomepagePath() . '/js/_commons.js', array(
-            '/^\s\surl:.*/' => '  url: "' . Path::getWebResourcesUrl() . '/ajax.php",',
-            '/AJAX_URL.*=.*/' => 'const AJAX_URL = "' . Path::getWebResourcesUrl() . '/ajax.php"',
-        ));
+        // Redundant with global AJAX_URL in homepage.php
     }
 }

@@ -114,9 +114,9 @@ foreach ($bearsamppBins->getApache()->getWwwDirectories() as $wwwDirectory) {
  */
 foreach ($bearsamppBins->getApache()->getVhostsUrl() as $vhost => $enabled) {
     if ($enabled) {
-        $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="http://' . $vhost . '"><i class="fa-regular fa-circle-check"></i> ' . $vhost . '</a></div>';
+        $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="//' . $vhost . '"><i class="fa-regular fa-circle-check"></i> ' . $vhost . '</a></div>';
     } else {
-        $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="http://' . $vhost . '"><i class="fa-regular fa-circle"></i> ' . $vhost . '</a></div>';
+        $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="//' . $vhost . '"><i class="fa-regular fa-circle"></i> ' . $vhost . '</a></div>';
     }
 }
 
@@ -124,4 +124,3 @@ foreach ($bearsamppBins->getApache()->getVhostsUrl() as $vhost => $enabled) {
  * Output the result array as a JSON-encoded string.
  */
 echo json_encode($result);
-

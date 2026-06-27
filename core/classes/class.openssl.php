@@ -23,6 +23,159 @@ class OpenSsl
     private $wbDelSslProgressBar;
     private $wbDelSslBtnDelete;
     private $wbDelSslBtnCancel;
+    private $rootCaName = 'BearsamppRootCA';
+
+
+    /**
+     * Ensures that the mkcert executable exists, attempting to download it if missing.
+     *
+     * @return bool True if mkcert exists or was successfully downloaded.
+     */
+    private function ensureMkcertExeExists()
+    {
+        $mkcertExe = Path::getMkcertExe();
+        if (file_exists($mkcertExe)) {
+            return true;
+        }
+
+        Log::error('mkcert.exe missing at: ' . $mkcertExe . '. It must be fetched during build time (prepareBase/buildFull/buildLite).');
+        return false;
+    }
+
+    /**
+     * Ensures that the SSL directory exists, creating it if necessary.
+     *
+     * @return string The SSL path.
+     */
+    private function ensureSslDirExists()
+    {
+        $sslPath = Path::getSslPath();
+        if (!is_dir($sslPath)) {
+            Log::info('SSL directory missing, creating: ' . $sslPath);
+            if (mkdir($sslPath, 0700, true)) {
+                @chmod($sslPath, 0700);
+                // Create .gitignore if the directory was just created
+                $gitignorePath = $sslPath . '/.gitignore';
+                if (!file_exists($gitignorePath)) {
+                    file_put_contents($gitignorePath, '# git holder' . PHP_EOL);
+                }
+            } else {
+                Log::error('Failed to create SSL directory: ' . $sslPath);
+            }
+        } else {
+            // Even if directory exists, ensure .gitignore is present
+            $gitignorePath = $sslPath . '/.gitignore';
+            if (!file_exists($gitignorePath)) {
+                file_put_contents($gitignorePath, '# git holder' . PHP_EOL);
+            }
+        }
+
+        if (!is_readable($sslPath) || !is_writable($sslPath)) {
+            Log::warning('SSL directory is not fully accessible. Attempting to relax permissions: ' . $sslPath);
+
+            // Set permissive permissions for local dev environment (0755 allows owner RWX, group/others RX)
+            @chmod($sslPath, 0755);
+            clearstatcache(true, $sslPath);
+
+            if (!is_readable($sslPath) || !is_writable($sslPath)) {
+                Log::error('SSL directory is still not readable/writable after permission adjustment: ' . $sslPath);
+            }
+        }
+
+        return $sslPath;
+    }
+
+    /**
+     * Creates a new Root CA and reinstalls it, then rebuilds all certificates.
+     *
+     * @return bool True if successful.
+     */
+    public function makeRootCa()
+    {
+        if (!$this->ensureMkcertExeExists()) {
+            return false;
+        }
+        $destPath = Path::getSslPath();
+        $mkcertExe = Path::getMkcertExe();
+
+        Log::info('Creating new Root CA and installing it...');
+        
+        $rootCaPath = Path::getSslPath() . '/' . Path::getMkcertRootCaName();
+        $batch = 'SET "CAROOT=' . Path::formatWindowsPath(Path::getSslPath()) . '"' . PHP_EOL;
+        $batch .= '"' . $mkcertExe . '" -uninstall' . PHP_EOL;
+        $batch .= '"' . $mkcertExe . '" -install' . PHP_EOL;
+        $batch .= 'IF EXIST "' . Path::formatWindowsPath($rootCaPath) . '" (ECHO OK)' . PHP_EOL;
+        
+        // Wait for the Root CA file to appear or timeout
+        $result = Batch::exec('mkcertMakeRootCa', $batch);
+        
+        if (!file_exists($rootCaPath)) {
+            Log::error('Failed to create Root CA file at: ' . $rootCaPath);
+            return false;
+        }
+
+        // Display info about the new Root CA
+        $batch = 'SET "CAROOT=' . Path::formatWindowsPath(Path::getSslPath()) . '"' . PHP_EOL;
+        $batch .= '"' . $mkcertExe . '" -CAROOT' . PHP_EOL;
+        $caRootInfo = Batch::exec('mkcertCaRootInfo', $batch);
+        if ($caRootInfo && isset($caRootInfo[0])) {
+            Log::info('mkcert CAROOT is set to: ' . $caRootInfo[0]);
+        }
+
+        Log::info('Root CA created. Rebuilding all existing certificates and ensuring localhost exists...');
+        
+        // Ensure localhost is created/rebuilt
+        $this->createCrt('localhost');
+        
+        return $this->rebuildAllCerts();
+    }
+
+    /**
+     * Rebuilds all existing certificates in the SSL directory.
+     *
+     * @return bool True if all certificates were rebuilt successfully.
+     */
+    public function rebuildAllCerts()
+    {
+        $certs = $this->getCrts();
+        $success = true;
+
+        foreach ($certs as $cert) {
+            Log::info('Rebuilding certificate: ' . $cert);
+            if (!$this->createCrt($cert)) {
+                Log::error('Failed to rebuild certificate: ' . $cert);
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
+
+    /**
+     * Validates the certificate name to prevent command injection attacks.
+     * Requires names to start with alphanumeric character to prevent mkcert flag injection.
+     * Uses filesystem-safe whitelist (same as removeCrt) to support existing cert names
+     * and prevent CMD metacharacter injection. Allows: alphanumeric, dots, dashes, underscores.
+     *
+     * @param string $name The certificate name to validate.
+     * @return bool True if the name is valid, false otherwise.
+     */
+    private function validateCertificateName($name)
+    {
+        if (empty($name)) {
+            return false;
+        }
+
+        // Filesystem-safe whitelist with mandatory alphanumeric first character:
+        // - Prevents CLI flag injection (leading `-`)
+        // - Prevents relative path traversal (leading `.`)
+        // - Allows remaining chars to be alphanumeric, dots, dashes, underscores
+        if (!preg_match('/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/', $name)) {
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * Creates a certificate with the specified name and destination path.
@@ -33,65 +186,105 @@ class OpenSsl
      */
     public function createCrt($name, $destPath = null)
     {
-        $destPath = empty($destPath) ? Path::getSslPath() : $destPath;
+        Log::trace('createCrt called for: ' . $name . ($destPath ? ' (dest: ' . $destPath . ')' : ''));
 
-        $subject = '"/C=US/O=Bearsampp/CN=' . $name . '"';
-        $password = 'pass:bearsampp';
-        $ppkPath = '"' . $destPath . '/' . $name . '.ppk"';
-        $pubPath = '"' . $destPath . '/' . $name . '.pub"';
-        $crtPath = '"' . $destPath . '/' . $name . '.crt"';
-        $extension = 'SAN';
-        $exe = '"' . Path::getOpenSslExe() . '"';
-
-        // ext
-        $extContent = PHP_EOL . '[' . $extension . ']' . PHP_EOL;
-        $extContent .= 'subjectAltName=DNS:*.' . $name . ',DNS:' . $name . PHP_EOL;
-
-        // tmp openssl.cfg
-        $conf = Path::getTmpPath() . '/openssl_' . $name . '_' . UtilString::random() . '.cfg';
-        file_put_contents($conf, file_get_contents(Path::getOpenSslConf()) . $extContent);
-
-        // Properly quote the config path for batch commands
-        $confPath = '"' . $conf . '"';
-
-        // ppk - Updated for OpenSSL 3.x syntax
-        $batch = $exe . ' genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -aes256 -pass ' . $password . ' -out ' . $ppkPath . ' -config ' . $confPath . PHP_EOL;
-        $batch .= 'IF %ERRORLEVEL% GEQ 1 GOTO EOF' . PHP_EOL . PHP_EOL;
-
-        // pub
-        $batch .= $exe . ' rsa -in ' . $ppkPath . ' -passin ' . $password . ' -out ' . $pubPath . PHP_EOL . PHP_EOL;
-        $batch .= 'IF %ERRORLEVEL% GEQ 1 GOTO EOF' . PHP_EOL . PHP_EOL;
-
-        // crt
-        $batch .= $exe . ' req -x509 -nodes -sha256 -new -key ' . $pubPath . ' -out ' . $crtPath . ' -passin ' . $password;
-        $batch .= ' -subj ' . $subject . ' -reqexts ' . $extension . ' -extensions ' . $extension . ' -config ' . $confPath . PHP_EOL;
-        $batch .= 'IF %ERRORLEVEL% GEQ 1 GOTO EOF' . PHP_EOL . PHP_EOL;
-
-        $batch .= ':EOF' . PHP_EOL;
-        $batch .= 'SET RESULT=KO' . PHP_EOL;
-        $batch .= 'IF EXIST ' . $ppkPath . ' IF EXIST ' . $pubPath . ' IF EXIST ' . $crtPath . ' SET RESULT=OK' . PHP_EOL;
-        $batch .= 'ECHO %RESULT%';
-
-        Log::trace('Creating SSL Certificate for "' . $name . '"');
-        $result = Batch::exec('createCertificate', $batch);
-
-        if ($result === false) {
-            Log::error('Batch execution failed for SSL Certificate generation of "' . $name . '"');
+        if (!$this->validateCertificateName($name)) {
+            Log::error('Invalid certificate name: ' . $name);
             return false;
         }
 
-        if (!is_array($result)) {
-            Log::error('Batch output capture failed for SSL Certificate generation of "' . $name . '". Result: ' . var_export($result, true));
+        if (!$this->ensureMkcertExeExists()) {
+            return false;
+        }
+        if (empty($destPath)) {
+            $destPath = $this->ensureSslDirExists();
+        }
+        $mkcertExe = Path::getMkcertExe();
+
+        if (!$this->ensureRootCaExists($destPath)) {
+            Log::error('Failed to ensure Root CA exists for: ' . $name);
             return false;
         }
 
-        $success = isset($result[0]) && $result[0] == 'OK';
+        $crtPath = '"' . Path::formatWindowsPath($destPath . '/' . $name . '.crt') . '"';
+        $pubPath = '"' . Path::formatWindowsPath($destPath . '/' . $name . '.pub') . '"';
+        $keyPath = '"' . Path::formatWindowsPath($destPath . '/' . $name . '.ppk') . '"'; // Using .ppk as requested in previous tasks
+        $opensslExe = '"' . Path::formatWindowsPath(Path::getOpenSslExe()) . '"';
+
+        $batch = 'SET "CAROOT=' . Path::formatWindowsPath($destPath) . '"' . PHP_EOL;
+
+        $mkcertNames = '"' . $name . '"';
+        if ($name === 'localhost') {
+            $mkcertNames .= ' 127.0.0.1 ::1';
+        } else {
+            $mkcertNames .= ' "*.' . $name . '" localhost 127.0.0.1 ::1';
+        }
+
+        Log::trace('Executing mkcert for "' . $name . '"');
+        // Use -- to terminate flag parsing before hostname arguments as defense-in-depth
+        $batch .= '"' . $mkcertExe . '" -cert-file ' . $crtPath . ' -key-file ' . $keyPath . ' -- ' . $mkcertNames . PHP_EOL;
+        $batch .= $opensslExe . " rsa -in " . $keyPath . " -out " . $keyPath . " -passin pass:" . PHP_EOL;
+        $batch .= "COPY /Y " . $keyPath . " " . $pubPath . PHP_EOL;
+        $batch .= 'IF EXIST ' . $crtPath . ' IF EXIST ' . $keyPath . ' ECHO OK' . PHP_EOL;
+
+        Log::trace('Creating SSL Certificate for "' . $name . '" using mkcert. Batch content: ' . $batch);
+        $result = Batch::exec('createCertificateMkcert', $batch);
+
+        if ($result === false || !is_array($result)) {
+            Log::error('Batch execution failed for mkcert generation of "' . $name . '". Check logs for createCertificateMkcert.');
+            return false;
+        }
+
+        $success = false;
+        foreach ($result as $line) {
+            if (trim($line) === 'OK') {
+                $success = true;
+                break;
+            }
+        }
+        
         if (!$success) {
-            Log::error('SSL Certificate generation for "' . $name . '" failed. Batch output: ' . implode(' ', $result));
+            Log::error('mkcert generation for "' . $name . '" did not return OK. Output: ' . implode(' | ', $result));
         }
-        Log::trace('SSL Certificate generation for "' . $name . '": ' . ($success ? 'SUCCESS' : 'FAILURE'));
+        Log::trace('mkcert generation for "' . $name . '": ' . ($success ? 'SUCCESS' : 'FAILURE'));
 
         return $success;
+    }
+
+    /**
+     * Ensures that the Root CA exists, creating it if necessary.
+     *
+     * @param string $destPath The destination path.
+     * @return bool True if the Root CA exists or was created successfully.
+     */
+    private function ensureRootCaExists($destPath)
+    {
+        if (!$this->ensureMkcertExeExists()) {
+            return false;
+        }
+        $mkcertExe = Path::getMkcertExe();
+
+        $rootCaPath = $destPath . '/' . Path::getMkcertRootCaName(); // mkcert default root CA name
+        if (!file_exists($rootCaPath)) {
+            Log::info('Root CA missing at ' . $rootCaPath . '. Running mkcert -install');
+            $batch = 'SET "CAROOT=' . Path::formatWindowsPath($destPath) . '"' . PHP_EOL;
+            $batch .= '"' . $mkcertExe . '" -install' . PHP_EOL;
+            $batch .= 'IF EXIST "' . Path::formatWindowsPath($rootCaPath) . '" (ECHO OK)' . PHP_EOL;
+            $result = Batch::exec('mkcertInstall', $batch);
+            
+            if ($result === false) {
+                Log::error('Batch execution failed for mkcert -install');
+                return false;
+            }
+
+            // Re-check after installation
+            if (!file_exists($rootCaPath)) {
+                Log::error('Root CA still missing after mkcert -install at: ' . $rootCaPath);
+                return false;
+            }
+            Log::info('Root CA successfully created and verified.');
+        }
+        return true;
     }
 
     /**
@@ -182,13 +375,10 @@ class OpenSsl
      */
     public function existsCrt($name)
     {
-        global $bearsamppRoot;
-
         $ppkPath = Path::getSslPath() . '/' . $name . '.ppk';
-        $pubPath = Path::getSslPath() . '/' . $name . '.pub';
         $crtPath = Path::getSslPath() . '/' . $name . '.crt';
 
-        return is_file($ppkPath) && is_file($pubPath) && is_file($crtPath);
+        return is_file($ppkPath) && is_file($crtPath);
     }
 
     /**
@@ -269,7 +459,7 @@ class OpenSsl
      */
     public function getCrts()
     {
-        $sslPath = Path::getSslPath();
+        $sslPath = $this->ensureSslDirExists();
         $certs = [];
         if (is_dir($sslPath)) {
             $files = glob($sslPath . '/*.crt');
@@ -292,9 +482,21 @@ class OpenSsl
     public function isExpired($name)
     {
         $crtPath = Path::getSslPath() . '/' . $name . '.crt';
+        $pubPath = Path::getSslPath() . '/' . $name . '.pub';
+
         if (!is_file($crtPath)) {
             Log::trace('SSL certificate file missing: ' . $crtPath);
             return true;
+        }
+
+        if (!is_file($pubPath)) {
+            Log::trace('SSL public certificate file missing: ' . $pubPath);
+            return true;
+        }
+
+        if (!extension_loaded('openssl')) {
+            Log::warning('OpenSSL extension not loaded. Cannot parse certificate for expiry check. Assuming NOT expired if file exists.');
+            return false;
         }
 
         $crtContent = file_get_contents($crtPath);
@@ -334,7 +536,7 @@ class OpenSsl
             Log::warning('Attempted to remove protected "localhost" certificate. Operation cancelled.');
             return false;
         }
-        $destPath = empty($destPath) ? Path::getSslPath() : $destPath;
+        $destPath = empty($destPath) ? $this->ensureSslDirExists() : $destPath;
 
         // Basic validation for name to prevent arbitrary file deletion
         if (!preg_match('/^[a-zA-Z0-9._-]+$/', $name)) {
@@ -343,10 +545,10 @@ class OpenSsl
         }
 
         $ppkPath = $destPath . '/' . $name . '.ppk';
-        $pubPath = $destPath . '/' . $name . '.pub';
         $crtPath = $destPath . '/' . $name . '.crt';
+        $pubPath = $destPath . '/' . $name . '.pub';
 
         Log::info('Removing SSL certificate: ' . $name . ' from ' . $destPath);
-        return @unlink($ppkPath) && @unlink($pubPath) && @unlink($crtPath);
+        return @unlink($ppkPath) && @unlink($crtPath) && @unlink($pubPath);
     }
 }

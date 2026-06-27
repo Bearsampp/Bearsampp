@@ -23,27 +23,27 @@
     <div class="col-lg-6">
         <div class="list-group">
             <div class="list-group-item apache-checkport">
-                <?php echo $getLoader; ?>
+                <span class="status-content"><?php echo $getLoader; ?></span>
                 <i class="fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue( Lang::STATUS ); ?>
             </div>
             <div class="list-group-item apache-versions col">
               <span class="label-left col-1">
                 <i class="fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
               </span>
-                <span class="apache-version-list float-end col">
+                <span class="apache-version-list status-content float-end col">
                 <?php echo $getLoader; ?>
               </span>
             </div>
             <div class="list-group-item apache-modulescount">
-                <?php echo $getLoader; ?>
+                <span class="status-content"><?php echo $getLoader; ?></span>
                 <i class="fa-regular fa-file-code"></i>  <?php echo $bearsamppLang->getValue( Lang::MODULES ); ?>
             </div>
             <div class="list-group-item apache-aliasescount">
-                <?php echo $getLoader; ?>
+                <span class="status-content"><?php echo $getLoader; ?></span>
                 <i class="fa-solid fa-link"></i>  <?php echo $bearsamppLang->getValue( Lang::ALIASES ); ?>
             </div>
             <div class="list-group-item apache-vhostscount">
-                <?php echo $getLoader; ?>
+                <span class="status-content"><?php echo $getLoader; ?></span>
                 <i class="fa-solid fa-globe"></i>  <?php echo $bearsamppLang->getValue( Lang::VIRTUAL_HOSTS ); ?>
             </div>
         </div>
@@ -56,7 +56,7 @@
         </div>
     </div>
     <div class="row-fluid">
-        <div class="apache-moduleslist d-flex flex-wrap row-cols-md-5 row-cols-sm-2 row-cols-auto mb-2">
+        <div class="apache-moduleslist status-content d-flex flex-wrap row-cols-md-5 row-cols-sm-2 row-cols-auto mb-2">
             <?php echo $getLoader; ?>
         </div>
     </div>
@@ -68,7 +68,7 @@
         </div>
     </div>
     <div class="row-fluid">
-        <div class="col-lg-12 apache-aliaseslist d-flex flex-wrap mb-2">
+        <div class="col-lg-12 apache-aliaseslist status-content d-flex flex-wrap mb-2">
             <?php echo $getLoader; ?>
         </div>
     </div>
@@ -80,7 +80,7 @@
         </div>
     </div>
     <div class="row-fluid">
-        <div class="col-lg-12 apache-wwwdirectory d-flex flex-wrap mb-2">
+        <div class="col-lg-12 apache-wwwdirectory status-content d-flex flex-wrap mb-2">
             <?php echo $getLoader; ?>
         </div>
     </div>
@@ -92,7 +92,7 @@
         </div>
     </div>
     <div class="row-fluid">
-        <div class="col-lg-12 apache-vhostslist d-flex flex-wrap mb-2">
+        <div class="col-lg-12 apache-vhostslist status-content d-flex flex-wrap mb-2">
             <?php echo $getLoader; ?>
         </div>
     </div>

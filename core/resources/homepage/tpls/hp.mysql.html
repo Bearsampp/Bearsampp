@@ -20,14 +20,14 @@
   <div class="col-lg-6">
     <div class="list-group">
       <div class="list-group-item mysql-checkport">
-        <?php echo $getLoader; ?>
+        <span class="status-content"><?php echo $getLoader; ?></span>
         <i class="fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
       </div>
       <div class="list-group-item mysql-versions col">
         <span class="label-left col-1">
           <i class="fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
         </span>
-        <span class="mysql-version-list float-end col-11">
+        <span class="mysql-version-list status-content float-end col-11">
           <?php echo $getLoader; ?>
         </span>
       </div>

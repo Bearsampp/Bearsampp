@@ -481,29 +481,30 @@ class QuickPick
                     // Step 2: Trigger reload AFTER config update (reload will apply the new version)
                     Log::debug('Config updated successfully, triggering reload to apply changes...');
 
-                    // Send progress update to user - temporarily stop output buffering
-                    $obLevel = ob_get_level();
-                    while (ob_get_level() > 0) {
-                        ob_end_flush();
+                    // Send progress update to user - flush output
+                    if (ob_get_level() > 0) {
+                        ob_flush();
                     }
-
-                    echo json_encode(['phase' => 'updating', 'message' => 'Updating system configuration...']);
+                    echo json_encode(['phase' => 'updating', 'message' => 'Updating system configuration...']) . PHP_EOL;
                     flush();
-
-                    // Restart output buffering
-                    for ($i = 0; $i < $obLevel; $i++) {
-                        ob_start();
-                    }
 
                     // Note: User must manually reload from tray menu to activate the new version
                     Log::debug('Installation complete - user must manually reload from tray menu');
                     $response['reload_required'] = true;
+
+                    // Clear both disk and memory caches to ensure the UI shows correct icons and labels
+                    Log::debug('Clearing caches after module installation...');
+                    CacheManager::clearAll();
                 } else {
                     Log::error('Config update failed for module: ' . $module);
                     $response['reload_triggered'] = false;
                 }
             } else if (isset($response['success']) && $enhancedMode == 0) {
                 Log::debug('Enhanced mode disabled - skipping config update');
+                
+                // Even if not updating config, clear cache to be safe as new files were added
+                Log::debug('Clearing caches after module installation (Standard mode)...');
+                CacheManager::clearAll();
             }
 
             return $response;
@@ -577,15 +578,15 @@ class QuickPick
     Log::debug('File extension: ' . $fileExtension);
 
     if ($fileExtension === '7z' || $fileExtension === 'zip') {
-        // Send phase indicator for extraction
-        echo json_encode(['phase' => 'extracting']);
+        echo json_encode(['phase' => 'extracting']) . PHP_EOL;
         if (ob_get_length()) {
             ob_flush();
         }
         flush();
 
         $unzipResult = $bearsamppCore->unzipFile($tmpFilePath, $destination, function ($currentPercentage) {
-            echo json_encode(['progress' => "$currentPercentage%"]);
+            $progressStr = is_numeric($currentPercentage) ? "$currentPercentage%" : $currentPercentage;
+            echo json_encode(['progress' => $progressStr]) . PHP_EOL;
             if (ob_get_length()) {
                 ob_flush();
             }
@@ -818,7 +819,9 @@ class QuickPick
                                             }
                                         ?>
                                             <li role = "option" class = "moduleoption"
-                                                id = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>-li">
+                                                id = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>-li"
+                                                data-module = "<?php echo htmlspecialchars( $module ); ?>"
+                                                data-value = "<?php echo htmlspecialchars( $version_array['version'] ); ?>">
                                                 <input type = "radio"
                                                        id = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>"
                                                        name = "module" data-module = "<?php echo htmlspecialchars( $module ); ?>"
@@ -863,4 +866,3 @@ class QuickPick
         return ob_get_clean();
     }
 }
-

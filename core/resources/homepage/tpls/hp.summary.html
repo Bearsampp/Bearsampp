@@ -6,12 +6,12 @@
 	~  * Github: https://github.com/Bearsampp
 	~  */
 	-->
-<div class = "row summary">
+<div id="summary" class = "row summary">
 	<div class = "col-md-4">
 		<div class = "list-group">
 			<div class = "list-group-item">
 				<h4 class = "list-group-item-heading"> <?php echo $bearsamppLang->getValue(Lang::ABOUT); ?> </h4>
-				<div class = "list-group-item-text"> <?php echo sprintf($bearsamppLang->getValue(Lang::HOMEPAGE_ABOUT_HTML), HttpClient::getWebsiteUrl('documentation/faqs'), HttpClient::getGithubUrl('repo', APP_GITHUB_USER, APP_GITHUB_REPO)); ?></div>
+				<div class = "list-group-item-text"> <?php echo sprintf($bearsamppLang->getValue(Lang::HOMEPAGE_ABOUT_HTML), 'https://documentation.bearsampp.com/', HttpClient::getWebsiteUrl('documentation/faqs'), HttpClient::getGithubUrl('repo', APP_GITHUB_USER, APP_GITHUB_REPO)); ?></div>
 			</div>
 		</div>
 	</div>
@@ -49,23 +49,23 @@
 			</div>
 			<div class = "card-body card-summary">
 				<div class = "list-group">
-					<span class = "list-group-item summary-binapache"> <?php echo $getLoader; ?> <a href = "#apache"> <?php echo $bearsamppLang->getValue(Lang::APACHE); ?> </a> </span>
-					<span class = "list-group-item summary-binphp"> <?php echo $getLoader; ?> <a href = "#php"> <?php echo $bearsamppLang->getValue(Lang::PHP); ?> </a>
+					<span class = "list-group-item summary-binapache"> <span class="bin-status"></span> <span class="status-content"><?php echo $getLoader; ?></span> <a href = "#apache"> <?php echo $bearsamppLang->getValue(Lang::APACHE); ?> </a> </span>
+					<span class = "list-group-item summary-binphp"> <span class="bin-status"></span> <span class="status-content"><?php echo $getLoader; ?></span> <a href = "#php"> <?php echo $bearsamppLang->getValue(Lang::PHP); ?> </a>
 					</span>
-					<span class = "list-group-item summary-binmysql"> <?php echo $getLoader; ?> <a href = "#mysql"> <?php echo $bearsamppLang->getValue(Lang::MYSQL); ?> </a>
+					<span class = "list-group-item summary-binmysql"> <span class="bin-status"></span> <span class="status-content"><?php echo $getLoader; ?></span> <a href = "#mysql"> <?php echo $bearsamppLang->getValue(Lang::MYSQL); ?> </a>
 					</span>
-					<span class = "list-group-item summary-binmariadb"> <?php echo $getLoader; ?> <a href = "#mariadb"> <?php echo $bearsamppLang->getValue(Lang::MARIADB); ?> </a>
+					<span class = "list-group-item summary-binmariadb"> <span class="bin-status"></span> <span class="status-content"><?php echo $getLoader; ?></span> <a href = "#mariadb"> <?php echo $bearsamppLang->getValue(Lang::MARIADB); ?> </a>
 					</span>
-					<span class = "list-group-item summary-binpostgresql"> <?php echo $getLoader; ?> <a href = "#postgresql"> <?php echo $bearsamppLang->getValue(Lang::POSTGRESQL); ?> </a>
+					<span class = "list-group-item summary-binpostgresql"> <span class="bin-status"></span> <span class="status-content"><?php echo $getLoader; ?></span> <a href = "#postgresql"> <?php echo $bearsamppLang->getValue(Lang::POSTGRESQL); ?> </a>
 					</span>
-					<span class = "list-group-item summary-binnodejs"> <?php echo $getLoader; ?> <a href = "#nodejs"> <?php echo $bearsamppLang->getValue(Lang::NODEJS); ?> </a>
+					<span class = "list-group-item summary-binnodejs"> <span class="bin-status"></span> <span class="status-content"><?php echo $getLoader; ?></span> <a href = "#nodejs"> <?php echo $bearsamppLang->getValue(Lang::NODEJS); ?> </a>
 					</span>
-					<span class = "list-group-item summary-binmailpit"> <?php echo $getLoader; ?> <a href = "#mailpit"> <?php echo $bearsamppLang->getValue(Lang::MAILPIT); ?> </a>
+					<span class = "list-group-item summary-binmailpit"> <span class="bin-status"></span> <span class="status-content"><?php echo $getLoader; ?></span> <a href = "#mailpit"> <?php echo $bearsamppLang->getValue(Lang::MAILPIT); ?> </a>
 					</span>
-					<span class = "list-group-item summary-binmemcached"> <?php echo $getLoader; ?> <a href = "#memcached"> <?php echo $bearsamppLang->
+					<span class = "list-group-item summary-binmemcached"> <span class="bin-status"></span> <span class="status-content"><?php echo $getLoader; ?></span> <a href = "#memcached"> <?php echo $bearsamppLang->
 						getValue(Lang::MEMCACHED); ?> </a>
 					</span>
-					<span class = "list-group-item summary-binxlight"> <?php echo $getLoader; ?> <a href = "#xlight"> <?php echo $bearsamppLang->getValue(Lang::XLIGHT); ?> </a>
+					<span class = "list-group-item summary-binxlight"> <span class="bin-status"></span> <span class="status-content"><?php echo $getLoader; ?></span> <a href = "#xlight"> <?php echo $bearsamppLang->getValue(Lang::XLIGHT); ?> </a>
 					</span>
 				</div>
 			</div>

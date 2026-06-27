@@ -47,7 +47,7 @@ class Lang
     const GIT_CONSOLE = 'gitConsole';
     const GITGUI = 'gitGui';
     const GITHUB = 'github';
-    const HELP = 'help';
+    const DOCUMENTATION = 'documentation';
     const HOSTSEDITOR = 'hostseditor';
     const LANG = 'lang';
     const LICENSE = 'license';
@@ -98,6 +98,7 @@ class Lang
     const MENU_ENABLE = 'menuEnable';
     const MENU_ERROR_LOGS = 'menuErrorLogs';
     const MENU_GEN_SSL_CERTIFICATE = 'menuGenSslCertificate';
+    const MENU_GEN_ROOT_CA = 'menuGenRootCa';
     const MENU_INSTALL_SERVICE = 'menuInstallService';
     const MENU_LAUNCH_STARTUP = 'menuLaunchStartup';
     const MENU_LOCALHOST = 'menuLocalhost';
@@ -283,6 +284,7 @@ class Lang
     const STARTUP_REGISTRY_ERROR_TEXT = 'startupRegistryErrorText';
     const STARTUP_UPDATE_CONFIG_TEXT = 'startupUpdateConfigText';
     const STARTUP_CHECK_SERVICE_TEXT = 'startupCheckServiceText';
+    const STARTUP_VERIFY_SERVICE_TEXT = 'startupVerifyServiceText';
     const STARTUP_INSTALL_SERVICE_TEXT = 'startupInstallServiceText';
     const STARTUP_START_SERVICE_TEXT = 'startupStartServiceText';
     const STARTUP_PREPARE_RESTART_TEXT = 'startupPrepareRestartText';
@@ -423,7 +425,7 @@ class Lang
             self::EXTENSIONS,
             self::GIT_CONSOLE,
             self::GITHUB,
-            self::HELP,
+            self::DOCUMENTATION,
             self::HOSTSEDITOR,
             self::LANG,
             self::LICENSE,
@@ -470,6 +472,7 @@ class Lang
             self::MENU_EDIT_VHOST,
             self::MENU_ENABLE,
             self::MENU_ERROR_LOGS,
+            self::MENU_GEN_ROOT_CA,
             self::MENU_GEN_SSL_CERTIFICATE,
             self::MENU_INSTALL_SERVICE,
             self::MENU_LAUNCH_STARTUP,
@@ -647,6 +650,7 @@ class Lang
             self::STARTUP_REGISTRY_ERROR_TEXT,
             self::STARTUP_UPDATE_CONFIG_TEXT,
             self::STARTUP_CHECK_SERVICE_TEXT,
+            self::STARTUP_VERIFY_SERVICE_TEXT,
             self::STARTUP_INSTALL_SERVICE_TEXT,
             self::STARTUP_START_SERVICE_TEXT,
             self::STARTUP_PREPARE_RESTART_TEXT,

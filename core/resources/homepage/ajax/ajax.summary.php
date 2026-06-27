@@ -55,7 +55,8 @@ try {
     $result['binapache'] .= '<span class = " float-end badge ' . $apacheLabel . '">' . $bearsamppBins->getApache()->getVersion() . '</span>';
 }
 catch ( Exception $e ) {
-    $result['binapache'] = 'An error occurred getting the summary of Apache. ' . $e->getMessage();
+    Log::error('Error getting summary for Apache: ' . $e->getMessage());
+    $result['binapache'] = '<span class="float-end badge bg-danger">Error</span>';
 }
 
 try {
@@ -76,7 +77,8 @@ try {
     $result['binmailpit'] .= '<span class = " float-end badge ' . $mailpitLabel . '">' . $bearsamppBins->getMailpit()->getVersion() . '</span>';
 }
 catch ( Exception $e ) {
-    $result['binmailpit'] = 'An error occurred getting the summary of Mailpit. ' . $e->getMessage();
+    Log::error('Error getting summary for Mailpit: ' . $e->getMessage());
+    $result['binmailpit'] = '<span class="float-end badge bg-danger">Error</span>';
 }
 
 try {
@@ -97,7 +99,8 @@ try {
     $result['binxlight'] .= '<span class = " float-end badge ' . $xlightLabel . '">' . $bearsamppBins->getXlight()->getVersion() . '</span>';
 }
 catch ( Exception $e ) {
-    $result['binxlight'] = 'An error occurred getting the summary of Xlight. ' . $e->getMessage();
+    Log::error('Error getting summary for Xlight: ' . $e->getMessage());
+    $result['binxlight'] = '<span class="float-end badge bg-danger">Error</span>';
 }
 
 try {
@@ -118,7 +121,8 @@ try {
     $result['binmariadb'] .= '<span class = " float-end badge ' . $mariadbLabel . '">' . $bearsamppBins->getMariadb()->getVersion() . '</span>';
 }
 catch ( Exception $e ) {
-    $result['binmariadb'] = 'An error occurred getting the summary of MariaDB. ' . $e->getMessage();
+    Log::error('Error getting summary for MariaDB: ' . $e->getMessage());
+    $result['binmariadb'] = '<span class="float-end badge bg-danger">Error</span>';
 }
 
 try {
@@ -139,7 +143,8 @@ try {
     $result['binmysql'] .= '<span class = " float-end badge ' . $mysqlLabel . '">' . $bearsamppBins->getMysql()->getVersion() . '</span>';
 }
 catch ( Exception $e ) {
-    $result['binmysql'] = 'An error occurred getting the summary of MySql. ' . $e->getMessage();
+    Log::error('Error getting summary for MySQL: ' . $e->getMessage());
+    $result['binmysql'] = '<span class="float-end badge bg-danger">Error</span>';
 }
 
 try {
@@ -160,7 +165,8 @@ try {
     $result['binpostgresql'] .= '<span class = " float-end badge ' . $postgresqlLabel . '">' . $bearsamppBins->getPostgresql()->getVersion() . '</span>';
 }
 catch ( Exception $e ) {
-    $result['binpostgresql'] = 'An error occurred getting the summary of Postgresql. ' . $e->getMessage();
+    Log::error('Error getting summary for PostgreSQL: ' . $e->getMessage());
+    $result['binpostgresql'] = '<span class="float-end badge bg-danger">Error</span>';
 }
 
 try {
@@ -181,7 +187,8 @@ try {
     $result['binmemcached'] .= '<span class = " float-end badge ' . $memcachedLabel . '">' . $bearsamppBins->getMemcached()->getVersion() . '</span>';
 }
 catch ( Exception $e ) {
-    $result['binmemcached'] = 'An error occurred getting the summary of Memchached. ' . $e->getMessage();
+    Log::error('Error getting summary for Memcached: ' . $e->getMessage());
+    $result['binmemcached'] = '<span class="float-end badge bg-danger">Error</span>';
 }
 
 try {
@@ -198,7 +205,8 @@ try {
     $result['binnodejs'] .= '<span class = " float-end badge ' . $nodejsLabel . '">' . $bearsamppBins->getNodejs()->getVersion() . '</span>';
 }
 catch ( Exception $e ) {
-    $result['binnodejs'] = 'An error occurred getting the summary of NodeJS. ' . $e->getMessage();
+    Log::error('Error getting summary for NodeJS: ' . $e->getMessage());
+    $result['binnodejs'] = '<span class="float-end badge bg-danger">Error</span>';
 }
 
 try {
@@ -215,9 +223,9 @@ try {
     $result['binphp'] .= '<span class = " float-end badge ' . $phpLabel . '">' . $bearsamppBins->getPhp()->getVersion() . '</span>';
 }
 catch ( Exception $e ) {
-    $result['binphp'] = 'An error occurred getting the summary of PHP. ' . $e->getMessage();
+    Log::error('Error getting summary for PHP: ' . $e->getMessage());
+    $result['binphp'] = '<span class="float-end badge bg-danger">Error</span>';
 }
 
 // Output the result as JSON
 echo json_encode( $result );
-

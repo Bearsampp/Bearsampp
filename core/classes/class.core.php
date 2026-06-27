@@ -177,12 +177,22 @@ class Core
             return false;
         }
 
+        if ($progressCallback) {
+            call_user_func($progressCallback, 'Initializing archive test...');
+        }
+
         // Test the archive to determine the number of files
+        if ($progressCallback) {
+            call_user_func($progressCallback, 'Analyzing archive...');
+        }
         $testOutput = CommandRunner::exec($sevenZipPath, ['t', $filePath, '-y', '-bsp1']);
         preg_match('/Files: (\d+)/', $testOutput !== false ? $testOutput : '', $matches);
         $numFiles = isset($matches[1]) ? (int) $matches[1] : 0;
         Log::trace('Number of files to be extracted: ' . $numFiles);
 
+        if ($progressCallback) {
+            call_user_func($progressCallback, 'Initializing extraction...');
+        }
         // Extract the archive, streaming progress line-by-line
         $returnVar = CommandRunner::stream(
             $sevenZipPath,
@@ -271,7 +281,7 @@ class Core
             // Send progress update
             if ( $progressBar ) {
                 $progress = $chunksRead;
-                echo json_encode( ['progress' => $progress] );
+                echo json_encode( ['progress' => $progress] ) . PHP_EOL;
 
                 // Check if output buffering is active before calling ob_flush()
                 if ( ob_get_length() !== false ) {

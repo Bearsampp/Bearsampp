@@ -13,11 +13,6 @@
 include_once __DIR__ . '/../../root.php';
 
 /**
- * Initialize CSRF protection
- */
-Csrf::init();
-
-/**
  * Define a mapping of valid process names to their corresponding file paths.
  * This approach is more secure than direct string concatenation.
  *
@@ -41,6 +36,15 @@ $procMap = [
 ];
 
 /**
+ * Clean and retrieve the 'proc' POST variable.
+ *
+ * UtilInput::cleanPostVar is assumed to be a method that sanitizes the input to prevent security issues such as SQL injection or XSS.
+ *
+ * @var string $proc The cleaned 'proc' parameter from the POST request.
+ */
+$proc = UtilInput::cleanPostVar('proc', 'text');  // Ensure 'proc' is cleaned and read correctly
+
+/**
  * Define which endpoints require CSRF protection.
  * Read-only endpoints (GET-like operations) don't need CSRF protection.
  * Write operations (POST that changes state) require CSRF protection.
@@ -52,18 +56,23 @@ $csrfProtectedEndpoints = [
 ];
 
 /**
- * Clean and retrieve the 'proc' POST variable.
- *
- * UtilInput::cleanPostVar is assumed to be a method that sanitizes the input to prevent security issues such as SQL injection or XSS.
- *
- * @var string $proc The cleaned 'proc' parameter from the POST request.
+ * Initialize CSRF protection
  */
-$proc = UtilInput::cleanPostVar('proc', 'text');  // Ensure 'proc' is cleaned and read correctly
+if ($proc !== 'quickpick') {
+    Csrf::init();
+}
 
 /**
  * Validate CSRF token for protected endpoints
  */
 if (in_array($proc, $csrfProtectedEndpoints, true)) {
+    if ($proc === 'quickpick') {
+        // quickpick handles its own headers and needs session started carefully
+        if (session_status() === PHP_SESSION_NONE) {
+            @session_start();
+        }
+    }
+
     if (!Csrf::validateRequest()) {
         http_response_code(403);
         header('Content-Type: application/json');
@@ -99,4 +108,3 @@ if (isset($procMap[$proc]) && file_exists($procMap[$proc])) {
     }
     echo json_encode(['error' => $errorMessage]);
 }
-

@@ -6,33 +6,20 @@
  * Github: https://github.com/Bearsampp
  */
 
-async function getLatestVersionStatus() {
-    const url = AJAX_URL; // Ensure this variable is defined and points to your server-side script handling the AJAX requests.
-    const senddata = new URLSearchParams();
-    senddata.append('proc', 'latestversion'); // Setting 'proc' to 'latestversion'
+createStatusFetcher('latestversion', [], {
+  customUpdater: (responseData) => {
+    if (responseData.display) {
+      const downloadEl = document.querySelector('.latestversion-download');
+      const changelogEl = document.querySelector('.latestversion-changelog');
+      const notifyEl = document.getElementById("latestversionnotify");
 
-    const options = {
-        method: 'POST',
-        body: senddata
-    };
-
-    try {
-        let response = await fetch(url, options);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        let responseData = await response.json(); // Assuming the server responds with JSON data
-
-        if (responseData.display) {
-            document.querySelector('.latestversion-download').insertAdjacentHTML('beforeend', responseData.download);
-            document.querySelector('.latestversion-changelog').insertAdjacentHTML('beforeend', responseData.changelog);
-            document.getElementById("latestversionnotify").style.display = 'block';
-        }
-    } catch (error) {
-        console.error('Failed to fetch latest version status:', error);
+      if (downloadEl) {
+          downloadEl.innerHTML = responseData.download;
+      }
+      if (changelogEl) {
+          changelogEl.innerHTML = responseData.changelog;
+      }
+      if (notifyEl) notifyEl.style.display = 'block';
     }
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    getLatestVersionStatus();
+  }
 });
