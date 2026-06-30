@@ -660,14 +660,35 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                 .start()
             rcEditProcess.waitFor()
             println "Successfully set product version to ${releaseFullVersion} using rcedit-x64.exe"
-        }
 
-        def fixIconProcess = new ProcessBuilder('cmd', '/c', 'fix-core-icon.bat')
-            .directory(projectDir)
-            .redirectErrorStream(true)
-            .start()
-        fixIconProcess.waitFor()
-        println "Successfully set icon to bearsampp.ico using ResourceHacker.exe"
+            // Native logic for setting icon
+            def resourceHackerExe = file("${projectDir}/ResourceHacker.exe")
+            def iconPath = file("${projectDir}/core/resources/homepage/img/icons/bearsampp.ico")
+
+            if (resourceHackerExe.exists() && iconPath.exists()) {
+                println "* Updating icon for ${bearsamppExe.name} using ResourceHacker..."
+                def process = new ProcessBuilder(resourceHackerExe.absolutePath,
+                            '-open', bearsamppExe.absolutePath,
+                            '-save', bearsamppExe.absolutePath,
+                            '-action', 'modify',
+                            '-res', "${iconPath.absolutePath},",
+                            '-mask', 'ICONGROUP,MAINICON,')
+                        .directory(projectDir)
+                        .redirectErrorStream(true)
+                        .start()
+
+                process.inputStream.eachLine { println "  > ${it}" }
+                process.waitFor()
+
+                if (process.exitValue() == 0) {
+                    println "* Successfully set icon to ${iconPath.name} using ResourceHacker.exe"
+                } else {
+                    println "* ERROR: ResourceHacker failed with exit code ${process.exitValue()}"
+                }
+            } else {
+                println "WARNING: ResourceHacker.exe or icon file not found. Skipping icon update."
+            }
+        }
 
         delete releaseBasePath
         releaseBasePath.mkdirs()
@@ -759,6 +780,17 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                 into releaseBasePath
             }
             println "  [COPY] LICENSE"
+        }
+        
+        // Copy favicon.ico
+        def sourceFavicon = file("${projectDir}/core/resources/homepage/img/icons/app.ico")
+        if (sourceFavicon.exists()) {
+            copy {
+                from sourceFavicon
+                into releaseBasePath
+                rename { 'favicon.ico' }
+            }
+            println "  [COPY] favicon.ico"
         }
         
         // Manually copy .gitignore files (Gradle excludes them by default)
@@ -1233,30 +1265,12 @@ task sync(dependsOn: buildFull) {
     doLast {
         println "\n*** Sync to Sandbox ***"
 
-        def console = System.console()
-        def syncConfirm
-        if (console) {
-            syncConfirm = console.readLine('Would you like to sync to sandbox? (y/yes or n/no): ')
-        } else {
-            println "Running in non-interactive mode. Skipping sync."
+        if (project.hasProperty('skipSync')) {
+            println "* Skipping sync."
             return
         }
 
-        if (!(syncConfirm ==~ /(?i)^(yes|y)$/)) {
-            println "Sync aborted by user."
-            return
-        }
-
-        println "\nCurrent sync path is: ${bearsamppPath}"
-        def pathConfirm = console.readLine('Is this the path you want to sync to? (y/yes or n/no): ')
-
-        def syncFinalPath = bearsamppPath
-        if (!(pathConfirm ==~ /(?i)^(yes|y)$/)) {
-            def customPath = console.readLine('Please enter the new path to sync to: ')
-            if (customPath && customPath.trim()) {
-                syncFinalPath = file(customPath.trim())
-            }
-        }
+        def syncFinalPath = project.hasProperty('syncPath') ? file(project.property('syncPath')) : bearsamppPath
 
         println "\n*** Sync step: using path = ${syncFinalPath}"
 
@@ -1414,13 +1428,17 @@ tasks.named('wrapper') {
 // Task: postBuildSync
 task postBuildSync {
     group = 'build'
-    description = 'Sync bearsampp.exe to sandbox and run fix-icon.bat'
+    description = 'Sync bearsampp.exe to sandbox and fix icon to sandbox version'
 
     doLast {
         println "\n*** Post-Build Sync to Sandbox ***"
         
         def sandboxDir = file("${projectDir}/../sandbox")
+        println "* Debug: sandboxDir = ${sandboxDir.absolutePath}"
+        println "* Debug: sandboxDir.exists() = ${sandboxDir.exists()}"
         def sourceExe = file("${projectDir}/base/bearsampp.exe")
+        println "* Debug: sourceExe = ${sourceExe.absolutePath}"
+        println "* Debug: sourceExe.exists() = ${sourceExe.exists()}"
         def destExe = file("${sandboxDir}/bearsampp.exe")
         
         if (!sourceExe.exists()) {
@@ -1442,10 +1460,18 @@ task postBuildSync {
         if (destExe.exists()) {
             println "* bearsampp.exe successfully copied to ${sandboxDir}"
             
-            def fixIconBat = file("${sandboxDir}/fix-icon.bat")
-            if (fixIconBat.exists()) {
-                println "* Running fix-icon.bat in sandbox..."
-                def process = new ProcessBuilder('cmd', '/c', 'fix-icon.bat')
+            // Migrate fix-icon.bat logic here
+            def resourceHackerExe = file("${sandboxDir}/ResourceHacker.exe")
+            def iconPath = file("${sandboxDir}/core/resources/homepage/img/icons/bearsampp.ico")
+            
+            if (resourceHackerExe.exists() && iconPath.exists()) {
+                println "* Updating icon using ResourceHacker..."
+                def process = new ProcessBuilder(resourceHackerExe.absolutePath,
+                            '-open', destExe.absolutePath,
+                            '-save', destExe.absolutePath,
+                            '-action', 'modify',
+                            '-res', "${iconPath.absolutePath},",
+                            '-mask', 'ICONGROUP,MAINICON,')
                     .directory(sandboxDir)
                     .redirectErrorStream(true)
                     .start()
@@ -1454,14 +1480,14 @@ task postBuildSync {
                 process.waitFor()
                 
                 if (process.exitValue() == 0) {
-                    println "* fix-icon.bat executed successfully"
+                    println "* Icon set successfully"
                     
-                    // New step: Copy app.ico from current project to sandbox root as favicon.ico
-                    def sourceFavicon = file("${projectDir}/core/resources/homepage/img/icons/app.ico")
+                    // New step: Copy app.ico from sandbox to sandbox root as favicon.ico
+                    def sourceFavicon = file("${sandboxDir}/core/resources/homepage/img/icons/app.ico")
                     def destFavicon = file("${sandboxDir}/favicon.ico")
                     
                     if (sourceFavicon.exists()) {
-                        println "* Copying app.ico from current project to sandbox root as favicon.ico..."
+                        println "* Copying app.ico from sandbox to sandbox root as favicon.ico..."
                         copy {
                             from sourceFavicon
                             into sandboxDir
@@ -1474,10 +1500,10 @@ task postBuildSync {
                     
                     println "* SUCCESS: bearsampp.exe synced and icons fixed in sandbox"
                 } else {
-                    println "* ERROR: fix-icon.bat failed with exit code ${process.exitValue()}"
+                    println "* ERROR: ResourceHacker failed with exit code ${process.exitValue()}"
                 }
             } else {
-                println "WARNING: fix-icon.bat not found in ${sandboxDir}"
+                println "WARNING: ResourceHacker.exe or icon file not found in ${sandboxDir}"
             }
         } else {
             println "ERROR: Failed to copy bearsampp.exe to sandbox"
@@ -1489,4 +1515,6 @@ task postBuildSync {
 defaultTasks 'release'
 
 // Finalize all build tasks with postBuildSync
-[buildFull, buildBasic, buildLite].each { it.finalizedBy postBuildSync }
+tasks.named('buildFull').configure { finalizedBy postBuildSync }
+tasks.named('buildBasic').configure { finalizedBy postBuildSync }
+tasks.named('buildLite').configure { finalizedBy postBuildSync }
