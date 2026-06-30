@@ -662,12 +662,29 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             println "Successfully set product version to ${releaseFullVersion} using rcedit-x64.exe"
         }
 
-        def fixIconProcess = new ProcessBuilder('cmd', '/c', 'fix-core-icon.bat')
-            .directory(projectDir)
-            .redirectErrorStream(true)
-            .start()
-        fixIconProcess.waitFor()
-        println "Successfully set icon to bearsampp.ico using ResourceHacker.exe"
+        def resourceHackerExe = file("${projectDir}/ResourceHacker.exe")
+        def coreIconPath = file("${projectDir}/core/resources/homepage/img/icons/bearsampp.ico")
+
+        if (resourceHackerExe.exists() && coreIconPath.exists()) {
+            def fixCoreIconProcess = new ProcessBuilder(resourceHackerExe.absolutePath,
+                        '-open', bearsamppExe.absolutePath,
+                        '-save', bearsamppExe.absolutePath,
+                        '-action', 'modify',
+                        '-res', "${coreIconPath.absolutePath},",
+                        '-mask', 'ICONGROUP,MAINICON,')
+                .directory(projectDir)
+                .redirectErrorStream(true)
+                .start()
+            fixCoreIconProcess.waitFor()
+
+            if (fixCoreIconProcess.exitValue() == 0) {
+                println "Successfully set icon to bearsampp.ico using ResourceHacker.exe"
+            } else {
+                println "WARNING: Failed to set core icon. ResourceHacker exit code: ${fixCoreIconProcess.exitValue()}"
+            }
+        } else {
+            println "WARNING: Could not set core icon - ResourceHacker.exe or icon file not found"
+        }
 
         delete releaseBasePath
         releaseBasePath.mkdirs()
@@ -1326,26 +1343,6 @@ task sync(dependsOn: buildFull) {
             }
         }
 
-        println "* Updating executable icon..."
-        def resourceHackerExe = file("${iconographyTempDir}/ResourceHacker.exe")
-        def iconPath = file("${syncFinalPath}/core/resources/homepage/img/icons/bearsampp.ico")
-
-        if (resourceHackerExe.exists() && iconPath.exists()) {
-            def resourceHackerProcess = new ProcessBuilder(resourceHackerExe.absolutePath,
-                        '-open', tempBearsamppExe.absolutePath,
-                        '-save', tempBearsamppExe.absolutePath,
-                        '-action', 'modify',
-                        '-res', "${iconPath.absolutePath},",
-                        '-mask', 'ICONGROUP,MAINICON,')
-                .directory(iconographyTempDir)
-                .redirectErrorStream(true)
-                .start()
-            resourceHackerProcess.waitFor()
-            println "* Successfully updated executable icon"
-        } else {
-            println "WARNING: Could not update icon - ResourceHacker or icon file not found"
-        }
-
         def finalBearsamppExe = file("${syncFinalPath}/bearsampp.exe")
         if (finalBearsamppExe.exists()) {
             finalBearsamppExe.delete()
@@ -1356,6 +1353,31 @@ task sync(dependsOn: buildFull) {
             from tempBearsamppExe
             into syncFinalPath
             overwrite true
+        }
+
+        println "* Applying sandbox icon update in Gradle..."
+        def sandboxResourceHackerExe = file("${syncFinalPath}/ResourceHacker.exe")
+        def sandboxIconPath = file("${syncFinalPath}/core/resources/homepage/img/icons/bearsampp.ico")
+
+        if (sandboxResourceHackerExe.exists() && sandboxIconPath.exists() && finalBearsamppExe.exists()) {
+            def fixSandboxIconProcess = new ProcessBuilder(sandboxResourceHackerExe.absolutePath,
+                        '-open', finalBearsamppExe.absolutePath,
+                        '-save', finalBearsamppExe.absolutePath,
+                        '-action', 'modify',
+                        '-res', "${sandboxIconPath.absolutePath},",
+                        '-mask', 'ICONGROUP,MAINICON,')
+                .directory(syncFinalPath)
+                .redirectErrorStream(true)
+                .start()
+            fixSandboxIconProcess.waitFor()
+
+            if (fixSandboxIconProcess.exitValue() == 0) {
+                println "* Successfully updated executable icon in sandbox"
+            } else {
+                println "WARNING: Sandbox icon update failed with exit code ${fixSandboxIconProcess.exitValue()}"
+            }
+        } else {
+            println "WARNING: Could not update sandbox icon - ResourceHacker.exe, icon, or bearsampp.exe not found"
         }
 
         println "\n*** Sync complete!"
