@@ -683,7 +683,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                 if (process.exitValue() == 0) {
                     println "* Successfully set icon to ${iconPath.name} using ResourceHacker.exe"
                 } else {
-                    println "* ERROR: ResourceHacker failed with exit code ${process.exitValue()}"
+                    throw new GradleException("ResourceHacker failed with exit code ${process.exitValue()}")
                 }
             } else {
                 println "WARNING: ResourceHacker.exe or icon file not found. Skipping icon update."
@@ -1434,11 +1434,7 @@ task postBuildSync {
         println "\n*** Post-Build Sync to Sandbox ***"
         
         def sandboxDir = file("${projectDir}/../sandbox")
-        println "* Debug: sandboxDir = ${sandboxDir.absolutePath}"
-        println "* Debug: sandboxDir.exists() = ${sandboxDir.exists()}"
         def sourceExe = file("${projectDir}/base/bearsampp.exe")
-        println "* Debug: sourceExe = ${sourceExe.absolutePath}"
-        println "* Debug: sourceExe.exists() = ${sourceExe.exists()}"
         def destExe = file("${sandboxDir}/bearsampp.exe")
         
         if (!sourceExe.exists()) {
@@ -1484,7 +1480,6 @@ task postBuildSync {
                     
                     // New step: Copy app.ico from sandbox to sandbox root as favicon.ico
                     def sourceFavicon = file("${sandboxDir}/core/resources/homepage/img/icons/app.ico")
-                    def destFavicon = file("${sandboxDir}/favicon.ico")
                     
                     if (sourceFavicon.exists()) {
                         println "* Copying app.ico from sandbox to sandbox root as favicon.ico..."
