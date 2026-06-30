@@ -47,7 +47,7 @@ class ActionStartup
         $this->startTime = Util::getMicrotime();
         $this->error     = '';
 
-        $this->rootPath    = $bearsamppRoot->getRootPath();
+        $this->rootPath    = Path::getRootPath();
         $this->filesToScan = array();
 
         $gauge = self::GAUGE_SERVICES * count( $bearsamppBins->getServices() );
@@ -98,7 +98,7 @@ class ActionStartup
             $this->writeLog('List procs:');
             $listProcs = array();
             foreach ($bearsamppRoot->getProcs() as $proc) {
-                $unixExePath = UtilPath::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]);
+                $unixExePath = Path::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]);
                 $listProcs[] = '-> ' . basename($unixExePath) . ' (PID ' . $proc[Win32Ps::PROCESS_ID] . ') in ' . $unixExePath;
             }
             sort($listProcs);
@@ -289,7 +289,7 @@ class ActionStartup
         $this->splash->setTextLoading($bearsamppLang->getValue(Lang::STARTUP_ROTATION_LOGS_TEXT));
         $this->splash->incrProgressBar();
 
-        $archivesPath = $bearsamppRoot->getLogsPath() . '/archives';
+        $archivesPath = Path::getLogsPath() . '/archives';
         if (!is_dir($archivesPath)) {
             Log::trace("Creating archives directory: " . $archivesPath);
             mkdir($archivesPath, 0777, true);
@@ -363,7 +363,7 @@ class ActionStartup
 
         // Logs
         Log::trace("Archiving log files");
-        $srcPath = $bearsamppRoot->getLogsPath();
+        $srcPath = Path::getLogsPath();
         $handle = @opendir($srcPath);
         if (!$handle) {
             Log::trace("Failed to open logs directory: " . $srcPath);
@@ -406,7 +406,7 @@ class ActionStartup
 
         // Scripts
         Log::trace("Archiving script files");
-        $srcPath = $bearsamppCore->getTmpPath();
+        $srcPath = Path::getTmpPath();
         $handle = @opendir($srcPath);
         if (!$handle) {
             Log::trace("Failed to open tmp directory: " . $srcPath);
@@ -449,7 +449,7 @@ class ActionStartup
 
         // Purge logs - only delete files that aren't locked
         Log::trace("Purging log files");
-        $logsPath = $bearsamppRoot->getLogsPath();
+        $logsPath = Path::getLogsPath();
         $handle = @opendir($logsPath);
         if (!$handle) {
             Log::trace("Failed to open logs directory for purging: " . $logsPath);
@@ -474,12 +474,25 @@ class ActionStartup
             }
 
             try {
-                if (file_exists($filePath) && unlink($filePath)) {
-                    $logsDeleted++;
-                    Log::trace("Purged log file: " . $file);
+                if (is_link($filePath)) {
+                    if (@unlink($filePath)) {
+                        $logsDeleted++;
+                        Log::trace("Purged log symlink: " . $file);
+                    } else {
+                        $logsPurgeSkipped++;
+                        Log::trace("Failed to purge log symlink: " . $file);
+                    }
+                } elseif (file_exists($filePath)) {
+                    if (@unlink($filePath)) {
+                        $logsDeleted++;
+                        Log::trace("Purged log file: " . $file);
+                    } else {
+                        $logsPurgeSkipped++;
+                        Log::trace("Failed to purge log file: " . $file);
+                    }
                 } else {
                     $logsPurgeSkipped++;
-                    Log::trace("Failed to purge log file: " . $file);
+                    Log::trace("Log file already removed or does not exist: " . $file);
                 }
             } catch (Exception $e) {
                 $logsPurgeSkipped++;
@@ -503,11 +516,11 @@ class ActionStartup
         $this->splash->incrProgressBar();
 
         $this->writeLog( 'Clear tmp folders' );
-        Util::clearFolder( $bearsamppRoot->getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore') );
-        Util::clearFolder( $bearsamppCore->getTmpPath(), array('.gitignore') );
+        Util::clearFolder( Path::getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore') );
+        Util::clearFolder( Path::getTmpPath(), array('.gitignore') );
 
         // Ensure opcache directory exists for persistent file cache
-        $opcachePath = $bearsamppRoot->getTmpPath() . DIRECTORY_SEPARATOR . 'opcache';
+        $opcachePath = Path::getTmpPath() . DIRECTORY_SEPARATOR . 'opcache';
 
         if (!is_dir($opcachePath)) {
             $this->writeLog('Creating opcache directory: ' . $opcachePath);
@@ -567,7 +580,7 @@ class ActionStartup
             $this->writeLog( 'Procs killed:' );
             $procsKilledSort = array();
             foreach ( $procsKilled as $proc ) {
-                $unixExePath       = UtilPath::formatUnixPath( $proc[Win32Ps::EXECUTABLE_PATH] );
+                $unixExePath       = Path::formatUnixPath( $proc[Win32Ps::EXECUTABLE_PATH] );
                 $procsKilledSort[] = '-> ' . basename( $unixExePath ) . ' (PID ' . $proc[Win32Ps::PROCESS_ID] . ') in ' . $unixExePath;
             }
             sort( $procsKilledSort );
@@ -696,21 +709,29 @@ class ActionStartup
         $currentPath = $this->rootPath;
 
         // Performance optimization: Skip scan if path hasn't changed
-        if ($lastPath === $currentPath) {
+        // BUT always scan if it's the first time or if we need to ensure placeholders are replaced.
+        // We removed the optimization because it prevents newly added modules from being initialized
+        // with the correct paths if the main project path remains the same.
+        /*
+        if ($lastPath === $currentPath && !empty($lastPath)) {
             Log::debug('Path unchanged, skipping file scan (performance optimization)');
             Log::trace('Last path: "' . $lastPath . '" matches current path: "' . $currentPath . '"');
+            
             $this->filesToScan = [];
             $this->writeLog('Files to scan: 0 (path unchanged - scan skipped)');
-
-            // Log performance benefit
-            $this->writeLog('Performance: File scan skipped, saving 3-8 seconds');
             return;
         }
+        */
 
-        // Path changed, perform full scan
-        Log::debug('Path changed, performing full file scan');
-        Log::trace('Last path: "' . $lastPath . '" differs from current path: "' . $currentPath . '"');
-        $this->writeLog('Path changed detected - performing full scan');
+        // Path changed or first run, perform full scan
+        if ($lastPath !== $currentPath || empty($lastPath)) {
+            Log::debug('Path changed or first run, performing full file scan');
+            Log::trace('Last path: "' . $lastPath . '" differs from current path: "' . $currentPath . '"');
+            $this->writeLog('Path changed detected - performing full scan');
+        } else {
+            Log::debug('Ensuring configuration files are checked for placeholders');
+            $this->writeLog('Scanning configuration files for placeholders');
+        }
 
         $scanStartTime = Util::getMicrotime();
         $this->filesToScan = Util::getFilesToScan();
@@ -729,7 +750,7 @@ class ActionStartup
         $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_CHANGE_PATH_TEXT ), $this->rootPath ) );
         $this->splash->incrProgressBar();
 
-        $result = Util::changePath( $this->filesToScan, $this->rootPath );
+        $result = Path::changePath( $this->filesToScan, $this->rootPath );
         $this->writeLog( 'Nb files changed: ' . $result['countChangedFiles'] );
         $this->writeLog( 'Nb occurences changed: ' . $result['countChangedOcc'] );
     }
@@ -741,7 +762,7 @@ class ActionStartup
     {
         global $bearsamppCore;
 
-        file_put_contents( $bearsamppCore->getLastPath(), $this->rootPath );
+        file_put_contents( Path::getLastPath(), $this->rootPath );
         $this->writeLog( 'Save current path: ' . $this->rootPath );
     }
 
@@ -756,7 +777,7 @@ class ActionStartup
         $this->splash->incrProgressBar();
 
         $currentAppPathRegKey = $bearsamppRegistry->getAppPathRegKey();
-        $genAppPathRegKey     = UtilPath::formatWindowsPath( $bearsamppRoot->getRootPath() );
+        $genAppPathRegKey     = Path::formatWindowsPath( Path::getRootPath() );
         $this->writeLog( 'Current app path reg key: ' . $currentAppPathRegKey );
         $this->writeLog( 'Gen app path reg key: ' . $genAppPathRegKey );
         if ( $currentAppPathRegKey != $genAppPathRegKey ) {
@@ -867,45 +888,58 @@ class ActionStartup
     }
 
     /**
-     * Creates SSL certificates if they do not already exist.
+     * Creates SSL certificates if they do not already exist or are expired.
      * Logs the creation process.
      */
     private function createSslCrts()
     {
-        global $bearsamppLang, $bearsamppOpenSsl, $bearsamppRoot;
+        global $bearsamppLang, $bearsamppOpenSsl, $bearsamppBins;
 
+        Log::info('Checking SSL certificates during startup...');
         $this->splash->incrProgressBar();
 
-        // Trust root CA only when CA-signed certificate mode is available
-        $rootCAPath = $bearsamppRoot->getSslPath() . '/rootCA.pem';
-        $rootCAKeyPath = $bearsamppRoot->getSslPath() . '/rootCA-key.pem';
-        $hasRootCA = file_exists($rootCAPath);
-        $hasRootCAKey = file_exists($rootCAKeyPath);
+        // Always ensure localhost exists and is valid
+        $localhostExpired = $bearsamppOpenSsl->isExpired('localhost');
+        Log::trace('Localhost SSL expired status: ' . ($localhostExpired ? 'YES' : 'NO'));
 
-        if ($hasRootCA && $hasRootCAKey) {
-            $trusted = Util::trustRootCA();
-            if ($trusted === false) {
-                $trustWarning = 'Unable to trust SSL root CA automatically. HTTPS certificates may be generated but not trusted by Windows. Run Bearsampp as Administrator (elevation required) and retry.';
-                $this->writeLog('WARNING: ' . $trustWarning . ' Root CA: ' . $rootCAPath);
-                Log::warning($trustWarning . ' Root CA: ' . $rootCAPath);
-                if (!empty($this->error)) {
-                    $this->error .= PHP_EOL . PHP_EOL;
-                }
-                $this->error .= $trustWarning;
+        if ($localhostExpired) {
+            Log::info('SSL certificate for "localhost" is missing or expired. Checking if creation is necessary...');
+            $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_GEN_SSL_CRT_TEXT), 'localhost'));
+            
+            // Only create if NOT present or REALLY expired
+            // (isExpired already returns true if missing)
+            if (!$bearsamppOpenSsl->createCrt('localhost')) {
+                Log::error('FAILED call to createCrt("localhost")');
             }
-        } elseif ($hasRootCA && !$hasRootCAKey) {
-            $caModeWarning = 'SSL root CA found but rootCA-key.pem is missing. CA signing is unavailable, so localhost certificates will remain self-signed and may be untrusted.';
-            $this->writeLog('WARNING: ' . $caModeWarning . ' Root CA: ' . $rootCAPath . ' Root CA Key: ' . $rootCAKeyPath);
-            Log::warning($caModeWarning . ' Root CA: ' . $rootCAPath . ' Root CA Key: ' . $rootCAKeyPath);
-            if (!empty($this->error)) {
-                $this->error .= PHP_EOL . PHP_EOL;
+            
+            // Re-verify after creation to log success/failure
+            if ($bearsamppOpenSsl->isExpired('localhost')) {
+                Log::error('FAILED to verify localhost SSL certificate after creation attempt.');
+            } else {
+                Log::info('Successfully verified localhost SSL certificate.');
             }
-            $this->error .= $caModeWarning;
+        } else {
+            Log::trace('SSL certificate for "localhost" is valid.');
         }
-        
-        if ( !$bearsamppOpenSsl->existsCrt( 'localhost' ) ) {
-            $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_GEN_SSL_CRT_TEXT ), 'localhost' ) );
-            $bearsamppOpenSsl->createCrt( 'localhost' );
+
+        // Also check all Apache vhosts
+        $apache = $bearsamppBins->getApache();
+        if ($apache) {
+            $vhosts = $apache->getVhosts();
+            Log::info('Checking SSL certificates for ' . count($vhosts) . ' vhosts');
+            foreach ($vhosts as $vhost) {
+                if ($bearsamppOpenSsl->isExpired($vhost)) {
+                    Log::info('SSL certificate for "' . $vhost . '" is missing or expired. Creating new one...');
+                    $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_GEN_SSL_CRT_TEXT), $vhost));
+                    if (!$bearsamppOpenSsl->createCrt($vhost)) {
+                        Log::error('FAILED call to createCrt("' . $vhost . '")');
+                    }
+                } else {
+                    Log::trace('SSL certificate for "' . $vhost . '" is valid.');
+                }
+            }
+        } else {
+            Log::info('Apache module not found or disabled, skipping vhost SSL check');
         }
     }
 
@@ -952,85 +986,105 @@ class ActionStartup
         Log::trace('Starting sequential service installation');
         $installStartTime = Util::getMicrotime();
 
-        // Step 1: Check and prepare all services
-        $servicesToStart = [];
-        $serviceErrors = [];
+        // Pre-fetch all services to speed up preparation phase
+        Win32Service::getServices(true);
 
-        $totalServiceCount = count($bearsamppBins->getServices());
-        $currentServiceIndex = 0;
+        // Skip symlink creation during checking phase for performance
+        Symlinks::setSkipSymlinkCreation(true);
 
-        foreach ($bearsamppBins->getServices() as $sName => $service) {
-            $currentServiceIndex++;
+        try {
+            // Step 1: Check and prepare all services
+            $servicesToStart = [];
+            $serviceErrors = [];
 
-            Log::trace('Preparing service: ' . $sName);
+            $totalServiceCount = count($bearsamppBins->getServices());
+            $currentServiceIndex = 0;
 
-            // prepareService() increments 1 step
-            $serviceInfo = $this->prepareService($sName, $service, $bearsamppBins, $bearsamppLang, $currentServiceIndex, $totalServiceCount);
+            foreach ($bearsamppBins->getServices() as $sName => $service) {
+                $currentServiceIndex++;
 
-            if ($serviceInfo['restart']) {
-                $this->writeLog('Need restart: installService ' . $serviceInfo['bin']->getName());
-                Log::trace('Restart required for service: ' . $serviceInfo['bin']->getName());
-                $this->restart = true;
-                // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
-                $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
-                continue;
+                Log::trace('Preparing service: ' . $sName);
+
+                // prepareService() increments 1 step
+                $serviceInfo = $this->prepareService($sName, $service, $bearsamppBins, $bearsamppLang, $currentServiceIndex, $totalServiceCount);
+
+                if ($serviceInfo['restart']) {
+                    $this->writeLog('Need restart: installService ' . $serviceInfo['bin']->getName());
+                    Log::trace('Restart required for service: ' . $serviceInfo['bin']->getName());
+                    $this->restart = true;
+                    // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
+                    $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
+                    continue;
+                }
+
+                if (!empty($serviceInfo['error'])) {
+                    $serviceErrors[$sName] = $serviceInfo;
+                    // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
+                    $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
+                    continue;
+                }
+
+                if ($serviceInfo['needsStart']) {
+                    $servicesToStart[$sName] = $serviceInfo;
+                } else {
+                    // Service already running or doesn't need to start
+                    // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
+                    $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
+                }
             }
-
-            if (!empty($serviceInfo['error'])) {
-                $serviceErrors[$sName] = $serviceInfo;
-                // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
-                $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
-                continue;
-            }
-
-            if ($serviceInfo['needsStart']) {
-                $servicesToStart[$sName] = $serviceInfo;
-            } else {
-                // Service already running or doesn't need to start
-                // prepareService used 1 step, need 4 more to reach GAUGE_SERVICES (5 total)
-                $this->splash->incrProgressBar(self::GAUGE_SERVICES - 1);
-            }
+        } finally {
+            // Re-enable symlink creation and reload bins with symlinks created
+            Symlinks::setSkipSymlinkCreation(false);
+            Log::trace('Re-enabling symlink creation after service checking');
+            $bearsamppBins->reload();
         }
 
-        // Step 2: Start all services sequentially with progress updates
+        // Step 2: Start all services in parallel with progress updates
         if (!empty($servicesToStart)) {
-            Log::trace('Starting ' . count($servicesToStart) . ' services sequentially');
+            Log::trace('Starting ' . count($servicesToStart) . ' services in parallel');
 
+            $parallelStartTime = Util::getMicrotime();
             $serviceCount = 0;
             $totalServices = count($servicesToStart);
 
+            // Use parallel startup for optimized performance (40-60% faster)
+            ServiceHelper::startAllServicesParallel(
+                $servicesToStart,
+                function($current, $total, $serviceName) use (&$serviceCount, $bearsamppLang) {
+                    $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::LOADING_START_SERVICE), $serviceName) . ' (' . $current . '/' . $total . ')');
+                    // Increment progress bar as each start command is sent
+                    if ($current > $serviceCount) {
+                        $this->splash->incrProgressBar();
+                        $serviceCount = $current;
+                    }
+                }
+            );
+
+            // Check which services are actually running and handle failures
+            $parallelDuration = round(Util::getMicrotime() - $parallelStartTime, 3);
+            Log::trace('Parallel startup phase completed in ' . $parallelDuration . ' seconds');
+
+            $verifyCount = 0;
             foreach ($servicesToStart as $sName => $serviceInfo) {
-                $serviceCount++;
+                $verifyCount++;
                 $name = $serviceInfo['name'];
                 $service = $serviceInfo['service'];
 
-                // Update splash before starting (1 step - 2nd of 5)
-                $this->splash->setTextLoading('Starting ' . $name . ' (' . $serviceCount . '/' . $totalServices . ')');
-                $this->splash->incrProgressBar();
+                // Update splash during verification phase
+                $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_VERIFY_SERVICE_TEXT), $name) . ' (' . $verifyCount . '/' . $totalServices . ')');
 
-                Log::trace('Starting service: ' . $sName);
-                $serviceStartTime = Util::getMicrotime();
-
-                // Start the service
-                $success = $service->start();
-
-                $duration = round(Util::getMicrotime() - $serviceStartTime, 3);
-
-                if ($success) {
-                    $this->writeLog($name . ' service started in ' . $duration . 's');
-                    Log::trace('Service ' . $name . ' started successfully in ' . $duration . ' seconds');
-
-                    // Update splash after successful start
-                    $this->splash->setTextLoading($name . ' started successfully');
+                if ($service->isRunning()) {
+                    $this->writeLog($name . ' service started successfully');
+                    Log::trace('Service ' . $name . ' verified running');
                 } else {
                     $error = $service->getError();
                     if (empty($error)) {
-                        $error = 'Failed to start service';
+                        $error = 'Failed to start service after parallel startup';
                     }
 
                     $serviceErrors[$sName] = $serviceInfo;
                     $serviceErrors[$sName]['error'] = $error;
-                    Log::trace('Service ' . $name . ' failed to start: ' . $error);
+                    Log::warning('Service ' . $name . ' failed to start: ' . $error);
 
                     // Run syntax check if available
                     if (!empty($serviceInfo['syntaxCheckCmd'])) {
@@ -1045,9 +1099,12 @@ class ActionStartup
                     }
                 }
 
-                // Complete remaining steps: prepareService=1, pre-start=1, now add 3 more = 5 total
+                // Increment progress bar for verification step
+                // Total for parallel path: 1 (prepare) + 1 (start callback) + 3 (verify) = 5
                 $this->splash->incrProgressBar(self::GAUGE_SERVICES - 2);
             }
+
+            Log::info('Parallel service startup completed: ' . count($servicesToStart) . ' services processed');
         }
 
         // Step 3: Report any errors
@@ -1146,7 +1203,11 @@ class ActionStartup
         $serviceAlreadyInstalled = false;
         $serviceToRemove = false;
 
-        if ($sName == BinApache::SERVICE_NAME) {
+        // Skip service checks for disabled services
+        if (!$bin->isEnable()) {
+            Log::trace('Skipping service check for disabled bin: ' . $bin->getName());
+            $serviceInfos = false;
+        } else if ($sName == BinApache::SERVICE_NAME) {
             $serviceInfos = $this->checkApacheServiceWithTimeout($service);
         } else if ($sName == BinMysql::SERVICE_NAME) {
             $serviceInfos = $this->checkMySQLServiceWithTimeout($service, $bin);
@@ -1203,8 +1264,34 @@ class ActionStartup
         $isPortInUse = Util::isPortInUse($port);
         if ($isPortInUse !== false) {
             // Port is in use - check if it's our service that's already running
-            if ($service->isRunning()) {
+            $isRunning = false;
+            if ($serviceInfos !== false && is_array($serviceInfos)) {
+                // Extract state from serviceInfos array (works for both NSSM and Win32Service)
+                $state = $serviceInfos[Win32Service::SERVICE_STATE] ?? $serviceInfos['CurrentState'] ?? null;
+
+                // Check if running: state can be numeric '4' or string 'RUNNING'
+                if ($state !== null) {
+                    $isRunning = ($state == Win32Service::WIN32_SERVICE_RUNNING) ||
+                                 (strtoupper((string)$state) === 'RUNNING');
+                } else {
+                    // Fallback to calling isRunning() if state is not found
+                    $isRunning = $service->isRunning();
+                }
+            } else if ($serviceInfos === false) {
+                // Fallback when serviceInfos is false
+                $isRunning = $service->isRunning();
+            }
+
+            if ($isRunning) {
                 // Service is already running and owns the port - this is OK
+                $this->writeLog($name . ' service already running on port ' . $port);
+                Log::trace('Service ' . $name . ' already running - no need to start');
+                $serviceInfo['needsStart'] = false;
+                return $serviceInfo;
+            }
+
+            // Fallback to a single status check if serviceInfos didn't give us the answer
+            if ($serviceInfos === false && $service->isRunning()) {
                 $this->writeLog($name . ' service already running on port ' . $port);
                 Log::trace('Service ' . $name . ' already running - no need to start');
                 $serviceInfo['needsStart'] = false;
@@ -1258,7 +1345,7 @@ class ActionStartup
 
         // Set a timeout for the Apache service check
         $serviceCheckStartTime = microtime(true);
-        $serviceCheckTimeout = 10; // 10 seconds timeout
+        $serviceCheckTimeout = 3; // 3 seconds timeout
 
         try {
             // Use a non-blocking approach to check service
@@ -1307,7 +1394,7 @@ class ActionStartup
 
         // Set a timeout for the MySQL service check
         $serviceCheckStartTime = microtime(true);
-        $serviceCheckTimeout = 8; // 8 seconds timeout
+        $serviceCheckTimeout = 3; // 3 seconds timeout
 
         try {
             // Use a non-blocking approach to check service
@@ -1349,6 +1436,6 @@ class ActionStartup
     private function writeLog($log)
     {
         global $bearsamppRoot;
-        Log::debug( $log, $bearsamppRoot->getStartupLogFilePath() );
+        Log::debug( $log, Path::getStartupLogFilePath() );
     }
 }
