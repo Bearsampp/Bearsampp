@@ -33,7 +33,9 @@ ext {
     // Development and build directories
     devDir = buildProps.getProperty('dev.dir')
     buildDirName = buildProps.getProperty('build.dir')
+    sandboxDirName = buildProps.getProperty('sandbox.dir')
     devPath = file("${projectDir}/${devDir}")
+    sandboxPath = file("${projectDir}/${sandboxDirName}")
     
     // Use build.dir from properties - can be absolute or relative path
     def buildDirPath = buildDirName.startsWith('/') || buildDirName.contains(':') ? 
@@ -1433,7 +1435,7 @@ task postBuildSync {
     doLast {
         println "\n*** Post-Build Sync to Sandbox ***"
         
-        def sandboxDir = file("${projectDir}/../sandbox")
+        def sandboxDir = sandboxPath
         def sourceExe = file("${projectDir}/base/bearsampp.exe")
         def destExe = file("${sandboxDir}/bearsampp.exe")
         
