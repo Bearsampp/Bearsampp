@@ -34,9 +34,9 @@ ext {
     devDir = buildProps.getProperty('dev.dir')
     buildDirName = buildProps.getProperty('build.dir')
     devPath = file("${projectDir}/${devDir}")
-    
+
     // Use build.dir from properties - can be absolute or relative path
-    def buildDirPath = buildDirName.startsWith('/') || buildDirName.contains(':') ? 
+    def buildDirPath = buildDirName.startsWith('/') || buildDirName.contains(':') ?
         buildDirName : "${projectDir}/${buildDirName}"
     buildOutputPath = file(buildDirPath)
     buildReleasePath = file("${buildOutputPath}/release")
@@ -134,14 +134,14 @@ def downloadModule(String releasesUrl, String version, File destDir) {
         if (!downloadFile.exists()) {
             println "* Downloading ${filename}..."
             ant.get(src: downloadUrl, dest: downloadFile, verbose: true)
-            
+
             // Verify download completed successfully
             if (downloadFile.exists() && downloadFile.length() < 1024 * 1024) {
                 println "WARNING: Downloaded file seems too small (${downloadFile.length()} bytes), may be corrupted"
             }
         } else {
             println "* Using cached ${filename} (${downloadFile.length()} bytes)"
-            
+
             // Verify cached file is not corrupted
             if (downloadFile.length() < 1024 * 1024) {
                 println "WARNING: Cached file seems too small (${downloadFile.length()} bytes), deleting and re-downloading..."
@@ -259,11 +259,11 @@ def safeDelete(File dir) {
     if (!dir.exists()) {
         return true
     }
-    
+
     def maxRetries = 5
     def retryCount = 0
     def deleted = false
-    
+
     while (retryCount < maxRetries && !deleted) {
         try {
             delete dir
@@ -281,7 +281,7 @@ def safeDelete(File dir) {
             }
         }
     }
-    
+
     return deleted
 }
 
@@ -289,7 +289,7 @@ def safeDelete(File dir) {
 def commentOutConfigLines(File confFile, List<String> linePrefixes) {
     def lines = confFile.readLines()
     def newLines = []
-    
+
     lines.each { line ->
         def shouldComment = false
         linePrefixes.each { prefix ->
@@ -303,7 +303,7 @@ def commentOutConfigLines(File confFile, List<String> linePrefixes) {
             newLines << line
         }
     }
-    
+
     confFile.text = newLines.join('\n')
 }
 
@@ -311,21 +311,21 @@ def commentOutConfigLines(File confFile, List<String> linePrefixes) {
 def loadBuildConfig(String configFile) {
     def config = [bins: [:], apps: [:], tools: [:]]
     def currentSection = null
-    
+
     file(configFile).eachLine { line ->
         line = line.trim()
-        
+
         // Skip comments and empty lines
         if (line.startsWith('#') || line.startsWith(';') || line.isEmpty()) {
             return
         }
-        
+
         // Check for section headers
         if (line.startsWith('[') && line.endsWith(']')) {
             currentSection = line[1..-2]
             return
         }
-        
+
         // Parse key=value pairs
         if (currentSection && line.contains('=')) {
             def parts = line.split('=', 2)
@@ -334,7 +334,7 @@ def loadBuildConfig(String configFile) {
             config[currentSection][key] = value
         }
     }
-    
+
     return config
 }
 
@@ -352,35 +352,35 @@ def getModulesToDownload(Map config, String type) {
 // Helper function to get modules to comment out based on config
 def getModulesToComment(Map config) {
     def toComment = []
-    
+
     // For bins, DON'T comment out - they are handled dynamically by the enable=0/1 flag
     // The application checks the enable flag to determine if a bin should be used
-    
+
     // For apps and tools, comment out version lines when disabled (they don't have enable flags)
     config.apps.each { module, enabled ->
         if (enabled == '0') {
             toComment << "${module}Version"
         }
     }
-    
+
     config.tools.each { module, enabled ->
         if (enabled == '0') {
             toComment << "${module}Version"
         }
     }
-    
+
     return toComment
 }
 
 // Helper function to get enable tokens based on config
 def getEnableTokens(Map config) {
     def tokens = [:]
-    
+
     config.bins.each { module, enabled ->
         def tokenName = "BIN_${module.toUpperCase()}_ENABLE"
         tokens[tokenName] = enabled
     }
-    
+
     return tokens
 }
 
@@ -391,22 +391,22 @@ task updateVersions {
 
     doLast {
         println "*** Updating module versions from GitHub"
-        
+
         def buildPropsFile = file('build.properties')
         def confFile = file("${projectDir}/base/bearsampp.conf")
         def tmpDir = file("${buildTmpPath}/version-check")
         tmpDir.mkdirs()
-        
+
         // Discover modules from bearsampp.conf
         def confLines = confFile.readLines()
         def modulesMap = [:]
         def confSection = null
-        
+
         confLines.each { line ->
             if (line.contains('; ---- BINS ----')) confSection = 'bin'
             else if (line.contains('; ---- TOOLS ----')) confSection = 'tool'
             else if (line.contains('; ---- APPS ----')) confSection = 'app'
-            
+
             if (confSection && line.contains('Version = "@') && !line.startsWith(';')) {
                 def parts = line.split('=')
                 if (parts.size() >= 2) {
@@ -417,39 +417,39 @@ task updateVersions {
                 }
             }
         }
-        
+
         println "* Discovered ${modulesMap.size()} modules"
-        
+
         // Read current build.properties
         def propsLines = buildPropsFile.readLines()
         def newLines = []
         def propsSection = null
         def addedProps = [] as Set
-        
+
         for (int i = 0; i < propsLines.size(); i++) {
             def line = propsLines[i]
             newLines << line
-            
+
             // Track sections
             if (line.startsWith('# Binaries versions')) propsSection = 'bin'
             else if (line.startsWith('# Applications versions')) propsSection = 'app'
             else if (line.startsWith('# Tools versions')) propsSection = 'tool'
-            
+
             // Check if we should insert missing entries after this line
             if (propsSection && line.startsWith("${propsSection}.") && line.contains('=')) {
                 def currentProp = line.split('=')[0].trim()
-                
+
                 // Find missing props that should go after current line
                 modulesMap.each { propName, repoName ->
                     if (propName.startsWith("${propsSection}.") && !addedProps.contains(propName)) {
                         def propExists = propsLines.any { it.startsWith("${propName} ") || it.startsWith("${propName}=") }
-                        
+
                         if (!propExists && propName > currentProp) {
                             // Check next line
                             def hasNext = i + 1 < propsLines.size()
                             def nextLine = hasNext ? propsLines[i + 1] : ''
                             def nextProp = nextLine.startsWith("${propsSection}.") ? nextLine.split('=')[0].trim() : null
-                            
+
                             if (!nextProp || propName < nextProp) {
                                 newLines << "${propName} = 0.0.0"
                                 addedProps << propName
@@ -460,34 +460,34 @@ task updateVersions {
                 }
             }
         }
-        
+
         buildPropsFile.text = newLines.join('\n')
-        
+
         // Now update versions from GitHub
         propsLines = buildPropsFile.readLines()
         def updatedLines = []
-        
+
         propsLines.each { line ->
             def updated = line
-            
+
             modulesMap.each { propName, repoName ->
                 if (line.startsWith("${propName} ") || line.startsWith("${propName}=")) {
                     try {
                         def url = "https://raw.githubusercontent.com/Bearsampp/${repoName}/main/releases.properties"
                         def propsFile = file("${tmpDir}/${repoName}.properties")
-                        
+
                         println "* Fetching ${propName}"
                         ant.get(src: url, dest: propsFile, verbose: false, ignoreerrors: false)
-                        
+
                         def releaseProps = new Properties()
                         propsFile.withInputStream { releaseProps.load(it) }
-                        
+
                         def versions = releaseProps.stringPropertyNames().toList()
                         if (!versions.isEmpty()) {
                             // Filter out date-like versions and versions with year suffixes
                             def validVersions = versions.findAll { version ->
                                 def parts = version.split('[.-]')
-                                
+
                                 // Check if first part looks like a year (exclude date-like versions)
                                 if (parts.length > 0 && parts[0].isInteger()) {
                                     def firstPart = parts[0].toInteger()
@@ -496,7 +496,7 @@ task updateVersions {
                                         return false
                                     }
                                 }
-                                
+
                                 // Check if any part after the first 3 looks like a year (e.g., 3.4.7-2025)
                                 if (parts.length > 3) {
                                     for (int i = 3; i < parts.length; i++) {
@@ -509,10 +509,10 @@ task updateVersions {
                                         }
                                     }
                                 }
-                                
+
                                 return true
                             }
-                            
+
                             if (!validVersions.isEmpty()) {
                                 def latest = validVersions.sort { a, b ->
                                     def aParts = a.split('[.-]')
@@ -524,7 +524,7 @@ task updateVersions {
                                     }
                                     return 0
                                 }[0]
-                                
+
                                 updated = "${propName} = ${latest}"
                                 println "  [OK] Updated to ${latest}"
                             } else {
@@ -536,10 +536,10 @@ task updateVersions {
                     }
                 }
             }
-            
+
             updatedLines << updated
         }
-        
+
         buildPropsFile.text = updatedLines.join('\n')
         println "[DONE] Version update complete"
         delete tmpDir
@@ -558,10 +558,10 @@ clean {
     doLast {
         if (buildOutputPath.exists()) {
             println "* Deleting build directory: ${buildOutputPath.absolutePath}"
-            
+
             // Use safeDelete helper function with retry logic
             def deleted = safeDelete(buildOutputPath)
-            
+
             if (deleted) {
                 println "* Build directory cleaned successfully"
             } else {
@@ -572,13 +572,13 @@ clean {
         } else {
             println "* Build directory does not exist (already clean)"
         }
-        
+
         // Also clean any temporary build artifacts in project directory
         def projectTempDirs = [
             file("${projectDir}/.gradle"),
             file("${projectDir}/build")
         ]
-        
+
         projectTempDirs.each { tempDir ->
             if (tempDir.exists() && tempDir != buildOutputPath) {
                 println "* Cleaning project temp directory: ${tempDir.name}"
@@ -702,23 +702,23 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                 def path = fileTreeElement.relativePath.pathString
                 def name = fileTreeElement.file.name
                 def isDirectory = fileTreeElement.file.isDirectory()
-                
+
                 // FIRST: NEVER EVER exclude .gitignore files - this takes priority over everything
                 if (name == '.gitignore' && fileTreeElement.file.isFile()) {
                     return false
                 }
-                
+
                 // SECOND: NEVER exclude files from these directories - copy everything
                 if (path.startsWith('tmp/') || path.startsWith('logs/')) {
                     return false
                 }
-                
+
                 // Exclude dot directories (but NOT .gitignore files)
                 // Check if this is a directory that starts with a dot
                 if (isDirectory && name.startsWith('.')) {
                     return true
                 }
-                
+
                 // Also exclude paths that are inside dot directories
                 def pathParts = path.split('[/\\\\]')
                 for (def part : pathParts) {
@@ -726,17 +726,17 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                         return true
                     }
                 }
-                
+
                 // Exclude specific file types
                 if (name.endsWith('.iml') || name.endsWith('.launch')) {
                     return true
                 }
-                
+
                 // Exclude git-related files (but NOT .gitignore - already handled above)
                 if (name == '.gitattributes' || name == '.editorconfig') {
                     return true
                 }
-                
+
                 return false
             }
         }
@@ -764,7 +764,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         }
         println "Found ${gitignoreFiles.size()} .gitignore files in base/:"
         gitignoreFiles.each { println "  - ${it}" }
-        
+
         // Copy everything from base/ first
         copy {
             from file("${projectDir}/base")
@@ -781,7 +781,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             }
             println "  [COPY] LICENSE"
         }
-        
+
         // Copy favicon.ico
         def sourceFavicon = file("${projectDir}/core/resources/homepage/img/icons/app.ico")
         if (sourceFavicon.exists()) {
@@ -792,7 +792,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             }
             println "  [COPY] favicon.ico"
         }
-        
+
         // Manually copy .gitignore files (Gradle excludes them by default)
         println "Manually copying .gitignore files..."
         gitignoreFiles.each { gitignorePath ->
@@ -805,7 +805,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                 println "  [COPY] ${destPath}"
             }
         }
-        
+
         // Now manually delete unwanted files from logs/, ssl/, tmp/, vhosts/ (but keep .gitignore)
         println "Cleaning up temporary directories (keeping .gitignore files)..."
         ['logs', 'ssl', 'tmp', 'vhosts'].each { dirName ->
@@ -821,7 +821,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                 }
             }
         }
-        
+
         // Verify .gitignore files were kept
         println "Verifying .gitignore files in release..."
         def keptGitignores = []
@@ -833,12 +833,12 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         }
         println "Found ${keptGitignores.size()} .gitignore files in release:"
         keptGitignores.each { println "  [OK] ${it}" }
-        
+
         // Ensure directories exist (they should already have .gitignore files from copy above)
         file("${releaseBasePath}/logs").mkdirs()
         file("${releaseBasePath}/ssl").mkdirs()
         file("${releaseBasePath}/vhosts").mkdirs()
-        
+
         file("${releaseBasePath}/tmp/cachegrind").mkdirs()
         file("${releaseBasePath}/tmp/npm-cache").mkdirs()
         file("${releaseBasePath}/tmp/openssl").mkdirs()
@@ -899,7 +899,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             lastPathFile.text = ''
             println "Created lastPath.dat file"
         }
-        
+
         // Clean up any logs that may have been created during build process (but keep .gitignore)
         def logsDir = file("${releaseBasePath}/logs")
         if (logsDir.exists()) {
@@ -937,7 +937,7 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
             into releaseTarget
             includeEmptyDirs = true
         }
-        
+
         // Manually copy .gitignore files from releaseBasePath to releaseTarget
         println "Copying .gitignore files to release target..."
         releaseBasePath.eachFileRecurse { f ->
@@ -952,7 +952,7 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
 
         // Load configuration from buildFull.ini
         def buildConfig = loadBuildConfig("${projectDir}/buildFull.ini")
-        
+
         // Generate enable tokens from config
         def fullTokens = getEnableTokens(buildConfig)
 
@@ -1051,7 +1051,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
             into releaseTarget
             includeEmptyDirs = true
         }
-        
+
         // Manually copy .gitignore files from releaseBasePath to releaseTarget
         println "Copying .gitignore files to release target..."
         releaseBasePath.eachFileRecurse { f ->
@@ -1066,7 +1066,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
 
         // Load configuration from buildBasic.ini
         def buildConfig = loadBuildConfig("${projectDir}/buildBasic.ini")
-        
+
         // Generate enable tokens from config
         def basicTokens = getEnableTokens(buildConfig)
 
@@ -1075,7 +1075,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
             confContent = confContent.replaceAll("@${token}@", value)
         }
         file("${releaseTarget}/bearsampp.conf").text = confContent
-        
+
         // Comment out unused apps and tools (bins are handled by enable flags)
         def confFile = file("${releaseTarget}/bearsampp.conf")
         def toComment = getModulesToComment(buildConfig)
@@ -1165,7 +1165,7 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
             into releaseTarget
             includeEmptyDirs = true
         }
-        
+
         // Manually copy .gitignore files from releaseBasePath to releaseTarget
         println "Copying .gitignore files to release target..."
         releaseBasePath.eachFileRecurse { f ->
@@ -1180,7 +1180,7 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
 
         // Load configuration from buildLite.ini
         def buildConfig = loadBuildConfig("${projectDir}/buildLite.ini")
-        
+
         // Generate enable tokens from config
         def liteTokens = getEnableTokens(buildConfig)
 
@@ -1189,7 +1189,7 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
             confContent = confContent.replaceAll("@${token}@", value)
         }
         file("${releaseTarget}/bearsampp.conf").text = confContent
-        
+
         // Comment out unused apps and tools (bins are handled by enable flags)
         def confFile = file("${releaseTarget}/bearsampp.conf")
         def toComment = getModulesToComment(buildConfig)
@@ -1432,16 +1432,16 @@ task postBuildSync {
 
     doLast {
         println "\n*** Post-Build Sync to Sandbox ***"
-        
-        def sandboxDir = file("${projectDir}/../sandbox")
+
+        def sandboxDir = file("${projectDir}/../../sandbox")
         def sourceExe = file("${projectDir}/base/bearsampp.exe")
         def destExe = file("${sandboxDir}/bearsampp.exe")
-        
+
         if (!sourceExe.exists()) {
             println "ERROR: Source executable not found at ${sourceExe}"
             return
         }
-        
+
         if (!sandboxDir.exists()) {
             println "ERROR: Sandbox directory not found at ${sandboxDir}"
             return
@@ -1452,14 +1452,14 @@ task postBuildSync {
             from sourceExe
             into sandboxDir
         }
-        
+
         if (destExe.exists()) {
             println "* bearsampp.exe successfully copied to ${sandboxDir}"
-            
+
             // Migrate fix-icon.bat logic here
             def resourceHackerExe = file("${sandboxDir}/ResourceHacker.exe")
             def iconPath = file("${sandboxDir}/core/resources/homepage/img/icons/bearsampp.ico")
-            
+
             if (resourceHackerExe.exists() && iconPath.exists()) {
                 println "* Updating icon using ResourceHacker..."
                 def process = new ProcessBuilder(resourceHackerExe.absolutePath,
@@ -1471,16 +1471,16 @@ task postBuildSync {
                     .directory(sandboxDir)
                     .redirectErrorStream(true)
                     .start()
-                
+
                 process.inputStream.eachLine { println "  > ${it}" }
                 process.waitFor()
-                
+
                 if (process.exitValue() == 0) {
                     println "* Icon set successfully"
-                    
+
                     // New step: Copy app.ico from sandbox to sandbox root as favicon.ico
                     def sourceFavicon = file("${sandboxDir}/core/resources/homepage/img/icons/app.ico")
-                    
+
                     if (sourceFavicon.exists()) {
                         println "* Copying app.ico from sandbox to sandbox root as favicon.ico..."
                         copy {
@@ -1492,7 +1492,7 @@ task postBuildSync {
                     } else {
                         println "WARNING: Source app.ico not found at ${sourceFavicon}"
                     }
-                    
+
                     println "* SUCCESS: bearsampp.exe synced and icons fixed in sandbox"
                 } else {
                     println "* ERROR: ResourceHacker failed with exit code ${process.exitValue()}"
