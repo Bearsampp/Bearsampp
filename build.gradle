@@ -1315,20 +1315,17 @@ task sync(dependsOn: buildFull) {
         copy {
             from file("${releaseTmpPath}/base/core")
             into file("${iconographyTempDir}/core")
-            overwrite true
         }
 
         println "* Preparing executable..."
         copy {
             from file("${projectDir}/base/bearsampp.exe")
             into iconographyTempDir
-            overwrite true
         }
 
         copy {
             from file("${projectDir}/rcedit-x64.exe")
             into iconographyTempDir
-            overwrite true
         }
 
         def resourceHackerSource = file("${syncFinalPath}/ResourceHacker.exe")
