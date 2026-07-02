@@ -1217,7 +1217,7 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
 }
 
 // Task: buildBasic
-task buildBasic(dependsOn: [initBuild, prepareBase]) {
+task buildBasic(dependsOn: buildFull) {
     group = 'build'
     description = 'Build basic release package'
 
@@ -1342,7 +1342,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
 }
 
 // Task: buildLite
-task buildLite(dependsOn: [initBuild, prepareBase]) {
+task buildLite(dependsOn: buildBasic) {
     group = 'build'
     description = 'Build lite release package'
 
@@ -1516,7 +1516,7 @@ task sync(dependsOn: buildFull) {
             copy {
                 from resourceHackerSource
                 into iconographyTempDir
-                overwrite true
+                duplicatesStrategy = 'include'
             }
         } else {
             println "WARNING: ResourceHacker.exe not found at ${resourceHackerSource}"
@@ -1542,7 +1542,7 @@ task sync(dependsOn: buildFull) {
             copy {
                 from iconsSource
                 into iconsDest
-                overwrite true
+                duplicatesStrategy = 'include'
             }
         }
 
@@ -1575,7 +1575,7 @@ task sync(dependsOn: buildFull) {
         copy {
             from tempBearsamppExe
             into syncFinalPath
-            overwrite true
+            duplicatesStrategy = 'include'
         }
 
         println "\n*** Sync complete!"
@@ -1585,7 +1585,7 @@ task sync(dependsOn: buildFull) {
 }
 
 // Task: release
-task release(dependsOn: [initBuild, prepareBase, buildFull, buildBasic, buildLite, sync]) {
+task release(dependsOn: [buildLite, sync]) {
     group = 'build'
     description = 'Release Bearsampp (all variants) - includes clean'
 
