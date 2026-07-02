@@ -1467,6 +1467,10 @@ task buildLite(dependsOn: buildBasic) {
 }
 
 // Task: sync
+// Capture project properties at configuration time to avoid deprecation warnings
+def skipSync = findProperty('skipSync') ?: false
+def customSyncPath = findProperty('syncPath') ?: null
+
 task sync(dependsOn: buildFull) {
     group = 'build'
     description = 'Sync build to sandbox'
@@ -1474,12 +1478,12 @@ task sync(dependsOn: buildFull) {
     doLast {
         println "\n*** Sync to Sandbox ***"
 
-        if (project.hasProperty('skipSync')) {
+        if (skipSync) {
             println "* Skipping sync."
             return
         }
 
-        def syncFinalPath = project.hasProperty('syncPath') ? file(project.property('syncPath')) : bearsamppPath
+        def syncFinalPath = customSyncPath ? file(customSyncPath) : bearsamppPath
 
         println "\n*** Sync step: using path = ${syncFinalPath}"
 
