@@ -350,7 +350,7 @@
       {
         "version": "10.07.1",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2026.7.1/bearsampp-ghostscript-10.07.1-2026.7.1.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "10.07.0",
