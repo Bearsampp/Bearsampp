@@ -200,6 +200,8 @@ async function installModule(moduleName, version) {
     const downloadversion = document.getElementById('download-version');
     let isCompleted = false;
     let messageData = '';
+    progressbar.classList.add('progress-bar-animated', 'progress-bar-striped');
+    progressbar.style.width = '100%';
     progressbar.innerText = `Downloading ${moduleName} ${version}`;
     progress.style.display = "block";
     downloadmodule.innerText = moduleName;
@@ -234,44 +236,75 @@ async function installModule(moduleName, version) {
 
         while (true) {
             const {done, value} = await reader.read();
-            if (done) break;
+            if (done) {
+                // Process any remaining text in responseText
+                if (responseText.trim()) {
+                    try {
+                        const data = JSON.parse(responseText.trim());
+                        processJsonChunk(data);
+                    } catch (e) {
+                        console.error('Failed to parse final JSON chunk:', responseText, e);
+                    }
+                }
+                break;
+            }
             responseText += decoder.decode(value, {stream: true});
 
-            const parts = responseText.split('}{').map((part, index, arr) => {
-                if (index === 0) return part + '}';
-                if (index === arr.length - 1) return '{' + part;
-                return '{' + part + '}';
-            });
-
-            for (const part of parts) {
+            const chunks = responseText.split('\n');
+            for (let i = 0; i < chunks.length - 1; i++) {
+                const chunk = chunks[i].trim();
+                if (!chunk) continue;
                 try {
-                    const data = JSON.parse(part);
-                    if (data.progress) {
-                        console.log('Progress:', data.progress);
-                        const progressValue = data.progress;
-                        progressbar.style.width = '100%';
-                        if (isDownloading) {
-                            progressbar.innerText = `${progressValue} KBytes Downloaded`;
-                        } else {
-                            progressbar.innerText = `${progressValue} Extracted`;
-                        }
-                    } else if (data.success) {
-                        console.log(data);
-                        isCompleted = true;
-                        messageData = data; // Store the full response object, not just the message
-                    } else if (data.error) {
-                        console.error('Error:', data.error);
-                        window.alert(`Error: ${data.error}`);
-                    } else if (data.phase === 'extracting') {
-                        isDownloading = false;
-                    }
+                    const data = JSON.parse(chunk);
+                    processJsonChunk(data);
                 } catch (error) {
-                    // Ignore JSON parse errors for incomplete parts
+                    console.error('Failed to parse JSON chunk:', chunk, error);
                 }
             }
+            responseText = chunks[chunks.length - 1];
+        }
 
-            // Clear responseText to keep only the unprocessed part
-            responseText = parts[parts.length - 1].startsWith('{') ? parts[parts.length - 1] : '';
+        function processJsonChunk(data) {
+            if (data.progress) {
+                console.log('Progress:', data.progress);
+                const progressValue = data.progress;
+                // Since we don't know total size for download, 
+                // we show it as "working" (100% width or just updating text)
+                // Extraction progress is percentage-based in the string
+                if (isDownloading) {
+                    progressbar.style.width = '100%';
+                    progressbar.innerText = `${progressValue} KBytes Downloaded`;
+                } else {
+                    const match = progressValue.match(/(\d+)%/);
+                    const percentage = match ? parseInt(match[1]) : null;
+
+                    if (progressValue.includes('...') || progressValue === 'Analyzing' || progressValue === 'Initializing' || !progressValue.includes('%') || percentage === 0) {
+                        progressbar.style.width = '100%';
+                        progressbar.classList.add('progress-bar-animated', 'progress-bar-striped');
+                        progressbar.innerText = progressValue.includes('%') ? `Extraction: ${progressValue}` : progressValue;
+                    } else {
+                        progressbar.classList.remove('progress-bar-animated', 'progress-bar-striped');
+                        const width = percentage !== null ? percentage + '%' : '100%';
+                        progressbar.style.width = width;
+                        progressbar.innerText = `Extraction: ${progressValue}`;
+                    }
+                }
+            } else if (data.success) {
+                console.log('Installation success:', data);
+                progressbar.classList.remove('progress-bar-animated', 'progress-bar-striped');
+                progressbar.style.width = '100%';
+                isCompleted = true;
+                messageData = data; // Store the full response object, not just the message
+            } else if (data.error) {
+                console.error('Error:', data.error);
+                progressbar.classList.remove('progress-bar-animated', 'progress-bar-striped');
+                window.alert(`Error: ${data.error}`);
+            } else if (data.phase === 'extracting') {
+                isDownloading = false;
+                progressbar.classList.add('progress-bar-animated', 'progress-bar-striped');
+                progressbar.style.width = '100%';
+                progressbar.innerText = 'Initializing extraction...';
+            }
         }
     } catch (error) {
         console.error('Failed to install module:', error);
@@ -293,9 +326,13 @@ async function installModule(moduleName, version) {
                 return; // Exit early to prevent reload
             }
         }
-        setTimeout(() => {
-            location.reload();
-        }, 100); // Delay of 100 milliseconds
+        // Only reload if not completed (e.g. error or interrupted)
+        // because success paths handle reload via their own modals
+        if (!isCompleted) {
+            setTimeout(() => {
+                location.reload();
+            }, 100); // Delay of 100 milliseconds
+        }
     }
 }
 
@@ -420,7 +457,7 @@ function showInfoDialog(message) {
     const modalBody = document.getElementById('infoModalBody');
     // Convert newlines to <br> for HTML display, but preserve white-space for formatting
     modalBody.style.whiteSpace = 'pre-wrap';
-    const htmlMessage = message.replace(/\n/g, '<br>');
+    const htmlMessage = typeof message === 'string' ? message.replace(/\n/g, '<br>') : JSON.stringify(message);
     modalBody.innerHTML = htmlMessage;
 
     // Get button references

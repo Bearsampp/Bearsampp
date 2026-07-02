@@ -709,21 +709,29 @@ class ActionStartup
         $currentPath = $this->rootPath;
 
         // Performance optimization: Skip scan if path hasn't changed
-        if ($lastPath === $currentPath) {
+        // BUT always scan if it's the first time or if we need to ensure placeholders are replaced.
+        // We removed the optimization because it prevents newly added modules from being initialized
+        // with the correct paths if the main project path remains the same.
+        /*
+        if ($lastPath === $currentPath && !empty($lastPath)) {
             Log::debug('Path unchanged, skipping file scan (performance optimization)');
             Log::trace('Last path: "' . $lastPath . '" matches current path: "' . $currentPath . '"');
+            
             $this->filesToScan = [];
             $this->writeLog('Files to scan: 0 (path unchanged - scan skipped)');
-
-            // Log performance benefit
-            $this->writeLog('Performance: File scan skipped, saving 3-8 seconds');
             return;
         }
+        */
 
-        // Path changed, perform full scan
-        Log::debug('Path changed, performing full file scan');
-        Log::trace('Last path: "' . $lastPath . '" differs from current path: "' . $currentPath . '"');
-        $this->writeLog('Path changed detected - performing full scan');
+        // Path changed or first run, perform full scan
+        if ($lastPath !== $currentPath || empty($lastPath)) {
+            Log::debug('Path changed or first run, performing full file scan');
+            Log::trace('Last path: "' . $lastPath . '" differs from current path: "' . $currentPath . '"');
+            $this->writeLog('Path changed detected - performing full scan');
+        } else {
+            Log::debug('Ensuring configuration files are checked for placeholders');
+            $this->writeLog('Scanning configuration files for placeholders');
+        }
 
         $scanStartTime = Util::getMicrotime();
         $this->filesToScan = Util::getFilesToScan();
@@ -887,20 +895,26 @@ class ActionStartup
     {
         global $bearsamppLang, $bearsamppOpenSsl, $bearsamppBins;
 
+        Log::info('Checking SSL certificates during startup...');
         $this->splash->incrProgressBar();
 
         // Always ensure localhost exists and is valid
-        if ($bearsamppOpenSsl->isExpired('localhost')) {
+        $localhostExpired = $bearsamppOpenSsl->isExpired('localhost');
+        Log::trace('Localhost SSL expired status: ' . ($localhostExpired ? 'YES' : 'NO'));
+
+        if ($localhostExpired) {
             Log::info('SSL certificate for "localhost" is missing or expired. Checking if creation is necessary...');
             $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_GEN_SSL_CRT_TEXT), 'localhost'));
             
             // Only create if NOT present or REALLY expired
             // (isExpired already returns true if missing)
-            $bearsamppOpenSsl->createCrt('localhost');
+            if (!$bearsamppOpenSsl->createCrt('localhost')) {
+                Log::error('FAILED call to createCrt("localhost")');
+            }
             
             // Re-verify after creation to log success/failure
             if ($bearsamppOpenSsl->isExpired('localhost')) {
-                Log::error('FAILED to create/verify localhost SSL certificate.');
+                Log::error('FAILED to verify localhost SSL certificate after creation attempt.');
             } else {
                 Log::info('Successfully verified localhost SSL certificate.');
             }
@@ -912,18 +926,20 @@ class ActionStartup
         $apache = $bearsamppBins->getApache();
         if ($apache) {
             $vhosts = $apache->getVhosts();
-            Log::trace('Checking SSL certificates for ' . count($vhosts) . ' vhosts');
+            Log::info('Checking SSL certificates for ' . count($vhosts) . ' vhosts');
             foreach ($vhosts as $vhost) {
                 if ($bearsamppOpenSsl->isExpired($vhost)) {
                     Log::info('SSL certificate for "' . $vhost . '" is missing or expired. Creating new one...');
                     $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_GEN_SSL_CRT_TEXT), $vhost));
-                    $bearsamppOpenSsl->createCrt($vhost);
+                    if (!$bearsamppOpenSsl->createCrt($vhost)) {
+                        Log::error('FAILED call to createCrt("' . $vhost . '")');
+                    }
                 } else {
                     Log::trace('SSL certificate for "' . $vhost . '" is valid.');
                 }
             }
         } else {
-            Log::trace('Apache module not found, skipping vhost SSL check');
+            Log::info('Apache module not found or disabled, skipping vhost SSL check');
         }
     }
 
@@ -969,6 +985,9 @@ class ActionStartup
     {
         Log::trace('Starting sequential service installation');
         $installStartTime = Util::getMicrotime();
+
+        // Pre-fetch all services to speed up preparation phase
+        Win32Service::getServices(true);
 
         // Skip symlink creation during checking phase for performance
         Symlinks::setSkipSymlinkCreation(true);
@@ -1052,7 +1071,7 @@ class ActionStartup
                 $service = $serviceInfo['service'];
 
                 // Update splash during verification phase
-                $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_CHECK_SERVICE_TEXT), $name) . ' (' . $verifyCount . '/' . $totalServices . ')');
+                $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_VERIFY_SERVICE_TEXT), $name) . ' (' . $verifyCount . '/' . $totalServices . ')');
 
                 if ($service->isRunning()) {
                     $this->writeLog($name . ' service started successfully');
@@ -1245,8 +1264,34 @@ class ActionStartup
         $isPortInUse = Util::isPortInUse($port);
         if ($isPortInUse !== false) {
             // Port is in use - check if it's our service that's already running
-            if ($service->isRunning()) {
+            $isRunning = false;
+            if ($serviceInfos !== false && is_array($serviceInfos)) {
+                // Extract state from serviceInfos array (works for both NSSM and Win32Service)
+                $state = $serviceInfos[Win32Service::SERVICE_STATE] ?? $serviceInfos['CurrentState'] ?? null;
+
+                // Check if running: state can be numeric '4' or string 'RUNNING'
+                if ($state !== null) {
+                    $isRunning = ($state == Win32Service::WIN32_SERVICE_RUNNING) ||
+                                 (strtoupper((string)$state) === 'RUNNING');
+                } else {
+                    // Fallback to calling isRunning() if state is not found
+                    $isRunning = $service->isRunning();
+                }
+            } else if ($serviceInfos === false) {
+                // Fallback when serviceInfos is false
+                $isRunning = $service->isRunning();
+            }
+
+            if ($isRunning) {
                 // Service is already running and owns the port - this is OK
+                $this->writeLog($name . ' service already running on port ' . $port);
+                Log::trace('Service ' . $name . ' already running - no need to start');
+                $serviceInfo['needsStart'] = false;
+                return $serviceInfo;
+            }
+
+            // Fallback to a single status check if serviceInfos didn't give us the answer
+            if ($serviceInfos === false && $service->isRunning()) {
                 $this->writeLog($name . ' service already running on port ' . $port);
                 Log::trace('Service ' . $name . ' already running - no need to start');
                 $serviceInfo['needsStart'] = false;

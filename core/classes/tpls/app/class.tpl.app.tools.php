@@ -19,6 +19,7 @@ class TplAppTools
 {
     // Constants for menu and action identifiers
     const MENU = 'tools';
+    const ACTION_MAKE_ROOT_CA = 'makeRootCA';
     const ACTION_GEN_SSL_CERTIFICATE = 'genSslCertificate';
     const ACTION_DEL_SSL_CERTIFICATE = 'delSslCertificate';
 
@@ -156,6 +157,15 @@ class TplAppTools
         // Line Separator
         $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
+        // Generate rootCA certificate
+        $tplMakeRootCa = TplApp::getActionMulti(
+            self::ACTION_MAKE_ROOT_CA, null,
+            array($bearsamppLang->getValue(Lang::MENU_GEN_ROOT_CA), TplAestan::GLYPH_SSL_CERTIFICATE),
+            false, get_called_class()
+        );
+        $resultItems .= $tplMakeRootCa[TplApp::SECTION_CALL] . PHP_EOL;
+        $resultActions .= $tplMakeRootCa[TplApp::SECTION_CONTENT] . PHP_EOL;
+
         // Generate SSL Certificate
         $tplGenSslCertificate = TplApp::getActionMulti(
             self::ACTION_GEN_SSL_CERTIFICATE, null,
@@ -175,6 +185,16 @@ class TplAppTools
         $resultActions .= $tplDelSslCertificate[TplApp::SECTION_CONTENT];
 
         return $resultItems . PHP_EOL . $resultActions;
+    }
+
+    /**
+     * Generates the action to create a new Root CA.
+     *
+     * @return string The generated action to create a new Root CA.
+     */
+    public static function getActionMakeRootCa()
+    {
+        return TplApp::getActionRun(Action::MAKE_ROOT_CA);
     }
 
     /**

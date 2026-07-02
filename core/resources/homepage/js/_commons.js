@@ -7,39 +7,20 @@
  *
  */
 
-const AJAX_URL = "http://localhost/1fd5bfc5c72323f1d019208088a6de21/ajax.php"
-
 /**
  * StatusFetcher - Unified utility for fetching and displaying service status
- *
- * This class eliminates code duplication across service-specific JavaScript files
- * by providing a common interface for AJAX status fetching and DOM updates.
  */
 class StatusFetcher {
-  /**
-   * Create a StatusFetcher instance
-   *
-   * @param {string} serviceName - The service name (e.g., 'mysql', 'apache', 'php')
-   * @param {Array<string|Object>} fields - Array of field names or field mapping objects
-   *   - String format: 'checkport' (uses same name for data key and selector)
-   *   - Object format: { data: 'versions', selector: 'version-list' }
-   * @param {Object} options - Optional configuration
-   * @param {Function} options.errorHandler - Custom error handler for specific services
-   * @param {Function} options.responseValidator - Custom response validator
-   * @param {Function} options.customUpdater - Custom DOM updater function
-   */
   constructor(serviceName, fields = ['checkport', 'versions'], options = {}) {
     this.serviceName = serviceName;
     this.fields = this.normalizeFields(fields);
-    this.options = options;
+    this.options = Object.assign({
+      interval: 10000,
+      proc: serviceName
+    }, options);
+    this.timer = null;
   }
 
-  /**
-   * Normalize field definitions to consistent format
-   *
-   * @param {Array<string|Object>} fields - Field definitions
-   * @returns {Array<Object>} Normalized field objects
-   */
   normalizeFields(fields) {
     return fields.map(field => {
       if (typeof field === 'string') {
@@ -49,108 +30,131 @@ class StatusFetcher {
     });
   }
 
-  /**
-   * Fetch status from the server
-   *
-   * @returns {Promise<void>}
-   */
+  init() {
+    this.fetchStatus();
+    if (this.options.interval > 0) {
+      this.timer = setInterval(() => this.fetchStatus(), this.options.interval);
+    }
+  }
+
   async fetchStatus() {
     const senddata = new URLSearchParams();
-    senddata.append('proc', this.serviceName);
-
-    // Add CSRF token using the helper function
-    if (typeof addCsrfToken === 'function') {
-      addCsrfToken(senddata);
-    }
+    senddata.append('proc', this.options.proc);
+    
+    let url = AJAX_URL;
 
     try {
-      const response = await fetch(AJAX_URL, {
+      const response = await fetchWithCsrf(url, {
         method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
         body: senddata
       });
 
-      if (!response.ok) {
-        console.log(`Error receiving from ajax.php for ${this.serviceName}`);
-        return;
-      }
-
-      const responseText = await response.text();
-
-      // Custom response validation (e.g., for MySQL mysqli_sql_exception)
-      if (this.options.responseValidator) {
-        const validationResult = this.options.responseValidator(responseText);
-        if (!validationResult.valid) {
-          console.log(validationResult.message || `Validation failed for ${this.serviceName}`);
-          return;
-        }
-      }
-
-      const data = JSON.parse(responseText);
-
-      // Use custom updater if provided, otherwise use default
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      
       if (this.options.customUpdater) {
         this.options.customUpdater(data);
       } else {
         this.updateDOM(data);
       }
     } catch (error) {
-      console.error(`Failed to parse response for ${this.serviceName}:`, error);
-      if (this.options.errorHandler) {
-        this.options.errorHandler(error);
+      // Don't log abort errors (common during page navigation/reload)
+      if (error.name === 'AbortError' || (error instanceof TypeError && error.message.includes('NetworkError'))) {
+         return;
+      }
+      console.error(`[${this.serviceName}] Fetch error:`, error);
+      this.showErrorFeedback();
+    }
+  }
+
+  showErrorFeedback() {
+    const selector = `.summary-${this.serviceName}`;
+    const element = document.querySelector(selector) || document.getElementById(this.serviceName);
+    if (element) {
+      // 1. Check if the element itself IS the designated container
+      const isContentEl = element.classList.contains('status-content');
+      
+      // 2. Prioritize .status-content for feedback, fallback to .loader, then element
+      const contentEl = isContentEl ? element : (element.querySelector('.status-content') || element.querySelector('.loader') || element);
+      
+      const loaders = contentEl.querySelectorAll('.loader');
+      if (loaders.length > 0) {
+        loaders.forEach(loader => {
+          loader.classList.remove('fa-spin');
+          loader.style.filter = 'invert(16%) sepia(89%) saturate(6144%) hue-rotate(357deg) brightness(97%) contrast(113%)';
+          const img = loader.querySelector('img');
+          if (img) {
+            img.style.filter = 'grayscale(100%) brightness(50%) sepia(100%) hue-rotate(-50deg) saturate(600%)';
+          }
+        });
+      } else if (!contentEl.innerText.trim()) {
+        // If no loader and content is empty or only whitespace, show error icon
+        contentEl.innerHTML = '<span class="text-danger"><i class="fas fa-exclamation-triangle"></i></span>';
       }
     }
   }
 
-  /**
-   * Update DOM elements with fetched data
-   *
-   * @param {Object} data - The parsed JSON data from the server
-   */
   updateDOM(data) {
+    if (!data) return;
     this.fields.forEach(field => {
       const selector = `.${this.serviceName}-${field.selector}`;
-      const element = document.querySelector(selector);
+      const elements = document.querySelectorAll(selector);
 
-      if (element) {
+      elements.forEach(element => {
+        if (data[field.data] === undefined || data[field.data] === null) return;
+        
+        const content = data[field.data];
+        
+        // 1. Check if the element itself IS the designated container
+        const isContentEl = element.classList.contains('status-content');
+        
+        // 2. Try to find a specifically designated container for dynamic content
+        const contentEl = isContentEl ? element : element.querySelector('.status-content');
+
+        // 3. Try to find a loader that should be replaced
         const loader = element.querySelector('.loader');
-        if (loader) {
-          loader.remove();
-        }
 
-        if (data[field.data] !== undefined) {
-          element.insertAdjacentHTML('beforeend', data[field.data]);
+        if (loader) {
+          // Replace the loader specifically to preserve sibling labels/icons
+          loader.outerHTML = content;
+        } else if (contentEl) {
+          // If we have a .status-content container (or the element itself is one), update it safely
+          if (contentEl.innerHTML !== content) {
+             contentEl.innerHTML = content;
+          }
+        } else {
+          // Standard behavior: replace content of the target container
+          // BUT only if it doesn't look like it contains important labels
+          if (typeof content === 'string' && content.includes('<')) {
+            // Only update if content is different to avoid flickering
+            if (element.innerHTML !== content) {
+              // If this element contains a link or a label, we MUST NOT overwrite it
+              if (element.querySelector('a') || element.querySelector('i') || element.querySelector('img') || element.innerText.trim().length > 15) {
+                 console.warn(`[${this.serviceName}] Refusing to overwrite element with HTML content to avoid losing labels`, element);
+              } else {
+                element.innerHTML = content;
+              }
+            }
+          } else {
+            if (element.innerText !== String(content)) {
+              element.innerText = content;
+            }
+          }
         }
-      } else {
-        console.warn(`Element not found: ${selector}`);
-      }
+      });
     });
   }
 
-  /**
-   * Initialize status fetching when DOM is ready
-   *
-   * @param {string} elementId - The element ID to check for (defaults to serviceName)
-   * @returns {void}
-   */
-  initOnReady(elementId = null) {
-    const checkId = elementId || this.serviceName;
-
-    document.addEventListener("DOMContentLoaded", () => {
-      if (document.getElementById(checkId)) {
-        this.fetchStatus();
-      }
-    });
+  initOnReady() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.init());
+    } else {
+      this.init();
+    }
   }
 }
 
-/**
- * Helper function to create and initialize a StatusFetcher
- *
- * @param {string} serviceName - The service name
- * @param {Array<string|Object>} fields - Array of field names or mapping objects
- * @param {Object} options - Optional configuration
- * @returns {StatusFetcher} The created StatusFetcher instance
- */
 function createStatusFetcher(serviceName, fields, options = {}) {
   const fetcher = new StatusFetcher(serviceName, fields, options);
   fetcher.initOnReady();

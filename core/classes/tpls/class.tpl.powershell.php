@@ -116,9 +116,14 @@ class TplPowerShell
         }
 
         $cmd = 'reg import "' . $tmpReg . '"';
-        $output = [];
-        $exitCode = 0;
-        exec($cmd, $output, $exitCode);
+        $exitCode = 1;
+        try {
+            $wsh = new COM('WScript.Shell');
+            $exitCode = $wsh->Run($cmd, 0, true);
+        } catch (Throwable $e) {
+            $output = [];
+            exec($cmd, $output, $exitCode);
+        }
 
         @unlink($tmpReg);
 
@@ -597,4 +602,3 @@ class TplPowerShell
         return "Title: $title | Shell: $shell | InitDir: $initDir";
     }
 }
-

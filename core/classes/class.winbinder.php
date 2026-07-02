@@ -144,7 +144,8 @@ class WinBinder
         } else {
             $this->writeLog('Window created successfully: handle=' . $window);
             // Set tiny window icon
-            $this->setImage($window, Path::getIconsPath() . '/app.ico');
+            // Use bmp for window icon to ensure orange icon is used everywhere as requested
+            $this->setImage($window, Path::getImagesPath() . '/bearsampp.bmp');
         }
 
         return $window;
@@ -333,43 +334,85 @@ class WinBinder
     /**
      * Executes a system command.
      *
-     * @param   string       $cmd     The command to execute.
-     * @param   string|null  $params  The parameters to pass to the command.
-     * @param   bool         $silent  Whether to execute the command silently.
+     * @param   string           $cmd     The command to execute.
+     * @param   string|array     $params  The parameters to pass to the command. Can be a pre-formed string
+     *                                   (for backwards compatibility) or array of individual arguments
+     *                                   (recommended for automatic quoting).
+     * @param   bool             $silent  Whether to execute the command silently.
+     * @param   bool             $wait    Whether to wait for the process to exit.
      *
      * @return mixed The result of the command execution.
      */
-    public function exec($cmd, $params = null, $silent = false): mixed
+    public function exec($cmd, $params = null, $silent = false, $wait = true): mixed
     {
+        // Handle array of arguments by quoting each one individually
+        if (is_array($params)) {
+            $quotedParams = [];
+            foreach ($params as $arg) {
+                $quotedParams[] = $this->quoteWindowsArg((string)$arg);
+            }
+            $params = implode(' ', $quotedParams);
+        }
+
         if ($silent) {
-            // Use PowerShell with -EncodedCommand for silent execution (no window flashing)
-            // This avoids all quoting/escaping issues by encoding the command in UTF-16LE base64
-
-            // Build the PowerShell command using single quotes to avoid nested quote issues
-            $psCmd = 'Start-Process -FilePath \'' . str_replace("'", "''", $cmd) . '\'';
-            if (!empty($params)) {
-                // Escape single quotes in params for PowerShell
-                $psCmd .= ' -ArgumentList \'' . str_replace("'", "''", $params) . '\'';
+            // Use WScript.Shell via COM for true silent execution (zero window flashing)
+            // This is more reliable than powershell.exe -WindowStyle Hidden which can still flash
+            try {
+                $wsh = new COM('WScript.Shell');
+                $fullCmd = '"' . $cmd . '"' . (empty($params) ? '' : ' ' . $params);
+                // 0 = Hidden, $wait = wait for process to exit
+                $exitCode = $wsh->Run($fullCmd, 0, $wait);
+                $this->writeLog('exec (silent via COM): ' . $fullCmd . ' [ExitCode: ' . $exitCode . ']');
+                return $exitCode === 0;
+            } catch (Throwable $e) {
+                $this->writeLog('exec (silent via COM) failed: ' . $e->getMessage() . '. Falling back to PowerShell.');
+                // Fall back to PowerShell method if COM fails
+                $psCmd = 'Start-Process -FilePath \'' . str_replace("'", "''", $cmd) . '\'';
+                if (!empty($params)) {
+                    $psCmd .= ' -ArgumentList \'' . str_replace("'", "''", $params) . '\'';
+                }
+                $psCmd .= ' -WindowStyle Hidden';
+                if ($wait) {
+                    $psCmd .= ' -Wait';
+                }
+                $encodedCmd = base64_encode(mb_convert_encoding($psCmd, 'UTF-16LE', 'UTF-8'));
+                $cmd = 'powershell.exe';
+                $params = '-WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand ' . $encodedCmd;
             }
-            $psCmd .= ' -WindowStyle Hidden -Wait';
-
-            // Encode the command in UTF-16LE and then base64
-            $encodedCmd = base64_encode(mb_convert_encoding($psCmd, 'UTF-16LE', 'UTF-8'));
-
-            // Log the original PowerShell command at TRACE level for debugging
-            global $bearsamppConfig;
-            if ($bearsamppConfig && $bearsamppConfig->getLogsVerbose() == Config::VERBOSE_TRACE) {
-                $this->writeLog('[TRACE] PowerShell command: ' . $psCmd);
-                $this->writeLog('[TRACE] Encoded command length: ' . strlen($encodedCmd));
-            }
-
-            $cmd = 'powershell.exe';
-            $params = '-WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand ' . $encodedCmd;
         }
 
         $this->writeLog('exec: ' . $cmd . ' ' . $params);
 
         return $this->callWinBinder('wb_exec', array($cmd, $params));
+    }
+
+    /**
+     * Quotes a Windows command-line argument for use in WScript.Shell or cmd.exe.
+     *
+     * Handles the following cases:
+     *  - Arguments with spaces need to be quoted
+     *  - Arguments with quotes need to have internal quotes escaped
+     *  - Empty arguments need to be represented as ""
+     *
+     * @param   string  $arg  The argument to quote.
+     *
+     * @return string The quoted argument, suitable for use in a Windows command line.
+     */
+    private function quoteWindowsArg(string $arg): string
+    {
+        // If argument is empty, return empty quotes
+        if ($arg === '') {
+            return '""';
+        }
+
+        // If argument contains spaces, quotes, or special shell characters, it needs quoting
+        if (preg_match('/[\s"&|<>^()]/', $arg)) {
+            // Escape any internal quotes by doubling them (Windows convention for cmd.exe/WScript.Shell)
+            $escaped = str_replace('"', '""', $arg);
+            return '"' . $escaped . '"';
+        }
+
+        return $arg;
     }
 
     /**
@@ -432,6 +475,9 @@ class WinBinder
     public function drawImage($wbobject, $path, $xPos = 0, $yPos = 0, $width = 0, $height = 0): mixed
     {
         $image = $this->callWinBinder('wb_load_image', array($path));
+        if ($image === null) {
+            return false;
+        }
 
         return $this->callWinBinder('wb_draw_image', array($wbobject, $image, $xPos, $yPos, $width, $height));
     }
@@ -1199,4 +1245,3 @@ function __winbinderEventHandler($window, $id, $ctrl, $param1, $param2)
         array($window, $id, $ctrl, $param1, $param2)
     );
 }
-

@@ -440,7 +440,7 @@ class Batch
 
         // Redirect output
         if ($catchOutput) {
-            $content .= '> "' . $resultFile . '"' . (!UtilString::endWith($content, '2') ? ' 2>&1' : '');
+            $content = '(' . PHP_EOL . $content . PHP_EOL . ') > "' . $resultFile . '"' . (!UtilString::endWith($content, '2') ? ' 2>&1' : '');
         }
 
         // Header
@@ -451,7 +451,19 @@ class Batch
 
         // Process
         file_put_contents($scriptPath, $header . $content . $footer);
-        $bearsamppWinbinder->exec($scriptPath, null, $silent);
+
+        if (is_object($bearsamppWinbinder)) {
+            $bearsamppWinbinder->exec($scriptPath, null, $silent);
+        } else {
+            // Fallback to standard PHP execution if WinBinder is not available (e.g. on web interface)
+            $cmd = 'cmd /c "' . $scriptPath . '"';
+            if ($silent) {
+                // Use shell_exec with output redirection to NUL for silent background execution on Windows
+                @shell_exec('start /B "" ' . $cmd . ' > NUL 2>&1');
+            } else {
+                @shell_exec($cmd);
+            }
+        }
 
         if (!$standalone) {
             $timeout = is_numeric($timeout) ? $timeout : ($timeout === true ? $bearsamppConfig->getScriptsTimeout() : false);

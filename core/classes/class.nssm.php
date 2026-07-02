@@ -46,7 +46,7 @@ class Nssm
     const INFO_APP_ENVIRONMENT_EXTRA = 'AppEnvironmentExtra';
 
     const PENDING_TIMEOUT = 10;
-    const SLEEP_TIME = 500000;
+    const SLEEP_TIME = 100000;
 
     private $name;
     private $displayName;
@@ -147,8 +147,6 @@ class Nssm
      */
     public function status($timeout = true)
     {
-        usleep( self::SLEEP_TIME );
-
         $this->latestStatus = self::STATUS_NA;
         $maxtime            = time() + self::PENDING_TIMEOUT;
 
@@ -164,6 +162,11 @@ class Nssm
             }
             if ( $timeout && $maxtime < time() ) {
                 break;
+            }
+
+            // Only sleep if we're going to loop again
+            if ($this->latestStatus == self::STATUS_NA || $this->isPending($this->latestStatus)) {
+                usleep(self::SLEEP_TIME);
             }
         }
 
