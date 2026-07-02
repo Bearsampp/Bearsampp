@@ -9,12 +9,14 @@ permissions:
 jobs:
   metadata:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     outputs:
       repository: ${{ steps.metadata.outputs.repository }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - uses: ahmadnassri/action-metadata@v2
         id: metadata
@@ -28,6 +30,7 @@ jobs:
     if: ${{ github.actor == 'dependabot[bot]' }}
 
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       PR_URL: ${{github.event.pull_request.html_url}}
       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 

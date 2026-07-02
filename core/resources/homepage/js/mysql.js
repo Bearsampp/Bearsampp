@@ -11,14 +11,4 @@
 createStatusFetcher('mysql', [
   'checkport',
   { data: 'versions', selector: 'version-list' }
-], {
-  responseValidator: (responseText) => {
-    if (responseText.includes("Uncaught mysqli_sql_exception")) {
-      return {
-        valid: false,
-        message: "Error occurred accessing MySQL"
-      };
-    }
-    return { valid: true };
-  }
-});
+]);

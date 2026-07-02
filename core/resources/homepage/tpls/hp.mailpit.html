@@ -26,14 +26,14 @@
     <div class="col-lg-6">
         <div class="list-group">
       <span class="list-group-item mailpit-checkport">
-        <?php echo $getLoader; ?>
+        <span class="status-content"><?php echo $getLoader; ?></span>
           <i class="fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
       </span>
             <span class="list-group-item mailpit-versions">
               <span class="label-left col-1">
                 <i class="fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
               </span>
-              <span class="mailpit-version-list float-end col-11">
+              <span class="mailpit-version-list status-content float-end col-11">
                 <?php echo $getLoader; ?>
               </span>
       </span>

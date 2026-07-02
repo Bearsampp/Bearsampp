@@ -100,6 +100,10 @@ ext {
     toolPowershellUrl = 'https://github.com/Bearsampp/module-powershell/releases'
     toolPythonUrl = 'https://github.com/Bearsampp/module-python/releases'
     toolRubyUrl = 'https://github.com/Bearsampp/module-ruby/releases'
+
+    // mkcert
+    mkcertReleaseApiUrl = 'https://api.github.com/repos/FiloSottile/mkcert/releases/latest'
+    mkcertFallbackUrl = 'https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe'
 }
 
 // Helper function to download and extract modules
@@ -179,6 +183,44 @@ def downloadModule(String releasesUrl, String version, File destDir) {
         destDir.mkdirs()
         println "WARNING: Created empty directory as fallback"
     }
+}
+
+// Helper function to download mkcert executable
+def downloadMkcert(File destFile) {
+    destFile.parentFile.mkdirs()
+
+    def mkcertUrl = ''
+    try {
+        def response = new URL(mkcertReleaseApiUrl).getText(
+            requestProperties: [
+                'Accept': 'application/vnd.github+json',
+                'User-Agent': 'Bearsampp-build'
+            ]
+        )
+        def releaseData = new groovy.json.JsonSlurper().parseText(response)
+        def winAsset = releaseData?.assets?.find { asset ->
+            asset?.name?.endsWith('windows-amd64.exe')
+        }
+        if (winAsset?.browser_download_url) {
+            mkcertUrl = winAsset.browser_download_url
+            println "Found latest mkcert download URL: ${mkcertUrl}"
+        }
+    } catch (Exception e) {
+        println "WARNING: Failed to fetch latest mkcert metadata: ${e.message}"
+    }
+
+    if (!mkcertUrl) {
+        mkcertUrl = mkcertFallbackUrl
+        println "Using mkcert fallback URL: ${mkcertUrl}"
+    }
+
+    ant.get(src: mkcertUrl, dest: destFile, usetimestamp: true)
+
+    if (!destFile.exists()) {
+        throw new GradleException("Failed to download mkcert.exe to ${destFile}")
+    }
+
+    println "mkcert downloaded to: ${destFile}"
 }
 
 // Helper function to compress using 7-Zip
@@ -778,6 +820,10 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             println "openssl.cfg already exists."
         }
 
+        def mkcertExe = file("${releaseBasePath}/core/libs/mkcert/mkcert.exe")
+        println "Downloading mkcert.exe..."
+        downloadMkcert(mkcertExe)
+
         // Debug: Check what files exist in base/ before copying
         println "Checking base directory contents..."
         def baseDir = file("${projectDir}/base")
@@ -1363,26 +1409,6 @@ task sync(dependsOn: buildFull) {
             }
         }
 
-        println "* Updating executable icon..."
-        def resourceHackerExe = file("${iconographyTempDir}/ResourceHacker.exe")
-        def iconPath = file("${syncFinalPath}/core/resources/homepage/img/icons/bearsampp.ico")
-
-        if (resourceHackerExe.exists() && iconPath.exists()) {
-            def resourceHackerProcess = new ProcessBuilder(resourceHackerExe.absolutePath,
-                        '-open', tempBearsamppExe.absolutePath,
-                        '-save', tempBearsamppExe.absolutePath,
-                        '-action', 'modify',
-                        '-res', "${iconPath.absolutePath},",
-                        '-mask', 'ICONGROUP,MAINICON,')
-                .directory(iconographyTempDir)
-                .redirectErrorStream(true)
-                .start()
-            resourceHackerProcess.waitFor()
-            println "* Successfully updated executable icon"
-        } else {
-            println "WARNING: Could not update icon - ResourceHacker or icon file not found"
-        }
-
         def finalBearsamppExe = file("${syncFinalPath}/bearsampp.exe")
         if (finalBearsamppExe.exists()) {
             finalBearsamppExe.delete()
@@ -1393,6 +1419,31 @@ task sync(dependsOn: buildFull) {
             from tempBearsamppExe
             into syncFinalPath
             overwrite true
+        }
+
+        println "* Applying sandbox icon update in Gradle..."
+        def sandboxResourceHackerExe = file("${syncFinalPath}/ResourceHacker.exe")
+        def sandboxIconPath = file("${syncFinalPath}/core/resources/homepage/img/icons/bearsampp.ico")
+
+        if (sandboxResourceHackerExe.exists() && sandboxIconPath.exists() && finalBearsamppExe.exists()) {
+            def fixSandboxIconProcess = new ProcessBuilder(sandboxResourceHackerExe.absolutePath,
+                        '-open', finalBearsamppExe.absolutePath,
+                        '-save', finalBearsamppExe.absolutePath,
+                        '-action', 'modify',
+                        '-res', "${sandboxIconPath.absolutePath},",
+                        '-mask', 'ICONGROUP,MAINICON,')
+                .directory(syncFinalPath)
+                .redirectErrorStream(true)
+                .start()
+            fixSandboxIconProcess.waitFor()
+
+            if (fixSandboxIconProcess.exitValue() == 0) {
+                println "* Successfully updated executable icon in sandbox"
+            } else {
+                println "WARNING: Sandbox icon update failed with exit code ${fixSandboxIconProcess.exitValue()}"
+            }
+        } else {
+            println "WARNING: Could not update sandbox icon - ResourceHacker.exe, icon, or bearsampp.exe not found"
         }
 
         println "\n*** Sync complete!"

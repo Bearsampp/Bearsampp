@@ -407,12 +407,27 @@ class Path
     public static function getLocalUrl($request = null)
     {
         global $bearsamppBins;
-        $port = (isset($bearsamppBins) && $bearsamppBins->getApache() !== null) ? $bearsamppBins->getApache()->getPort() : 80;
-        $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+        $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+        $scheme = $isHttps ? 'https://' : 'http://';
         $host = (isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : 'localhost';
-        return $scheme . $host .
-            ($port != 80 && !isset($_SERVER['HTTPS']) ? ':' . $port : '') .
-            (!empty($request) ? '/' . $request : '');
+        
+        $port = 80;
+        if (isset($bearsamppBins) && $bearsamppBins->getApache() !== null) {
+            $port = $isHttps ? $bearsamppBins->getApache()->getSslPort() : $bearsamppBins->getApache()->getPort();
+        }
+
+        $portSuffix = '';
+        if ($isHttps) {
+            if ($port != 443) {
+                $portSuffix = ':' . $port;
+            }
+        } else {
+            if ($port != 80) {
+                $portSuffix = ':' . $port;
+            }
+        }
+
+        return $scheme . $host . $portSuffix . (!empty($request) ? '/' . $request : '');
     }
 
     /**
@@ -939,6 +954,38 @@ class Path
     }
 
     /**
+     * Gets the path to the mkcert directory.
+     *
+     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @return string The mkcert path.
+     */
+    public static function getMkcertPath($aetrayPath = false)
+    {
+        return self::getLibsPath($aetrayPath) . '/mkcert';
+    }
+
+    /**
+     * Gets the path to the mkcert executable.
+     *
+     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @return string The mkcert executable path.
+     */
+    public static function getMkcertExe($aetrayPath = false)
+    {
+        return self::getMkcertPath($aetrayPath) . '/mkcert.exe';
+    }
+
+    /**
+     * Gets the name of the mkcert root CA file.
+     *
+     * @return string The mkcert root CA filename.
+     */
+    public static function getMkcertRootCaName()
+    {
+        return 'rootCA.pem';
+    }
+
+    /**
      * Gets the path to the virtual hosts directory.
      *
      * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
@@ -988,12 +1035,27 @@ class Path
     {
         global $bearsamppBins;
         $request = self::getWebResourcesPath();
-        $port = (isset($bearsamppBins) && $bearsamppBins->getApache() !== null) ? $bearsamppBins->getApache()->getPort() : 80;
-        $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+        $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+        $scheme = $isHttps ? 'https://' : 'http://';
         $host = (isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : 'localhost';
-        return $scheme . $host .
-            ($port != 80 && !isset($_SERVER['HTTPS']) ? ':' . $port : '') .
-            (!empty($request) ? '/' . $request : '');
+        
+        $port = 80;
+        if (isset($bearsamppBins) && $bearsamppBins->getApache() !== null) {
+            $port = $isHttps ? $bearsamppBins->getApache()->getSslPort() : $bearsamppBins->getApache()->getPort();
+        }
+
+        $portSuffix = '';
+        if ($isHttps) {
+            if ($port != 443) {
+                $portSuffix = ':' . $port;
+            }
+        } else {
+            if ($port != 80) {
+                $portSuffix = ':' . $port;
+            }
+        }
+
+        return $scheme . $host . $portSuffix . (!empty($request) ? '/' . $request : '');
     }
 
     /**

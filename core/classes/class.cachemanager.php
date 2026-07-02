@@ -171,7 +171,7 @@ class CacheManager
     }
 
     /**
-     * Clear all cache files
+     * Clear all cache files and in-memory caches
      * Called on version update or manual reset
      *
      * @return int Number of files deleted
@@ -180,6 +180,17 @@ class CacheManager
     {
         if (!self::$enabled || !self::$cacheDir) {
             return 0;
+        }
+
+        // Clear in-memory caches of related classes
+        if (class_exists('Module')) {
+            Module::clearMemoryCache();
+        }
+
+        // Clear general cache if it exists
+        if (class_exists('Cache')) {
+            $cache = new Cache();
+            $cache->clear();
         }
 
         $files = @glob(self::$cacheDir . '/*.cache');

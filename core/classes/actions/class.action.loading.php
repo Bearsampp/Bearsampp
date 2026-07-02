@@ -283,4 +283,3 @@ class ActionLoading
         return $allStarted;
     }
 }
-

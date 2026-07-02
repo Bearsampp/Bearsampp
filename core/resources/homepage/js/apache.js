@@ -6,12 +6,9 @@
  * Github: https://github.com/Bearsampp
  */
 
-// Apache status fetcher with multiple fields
-// Maps 'versions' data key to 'version-list' selector
-// Uses custom element check to support both 'a[name=apache]' and '#apache'
 document.addEventListener("DOMContentLoaded", function () {
   if (document.querySelector('a[name=apache]') || document.getElementById('apache')) {
-    const fetcher = new StatusFetcher('apache', [
+    createStatusFetcher('apache', [
       'checkport',
       { data: 'versions', selector: 'version-list' },
       'modulescount',
@@ -22,6 +19,5 @@ document.addEventListener("DOMContentLoaded", function () {
       'wwwdirectory',
       'vhostslist'
     ]);
-    fetcher.fetchStatus();
   }
 });

@@ -21,23 +21,23 @@
     <div class="col-lg-6">
         <div class="list-group">
             <span class="list-group-item php-status">
-                <?php echo $getLoader; ?>
+                <span class="status-content"><?php echo $getLoader; ?></span>
                 <i class="fa-solid fa-server"></i>  <?php echo $bearsamppLang->getValue(Lang::STATUS); ?>
             </span>
             <span class="list-group-item php-versions col">
                 <span class="label-left col-1">
                     <i class="fa-solid fa-code-merge"></i>  <?php echo $bearsamppLang->getValue(Lang::VERSIONS); ?>
                 </span>
-                <span class="php-version-list float-end col-11">
+                <span class="php-version-list status-content float-end col-11">
                     <?php echo $getLoader; ?>
                 </span>
             </span>
             <span class="list-group-item php-extscount">
-                <?php echo $getLoader; ?>
+                <span class="status-content"><?php echo $getLoader; ?></span>
                 <i class="fa-regular fa-file-code"></i>  <?php echo $bearsamppLang->getValue(Lang::EXTENSIONS); ?>
             </span>
             <span class="list-group-item php-pearversion">
-                <?php echo $getLoader; ?>
+                <span class="status-content"><?php echo $getLoader; ?></span>
                 <img alt="Pear" src="<?php echo $iconsPath . 'pear-icon.gif'; ?>">  <?php echo $bearsamppLang->getValue(Lang::PEAR); ?>
             </span>
             <span class="list-group-item">
@@ -64,7 +64,7 @@
         </div>
     </div>
     <div class="row-fluid">
-        <div class="col-lg-12 php-extslist d-flex flex-wrap mb-2">
+        <div class="col-lg-12 php-extslist status-content d-flex flex-wrap mb-2">
             <span class="loader">
                 <?php echo $getLoader; ?>
             </span>
