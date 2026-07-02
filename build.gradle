@@ -125,7 +125,7 @@ def downloadModule(String releasesUrl, String version, File destDir) {
 
         println "* Fetching release properties from: ${releasesPropsUrl}"
 
-        ant.get(src: releasesPropsUrl, dest: propsFile, verbose: true, ignoreerrors: false)
+        downloadFileNative(releasesPropsUrl, propsFile)
 
         def releaseProps = new Properties()
         propsFile.withInputStream { releaseProps.load(it) }
@@ -142,20 +142,20 @@ def downloadModule(String releasesUrl, String version, File destDir) {
 
         if (!downloadFile.exists()) {
             println "* Downloading ${filename}..."
-            ant.get(src: downloadUrl, dest: downloadFile, verbose: true)
-            
+            downloadFileNative(downloadUrl, downloadFile)
+
             // Verify download completed successfully
             if (downloadFile.exists() && downloadFile.length() < 1024 * 1024) {
                 println "WARNING: Downloaded file seems too small (${downloadFile.length()} bytes), may be corrupted"
             }
         } else {
             println "* Using cached ${filename} (${downloadFile.length()} bytes)"
-            
+
             // Verify cached file is not corrupted
             if (downloadFile.length() < 1024 * 1024) {
                 println "WARNING: Cached file seems too small (${downloadFile.length()} bytes), deleting and re-downloading..."
                 downloadFile.delete()
-                ant.get(src: downloadUrl, dest: downloadFile, verbose: true)
+                downloadFileNative(downloadUrl, downloadFile)
             }
         }
 
@@ -173,7 +173,7 @@ def downloadModule(String releasesUrl, String version, File destDir) {
                 .start()
             extractProcess.waitFor()
         } else if (filename.endsWith('.zip')) {
-            ant.unzip(src: downloadFile, dest: destDir)
+            unzipFile(downloadFile, destDir)
         } else {
             throw new GradleException("Unknown archive format: ${filename}")
         }
@@ -208,6 +208,54 @@ def downloadFileNative(String urlStr, File destFile) {
             }
         }
     }
+}
+
+// Helper function to unzip files using native Java
+def unzipFile(File zipFile, File destDir) {
+    destDir.mkdirs()
+    def zipStream = new java.util.zip.ZipInputStream(zipFile.newInputStream())
+    try {
+        def entry
+        while ((entry = zipStream.nextEntry) != null) {
+            def file = new File(destDir, entry.name)
+            if (entry.isDirectory()) {
+                file.mkdirs()
+            } else {
+                file.parentFile.mkdirs()
+                file.withOutputStream { out ->
+                    byte[] buffer = new byte[1024]
+                    int len
+                    while ((len = zipStream.read(buffer)) > 0) {
+                        out.write(buffer, 0, len)
+                    }
+                }
+            }
+        }
+    } finally {
+        zipStream.close()
+    }
+}
+
+// Helper function to generate checksums using native Java
+def generateChecksumsNative(File file) {
+    def algorithms = ['MD5', 'SHA-1', 'SHA-256', 'SHA-512']
+    def checksums = [:]
+
+    algorithms.each { algorithm ->
+        def messageDigest = java.security.MessageDigest.getInstance(algorithm)
+        file.withInputStream { stream ->
+            byte[] buffer = new byte[8192]
+            int len
+            while ((len = stream.read(buffer)) > 0) {
+                messageDigest.update(buffer, 0, len)
+            }
+        }
+        def hash = messageDigest.digest().collect { String.format('%02x', it) }.join()
+        checksums[algorithm] = hash
+        println "* ${algorithm.padRight(10)}: ${hash}"
+    }
+
+    return checksums
 }
 
 // Helper function to download modules in parallel
@@ -300,7 +348,7 @@ def downloadModulesParallel(List<Map> downloads) {
                             .start()
                         extractProcess.waitFor()
                     } else if (filename.endsWith('.zip')) {
-                        ant.unzip(src: downloadFile, dest: destDir)
+                        unzipFile(downloadFile, destDir)
                     } else {
                         throw new GradleException("Unknown archive format: ${filename}")
                     }
@@ -381,23 +429,7 @@ def generateChecksums(File file) {
     println "** Generating Checksums"
     println "* File: ${file.name}"
 
-    def algorithms = ['MD5', 'SHA-1', 'SHA-256', 'SHA-512']
-    def checksums = [:]
-
-    algorithms.each { algorithm ->
-        def checksumFile = new File("${file.absolutePath}.${algorithm.toLowerCase().replace('-', '')}")
-
-        ant.checksum(file: file, algorithm: algorithm, fileext: ".${algorithm.toLowerCase().replace('-', '')}")
-
-        if (checksumFile.exists()) {
-            def checksumContent = checksumFile.text.trim()
-            def hash = checksumContent.split(/\s+/)[0]
-            checksums[algorithm] = hash
-            println "* ${algorithm.padRight(10)}: ${hash}"
-        }
-    }
-
-    return checksums
+    generateChecksumsNative(file)
 }
 
 // Helper function to apply token filters to a file
@@ -634,7 +666,7 @@ task updateVersions {
                         def propsFile = file("${tmpDir}/${repoName}.properties")
                         
                         println "* Fetching ${propName}"
-                        ant.get(src: url, dest: propsFile, verbose: false, ignoreerrors: false)
+                        downloadFileNative(url, propsFile)
                         
                         def releaseProps = new Properties()
                         propsFile.withInputStream { releaseProps.load(it) }
@@ -876,7 +908,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         def mkcertUrl = "https://github.com/FiloSottile/mkcert/releases/download/${latestTag}/mkcert-${latestTag}-windows-amd64.exe"
         def mkcertExe = file("${releaseBasePath}/core/libs/mkcert/mkcert.exe")
         mkcertExe.parentFile.mkdirs()
-        ant.get(src: mkcertUrl, dest: mkcertExe)
+        downloadFileNative(mkcertUrl, mkcertExe)
         println "Successfully downloaded mkcert ${latestTag} to ${mkcertExe}"
 
         // Copy only the core directory from the project
@@ -930,10 +962,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         def opensslCfg = file("${projectDir}/core/libs/openssl/openssl.cfg")
         if (!opensslCfg.exists()) {
             opensslCfg.parentFile.mkdirs()
-            ant.get(
-                src: 'https://github.com/Bearsampp/sandbox/releases/download/2024.8.23/openssl.cfg',
-                dest: opensslCfg
-            )
+            downloadFileNative('https://github.com/Bearsampp/sandbox/releases/download/2024.8.23/openssl.cfg', opensslCfg)
             println "openssl.cfg recovered from sandbox"
         } else {
             println "openssl.cfg already exists."
@@ -1504,8 +1533,8 @@ task sync(dependsOn: buildFull) {
 
         println "* Downloading Sandbox iconography..."
         iconographyTempDir.mkdirs()
-        ant.get(src: iconographyUrl, dest: iconographyZip)
-        ant.unzip(src: iconographyZip, dest: iconographyTempDir)
+        downloadFileNative(iconographyUrl, iconographyZip)
+        unzipFile(iconographyZip, iconographyTempDir)
         iconographyZip.delete()
         println "* Successfully downloaded and extracted Sandbox iconography"
 
