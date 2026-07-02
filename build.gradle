@@ -2,6 +2,7 @@ plugins {
     id 'base'
     id 'de.undercouch.download' version '5.4.0'
 }
+import groovy.json.JsonSlurper
 
 // Load properties from build.properties
 def buildProps = new Properties()
@@ -695,6 +696,19 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         delete releaseBasePath
         releaseBasePath.mkdirs()
 
+        // Download latest mkcert
+        def apiUrl = "https://api.github.com/repos/FiloSottile/mkcert/releases/latest"
+        def connection = new URL(apiUrl).openConnection()
+        connection.setRequestProperty("User-Agent", "Gradle")
+        def json = connection.inputStream.text
+        def data = new JsonSlurper().parseText(json)
+        def latestTag = data.tag_name
+        def mkcertUrl = "https://github.com/FiloSottile/mkcert/releases/download/${latestTag}/mkcert-${latestTag}-windows-amd64.exe"
+        def mkcertExe = file("${releaseBasePath}/core/libs/mkcert/mkcert.exe")
+        mkcertExe.parentFile.mkdirs()
+        ant.get(src: mkcertUrl, dest: mkcertExe)
+        println "Successfully downloaded mkcert ${latestTag} to ${mkcertExe}"
+
         // Copy only the core directory from the project
         copy {
             from file("${projectDir}/core")
@@ -840,6 +854,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         file("${releaseBasePath}/logs").mkdirs()
         file("${releaseBasePath}/ssl").mkdirs()
         file("${releaseBasePath}/vhosts").mkdirs()
+        file("${releaseBasePath}/core/libs/mkcert").mkdirs()
         
         file("${releaseBasePath}/tmp/cachegrind").mkdirs()
         file("${releaseBasePath}/tmp/npm-cache").mkdirs()
