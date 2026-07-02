@@ -103,12 +103,14 @@ ext {
     mkcertFallbackUrl = 'https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe'
 }
 
-// Helper function to download and extract modules
+// Helper function to download and extract modules (thread-safe)
 def downloadModule(String releasesUrl, String version, File destDir) {
-    println "** Get Module"
-    println "* Releases url : ${releasesUrl}"
-    println "* Version      : ${version}"
-    println "* Destination  : ${destDir}"
+    synchronized(downloadModule) {
+        println "** Get Module"
+        println "* Releases url : ${releasesUrl}"
+        println "* Version      : ${version}"
+        println "* Destination  : ${destDir}"
+    }
 
     def getmTmpPath = file("${buildTmpPath}/getmodule")
     getmTmpPath.mkdirs()
@@ -220,6 +222,154 @@ def downloadMkcert(File destFile) {
     println "mkcert downloaded to: ${destFile}"
 }
 
+// Helper function to download file using native Java HTTP
+def downloadFileNative(String urlStr, File destFile) {
+    destFile.parentFile.mkdirs()
+    def url = new URL(urlStr)
+    def conn = url.openConnection()
+    conn.setRequestProperty('User-Agent', 'Bearsampp-build')
+    conn.connect()
+
+    if (conn.responseCode != 200) {
+        throw new IOException("Failed to download: HTTP ${conn.responseCode}")
+    }
+
+    destFile.withOutputStream { out ->
+        conn.inputStream.with { ins ->
+            byte[] buffer = new byte[1024]
+            int len
+            while ((len = ins.read(buffer)) > 0) {
+                out.write(buffer, 0, len)
+            }
+        }
+    }
+}
+
+// Helper function to download modules in parallel
+def downloadModulesParallel(List<Map> downloads) {
+    def executorService = java.util.concurrent.Executors.newFixedThreadPool(4)
+    def futures = []
+    def exceptions = []
+
+    try {
+        downloads.each { Map download ->
+            def future = executorService.submit({
+                try {
+                    def releasesUrl = download.url
+                    def version = download.version
+                    def destDir = download.destDir
+
+                    synchronized(System.out) {
+                        println "** Get Module"
+                        println "* Releases url : ${releasesUrl}"
+                        println "* Version      : ${version}"
+                        println "* Destination  : ${destDir}"
+                    }
+
+                    def getmTmpPath = file("${buildTmpPath}/getmodule")
+                    getmTmpPath.mkdirs()
+
+                    def repoUrl = releasesUrl.replace('/releases', '').replace('github.com', 'raw.githubusercontent.com')
+                    def releasesPropsUrl = "${repoUrl}/main/releases.properties"
+                    def propsFile = file("${getmTmpPath}/releases-${version}.properties")
+
+                    synchronized(System.out) {
+                        println "* Fetching release properties from: ${releasesPropsUrl}"
+                    }
+
+                    downloadFileNative(releasesPropsUrl, propsFile)
+
+                    def releaseProps = new Properties()
+                    propsFile.withInputStream { releaseProps.load(it) }
+
+                    def downloadUrl = releaseProps.getProperty(version)
+                    if (!downloadUrl) {
+                        throw new GradleException("Version ${version} not found in releases.properties")
+                    }
+
+                    synchronized(System.out) {
+                        println "* Download URL : ${downloadUrl}"
+                    }
+
+                    def filename = downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1)
+                    def downloadFile = file("${getmTmpPath}/${filename}")
+
+                    if (!downloadFile.exists()) {
+                        synchronized(System.out) {
+                            println "* Downloading ${filename}..."
+                        }
+                        downloadFileNative(downloadUrl, downloadFile)
+
+                        if (downloadFile.exists() && downloadFile.length() < 1024 * 1024) {
+                            synchronized(System.out) {
+                                println "WARNING: Downloaded file seems too small (${downloadFile.length()} bytes), may be corrupted"
+                            }
+                        }
+                    } else {
+                        synchronized(System.out) {
+                            println "* Using cached ${filename} (${downloadFile.length()} bytes)"
+                        }
+
+                        if (downloadFile.length() < 1024 * 1024) {
+                            synchronized(System.out) {
+                                println "WARNING: Cached file seems too small (${downloadFile.length()} bytes), deleting and re-downloading..."
+                            }
+                            downloadFile.delete()
+                            downloadFileNative(downloadUrl, downloadFile)
+                        }
+                    }
+
+                    synchronized(System.out) {
+                        println "* Extracting ${filename} to ${destDir}..."
+                    }
+                    destDir.mkdirs()
+
+                    if (filename.endsWith('.7z')) {
+                        def sevenZipExe = file("${devPath}/tools/7zip/7za.exe")
+                        if (!sevenZipExe.exists()) {
+                            throw new GradleException("7-Zip not found at ${sevenZipExe}")
+                        }
+                        def extractProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'x', downloadFile.absolutePath, "-o${destDir.absolutePath}", '-y')
+                            .directory(destDir)
+                            .redirectErrorStream(true)
+                            .start()
+                        extractProcess.waitFor()
+                    } else if (filename.endsWith('.zip')) {
+                        ant.unzip(src: downloadFile, dest: destDir)
+                    } else {
+                        throw new GradleException("Unknown archive format: ${filename}")
+                    }
+
+                    synchronized(System.out) {
+                        println "* Module extracted successfully"
+                    }
+
+                } catch (Exception e) {
+                    synchronized(exceptions) {
+                        exceptions << e
+                    }
+                    synchronized(System.out) {
+                        println "ERROR: Failed to download module: ${e.message}"
+                    }
+                }
+            } as Runnable)
+            futures << future
+        }
+
+        // Wait for all downloads to complete
+        futures.each { future ->
+            future.get()
+        }
+
+        // Check for any exceptions
+        if (!exceptions.isEmpty()) {
+            throw new GradleException("Some downloads failed: ${exceptions.collect { it.message }.join(', ')}")
+        }
+    } finally {
+        executorService.shutdown()
+    }
+}
+
 // Helper function to compress using 7-Zip
 def compressArchive(File sourceDir, File destFile, String format = '7z') {
     println "** Compressing Archive"
@@ -241,7 +391,7 @@ def compressArchive(File sourceDir, File destFile, String format = '7z') {
     if (format == '7z') {
         def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', '-t7z', destFile.absolutePath,
                     "${sourceDir.absolutePath}${File.separator}*",
-                    '-m0=LZMA2', '-mx9', '-mmt6')
+                    '-m0=LZMA2', '-mx5', '-mmt6')
             .directory(sourceDir.parentFile)
             .redirectErrorStream(true)
             .start()
@@ -968,7 +1118,7 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
             into releaseTarget
             includeEmptyDirs = true
         }
-        
+
         // Manually copy .gitignore files from releaseBasePath to releaseTarget
         println "Copying .gitignore files to release target..."
         releaseBasePath.eachFileRecurse { f ->
@@ -983,7 +1133,7 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
 
         // Load configuration from buildFull.ini
         def buildConfig = loadBuildConfig("${projectDir}/buildFull.ini")
-        
+
         // Generate enable tokens from config
         def fullTokens = getEnableTokens(buildConfig)
 
@@ -1006,17 +1156,21 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
         def toolsToDownload = getModulesToDownload(buildConfig, 'tools')
 
         println "Downloading binaries (all bins needed for config files)..."
-        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
-        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
-        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
-        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb"))
-        downloadModule(binPostgresqlUrl, binPostgresqlVersion, file("${releaseTarget}/bin/postgresql"))
-        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
-        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight"))
-        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
-        downloadModule(binMemcachedUrl, binMemcachedVersion, file("${releaseTarget}/bin/memcached"))
+        def binDownloads = [
+            [url: binApacheUrl, version: binApacheVersion, destDir: file("${releaseTarget}/bin/apache")],
+            [url: binPhpUrl, version: binPhpVersion, destDir: file("${releaseTarget}/bin/php")],
+            [url: binMysqlUrl, version: binMysqlVersion, destDir: file("${releaseTarget}/bin/mysql")],
+            [url: binMariaUrl, version: binMariaVersion, destDir: file("${releaseTarget}/bin/mariadb")],
+            [url: binPostgresqlUrl, version: binPostgresqlVersion, destDir: file("${releaseTarget}/bin/postgresql")],
+            [url: binNodejsUrl, version: binNodejsVersion, destDir: file("${releaseTarget}/bin/nodejs")],
+            [url: binXlightUrl, version: binXlightVersion, destDir: file("${releaseTarget}/bin/xlight")],
+            [url: binMailpitUrl, version: binMailpitVersion, destDir: file("${releaseTarget}/bin/mailpit")],
+            [url: binMemcachedUrl, version: binMemcachedVersion, destDir: file("${releaseTarget}/bin/memcached")]
+        ]
+        downloadModulesParallel(binDownloads)
 
         println "Downloading applications (only enabled)..."
+        def appDownloads = []
         def appUrls = [
             phpmyadmin: [url: appPhpmyadminUrl, version: appPhpmyadminVersion],
             phppgadmin: [url: appPhppgadminUrl, version: appPhppgadminVersion]
@@ -1024,11 +1178,15 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
         appsToDownload.each { moduleName ->
             def moduleInfo = appUrls[moduleName]
             if (moduleInfo) {
-                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/apps/${moduleName}"))
+                appDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/apps/${moduleName}")]
             }
+        }
+        if (!appDownloads.isEmpty()) {
+            downloadModulesParallel(appDownloads)
         }
 
         println "Downloading tools (only enabled)..."
+        def toolDownloads = []
         def toolUrls = [
             bruno: [url: toolBrunoUrl, version: toolBrunoVersion],
             composer: [url: toolComposerUrl, version: toolComposerVersion],
@@ -1043,8 +1201,11 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
         toolsToDownload.each { moduleName ->
             def moduleInfo = toolUrls[moduleName]
             if (moduleInfo) {
-                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/tools/${moduleName}"))
+                toolDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/tools/${moduleName}")]
             }
+        }
+        if (!toolDownloads.isEmpty()) {
+            downloadModulesParallel(toolDownloads)
         }
 
         println "\n*** Compressing release..."
@@ -1082,7 +1243,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
             into releaseTarget
             includeEmptyDirs = true
         }
-        
+
         // Manually copy .gitignore files from releaseBasePath to releaseTarget
         println "Copying .gitignore files to release target..."
         releaseBasePath.eachFileRecurse { f ->
@@ -1097,7 +1258,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
 
         // Load configuration from buildBasic.ini
         def buildConfig = loadBuildConfig("${projectDir}/buildBasic.ini")
-        
+
         // Generate enable tokens from config
         def basicTokens = getEnableTokens(buildConfig)
 
@@ -1106,7 +1267,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
             confContent = confContent.replaceAll("@${token}@", value)
         }
         file("${releaseTarget}/bearsampp.conf").text = confContent
-        
+
         // Comment out unused apps and tools (bins are handled by enable flags)
         def confFile = file("${releaseTarget}/bearsampp.conf")
         def toComment = getModulesToComment(buildConfig)
@@ -1120,17 +1281,21 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
         def toolsToDownload = getModulesToDownload(buildConfig, 'tools')
 
         println "Downloading binaries (all bins needed for config files)..."
-        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
-        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
-        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
-        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb"))
-        downloadModule(binPostgresqlUrl, binPostgresqlVersion, file("${releaseTarget}/bin/postgresql"))
-        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
-        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight"))
-        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
-        downloadModule(binMemcachedUrl, binMemcachedVersion, file("${releaseTarget}/bin/memcached"))
+        def binDownloads = [
+            [url: binApacheUrl, version: binApacheVersion, destDir: file("${releaseTarget}/bin/apache")],
+            [url: binPhpUrl, version: binPhpVersion, destDir: file("${releaseTarget}/bin/php")],
+            [url: binMysqlUrl, version: binMysqlVersion, destDir: file("${releaseTarget}/bin/mysql")],
+            [url: binMariaUrl, version: binMariaVersion, destDir: file("${releaseTarget}/bin/mariadb")],
+            [url: binPostgresqlUrl, version: binPostgresqlVersion, destDir: file("${releaseTarget}/bin/postgresql")],
+            [url: binNodejsUrl, version: binNodejsVersion, destDir: file("${releaseTarget}/bin/nodejs")],
+            [url: binXlightUrl, version: binXlightVersion, destDir: file("${releaseTarget}/bin/xlight")],
+            [url: binMailpitUrl, version: binMailpitVersion, destDir: file("${releaseTarget}/bin/mailpit")],
+            [url: binMemcachedUrl, version: binMemcachedVersion, destDir: file("${releaseTarget}/bin/memcached")]
+        ]
+        downloadModulesParallel(binDownloads)
 
         println "Downloading applications (only enabled)..."
+        def appDownloads = []
         def appUrls = [
             phpmyadmin: [url: appPhpmyadminUrl, version: appPhpmyadminVersion],
             phppgadmin: [url: appPhppgadminUrl, version: appPhppgadminVersion]
@@ -1138,11 +1303,15 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
         appsToDownload.each { moduleName ->
             def moduleInfo = appUrls[moduleName]
             if (moduleInfo) {
-                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/apps/${moduleName}"))
+                appDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/apps/${moduleName}")]
             }
+        }
+        if (!appDownloads.isEmpty()) {
+            downloadModulesParallel(appDownloads)
         }
 
         println "Downloading tools (only enabled)..."
+        def toolDownloads = []
         def toolUrls = [
             bruno: [url: toolBrunoUrl, version: toolBrunoVersion],
             composer: [url: toolComposerUrl, version: toolComposerVersion],
@@ -1157,8 +1326,11 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
         toolsToDownload.each { moduleName ->
             def moduleInfo = toolUrls[moduleName]
             if (moduleInfo) {
-                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/tools/${moduleName}"))
+                toolDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/tools/${moduleName}")]
             }
+        }
+        if (!toolDownloads.isEmpty()) {
+            downloadModulesParallel(toolDownloads)
         }
 
         println "\n*** Compressing release..."
@@ -1196,7 +1368,7 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
             into releaseTarget
             includeEmptyDirs = true
         }
-        
+
         // Manually copy .gitignore files from releaseBasePath to releaseTarget
         println "Copying .gitignore files to release target..."
         releaseBasePath.eachFileRecurse { f ->
@@ -1211,7 +1383,7 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
 
         // Load configuration from buildLite.ini
         def buildConfig = loadBuildConfig("${projectDir}/buildLite.ini")
-        
+
         // Generate enable tokens from config
         def liteTokens = getEnableTokens(buildConfig)
 
@@ -1220,7 +1392,7 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
             confContent = confContent.replaceAll("@${token}@", value)
         }
         file("${releaseTarget}/bearsampp.conf").text = confContent
-        
+
         // Comment out unused apps and tools (bins are handled by enable flags)
         def confFile = file("${releaseTarget}/bearsampp.conf")
         def toComment = getModulesToComment(buildConfig)
@@ -1234,17 +1406,21 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
         def toolsToDownload = getModulesToDownload(buildConfig, 'tools')
 
         println "Downloading binaries (all bins needed for config files)..."
-        downloadModule(binApacheUrl, binApacheVersion, file("${releaseTarget}/bin/apache"))
-        downloadModule(binPhpUrl, binPhpVersion, file("${releaseTarget}/bin/php"))
-        downloadModule(binMysqlUrl, binMysqlVersion, file("${releaseTarget}/bin/mysql"))
-        downloadModule(binMariaUrl, binMariaVersion, file("${releaseTarget}/bin/mariadb"))
-        downloadModule(binPostgresqlUrl, binPostgresqlVersion, file("${releaseTarget}/bin/postgresql"))
-        downloadModule(binNodejsUrl, binNodejsVersion, file("${releaseTarget}/bin/nodejs"))
-        downloadModule(binXlightUrl, binXlightVersion, file("${releaseTarget}/bin/xlight"))
-        downloadModule(binMailpitUrl, binMailpitVersion, file("${releaseTarget}/bin/mailpit"))
-        downloadModule(binMemcachedUrl, binMemcachedVersion, file("${releaseTarget}/bin/memcached"))
+        def binDownloads = [
+            [url: binApacheUrl, version: binApacheVersion, destDir: file("${releaseTarget}/bin/apache")],
+            [url: binPhpUrl, version: binPhpVersion, destDir: file("${releaseTarget}/bin/php")],
+            [url: binMysqlUrl, version: binMysqlVersion, destDir: file("${releaseTarget}/bin/mysql")],
+            [url: binMariaUrl, version: binMariaVersion, destDir: file("${releaseTarget}/bin/mariadb")],
+            [url: binPostgresqlUrl, version: binPostgresqlVersion, destDir: file("${releaseTarget}/bin/postgresql")],
+            [url: binNodejsUrl, version: binNodejsVersion, destDir: file("${releaseTarget}/bin/nodejs")],
+            [url: binXlightUrl, version: binXlightVersion, destDir: file("${releaseTarget}/bin/xlight")],
+            [url: binMailpitUrl, version: binMailpitVersion, destDir: file("${releaseTarget}/bin/mailpit")],
+            [url: binMemcachedUrl, version: binMemcachedVersion, destDir: file("${releaseTarget}/bin/memcached")]
+        ]
+        downloadModulesParallel(binDownloads)
 
         println "Downloading applications (only enabled)..."
+        def appDownloads = []
         def appUrls = [
             phpmyadmin: [url: appPhpmyadminUrl, version: appPhpmyadminVersion],
             phppgadmin: [url: appPhppgadminUrl, version: appPhppgadminVersion]
@@ -1252,11 +1428,15 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
         appsToDownload.each { moduleName ->
             def moduleInfo = appUrls[moduleName]
             if (moduleInfo) {
-                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/apps/${moduleName}"))
+                appDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/apps/${moduleName}")]
             }
+        }
+        if (!appDownloads.isEmpty()) {
+            downloadModulesParallel(appDownloads)
         }
 
         println "Downloading tools (only enabled)..."
+        def toolDownloads = []
         def toolUrls = [
             bruno: [url: toolBrunoUrl, version: toolBrunoVersion],
             composer: [url: toolComposerUrl, version: toolComposerVersion],
@@ -1271,8 +1451,11 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
         toolsToDownload.each { moduleName ->
             def moduleInfo = toolUrls[moduleName]
             if (moduleInfo) {
-                downloadModule(moduleInfo.url, moduleInfo.version, file("${releaseTarget}/tools/${moduleName}"))
+                toolDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/tools/${moduleName}")]
             }
+        }
+        if (!toolDownloads.isEmpty()) {
+            downloadModulesParallel(toolDownloads)
         }
 
         println "\n*** Compressing release..."
