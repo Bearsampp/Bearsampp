@@ -2,6 +2,7 @@ plugins {
     id 'base'
     id 'de.undercouch.download' version '5.4.0'
 }
+import groovy.json.JsonSlurper
 
 // Load properties from build.properties
 def buildProps = new Properties()
@@ -33,7 +34,9 @@ ext {
     // Development and build directories
     devDir = buildProps.getProperty('dev.dir')
     buildDirName = buildProps.getProperty('build.dir')
+    sandboxDirName = buildProps.getProperty('sandbox.dir')
     devPath = file("${projectDir}/${devDir}")
+    sandboxPath = file("${projectDir}/${sandboxDirName}")
     
     // Use build.dir from properties - can be absolute or relative path
     def buildDirPath = buildDirName.startsWith('/') || buildDirName.contains(':') ? 
@@ -97,10 +100,6 @@ ext {
     toolPowershellUrl = 'https://github.com/Bearsampp/module-powershell/releases'
     toolPythonUrl = 'https://github.com/Bearsampp/module-python/releases'
     toolRubyUrl = 'https://github.com/Bearsampp/module-ruby/releases'
-
-    // mkcert
-    mkcertReleaseApiUrl = 'https://api.github.com/repos/FiloSottile/mkcert/releases/latest'
-    mkcertFallbackUrl = 'https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe'
 }
 
 // Helper function to download and extract modules (thread-safe)
@@ -184,42 +183,152 @@ def downloadModule(String releasesUrl, String version, File destDir) {
     }
 }
 
-// Helper function to download mkcert executable
-def downloadMkcert(File destFile) {
+// Helper function to download file using native Java HTTP
+def downloadFileNative(String urlStr, File destFile) {
     destFile.parentFile.mkdirs()
+    def url = new URL(urlStr)
+    def conn = url.openConnection()
+    conn.setRequestProperty('User-Agent', 'Bearsampp-build')
+    conn.connect()
 
-    def mkcertUrl = ''
+    if (conn.responseCode != 200) {
+        throw new IOException("Failed to download: HTTP ${conn.responseCode}")
+    }
+
+    destFile.withOutputStream { out ->
+        conn.inputStream.with { ins ->
+            byte[] buffer = new byte[1024]
+            int len
+            while ((len = ins.read(buffer)) > 0) {
+                out.write(buffer, 0, len)
+            }
+        }
+    }
+}
+
+// Helper function to download modules in parallel
+def downloadModulesParallel(List<Map> downloads) {
+    def executorService = java.util.concurrent.Executors.newFixedThreadPool(4)
+    def futures = []
+    def exceptions = []
+
     try {
-        def response = new URL(mkcertReleaseApiUrl).getText(
-            requestProperties: [
-                'Accept': 'application/vnd.github+json',
-                'User-Agent': 'Bearsampp-build'
-            ]
-        )
-        def releaseData = new groovy.json.JsonSlurper().parseText(response)
-        def winAsset = releaseData?.assets?.find { asset ->
-            asset?.name?.endsWith('windows-amd64.exe')
+        downloads.each { Map download ->
+            def future = executorService.submit({
+                try {
+                    def releasesUrl = download.url
+                    def version = download.version
+                    def destDir = download.destDir
+
+                    synchronized(System.out) {
+                        println "** Get Module"
+                        println "* Releases url : ${releasesUrl}"
+                        println "* Version      : ${version}"
+                        println "* Destination  : ${destDir}"
+                    }
+
+                    def getmTmpPath = file("${buildTmpPath}/getmodule")
+                    getmTmpPath.mkdirs()
+
+                    def repoUrl = releasesUrl.replace('/releases', '').replace('github.com', 'raw.githubusercontent.com')
+                    def releasesPropsUrl = "${repoUrl}/main/releases.properties"
+                    def propsFile = file("${getmTmpPath}/releases-${version}.properties")
+
+                    synchronized(System.out) {
+                        println "* Fetching release properties from: ${releasesPropsUrl}"
+                    }
+
+                    downloadFileNative(releasesPropsUrl, propsFile)
+
+                    def releaseProps = new Properties()
+                    propsFile.withInputStream { releaseProps.load(it) }
+
+                    def downloadUrl = releaseProps.getProperty(version)
+                    if (!downloadUrl) {
+                        throw new GradleException("Version ${version} not found in releases.properties")
+                    }
+
+                    synchronized(System.out) {
+                        println "* Download URL : ${downloadUrl}"
+                    }
+
+                    def filename = downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1)
+                    def downloadFile = file("${getmTmpPath}/${filename}")
+
+                    if (!downloadFile.exists()) {
+                        synchronized(System.out) {
+                            println "* Downloading ${filename}..."
+                        }
+                        downloadFileNative(downloadUrl, downloadFile)
+
+                        if (downloadFile.exists() && downloadFile.length() < 1024 * 1024) {
+                            synchronized(System.out) {
+                                println "WARNING: Downloaded file seems too small (${downloadFile.length()} bytes), may be corrupted"
+                            }
+                        }
+                    } else {
+                        synchronized(System.out) {
+                            println "* Using cached ${filename} (${downloadFile.length()} bytes)"
+                        }
+
+                        if (downloadFile.length() < 1024 * 1024) {
+                            synchronized(System.out) {
+                                println "WARNING: Cached file seems too small (${downloadFile.length()} bytes), deleting and re-downloading..."
+                            }
+                            downloadFile.delete()
+                            downloadFileNative(downloadUrl, downloadFile)
+                        }
+                    }
+
+                    synchronized(System.out) {
+                        println "* Extracting ${filename} to ${destDir}..."
+                    }
+                    destDir.mkdirs()
+
+                    if (filename.endsWith('.7z')) {
+                        def sevenZipExe = file("${devPath}/tools/7zip/7za.exe")
+                        if (!sevenZipExe.exists()) {
+                            throw new GradleException("7-Zip not found at ${sevenZipExe}")
+                        }
+                        def extractProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'x', downloadFile.absolutePath, "-o${destDir.absolutePath}", '-y')
+                            .directory(destDir)
+                            .redirectErrorStream(true)
+                            .start()
+                        extractProcess.waitFor()
+                    } else if (filename.endsWith('.zip')) {
+                        ant.unzip(src: downloadFile, dest: destDir)
+                    } else {
+                        throw new GradleException("Unknown archive format: ${filename}")
+                    }
+
+                    synchronized(System.out) {
+                        println "* Module extracted successfully"
+                    }
+
+                } catch (Exception e) {
+                    synchronized(exceptions) {
+                        exceptions << e
+                    }
+                    synchronized(System.out) {
+                        println "ERROR: Failed to download module: ${e.message}"
+                    }
+                }
+            } as Runnable)
+            futures << future
         }
-        if (winAsset?.browser_download_url) {
-            mkcertUrl = winAsset.browser_download_url
-            println "Found latest mkcert download URL: ${mkcertUrl}"
+
+        // Wait for all downloads to complete
+        futures.each { future ->
+            future.get()
         }
-    } catch (Exception e) {
-        println "WARNING: Failed to fetch latest mkcert metadata: ${e.message}"
+
+        // Check for any exceptions
+        if (!exceptions.isEmpty()) {
+            throw new GradleException("Some downloads failed: ${exceptions.collect { it.message }.join(', ')}")
+        }
+    } finally {
+        executorService.shutdown()
     }
-
-    if (!mkcertUrl) {
-        mkcertUrl = mkcertFallbackUrl
-        println "Using mkcert fallback URL: ${mkcertUrl}"
-    }
-
-    ant.get(src: mkcertUrl, dest: destFile, usetimestamp: true)
-
-    if (!destFile.exists()) {
-        throw new GradleException("Failed to download mkcert.exe to ${destFile}")
-    }
-
-    println "mkcert downloaded to: ${destFile}"
 }
 
 // Helper function to download file using native Java HTTP
@@ -839,47 +948,73 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         def iconographyZip = file("${projectDir}/Bearsampp-iconography.zip")
 
         println "Downloading iconography..."
-        ant.get(src: iconographyUrl, dest: iconographyZip)
-        ant.unzip(src: iconographyZip, dest: projectDir)
+        def url = new URL(iconographyUrl)
+        url.openConnection().with { conn ->
+            conn.inputStream.with { input ->
+                iconographyZip.bytes = input.bytes
+            }
+        }
+        copy {
+            from zipTree(iconographyZip)
+            into projectDir
+        }
         iconographyZip.delete()
         println "Successfully downloaded and extracted Bearsampp iconography."
 
         def bearsamppExe = file("${projectDir}/base/bearsampp.exe")
         if (bearsamppExe.exists()) {
-            def rcEditProcess = new ProcessBuilder('rcedit-x64.exe', bearsamppExe.absolutePath, '--set-file-version', releaseFullVersion)
+            def rcEditExe = file("${projectDir}/rcedit-x64.exe")
+            def rcEditProcess = new ProcessBuilder(rcEditExe.absolutePath, bearsamppExe.absolutePath, '--set-file-version', releaseFullVersion)
                 .directory(projectDir)
                 .redirectErrorStream(true)
                 .start()
             rcEditProcess.waitFor()
             println "Successfully set product version to ${releaseFullVersion} using rcedit-x64.exe"
-        }
 
-        def resourceHackerExe = file("${projectDir}/ResourceHacker.exe")
-        def coreIconPath = file("${projectDir}/core/resources/homepage/img/icons/bearsampp.ico")
+            // Native logic for setting icon
+            def resourceHackerExe = file("${projectDir}/ResourceHacker.exe")
+            def iconPath = file("${projectDir}/core/resources/homepage/img/icons/bearsampp.ico")
 
-        if (resourceHackerExe.exists() && coreIconPath.exists()) {
-            def fixCoreIconProcess = new ProcessBuilder(resourceHackerExe.absolutePath,
-                        '-open', bearsamppExe.absolutePath,
-                        '-save', bearsamppExe.absolutePath,
-                        '-action', 'modify',
-                        '-res', "${coreIconPath.absolutePath},",
-                        '-mask', 'ICONGROUP,MAINICON,')
-                .directory(projectDir)
-                .redirectErrorStream(true)
-                .start()
-            fixCoreIconProcess.waitFor()
+            if (resourceHackerExe.exists() && iconPath.exists()) {
+                println "* Updating icon for ${bearsamppExe.name} using ResourceHacker..."
+                def process = new ProcessBuilder(resourceHackerExe.absolutePath,
+                            '-open', bearsamppExe.absolutePath,
+                            '-save', bearsamppExe.absolutePath,
+                            '-action', 'modify',
+                            '-res', "${iconPath.absolutePath},",
+                            '-mask', 'ICONGROUP,MAINICON,')
+                        .directory(projectDir)
+                        .redirectErrorStream(true)
+                        .start()
 
-            if (fixCoreIconProcess.exitValue() == 0) {
-                println "Successfully set icon to bearsampp.ico using ResourceHacker.exe"
+                process.inputStream.eachLine { println "  > ${it}" }
+                process.waitFor()
+
+                if (process.exitValue() == 0) {
+                    println "* Successfully set icon to ${iconPath.name} using ResourceHacker.exe"
+                } else {
+                    throw new GradleException("ResourceHacker failed with exit code ${process.exitValue()}")
+                }
             } else {
-                println "WARNING: Failed to set core icon. ResourceHacker exit code: ${fixCoreIconProcess.exitValue()}"
+                println "WARNING: ResourceHacker.exe or icon file not found. Skipping icon update."
             }
-        } else {
-            println "WARNING: Could not set core icon - ResourceHacker.exe or icon file not found"
         }
 
         delete releaseBasePath
         releaseBasePath.mkdirs()
+
+        // Download latest mkcert
+        def apiUrl = "https://api.github.com/repos/FiloSottile/mkcert/releases/latest"
+        def connection = new URL(apiUrl).openConnection()
+        connection.setRequestProperty("User-Agent", "Gradle")
+        def json = connection.inputStream.text
+        def data = new JsonSlurper().parseText(json)
+        def latestTag = data.tag_name
+        def mkcertUrl = "https://github.com/FiloSottile/mkcert/releases/download/${latestTag}/mkcert-${latestTag}-windows-amd64.exe"
+        def mkcertExe = file("${releaseBasePath}/core/libs/mkcert/mkcert.exe")
+        mkcertExe.parentFile.mkdirs()
+        ant.get(src: mkcertUrl, dest: mkcertExe)
+        println "Successfully downloaded mkcert ${latestTag} to ${mkcertExe}"
 
         // Copy only the core directory from the project
         copy {
@@ -941,10 +1076,6 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
             println "openssl.cfg already exists."
         }
 
-        def mkcertExe = file("${releaseBasePath}/core/libs/mkcert/mkcert.exe")
-        println "Downloading mkcert.exe..."
-        downloadMkcert(mkcertExe)
-
         // Debug: Check what files exist in base/ before copying
         println "Checking base directory contents..."
         def baseDir = file("${projectDir}/base")
@@ -972,6 +1103,17 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                 into releaseBasePath
             }
             println "  [COPY] LICENSE"
+        }
+        
+        // Copy favicon.ico
+        def sourceFavicon = file("${projectDir}/core/resources/homepage/img/icons/app.ico")
+        if (sourceFavicon.exists()) {
+            copy {
+                from sourceFavicon
+                into releaseBasePath
+                rename { 'favicon.ico' }
+            }
+            println "  [COPY] favicon.ico"
         }
         
         // Manually copy .gitignore files (Gradle excludes them by default)
@@ -1019,6 +1161,7 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         file("${releaseBasePath}/logs").mkdirs()
         file("${releaseBasePath}/ssl").mkdirs()
         file("${releaseBasePath}/vhosts").mkdirs()
+        file("${releaseBasePath}/core/libs/mkcert").mkdirs()
         
         file("${releaseBasePath}/tmp/cachegrind").mkdirs()
         file("${releaseBasePath}/tmp/npm-cache").mkdirs()
@@ -1479,30 +1622,12 @@ task sync(dependsOn: buildFull) {
     doLast {
         println "\n*** Sync to Sandbox ***"
 
-        def console = System.console()
-        def syncConfirm
-        if (console) {
-            syncConfirm = console.readLine('Would you like to sync to sandbox? (y/yes or n/no): ')
-        } else {
-            println "Running in non-interactive mode. Skipping sync."
+        if (project.hasProperty('skipSync')) {
+            println "* Skipping sync."
             return
         }
 
-        if (!(syncConfirm ==~ /(?i)^(yes|y)$/)) {
-            println "Sync aborted by user."
-            return
-        }
-
-        println "\nCurrent sync path is: ${bearsamppPath}"
-        def pathConfirm = console.readLine('Is this the path you want to sync to? (y/yes or n/no): ')
-
-        def syncFinalPath = bearsamppPath
-        if (!(pathConfirm ==~ /(?i)^(yes|y)$/)) {
-            def customPath = console.readLine('Please enter the new path to sync to: ')
-            if (customPath && customPath.trim()) {
-                syncFinalPath = file(customPath.trim())
-            }
-        }
+        def syncFinalPath = project.hasProperty('syncPath') ? file(project.property('syncPath')) : bearsamppPath
 
         println "\n*** Sync step: using path = ${syncFinalPath}"
 
@@ -1521,20 +1646,17 @@ task sync(dependsOn: buildFull) {
         copy {
             from file("${releaseTmpPath}/base/core")
             into file("${iconographyTempDir}/core")
-            overwrite true
         }
 
         println "* Preparing executable..."
         copy {
             from file("${projectDir}/base/bearsampp.exe")
             into iconographyTempDir
-            overwrite true
         }
 
         copy {
             from file("${projectDir}/rcedit-x64.exe")
             into iconographyTempDir
-            overwrite true
         }
 
         def resourceHackerSource = file("${syncFinalPath}/ResourceHacker.exe")
@@ -1572,6 +1694,26 @@ task sync(dependsOn: buildFull) {
             }
         }
 
+        println "* Updating executable icon..."
+        def resourceHackerExe = file("${iconographyTempDir}/ResourceHacker.exe")
+        def iconPath = file("${syncFinalPath}/core/resources/homepage/img/icons/bearsampp.ico")
+
+        if (resourceHackerExe.exists() && iconPath.exists()) {
+            def resourceHackerProcess = new ProcessBuilder(resourceHackerExe.absolutePath,
+                        '-open', tempBearsamppExe.absolutePath,
+                        '-save', tempBearsamppExe.absolutePath,
+                        '-action', 'modify',
+                        '-res', "${iconPath.absolutePath},",
+                        '-mask', 'ICONGROUP,MAINICON,')
+                .directory(iconographyTempDir)
+                .redirectErrorStream(true)
+                .start()
+            resourceHackerProcess.waitFor()
+            println "* Successfully updated executable icon"
+        } else {
+            println "WARNING: Could not update icon - ResourceHacker or icon file not found"
+        }
+
         def finalBearsamppExe = file("${syncFinalPath}/bearsampp.exe")
         if (finalBearsamppExe.exists()) {
             finalBearsamppExe.delete()
@@ -1582,31 +1724,6 @@ task sync(dependsOn: buildFull) {
             from tempBearsamppExe
             into syncFinalPath
             overwrite true
-        }
-
-        println "* Applying sandbox icon update in Gradle..."
-        def sandboxResourceHackerExe = file("${syncFinalPath}/ResourceHacker.exe")
-        def sandboxIconPath = file("${syncFinalPath}/core/resources/homepage/img/icons/bearsampp.ico")
-
-        if (sandboxResourceHackerExe.exists() && sandboxIconPath.exists() && finalBearsamppExe.exists()) {
-            def fixSandboxIconProcess = new ProcessBuilder(sandboxResourceHackerExe.absolutePath,
-                        '-open', finalBearsamppExe.absolutePath,
-                        '-save', finalBearsamppExe.absolutePath,
-                        '-action', 'modify',
-                        '-res', "${sandboxIconPath.absolutePath},",
-                        '-mask', 'ICONGROUP,MAINICON,')
-                .directory(syncFinalPath)
-                .redirectErrorStream(true)
-                .start()
-            fixSandboxIconProcess.waitFor()
-
-            if (fixSandboxIconProcess.exitValue() == 0) {
-                println "* Successfully updated executable icon in sandbox"
-            } else {
-                println "WARNING: Sandbox icon update failed with exit code ${fixSandboxIconProcess.exitValue()}"
-            }
-        } else {
-            println "WARNING: Could not update sandbox icon - ResourceHacker.exe, icon, or bearsampp.exe not found"
         }
 
         println "\n*** Sync complete!"
@@ -1662,5 +1779,91 @@ tasks.named('wrapper') {
     enabled = false
 }
 
+// Task: postBuildSync
+task postBuildSync {
+    group = 'build'
+    description = 'Sync bearsampp.exe to sandbox and fix icon to sandbox version'
+
+    doLast {
+        println "\n*** Post-Build Sync to Sandbox ***"
+        
+        def sandboxDir = sandboxPath
+        def sourceExe = file("${projectDir}/base/bearsampp.exe")
+        def destExe = file("${sandboxDir}/bearsampp.exe")
+        
+        if (!sourceExe.exists()) {
+            println "ERROR: Source executable not found at ${sourceExe}"
+            return
+        }
+        
+        if (!sandboxDir.exists()) {
+            println "ERROR: Sandbox directory not found at ${sandboxDir}"
+            return
+        }
+
+        println "* Copying bearsampp.exe to sandbox..."
+        copy {
+            from sourceExe
+            into sandboxDir
+        }
+        
+        if (destExe.exists()) {
+            println "* bearsampp.exe successfully copied to ${sandboxDir}"
+            
+            // Migrate fix-icon.bat logic here
+            def resourceHackerExe = file("${sandboxDir}/ResourceHacker.exe")
+            def iconPath = file("${sandboxDir}/core/resources/homepage/img/icons/bearsampp.ico")
+            
+            if (resourceHackerExe.exists() && iconPath.exists()) {
+                println "* Updating icon using ResourceHacker..."
+                def process = new ProcessBuilder(resourceHackerExe.absolutePath,
+                            '-open', destExe.absolutePath,
+                            '-save', destExe.absolutePath,
+                            '-action', 'modify',
+                            '-res', "${iconPath.absolutePath},",
+                            '-mask', 'ICONGROUP,MAINICON,')
+                    .directory(sandboxDir)
+                    .redirectErrorStream(true)
+                    .start()
+                
+                process.inputStream.eachLine { println "  > ${it}" }
+                process.waitFor()
+                
+                if (process.exitValue() == 0) {
+                    println "* Icon set successfully"
+                    
+                    // New step: Copy app.ico from sandbox to sandbox root as favicon.ico
+                    def sourceFavicon = file("${sandboxDir}/core/resources/homepage/img/icons/app.ico")
+                    
+                    if (sourceFavicon.exists()) {
+                        println "* Copying app.ico from sandbox to sandbox root as favicon.ico..."
+                        copy {
+                            from sourceFavicon
+                            into sandboxDir
+                            rename { 'favicon.ico' }
+                        }
+                        println "* favicon.ico successfully updated in ${sandboxDir} from ${sourceFavicon}"
+                    } else {
+                        println "WARNING: Source app.ico not found at ${sourceFavicon}"
+                    }
+                    
+                    println "* SUCCESS: bearsampp.exe synced and icons fixed in sandbox"
+                } else {
+                    println "* ERROR: ResourceHacker failed with exit code ${process.exitValue()}"
+                }
+            } else {
+                println "WARNING: ResourceHacker.exe or icon file not found in ${sandboxDir}"
+            }
+        } else {
+            println "ERROR: Failed to copy bearsampp.exe to sandbox"
+        }
+    }
+}
+
 // Default task
 defaultTasks 'release'
+
+// Finalize all build tasks with postBuildSync
+tasks.named('buildFull').configure { finalizedBy postBuildSync }
+tasks.named('buildBasic').configure { finalizedBy postBuildSync }
+tasks.named('buildLite').configure { finalizedBy postBuildSync }
