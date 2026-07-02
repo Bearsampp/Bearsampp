@@ -2435,26 +2435,26 @@
       {
         "version": "7.6.3",
         "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.6.25/bearsampp-powershell-7.6.3-2026.6.25.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "7.6.2",
-        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.5.31/bearsampp-powershell-7.6.2-2026.5.31.7z",
+        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.6.25/bearsampp-powershell-7.6.2-2026.6.25.7z",
         "prerelease": false
       },
       {
         "version": "7.6.1",
-        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.4.24/bearsampp-powershell-7.6.1-2026.4.24.7z",
+        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.6.25/bearsampp-powershell-7.6.1-2026.6.25.7z",
         "prerelease": false
       },
       {
         "version": "7.6.0",
-        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.4.24.1/bearsampp-powershell-7.6.0-2026.4.24.7z",
+        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.6.25/bearsampp-powershell-7.6.0-2026.6.25.7z",
         "prerelease": false
       },
       {
         "version": "7.5.4",
-        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.4.24.1/bearsampp-powershell-7.5.4-2026.4.24.7z",
+        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.6.25/bearsampp-powershell-7.5.4-2026.6.25.7z",
         "prerelease": false
       }
     ]
