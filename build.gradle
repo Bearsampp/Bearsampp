@@ -650,14 +650,23 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         def iconographyZip = file("${projectDir}/Bearsampp-iconography.zip")
 
         println "Downloading iconography..."
-        ant.get(src: iconographyUrl, dest: iconographyZip)
-        ant.unzip(src: iconographyZip, dest: projectDir)
+        def url = new URL(iconographyUrl)
+        url.openConnection().with { conn ->
+            conn.inputStream.with { input ->
+                iconographyZip.bytes = input.bytes
+            }
+        }
+        copy {
+            from zipTree(iconographyZip)
+            into projectDir
+        }
         iconographyZip.delete()
         println "Successfully downloaded and extracted Bearsampp iconography."
 
         def bearsamppExe = file("${projectDir}/base/bearsampp.exe")
         if (bearsamppExe.exists()) {
-            def rcEditProcess = new ProcessBuilder('rcedit-x64.exe', bearsamppExe.absolutePath, '--set-file-version', releaseFullVersion)
+            def rcEditExe = file("${projectDir}/rcedit-x64.exe")
+            def rcEditProcess = new ProcessBuilder(rcEditExe.absolutePath, bearsamppExe.absolutePath, '--set-file-version', releaseFullVersion)
                 .directory(projectDir)
                 .redirectErrorStream(true)
                 .start()
