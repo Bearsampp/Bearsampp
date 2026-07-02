@@ -795,6 +795,13 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
     group = 'build'
     description = 'Prepare base environment for Bearsampp'
 
+    // Inputs: files that affect this task
+    inputs.files(file("${projectDir}/base"), file("${projectDir}/core"))
+    inputs.property('releaseVersion', releaseFullVersion)
+
+    // Outputs: what this task produces
+    outputs.dir(releaseBasePath)
+
     doLast {
         println "*** Preparing base"
         println "* Name    : ${releaseName}"
