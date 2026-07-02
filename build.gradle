@@ -4,6 +4,10 @@ plugins {
 }
 import groovy.json.JsonSlurper
 
+// Configure Gradle build cache and parallel execution
+gradle.startParameter.buildCacheEnabled = true
+gradle.startParameter.parallelProjectExecutionEnabled = true
+
 // Load properties from build.properties
 def buildProps = new Properties()
 file('build.properties').withInputStream { buildProps.load(it) }
@@ -1217,7 +1221,7 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
 }
 
 // Task: buildBasic
-task buildBasic(dependsOn: buildFull) {
+task buildBasic(dependsOn: [initBuild, prepareBase]) {
     group = 'build'
     description = 'Build basic release package'
 
@@ -1342,7 +1346,7 @@ task buildBasic(dependsOn: buildFull) {
 }
 
 // Task: buildLite
-task buildLite(dependsOn: buildBasic) {
+task buildLite(dependsOn: [initBuild, prepareBase]) {
     group = 'build'
     description = 'Build lite release package'
 
@@ -1483,7 +1487,7 @@ task sync(dependsOn: buildFull) {
             return
         }
 
-        def syncFinalPath = customSyncPath ? file(customSyncPath) : bearsamppPath
+        def syncFinalPath = customSyncPath ? file(customSyncPath) : sandboxPath
 
         println "\n*** Sync step: using path = ${syncFinalPath}"
 
@@ -1588,8 +1592,13 @@ task sync(dependsOn: buildFull) {
     }
 }
 
+// Define task ordering for release builds (ensures downloads are cached across builds)
+buildBasic.mustRunAfter buildFull
+buildLite.mustRunAfter buildBasic
+sync.mustRunAfter buildFull
+
 // Task: release
-task release(dependsOn: [buildLite, sync]) {
+task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
     group = 'build'
     description = 'Release Bearsampp (all variants) - includes clean'
 
