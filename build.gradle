@@ -492,11 +492,11 @@ def safeDelete(File dir) {
     if (!dir.exists()) {
         return true
     }
-    
+
     def maxRetries = 5
     def retryCount = 0
     def deleted = false
-    
+
     while (retryCount < maxRetries && !deleted) {
         try {
             delete dir
@@ -514,8 +514,38 @@ def safeDelete(File dir) {
             }
         }
     }
-    
+
     return deleted
+}
+
+// Helper function to safely copy a file with retry logic
+def safeCopy(File sourceFile, File destDir) {
+    def maxRetries = 5
+    def retryCount = 0
+    def copied = false
+
+    while (retryCount < maxRetries && !copied) {
+        try {
+            copy {
+                from sourceFile
+                into destDir
+            }
+            copied = true
+        } catch (Exception e) {
+            retryCount++
+            if (retryCount < maxRetries) {
+                println "* Retry ${retryCount}/${maxRetries}: Waiting for file locks to release..."
+                Thread.sleep(2000)
+            } else {
+                println "* WARNING: Could not copy file after ${maxRetries} attempts"
+                println "* Error: ${e.message}"
+                println "* Please close any applications that may have the file open."
+                return false
+            }
+        }
+    }
+
+    return copied
 }
 
 // Helper function to comment out specific config lines
@@ -1380,12 +1410,13 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
 
+        def duration = System.currentTimeMillis() - buildStartTime
+        ext.buildTimes['full'] = duration
+
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-
-        def duration = System.currentTimeMillis() - buildStartTime
-        ext.buildTimes['full'] = duration
+        println "* Build time: ${duration} ms"
     }
 }
 
@@ -1493,12 +1524,13 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
 
+        def duration = System.currentTimeMillis() - buildStartTime
+        ext.buildTimes['basic'] = duration
+
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-
-        def duration = System.currentTimeMillis() - buildStartTime
-        ext.buildTimes['basic'] = duration
+        println "* Build time: ${duration} ms"
     }
 }
 
@@ -1606,12 +1638,13 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
 
+        def duration = System.currentTimeMillis() - buildStartTime
+        ext.buildTimes['lite'] = duration
+
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-
-        def duration = System.currentTimeMillis() - buildStartTime
-        ext.buildTimes['lite'] = duration
+        println "* Build time: ${duration} ms"
     }
 }
 
@@ -1748,21 +1781,17 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
         println "Release complete!"
         println "All build variants have been created."
 
-        try {
-            if (ext.buildTimes && !ext.buildTimes.isEmpty()) {
-                println "\n*** Build Times ***"
-                if (ext.buildTimes.full) {
-                    println "* Full build time: ${ext.buildTimes.full} ms"
-                }
-                if (ext.buildTimes.basic) {
-                    println "* Basic build time: ${ext.buildTimes.basic} ms"
-                }
-                if (ext.buildTimes.lite) {
-                    println "* Lite build time: ${ext.buildTimes.lite} ms"
-                }
+        if (ext.hasProperty('buildTimes') && ext.buildTimes && !ext.buildTimes.isEmpty()) {
+            println "\n*** Build Times ***"
+            if (ext.buildTimes.full) {
+                println "* Full build time: ${ext.buildTimes.full} ms"
             }
-        } catch (Exception e) {
-            // Build times not available
+            if (ext.buildTimes.basic) {
+                println "* Basic build time: ${ext.buildTimes.basic} ms"
+            }
+            if (ext.buildTimes.lite) {
+                println "* Lite build time: ${ext.buildTimes.lite} ms"
+            }
         }
     }
 }
@@ -1826,12 +1855,7 @@ task postBuildSync {
         }
 
         println "* Copying bearsampp.exe to sandbox..."
-        copy {
-            from sourceExe
-            into sandboxDir
-        }
-        
-        if (destExe.exists()) {
+        if (safeCopy(sourceExe, sandboxDir)) {
             println "* bearsampp.exe successfully copied to ${sandboxDir}"
             
             // Ensure icons are up-to-date
