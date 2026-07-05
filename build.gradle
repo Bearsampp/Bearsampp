@@ -80,7 +80,6 @@ ext {
 
     // Build time tracking
     buildStartTime = 0L
-    buildTimes = [:]
 
     // BEARSAMPP_PATH property
     bearsamppPath = file("${projectDir}/bearsampp-destination")
@@ -120,14 +119,6 @@ def downloadAndExtractIconography(File destDir) {
     unzipFile(iconZip, destDir)
     iconZip.delete()
     println "* Successfully extracted Sandbox iconography"
-}
-
-// Helper function to format milliseconds to minutes and seconds
-def formatDuration(long milliseconds) {
-    def totalSeconds = milliseconds / 1000
-    def minutes = totalSeconds / 60
-    def seconds = totalSeconds % 60
-    return String.format("%dm %ds", minutes as int, seconds as int)
 }
 
 // Helper function to track build time
@@ -1329,9 +1320,6 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
     description = 'Build full release package'
 
     doLast {
-        if (!ext.hasProperty('buildTimes')) {
-            ext.buildTimes = [:]
-        }
         def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-${releaseFullVersion}"
@@ -1426,12 +1414,9 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
 
-        ext.buildTimes.full = System.currentTimeMillis() - buildStartTime
-
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-        println "* Build time: ${formatDuration(ext.buildTimes.full)}"
     }
 }
 
@@ -1538,10 +1523,12 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
         def duration = System.currentTimeMillis() - buildStartTime
         rootProject.ext.buildTimes.put('basic', duration)
 
+        ext.buildTimes.basic = System.currentTimeMillis() - buildStartTime
+
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-        println "* Build time: ${formatDuration(ext.buildTimes.full)}"
+        println "* Build time: ${formatDuration(ext.buildTimes.basic)}"
     }
 }
 
@@ -1645,13 +1632,12 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
 
-        def duration = System.currentTimeMillis() - buildStartTime
-        rootProject.ext.buildTimes.put('lite', duration)
+        ext.buildTimes.lite = System.currentTimeMillis() - buildStartTime
 
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-        println "* Build time: ${formatDuration(ext.buildTimes.full)}"
+        println "* Build time: ${formatDuration(ext.buildTimes.lite)}"
     }
 }
 
@@ -1787,13 +1773,6 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
     doLast {
         println "Release complete!"
         println "All build variants have been created."
-
-        if (ext.buildTimes.full || ext.buildTimes.basic || ext.buildTimes.lite) {
-            println "\n*** Build Times Summary ***"
-            if (ext.buildTimes.full) println "* Full build time: ${formatDuration(ext.buildTimes.full)}"
-            if (ext.buildTimes.basic) println "* Basic build time: ${formatDuration(ext.buildTimes.basic)}"
-            if (ext.buildTimes.lite) println "* Lite build time: ${formatDuration(ext.buildTimes.lite)}"
-        }
     }
 }
 
@@ -1914,8 +1893,3 @@ task postBuildSync {
 
 // Default task
 defaultTasks 'release'
-
-// Finalize all build tasks with postBuildSync
-tasks.named('buildFull').configure { finalizedBy postBuildSync }
-tasks.named('buildBasic').configure { finalizedBy postBuildSync }
-tasks.named('buildLite').configure { finalizedBy postBuildSync }
