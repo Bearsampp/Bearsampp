@@ -1709,8 +1709,10 @@ task sync(dependsOn: buildFull) {
     }
 }
 
-// sync task should run after buildFull (no sequential dependency needed since release already has full ordering)
-sync.mustRunAfter buildFull
+// Enforce build order: full -> basic -> lite
+buildBasic.mustRunAfter buildFull
+buildLite.mustRunAfter buildBasic
+sync.mustRunAfter buildLite
 
 // Task: release
 task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
