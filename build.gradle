@@ -1329,10 +1329,6 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
     description = 'Build full release package'
 
     doLast {
-        if (!rootProject.ext.hasProperty('buildTimes')) {
-            rootProject.ext.buildTimes = [:]
-        }
-
         def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-${releaseFullVersion}"
@@ -1427,13 +1423,12 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
 
-        def duration = System.currentTimeMillis() - buildStartTime
-        rootProject.ext.buildTimes.put('full', duration)
+        ext.buildTimes.full = System.currentTimeMillis() - buildStartTime
 
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-        println "* Build time: ${formatDuration(duration)}"
+        println "* Build time: ${formatDuration(ext.buildTimes.full)}"
     }
 }
 
@@ -1443,10 +1438,6 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
     description = 'Build basic release package'
 
     doLast {
-        if (!rootProject.ext.hasProperty('buildTimes')) {
-            rootProject.ext.buildTimes = [:]
-        }
-
         def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-basic-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-basic-${releaseFullVersion}"
@@ -1547,7 +1538,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-        println "* Build time: ${formatDuration(duration)}"
+        println "* Build time: ${formatDuration(ext.buildTimes.full)}"
     }
 }
 
@@ -1557,10 +1548,6 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
     description = 'Build lite release package'
 
     doLast {
-        if (!rootProject.ext.hasProperty('buildTimes')) {
-            rootProject.ext.buildTimes = [:]
-        }
-
         def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-lite-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-lite-${releaseFullVersion}"
@@ -1661,7 +1648,7 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-        println "* Build time: ${formatDuration(duration)}"
+        println "* Build time: ${formatDuration(ext.buildTimes.full)}"
     }
 }
 
@@ -1798,16 +1785,11 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
         println "Release complete!"
         println "All build variants have been created."
 
-        try {
-            def times = rootProject.ext.buildTimes
-            if (times && !times.isEmpty()) {
-                println "\n*** Build Times Summary ***"
-                if (times.full) println "* Full build time: ${formatDuration(times.full)}"
-                if (times.basic) println "* Basic build time: ${formatDuration(times.basic)}"
-                if (times.lite) println "* Lite build time: ${formatDuration(times.lite)}"
-            }
-        } catch (Exception e) {
-            // Build times not available
+        if (ext.buildTimes.full || ext.buildTimes.basic || ext.buildTimes.lite) {
+            println "\n*** Build Times Summary ***"
+            if (ext.buildTimes.full) println "* Full build time: ${formatDuration(ext.buildTimes.full)}"
+            if (ext.buildTimes.basic) println "* Basic build time: ${formatDuration(ext.buildTimes.basic)}"
+            if (ext.buildTimes.lite) println "* Lite build time: ${formatDuration(ext.buildTimes.lite)}"
         }
     }
 }
