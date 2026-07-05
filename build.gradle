@@ -1411,7 +1411,7 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
         generateChecksums(archiveFile)
 
         def duration = System.currentTimeMillis() - buildStartTime
-        ext.buildTimes['full'] = duration
+        ext.buildTimes.put('full', duration)
 
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
@@ -1783,14 +1783,14 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
 
         if (ext.hasProperty('buildTimes') && ext.buildTimes && !ext.buildTimes.isEmpty()) {
             println "\n*** Build Times ***"
-            if (ext.buildTimes.full) {
-                println "* Full build time: ${ext.buildTimes.full} ms"
+            if (ext.buildTimes.get('full')) {
+                println "* Full build time: ${ext.buildTimes.get('full')} ms"
             }
-            if (ext.buildTimes.basic) {
-                println "* Basic build time: ${ext.buildTimes.basic} ms"
+            if (ext.buildTimes.get('basic')) {
+                println "* Basic build time: ${ext.buildTimes.get('basic')} ms"
             }
-            if (ext.buildTimes.lite) {
-                println "* Lite build time: ${ext.buildTimes.lite} ms"
+            if (ext.buildTimes.get('lite')) {
+                println "* Lite build time: ${ext.buildTimes.get('lite')} ms"
             }
         }
     }
