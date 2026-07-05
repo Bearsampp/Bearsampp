@@ -830,7 +830,7 @@ task initBuild(dependsOn: clean) {
     description = 'Initialize build environment'
 
     doLast {
-        project.ext.buildStartTime = System.currentTimeMillis()
+        ext.buildStartTime = System.currentTimeMillis()
         println "Initializing Bearsampp build environment"
         println "Project base directory: ${projectDir}"
         println "Build directory: ${buildOutputPath}"
@@ -1760,15 +1760,16 @@ tasks.named('wrapper') {
 }
 
 // Task: postBuildSync
+def buildStartTime = ext.buildStartTime
 task postBuildSync {
     group = 'build'
     description = 'Sync bearsampp.exe to sandbox and fix icon to sandbox version'
 
     doLast {
         println "\n*** Post-Build Sync to Sandbox ***"
-        
-        if (project.ext.hasProperty('buildStartTime')) {
-            trackBuildTime(project.ext.buildStartTime, version)
+
+        if (buildStartTime) {
+            trackBuildTime(buildStartTime, version)
         }
         
         def sandboxDir = sandboxPath
