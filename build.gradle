@@ -1521,14 +1521,10 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
         generateChecksums(archiveFile)
 
         def duration = System.currentTimeMillis() - buildStartTime
-        rootProject.ext.buildTimes.put('basic', duration)
-
-        ext.buildTimes.basic = System.currentTimeMillis() - buildStartTime
 
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-        println "* Build time: ${formatDuration(ext.buildTimes.basic)}"
     }
 }
 
@@ -1632,12 +1628,9 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
 
-        ext.buildTimes.lite = System.currentTimeMillis() - buildStartTime
-
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-        println "* Build time: ${formatDuration(ext.buildTimes.lite)}"
     }
 }
 
