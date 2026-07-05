@@ -829,10 +829,10 @@ clean {
     doLast {
         if (buildOutputPath.exists()) {
             println "* Deleting build directory: ${buildOutputPath.absolutePath}"
-            
+
             // Use safeDelete helper function with retry logic
             def deleted = safeDelete(buildOutputPath)
-            
+
             if (deleted) {
                 println "* Build directory cleaned successfully"
             } else {
@@ -843,13 +843,22 @@ clean {
         } else {
             println "* Build directory does not exist (already clean)"
         }
-        
+
+        // Explicitly clear modules cache
+        def modulesCache = file("${buildTmpPath}/modules-cache")
+        if (modulesCache.exists()) {
+            println "* Clearing modules cache: ${modulesCache.absolutePath}"
+            if (safeDelete(modulesCache)) {
+                println "* Modules cache cleared"
+            }
+        }
+
         // Also clean any temporary build artifacts in project directory
         def projectTempDirs = [
             file("${projectDir}/.gradle"),
             file("${projectDir}/build")
         ]
-        
+
         projectTempDirs.each { tempDir ->
             if (tempDir.exists() && tempDir != buildOutputPath) {
                 println "* Cleaning project temp directory: ${tempDir.name}"
@@ -1320,8 +1329,8 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
     description = 'Build full release package'
 
     doLast {
-        if (!ext.hasProperty('buildTimes')) {
-            ext.buildTimes = [:]
+        if (!rootProject.ext.hasProperty('buildTimes')) {
+            rootProject.ext.buildTimes = [:]
         }
 
         def buildStartTime = System.currentTimeMillis()
@@ -1419,7 +1428,7 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
         generateChecksums(archiveFile)
 
         def duration = System.currentTimeMillis() - buildStartTime
-        ext.buildTimes.put('full', duration)
+        rootProject.ext.buildTimes.put('full', duration)
 
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
@@ -1434,8 +1443,8 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
     description = 'Build basic release package'
 
     doLast {
-        if (!ext.hasProperty('buildTimes')) {
-            ext.buildTimes = [:]
+        if (!rootProject.ext.hasProperty('buildTimes')) {
+            rootProject.ext.buildTimes = [:]
         }
 
         def buildStartTime = System.currentTimeMillis()
@@ -1533,7 +1542,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
         generateChecksums(archiveFile)
 
         def duration = System.currentTimeMillis() - buildStartTime
-        ext.buildTimes.put('basic', duration)
+        rootProject.ext.buildTimes.put('basic', duration)
 
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
@@ -1548,8 +1557,8 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
     description = 'Build lite release package'
 
     doLast {
-        if (!ext.hasProperty('buildTimes')) {
-            ext.buildTimes = [:]
+        if (!rootProject.ext.hasProperty('buildTimes')) {
+            rootProject.ext.buildTimes = [:]
         }
 
         def buildStartTime = System.currentTimeMillis()
@@ -1647,7 +1656,7 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
         generateChecksums(archiveFile)
 
         def duration = System.currentTimeMillis() - buildStartTime
-        ext.buildTimes.put('lite', duration)
+        rootProject.ext.buildTimes.put('lite', duration)
 
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
@@ -1789,18 +1798,16 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
         println "Release complete!"
         println "All build variants have been created."
 
-        // Display build times summary at end of release
-        if (ext.hasProperty('buildTimes') && ext.buildTimes && !ext.buildTimes.isEmpty()) {
-            println "\n*** Build Times Summary ***"
-            if (ext.buildTimes.get('full')) {
-                println "* Full build time: ${formatDuration(ext.buildTimes.get('full'))}"
+        try {
+            def times = rootProject.ext.buildTimes
+            if (times && !times.isEmpty()) {
+                println "\n*** Build Times Summary ***"
+                if (times.full) println "* Full build time: ${formatDuration(times.full)}"
+                if (times.basic) println "* Basic build time: ${formatDuration(times.basic)}"
+                if (times.lite) println "* Lite build time: ${formatDuration(times.lite)}"
             }
-            if (ext.buildTimes.get('basic')) {
-                println "* Basic build time: ${formatDuration(ext.buildTimes.get('basic'))}"
-            }
-            if (ext.buildTimes.get('lite')) {
-                println "* Lite build time: ${formatDuration(ext.buildTimes.get('lite'))}"
-            }
+        } catch (Exception e) {
+            // Build times not available
         }
     }
 }
