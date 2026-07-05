@@ -1282,6 +1282,10 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
     description = 'Build full release package'
 
     doLast {
+        if (!project.hasProperty('ext') || !ext.hasProperty('buildTimes')) {
+            ext.buildTimes = [:]
+        }
+
         def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-${releaseFullVersion}"
@@ -1391,6 +1395,10 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
     description = 'Build basic release package'
 
     doLast {
+        if (!project.hasProperty('ext') || !ext.hasProperty('buildTimes')) {
+            ext.buildTimes = [:]
+        }
+
         def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-basic-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-basic-${releaseFullVersion}"
@@ -1500,6 +1508,10 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
     description = 'Build lite release package'
 
     doLast {
+        if (!project.hasProperty('ext') || !ext.hasProperty('buildTimes')) {
+            ext.buildTimes = [:]
+        }
+
         def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-lite-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-lite-${releaseFullVersion}"
@@ -1736,7 +1748,7 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
         println "Release complete!"
         println "All build variants have been created."
 
-        if (ext.buildTimes) {
+        if (project.hasProperty('ext') && ext.hasProperty('buildTimes') && ext.buildTimes) {
             println "\n*** Build Times ***"
             if (ext.buildTimes['full']) {
                 println "* Full build time: ${ext.buildTimes['full']} ms"
