@@ -1282,7 +1282,7 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
     description = 'Build full release package'
 
     doLast {
-        if (!project.hasProperty('ext') || !ext.hasProperty('buildTimes')) {
+        if (!ext.hasProperty('buildTimes')) {
             ext.buildTimes = [:]
         }
 
@@ -1395,7 +1395,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
     description = 'Build basic release package'
 
     doLast {
-        if (!project.hasProperty('ext') || !ext.hasProperty('buildTimes')) {
+        if (!ext.hasProperty('buildTimes')) {
             ext.buildTimes = [:]
         }
 
@@ -1508,7 +1508,7 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
     description = 'Build lite release package'
 
     doLast {
-        if (!project.hasProperty('ext') || !ext.hasProperty('buildTimes')) {
+        if (!ext.hasProperty('buildTimes')) {
             ext.buildTimes = [:]
         }
 
@@ -1748,17 +1748,21 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
         println "Release complete!"
         println "All build variants have been created."
 
-        if (project.hasProperty('ext') && ext.hasProperty('buildTimes') && ext.buildTimes) {
-            println "\n*** Build Times ***"
-            if (ext.buildTimes['full']) {
-                println "* Full build time: ${ext.buildTimes['full']} ms"
+        try {
+            if (ext.buildTimes && !ext.buildTimes.isEmpty()) {
+                println "\n*** Build Times ***"
+                if (ext.buildTimes.full) {
+                    println "* Full build time: ${ext.buildTimes.full} ms"
+                }
+                if (ext.buildTimes.basic) {
+                    println "* Basic build time: ${ext.buildTimes.basic} ms"
+                }
+                if (ext.buildTimes.lite) {
+                    println "* Lite build time: ${ext.buildTimes.lite} ms"
+                }
             }
-            if (ext.buildTimes['basic']) {
-                println "* Basic build time: ${ext.buildTimes['basic']} ms"
-            }
-            if (ext.buildTimes['lite']) {
-                println "* Lite build time: ${ext.buildTimes['lite']} ms"
-            }
+        } catch (Exception e) {
+            // Build times not available
         }
     }
 }
