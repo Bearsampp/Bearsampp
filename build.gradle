@@ -80,6 +80,7 @@ ext {
 
     // Build time tracking
     buildStartTime = 0L
+    buildTimes = [:]
 
     // BEARSAMPP_PATH property
     bearsamppPath = file("${projectDir}/bearsampp-destination")
@@ -1281,6 +1282,7 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
     description = 'Build full release package'
 
     doLast {
+        def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-${releaseFullVersion}"
 
@@ -1377,6 +1379,9 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
+
+        def duration = System.currentTimeMillis() - buildStartTime
+        ext.buildTimes['full'] = duration
     }
 }
 
@@ -1386,6 +1391,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
     description = 'Build basic release package'
 
     doLast {
+        def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-basic-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-basic-${releaseFullVersion}"
 
@@ -1482,6 +1488,9 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
+
+        def duration = System.currentTimeMillis() - buildStartTime
+        ext.buildTimes['basic'] = duration
     }
 }
 
@@ -1491,6 +1500,7 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
     description = 'Build lite release package'
 
     doLast {
+        def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-lite-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-lite-${releaseFullVersion}"
 
@@ -1587,6 +1597,9 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
+
+        def duration = System.currentTimeMillis() - buildStartTime
+        ext.buildTimes['lite'] = duration
     }
 }
 
@@ -1722,6 +1735,19 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
     doLast {
         println "Release complete!"
         println "All build variants have been created."
+
+        if (ext.buildTimes) {
+            println "\n*** Build Times ***"
+            if (ext.buildTimes['full']) {
+                println "* Full build time: ${ext.buildTimes['full']} ms"
+            }
+            if (ext.buildTimes['basic']) {
+                println "* Basic build time: ${ext.buildTimes['basic']} ms"
+            }
+            if (ext.buildTimes['lite']) {
+                println "* Lite build time: ${ext.buildTimes['lite']} ms"
+            }
+        }
     }
 }
 
@@ -1762,17 +1788,12 @@ tasks.named('wrapper') {
 }
 
 // Task: postBuildSync
-def buildStartTime = ext.buildStartTime
 task postBuildSync {
     group = 'build'
     description = 'Sync bearsampp.exe to sandbox and fix icon to sandbox version'
 
     doLast {
         println "\n*** Post-Build Sync to Sandbox ***"
-
-        if (buildStartTime) {
-            trackBuildTime(buildStartTime, version)
-        }
         
         def sandboxDir = sandboxPath
         def sourceExe = file("${projectDir}/base/bearsampp.exe")
