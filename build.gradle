@@ -122,12 +122,20 @@ def downloadAndExtractIconography(File destDir) {
     println "* Successfully extracted Sandbox iconography"
 }
 
+// Helper function to format milliseconds to minutes and seconds
+def formatDuration(long milliseconds) {
+    def totalSeconds = milliseconds / 1000
+    def minutes = totalSeconds / 60
+    def seconds = totalSeconds % 60
+    return String.format("%dm %ds", minutes as int, seconds as int)
+}
+
 // Helper function to track build time
 def trackBuildTime(long startTime, String version) {
     def endTime = System.currentTimeMillis()
     def duration = endTime - startTime
     println "* Build time: ${duration} ms"
-    
+
     def historyFile = file("${projectDir}/build_history.txt")
     historyFile.append("${version}: ${duration}ms\n")
 }
@@ -1416,7 +1424,7 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-        println "* Build time: ${duration} ms"
+        println "* Build time: ${formatDuration(duration)}"
     }
 }
 
@@ -1525,12 +1533,12 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
         generateChecksums(archiveFile)
 
         def duration = System.currentTimeMillis() - buildStartTime
-        ext.buildTimes['basic'] = duration
+        ext.buildTimes.put('basic', duration)
 
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-        println "* Build time: ${duration} ms"
+        println "* Build time: ${formatDuration(duration)}"
     }
 }
 
@@ -1639,12 +1647,12 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
         generateChecksums(archiveFile)
 
         def duration = System.currentTimeMillis() - buildStartTime
-        ext.buildTimes['lite'] = duration
+        ext.buildTimes.put('lite', duration)
 
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
         println "* Size: ${String.format('%.2f MB', archiveFile.length() / 1024 / 1024)}"
-        println "* Build time: ${duration} ms"
+        println "* Build time: ${formatDuration(duration)}"
     }
 }
 
@@ -1764,6 +1772,20 @@ task sync(dependsOn: buildFull) {
         println "\n*** Sync complete!"
         println "* Synced to: ${syncFinalPath}"
         println "* Executable updated with version ${releaseFullVersion}"
+
+        // Display build times summary at end of sync
+        if (ext.hasProperty('buildTimes') && ext.buildTimes && !ext.buildTimes.isEmpty()) {
+            println "\n*** Build Times Summary ***"
+            if (ext.buildTimes.get('full')) {
+                println "* Full build time: ${formatDuration(ext.buildTimes.get('full'))}"
+            }
+            if (ext.buildTimes.get('basic')) {
+                println "* Basic build time: ${formatDuration(ext.buildTimes.get('basic'))}"
+            }
+            if (ext.buildTimes.get('lite')) {
+                println "* Lite build time: ${formatDuration(ext.buildTimes.get('lite'))}"
+            }
+        }
     }
 }
 
@@ -1780,19 +1802,6 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
     doLast {
         println "Release complete!"
         println "All build variants have been created."
-
-        if (ext.hasProperty('buildTimes') && ext.buildTimes && !ext.buildTimes.isEmpty()) {
-            println "\n*** Build Times ***"
-            if (ext.buildTimes.get('full')) {
-                println "* Full build time: ${ext.buildTimes.get('full')} ms"
-            }
-            if (ext.buildTimes.get('basic')) {
-                println "* Basic build time: ${ext.buildTimes.get('basic')} ms"
-            }
-            if (ext.buildTimes.get('lite')) {
-                println "* Lite build time: ${ext.buildTimes.get('lite')} ms"
-            }
-        }
     }
 }
 
