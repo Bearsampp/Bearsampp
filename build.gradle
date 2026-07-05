@@ -1776,37 +1776,6 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
     }
 }
 
-// Task: launch
-task launch(dependsOn: buildFull) {
-    group = 'application'
-    description = 'Launch Bearsampp'
-
-    doLast {
-        def releaseTarget = file("${releaseTmpPath}/${releaseName}-${releaseFullVersion}")
-
-        if (!releaseTarget.exists()) {
-            throw new GradleException("Release target directory not found: ${releaseTarget}")
-        }
-
-        delete buildLaunchPath
-        buildLaunchPath.mkdirs()
-
-        copy {
-            from releaseTarget
-            into buildLaunchPath
-        }
-
-        println "Executing Bearsampp. Please wait..."
-        def bearsamppExe = file("${buildLaunchPath}/bearsampp.exe")
-        if (bearsamppExe.exists()) {
-            def launchProcess = new ProcessBuilder(bearsamppExe.absolutePath)
-                .directory(buildLaunchPath)
-                .start()
-        }
-        println "If the application needs to restart, you can execute Bearsampp.exe in: ${buildLaunchPath}"
-    }
-}
-
 // Disable wrapper task - Gradle is installed locally, wrappers are not used
 tasks.named('wrapper') {
     enabled = false
