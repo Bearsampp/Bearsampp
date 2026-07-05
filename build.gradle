@@ -1772,20 +1772,6 @@ task sync(dependsOn: buildFull) {
         println "\n*** Sync complete!"
         println "* Synced to: ${syncFinalPath}"
         println "* Executable updated with version ${releaseFullVersion}"
-
-        // Display build times summary at end of sync
-        if (ext.hasProperty('buildTimes') && ext.buildTimes && !ext.buildTimes.isEmpty()) {
-            println "\n*** Build Times Summary ***"
-            if (ext.buildTimes.get('full')) {
-                println "* Full build time: ${formatDuration(ext.buildTimes.get('full'))}"
-            }
-            if (ext.buildTimes.get('basic')) {
-                println "* Basic build time: ${formatDuration(ext.buildTimes.get('basic'))}"
-            }
-            if (ext.buildTimes.get('lite')) {
-                println "* Lite build time: ${formatDuration(ext.buildTimes.get('lite'))}"
-            }
-        }
     }
 }
 
@@ -1802,6 +1788,20 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
     doLast {
         println "Release complete!"
         println "All build variants have been created."
+
+        // Display build times summary at end of release
+        if (ext.hasProperty('buildTimes') && ext.buildTimes && !ext.buildTimes.isEmpty()) {
+            println "\n*** Build Times Summary ***"
+            if (ext.buildTimes.get('full')) {
+                println "* Full build time: ${formatDuration(ext.buildTimes.get('full'))}"
+            }
+            if (ext.buildTimes.get('basic')) {
+                println "* Basic build time: ${formatDuration(ext.buildTimes.get('basic'))}"
+            }
+            if (ext.buildTimes.get('lite')) {
+                println "* Lite build time: ${formatDuration(ext.buildTimes.get('lite'))}"
+            }
+        }
     }
 }
 
