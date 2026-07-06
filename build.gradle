@@ -9,7 +9,15 @@ def buildProps = new Properties()
 file('build.properties').withInputStream { buildProps.load(it) }
 
 // Extract thread configuration early (needed for both Gradle and helper functions)
-def numThreads = buildProps.getProperty('threads', '4').toInteger()
+def threadsProperty = buildProps.getProperty('threads', 'auto')
+def numThreads
+if (threadsProperty == 'auto' || threadsProperty == '-1') {
+    numThreads = Math.max(1, Runtime.getRuntime().availableProcessors() - 1)
+    println "* Auto-detected CPU threads: ${Runtime.getRuntime().availableProcessors()}, using ${numThreads} threads"
+} else {
+    numThreads = threadsProperty.toInteger()
+    println "* Using configured thread count: ${numThreads}"
+}
 
 // Configure Gradle build cache and parallel execution
 gradle.startParameter.buildCacheEnabled = true
@@ -22,8 +30,8 @@ version = buildProps.getProperty('release.version')
 
 // Define properties
 ext {
-    // Build configuration
-    numThreads = buildProps.getProperty('threads', '4').toInteger()
+    // Build configuration (already computed above with auto-detection logic)
+    numThreads = numThreads
 
     // Application configuration
     appconfLang = buildProps.getProperty('appconf.lang')
