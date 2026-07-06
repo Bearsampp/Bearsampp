@@ -4,13 +4,15 @@ plugins {
 }
 import groovy.json.JsonSlurper
 
-// Configure Gradle build cache and parallel execution
-gradle.startParameter.buildCacheEnabled = true
-gradle.startParameter.parallelProjectExecutionEnabled = true
-
 // Load properties from build.properties
 def buildProps = new Properties()
 file('build.properties').withInputStream { buildProps.load(it) }
+
+// Configure Gradle build cache and parallel execution
+gradle.startParameter.buildCacheEnabled = true
+gradle.startParameter.parallelProjectExecutionEnabled = true
+def numThreads = buildProps.getProperty('threads', '4').toInteger()
+gradle.startParameter.maxWorkers = numThreads
 
 // Project configuration
 group = 'com.bearsampp'
@@ -18,6 +20,9 @@ version = buildProps.getProperty('release.version')
 
 // Define properties
 ext {
+    // Build configuration
+    numThreads = buildProps.getProperty('threads', '4').toInteger()
+
     // Application configuration
     appconfLang = buildProps.getProperty('appconf.lang')
     appconfTimezone = buildProps.getProperty('appconf.timezone')
@@ -447,7 +452,7 @@ def compressArchive(File sourceDir, File destFile, String format = '7z') {
     if (format == '7z') {
         def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', '-t7z', destFile.absolutePath,
                     "${sourceDir.absolutePath}${File.separator}*",
-                    '-m0=LZMA2', '-mx5', '-mmt6')
+                    '-m0=LZMA2', '-mx5', "-mmt${numThreads}")
             .directory(sourceDir.parentFile)
             .redirectErrorStream(true)
             .start()
@@ -455,7 +460,7 @@ def compressArchive(File sourceDir, File destFile, String format = '7z') {
     } else if (format == 'zip') {
         def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', destFile.absolutePath,
                     "${sourceDir.absolutePath}${File.separator}*",
-                    '-mm=Deflate', '-mfb=258', '-mpass=15', '-r')
+                    '-mm=Deflate', '-mfb=258', '-mpass=15', '-r', "-mmt${numThreads}")
             .directory(sourceDir.parentFile)
             .redirectErrorStream(true)
             .start()
@@ -1652,14 +1657,12 @@ task sync(dependsOn: buildFull) {
         }
 
         def syncFinalPath = customSyncPath ? file(customSyncPath) : sandboxPath
+        def iconographyTempDir = file("${buildTmpPath}/bearsampp-iconography-temp")
 
         println "\n*** Sync step: using path = ${syncFinalPath}"
 
-        downloadAndExtractIconography(syncFinalPath)
-        println "* Successfully extracted Sandbox iconography to ${syncFinalPath}"
-
-        def iconographyTempDir = file("${buildTmpPath}/bearsampp-iconography-temp")
         println "* Downloading Sandbox iconography..."
+        safeDelete(iconographyTempDir)
         downloadAndExtractIconography(iconographyTempDir)
         println "* Successfully downloaded and extracted Sandbox iconography"
 
@@ -1703,21 +1706,9 @@ task sync(dependsOn: buildFull) {
         rcEditProcess.waitFor()
         println "* Successfully set product version to ${releaseFullVersion}"
 
-        println "* Copying icons to sync path..."
-        def iconsSource = file("${iconographyTempDir}/core/resources/homepage/img/icons")
-        def iconsDest = file("${syncFinalPath}/core/resources/homepage/img/icons")
-
-        if (iconsSource.exists()) {
-            copy {
-                from iconsSource
-                into iconsDest
-                duplicatesStrategy = 'include'
-            }
-        }
-
         println "* Updating executable icon..."
         def resourceHackerExe = file("${iconographyTempDir}/ResourceHacker.exe")
-        def iconPath = file("${syncFinalPath}/core/resources/homepage/img/icons/bearsampp.ico")
+        def iconPath = file("${iconographyTempDir}/core/resources/homepage/img/icons/bearsampp.ico")
 
         if (resourceHackerExe.exists() && iconPath.exists()) {
             def resourceHackerProcess = new ProcessBuilder(resourceHackerExe.absolutePath,
@@ -1733,6 +1724,12 @@ task sync(dependsOn: buildFull) {
             println "* Successfully updated executable icon"
         } else {
             println "WARNING: Could not update icon - ResourceHacker or icon file not found"
+            if (!resourceHackerExe.exists()) {
+                println "  Missing: ${resourceHackerExe}"
+            }
+            if (!iconPath.exists()) {
+                println "  Missing: ${iconPath}"
+            }
         }
 
         def finalBearsamppExe = file("${syncFinalPath}/bearsampp.exe")
@@ -1745,6 +1742,19 @@ task sync(dependsOn: buildFull) {
             from tempBearsamppExe
             into syncFinalPath
             duplicatesStrategy = 'include'
+        }
+
+        println "* Copying icons to sync path..."
+        def iconsSource = file("${iconographyTempDir}/core/resources/homepage/img/icons")
+        def iconsDest = file("${syncFinalPath}/core/resources/homepage/img/icons")
+
+        if (iconsSource.exists()) {
+            copy {
+                from iconsSource
+                into iconsDest
+                duplicatesStrategy = 'include'
+            }
+            println "* Icons copied to sync path"
         }
 
         println "\n*** Sync complete!"
