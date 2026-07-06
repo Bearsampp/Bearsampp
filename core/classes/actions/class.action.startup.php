@@ -773,11 +773,11 @@ class ActionStartup
     {
         global $bearsamppRoot, $bearsamppLang, $bearsamppRegistry;
 
-        $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_REGISTRY_TEXT ), Registry::APP_PATH_REG_ENTRY ) );
-        $this->splash->incrProgressBar();
-
         $currentAppPathRegKey = $bearsamppRegistry->getAppPathRegKey();
         $genAppPathRegKey     = Path::formatWindowsPath( Path::getRootPath() );
+        $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_REGISTRY_TEXT ), Registry::APP_PATH_REG_ENTRY . ': ' . $genAppPathRegKey ) );
+        $this->splash->incrProgressBar();
+
         $this->writeLog( 'Current app path reg key: ' . $currentAppPathRegKey );
         $this->writeLog( 'Gen app path reg key: ' . $genAppPathRegKey );
         if ( $currentAppPathRegKey != $genAppPathRegKey ) {
@@ -806,11 +806,11 @@ class ActionStartup
     {
         global $bearsamppLang, $bearsamppRegistry;
 
-        $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_REGISTRY_TEXT ), Registry::APP_BINS_REG_ENTRY ) );
-        $this->splash->incrProgressBar();
-
         $currentAppBinsRegKey = $bearsamppRegistry->getAppBinsRegKey();
         $genAppBinsRegKey     = $bearsamppRegistry->getAppBinsRegKey( false );
+        $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_REGISTRY_TEXT ), Registry::APP_BINS_REG_ENTRY . ': ' . $genAppBinsRegKey ) );
+        $this->splash->incrProgressBar();
+
         $this->writeLog( 'Current app bins reg key: ' . $currentAppBinsRegKey );
         $this->writeLog( 'Gen app bins reg key: ' . $genAppBinsRegKey );
         if ( $currentAppBinsRegKey != $genAppBinsRegKey ) {
@@ -839,10 +839,10 @@ class ActionStartup
     {
         global $bearsamppLang, $bearsamppRegistry;
 
+        $currentSysPathRegKey = $bearsamppRegistry->getSysPathRegKey();
         $this->splash->setTextLoading( sprintf( $bearsamppLang->getValue( Lang::STARTUP_REGISTRY_TEXT ), Registry::SYSPATH_REG_ENTRY ) );
         $this->splash->incrProgressBar();
 
-        $currentSysPathRegKey = $bearsamppRegistry->getSysPathRegKey();
         $this->writeLog( 'Current system PATH: ' . $currentSysPathRegKey );
 
         $newSysPathRegKey = str_replace( '%' . Registry::APP_BINS_REG_ENTRY . '%;', '', $currentSysPathRegKey );
