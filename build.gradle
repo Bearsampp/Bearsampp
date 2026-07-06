@@ -1761,6 +1761,19 @@ task sync(dependsOn: buildFull) {
             println "* Sandbox core folder (with orange icons) copied to sync path"
         }
 
+        println "* Creating Sandbox favicon.ico..."
+        def sandboxFavicon = file("${syncFinalPath}/core/resources/homepage/img/icons/app.ico")
+        if (sandboxFavicon.exists()) {
+            copy {
+                from sandboxFavicon
+                into syncFinalPath
+                rename { 'favicon.ico' }
+            }
+            println "* Sandbox favicon.ico created (orange branding)"
+        } else {
+            println "WARNING: Sandbox app.ico not found at ${sandboxFavicon}"
+        }
+
         println "\n*** Sync complete!"
         println "* Synced to: ${syncFinalPath}"
         println "* Executable updated with version ${releaseFullVersion}"
