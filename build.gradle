@@ -1676,12 +1676,6 @@ task sync(dependsOn: buildFull) {
         downloadAndExtractIconography(iconographyTempDir)
         println "* Successfully downloaded and extracted Sandbox iconography"
 
-        println "* Copying base core files..."
-        copy {
-            from file("${releaseTmpPath}/base/core")
-            into file("${iconographyTempDir}/core")
-        }
-
         println "* Preparing executable..."
         copy {
             from file("${projectDir}/base/bearsampp.exe")
@@ -1754,22 +1748,23 @@ task sync(dependsOn: buildFull) {
             duplicatesStrategy = 'include'
         }
 
-        println "* Copying icons to sync path..."
-        def iconsSource = file("${iconographyTempDir}/core/resources/homepage/img/icons")
-        def iconsDest = file("${syncFinalPath}/core/resources/homepage/img/icons")
+        println "* Copying Sandbox core folder to sync path..."
+        def coreSource = file("${iconographyTempDir}/core")
+        def coreDest = file("${syncFinalPath}/core")
 
-        if (iconsSource.exists()) {
+        if (coreSource.exists()) {
             copy {
-                from iconsSource
-                into iconsDest
+                from coreSource
+                into coreDest
                 duplicatesStrategy = 'include'
             }
-            println "* Icons copied to sync path"
+            println "* Sandbox core folder (with orange icons) copied to sync path"
         }
 
         println "\n*** Sync complete!"
         println "* Synced to: ${syncFinalPath}"
         println "* Executable updated with version ${releaseFullVersion}"
+        println "* Sandbox branding (orange icons) applied"
     }
 }
 
