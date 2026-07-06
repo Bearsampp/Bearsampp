@@ -8,10 +8,12 @@ import groovy.json.JsonSlurper
 def buildProps = new Properties()
 file('build.properties').withInputStream { buildProps.load(it) }
 
+// Extract thread configuration early (needed for both Gradle and helper functions)
+def numThreads = buildProps.getProperty('threads', '4').toInteger()
+
 // Configure Gradle build cache and parallel execution
 gradle.startParameter.buildCacheEnabled = true
 gradle.startParameter.parallelProjectExecutionEnabled = true
-def numThreads = buildProps.getProperty('threads', '4').toInteger()
 System.setProperty('org.gradle.workers.max', numThreads.toString())
 
 // Project configuration
@@ -20,8 +22,6 @@ version = buildProps.getProperty('release.version')
 
 // Define properties
 ext {
-    // Build configuration
-    numThreads = buildProps.getProperty('threads', '4').toInteger()
 
     // Application configuration
     appconfLang = buildProps.getProperty('appconf.lang')
