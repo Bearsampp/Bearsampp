@@ -12,7 +12,7 @@ file('build.properties').withInputStream { buildProps.load(it) }
 gradle.startParameter.buildCacheEnabled = true
 gradle.startParameter.parallelProjectExecutionEnabled = true
 def numThreads = buildProps.getProperty('threads', '4').toInteger()
-gradle.startParameter.maxWorkers = numThreads
+System.setProperty('org.gradle.workers.max', numThreads.toString())
 
 // Project configuration
 group = 'com.bearsampp'
