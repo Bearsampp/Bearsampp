@@ -23,7 +23,7 @@ version = buildProps.getProperty('release.version')
 // Define properties
 ext {
     // Build configuration
-    numThreads = numThreads
+    numThreads = buildProps.getProperty('threads', '4').toInteger()
 
     // Application configuration
     appconfLang = buildProps.getProperty('appconf.lang')
@@ -434,7 +434,7 @@ def copyModulesFromCache(List<Map> modulesToCopy, File cacheDir) {
 }
 
 // Helper function to compress using 7-Zip
-def compressArchive(File sourceDir, File destFile, String format = '7z') {
+def compressArchive(File sourceDir, File destFile, String format = '7z', int threads = 4) {
     println "** Compressing Archive"
     println "* Source      : ${sourceDir}"
     println "* Destination : ${destFile}"
@@ -454,7 +454,7 @@ def compressArchive(File sourceDir, File destFile, String format = '7z') {
     if (format == '7z') {
         def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', '-t7z', destFile.absolutePath,
                     "${sourceDir.absolutePath}${File.separator}*",
-                    '-m0=LZMA2', '-mx5', "-mmt${project.ext.numThreads}")
+                    '-m0=LZMA2', '-mx5', "-mmt${threads}")
             .directory(sourceDir.parentFile)
             .redirectErrorStream(true)
             .start()
@@ -462,7 +462,7 @@ def compressArchive(File sourceDir, File destFile, String format = '7z') {
     } else if (format == 'zip') {
         def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', destFile.absolutePath,
                     "${sourceDir.absolutePath}${File.separator}*",
-                    '-mm=Deflate', '-mfb=258', '-mpass=15', '-r', "-mmt${project.ext.numThreads}")
+                    '-mm=Deflate', '-mfb=258', '-mpass=15', '-r', "-mmt${threads}")
             .directory(sourceDir.parentFile)
             .redirectErrorStream(true)
             .start()
@@ -1416,7 +1416,7 @@ task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")
-        compressArchive(releaseTarget, archiveFile, releaseFormat)
+        compressArchive(releaseTarget, archiveFile, releaseFormat, numThreads)
 
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
@@ -1522,7 +1522,7 @@ task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")
-        compressArchive(releaseTarget, archiveFile, releaseFormat)
+        compressArchive(releaseTarget, archiveFile, releaseFormat, numThreads)
 
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
@@ -1630,7 +1630,7 @@ task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")
-        compressArchive(releaseTarget, archiveFile, releaseFormat)
+        compressArchive(releaseTarget, archiveFile, releaseFormat, numThreads)
 
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
