@@ -22,6 +22,8 @@ version = buildProps.getProperty('release.version')
 
 // Define properties
 ext {
+    // Build configuration
+    numThreads = numThreads
 
     // Application configuration
     appconfLang = buildProps.getProperty('appconf.lang')
@@ -452,7 +454,7 @@ def compressArchive(File sourceDir, File destFile, String format = '7z') {
     if (format == '7z') {
         def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', '-t7z', destFile.absolutePath,
                     "${sourceDir.absolutePath}${File.separator}*",
-                    '-m0=LZMA2', '-mx5', "-mmt${numThreads}")
+                    '-m0=LZMA2', '-mx5', "-mmt${project.ext.numThreads}")
             .directory(sourceDir.parentFile)
             .redirectErrorStream(true)
             .start()
@@ -460,7 +462,7 @@ def compressArchive(File sourceDir, File destFile, String format = '7z') {
     } else if (format == 'zip') {
         def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', destFile.absolutePath,
                     "${sourceDir.absolutePath}${File.separator}*",
-                    '-mm=Deflate', '-mfb=258', '-mpass=15', '-r', "-mmt${numThreads}")
+                    '-mm=Deflate', '-mfb=258', '-mpass=15', '-r', "-mmt${project.ext.numThreads}")
             .directory(sourceDir.parentFile)
             .redirectErrorStream(true)
             .start()
