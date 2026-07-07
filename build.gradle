@@ -298,6 +298,28 @@ def generateChecksumsNative(File file) {
     return checksums
 }
 
+// Helper function to write checksums to files
+def writeChecksumsToFiles(File file, Map checksums) {
+    def baseFile = file.absolutePath
+
+    // Write individual checksum files
+    def md5File = new File("${baseFile}.md5")
+    def sha1File = new File("${baseFile}.sha1")
+    def sha256File = new File("${baseFile}.sha256")
+    def sha512File = new File("${baseFile}.sha512")
+
+    md5File.text = "${checksums['MD5']}  ${file.name}"
+    sha1File.text = "${checksums['SHA-1']}  ${file.name}"
+    sha256File.text = "${checksums['SHA-256']}  ${file.name}"
+    sha512File.text = "${checksums['SHA-512']}  ${file.name}"
+
+    println "* Checksum files written:"
+    println "  - ${md5File.name}"
+    println "  - ${sha1File.name}"
+    println "  - ${sha256File.name}"
+    println "  - ${sha512File.name}"
+}
+
 // Helper function to download modules in parallel
 def downloadModulesParallel(List<Map> downloads) {
     def executorService = java.util.concurrent.Executors.newFixedThreadPool(4)
@@ -487,7 +509,8 @@ def generateChecksums(File file) {
     println "** Generating Checksums"
     println "* File: ${file.name}"
 
-    generateChecksumsNative(file)
+    def checksums = generateChecksumsNative(file)
+    writeChecksumsToFiles(file, checksums)
 }
 
 // Helper function to apply token filters to a file
