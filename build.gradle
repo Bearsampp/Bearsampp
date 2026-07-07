@@ -4,13 +4,25 @@ plugins {
 }
 import groovy.json.JsonSlurper
 
-// Configure Gradle build cache and parallel execution
-gradle.startParameter.buildCacheEnabled = true
-gradle.startParameter.parallelProjectExecutionEnabled = true
-
 // Load properties from build.properties
 def buildProps = new Properties()
 file('build.properties').withInputStream { buildProps.load(it) }
+
+// Extract thread configuration early (needed for both Gradle and helper functions)
+def threadsProperty = buildProps.getProperty('threads', 'auto')
+def numThreads
+if (threadsProperty == 'auto' || threadsProperty == '-1') {
+    numThreads = Math.max(1, Runtime.getRuntime().availableProcessors() - 1)
+    println "* Auto-detected CPU threads: ${Runtime.getRuntime().availableProcessors()}, using ${numThreads} threads"
+} else {
+    numThreads = threadsProperty.toInteger()
+    println "* Using configured thread count: ${numThreads}"
+}
+
+// Configure Gradle build cache and parallel execution
+gradle.startParameter.buildCacheEnabled = true
+gradle.startParameter.parallelProjectExecutionEnabled = true
+System.setProperty('org.gradle.workers.max', numThreads.toString())
 
 // Project configuration
 group = 'com.bearsampp'
@@ -18,6 +30,9 @@ version = buildProps.getProperty('release.version')
 
 // Define properties
 ext {
+    // Build configuration (already computed above with auto-detection logic)
+    numThreads = numThreads
+
     // Application configuration
     appconfLang = buildProps.getProperty('appconf.lang')
     appconfTimezone = buildProps.getProperty('appconf.timezone')
@@ -78,6 +93,9 @@ ext {
     toolPythonVersion = buildProps.getProperty('tool.python.version')
     toolRubyVersion = buildProps.getProperty('tool.ruby.version')
 
+    // Build time tracking
+    buildStartTime = 0L
+
     // BEARSAMPP_PATH property
     bearsamppPath = file("${projectDir}/bearsampp-destination")
 
@@ -104,6 +122,28 @@ ext {
     toolPowershellUrl = 'https://github.com/Bearsampp/module-powershell/releases'
     toolPythonUrl = 'https://github.com/Bearsampp/module-python/releases'
     toolRubyUrl = 'https://github.com/Bearsampp/module-ruby/releases'
+}
+
+// Helper function to download and extract iconography
+def downloadAndExtractIconography(File destDir) {
+    println "* Downloading and extracting Sandbox iconography to ${destDir}..."
+    def iconographyUrl = 'https://github.com/Bearsampp/sandbox/releases/download/iconography/Sandbox-iconography.zip'
+    def iconZip = file("${buildTmpPath}/Sandbox-iconography.zip")
+    
+    downloadFileNative(iconographyUrl, iconZip)
+    unzipFile(iconZip, destDir)
+    iconZip.delete()
+    println "* Successfully extracted Sandbox iconography"
+}
+
+// Helper function to track build time
+def trackBuildTime(long startTime, String version) {
+    def endTime = System.currentTimeMillis()
+    def duration = endTime - startTime
+    println "* Build time: ${duration} ms"
+
+    def historyFile = file("${projectDir}/build_history.txt")
+    historyFile.append("${version}: ${duration}ms\n")
 }
 
 // Helper function to download and extract modules (thread-safe)
@@ -258,6 +298,28 @@ def generateChecksumsNative(File file) {
     return checksums
 }
 
+// Helper function to write checksums to files
+def writeChecksumsToFiles(File file, Map checksums) {
+    def baseFile = file.absolutePath
+
+    // Write individual checksum files
+    def md5File = new File("${baseFile}.md5")
+    def sha1File = new File("${baseFile}.sha1")
+    def sha256File = new File("${baseFile}.sha256")
+    def sha512File = new File("${baseFile}.sha512")
+
+    md5File.text = "${checksums['MD5']}  ${file.name}"
+    sha1File.text = "${checksums['SHA-1']}  ${file.name}"
+    sha256File.text = "${checksums['SHA-256']}  ${file.name}"
+    sha512File.text = "${checksums['SHA-512']}  ${file.name}"
+
+    println "* Checksum files written:"
+    println "  - ${md5File.name}"
+    println "  - ${sha1File.name}"
+    println "  - ${sha256File.name}"
+    println "  - ${sha512File.name}"
+}
+
 // Helper function to download modules in parallel
 def downloadModulesParallel(List<Map> downloads) {
     def executorService = java.util.concurrent.Executors.newFixedThreadPool(4)
@@ -383,8 +445,26 @@ def downloadModulesParallel(List<Map> downloads) {
     }
 }
 
+// Helper function to copy modules from cache to destination
+def copyModulesFromCache(List<Map> modulesToCopy, File cacheDir) {
+    modulesToCopy.each { Map module ->
+        def sourceDir = file("${cacheDir}/${module.type}/${module.name}")
+        def destDir = module.destDir
+
+        if (sourceDir.exists()) {
+            println "* Copying ${module.type}/${module.name} from cache..."
+            copy {
+                from sourceDir
+                into destDir
+            }
+        } else {
+            println "WARNING: Module not found in cache: ${module.type}/${module.name}"
+        }
+    }
+}
+
 // Helper function to compress using 7-Zip
-def compressArchive(File sourceDir, File destFile, String format = '7z') {
+def compressArchive(File sourceDir, File destFile, String format = '7z', int threads = 4) {
     println "** Compressing Archive"
     println "* Source      : ${sourceDir}"
     println "* Destination : ${destFile}"
@@ -404,7 +484,7 @@ def compressArchive(File sourceDir, File destFile, String format = '7z') {
     if (format == '7z') {
         def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', '-t7z', destFile.absolutePath,
                     "${sourceDir.absolutePath}${File.separator}*",
-                    '-m0=LZMA2', '-mx5', '-mmt6')
+                    '-m0=LZMA2', '-mx5', "-mmt${threads}")
             .directory(sourceDir.parentFile)
             .redirectErrorStream(true)
             .start()
@@ -412,7 +492,7 @@ def compressArchive(File sourceDir, File destFile, String format = '7z') {
     } else if (format == 'zip') {
         def compressProcess = new ProcessBuilder(sevenZipExe.absolutePath, 'a', destFile.absolutePath,
                     "${sourceDir.absolutePath}${File.separator}*",
-                    '-mm=Deflate', '-mfb=258', '-mpass=15', '-r')
+                    '-mm=Deflate', '-mfb=258', '-mpass=15', '-r', "-mmt${threads}")
             .directory(sourceDir.parentFile)
             .redirectErrorStream(true)
             .start()
@@ -429,7 +509,8 @@ def generateChecksums(File file) {
     println "** Generating Checksums"
     println "* File: ${file.name}"
 
-    generateChecksumsNative(file)
+    def checksums = generateChecksumsNative(file)
+    writeChecksumsToFiles(file, checksums)
 }
 
 // Helper function to apply token filters to a file
@@ -448,11 +529,11 @@ def safeDelete(File dir) {
     if (!dir.exists()) {
         return true
     }
-    
+
     def maxRetries = 5
     def retryCount = 0
     def deleted = false
-    
+
     while (retryCount < maxRetries && !deleted) {
         try {
             delete dir
@@ -470,8 +551,38 @@ def safeDelete(File dir) {
             }
         }
     }
-    
+
     return deleted
+}
+
+// Helper function to safely copy a file with retry logic
+def safeCopy(File sourceFile, File destDir) {
+    def maxRetries = 5
+    def retryCount = 0
+    def copied = false
+
+    while (retryCount < maxRetries && !copied) {
+        try {
+            copy {
+                from sourceFile
+                into destDir
+            }
+            copied = true
+        } catch (Exception e) {
+            retryCount++
+            if (retryCount < maxRetries) {
+                println "* Retry ${retryCount}/${maxRetries}: Waiting for file locks to release..."
+                Thread.sleep(2000)
+            } else {
+                println "* WARNING: Could not copy file after ${maxRetries} attempts"
+                println "* Error: ${e.message}"
+                println "* Please close any applications that may have the file open."
+                return false
+            }
+        }
+    }
+
+    return copied
 }
 
 // Helper function to comment out specific config lines
@@ -747,10 +858,10 @@ clean {
     doLast {
         if (buildOutputPath.exists()) {
             println "* Deleting build directory: ${buildOutputPath.absolutePath}"
-            
+
             // Use safeDelete helper function with retry logic
             def deleted = safeDelete(buildOutputPath)
-            
+
             if (deleted) {
                 println "* Build directory cleaned successfully"
             } else {
@@ -761,13 +872,22 @@ clean {
         } else {
             println "* Build directory does not exist (already clean)"
         }
-        
+
+        // Explicitly clear modules cache
+        def modulesCache = file("${buildTmpPath}/modules-cache")
+        if (modulesCache.exists()) {
+            println "* Clearing modules cache: ${modulesCache.absolutePath}"
+            if (safeDelete(modulesCache)) {
+                println "* Modules cache cleared"
+            }
+        }
+
         // Also clean any temporary build artifacts in project directory
         def projectTempDirs = [
             file("${projectDir}/.gradle"),
             file("${projectDir}/build")
         ]
-        
+
         projectTempDirs.each { tempDir ->
             if (tempDir.exists() && tempDir != buildOutputPath) {
                 println "* Cleaning project temp directory: ${tempDir.name}"
@@ -787,6 +907,7 @@ task initBuild(dependsOn: clean) {
     description = 'Initialize build environment'
 
     doLast {
+        ext.buildStartTime = System.currentTimeMillis()
         println "Initializing Bearsampp build environment"
         println "Project base directory: ${projectDir}"
         println "Build directory: ${buildOutputPath}"
@@ -819,6 +940,106 @@ task checkLang(dependsOn: initBuild) {
                 }
             }
         }
+    }
+}
+// Task: downloadAllModules
+// Downloads and extracts all modules to a shared cache for reuse across builds
+// Helper to download only modules needed for a specific build config
+def downloadModulesForConfig(String configFileName) {
+    def modulesCachePath = file("${buildTmpPath}/modules-cache")
+    modulesCachePath.mkdirs()
+
+    def buildConfig = loadBuildConfig("${projectDir}/${configFileName}")
+    def appsToDownload = getModulesToDownload(buildConfig, 'apps')
+    def toolsToDownload = getModulesToDownload(buildConfig, 'tools')
+
+    // Download all binaries (always needed for config files)
+    println "Downloading binaries to cache..."
+    def binDownloads = [
+        [url: binApacheUrl, version: binApacheVersion, destDir: file("${modulesCachePath}/bin/apache")],
+        [url: binPhpUrl, version: binPhpVersion, destDir: file("${modulesCachePath}/bin/php")],
+        [url: binMysqlUrl, version: binMysqlVersion, destDir: file("${modulesCachePath}/bin/mysql")],
+        [url: binMariaUrl, version: binMariaVersion, destDir: file("${modulesCachePath}/bin/mariadb")],
+        [url: binPostgresqlUrl, version: binPostgresqlVersion, destDir: file("${modulesCachePath}/bin/postgresql")],
+        [url: binNodejsUrl, version: binNodejsVersion, destDir: file("${modulesCachePath}/bin/nodejs")],
+        [url: binXlightUrl, version: binXlightVersion, destDir: file("${modulesCachePath}/bin/xlight")],
+        [url: binMailpitUrl, version: binMailpitVersion, destDir: file("${modulesCachePath}/bin/mailpit")],
+        [url: binMemcachedUrl, version: binMemcachedVersion, destDir: file("${modulesCachePath}/bin/memcached")]
+    ]
+    downloadModulesParallel(binDownloads)
+
+    // Download enabled applications
+    println "Downloading applications (only enabled) to cache..."
+    def appDownloads = []
+    def appUrls = [
+        phpmyadmin: [url: appPhpmyadminUrl, version: appPhpmyadminVersion],
+        phppgadmin: [url: appPhppgadminUrl, version: appPhppgadminVersion]
+    ]
+    appsToDownload.each { moduleName ->
+        def moduleInfo = appUrls[moduleName]
+        if (moduleInfo) {
+            appDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${modulesCachePath}/apps/${moduleName}")]
+        }
+    }
+    if (!appDownloads.isEmpty()) {
+        downloadModulesParallel(appDownloads)
+    }
+
+    // Download enabled tools
+    println "Downloading tools (only enabled) to cache..."
+    def toolDownloads = []
+    def toolUrls = [
+        bruno: [url: toolBrunoUrl, version: toolBrunoVersion],
+        composer: [url: toolComposerUrl, version: toolComposerVersion],
+        powershell: [url: toolPowershellUrl, version: toolPowershellVersion],
+        ghostscript: [url: toolGhostscriptUrl, version: toolGhostscriptVersion],
+        git: [url: toolGitUrl, version: toolGitVersion],
+        ngrok: [url: toolNgrokUrl, version: toolNgrokVersion],
+        perl: [url: toolPerlUrl, version: toolPerlVersion],
+        python: [url: toolPythonUrl, version: toolPythonVersion],
+        ruby: [url: toolRubyUrl, version: toolRubyVersion]
+    ]
+    toolsToDownload.each { moduleName ->
+        def moduleInfo = toolUrls[moduleName]
+        if (moduleInfo) {
+            toolDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${modulesCachePath}/tools/${moduleName}")]
+        }
+    }
+    if (!toolDownloads.isEmpty()) {
+        downloadModulesParallel(toolDownloads)
+    }
+}
+
+// Task: downloadModulesFull
+task downloadModulesFull(dependsOn: initBuild) {
+    group = 'build'
+    description = 'Download modules needed for full build'
+
+    doLast {
+        println "*** Downloading modules for full build"
+        downloadModulesForConfig("buildFull.ini")
+    }
+}
+
+// Task: downloadModulesBasic
+task downloadModulesBasic(dependsOn: initBuild) {
+    group = 'build'
+    description = 'Download modules needed for basic build'
+
+    doLast {
+        println "*** Downloading modules for basic build"
+        downloadModulesForConfig("buildBasic.ini")
+    }
+}
+
+// Task: downloadModulesLite
+task downloadModulesLite(dependsOn: initBuild) {
+    group = 'build'
+    description = 'Download modules needed for lite build'
+
+    doLast {
+        println "*** Downloading modules for lite build"
+        downloadModulesForConfig("buildLite.ini")
     }
 }
 
@@ -1132,11 +1353,12 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
 }
 
 // Task: buildFull
-task buildFull(dependsOn: [initBuild, prepareBase]) {
+task buildFull(dependsOn: [initBuild, prepareBase, downloadModulesFull]) {
     group = 'build'
     description = 'Build full release package'
 
     doLast {
+        def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-${releaseFullVersion}"
 
@@ -1190,62 +1412,42 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
         def appsToDownload = getModulesToDownload(buildConfig, 'apps')
         def toolsToDownload = getModulesToDownload(buildConfig, 'tools')
 
-        println "Downloading binaries (all bins needed for config files)..."
-        def binDownloads = [
-            [url: binApacheUrl, version: binApacheVersion, destDir: file("${releaseTarget}/bin/apache")],
-            [url: binPhpUrl, version: binPhpVersion, destDir: file("${releaseTarget}/bin/php")],
-            [url: binMysqlUrl, version: binMysqlVersion, destDir: file("${releaseTarget}/bin/mysql")],
-            [url: binMariaUrl, version: binMariaVersion, destDir: file("${releaseTarget}/bin/mariadb")],
-            [url: binPostgresqlUrl, version: binPostgresqlVersion, destDir: file("${releaseTarget}/bin/postgresql")],
-            [url: binNodejsUrl, version: binNodejsVersion, destDir: file("${releaseTarget}/bin/nodejs")],
-            [url: binXlightUrl, version: binXlightVersion, destDir: file("${releaseTarget}/bin/xlight")],
-            [url: binMailpitUrl, version: binMailpitVersion, destDir: file("${releaseTarget}/bin/mailpit")],
-            [url: binMemcachedUrl, version: binMemcachedVersion, destDir: file("${releaseTarget}/bin/memcached")]
+        println "Copying binaries from cache..."
+        def modulesCacheDir = file("${buildTmpPath}/modules-cache")
+        def binModulesToCopy = [
+            [type: 'bin', name: 'apache', destDir: file("${releaseTarget}/bin/apache")],
+            [type: 'bin', name: 'php', destDir: file("${releaseTarget}/bin/php")],
+            [type: 'bin', name: 'mysql', destDir: file("${releaseTarget}/bin/mysql")],
+            [type: 'bin', name: 'mariadb', destDir: file("${releaseTarget}/bin/mariadb")],
+            [type: 'bin', name: 'postgresql', destDir: file("${releaseTarget}/bin/postgresql")],
+            [type: 'bin', name: 'nodejs', destDir: file("${releaseTarget}/bin/nodejs")],
+            [type: 'bin', name: 'xlight', destDir: file("${releaseTarget}/bin/xlight")],
+            [type: 'bin', name: 'mailpit', destDir: file("${releaseTarget}/bin/mailpit")],
+            [type: 'bin', name: 'memcached', destDir: file("${releaseTarget}/bin/memcached")]
         ]
-        downloadModulesParallel(binDownloads)
+        copyModulesFromCache(binModulesToCopy, modulesCacheDir)
 
-        println "Downloading applications (only enabled)..."
-        def appDownloads = []
-        def appUrls = [
-            phpmyadmin: [url: appPhpmyadminUrl, version: appPhpmyadminVersion],
-            phppgadmin: [url: appPhppgadminUrl, version: appPhppgadminVersion]
-        ]
+        println "Copying applications (only enabled) from cache..."
+        def appModulesToCopy = []
         appsToDownload.each { moduleName ->
-            def moduleInfo = appUrls[moduleName]
-            if (moduleInfo) {
-                appDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/apps/${moduleName}")]
-            }
+            appModulesToCopy << [type: 'apps', name: moduleName, destDir: file("${releaseTarget}/apps/${moduleName}")]
         }
-        if (!appDownloads.isEmpty()) {
-            downloadModulesParallel(appDownloads)
+        if (!appModulesToCopy.isEmpty()) {
+            copyModulesFromCache(appModulesToCopy, modulesCacheDir)
         }
 
-        println "Downloading tools (only enabled)..."
-        def toolDownloads = []
-        def toolUrls = [
-            bruno: [url: toolBrunoUrl, version: toolBrunoVersion],
-            composer: [url: toolComposerUrl, version: toolComposerVersion],
-            powershell: [url: toolPowershellUrl, version: toolPowershellVersion],
-            ghostscript: [url: toolGhostscriptUrl, version: toolGhostscriptVersion],
-            git: [url: toolGitUrl, version: toolGitVersion],
-            ngrok: [url: toolNgrokUrl, version: toolNgrokVersion],
-            perl: [url: toolPerlUrl, version: toolPerlVersion],
-            python: [url: toolPythonUrl, version: toolPythonVersion],
-            ruby: [url: toolRubyUrl, version: toolRubyVersion]
-        ]
+        println "Copying tools (only enabled) from cache..."
+        def toolModulesToCopy = []
         toolsToDownload.each { moduleName ->
-            def moduleInfo = toolUrls[moduleName]
-            if (moduleInfo) {
-                toolDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/tools/${moduleName}")]
-            }
+            toolModulesToCopy << [type: 'tools', name: moduleName, destDir: file("${releaseTarget}/tools/${moduleName}")]
         }
-        if (!toolDownloads.isEmpty()) {
-            downloadModulesParallel(toolDownloads)
+        if (!toolModulesToCopy.isEmpty()) {
+            copyModulesFromCache(toolModulesToCopy, modulesCacheDir)
         }
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")
-        compressArchive(releaseTarget, archiveFile, releaseFormat)
+        compressArchive(releaseTarget, archiveFile, releaseFormat, numThreads)
 
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
@@ -1257,11 +1459,12 @@ task buildFull(dependsOn: [initBuild, prepareBase]) {
 }
 
 // Task: buildBasic
-task buildBasic(dependsOn: [initBuild, prepareBase]) {
+task buildBasic(dependsOn: [initBuild, prepareBase, downloadModulesBasic]) {
     group = 'build'
     description = 'Build basic release package'
 
     doLast {
+        def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-basic-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-basic-${releaseFullVersion}"
 
@@ -1315,65 +1518,47 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
         def appsToDownload = getModulesToDownload(buildConfig, 'apps')
         def toolsToDownload = getModulesToDownload(buildConfig, 'tools')
 
-        println "Downloading binaries (all bins needed for config files)..."
-        def binDownloads = [
-            [url: binApacheUrl, version: binApacheVersion, destDir: file("${releaseTarget}/bin/apache")],
-            [url: binPhpUrl, version: binPhpVersion, destDir: file("${releaseTarget}/bin/php")],
-            [url: binMysqlUrl, version: binMysqlVersion, destDir: file("${releaseTarget}/bin/mysql")],
-            [url: binMariaUrl, version: binMariaVersion, destDir: file("${releaseTarget}/bin/mariadb")],
-            [url: binPostgresqlUrl, version: binPostgresqlVersion, destDir: file("${releaseTarget}/bin/postgresql")],
-            [url: binNodejsUrl, version: binNodejsVersion, destDir: file("${releaseTarget}/bin/nodejs")],
-            [url: binXlightUrl, version: binXlightVersion, destDir: file("${releaseTarget}/bin/xlight")],
-            [url: binMailpitUrl, version: binMailpitVersion, destDir: file("${releaseTarget}/bin/mailpit")],
-            [url: binMemcachedUrl, version: binMemcachedVersion, destDir: file("${releaseTarget}/bin/memcached")]
+        println "Copying binaries from cache..."
+        def modulesCacheDir = file("${buildTmpPath}/modules-cache")
+        def binModulesToCopy = [
+            [type: 'bin', name: 'apache', destDir: file("${releaseTarget}/bin/apache")],
+            [type: 'bin', name: 'php', destDir: file("${releaseTarget}/bin/php")],
+            [type: 'bin', name: 'mysql', destDir: file("${releaseTarget}/bin/mysql")],
+            [type: 'bin', name: 'mariadb', destDir: file("${releaseTarget}/bin/mariadb")],
+            [type: 'bin', name: 'postgresql', destDir: file("${releaseTarget}/bin/postgresql")],
+            [type: 'bin', name: 'nodejs', destDir: file("${releaseTarget}/bin/nodejs")],
+            [type: 'bin', name: 'xlight', destDir: file("${releaseTarget}/bin/xlight")],
+            [type: 'bin', name: 'mailpit', destDir: file("${releaseTarget}/bin/mailpit")],
+            [type: 'bin', name: 'memcached', destDir: file("${releaseTarget}/bin/memcached")]
         ]
-        downloadModulesParallel(binDownloads)
+        copyModulesFromCache(binModulesToCopy, modulesCacheDir)
 
-        println "Downloading applications (only enabled)..."
-        def appDownloads = []
-        def appUrls = [
-            phpmyadmin: [url: appPhpmyadminUrl, version: appPhpmyadminVersion],
-            phppgadmin: [url: appPhppgadminUrl, version: appPhppgadminVersion]
-        ]
+        println "Copying applications (only enabled) from cache..."
+        def appModulesToCopy = []
         appsToDownload.each { moduleName ->
-            def moduleInfo = appUrls[moduleName]
-            if (moduleInfo) {
-                appDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/apps/${moduleName}")]
-            }
+            appModulesToCopy << [type: 'apps', name: moduleName, destDir: file("${releaseTarget}/apps/${moduleName}")]
         }
-        if (!appDownloads.isEmpty()) {
-            downloadModulesParallel(appDownloads)
+        if (!appModulesToCopy.isEmpty()) {
+            copyModulesFromCache(appModulesToCopy, modulesCacheDir)
         }
 
-        println "Downloading tools (only enabled)..."
-        def toolDownloads = []
-        def toolUrls = [
-            bruno: [url: toolBrunoUrl, version: toolBrunoVersion],
-            composer: [url: toolComposerUrl, version: toolComposerVersion],
-            powershell: [url: toolPowershellUrl, version: toolPowershellVersion],
-            ghostscript: [url: toolGhostscriptUrl, version: toolGhostscriptVersion],
-            git: [url: toolGitUrl, version: toolGitVersion],
-            ngrok: [url: toolNgrokUrl, version: toolNgrokVersion],
-            perl: [url: toolPerlUrl, version: toolPerlVersion],
-            python: [url: toolPythonUrl, version: toolPythonVersion],
-            ruby: [url: toolRubyUrl, version: toolRubyVersion]
-        ]
+        println "Copying tools (only enabled) from cache..."
+        def toolModulesToCopy = []
         toolsToDownload.each { moduleName ->
-            def moduleInfo = toolUrls[moduleName]
-            if (moduleInfo) {
-                toolDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/tools/${moduleName}")]
-            }
+            toolModulesToCopy << [type: 'tools', name: moduleName, destDir: file("${releaseTarget}/tools/${moduleName}")]
         }
-        if (!toolDownloads.isEmpty()) {
-            downloadModulesParallel(toolDownloads)
+        if (!toolModulesToCopy.isEmpty()) {
+            copyModulesFromCache(toolModulesToCopy, modulesCacheDir)
         }
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")
-        compressArchive(releaseTarget, archiveFile, releaseFormat)
+        compressArchive(releaseTarget, archiveFile, releaseFormat, numThreads)
 
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
+
+        def duration = System.currentTimeMillis() - buildStartTime
 
         println "\n*** Build complete!"
         println "* Archive: ${archiveFile.name}"
@@ -1382,11 +1567,12 @@ task buildBasic(dependsOn: [initBuild, prepareBase]) {
 }
 
 // Task: buildLite
-task buildLite(dependsOn: [initBuild, prepareBase]) {
+task buildLite(dependsOn: [initBuild, prepareBase, downloadModulesLite]) {
     group = 'build'
     description = 'Build lite release package'
 
     doLast {
+        def buildStartTime = System.currentTimeMillis()
         def releaseTarget = file("${releaseTmpPath}/${releaseName}-lite-${releaseFullVersion}")
         def releaseDestFile = "${buildReleasePath}/${releaseName}-lite-${releaseFullVersion}"
 
@@ -1440,62 +1626,42 @@ task buildLite(dependsOn: [initBuild, prepareBase]) {
         def appsToDownload = getModulesToDownload(buildConfig, 'apps')
         def toolsToDownload = getModulesToDownload(buildConfig, 'tools')
 
-        println "Downloading binaries (all bins needed for config files)..."
-        def binDownloads = [
-            [url: binApacheUrl, version: binApacheVersion, destDir: file("${releaseTarget}/bin/apache")],
-            [url: binPhpUrl, version: binPhpVersion, destDir: file("${releaseTarget}/bin/php")],
-            [url: binMysqlUrl, version: binMysqlVersion, destDir: file("${releaseTarget}/bin/mysql")],
-            [url: binMariaUrl, version: binMariaVersion, destDir: file("${releaseTarget}/bin/mariadb")],
-            [url: binPostgresqlUrl, version: binPostgresqlVersion, destDir: file("${releaseTarget}/bin/postgresql")],
-            [url: binNodejsUrl, version: binNodejsVersion, destDir: file("${releaseTarget}/bin/nodejs")],
-            [url: binXlightUrl, version: binXlightVersion, destDir: file("${releaseTarget}/bin/xlight")],
-            [url: binMailpitUrl, version: binMailpitVersion, destDir: file("${releaseTarget}/bin/mailpit")],
-            [url: binMemcachedUrl, version: binMemcachedVersion, destDir: file("${releaseTarget}/bin/memcached")]
+        println "Copying binaries from cache..."
+        def modulesCacheDir = file("${buildTmpPath}/modules-cache")
+        def binModulesToCopy = [
+            [type: 'bin', name: 'apache', destDir: file("${releaseTarget}/bin/apache")],
+            [type: 'bin', name: 'php', destDir: file("${releaseTarget}/bin/php")],
+            [type: 'bin', name: 'mysql', destDir: file("${releaseTarget}/bin/mysql")],
+            [type: 'bin', name: 'mariadb', destDir: file("${releaseTarget}/bin/mariadb")],
+            [type: 'bin', name: 'postgresql', destDir: file("${releaseTarget}/bin/postgresql")],
+            [type: 'bin', name: 'nodejs', destDir: file("${releaseTarget}/bin/nodejs")],
+            [type: 'bin', name: 'xlight', destDir: file("${releaseTarget}/bin/xlight")],
+            [type: 'bin', name: 'mailpit', destDir: file("${releaseTarget}/bin/mailpit")],
+            [type: 'bin', name: 'memcached', destDir: file("${releaseTarget}/bin/memcached")]
         ]
-        downloadModulesParallel(binDownloads)
+        copyModulesFromCache(binModulesToCopy, modulesCacheDir)
 
-        println "Downloading applications (only enabled)..."
-        def appDownloads = []
-        def appUrls = [
-            phpmyadmin: [url: appPhpmyadminUrl, version: appPhpmyadminVersion],
-            phppgadmin: [url: appPhppgadminUrl, version: appPhppgadminVersion]
-        ]
+        println "Copying applications (only enabled) from cache..."
+        def appModulesToCopy = []
         appsToDownload.each { moduleName ->
-            def moduleInfo = appUrls[moduleName]
-            if (moduleInfo) {
-                appDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/apps/${moduleName}")]
-            }
+            appModulesToCopy << [type: 'apps', name: moduleName, destDir: file("${releaseTarget}/apps/${moduleName}")]
         }
-        if (!appDownloads.isEmpty()) {
-            downloadModulesParallel(appDownloads)
+        if (!appModulesToCopy.isEmpty()) {
+            copyModulesFromCache(appModulesToCopy, modulesCacheDir)
         }
 
-        println "Downloading tools (only enabled)..."
-        def toolDownloads = []
-        def toolUrls = [
-            bruno: [url: toolBrunoUrl, version: toolBrunoVersion],
-            composer: [url: toolComposerUrl, version: toolComposerVersion],
-            powershell: [url: toolPowershellUrl, version: toolPowershellVersion],
-            ghostscript: [url: toolGhostscriptUrl, version: toolGhostscriptVersion],
-            git: [url: toolGitUrl, version: toolGitVersion],
-            ngrok: [url: toolNgrokUrl, version: toolNgrokVersion],
-            perl: [url: toolPerlUrl, version: toolPerlVersion],
-            python: [url: toolPythonUrl, version: toolPythonVersion],
-            ruby: [url: toolRubyUrl, version: toolRubyVersion]
-        ]
+        println "Copying tools (only enabled) from cache..."
+        def toolModulesToCopy = []
         toolsToDownload.each { moduleName ->
-            def moduleInfo = toolUrls[moduleName]
-            if (moduleInfo) {
-                toolDownloads << [url: moduleInfo.url, version: moduleInfo.version, destDir: file("${releaseTarget}/tools/${moduleName}")]
-            }
+            toolModulesToCopy << [type: 'tools', name: moduleName, destDir: file("${releaseTarget}/tools/${moduleName}")]
         }
-        if (!toolDownloads.isEmpty()) {
-            downloadModulesParallel(toolDownloads)
+        if (!toolModulesToCopy.isEmpty()) {
+            copyModulesFromCache(toolModulesToCopy, modulesCacheDir)
         }
 
         println "\n*** Compressing release..."
         def archiveFile = file("${releaseDestFile}.${releaseFormat}")
-        compressArchive(releaseTarget, archiveFile, releaseFormat)
+        compressArchive(releaseTarget, archiveFile, releaseFormat, numThreads)
 
         println "\n*** Generating checksums..."
         generateChecksums(archiveFile)
@@ -1524,25 +1690,14 @@ task sync(dependsOn: buildFull) {
         }
 
         def syncFinalPath = customSyncPath ? file(customSyncPath) : sandboxPath
+        def iconographyTempDir = file("${buildTmpPath}/bearsampp-iconography-temp")
 
         println "\n*** Sync step: using path = ${syncFinalPath}"
 
-        def iconographyUrl = 'https://github.com/Bearsampp/sandbox/releases/download/iconography/Sandbox-iconography.zip'
-        def iconographyTempDir = file("${buildTmpPath}/bearsampp-iconography-temp")
-        def iconographyZip = file("${iconographyTempDir}/Sandbox-iconography.zip")
-
         println "* Downloading Sandbox iconography..."
-        iconographyTempDir.mkdirs()
-        downloadFileNative(iconographyUrl, iconographyZip)
-        unzipFile(iconographyZip, iconographyTempDir)
-        iconographyZip.delete()
+        safeDelete(iconographyTempDir)
+        downloadAndExtractIconography(iconographyTempDir)
         println "* Successfully downloaded and extracted Sandbox iconography"
-
-        println "* Copying base core files..."
-        copy {
-            from file("${releaseTmpPath}/base/core")
-            into file("${iconographyTempDir}/core")
-        }
 
         println "* Preparing executable..."
         copy {
@@ -1578,21 +1733,9 @@ task sync(dependsOn: buildFull) {
         rcEditProcess.waitFor()
         println "* Successfully set product version to ${releaseFullVersion}"
 
-        println "* Copying icons to sync path..."
-        def iconsSource = file("${iconographyTempDir}/core/resources/homepage/img/icons")
-        def iconsDest = file("${syncFinalPath}/core/resources/homepage/img/icons")
-
-        if (iconsSource.exists()) {
-            copy {
-                from iconsSource
-                into iconsDest
-                duplicatesStrategy = 'include'
-            }
-        }
-
         println "* Updating executable icon..."
         def resourceHackerExe = file("${iconographyTempDir}/ResourceHacker.exe")
-        def iconPath = file("${syncFinalPath}/core/resources/homepage/img/icons/bearsampp.ico")
+        def iconPath = file("${iconographyTempDir}/core/resources/homepage/img/icons/bearsampp.ico")
 
         if (resourceHackerExe.exists() && iconPath.exists()) {
             def resourceHackerProcess = new ProcessBuilder(resourceHackerExe.absolutePath,
@@ -1608,6 +1751,12 @@ task sync(dependsOn: buildFull) {
             println "* Successfully updated executable icon"
         } else {
             println "WARNING: Could not update icon - ResourceHacker or icon file not found"
+            if (!resourceHackerExe.exists()) {
+                println "  Missing: ${resourceHackerExe}"
+            }
+            if (!iconPath.exists()) {
+                println "  Missing: ${iconPath}"
+            }
         }
 
         def finalBearsamppExe = file("${syncFinalPath}/bearsampp.exe")
@@ -1622,16 +1771,43 @@ task sync(dependsOn: buildFull) {
             duplicatesStrategy = 'include'
         }
 
+        println "* Copying Sandbox core folder to sync path..."
+        def coreSource = file("${iconographyTempDir}/core")
+        def coreDest = file("${syncFinalPath}/core")
+
+        if (coreSource.exists()) {
+            copy {
+                from coreSource
+                into coreDest
+                duplicatesStrategy = 'include'
+            }
+            println "* Sandbox core folder (with orange icons) copied to sync path"
+        }
+
+        println "* Creating Sandbox favicon.ico..."
+        def sandboxFavicon = file("${syncFinalPath}/core/resources/homepage/img/icons/app.ico")
+        if (sandboxFavicon.exists()) {
+            copy {
+                from sandboxFavicon
+                into syncFinalPath
+                rename { 'favicon.ico' }
+            }
+            println "* Sandbox favicon.ico created (orange branding)"
+        } else {
+            println "WARNING: Sandbox app.ico not found at ${sandboxFavicon}"
+        }
+
         println "\n*** Sync complete!"
         println "* Synced to: ${syncFinalPath}"
         println "* Executable updated with version ${releaseFullVersion}"
+        println "* Sandbox branding (orange icons) applied"
     }
 }
 
-// Define task ordering for release builds (ensures downloads are cached across builds)
+// Enforce build order: full -> basic -> lite
 buildBasic.mustRunAfter buildFull
 buildLite.mustRunAfter buildBasic
-sync.mustRunAfter buildFull
+sync.mustRunAfter buildLite
 
 // Task: release
 task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
@@ -1641,37 +1817,6 @@ task release(dependsOn: [buildFull, buildBasic, buildLite, sync]) {
     doLast {
         println "Release complete!"
         println "All build variants have been created."
-    }
-}
-
-// Task: launch
-task launch(dependsOn: buildFull) {
-    group = 'application'
-    description = 'Launch Bearsampp'
-
-    doLast {
-        def releaseTarget = file("${releaseTmpPath}/${releaseName}-${releaseFullVersion}")
-
-        if (!releaseTarget.exists()) {
-            throw new GradleException("Release target directory not found: ${releaseTarget}")
-        }
-
-        delete buildLaunchPath
-        buildLaunchPath.mkdirs()
-
-        copy {
-            from releaseTarget
-            into buildLaunchPath
-        }
-
-        println "Executing Bearsampp. Please wait..."
-        def bearsamppExe = file("${buildLaunchPath}/bearsampp.exe")
-        if (bearsamppExe.exists()) {
-            def launchProcess = new ProcessBuilder(bearsamppExe.absolutePath)
-                .directory(buildLaunchPath)
-                .start()
-        }
-        println "If the application needs to restart, you can execute Bearsampp.exe in: ${buildLaunchPath}"
     }
 }
 
@@ -1703,13 +1848,11 @@ task postBuildSync {
         }
 
         println "* Copying bearsampp.exe to sandbox..."
-        copy {
-            from sourceExe
-            into sandboxDir
-        }
-        
-        if (destExe.exists()) {
+        if (safeCopy(sourceExe, sandboxDir)) {
             println "* bearsampp.exe successfully copied to ${sandboxDir}"
+            
+            // Ensure icons are up-to-date
+            downloadAndExtractIconography(sandboxDir)
             
             // Migrate fix-icon.bat logic here
             def resourceHackerExe = file("${sandboxDir}/ResourceHacker.exe")
@@ -1763,8 +1906,3 @@ task postBuildSync {
 
 // Default task
 defaultTasks 'release'
-
-// Finalize all build tasks with postBuildSync
-tasks.named('buildFull').configure { finalizedBy postBuildSync }
-tasks.named('buildBasic').configure { finalizedBy postBuildSync }
-tasks.named('buildLite').configure { finalizedBy postBuildSync }
