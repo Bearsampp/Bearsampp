@@ -1400,7 +1400,7 @@
       {
         "version": "3.35.0",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/Ngrok-3.35.0/bearsampp-ngrok-3.35.0-2026.1.15.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.25.0",
