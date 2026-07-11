@@ -1,9 +1,9 @@
 This snapshot was automatically generated on
-Tue, 02 Jun 2026 21:19:42 +0000
+Wed, 01 Jul 2026 04:07:41 +0000
 
-Version: 8.5.7
+Version: 8.5.8
 Branch: HEAD
-Build: C:\Users\runneradmin\AppData\Local\Temp\php-81287ebc-a17e-4ee8-88ff-370357da9b0b\config\vs17\x64\obj\Release_TS
+Build: C:\Users\runneradmin\AppData\Local\Temp\php-6fd48e17-d8a3-4fe4-8983-d296262bce14\config\vs17\x64\obj\Release_TS
 
 Built-in Extensions
 ===========================
@@ -51,7 +51,6 @@ Module: php_curl.dll
 	libssh2.dll
 	nghttp2.dll
 	brotlidec.dll
-	libzstd.dll
 
 Module: libssl-3-x64.dll
 ===========================

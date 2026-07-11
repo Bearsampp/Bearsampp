@@ -288,15 +288,15 @@ class ActionSwitchVersion
             $currentRegValue
         ));
 
+        // Perform the registry update
+        $newRegValue = $bearsamppRegistry->setAppBinsRegKey($currentRegValue);
+
         $this->bearsamppSplash->setTextLoading(sprintf(
             $bearsamppLang->getValue(Lang::SWITCH_VERSION_REGISTRY),
             $regEntry
         ));
 
         $this->bearsamppSplash->incrProgressBar(2);
-
-        // Perform the registry update
-        $newRegValue = $bearsamppRegistry->setAppBinsRegKey($currentRegValue);
         Log::trace(sprintf(
             'Registry update completed | Key: %s | New value: %s | Previous value: %s',
             $regEntry,

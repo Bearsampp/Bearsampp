@@ -1,5 +1,5 @@
 #! /usr/bin/env perl
-# Copyright 1995-2023 The OpenSSL Project Authors. All Rights Reserved.
+# Copyright 1995-2025 The OpenSSL Project Authors. All Rights Reserved.
 #
 # Licensed under the Apache License 2.0 (the "License").  You may not use
 # this file except in compliance with the License.  You can obtain a copy
@@ -19,7 +19,10 @@ die "Unrecognised option, must be -C or -H\n"
     unless ($opt eq '-H' || $opt eq '-C');
 
 my %commands     = ();
-my $cmdre        = qr/^\s*int\s+([a-z_][a-z0-9_]*)_main\(\s*int\s+argc\s*,/;
+# I think it is best reconsidered in favour of just a table
+# of commands instead of this fragile regex. There really are not that
+# many commands.
+my $cmdre        = qr/^\s*(int\s+|)\s*([a-z_][a-z0-9_]*)_main\s*\(\s*int\s+argc\s*,/;
 my $apps_openssl = shift @ARGV;
 my $YEAR         = [gmtime($ENV{SOURCE_DATE_EPOCH} || time())]->[5] + 1900;
 
@@ -36,7 +39,7 @@ foreach my $filename (@openssl_source) {
     open F, $filename or die "Couldn't open $filename: $!\n";
     foreach ( grep /$cmdre/, <F> ) {
         my @foo = /$cmdre/;
-        $commands{$1} = 1;
+        $commands{$2} = 1;
     }
     close F;
 }
@@ -93,7 +96,6 @@ EOF
 
     my %cmd_disabler = (
         ciphers  => "sock",
-        genrsa   => "rsa",
         gendsa   => "dsa",
         dsaparam => "dsa",
         gendh    => "dh",
@@ -107,7 +109,7 @@ EOF
 #   [2] = preprocessor conditional for excluding irrespective of deprecation
 #        rsa      => [ "pkey",      "3_0", "rsa" ],
 #        genrsa   => [ "genpkey",   "3_0", "rsa" ],
-        rsautl   => [ "pkeyutl",   "3_0", "rsa" ],
+        rsautl   => [ "pkeyutl",   "3_0", "" ],
 #        dhparam  => [ "pkeyparam", "3_0", "dh"  ],
 #        dsaparam => [ "pkeyparam", "3_0", "dsa" ],
 #        dsa      => [ "pkey",      "3_0", "dsa" ],
