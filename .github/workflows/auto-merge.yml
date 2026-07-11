@@ -16,7 +16,7 @@ jobs:
       repository: ${{ steps.metadata.outputs.repository }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: ahmadnassri/action-metadata@v2
         id: metadata
@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - id: dependabot
-        uses: dependabot/fetch-metadata@v3
+        uses: dependabot/fetch-metadata@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
