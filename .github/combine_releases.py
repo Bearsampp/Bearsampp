@@ -5,6 +5,7 @@ import json
 import os
 import sys
 import traceback
+import re
 from packaging import version
 
 output_path = 'core/resources/quickpick-releases.json'
@@ -52,60 +53,81 @@ def sanitize_string(s):
         return "".join(ch for ch in s if ord(ch) >= 32 or ch in '\n\r')
     return s
 
-def fetch_releases_from_api(owner, repo):
-    """Fetch releases from GitHub API and extract version, URL, and prerelease status.
+def fetch_releases_properties(owner, repo):
+    """Fetch releases.properties from the module repo and parse versions.
 
-    Returns a list of dicts: [{version, url, prerelease}]
+    Returns a list of dicts: [{version, url}]
     """
     try:
-        url = f"https://api.github.com/repos/{owner}/{repo}/releases?per_page=100"
-        print(f"  📥 Fetching releases from GitHub API for {repo}")
+        url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/releases.properties"
+        print(f"  📥 Fetching releases.properties from {repo}")
         response = requests.get(url, headers=headers, timeout=30)
 
         if response.status_code == 200:
-            releases = response.json()
+            properties_content = response.text
             releases_data = []
 
-            for release in releases:
-                # Skip draft releases
-                if release.get('draft', False):
-                    continue
+            # Parse releases.properties file
+            # Format: [version] = [URL]
+            pattern = r'\[\s*([^\]]+)\s*\]\s*=\s*([^\n]+)'
+            matches = re.findall(pattern, properties_content)
 
-                url_value = None
-                prerelease = release.get('prerelease', False)
-                release_date = release.get('published_at', '')
+            for version_str, url_value in matches:
+                version_str = version_str.strip()
+                url_value = url_value.strip()
 
-                # Find the asset URL (usually a .7z or .zip file) and extract version from filename
-                version = None
-                if release.get('assets'):
-                    for asset in release['assets']:
-                        if asset['name'].endswith(('.7z', '.zip')):
-                            url_value = asset['browser_download_url']
-                            # Extract version from filename: bearsampp-{module}-{VERSION}-{DATE}.7z
-                            # Example: bearsampp-mysql-9.7.0-2026.7.10.7z
-                            filename = asset['name']
-                            parts = filename.replace('bearsampp-', '').replace('.7z', '').replace('.zip', '').split('-')
-                            if len(parts) >= 2:
-                                # Version is the second-to-last part (before the date)
-                                version = parts[-2]
-                            break
-
-                if version and url_value:
+                if version_str and url_value:
                     releases_data.append({
-                        'version': version,
-                        'url': url_value,
-                        'prerelease': prerelease,
-                        'release_date': release_date
+                        'version': version_str,
+                        'url': url_value
                     })
 
-            print(f"  ✓ Found {len(releases_data)} versions from GitHub API")
+            print(f"  ✓ Found {len(releases_data)} versions in releases.properties")
             return releases_data
+        elif response.status_code == 404:
+            print(f"  ⚠ releases.properties not found for {repo}")
+            return []
         else:
-            print(f"  ⚠ GitHub API request failed for {repo} (HTTP {response.status_code})")
+            print(f"  ⚠ Request failed for {repo} (HTTP {response.status_code})")
             return []
     except Exception as e:
-        print(f"  ❌ Error fetching from GitHub API for {repo}: {e}")
+        print(f"  ❌ Error fetching releases.properties for {repo}: {e}")
         return []
+
+def check_if_prerelease(owner, repo, url):
+    """Check if a release is a prerelease by querying GitHub API.
+
+    Args:
+        owner: GitHub owner (e.g., 'Bearsampp')
+        repo: GitHub repo (e.g., 'module-mysql')
+        url: The download URL to find the corresponding release
+
+    Returns:
+        bool: True if prerelease, False if stable release
+    """
+    try:
+        # Extract release tag from URL
+        # Format: https://github.com/owner/repo/releases/download/TAG/filename
+        match = re.search(r'/releases/download/([^/]+)/', url)
+        if not match:
+            print(f"    ⚠ Could not extract tag from URL: {url}")
+            return False
+
+        tag = match.group(1)
+
+        # Query GitHub API for this release
+        api_url = f"https://api.github.com/repos/{owner}/{repo}/releases/tags/{tag}"
+        response = requests.get(api_url, headers=headers, timeout=30)
+
+        if response.status_code == 200:
+            release_data = response.json()
+            return release_data.get('prerelease', False)
+        else:
+            print(f"    ⚠ Could not find release info for tag: {tag}")
+            return False
+    except Exception as e:
+        print(f"    ⚠ Error checking prerelease status: {e}")
+        return False
 
 def version_sort_key(v):
     """Sort key for semantic versioning."""
@@ -132,42 +154,30 @@ try:
             print(f"\n📦 Processing: {module_name}")
             print("-" * 80)
 
-            # Fetch releases from GitHub API (includes prerelease status)
-            releases_data = fetch_releases_from_api(owner, repo)
+            # Fetch releases from releases.properties file
+            releases_data = fetch_releases_properties(owner, repo)
 
             if not releases_data:
-                print(f"  ⚠ No versions found from GitHub API, skipping {module_name}")
+                print(f"  ⚠ No versions found in releases.properties, skipping {module_name}")
                 continue
 
-            # Deduplicate: keep only the newest release for each version
-            version_map = {}
-            for release in releases_data:
-                ver = release['version']
-                if ver not in version_map:
-                    version_map[ver] = release
-                else:
-                    # Compare release dates and keep the newer one
-                    current_date = release.get('release_date', '')
-                    existing_date = version_map[ver].get('release_date', '')
-                    if current_date > existing_date:
-                        version_map[ver] = release
-
-            # Sort by version (newest first)
-            sorted_versions = sorted(version_map.values(),
-                                    key=lambda x: version_sort_key(x['version']),
-                                    reverse=True)
-
+            # Check prerelease status for each version and sort
             versions_data = []
-            for release in sorted_versions:
-                # Don't include release_date in final output
+            for release in releases_data:
+                prerelease = check_if_prerelease(owner, repo, release['url'])
                 clean_release = {
                     'version': release['version'],
                     'url': release['url'],
-                    'prerelease': release['prerelease']
+                    'prerelease': prerelease
                 }
                 versions_data.append(clean_release)
-                prerelease_label = " (prerelease)" if release['prerelease'] else ""
-                print(f"  ✓ {release['version']}: {release['url']}{prerelease_label}")
+                prerelease_label = " (prerelease)" if prerelease else ""
+                print(f"  ✓ {release['version']}{prerelease_label}")
+
+            # Sort by version (newest first)
+            versions_data = sorted(versions_data,
+                                   key=lambda x: version_sort_key(x['version']),
+                                   reverse=True)
 
             combined_data.append({
                 'module': module_name,
