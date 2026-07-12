@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
+
 import requests
 import json
 import os
-import re
 import sys
 import traceback
-from packaging import version  # For proper semver comparison
-import time
-from datetime import datetime
+from packaging import version
 
 output_path = 'core/resources/quickpick-releases.json'
 
-# GitHub repositories to fetch releases from
 repos = [
     'Bearsampp/module-adminer',
     'Bearsampp/module-apache',
@@ -37,511 +34,142 @@ repos = [
     'Bearsampp/module-xlight'
 ]
 
-# Track statistics
-stats = {
-    'total_repos': len(repos),
-    'processed_repos': 0,
-    'failed_repos': [],
-    'total_versions': 0
-}
+headers = {}
+if os.environ.get('GH_PAT'):
+    headers = {"Authorization": f"token {os.environ.get('GH_PAT')}"}
+    print("✓ Using GitHub PAT for authentication")
+else:
+    print("⚠ No GitHub PAT found, using unauthenticated requests")
 
 combined_data = []
 
-# GitHub API headers - add token if you have one to increase rate limits
-headers = {}
-# Use GitHub token if available in environment variables
-if os.environ.get('GH_PAT'):
-    headers = {"Authorization": f"token {os.environ.get('GH_PAT')}"}
-    print("Using GitHub PAT for authentication")
-else:
-    print("No GitHub PAT found, using unauthenticated requests")
-
-# Helper function to sanitize strings by removing null bytes and other problematic characters
 def sanitize_string(s):
+    """Remove null bytes and problematic characters."""
     if s is None:
         return None
     if isinstance(s, str):
-        # Remove null bytes and other common non-printable characters that might cause issues
-        # Also remove any literal \0 or \u0000 strings just in case
         s = s.replace('\0', '').replace('\\0', '').replace('\\u0000', '')
-        # Remove any other control characters except newline and carriage return
         return "".join(ch for ch in s if ord(ch) >= 32 or ch in '\n\r')
     return s
 
-# Rate limiting helper
-def make_api_request(url, headers):
-    try:
-        response = requests.get(url, headers=headers, timeout=30)
-        if response.status_code == 429:  # Rate limit exceeded
-            reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
-            current_time = int(time.time())
-            sleep_time = max(reset_time - current_time + 1, 1)
-            print(f"Rate limit exceeded. Waiting for {sleep_time} seconds...")
-            time.sleep(sleep_time)
-            return make_api_request(url, headers)  # Retry after waiting
-        return response
-    except Exception as e:
-        # Avoid flooding logs with traceback for common connection issues
-        print(f"Error making API request to {url}: {e}")
-        return None
+def fetch_releases_properties(owner, repo):
+    """Fetch and parse releases.properties from module repo.
 
-# Helper function to normalize version strings for comparison
-def normalize_version(version_str):
+    Returns a dict: {version: url}
+    """
     try:
-        # Handle versions like "13.2" vs "13.30" by padding with zeros
-        parts = version_str.split('.')
-        return '.'.join(part.zfill(3) for part in parts)
-    except Exception as e:
-        print(f"Error normalizing version {version_str}: {e}")
-        return version_str
-
-# Helper function to create a tuple for version comparison
-def version_tuple(v):
-    try:
-        # Split the version string and convert components to integers for proper comparison
-        # This handles cases where packaging.version might fail
-        components = []
-        for component in v.split('.'):
-            try:
-                components.append(int(component))
-            except ValueError:
-                # If component has non-numeric parts, keep it as is
-                components.append(component)
-        return tuple(components)
-    except Exception as e:
-        print(f"Error creating version tuple for {v}: {e}")
-        return (0,)
-
-# Helper function to extract version from asset name
-def fetch_module_versions_from_properties(owner, repo):
-    try:
-        # Use main branch for releases.properties
         url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/releases.properties"
-        print(f"Fetching releases.properties from {url}")
-        
-        response = requests.get(url, timeout=30)
+        print(f"  📥 Fetching releases.properties from {repo}")
+        response = requests.get(url, headers=headers, timeout=30)
+
         if response.status_code == 200:
-            # Sanitize the entire content
             content = sanitize_string(response.text)
             properties = {}
+
             for line in content.splitlines():
                 line = line.strip()
                 if line and '=' in line and not line.startswith('#'):
-                    # The format is version = url
                     parts = line.split('=', 1)
                     if len(parts) == 2:
-                        v = parts[0].strip()
-                        u = parts[1].strip()
-                        properties[u] = v
-            print(f"Successfully parsed {len(properties)} versions from releases.properties")
+                        version_key = parts[0].strip()
+                        url_value = parts[1].strip()
+                        properties[version_key] = url_value
+
+            print(f"  ✓ Found {len(properties)} versions in releases.properties")
             return properties
         else:
-            print(f"releases.properties not found in {repo} (HTTP {response.status_code})")
+            print(f"  ⚠ releases.properties not found in {repo} (HTTP {response.status_code})")
             return {}
     except Exception as e:
-        print(f"Error fetching/parsing releases.properties for {repo}: {e}")
+        print(f"  ❌ Error fetching releases.properties for {repo}: {e}")
         return {}
 
-def extract_version_from_asset(asset_name, module_short_name, tag_name, property_versions=None):
+def version_sort_key(v):
+    """Sort key for semantic versioning."""
     try:
-        print(f"Extracting version from asset: {asset_name} for module: {module_short_name}")
-        
-        # Check if we have this asset's URL in our property versions (if property_versions was passed)
-        # Note: We don't have the URL yet in this function, so we'll handle this in the main loop
-        
-        # Special case for Ngrok version 3 - only for the specific older asset
-        if module_short_name == 'ngrok' and asset_name == 'bearsampp-ngrok-3-2022.07.14.7z':
-            print(f"Applying special case for specific Ngrok asset: setting version to 3.0")
-            return '3.0'
-        
-        # Special case for assets with "neard-" prefix (legacy naming convention)
-        if asset_name.startswith('neard-'):
-            # Pattern: neard-{module}-{version}-r{release}.7z
-            neard_pattern = f"neard-{module_short_name}-(\\d+(?:\\.\\d+)+)-r\\d+"
-            neard_match = re.search(neard_pattern, asset_name)
-            if neard_match:
-                version_number = neard_match.group(1)
-                print(f"Extracted version {version_number} from neard-prefixed asset {asset_name}")
-                return version_number
-        
-        # General pattern for all modules: bearsampp-{module}-{version}-{date}.7z
-        # The optional (?:-\d+)? captures a revision integer (e.g. the "1" in 4.0.2-1)
-        # when present. The required -(\d{4}[\.-].*) suffix anchors to the date field
-        # which usually starts with a 4-digit year followed by . or -
-        # Improved version part: (\d+(?:\.\d+)*(?:-[a-zA-Z0-9]+)?) to support RC, beta, etc.
-        standard_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)*(?:-[a-zA-Z0-9]+)?)-(\\d{{4}}[\\.-].*)\\.7z"
-        print(f"Trying standard pattern: {standard_pattern}")
-        standard_match = re.search(standard_pattern, asset_name)
-        if standard_match:
-            version_number = standard_match.group(1)
-            print(f"Extracted version {version_number} from asset {asset_name} using standard pattern")
-            return version_number
-        
-        # Try alternative pattern: bearsampp-{module}-{version}.7z (no date)
-        # Support alphanumeric components here too
-        alt_pattern = f"bearsampp-{module_short_name}-(\\d+(?:\\.\\d+)*(?:-[a-zA-Z0-9]+)?)\\.7z"
-        print(f"Trying alternative pattern: {alt_pattern}")
-        alt_match = re.search(alt_pattern, asset_name)
-        if alt_match:
-            version_number = alt_match.group(1)
-            print(f"Extracted version {version_number} from asset {asset_name} using alternative pattern")
-            return version_number
-        
-        # Handle non-standard prefixes (like phppgadmin7.13.0-2022.08.28.7z)
-        # Try to match the module name directly at the start of the asset name
-        nonstandard_pattern = f"{module_short_name}(\\d+(?:\\.\\d+)+)-"
-        print(f"Trying non-standard pattern: {nonstandard_pattern}")
-        nonstandard_match = re.search(nonstandard_pattern, asset_name, re.IGNORECASE)
-        if nonstandard_match:
-            version_number = nonstandard_match.group(1)
-            print(f"Extracted version {version_number} from non-standard asset {asset_name}")
-            return version_number
-        
-        # For more complex patterns, extract everything between module name and .7z
-        base_pattern = f"bearsampp-{module_short_name}-(.+?)\\.7z"
-        print(f"Trying base pattern: {base_pattern}")
-        base_match = re.search(base_pattern, asset_name)
-        
-        if base_match:
-            # Get everything between module name and .7z
-            version_with_possible_suffix = base_match.group(1)
-            print(f"Found content between module name and .7z: {version_with_possible_suffix}")
-            
-            # Special case for Ngrok version 3 - only for specific patterns
-            if module_short_name == 'ngrok' and version_with_possible_suffix == '3':
-                print(f"Applying special case for Ngrok version 3: setting version to 3.0")
-                return '3.0'
-            
-            # Extract the version number from the string
-            # First try to match X.Y.Z-Suffix or X.Y.Z pattern
-            # Using anchor ^ and checking for date-like suffix to avoid picking up the date
-            version_match = re.search(r'^(\d+\.\d+\.\d+(?:-[a-zA-Z0-9]+)?)', version_with_possible_suffix)
-            if version_match:
-                version_number = version_match.group(1)
-                print(f"Extracted version {version_number} from asset {asset_name} using X.Y.Z pattern")
-                return version_number
-            
-            # Try to match X.Y-Suffix or X.Y pattern
-            version_match = re.search(r'^(\d+\.\d+(?:-[a-zA-Z0-9]+)?)', version_with_possible_suffix)
-            if version_match:
-                version_number = version_match.group(1)
-                print(f"Extracted version {version_number} from asset {asset_name} using X.Y pattern")
-                return version_number
-            
-            # If no version pattern found, use the whole string before the first hyphen
-            if '-' in version_with_possible_suffix:
-                version_number = version_with_possible_suffix.split('-')[0]
-                print(f"Extracted version {version_number} from asset {asset_name} by splitting at hyphen")
-                return version_number
-            else:
-                version_number = version_with_possible_suffix
-                print(f"Using entire string {version_number} as version from asset {asset_name}")
-                return version_number
-        
-        # Try to extract version directly from the asset name if it contains a version pattern
-        # First try X.Y.Z pattern
-        print("Trying direct version extraction from asset name")
-        version_match = re.search(r'(\d+\.\d+\.\d+)', asset_name)
-        if version_match:
-            version_number = version_match.group(1)
-            print(f"Extracted version {version_number} directly from asset name {asset_name} using X.Y.Z pattern")
-            return version_number
-        
-        # Then try to find any version-like pattern in the asset name
-        # This will catch cases like phppgadmin7.13.0-2022.08.28.7z
-        version_match = re.search(r'(\d+(?:\.\d+)+)', asset_name)
-        if version_match:
-            version_number = version_match.group(1)
-            print(f"Extracted version {version_number} directly from asset name {asset_name} using generic version pattern")
-            return version_number
-        
-        # If we get here, we couldn't extract a version using any pattern
-        print(f"WARNING: Could not extract version from asset name: {asset_name}")
-        return f"unknown-{module_short_name}"
-    except Exception as e:
-        print(f"Error extracting version from asset {asset_name}: {e}")
-        traceback.print_exc()
-        return f"unknown-{module_short_name}"
-
-# Helper function to extract date from asset name or URL
-def extract_date_from_asset(asset_name, asset_url, created_at):
-    try:
-        print(f"Extracting date from asset: {asset_name}")
-        
-        # Try to extract date from asset name (format: YYYY.MM.DD)
-        date_match = re.search(r'(\d{4}\.\d{1,2}\.\d{1,2})', asset_name)
-        if date_match:
-            try:
-                date_str = date_match.group(1)
-                # Convert dots to dashes for datetime parsing
-                date_str = date_str.replace('.', '-')
-                date_obj = datetime.strptime(date_str, '%Y-%m-%d')
-                print(f"Extracted date {date_obj} from asset name using YYYY.MM.DD pattern")
-                return date_obj
-            except ValueError as e:
-                print(f"Failed to parse date from {date_str}: {e}")
-        
-        # Try to extract date from asset name (format: YYYY.M.D)
-        date_match = re.search(r'(\d{4})\.(\d{1,2})\.(\d{1,2})', asset_name)
-        if date_match:
-            try:
-                year, month, day = date_match.groups()
-                date_obj = datetime(int(year), int(month), int(day))
-                print(f"Extracted date {date_obj} from asset name using YYYY.M.D pattern")
-                return date_obj
-            except ValueError as e:
-                print(f"Failed to parse date from {year}.{month}.{day}: {e}")
-        
-        # Try to extract date from asset name (format: YYYY-MM-DD)
-        date_match = re.search(r'(\d{4}-\d{1,2}-\d{1,2})', asset_name)
-        if date_match:
-            try:
-                date_str = date_match.group(1)
-                date_obj = datetime.strptime(date_str, '%Y-%m-%d')
-                print(f"Extracted date {date_obj} from asset name using YYYY-MM-DD pattern")
-                return date_obj
-            except ValueError as e:
-                print(f"Failed to parse date from {date_str}: {e}")
-        
-        # Try to extract date from URL
-        date_match = re.search(r'/(\d{4}\.\d{1,2}\.\d{1,2})/', asset_url)
-        if date_match:
-            try:
-                date_str = date_match.group(1)
-                # Convert dots to dashes for datetime parsing
-                date_str = date_str.replace('.', '-')
-                date_obj = datetime.strptime(date_str, '%Y-%m-%d')
-                print(f"Extracted date {date_obj} from URL")
-                return date_obj
-            except ValueError as e:
-                print(f"Failed to parse date from URL {date_str}: {e}")
-        
-        # If no date in asset name or URL, use the release created_at date
-        try:
-            date_obj = datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
-            print(f"Using release date {date_obj} from created_at")
-            return date_obj
-        except (ValueError, TypeError) as e:
-            print(f"Failed to parse created_at date {created_at}: {e}")
-            # If all else fails, use current time (least preferred)
-            date_obj = datetime.now()
-            print(f"Using current time {date_obj} as fallback")
-            return date_obj
-    except Exception as e:
-        print(f"Error extracting date from asset {asset_name}: {e}")
-        traceback.print_exc()
-        return datetime.now()
+        return version.parse(v)
+    except Exception:
+        return version.parse("0.0.0")
 
 try:
-    print("Starting release processing...")
+    print("\n" + "="*80)
+    print("BEARSAMPP COMBINE RELEASES - Processing Module Repositories")
+    print("="*80 + "\n")
+
     for repo_path in repos:
         try:
-            # Split the repo path into owner and repo
             parts = repo_path.split('/')
             if len(parts) != 2:
-                print(f"Skipping invalid repo path: {repo_path}")
+                print(f"⚠ Skipping invalid repo path: {repo_path}")
                 continue
 
             owner, repo = parts
+            module_name = repo.replace('module-', '')
 
-            # Use GitHub API to fetch releases
-            api_url = f"https://api.github.com/repos/{owner}/{repo}/releases"
-            print(f"Fetching releases from {api_url}")
-            response = make_api_request(api_url, headers)
+            print(f"\n📦 Processing: {module_name}")
+            print("-" * 80)
 
-            if response is None:
-                print(f"Failed to fetch releases for {repo_path}: No response")
+            # PRIMARY SOURCE: Load releases.properties (version -> URL mapping)
+            properties = fetch_releases_properties(owner, repo)
+
+            if not properties:
+                print(f"  ⚠ No versions found in releases.properties, skipping {module_name}")
                 continue
 
-            if response.status_code == 200:
-                releases = response.json()
-                
-                # Sanitize all strings in the releases data
-                if isinstance(releases, list):
-                    for release in releases:
-                        if 'tag_name' in release:
-                            release['tag_name'] = sanitize_string(release['tag_name'])
-                        if 'created_at' in release:
-                            release['created_at'] = sanitize_string(release['created_at'])
-                        if 'assets' in release:
-                            for asset in release['assets']:
-                                if 'name' in asset:
-                                    asset['name'] = sanitize_string(asset['name'])
-                                if 'browser_download_url' in asset:
-                                    asset['browser_download_url'] = sanitize_string(asset['browser_download_url'])
-                
-                module_name = repo
-                
-                # Fetch versions from releases.properties if available
-                property_versions = fetch_module_versions_from_properties(owner, repo)
-                
-                # Dictionary to store the newest asset for each version
-                version_assets = {}  # {version: (asset_data, date)}
-                
-                for release in releases:
-                    try:
-                        # Find .7z assets
-                        seven_z_assets = [asset for asset in release['assets']
-                                          if asset['name'].lower().endswith('.7z')]
+            # Convert to the required JSON format
+            # Sort by version (newest first)
+            sorted_versions = sorted(properties.items(),
+                                    key=lambda x: version_sort_key(x[0]),
+                                    reverse=True)
 
-                        # Skip releases without .7z assets
-                        if not seven_z_assets:
-                            # Reduced logging for skipped releases
-                            continue
-
-                        # Process all .7z assets in this release
-                        module_short_name = repo.replace('module-', '')
-                        is_prerelease = release['prerelease']
-                        created_at = release.get('created_at')
-                        
-                        print(f"Processing release {release['tag_name']} in {repo} with {len(seven_z_assets)} .7z assets")
-                        
-                        found_valid_asset = False
-                        for asset in seven_z_assets:
-                            try:
-                                asset_url = asset['browser_download_url']
-                                asset_name = asset['name']
-                                
-                                # First, try to get version from releases.properties mapping
-                                version_number = None
-                                if asset_url in property_versions:
-                                    version_number = property_versions[asset_url]
-                                    print(f"Extracted version {version_number} from releases.properties mapping for {asset_name}")
-                                
-                                # Fallback to regex extraction if not found in properties
-                                if not version_number:
-                                    version_number = extract_version_from_asset(asset_name, module_short_name, release['tag_name'])
-                                
-                                # Skip assets with unknown version
-                                if version_number.startswith('unknown-'):
-                                    # Reduced logging for skipped unknown assets
-                                    continue
-                                
-                                found_valid_asset = True
-                                
-                                # Extract date from asset name or use release date
-                                asset_date = extract_date_from_asset(asset_name, asset_url, created_at)
-                                
-                                # Debug: Print what we're about to store
-                                print(f"DEBUG: For asset {asset_name}, extracted version={version_number}, date={asset_date}")
-                                
-                                # Check if we already have this version and if this asset is better
-                                # We prefer 'stable' over 'prerelease', and newer date if same status
-                                if version_number in version_assets:
-                                    existing_data, existing_date = version_assets[version_number]
-                                    new_is_prerelease = is_prerelease
-                                    existing_is_prerelease = existing_data['prerelease']
-                                    
-                                    should_replace = False
-                                    # Preference 1: Stable over Prerelease
-                                    if not new_is_prerelease and existing_is_prerelease:
-                                        print(f"Replacing prerelease {module_name} {version_number} with stable release")
-                                        should_replace = True
-                                    # Preference 2: Newer date if same status
-                                    elif new_is_prerelease == existing_is_prerelease and asset_date > existing_date:
-                                        print(f"Replacing {module_name} version {version_number} with newer asset: {asset_name}")
-                                        should_replace = True
-                                    
-                                    if should_replace:
-                                        version_assets[version_number] = ({
-                                            'version': version_number,
-                                            'url': asset_url,
-                                            'prerelease': new_is_prerelease
-                                        }, asset_date)
-                                    else:
-                                        print(f"Skipping asset for {module_name} version {version_number}: {asset_name} (better or newer already exists)")
-                                else:
-                                    print(f"Added {module_name} version {version_number} from asset {asset_name}")
-                                    version_assets[version_number] = ({
-                                        'version': version_number,
-                                        'url': asset_url,
-                                        'prerelease': is_prerelease
-                                    }, asset_date)
-                            except Exception as e:
-                                print(f"Error processing asset {asset.get('name', 'unknown')}: {e}")
-                                traceback.print_exc()
-                                continue
-                        
-                        if not found_valid_asset:
-                            print(f"No valid .7z assets with version patterns found in release {release['tag_name']}")
-                    except Exception as e:
-                        print(f"Error processing release {release.get('tag_name', 'unknown')}: {e}")
-                        traceback.print_exc()
-                        continue
-                
-                # Debug: Print the final version_assets dictionary before sorting
-                print(f"DEBUG: Final version_assets for {module_name} before sorting:")
-                for version_key, (asset_data, date) in version_assets.items():
-                    print(f"  {version_key}: {asset_data['url']} ({date})")
-                
-                # Extract just the asset data (without dates) for the final output
-                version_data = [asset_data for asset_data, _ in version_assets.values()]
-                
-                # Filter out any remaining entries with unknown- prefix (just to be safe)
-                version_data = [item for item in version_data if not item['version'].startswith('unknown-')]
-                
-                # Sort versions using improved version comparison
-                try:
-                    # First attempt: Use version_tuple for most reliable sorting
-                    version_data.sort(key=lambda x: version_tuple(x['version']), reverse=True)
-                except Exception as e:
-                    print(f"Warning: Could not sort versions for {repo} using version tuple: {e}")
-                    try:
-                        # Second attempt: Use packaging.version for proper semver sorting
-                        version_data.sort(key=lambda x: version.parse(x['version']), reverse=True)
-                    except Exception as e2:
-                        print(f"Warning: Could not sort versions for {repo} using semver: {e2}")
-                        # Fallback: Use string normalization for simple version comparison
-                        version_data.sort(key=lambda x: normalize_version(x['version']), reverse=True)
-
-                # Debug: Print the final sorted version data
-                print(f"DEBUG: Final sorted version_data for {module_name}: {len(version_data)} versions")
-                for item in version_data:
-                    print(f"  {item['version']}: {item['url']}")
-
-                combined_data.append({
-                    'module': module_name,
-                    'versions': version_data
+            versions_data = []
+            for ver, url in sorted_versions:
+                versions_data.append({
+                    'version': ver,
+                    'url': url,
+                    'prerelease': False
                 })
-                stats['processed_repos'] += 1
-                stats['total_versions'] += len(version_data)
-            else:
-                print(f"Failed to fetch releases for {repo_path}: {response.status_code}")
-                stats['failed_repos'].append(f"{repo_path} (HTTP {response.status_code})")
+                print(f"  ✓ {ver}: {url}")
+
+            combined_data.append({
+                'module': module_name,
+                'versions': versions_data
+            })
+
+            print(f"  📊 Total versions: {len(versions_data)}")
+
         except Exception as e:
-            print(f"Error processing repo {repo_path}: {e}")
+            print(f"  ❌ Error processing {repo_path}: {e}")
             traceback.print_exc()
-            stats['failed_repos'].append(f"{repo_path} (Error: {str(e)})")
             continue
 
-    print("Release processing completed")
-    print(f"Summary: Processed {stats['processed_repos']}/{stats['total_repos']} repositories")
-    print(f"Total versions found: {stats['total_versions']}")
-    if stats['failed_repos']:
-        print(f"Failed repositories: {', '.join(stats['failed_repos'])}")
+    print("\n" + "="*80)
+    print("WRITING OUTPUT")
+    print("="*80 + "\n")
 
-except Exception as e:
-    print(f"Error during release processing: {e}")
-    traceback.print_exc()
-
-# Write the file
-print(f"Writing output to {output_path}")
-try:
-    with open(output_path, 'w') as f:
-        json.dump(combined_data, f, indent=2)
-    print(f"Successfully saved combined release data to {output_path}")
-    print(f"File size: {os.path.getsize(output_path)} bytes")
-except Exception as e:
-    print(f"Error writing to {output_path}: {e}")
-    traceback.print_exc()
-    # Create an empty file if writing fails
+    # Write the combined data to JSON
     try:
-        with open(output_path, 'w') as f:
-            json.dump([], f, indent=2)
-        print(f"Created empty {output_path} due to error")
-    except Exception as e2:
-        print(f"Failed to create {output_path}: {e2}")
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(combined_data, f, indent=2)
+
+        file_size = os.path.getsize(output_path)
+        print(f"✓ Successfully wrote {output_path}")
+        print(f"  File size: {file_size} bytes")
+        print(f"  Modules: {len(combined_data)}")
+
+        total_versions = sum(len(m['versions']) for m in combined_data)
+        print(f"  Total versions: {total_versions}")
+
+    except Exception as e:
+        print(f"❌ Error writing {output_path}: {e}")
         traceback.print_exc()
         sys.exit(1)
 
-print("Script completed successfully")
+except Exception as e:
+    print(f"\n❌ FATAL ERROR: {e}")
+    traceback.print_exc()
+    sys.exit(1)
+
+print("\n" + "="*80)
+print("✓ SCRIPT COMPLETED SUCCESSFULLY")
+print("="*80 + "\n")
