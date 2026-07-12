@@ -487,7 +487,9 @@ print("="*80 + "\n")
 
 for module_entry in combined_data:
     module_name = module_entry['module']
-    repo_path = f"Bearsampp/module-{module_name}"
+    # module_name is already in format "module-{shortname}", extract the shortname
+    module_shortname = module_name.replace('module-', '')
+    repo_path = f"Bearsampp/module-{module_shortname}"
     parts = repo_path.split('/')
     owner, repo = parts
 
