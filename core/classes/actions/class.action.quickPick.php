@@ -300,26 +300,39 @@ class QuickPick
 
         $jsonData = $this->getQuickpickJson();
 
+        // Check if JSON data is valid
+        if ( is_array( $jsonData ) && isset( $jsonData['error'] ) ) {
+            Log::error( 'getQuickpickJson returned error: ' . $jsonData['error'] );
+            return $jsonData;
+        }
+
+        Log::debug( 'JSON data loaded: ' . count( $jsonData ) . ' entries' );
+
         foreach ( $jsonData as $entry ) {
             if ( is_array( $entry ) ) {
                 if ( isset( $entry['module'] ) && is_string( $entry['module'] ) ) {
                     if ( isset( $entry['versions'] ) && is_array( $entry['versions'] ) ) {
                         $versions[$entry['module']] = array_column( $entry['versions'], null, 'version' );
+                        Log::debug( 'Loaded ' . count( $entry['versions'] ) . ' versions for ' . $entry['module'] );
+                    } else {
+                        Log::warning( 'Module ' . $entry['module'] . ' has no versions array' );
                     }
+                } else {
+                    Log::warning( 'Entry missing module or module is not string' );
                 }
             }
             else {
-                Log::error( 'Invalid entry format in JSON data' );
+                Log::error( 'Invalid entry format in JSON data: ' . gettype( $entry ) );
             }
         }
 
         if ( empty( $versions ) ) {
-            Log::error( 'No versions found' );
+            Log::error( 'No versions found after processing' );
 
             return ['error' => 'No versions found'];
         }
 
-        Log::debug( 'Found versions' );
+        Log::debug( 'Found ' . count( $versions ) . ' modules with versions' );
 
         $this->versions = $versions;
 
