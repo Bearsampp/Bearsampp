@@ -94,40 +94,26 @@ def fetch_releases_properties(owner, repo):
         print(f"  ❌ Error fetching releases.properties for {repo}: {e}")
         return []
 
-def check_if_prerelease(owner, repo, url):
-    """Check if a release is a prerelease by querying GitHub API.
+def determine_prerelease_from_tag(tag):
+    """Determine if a release is a prerelease based on the tag format.
 
     Args:
-        owner: GitHub owner (e.g., 'Bearsampp')
-        repo: GitHub repo (e.g., 'module-mysql')
-        url: The download URL to find the corresponding release
+        tag: Release tag from the URL (e.g., '2026.7.11' or 'rc1')
 
     Returns:
-        bool: True if prerelease, False if stable release
+        bool: True if appears to be prerelease, False if stable
     """
-    try:
-        # Extract release tag from URL
-        # Format: https://github.com/owner/repo/releases/download/TAG/filename
-        match = re.search(r'/releases/download/([^/]+)/', url)
-        if not match:
-            print(f"    ⚠ Could not extract tag from URL: {url}")
-            return False
+    # Tags with obvious prerelease markers
+    prerelease_markers = ['rc', 'alpha', 'beta', 'pre', 'preview', 'pr', 'dev', 'test']
+    tag_lower = tag.lower()
 
-        tag = match.group(1)
+    for marker in prerelease_markers:
+        if marker in tag_lower:
+            return True
 
-        # Query GitHub API for this release
-        api_url = f"https://api.github.com/repos/{owner}/{repo}/releases/tags/{tag}"
-        response = requests.get(api_url, headers=headers, timeout=30)
-
-        if response.status_code == 200:
-            release_data = response.json()
-            return release_data.get('prerelease', False)
-        else:
-            print(f"    ⚠ Could not find release info for tag: {tag}")
-            return False
-    except Exception as e:
-        print(f"    ⚠ Error checking prerelease status: {e}")
-        return False
+    # Date format tags (YYYY.M.D) that are very recent might be prerelease
+    # but we'll trust the releases.properties file, so default to False
+    return False
 
 def version_sort_key(v):
     """Sort key for semantic versioning."""
@@ -161,10 +147,14 @@ try:
                 print(f"  ⚠ No versions found in releases.properties, skipping {module_name}")
                 continue
 
-            # Check prerelease status for each version and sort
+            # Build versions data - determine prerelease status from tag
             versions_data = []
             for release in releases_data:
-                prerelease = check_if_prerelease(owner, repo, release['url'])
+                # Extract release tag from URL for prerelease detection
+                tag_match = re.search(r'/releases/download/([^/]+)/', release['url'])
+                tag = tag_match.group(1) if tag_match else ''
+
+                prerelease = determine_prerelease_from_tag(tag)
                 clean_release = {
                     'version': release['version'],
                     'url': release['url'],
