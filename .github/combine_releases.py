@@ -306,8 +306,23 @@ try:
 
             if rp_response and rp_response.status_code == 200:
                 properties_content = rp_response.text
-                pattern = r'\[\s*([^\]]+)\s*\]\s*=\s*([^\n]+)'
-                matches = re.findall(pattern, properties_content)
+                # Parse releases.properties robustly: support both [version] = url and version = url
+                matches = []
+                for line in properties_content.splitlines():
+                    line = line.strip()
+                    if not line or line.startswith('#') or line.startswith(';'):
+                        continue
+                    # Strip inline comments
+                    if '#' in line:
+                        line = line.split('#', 1)[0].strip()
+                    if ';' in line:
+                        line = line.split(';', 1)[0].strip()
+                    if '=' not in line:
+                        continue
+                    left, right = line.split('=', 1)
+                    version_key = left.strip().strip('[]').strip()
+                    url_value = right.strip()
+                    matches.append((version_key, url_value))
                 print(f"  Parsed {len(matches)} version entries from releases.properties for {repo}")
 
                 version_list = []
@@ -499,9 +514,23 @@ for module_entry in combined_data:
         if response.status_code == 200:
             properties_content = response.text
 
-            # Parse releases.properties file: [version] = [URL]
-            pattern = r'\[\s*([^\]]+)\s*\]\s*=\s*([^\n]+)'
-            matches = re.findall(pattern, properties_content)
+            # Parse releases.properties file: support both [version] = [URL] and version = URL formats
+            matches = []
+            for line in properties_content.splitlines():
+                line = line.strip()
+                if not line or line.startswith('#') or line.startswith(';'):
+                    continue
+                # Strip inline comments
+                if '#' in line:
+                    line = line.split('#', 1)[0].strip()
+                if ';' in line:
+                    line = line.split(';', 1)[0].strip()
+                if '=' not in line:
+                    continue
+                left, right = line.split('=', 1)
+                version_key = left.strip().strip('[]').strip()
+                url_value = right.strip()
+                matches.append((version_key, url_value))
 
             print(f"  Parsed {len(matches)} version entries from releases.properties")
 
@@ -575,6 +604,10 @@ for entry in combined_data:
 # Write the file
 print(f"\nWriting output to {output_path}")
 try:
+    # Ensure output directory exists
+    outdir = os.path.dirname(output_path)
+    if outdir:
+        os.makedirs(outdir, exist_ok=True)
     with open(output_path, 'w') as f:
         json.dump(combined_data, f, indent=2)
     print(f"Successfully saved combined release data to {output_path}")
@@ -584,6 +617,9 @@ except Exception as e:
     traceback.print_exc()
     # Create an empty file if writing fails
     try:
+        outdir = os.path.dirname(output_path)
+        if outdir:
+            os.makedirs(outdir, exist_ok=True)
         with open(output_path, 'w') as f:
             json.dump([], f, indent=2)
         print(f"Created empty {output_path} due to error")
