@@ -493,8 +493,12 @@ for module_entry in combined_data:
     parts = repo_path.split('/')
     owner, repo = parts
 
+    print(f"\nProcessing module: {module_name} (repo: {repo})")
+    print(f"  Current versions in JSON: {[v['version'] for v in module_entry['versions']]}")
+
     # Try to fetch releases.properties for this module
     releases_props_url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/releases.properties"
+    print(f"  Fetching releases.properties from: {releases_props_url}")
     try:
         response = requests.get(releases_props_url, headers=headers, timeout=30)
         if response.status_code == 200:
@@ -528,6 +532,8 @@ for module_entry in combined_data:
                     if version_num in releases_props_map:
                         print(f"    Found in releases.properties ✓")
                         releases_props_url_for_version = releases_props_map[version_num]
+                        print(f"    Current JSON URL:     {current_url}")
+                        print(f"    releases.properties:  {releases_props_url_for_version}")
                         if current_url != releases_props_url_for_version:
                             print(f"  {version_num}: Updating URL from GitHub API to releases.properties version")
                             print(f"    Old: {current_url}")
