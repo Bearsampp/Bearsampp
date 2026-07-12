@@ -505,7 +505,7 @@ for module_entry in combined_data:
             matches = re.findall(pattern, properties_content)
 
             if matches:
-                print(f"\nValidating {module_name} against releases.properties")
+                print(f"\nValidating {module_name} against releases.properties ({len(matches)} versions found)")
 
                 # Build a map of version -> URL from releases.properties
                 releases_props_map = {}
@@ -513,14 +513,20 @@ for module_entry in combined_data:
                     version_str = version_str.strip()
                     url_value = url_value.strip()
                     releases_props_map[version_str] = url_value
+                    print(f"  releases.properties: {version_str} = {url_value[:80]}...")
+
+                print(f"JSON has {len(module_entry['versions'])} versions")
 
                 # Check each version in our combined_data
                 for version_entry in module_entry['versions']:
                     version_num = version_entry['version']
                     current_url = version_entry['url']
 
+                    print(f"  Checking version: {version_num}")
+
                     # If releases.properties has a different URL for this version, use it
                     if version_num in releases_props_map:
+                        print(f"    Found in releases.properties ✓")
                         releases_props_url_for_version = releases_props_map[version_num]
                         if current_url != releases_props_url_for_version:
                             print(f"  {version_num}: Updating URL from GitHub API to releases.properties version")
@@ -540,7 +546,9 @@ for module_entry in combined_data:
                             else:
                                 print(f"    Could not determine prerelease status, keeping: {version_entry['prerelease']}")
                         else:
-                            print(f"  {version_num}: URLs match ✓")
+                            print(f"    URLs match ✓")
+                    else:
+                        print(f"    NOT in releases.properties (only in GitHub API)")
         elif response.status_code == 404:
             pass  # releases.properties doesn't exist for this module, skip silently
         else:
