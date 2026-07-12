@@ -52,37 +52,51 @@ def sanitize_string(s):
         return "".join(ch for ch in s if ord(ch) >= 32 or ch in '\n\r')
     return s
 
-def fetch_releases_properties(owner, repo):
-    """Fetch and parse releases.properties from module repo.
+def fetch_releases_from_api(owner, repo):
+    """Fetch releases from GitHub API and extract version, URL, and prerelease status.
 
-    Returns a dict: {version: url}
+    Returns a list of dicts: [{version, url, prerelease}]
     """
     try:
-        url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/releases.properties"
-        print(f"  📥 Fetching releases.properties from {repo}")
+        url = f"https://api.github.com/repos/{owner}/{repo}/releases?per_page=100"
+        print(f"  📥 Fetching releases from GitHub API for {repo}")
         response = requests.get(url, headers=headers, timeout=30)
 
         if response.status_code == 200:
-            content = sanitize_string(response.text)
-            properties = {}
+            releases = response.json()
+            releases_data = []
 
-            for line in content.splitlines():
-                line = line.strip()
-                if line and '=' in line and not line.startswith('#'):
-                    parts = line.split('=', 1)
-                    if len(parts) == 2:
-                        version_key = parts[0].strip()
-                        url_value = parts[1].strip()
-                        properties[version_key] = url_value
+            for release in releases:
+                # Skip draft releases
+                if release.get('draft', False):
+                    continue
 
-            print(f"  ✓ Found {len(properties)} versions in releases.properties")
-            return properties
+                version = release.get('tag_name', '').lstrip('v')
+                url_value = None
+                prerelease = release.get('prerelease', False)
+
+                # Find the asset URL (usually a .7z or .zip file)
+                if release.get('assets'):
+                    for asset in release['assets']:
+                        if asset['name'].endswith(('.7z', '.zip')):
+                            url_value = asset['browser_download_url']
+                            break
+
+                if version and url_value:
+                    releases_data.append({
+                        'version': version,
+                        'url': url_value,
+                        'prerelease': prerelease
+                    })
+
+            print(f"  ✓ Found {len(releases_data)} versions from GitHub API")
+            return releases_data
         else:
-            print(f"  ⚠ releases.properties not found in {repo} (HTTP {response.status_code})")
-            return {}
+            print(f"  ⚠ GitHub API request failed for {repo} (HTTP {response.status_code})")
+            return []
     except Exception as e:
-        print(f"  ❌ Error fetching releases.properties for {repo}: {e}")
-        return {}
+        print(f"  ❌ Error fetching from GitHub API for {repo}: {e}")
+        return []
 
 def version_sort_key(v):
     """Sort key for semantic versioning."""
@@ -109,27 +123,23 @@ try:
             print(f"\n📦 Processing: {module_name}")
             print("-" * 80)
 
-            # PRIMARY SOURCE: Load releases.properties (version -> URL mapping)
-            properties = fetch_releases_properties(owner, repo)
+            # Fetch releases from GitHub API (includes prerelease status)
+            releases_data = fetch_releases_from_api(owner, repo)
 
-            if not properties:
-                print(f"  ⚠ No versions found in releases.properties, skipping {module_name}")
+            if not releases_data:
+                print(f"  ⚠ No versions found from GitHub API, skipping {module_name}")
                 continue
 
-            # Convert to the required JSON format
             # Sort by version (newest first)
-            sorted_versions = sorted(properties.items(),
-                                    key=lambda x: version_sort_key(x[0]),
+            sorted_versions = sorted(releases_data,
+                                    key=lambda x: version_sort_key(x['version']),
                                     reverse=True)
 
             versions_data = []
-            for ver, url in sorted_versions:
-                versions_data.append({
-                    'version': ver,
-                    'url': url,
-                    'prerelease': False
-                })
-                print(f"  ✓ {ver}: {url}")
+            for release in sorted_versions:
+                versions_data.append(release)
+                prerelease_label = " (prerelease)" if release['prerelease'] else ""
+                print(f"  ✓ {release['version']}: {release['url']}{prerelease_label}")
 
             combined_data.append({
                 'module': module_name,
