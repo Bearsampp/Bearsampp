@@ -452,6 +452,64 @@ except Exception as e:
     print(f"Error during release processing: {e}")
     traceback.print_exc()
 
+# Validation step: Override with releases.properties if it has different URLs
+print("\n" + "="*80)
+print("VALIDATING AGAINST releases.properties")
+print("="*80 + "\n")
+
+for module_entry in combined_data:
+    module_name = module_entry['module']
+    repo_path = f"Bearsampp/module-{module_name}"
+    parts = repo_path.split('/')
+    owner, repo = parts
+
+    # Try to fetch releases.properties for this module
+    releases_props_url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/releases.properties"
+    try:
+        response = requests.get(releases_props_url, headers=headers, timeout=30)
+        if response.status_code == 200:
+            properties_content = response.text
+
+            # Parse releases.properties file: [version] = [URL]
+            pattern = r'\[\s*([^\]]+)\s*\]\s*=\s*([^\n]+)'
+            matches = re.findall(pattern, properties_content)
+
+            if matches:
+                print(f"\nValidating {module_name} against releases.properties")
+
+                # Build a map of version -> URL from releases.properties
+                releases_props_map = {}
+                for version_str, url_value in matches:
+                    version_str = version_str.strip()
+                    url_value = url_value.strip()
+                    releases_props_map[version_str] = url_value
+
+                # Check each version in our combined_data
+                for version_entry in module_entry['versions']:
+                    version_num = version_entry['version']
+                    current_url = version_entry['url']
+
+                    # If releases.properties has a different URL for this version, use it
+                    if version_num in releases_props_map:
+                        releases_props_url_for_version = releases_props_map[version_num]
+                        if current_url != releases_props_url_for_version:
+                            print(f"  {version_num}: Updating URL from GitHub API to releases.properties version")
+                            print(f"    Old: {current_url}")
+                            print(f"    New: {releases_props_url_for_version}")
+                            version_entry['url'] = releases_props_url_for_version
+                        else:
+                            print(f"  {version_num}: URLs match ✓")
+        elif response.status_code == 404:
+            pass  # releases.properties doesn't exist for this module, skip silently
+        else:
+            print(f"Warning: Could not fetch releases.properties for {module_name} (HTTP {response.status_code})")
+    except Exception as e:
+        print(f"Warning: Error validating {module_name} against releases.properties: {e}")
+
+print("\n" + "="*80)
+print("VALIDATION COMPLETED")
+print("="*80 + "\n")
+
 # Write the file
 print(f"Writing output to {output_path}")
 try:
