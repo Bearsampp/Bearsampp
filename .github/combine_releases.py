@@ -452,6 +452,34 @@ except Exception as e:
     print(f"Error during release processing: {e}")
     traceback.print_exc()
 
+def get_prerelease_status_from_url(owner, repo, url):
+    """Extract release tag from URL and check if it's a prerelease on GitHub."""
+    try:
+        # Extract release tag from URL: /releases/download/TAG/filename
+        match = re.search(r'/releases/download/([^/]+)/', url)
+        if not match:
+            print(f"    Could not extract tag from URL: {url}")
+            return None
+
+        tag = match.group(1)
+        print(f"    Checking prerelease status for tag: {tag}")
+
+        # Query GitHub API for this release
+        api_url = f"https://api.github.com/repos/{owner}/{repo}/releases/tags/{tag}"
+        response = make_api_request(api_url, headers)
+
+        if response and response.status_code == 200:
+            release_data = response.json()
+            prerelease_status = release_data.get('prerelease', False)
+            print(f"    Release {tag} prerelease status: {prerelease_status}")
+            return prerelease_status
+        else:
+            print(f"    Could not find release info for tag: {tag}")
+            return None
+    except Exception as e:
+        print(f"    Error checking prerelease status: {e}")
+        return None
+
 # Validation step: Override with releases.properties if it has different URLs
 print("\n" + "="*80)
 print("VALIDATING AGAINST releases.properties")
@@ -497,6 +525,18 @@ for module_entry in combined_data:
                             print(f"    Old: {current_url}")
                             print(f"    New: {releases_props_url_for_version}")
                             version_entry['url'] = releases_props_url_for_version
+
+                            # Get the correct prerelease status for the new URL
+                            prerelease_status = get_prerelease_status_from_url(owner, repo, releases_props_url_for_version)
+                            if prerelease_status is not None:
+                                old_prerelease = version_entry['prerelease']
+                                version_entry['prerelease'] = prerelease_status
+                                if old_prerelease != prerelease_status:
+                                    print(f"    Prerelease status: {old_prerelease} → {prerelease_status}")
+                                else:
+                                    print(f"    Prerelease status: {prerelease_status} (unchanged)")
+                            else:
+                                print(f"    Could not determine prerelease status, keeping: {version_entry['prerelease']}")
                         else:
                             print(f"  {version_num}: URLs match ✓")
         elif response.status_code == 404:
