@@ -74,6 +74,7 @@ def fetch_releases_from_api(owner, repo):
                 version = release.get('tag_name', '').lstrip('v')
                 url_value = None
                 prerelease = release.get('prerelease', False)
+                release_date = release.get('published_at', '')
 
                 # Find the asset URL (usually a .7z or .zip file)
                 if release.get('assets'):
@@ -86,7 +87,8 @@ def fetch_releases_from_api(owner, repo):
                     releases_data.append({
                         'version': version,
                         'url': url_value,
-                        'prerelease': prerelease
+                        'prerelease': prerelease,
+                        'release_date': release_date
                     })
 
             print(f"  ✓ Found {len(releases_data)} versions from GitHub API")
@@ -130,8 +132,21 @@ try:
                 print(f"  ⚠ No versions found from GitHub API, skipping {module_name}")
                 continue
 
+            # Deduplicate: keep only the newest release for each version
+            version_map = {}
+            for release in releases_data:
+                ver = release['version']
+                if ver not in version_map:
+                    version_map[ver] = release
+                else:
+                    # Compare release dates and keep the newer one
+                    current_date = release.get('release_date', '')
+                    existing_date = version_map[ver].get('release_date', '')
+                    if current_date > existing_date:
+                        version_map[ver] = release
+
             # Sort by version (newest first)
-            sorted_versions = sorted(releases_data,
+            sorted_versions = sorted(version_map.values(),
                                     key=lambda x: version_sort_key(x['version']),
                                     reverse=True)
 
