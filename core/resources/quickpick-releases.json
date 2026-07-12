@@ -1,107 +1,76 @@
 [
   {
-    "module": "module-adminer",
-    "versions": [
-      {
-        "version": "4.6.1",
-        "url": "https://github.com/Bearsampp/module-adminer/releases/download/r4/bearsampp-adminer-4.6.1-2022.7.07.7z",
-        "prerelease": false,
-        "date": "2016-10-06T22:57:15"
-      },
-      {
-        "version": "4.8.1",
-        "url": "https://github.com/Bearsampp/module-adminer/releases/download/2022.7.07/bearsampp-adminer-4.8.1-2022.7.07.7z",
-        "prerelease": false,
-        "date": "2022-07-07T18:40:53"
-      }
-    ]
-  },
-  {
     "module": "module-apache",
     "versions": [
       {
         "version": "2.4.68",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2026.7.10/bearsampp-apache-2.4.68-2026.7.10.7z",
-        "prerelease": false,
-        "date": "2026-06-26T05:51:16"
+        "prerelease": false
       },
       {
         "version": "2.4.67",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2026.5.31/bearsampp-apache-2.4.67-2026.5.31.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:13"
+        "prerelease": false
       },
       {
         "version": "2.4.66",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2025.12.8/bearsampp-apache-2.4.66-2025.12.8.7z",
-        "prerelease": false,
-        "date": "2025-12-09T05:29:55"
+        "prerelease": false
       },
       {
         "version": "2.4.65",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2025.8.15/bearsampp-apache-2.4.65-2025.8.15.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:46"
+        "prerelease": false
       },
       {
         "version": "2.4.63",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2025.2.9/bearsampp-apache-2.4.63-2025.2.9.7z",
-        "prerelease": false,
-        "date": "2025-01-16T07:07:03"
+        "prerelease": false
       },
       {
         "version": "2.4.62",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2024.7.23/bearsampp-apache-2.4.62-2024.7.23.7z",
-        "prerelease": false,
-        "date": "2024-07-23T11:08:30"
+        "prerelease": false
       },
       {
         "version": "2.4.59",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2024.4.7/bearsampp-apache-2.4.59-2024.4.7.7z",
-        "prerelease": false,
-        "date": "2024-04-07T13:23:11"
+        "prerelease": false
       },
       {
         "version": "2.4.58",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2024.3.31/bearsampp-apache-2.4.58-2023.3.31.7z",
-        "prerelease": false,
-        "date": "2023-07-30T08:09:47"
+        "prerelease": false
       },
       {
         "version": "2.4.57",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2023.6.6/bearsampp-apache-2.4.57-2023.6.6.7z",
-        "prerelease": false,
-        "date": "2023-05-10T01:33:18"
+        "prerelease": false
       },
       {
         "version": "2.4.55",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2023.2.14/bearsampp-apache-2.4.55-2023.2.24.7z",
-        "prerelease": false,
-        "date": "2023-02-06T23:35:09"
+        "prerelease": false
       },
       {
         "version": "2.4.54",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/Apache-2.4.54/bearsampp-apache-2.4.54-2022.07.07.7z",
-        "prerelease": false,
-        "date": "2022-07-08T04:45:54"
+        "prerelease": false
       },
       {
         "version": "2.4.52",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/apache-2022/bearsampp-apache-2.4.52-2021.12.07.7z",
-        "prerelease": false,
-        "date": "2022-01-04T01:19:01"
+        "prerelease": false
       },
       {
         "version": "2.4.51",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/apache-2021/bearsampp-apache-2.4.51-2021.12.07.7z",
-        "prerelease": false,
-        "date": "2022-01-04T01:19:01"
+        "prerelease": false
       },
       {
         "version": "2.4.41",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/apache-2020/apache2.4.41-x86.7z",
-        "prerelease": false,
-        "date": "2022-01-04T01:19:01"
+        "prerelease": false
       }
     ]
   },
@@ -111,134 +80,112 @@
       {
         "version": "3.5.1",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2026.7.10/bearsampp-bruno-3.5.1-2026.7.10.7z",
-        "prerelease": false,
-        "date": "2026-06-26T05:51:18"
+        "prerelease": false
       },
       {
         "version": "3.4.2",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2026.5.27/bearsampp-bruno-3.4.2-2026.5.27.7z",
-        "prerelease": false,
-        "date": "2026-04-24T04:00:05"
+        "prerelease": false
       },
       {
         "version": "3.3.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2026.4.23/bearsampp-bruno-3.3.0-2026.4.23.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:14"
+        "prerelease": false
       },
       {
         "version": "3.2.2",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2026.4.12/bearsampp-bruno-3.2.2-2026.4.12.7z",
-        "prerelease": false,
-        "date": "2026-03-08T02:56:16"
+        "prerelease": false
       },
       {
         "version": "3.1.4",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2026.3.5/bearsampp-bruno-3.1.4-2026.3.5.7z",
-        "prerelease": false,
-        "date": "2026-01-25T21:14:49"
+        "prerelease": false
       },
       {
         "version": "3.0.2",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2026.1.15/bearsampp-bruno-3.0.2-2025.1.15.7z",
-        "prerelease": false,
-        "date": "2026-01-04T10:38:15"
+        "prerelease": false
       },
       {
         "version": "2.13.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.10.14/bearsampp-bruno-2.13.0-2025.10.14.7z",
-        "prerelease": false,
-        "date": "2025-08-15T13:34:13"
+        "prerelease": false
       },
       {
         "version": "2.9.1",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.8.15/bearsampp-bruno-2.9.1-2025.8.15.7z",
-        "prerelease": false,
-        "date": "2025-08-04T23:41:03"
+        "prerelease": false
       },
       {
         "version": "2.9.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.8.8/bearsampp-bruno-2.9.0-2025.8.8.7z",
-        "prerelease": false,
-        "date": "2025-08-04T23:41:03"
+        "prerelease": false
       },
       {
         "version": "2.8.1",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.7.31/bearsampp-bruno-2.8.1-2025.7.31.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:47"
+        "prerelease": false
       },
       {
         "version": "2.5.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.6.13/bearsampp-bruno-2.5.0-2025.6.13.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:24"
+        "prerelease": false
       },
       {
         "version": "2.1.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.4.18/bearsampp-bruno-2.1.0-2025.4.18.7z",
-        "prerelease": false,
-        "date": "2025-04-16T04:56:48"
+        "prerelease": false
       },
       {
         "version": "1.39.1",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.3.2/bearsampp-bruno-1.39.1-2025.3.2.7z",
-        "prerelease": false,
-        "date": "2025-02-18T12:52:11"
+        "prerelease": false
       },
       {
         "version": "1.38.1",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2025.2.9/bearsampp-bruno-1.38.1-2025.2.9.7z",
-        "prerelease": false,
-        "date": "2025-01-16T07:10:08"
+        "prerelease": false
       },
       {
         "version": "1.35.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.12.1/bearsampp-bruno-1.35.0-2024.12.1.7z",
-        "prerelease": false,
-        "date": "2024-11-08T09:39:07"
+        "prerelease": false
       },
       {
         "version": "1.34.1",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.11.2/bearsampp-bruno-1.34.1-2024.11.2.7z",
-        "prerelease": false,
-        "date": "2024-10-02T01:39:31"
+        "prerelease": false
       },
       {
         "version": "1.32.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.10.1/bearsampp-bruno-1.32.0-2024.10.1.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:30"
+        "prerelease": false
       },
       {
         "version": "1.31.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.9.30/bearsampp-bruno-1.31.0-2024.9.30.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:30"
+        "prerelease": false
       },
       {
         "version": "1.30.1",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.9.22/bearsampp-bruno-1.30.1-2024.9.22.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:30"
+        "prerelease": false
       },
       {
         "version": "1.30.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.9.21/bearsampp-bruno-1.30.0-2024.9.21.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:30"
+        "prerelease": false
       },
       {
         "version": "1.29.1",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.9.18/bearsampp-bruno-1.29.1-2024.9.18.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:30"
+        "prerelease": false
       },
       {
         "version": "1.28.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2024.9.13/bearsampp-bruno-1.28.0-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-13T16:06:51"
+        "prerelease": false
       }
     ]
   },
@@ -248,158 +195,132 @@
       {
         "version": "2.10.2",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2026.7.10/bearsampp-composer-2.10.2-2026.7.10.7z",
-        "prerelease": false,
-        "date": "2026-07-11T07:00:52"
+        "prerelease": false
       },
       {
         "version": "2.10.0",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2026.5.31/bearsampp-composer-2.10.0-2026.5.31.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:16"
+        "prerelease": false
       },
       {
         "version": "2.9.5",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/20263.5/bearsampp-composer-2.9.5-2026.3.5.7z",
-        "prerelease": false,
-        "date": "2026-01-17T08:55:45"
+        "prerelease": false
       },
       {
         "version": "2.9.3",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2026.1.15/bearsampp-composer-2.9.3-2026.1.15.7z",
-        "prerelease": false,
-        "date": "2026-01-04T10:38:16"
+        "prerelease": false
       },
       {
         "version": "2.9.2",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2025.11.19/bearsampp-composer-2.9.2-2025.11.19.7z",
-        "prerelease": false,
-        "date": "2025-11-20T01:39:02"
+        "prerelease": false
       },
       {
         "version": "2.8.10",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2025.8.15/bearsampp-composer-2.8.10-2025.8.15.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:48"
+        "prerelease": false
       },
       {
         "version": "2.8.9",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2025.7.2/bearsampp-composer-2.8.9-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:25"
+        "prerelease": false
       },
       {
         "version": "2.8.8",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2025.4.18/bearsampp-composer-2.8.8-2025.4.18.7z",
-        "prerelease": false,
-        "date": "2025-04-16T04:56:50"
+        "prerelease": false
       },
       {
         "version": "2.8.6",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2025.3.2/bearsampp-composer-2.8.6-2025.3.2.7z",
-        "prerelease": false,
-        "date": "2025-02-18T12:52:13"
+        "prerelease": false
       },
       {
         "version": "2.8.5",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2025.1.30/bearsampp-composer-2.8.5-2025.1.30.7z",
-        "prerelease": false,
-        "date": "2025-01-16T07:11:23"
+        "prerelease": false
       },
       {
         "version": "2.8.3",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.12.1/bearsampp-composer-2.8.3-2024.12.1.7z",
-        "prerelease": false,
-        "date": "2024-11-08T09:25:58"
+        "prerelease": false
       },
       {
         "version": "2.8.2",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.11.2/bearsampp-composer-2.8.2-2024.11.2.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:39:10"
+        "prerelease": false
       },
       {
         "version": "2.7.9",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.9.13/bearsampp-composer-2.7.9-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-12T23:08:03"
+        "prerelease": false
       },
       {
         "version": "2.7.7",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.6.17/bearsampp-composer-2.7.7-2024.6.17.7z",
-        "prerelease": false,
-        "date": "2024-05-27T00:25:23"
+        "prerelease": false
       },
       {
         "version": "2.7.4",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.7.4-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       },
       {
         "version": "2.7.3",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.7.3-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       },
       {
         "version": "2.7.2",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.7.2-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       },
       {
         "version": "2.7.1",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.7.1-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       },
       {
         "version": "2.7.0",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.7.0-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       },
       {
         "version": "2.5.8",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.5.8-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       },
       {
         "version": "2.5.5",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.5.5-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       },
       {
         "version": "2.5.4",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.5.4-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       },
       {
         "version": "2.4.4",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.4.4-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       },
       {
         "version": "2.4.2",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.4.2-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       },
       {
         "version": "2.4.0",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.4.0-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       },
       {
         "version": "2.3.9",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2024.4.5/bearsampp-composer-2.3.9-2024.4.25.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:29:43"
+        "prerelease": false
       }
     ]
   },
@@ -409,74 +330,62 @@
       {
         "version": "10.07.1",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2026.7.1/bearsampp-ghostscript-10.07.1-2026.7.1.7z",
-        "prerelease": false,
-        "date": "2026-07-02T01:01:29"
+        "prerelease": false
       },
       {
         "version": "10.07.0",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2026.4.12/bearsampp-ghostscript-10.07.0-2026.4.12.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:26"
+        "prerelease": false
       },
       {
         "version": "10.06.0",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2026.1.15/bearsampp-ghostscript-10.06.0-2026.1.15.7z",
-        "prerelease": false,
-        "date": "2026-01-04T10:38:18"
+        "prerelease": false
       },
       {
         "version": "10.05.1",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2025.7.31/bearsampp-ghostscript-10.05.1-2025.7.31.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:50"
+        "prerelease": false
       },
       {
         "version": "10.05.0",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2025.4.26/bearsampp-ghostscript-10.05.0-2025.4.26.7z",
-        "prerelease": false,
-        "date": "2025-04-23T14:33:25"
+        "prerelease": false
       },
       {
         "version": "10.04.0",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2024.10.31/bearsampp-ghostscript-10.04.0-2024.10.31.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:33"
+        "prerelease": false
       },
       {
         "version": "10.03.1",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2024.6.18/bearsampp-ghostscript-10.03.1-2024.06.18.7z",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:29"
+        "prerelease": false
       },
       {
         "version": "10.03.0",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2024.4.14/bearsampp-ghostscript-10.03.0-2024.04.14.7z",
-        "prerelease": false,
-        "date": "2023-10-07T17:57:12"
+        "prerelease": false
       },
       {
         "version": "10.02.0",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2023.10.1/bearsampp-ghostscript-10.02.0-2023.10.1.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:25"
+        "prerelease": false
       },
       {
         "version": "10.0",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2022.12.03/bearsampp-ghostscript-10.0-2022.12.03.7z",
-        "prerelease": false,
-        "date": "2022-10-21T23:47:18"
+        "prerelease": false
       },
       {
         "version": "9.56.1",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2022.07.10/bearsampp-ghostscript-9.56.1-2022.07.10.7z",
-        "prerelease": false,
-        "date": "2022-07-10T11:42:26"
+        "prerelease": false
       },
       {
         "version": "9.22",
         "url": "https://github.com/Bearsampp/module-ghostscript/releases/download/2022.07.10/bearsampp-ghostscript-9.22-r3.7z",
-        "prerelease": false,
-        "date": "2022-07-10T11:42:26"
+        "prerelease": false
       }
     ]
   },
@@ -486,170 +395,142 @@
       {
         "version": "2.54.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2026.5.31/bearsampp-git-2.54.0-2026.5.31.7z",
-        "prerelease": false,
-        "date": "2026-06-05T20:27:41"
+        "prerelease": false
       },
       {
         "version": "2.53.0.2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2026.4.12/bearsampp-git-2.53.0.2-2026.4.12.7z",
-        "prerelease": false,
-        "date": "2026-03-06T04:54:23"
+        "prerelease": false
       },
       {
         "version": "2.53.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2026.3.5/bearsampp-git-2.53.0-2026.3.5.7z",
-        "prerelease": false,
-        "date": "2026-01-17T08:55:47"
+        "prerelease": false
       },
       {
         "version": "2.52.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2025.11.22/bearsampp-git-2.52.0-2025.11.1.7z",
-        "prerelease": false,
-        "date": "2025-11-23T11:29:02"
+        "prerelease": false
       },
       {
         "version": "2.51.2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2025.11.1/bearsampp-git-2.51.2-2025.11.1.7z",
-        "prerelease": false,
-        "date": "2025-07-11T06:05:51"
+        "prerelease": false
       },
       {
         "version": "2.50.1",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2025.7.10/bearsampp-git-2.50.1-2025.7.10.7z",
-        "prerelease": false,
-        "date": "2025-07-05T22:50:03"
+        "prerelease": false
       },
       {
         "version": "2.50.0.2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2025.7.2/bearsampp-git-2.50.0.2-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:28"
+        "prerelease": false
       },
       {
         "version": "2.49.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2025.4.19/bearsampp-git-2.49.0-2025.4.19.7z",
-        "prerelease": false,
-        "date": "2025-04-16T04:56:55"
+        "prerelease": false
       },
       {
         "version": "2.48.1",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2025.2.22/bearsampp-git-2.48.1-2025.2.22.7z",
-        "prerelease": false,
-        "date": "2025-02-18T12:52:17"
+        "prerelease": false
       },
       {
         "version": "2.48.0-rc2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2025.2.9/bearsampp-git-2.48.0-rc2-2025.2.9.7z",
-        "prerelease": false,
-        "date": "2024-11-01T18:53:39"
+        "prerelease": false
       },
       {
         "version": "2.47.1",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2025.2.9/bearsampp-git-2.47.1-2025.2.9.7z",
-        "prerelease": false,
-        "date": "2024-11-01T18:53:39"
+        "prerelease": false
       },
       {
         "version": "2.47.0.2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.11.1/bearsampp-git-2.47.0.2-2024.11.1.7z",
-        "prerelease": false,
-        "date": "2024-10-15T00:38:50"
+        "prerelease": false
       },
       {
         "version": "2.47.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.10.9/bearsampp-git-2.47.0-2024.10.9.7z",
-        "prerelease": false,
-        "date": "2024-10-09T23:01:36"
+        "prerelease": false
       },
       {
         "version": "2.47.0-rc1",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.10.7/bearsampp-git-2.47.0-2024.10.7.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:34"
+        "prerelease": false
       },
       {
         "version": "2.46.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.8.9/bearsampp-git-2.46.0-2024.8.9.7z",
-        "prerelease": false,
-        "date": "2024-07-23T11:08:34"
+        "prerelease": false
       },
       {
         "version": "2.45.2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.6.17/bearsampp-git-2.45.2-2024.6.17.7z",
-        "prerelease": false,
-        "date": "2024-05-22T00:02:24"
+        "prerelease": false
       },
       {
         "version": "2.45.1",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.5.21/bearsampp-git-2.45.1-2024.5.21.7z",
-        "prerelease": false,
-        "date": "2024-05-09T13:56:44"
+        "prerelease": false
       },
       {
         "version": "2.45.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.5.3/bearsampp-git-2.45.0-2024.5.3.zip",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:31"
+        "prerelease": false
       },
       {
         "version": "2.44.0.1",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2024.3.31/bearsampp-git-2.44.0.1-2024.3.31.zip",
-        "prerelease": false,
-        "date": "2023-09-15T02:24:55"
+        "prerelease": false
       },
       {
         "version": "2.42.0.2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2023.9.7/bearsampp-git-2.42.0.2-2023.7.7.zip",
-        "prerelease": false,
-        "date": "2023-07-09T22:56:59"
+        "prerelease": false
       },
       {
         "version": "2.41.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2023.7.7/bearsampp-git-2.41.0-2023.7.7.zip",
-        "prerelease": false,
-        "date": "2023-05-22T23:04:44"
+        "prerelease": false
       },
       {
         "version": "2.40.1",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2023.5.17/bearsampp-git-2.40.1-2023.5.17.zip",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:26"
+        "prerelease": false
       },
       {
         "version": "2.39.1",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2023.1.31/bearsampp-git-2.39.1-2022.10.21.zip",
-        "prerelease": false,
-        "date": "2022-10-21T23:47:18"
+        "prerelease": false
       },
       {
         "version": "2.38.1",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2022.10.21/bearsampp-git-2.38.1-2022.10.21.zip",
-        "prerelease": false,
-        "date": "2022-09-29T05:23:02"
+        "prerelease": false
       },
       {
         "version": "2.37.3",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2022.08.29/bearsampp-git-2.37.2-2022.08.29.zip",
-        "prerelease": false,
-        "date": "2022-08-17T05:11:07"
+        "prerelease": false
       },
       {
         "version": "2.37.2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2022.08.29/bearsampp-git-2.37.2-2022.08.29.zip",
-        "prerelease": false,
-        "date": "2022-08-17T05:11:07"
+        "prerelease": false
       },
       {
         "version": "2.37.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2022.07.11/bearsampp-git-2.37.0-2022.07.11.zip",
-        "prerelease": false,
-        "date": "2022-07-11T21:29:23"
+        "prerelease": false
       },
       {
         "version": "2.34.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2.34.0/bearsampp-git-2.34.0-2.34.0.zip",
-        "prerelease": false,
-        "date": "2021-11-19T01:40:11"
+        "prerelease": false
       }
     ]
   },
@@ -659,50 +540,42 @@
       {
         "version": "1.30.4",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2026.7.9/bearsampp-mailpit-1.30.4-2026.7.9.7z",
-        "prerelease": false,
-        "date": "2026-06-26T05:51:26"
+        "prerelease": false
       },
       {
         "version": "1.30.2",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2026.6.17/bearsampp-mailpit-1.30.2-2026.6.17.7z",
-        "prerelease": false,
-        "date": "2026-06-08T04:11:00"
+        "prerelease": false
       },
       {
         "version": "1.30.1",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2026.5.29/bearsampp-mailpit-1.30.1-2026.5.29.7z",
-        "prerelease": false,
-        "date": "2026-04-24T02:50:03"
+        "prerelease": false
       },
       {
         "version": "1.29.7",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2026.4.16/bearsampp-mailpit-1.29.7-2026.4.19.7z",
-        "prerelease": false,
-        "date": "2026-04-16T23:55:13"
+        "prerelease": false
       },
       {
         "version": "1.29.2",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2026.3.5/bearsampp-mailpit-1.29.2-2026.3.5.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:29"
+        "prerelease": false
       },
       {
         "version": "1.28.2",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2026.1.15/bearsampp-mailpit-1.28.2-2026.1.15.7z",
-        "prerelease": false,
-        "date": "2026-01-16T05:51:17"
+        "prerelease": false
       },
       {
         "version": "1.28.0",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.12.10/bearsampp-mailpit-1.28.0-2025.12.10.7z",
-        "prerelease": false,
-        "date": "2025-12-10T11:06:41"
+        "prerelease": false
       },
       {
         "version": "1.27.11",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2025.11.23/bearsampp-mailpit-1.27.11-2025.11.23.7z",
-        "prerelease": false,
-        "date": "2025-11-24T00:50:15"
+        "prerelease": false
       }
     ]
   },
@@ -712,512 +585,427 @@
       {
         "version": "12.3.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.6.2/bearsampp-mariadb-12.3.2-2026.6.2.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:23"
+        "prerelease": false
       },
       {
         "version": "12.2.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.3.7/bearsampp-mariadb-12.2.2-2026.3.7.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:31"
+        "prerelease": false
       },
       {
         "version": "12.1.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.11.22/bearsampp-mariadb-12.1.2-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-11-23T03:50:31"
+        "prerelease": false
       },
       {
         "version": "12.0.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.8.21/bearsampp-mariadb-12.0.2-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:53"
+        "prerelease": false
       },
       {
         "version": "11.8.8",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.6.2/bearsampp-mariadb-11.8.8-2026.6.2.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:23"
+        "prerelease": false
       },
       {
         "version": "11.8.6",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.3.7/bearsampp-mariadb-11.8.6-2026.3.7.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:31"
+        "prerelease": false
       },
       {
         "version": "11.8.5",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.11.22/bearsampp-mariadb-11.8.5-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-11-23T03:50:31"
+        "prerelease": false
       },
       {
         "version": "11.8.3",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.8.21/bearsampp-mariadb-11.8.3-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:53"
+        "prerelease": false
       },
       {
         "version": "11.8.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.7.2/bearsampp-mariadb-11.8.2-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:30"
+        "prerelease": false
       },
       {
         "version": "11.6.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.12.1/bearsampp-mariadb-11.6.2-2024.12.1.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:38:41"
+        "prerelease": false
       },
       {
         "version": "11.6.1-RC",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-11.6.1-RC-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-12T23:08:10"
+        "prerelease": false
       },
       {
         "version": "11.5.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-11.5.2-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-12T23:08:10"
+        "prerelease": false
       },
       {
         "version": "11.5.1-RC",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.6.25/bearsampp-mariadb-11.5.1-RC-2024.6.25.7z",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:34"
+        "prerelease": false
       },
       {
         "version": "11.4.12",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.6.2/bearsampp-mariadb-11.4.12-2026.6.2.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:23"
+        "prerelease": false
       },
       {
         "version": "11.4.9",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.11.22/bearsampp-mariadb-11.4.9-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-11-23T03:50:31"
+        "prerelease": false
       },
       {
         "version": "11.4.8",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.11.22/bearsampp-mariadb-11.4.8-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-11-23T03:50:31"
+        "prerelease": false
       },
       {
         "version": "11.4.7",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.7.2/bearsampp-mariadb-11.4.7-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:30"
+        "prerelease": false
       },
       {
         "version": "11.4.5",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.2.11/bearsampp-mariadb-11.4.5-2025.2.11.7z",
-        "prerelease": false,
-        "date": "2024-12-03T01:13:23"
+        "prerelease": false
       },
       {
         "version": "11.4.3",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-11.4.3-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-12T23:08:10"
+        "prerelease": false
       },
       {
         "version": "11.4.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.6.25/bearsampp-mariadb-11.4.2-2024.6.25.7z",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:34"
+        "prerelease": false
       },
       {
         "version": "11.3.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.3.31/bearsampp-mariadb-11.3.2-2024.3.31.7z",
-        "prerelease": false,
-        "date": "2023-12-11T02:39:02"
+        "prerelease": false
       },
       {
         "version": "11.2.5",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-11.2.5-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-12T23:08:10"
+        "prerelease": false
       },
       {
         "version": "11.2.4",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.6.25/bearsampp-mariadb-11.2.4-2024.6.25.7z",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:34"
+        "prerelease": false
       },
       {
         "version": "11.2.3",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.3.31/bearsampp-mariadb-11.2.3-2024.3.31.7z",
-        "prerelease": false,
-        "date": "2023-12-11T02:39:02"
+        "prerelease": false
       },
       {
         "version": "11.2.1-RC",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.10.9/bearsampp-mariadb-11.2.1-RC-2023.10.9.7z",
-        "prerelease": false,
-        "date": "2023-07-28T00:14:11"
+        "prerelease": false
       },
       {
         "version": "11.1.6",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-11.1.6-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-12T23:08:10"
+        "prerelease": false
       },
       {
         "version": "11.1.5",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.6.25/bearsampp-mariadb-11.1.5-2024.6.25.7z",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:34"
+        "prerelease": false
       },
       {
         "version": "11.1.4",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.3.31/bearsampp-mariadb-11.1.4-2024.3.31.7z",
-        "prerelease": false,
-        "date": "2023-12-11T02:39:02"
+        "prerelease": false
       },
       {
         "version": "11.1.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.10.9/bearsampp-mariadb-11.1.2-2023.10.9.7z",
-        "prerelease": false,
-        "date": "2023-07-28T00:14:11"
+        "prerelease": false
       },
       {
         "version": "11.1.1-RC",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.7.23/bearsampp-mariadb-11.1.1-RC-2022.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T01:55:20"
+        "prerelease": false
       },
       {
         "version": "11.0.6",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.6.25/bearsampp-mariadb-11.0.6-2024.6.25.7z",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:34"
+        "prerelease": false
       },
       {
         "version": "11.0.5",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.3.31/bearsampp-mariadb-11.0.5-2024.3.31.7z",
-        "prerelease": false,
-        "date": "2023-12-11T02:39:02"
+        "prerelease": false
       },
       {
         "version": "11.0.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.7.23/bearsampp-mariadb-11.0.2-2022.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T01:55:20"
+        "prerelease": false
       },
       {
         "version": "10.11.18",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.6.2/bearsampp-mariadb-10.11.18-2026.6.2.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:23"
+        "prerelease": false
       },
       {
         "version": "10.11.15",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.11.22/bearsampp-mariadb-10.11.15-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-11-23T03:50:31"
+        "prerelease": false
       },
       {
         "version": "10.11.14",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.8.21/bearsampp-mariadb-10.11.14-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:53"
+        "prerelease": false
       },
       {
         "version": "10.11.13",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.7.2/bearsampp-mariadb-10.11.13-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:30"
+        "prerelease": false
       },
       {
         "version": "10.11.11",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.2.11/bearsampp-mariadb-10.11.11-2025.2.11.7z",
-        "prerelease": false,
-        "date": "2024-12-03T01:13:23"
+        "prerelease": false
       },
       {
         "version": "10.11.9",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-10.11.9-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-12T23:08:10"
+        "prerelease": false
       },
       {
         "version": "10.11.8",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.6.25/bearsampp-mariadb-10.11.8-2024.6.25.7z",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:34"
+        "prerelease": false
       },
       {
         "version": "10.11.7",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.3.31/bearsampp-mariadb-10.11.7-2024.3.31.7z",
-        "prerelease": false,
-        "date": "2023-12-11T02:39:02"
+        "prerelease": false
       },
       {
         "version": "10.11.5",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.10.9/bearsampp-mariadb-10.11.5-2023.10.9.7z",
-        "prerelease": false,
-        "date": "2023-07-28T00:14:11"
+        "prerelease": false
       },
       {
         "version": "10.11.4",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.7.23/bearsampp-mariadb-10.11.4-2022.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T01:55:20"
+        "prerelease": false
       },
       {
         "version": "10.11.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.4.30/bearsampp-mariadb-10.11.2-2022.5.3.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:28"
+        "prerelease": false
       },
       {
         "version": "10.11.1",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.12.03/bearsampp-mariadb-10.11.1-2022.12.03.7z",
-        "prerelease": false,
-        "date": "2022-12-03T14:32:08"
+        "prerelease": false
       },
       {
         "version": "10.10.6",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.10.9/bearsampp-mariadb-10.10.6-2023.10.9.7z",
-        "prerelease": false,
-        "date": "2023-07-28T00:14:11"
+        "prerelease": false
       },
       {
         "version": "10.10.5",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.7.23/bearsampp-mariadb-10.10.5-2022.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T01:55:20"
+        "prerelease": false
       },
       {
         "version": "10.10.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.12.03/bearsampp-mariadb-10.10.2-2022.12.03.7z",
-        "prerelease": false,
-        "date": "2022-12-03T14:32:08"
+        "prerelease": false
       },
       {
         "version": "10.9.8",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.10.9/bearsampp-mariadb-10.9.8-2023.10.9.7z",
-        "prerelease": false,
-        "date": "2023-07-28T00:14:11"
+        "prerelease": false
       },
       {
         "version": "10.9.7",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.7.23/bearsampp-mariadb-10.9.7-2022.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T01:55:20"
+        "prerelease": false
       },
       {
         "version": "10.9.5",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.7.23/bearsampp-mariadb-10.9.5-2022.5.3.7z",
-        "prerelease": false,
-        "date": "2023-05-10T01:55:20"
+        "prerelease": false
       },
       {
         "version": "10.9.4",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.12.03/bearsampp-mariadb-10.9.4-2022.12.03.7z",
-        "prerelease": false,
-        "date": "2022-12-03T14:32:08"
+        "prerelease": false
       },
       {
         "version": "10.9.3",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.09.22/bearsampp-mariadb-10.9.3-2022.09.22.7z",
-        "prerelease": false,
-        "date": "2022-09-13T09:37:54"
+        "prerelease": false
       },
       {
         "version": "10.9.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.09.04/bearsampp-mariadb-10.9.2-2022.09.04.7z",
-        "prerelease": false,
-        "date": "2022-09-01T10:28:42"
+        "prerelease": false
       },
       {
         "version": "10.8.6",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.12.03/bearsampp-mariadb-10.8.6-2022.12.03.7z",
-        "prerelease": false,
-        "date": "2022-12-03T14:32:08"
+        "prerelease": false
       },
       {
         "version": "10.8.5",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.10.24/bearsampp-mariadb-10.8.5-2022.10.24.7z",
-        "prerelease": false,
-        "date": "2022-10-24T08:11:48"
+        "prerelease": false
       },
       {
         "version": "10.8.4",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/mariadb-2022.08.27/bearsampp-mariadb-10.8.4-2022.08.27.7z",
-        "prerelease": false,
-        "date": "2022-08-17T05:11:14"
+        "prerelease": false
       },
       {
         "version": "10.8.3",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.05.21/bearsampp-mariadb-10.8.3-2022.05.21.7z",
-        "prerelease": false,
-        "date": "2022-07-13T06:43:03"
+        "prerelease": false
       },
       {
         "version": "10.7.7",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.12.03/bearsampp-mariadb-10.7.7-2022.12.03.7z",
-        "prerelease": false,
-        "date": "2022-12-03T14:32:08"
+        "prerelease": false
       },
       {
         "version": "10.7.6",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.10.24/bearsampp-mariadb-10.7.6-2022.10.24.7z",
-        "prerelease": false,
-        "date": "2022-10-24T08:11:48"
+        "prerelease": false
       },
       {
         "version": "10.6.27",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.6.2/bearsampp-mariadb-10.6.27-2026.6.2.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:23"
+        "prerelease": false
       },
       {
         "version": "10.6.24",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.11.22/bearsampp-mariadb-10.6.24-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-11-23T03:50:31"
+        "prerelease": false
       },
       {
         "version": "10.6.23",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.8.21/bearsampp-mariadb-10.6.23-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:53"
+        "prerelease": false
       },
       {
         "version": "10.6.22",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.7.2/bearsampp-mariadb-10.6.22-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:30"
+        "prerelease": false
       },
       {
         "version": "10.6.21",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.2.11/bearsampp-mariadb-10.6.21-2025.2.11.7z",
-        "prerelease": false,
-        "date": "2024-12-03T01:13:23"
+        "prerelease": false
       },
       {
         "version": "10.6.19",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-10.6.19-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-12T23:08:10"
+        "prerelease": false
       },
       {
         "version": "10.6.18",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.6.25/bearsampp-mariadb-10.6.18-2024.6.25.7z",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:34"
+        "prerelease": false
       },
       {
         "version": "10.6.17",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.3.31/bearsampp-mariadb-10.6.17-2024.3.31.7z",
-        "prerelease": false,
-        "date": "2023-12-11T02:39:02"
+        "prerelease": false
       },
       {
         "version": "10.6.14",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.7.23/bearsampp-mariadb-10.6.14-2022.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T01:55:20"
+        "prerelease": false
       },
       {
         "version": "10.6.11",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.12.03/bearsampp-mariadb-10.6.11-2022.12.03.7z",
-        "prerelease": false,
-        "date": "2022-12-03T14:32:08"
+        "prerelease": false
       },
       {
         "version": "10.6.10",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.10.24/bearsampp-mariadb-10.6.10-2022.10.24.7z",
-        "prerelease": false,
-        "date": "2022-10-24T08:11:48"
+        "prerelease": false
       },
       {
         "version": "10.6.9",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.09.04/bearsampp-mariadb-10.6.9-2022.09.04.7z",
-        "prerelease": false,
-        "date": "2022-09-01T10:28:42"
+        "prerelease": false
       },
       {
         "version": "10.6.8",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.05.21/bearsampp-mariadb-10.6.8-2022.05.21.7z",
-        "prerelease": false,
-        "date": "2022-07-13T06:43:03"
+        "prerelease": false
       },
       {
         "version": "10.5.29",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.7.2/bearsampp-mariadb-10.5.29-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:30"
+        "prerelease": false
       },
       {
         "version": "10.5.28",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2025.2.11/bearsampp-mariadb-10.5.28-2025.2.11.7z",
-        "prerelease": false,
-        "date": "2024-12-03T01:13:23"
+        "prerelease": false
       },
       {
         "version": "10.5.26",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.9.13/bearsampp-mariadb-10.5.26-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-12T23:08:10"
+        "prerelease": false
       },
       {
         "version": "10.5.25",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.6.25/bearsampp-mariadb-10.5.25-2024.6.25.7z",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:34"
+        "prerelease": false
       },
       {
         "version": "10.5.24",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.3.31/bearsampp-mariadb-10.5.24-2024.3.31.7z",
-        "prerelease": false,
-        "date": "2023-12-11T02:39:02"
+        "prerelease": false
       },
       {
         "version": "10.5.21",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.7.23/bearsampp-mariadb-10.5.21-2022.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T01:55:20"
+        "prerelease": false
       },
       {
         "version": "10.5.18",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.12.03/bearsampp-mariadb-10.5.18-2022.12.03.7z",
-        "prerelease": false,
-        "date": "2022-12-03T14:32:08"
+        "prerelease": false
       },
       {
         "version": "10.4.34",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.6.25/bearsampp-mariadb-10.4.34-2024.6.25.7z",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:34"
+        "prerelease": false
       },
       {
         "version": "10.4.33",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2024.3.31/bearsampp-mariadb-10.4.33-2024.3.31.7z",
-        "prerelease": false,
-        "date": "2023-12-11T02:39:02"
+        "prerelease": false
       },
       {
         "version": "10.4.30",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2023.7.23/bearsampp-mariadb-10.4.30-2022.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T01:55:20"
+        "prerelease": false
       },
       {
         "version": "10.4.27",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.12.03/bearsampp-mariadb-10.4.27-2022.12.03.7z",
-        "prerelease": false,
-        "date": "2022-12-03T14:32:08"
+        "prerelease": false
       },
       {
         "version": "10.3.37",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2022.12.03/bearsampp-mariadb-10.3.37-2022.12.03.7z",
-        "prerelease": false,
-        "date": "2022-12-03T14:32:08"
+        "prerelease": false
       }
     ]
   },
@@ -1227,104 +1015,87 @@
       {
         "version": "1.6.45",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2026.7.10/bearsampp-memcached-1.6.45-2026.7.10.7z",
-        "prerelease": false,
-        "date": "2026-07-11T07:53:47"
+        "prerelease": false
       },
       {
         "version": "1.6.42",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2026.6.2/bearsampp-memcached-1.6.42-2026.6.2.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:25"
+        "prerelease": false
       },
       {
         "version": "1.6.41",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2026.3.7/bearsampp-memcached-1.6.41-2026.3.7.7z",
-        "prerelease": false,
-        "date": "2026-03-07T20:46:19"
+        "prerelease": false
       },
       {
         "version": "1.6.40.7",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2026.1.16/bearsampp-memcached-1.6.40.7-2026.1.15.7z",
-        "prerelease": false,
-        "date": "2026-01-16T06:05:51"
+        "prerelease": false
       },
       {
         "version": "1.6.39",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2025.8.20/bearsampp-memcached-1.6.39-2025.8.20.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:54"
+        "prerelease": false
       },
       {
         "version": "1.6.38",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2025.4.19/bearsampp-memcached-1.6.38-2025.4.19.7z",
-        "prerelease": false,
-        "date": "2025-04-16T04:57:00"
+        "prerelease": false
       },
       {
         "version": "1.6.36",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2025.2.11/bearsampp-memcached-1.6.36-2025.2.11.7z",
-        "prerelease": false,
-        "date": "2024-12-28T21:58:56"
+        "prerelease": false
       },
       {
         "version": "1.6.33",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.12.23/bearsampp-memcached-1.6.33-2024.12.23.7z",
-        "prerelease": false,
-        "date": "2024-10-09T23:11:40"
+        "prerelease": false
       },
       {
         "version": "1.6.32",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.12.1/bearsampp-memcached-1.6.32-2024.12.1.7z",
-        "prerelease": false,
-        "date": "2024-10-09T23:11:40"
+        "prerelease": false
       },
       {
         "version": "1.6.31",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.10.7/bearsampp-memcached-1.6.31-2024.10.7.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:37"
+        "prerelease": false
       },
       {
         "version": "1.6.29",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.7.29/bearsampp-memcached-1.6.29-2024.10.7.7z",
-        "prerelease": false,
-        "date": "2024-07-23T11:08:38"
+        "prerelease": false
       },
       {
         "version": "1.6.24",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2024.3.30/bearsampp-memcached-1.6.24-2024.3.30.7z",
-        "prerelease": false,
-        "date": "2023-10-07T17:46:09"
+        "prerelease": false
       },
       {
         "version": "1.6.21",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2023.10.1/bearsampp-memcached-1.6.21-2023.10.1.7z",
-        "prerelease": false,
-        "date": "2023-03-07T01:03:07"
+        "prerelease": false
       },
       {
         "version": "1.6.18",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2023.3.5/bearsampp-memcached-1.6.18-2023.3.5.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:29"
+        "prerelease": false
       },
       {
         "version": "1.6.17",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2022.09.26/bearsampp-memcached-1.6.17-2022.09.24.7z",
-        "prerelease": false,
-        "date": "2022-09-27T01:47:01"
+        "prerelease": false
       },
       {
         "version": "1.6.15",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2022.08.04/bearsampp-memcached-1.6.15-2022.08.04.7z",
-        "prerelease": false,
-        "date": "2022-08-04T13:49:20"
+        "prerelease": false
       },
       {
         "version": "1.6.6",
         "url": "https://github.com/Bearsampp/module-memcached/releases/download/2022.07.14/bearsampp-memcached-1.6.6-2022.07.14.7z",
-        "prerelease": false,
-        "date": "2022-07-14T06:34:55"
+        "prerelease": false
       }
     ]
   },
@@ -1334,188 +1105,157 @@
       {
         "version": "9.7.1",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2026.7.10/bearsampp-mysql-9.7.1-2026.7.10.7z",
-        "prerelease": true,
-        "date": "2026-07-11T07:53:49"
+        "prerelease": true
       },
       {
         "version": "9.7.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2026.7.10/bearsampp-mysql-9.7.0-2026.7.10.7z",
-        "prerelease": true,
-        "date": "2026-07-11T07:53:49"
+        "prerelease": true
       },
       {
         "version": "9.6.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2026.3.4/bearsampp-mysql-9.6.0-2026.3.4.7z",
-        "prerelease": false,
-        "date": "2026-01-17T08:55:52"
+        "prerelease": false
       },
       {
         "version": "9.5.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.11.23/bearsampp-mysql-9.5.0-2025.11.23.7z",
-        "prerelease": false,
-        "date": "2025-11-23T11:29:09"
+        "prerelease": false
       },
       {
         "version": "9.4.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.8.21/bearsampp-mysql-9.4.0-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:55"
+        "prerelease": false
       },
       {
         "version": "9.3.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.4.18/bearsampp-mysql-9.3.0-2025.4.18.7z",
-        "prerelease": false,
-        "date": "2025-04-16T04:57:02"
+        "prerelease": false
       },
       {
         "version": "9.2.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.1.23/bearsampp-mysql-9.2.0-2025.1.23.7z",
-        "prerelease": false,
-        "date": "2024-12-02T04:39:12"
+        "prerelease": false
       },
       {
         "version": "9.1.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.12.1/bearsampp-mysql-9.1.0-2024.12.1.7z",
-        "prerelease": false,
-        "date": "2024-11-01T00:07:19"
+        "prerelease": false
       },
       {
         "version": "9.0.1",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.7.28/bearsampp-mysql-9.0.1-2024.8.7.7z",
-        "prerelease": false,
-        "date": "2024-07-23T11:08:39"
+        "prerelease": false
       },
       {
         "version": "8.4.8",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2026.3.4/bearsampp-mysql-8.4.8-2026.3.4.7z",
-        "prerelease": false,
-        "date": "2026-01-17T08:55:52"
+        "prerelease": false
       },
       {
         "version": "8.4.7",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.11.23/bearsampp-mysql-8.4.7-2025.11.23.7z",
-        "prerelease": false,
-        "date": "2025-11-23T11:29:09"
+        "prerelease": false
       },
       {
         "version": "8.4.6",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.8.21/bearsampp-mysql-8.4.6-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:55"
+        "prerelease": false
       },
       {
         "version": "8.4.5",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.4.18/bearsampp-mysql-8.4.5-2025.4.18.7z",
-        "prerelease": false,
-        "date": "2025-04-16T04:57:02"
+        "prerelease": false
       },
       {
         "version": "8.4.4",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.1.23/bearsampp-mysql-8.4.4-2025.1.23.7z",
-        "prerelease": false,
-        "date": "2024-12-02T04:39:12"
+        "prerelease": false
       },
       {
         "version": "8.4.3",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.10.31/bearsampp-mysql-8.4.3-2024.10.31.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:40"
+        "prerelease": false
       },
       {
         "version": "8.4.2",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.7.28/bearsampp-mysql-8.4.2-2024.7.28.7z",
-        "prerelease": false,
-        "date": "2024-07-23T11:08:39"
+        "prerelease": false
       },
       {
         "version": "8.4",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.6.14/bearsampp-mysql-8.4-2024.6.14.7z",
-        "prerelease": false,
-        "date": "2024-06-03T02:57:38"
+        "prerelease": false
       },
       {
         "version": "8.3.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.6.14/bearsampp-mysql-8.3.0-2024.6.14.7z",
-        "prerelease": false,
-        "date": "2024-06-03T02:57:38"
+        "prerelease": false
       },
       {
         "version": "8.0.45",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2026.3.4/bearsampp-mysql-8.0.45-2026.3.4.7z",
-        "prerelease": false,
-        "date": "2026-01-17T08:55:52"
+        "prerelease": false
       },
       {
         "version": "8.0.44",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.11.23/bearsampp-mysql-8.0.44-2025.11.23.7z",
-        "prerelease": false,
-        "date": "2025-11-23T11:29:09"
+        "prerelease": false
       },
       {
         "version": "8.0.42",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.4.18/bearsampp-mysql-8.0.42-2025.4.18.7z",
-        "prerelease": false,
-        "date": "2025-04-16T04:57:02"
+        "prerelease": false
       },
       {
         "version": "8.0.41",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2025.1.23/bearsampp-mysql-8.0.41-2025.1.23.7z",
-        "prerelease": false,
-        "date": "2024-12-02T04:39:12"
+        "prerelease": false
       },
       {
         "version": "8.0.37",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.5.9/bearsampp-mysql-8.0.37-2024.5.9.7z",
-        "prerelease": false,
-        "date": "2024-04-30T03:12:38"
+        "prerelease": false
       },
       {
         "version": "8.0.36",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2024.4.10/bearsampp-mysql-8.0.36-2024.4.10.7z",
-        "prerelease": false,
-        "date": "2023-07-09T22:58:38"
+        "prerelease": false
       },
       {
         "version": "8.0.33",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2023.7.7/bearsampp-mysql-8.0.33-2023.7.7.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:53:24"
+        "prerelease": false
       },
       {
         "version": "8.0.32",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2023.3.5/bearsampp-mysql-8.0.32-2023.3.5.7z",
-        "prerelease": false,
-        "date": "2022-10-30T03:22:22"
+        "prerelease": false
       },
       {
         "version": "8.0.31",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2022.10.28/bearsampp-mysql-8.0.31-2022.10.29.7z",
-        "prerelease": false,
-        "date": "2022-10-21T23:47:22"
+        "prerelease": false
       },
       {
         "version": "8.0.30",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2022.08.29/bearsampp-mysql-8.0.30-2022.08.29.7z",
-        "prerelease": false,
-        "date": "2022-08-17T05:11:19"
+        "prerelease": false
       },
       {
         "version": "8.0.29",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2022.07.14/bearsampp-mysql-8.0.29-2022.07.14.7z",
-        "prerelease": false,
-        "date": "2022-07-14T07:59:29"
+        "prerelease": false
       },
       {
         "version": "8.0.27",
         "url": "https://github.com/Bearsampp/modules-untouched/releases/download/mysql-r15/bearsampp-mysql-8.0.27-2022.07.30.7z",
-        "prerelease": false,
-        "date": null
+        "prerelease": false
       },
       {
         "version": "5.7.39",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2022.07.30/bearsampp-mysql-5.7.39-2022.07.30.7z",
-        "prerelease": false,
-        "date": "2022-07-25T01:46:55"
+        "prerelease": false
       }
     ]
   },
@@ -1525,38 +1265,32 @@
       {
         "version": "3.39.9",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2026.7.11/bearsampp-ngrok-3.39.9-2026.7.11.7z",
-        "prerelease": true,
-        "date": "2026-07-11T07:53:50"
+        "prerelease": true
       },
       {
         "version": "3.39.6",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2026.6.2/bearsampp-ngrok-3.39.6-2026.6.2.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:29"
+        "prerelease": false
       },
       {
         "version": "3.25.0",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2025.7.31/bearsampp-ngrok-3.25.0-2025.7.31.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:56"
+        "prerelease": false
       },
       {
         "version": "3.19.1",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2025.02.16/bearsampp-ngrok-3.19.1-2025.02.16.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:41"
+        "prerelease": false
       },
       {
         "version": "3",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/3/bearsampp-ngrok-3-2022.07.14.7z",
-        "prerelease": false,
-        "date": "2021-12-10T01:19:20"
+        "prerelease": false
       },
       {
         "version": "2.2.8",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2.2.8/bearsampp-ngrok-2.2.8-2022.07.14.7z",
-        "prerelease": false,
-        "date": "2021-12-10T01:19:20"
+        "prerelease": false
       }
     ]
   },
@@ -1566,248 +1300,207 @@
       {
         "version": "26.5.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.7.11/bearsampp-nodejs-26.5.0-2026.7.11.7z",
-        "prerelease": true,
-        "date": "2026-07-11T07:53:51"
+        "prerelease": true
       },
       {
         "version": "26.3.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.6.2/bearsampp-nodejs-26.3.0-2026.6.2.7z",
-        "prerelease": false,
-        "date": "2026-06-03T02:07:38"
+        "prerelease": false
       },
       {
         "version": "25.9.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.4.12/bearsampp-nodejs-25.9.0-2026.4.12.7z",
-        "prerelease": false,
-        "date": "2026-03-08T09:08:56"
+        "prerelease": false
       },
       {
         "version": "25.8.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.3.7/bearsampp-nodejs-25.8.0-2026.3.7.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:37"
+        "prerelease": false
       },
       {
         "version": "24.14.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.4.12/bearsampp-nodejs-24.14.1-2026.4.12.7z",
-        "prerelease": false,
-        "date": "2026-03-08T09:08:56"
+        "prerelease": false
       },
       {
         "version": "24.14.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.3.7/bearsampp-nodejs-24.14.0-2026.3.7.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:37"
+        "prerelease": false
       },
       {
         "version": "24.6.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.8.21/bearsampp-nodejs-24.6.0-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-08-01T19:23:16"
+        "prerelease": false
       },
       {
         "version": "24.4.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.7.31/bearsampp-nodejs-24.4.1-2025.7.31.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:28:57"
+        "prerelease": false
       },
       {
         "version": "24.3.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.7.2/bearsampp-nodejs-24.3.0-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:34"
+        "prerelease": false
       },
       {
         "version": "23.11.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.4.19/bearsampp-nodejs-23.11.0-2025.4.19.7z",
-        "prerelease": false,
-        "date": "2025-04-16T04:57:05"
+        "prerelease": false
       },
       {
         "version": "23.9.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.3.2/bearsampp-nodejs-23.9.0-2025.3.2.7z",
-        "prerelease": false,
-        "date": "2025-02-19T02:37:42"
+        "prerelease": false
       },
       {
         "version": "23.7.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.2.11/bearsampp-nodejs-23.7.0-2025.2.11.7z",
-        "prerelease": false,
-        "date": "2025-01-30T07:36:02"
+        "prerelease": false
       },
       {
         "version": "23.6.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.1.23/bearsampp-nodejs-23.6.1-2025.1.23.7z",
-        "prerelease": false,
-        "date": "2024-12-02T03:03:44"
+        "prerelease": false
       },
       {
         "version": "23.3.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.12.1/bearsampp-nodejs-23.3.0-2024.12.1.7z",
-        "prerelease": false,
-        "date": "2024-11-02T10:11:35"
+        "prerelease": false
       },
       {
         "version": "23.1.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.11.1/bearsampp-nodejs-23.1.0-2024.11.1.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:37:47"
+        "prerelease": false
       },
       {
         "version": "22.22.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.3.7/bearsampp-nodejs-22.22.1-2026.3.7.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:37"
+        "prerelease": false
       },
       {
         "version": "22.21.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-22.21.1-2025.11.23.7z",
-        "prerelease": false,
-        "date": "2025-11-23T23:31:21"
+        "prerelease": false
       },
       {
         "version": "22.18.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.8.21/bearsampp-nodejs-22.18.0-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-08-01T19:23:16"
+        "prerelease": false
       },
       {
         "version": "22.17.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.7.2/bearsampp-nodejs-22.17.0-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:34"
+        "prerelease": false
       },
       {
         "version": "22.14.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.3.2/bearsampp-nodejs-22.14.0-2025.3.2.7z",
-        "prerelease": false,
-        "date": "2025-02-19T02:37:42"
+        "prerelease": false
       },
       {
         "version": "22.11.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.11.1/bearsampp-nodejs-22.11.0-2024.11.1.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:37:47"
+        "prerelease": false
       },
       {
         "version": "22.8.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.9.13/bearsampp-nodejs-22.8.0-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-12T23:08:16"
+        "prerelease": false
       },
       {
         "version": "22.5.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.7.28/bearsampp-nodejs-22.5.1-2024.7.28.7z",
-        "prerelease": false,
-        "date": "2024-07-23T11:08:42"
+        "prerelease": false
       },
       {
         "version": "21.7.3",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.4.11/bearsampp-nodejs-21.7.3-2024.4.11.7z",
-        "prerelease": false,
-        "date": "2023-07-27T23:42:42"
+        "prerelease": false
       },
       {
         "version": "20.19.5",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2025.11.23/bearsampp-nodejs-20.19.5-2025.11.23.7z",
-        "prerelease": false,
-        "date": "2025-11-23T23:31:21"
+        "prerelease": false
       },
       {
         "version": "20.17.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.9.13/bearsampp-nodejs-20.17.0-2024.9.13.7z",
-        "prerelease": false,
-        "date": "2024-09-12T23:08:16"
+        "prerelease": false
       },
       {
         "version": "20.16.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.7.28/bearsampp-nodejs-20.16.0-2024.7.28.7z",
-        "prerelease": false,
-        "date": "2024-07-23T11:08:42"
+        "prerelease": false
       },
       {
         "version": "20.12.2",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.4.11/bearsampp-nodejs-20.12.2-2024.4.11.7z",
-        "prerelease": false,
-        "date": "2023-07-27T23:42:42"
+        "prerelease": false
       },
       {
         "version": "20.5",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2023.7.23/bearsampp-nodejs-20.5-2023.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T02:26:23"
+        "prerelease": false
       },
       {
         "version": "20.0.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2023.4.19/bearsampp-nodejs-20.0.0-2023.4.19.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:32"
+        "prerelease": false
       },
       {
         "version": "19.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2022.10.28/bearsampp-nodejs-19.0-2022.10.28.7z",
-        "prerelease": false,
-        "date": "2022-10-21T23:47:24"
+        "prerelease": false
       },
       {
         "version": "18.20.2",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2024.4.11/bearsampp-nodejs-18.20.2-2024.4.11.7z",
-        "prerelease": false,
-        "date": "2023-07-27T23:42:42"
+        "prerelease": false
       },
       {
         "version": "18.17",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2023.7.23/bearsampp-nodejs-18.17-2023.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T02:26:23"
+        "prerelease": false
       },
       {
         "version": "18.12",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2022.10.28/bearsampp-nodejs-18.12-2022.10.28.7z",
-        "prerelease": false,
-        "date": "2022-10-21T23:47:24"
+        "prerelease": false
       },
       {
         "version": "18.10.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2022.09.28/bearsampp-nodejs-18.10.0-2022.09.24.7z",
-        "prerelease": false,
-        "date": "2022-09-24T07:36:44"
+        "prerelease": false
       },
       {
         "version": "18.9.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2022.09.24/bearsampp-nodejs-18.9.1-2022.09.24.7z",
-        "prerelease": false,
-        "date": "2022-09-24T06:37:01"
+        "prerelease": false
       },
       {
         "version": "18.8.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2022.09.24/bearsampp-nodejs-18.8.0-2022.09.24.7z",
-        "prerelease": false,
-        "date": "2022-09-24T06:37:01"
+        "prerelease": false
       },
       {
         "version": "18.6",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2022.09.24/bearsampp-nodejs-18.6-2022.09.24.7z",
-        "prerelease": false,
-        "date": "2022-09-24T06:37:01"
+        "prerelease": false
       },
       {
         "version": "18.4",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/18.4/bearsampp-nodejs-18.4-2022.07.15.7z",
-        "prerelease": false,
-        "date": "2022-06-30T15:10:15"
+        "prerelease": false
       },
       {
         "version": "16.20",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2023.7.23/bearsampp-nodejs-16.20-2023.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T02:26:23"
+        "prerelease": false
       },
       {
         "version": "16.17.1",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2022.09.28/bearsampp-nodejs-16.17.1-2022.09.24.7z",
-        "prerelease": false,
-        "date": "2022-09-24T07:36:44"
+        "prerelease": false
       }
     ]
   },
@@ -1817,32 +1510,27 @@
       {
         "version": "5.42.2.1",
         "url": "https://github.com/Bearsampp/module-perl/releases/download/2026.4.12/bearsampp-perl-5.42.2.1-2026.4.12.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:38"
+        "prerelease": false
       },
       {
         "version": "5.42.0.1",
         "url": "https://github.com/Bearsampp/module-perl/releases/download/2026.1.15/bearsampp-perl-5.42.0.1-2026.1.15.7z",
-        "prerelease": false,
-        "date": "2026-01-04T10:38:26"
+        "prerelease": false
       },
       {
         "version": "5.40.0",
         "url": "https://github.com/Bearsampp/module-perl/releases/download/2025.4.26/bearsampp-perl-5.40.0-2025.4.26.7z",
-        "prerelease": false,
-        "date": "2025-04-23T14:33:35"
+        "prerelease": false
       },
       {
         "version": "5.38.2.2",
         "url": "https://github.com/Bearsampp/module-perl/releases/download/2024.4.14/bearsampp-perl-5.38.2.2-2024.04.14.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:34"
+        "prerelease": false
       },
       {
         "version": "5.32.1.1",
         "url": "https://github.com/Bearsampp/module-perl/releases/download/5.32.1.1/bearsampp-perl-5.32.1.1-2022.07.15.7z",
-        "prerelease": false,
-        "date": "2022-07-15T05:25:16"
+        "prerelease": false
       }
     ]
   },
@@ -1852,530 +1540,442 @@
       {
         "version": "8.5.8",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.7.7/bearsampp-php-8.5.8-2026.7.7.7z",
-        "prerelease": false,
-        "date": "2026-06-26T05:51:42"
+        "prerelease": false
       },
       {
         "version": "8.5.7",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.6.2/bearsampp-php-8.5.7-2026.6.2.7z",
-        "prerelease": false,
-        "date": "2026-04-24T03:53:41"
+        "prerelease": false
       },
       {
         "version": "8.5.5",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.4.18/bearsampp-php-8.5.5-2026.4.18.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:35"
+        "prerelease": false
       },
       {
         "version": "8.5.3",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.3.4/bearsampp-php-8.5.3-2026.3.4.7z",
-        "prerelease": false,
-        "date": "2026-02-03T12:45:29"
+        "prerelease": false
       },
       {
         "version": "8.5.2",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.1.30/bearsampp-php-8.5.2-2026.1.30.7z",
-        "prerelease": false,
-        "date": "2026-01-25T21:00:23"
+        "prerelease": false
       },
       {
         "version": "8.5.0",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.12.7/bearsampp-php-8.5.0-2025.12.07.7z",
-        "prerelease": false,
-        "date": "2025-11-25T10:46:28"
+        "prerelease": false
       },
       {
         "version": "8.4.23",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.7.7/bearsampp-php-8.4.23-2026.7.7.7z",
-        "prerelease": false,
-        "date": "2026-06-26T05:51:42"
+        "prerelease": false
       },
       {
         "version": "8.4.22",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.6.2/bearsampp-php-8.4.22-2026.6.2.7z",
-        "prerelease": false,
-        "date": "2026-04-24T03:53:41"
+        "prerelease": false
       },
       {
         "version": "8.4.20",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.4.18/bearsampp-php-8.4.20-2026.4.18.7z",
-        "prerelease": false,
-        "date": "2026-04-17T05:42:35"
+        "prerelease": false
       },
       {
         "version": "8.4.18",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.3.4/bearsampp-php-8.4.18-2026.3.4.7z",
-        "prerelease": false,
-        "date": "2026-02-03T12:45:29"
+        "prerelease": false
       },
       {
         "version": "8.4.17",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.1.16/bearsampp-php-8.4.17-2026.1.16.7z",
-        "prerelease": false,
-        "date": "2026-01-04T10:38:27"
+        "prerelease": false
       },
       {
         "version": "8.4.15",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.12.7/bearsampp-php-8.4.15-2025.12.07.7z",
-        "prerelease": false,
-        "date": "2025-11-25T10:46:28"
+        "prerelease": false
       },
       {
         "version": "8.4.14",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.10.31/bearsampp-php-8.4.14-2025.10.31.7z",
-        "prerelease": false,
-        "date": "2025-09-27T06:52:04"
+        "prerelease": false
       },
       {
         "version": "8.4.13",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.9.24/bearsampp-php-8.4.13-2025.9.24.7z",
-        "prerelease": false,
-        "date": "2025-09-23T02:34:54"
+        "prerelease": false
       },
       {
         "version": "8.4.11",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.8.21/bearsampp-php-8.4.11-2025.8.20.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:29:00"
+        "prerelease": false
       },
       {
         "version": "8.4.10",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.8.22/bearsampp-php-8.4.10-2025.8.22.7z",
-        "prerelease": false,
-        "date": "2025-08-22T12:54:04"
+        "prerelease": false
       },
       {
         "version": "8.4.6",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.4.24/bearsampp-php-8.4.6-2025.4.24.7z",
-        "prerelease": false,
-        "date": "2025-04-23T14:33:37"
+        "prerelease": false
       },
       {
         "version": "8.4.5",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.4.8/bearsampp-php-8.4.5-2025.4.8.7z",
-        "prerelease": false,
-        "date": "2025-02-22T08:08:15"
+        "prerelease": false
       },
       {
         "version": "8.4.4",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.20/bearsampp-php-8.4.4-2025.2.20.7z",
-        "prerelease": false,
-        "date": "2025-02-20T12:50:29"
+        "prerelease": false
       },
       {
         "version": "8.4.3",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.18/bearsampp-php-8.4.3-2025.2.18.7z",
-        "prerelease": false,
-        "date": "2025-02-18T12:52:30"
+        "prerelease": false
       },
       {
         "version": "8.4.1",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.11/bearsampp-php-8.4.1-2025.2.11.7z",
-        "prerelease": false,
-        "date": "2025-01-16T07:09:02"
+        "prerelease": false
       },
       {
         "version": "8.3.32",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.7.7/bearsampp-php-8.3.32-2026.7.7.7z",
-        "prerelease": false,
-        "date": "2026-06-26T05:51:42"
+        "prerelease": false
       },
       {
         "version": "8.3.31",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.6.2/bearsampp-php-8.3.31-2026.6.2.7z",
-        "prerelease": false,
-        "date": "2026-04-24T03:53:41"
+        "prerelease": false
       },
       {
         "version": "8.3.30",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.1.16/bearsampp-php-8.3.30-2026.1.16.7z",
-        "prerelease": false,
-        "date": "2026-01-04T10:38:27"
+        "prerelease": false
       },
       {
         "version": "8.3.28",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.12.7/bearsampp-php-8.3.28-2025.12.07.7z",
-        "prerelease": false,
-        "date": "2025-11-25T10:46:28"
+        "prerelease": false
       },
       {
         "version": "8.3.27",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.10.31/bearsampp-php-8.3.27-2025.10.31.7z",
-        "prerelease": false,
-        "date": "2025-09-27T06:52:04"
+        "prerelease": false
       },
       {
         "version": "8.3.26",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.9.24/bearsampp-php-8.3.26-2025.9.24.7z",
-        "prerelease": false,
-        "date": "2025-09-23T02:34:54"
+        "prerelease": false
       },
       {
         "version": "8.3.24",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.8.21/bearsampp-php-8.3.24-2025.8.20.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:29:00"
+        "prerelease": false
       },
       {
         "version": "8.3.20",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.4.24/bearsampp-php-8.3.20-2025.4.24.7z",
-        "prerelease": false,
-        "date": "2025-04-23T14:33:37"
+        "prerelease": false
       },
       {
         "version": "8.3.19",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.4.8/bearsampp-php-8.3.19-2025.4.8.7z",
-        "prerelease": false,
-        "date": "2025-02-22T08:08:15"
+        "prerelease": false
       },
       {
         "version": "8.3.17",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.20/bearsampp-php-8.3.17-2025.2.20.7z",
-        "prerelease": false,
-        "date": "2025-02-20T12:50:29"
+        "prerelease": false
       },
       {
         "version": "8.3.16",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.11/bearsampp-php-8.3.16-2025.2.11.7z",
-        "prerelease": false,
-        "date": "2025-01-16T07:09:02"
+        "prerelease": false
       },
       {
         "version": "8.3.14",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.12.15/bearsampp-php-8.3.14-2024.12.15.7z",
-        "prerelease": false,
-        "date": "2024-12-03T01:28:47"
+        "prerelease": false
       },
       {
         "version": "8.3.12",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.12-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.3.11",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.11-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.3.9",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.9-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.3.7",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.7-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.3.6",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.6-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.3.4",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.4-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.3.1",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.1-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.2.30",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.1.16/bearsampp-php-8.2.30-2026.1.16.7z",
-        "prerelease": false,
-        "date": "2026-01-04T10:38:27"
+        "prerelease": false
       },
       {
         "version": "8.2.29",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.8.21/bearsampp-php-8.2.29-2025.8.20.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:29:00"
+        "prerelease": false
       },
       {
         "version": "8.2.28",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.4.8/bearsampp-php-8.2.28-2025.4.8.7z",
-        "prerelease": false,
-        "date": "2025-02-22T08:08:15"
+        "prerelease": false
       },
       {
         "version": "8.2.27",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.11/bearsampp-php-8.2.27-2025.2.11.7z",
-        "prerelease": false,
-        "date": "2025-01-16T07:09:02"
+        "prerelease": false
       },
       {
         "version": "8.2.26",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.12.15/bearsampp-php-8.2.26-2024.12.15.7z",
-        "prerelease": false,
-        "date": "2024-12-03T01:28:47"
+        "prerelease": false
       },
       {
         "version": "8.2.24",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.4-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.2.21",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.7.11/bearsampp-php-8.2.21-2024.7.12.7z",
-        "prerelease": false,
-        "date": "2024-06-17T22:50:56"
+        "prerelease": false
       },
       {
         "version": "8.2.19",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.19-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.2.18",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.18-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.2.17",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.17-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.2.14",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.14-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.2.10",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.10-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.2.8",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.8-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.2.4",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.4-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.2.3",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.3-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.2.1",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.1-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.2.0",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.2.0-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.33",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.8.21/bearsampp-php-8.1.33-2025.8.20.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:29:00"
+        "prerelease": false
       },
       {
         "version": "8.1.32",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.4.8/bearsampp-php-8.1.32-2025.4.8.7z",
-        "prerelease": false,
-        "date": "2025-02-22T08:08:15"
+        "prerelease": false
       },
       {
         "version": "8.1.31",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.12.15/bearsampp-php-8.1.31-2024.12.15.7z",
-        "prerelease": false,
-        "date": "2024-12-03T01:28:47"
+        "prerelease": false
       },
       {
         "version": "8.1.30",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.30-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.28",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.28-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.27",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.27-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.23",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.23-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.21",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.21-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.17",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.17-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.16",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.16-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.14",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.14-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.13",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.13-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.12",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.12-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.11",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.11-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.10",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.10-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.9",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.9-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.1.8",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.1.8-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.0.30",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.30-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.0.29",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.29-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.0.28",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.28-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.0.27",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.27-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.0.26",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.26-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.0.25",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.25-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.0.24",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.24-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.0.23",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.23-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.0.22",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.22-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "8.0.21",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.0.21-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "7.4.33",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-7.4.33-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "7.4.32",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-7.4.32-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "7.4.30",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-7.4.30-2024.11.30.7z",
-        "prerelease": false,
-        "date": "2024-10-15T02:15:54"
+        "prerelease": false
       },
       {
         "version": "5.6.40",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2022.07.30/bearsampp-php-5.6.40-2022.07.30.7z",
-        "prerelease": false,
-        "date": "2022-07-29T12:00:44"
+        "prerelease": false
       }
     ]
   },
@@ -2385,32 +1985,27 @@
       {
         "version": "5.2.3",
         "url": "https://github.com/Bearsampp/module-phpmyadmin/releases/download/2025.11.23/bearsampp-phpmyadmin-5.2.3-2025.11.23.7z",
-        "prerelease": false,
-        "date": "2025-11-23T23:31:27"
+        "prerelease": false
       },
       {
         "version": "5.2.2",
         "url": "https://github.com/Bearsampp/module-phpmyadmin/releases/download/2025.1.23/bearsampp-phpmyadmin-5.2.2-2025.1.23.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:46"
+        "prerelease": false
       },
       {
         "version": "5.2.1",
         "url": "https://github.com/Bearsampp/module-phpmyadmin/releases/download/2023.3.5/bearsampp-phpmyadmin-5.2.1-2023.3.5.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:36"
+        "prerelease": false
       },
       {
         "version": "5.2.0",
         "url": "https://github.com/Bearsampp/module-phpmyadmin/releases/download/2022.07.02/bearsampp-phpmyadmin-5.2.0-2022.07.16.7z",
-        "prerelease": false,
-        "date": "2021-12-10T01:19:41"
+        "prerelease": false
       },
       {
         "version": "4.9.10",
         "url": "https://github.com/Bearsampp/module-phpmyadmin/releases/download/2022.07.16/bearsampp-phpmyadmin-4.9.10-2022.07.16.7z",
-        "prerelease": false,
-        "date": "2022-07-16T05:28:38"
+        "prerelease": false
       }
     ]
   },
@@ -2420,20 +2015,17 @@
       {
         "version": "7.13.0",
         "url": "https://github.com/Bearsampp/module-phppgadmin/releases/download/2022.08.28/phppgadmin7.13.0-2022.08.28.7z",
-        "prerelease": false,
-        "date": "2022-08-17T05:11:35"
+        "prerelease": false
       },
       {
         "version": "7.14.4",
         "url": "https://github.com/Bearsampp/module-phppgadmin/releases/download/2023.4.20/bearsampp-phppgadmin-7.14.4-2023.4.25.7z",
-        "prerelease": false,
-        "date": "2023-04-20T01:10:25"
+        "prerelease": false
       },
       {
         "version": "7.14.7",
         "url": "https://github.com/Bearsampp/module-phppgadmin/releases/download/2024.4.14/bearsampp-phppgadmin-7.14.7-2024.4.14.7z",
-        "prerelease": false,
-        "date": "2023-05-10T02:32:14"
+        "prerelease": false
       }
     ]
   },
@@ -2443,338 +2035,282 @@
       {
         "version": "18.4",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-18.4-2025.6.2.7z",
-        "prerelease": false,
-        "date": "2026-06-03T03:48:39"
+        "prerelease": false
       },
       {
         "version": "18.3",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.3.8/bearsampp-postgresql-18.3-2025.3.8.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:44"
+        "prerelease": false
       },
       {
         "version": "18.1",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-18.1-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-11-22T02:35:57"
+        "prerelease": false
       },
       {
         "version": "17.10",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-17.10-2025.6.2.7z",
-        "prerelease": false,
-        "date": "2026-06-03T03:48:39"
+        "prerelease": false
       },
       {
         "version": "17.9",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.3.8/bearsampp-postgresql-17.9-2025.3.8.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:44"
+        "prerelease": false
       },
       {
         "version": "17.7",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-17.7-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-11-22T02:35:57"
+        "prerelease": false
       },
       {
         "version": "17.5",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.7.2/bearsampp-postgresql-17.5-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:40"
+        "prerelease": false
       },
       {
         "version": "17.4",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-17.4-2025.2.21.7z",
-        "prerelease": false,
-        "date": "2025-02-19T02:39:54"
+        "prerelease": false
       },
       {
         "version": "17.2.3",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.13/bearsampp-postgresql-17.2.3-2025.2.13.7z",
-        "prerelease": false,
-        "date": "2024-12-02T04:39:33"
+        "prerelease": false
       },
       {
         "version": "17.2.1",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.12.1/bearsampp-postgresql-17.2.1-2024.12.1.7z",
-        "prerelease": false,
-        "date": "2024-09-20T15:48:18"
+        "prerelease": false
       },
       {
         "version": "17.0-RC1",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.9.18/bearsampp-postgresql-17.0-RC1-2024.9.18.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:48"
+        "prerelease": false
       },
       {
         "version": "16.14",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-16.14-2025.6.2.7z",
-        "prerelease": false,
-        "date": "2026-06-03T03:48:39"
+        "prerelease": false
       },
       {
         "version": "16.13",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.3.8/bearsampp-postgresql-16.13-2025.3.8.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:44"
+        "prerelease": false
       },
       {
         "version": "16.11",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-16.11-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-11-22T02:35:57"
+        "prerelease": false
       },
       {
         "version": "16.9",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.7.2/bearsampp-postgresql-16.9-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:40"
+        "prerelease": false
       },
       {
         "version": "16.8",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-16.8-2025.2.21.7z",
-        "prerelease": false,
-        "date": "2025-02-19T02:39:54"
+        "prerelease": false
       },
       {
         "version": "16.4",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.9.18/bearsampp-postgresql-16.4-2024.9.18.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:48"
+        "prerelease": false
       },
       {
         "version": "16.2",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.4.16/bearsampp-postgresql-16.2-2024.4.16.7z",
-        "prerelease": false,
-        "date": "2023-12-18T04:02:46"
+        "prerelease": false
       },
       {
         "version": "16.0",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.10.9/bearsampp-postgresql-16.0-2023.10.9.7z",
-        "prerelease": false,
-        "date": "2023-07-23T16:11:08"
+        "prerelease": false
       },
       {
         "version": "15.18",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-15.18-2025.6.2.7z",
-        "prerelease": false,
-        "date": "2026-06-03T03:48:39"
+        "prerelease": false
       },
       {
         "version": "15.17",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.3.8/bearsampp-postgresql-15.17-2025.3.8.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:44"
+        "prerelease": false
       },
       {
         "version": "15.15",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-15.15-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-11-22T02:35:57"
+        "prerelease": false
       },
       {
         "version": "15.13",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.7.2/bearsampp-postgresql-15.13-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:40"
+        "prerelease": false
       },
       {
         "version": "15.12",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-15.12-2025.2.21.7z",
-        "prerelease": false,
-        "date": "2025-02-19T02:39:54"
+        "prerelease": false
       },
       {
         "version": "15.6",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.4.16/bearsampp-postgresql-15.6-2024.4.16.7z",
-        "prerelease": false,
-        "date": "2023-12-18T04:02:46"
+        "prerelease": false
       },
       {
         "version": "15.4",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.10.9/bearsampp-postgresql-15.4-2023.10.9.7z",
-        "prerelease": false,
-        "date": "2023-07-23T16:11:08"
+        "prerelease": false
       },
       {
         "version": "15.3",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.7.23/bearsampp-postgresql-15.3-2023.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T02:20:28"
+        "prerelease": false
       },
       {
         "version": "15.2",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.4.20/bearsampp-postgresql-15.2-2023.4.24.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:38"
+        "prerelease": false
       },
       {
         "version": "15.0",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.10.28/bearsampp-postgresql-15.0-2022.10.28.7z",
-        "prerelease": false,
-        "date": "2022-10-21T23:47:29"
+        "prerelease": false
       },
       {
         "version": "14.23",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-14.23-2025.6.2.7z",
-        "prerelease": false,
-        "date": "2026-06-03T03:48:39"
+        "prerelease": false
       },
       {
         "version": "14.22",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.3.8/bearsampp-postgresql-14.22-2025.3.8.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:44"
+        "prerelease": false
       },
       {
         "version": "14.20",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-14.20-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-11-22T02:35:57"
+        "prerelease": false
       },
       {
         "version": "14.18",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.7.2/bearsampp-postgresql-14.18-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:40"
+        "prerelease": false
       },
       {
         "version": "14.17",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-14.17-2025.2.21.7z",
-        "prerelease": false,
-        "date": "2025-02-19T02:39:54"
+        "prerelease": false
       },
       {
         "version": "14.11",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.4.16/bearsampp-postgresql-14.11-2024.4.16.7z",
-        "prerelease": false,
-        "date": "2023-12-18T04:02:46"
+        "prerelease": false
       },
       {
         "version": "14.9",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.10.9/bearsampp-postgresql-14.9-2023.10.9.7z",
-        "prerelease": false,
-        "date": "2023-07-23T16:11:08"
+        "prerelease": false
       },
       {
         "version": "14.8",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.7.23/bearsampp-postgresql-14.8-2023.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T02:20:28"
+        "prerelease": false
       },
       {
         "version": "14.7",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.4.20/bearsampp-postgresql-14.7-2023.4.24.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:38"
+        "prerelease": false
       },
       {
         "version": "14.5",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.08.28/bearsampp-postgresql-14.5-2022.08.28.7z",
-        "prerelease": false,
-        "date": "2022-08-17T05:11:38"
+        "prerelease": false
       },
       {
         "version": "14.4",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.08.04/bearsampp-postgresql-14.4-2022.08.04.7z",
-        "prerelease": false,
-        "date": "2022-08-04T13:49:30"
+        "prerelease": false
       },
       {
         "version": "13.23",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-13.23-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-11-22T02:35:57"
+        "prerelease": false
       },
       {
         "version": "13.21",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.7.2/bearsampp-postgresql-13.21-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:40"
+        "prerelease": false
       },
       {
         "version": "13.20",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.2.21/bearsampp-postgresql-13.20-2025.2.21.7z",
-        "prerelease": false,
-        "date": "2025-02-19T02:39:54"
+        "prerelease": false
       },
       {
         "version": "13.14",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.4.16/bearsampp-postgresql-13.14-2024.4.16.7z",
-        "prerelease": false,
-        "date": "2023-12-18T04:02:46"
+        "prerelease": false
       },
       {
         "version": "13.12",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.10.9/bearsampp-postgresql-13.12-2023.10.9.7z",
-        "prerelease": false,
-        "date": "2023-07-23T16:11:08"
+        "prerelease": false
       },
       {
         "version": "13.11",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.7.23/bearsampp-postgresql-13.11-2023.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T02:20:28"
+        "prerelease": false
       },
       {
         "version": "13.8",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.08.28/bearsampp-postgresql-13.8-2022.08.04.7z",
-        "prerelease": false,
-        "date": "2022-08-17T05:11:38"
+        "prerelease": false
       },
       {
         "version": "13.7",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.08.04/bearsampp-postgresql-13.7-2022.08.04.7z",
-        "prerelease": false,
-        "date": "2022-08-04T13:49:30"
+        "prerelease": false
       },
       {
         "version": "12.18",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2024.4.16/bearsampp-postgresql-12.18-2024.4.16.7z",
-        "prerelease": false,
-        "date": "2023-12-18T04:02:46"
+        "prerelease": false
       },
       {
         "version": "12.16",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.10.9/bearsampp-postgresql-12.16-2023.10.9.7z",
-        "prerelease": false,
-        "date": "2023-07-23T16:11:08"
+        "prerelease": false
       },
       {
         "version": "12.15",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.7.23/bearsampp-postgresql-12.15-2023.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T02:20:28"
+        "prerelease": false
       },
       {
         "version": "12.12",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.08.28/bearsampp-postgresql-12.12-2022.08.04.7z",
-        "prerelease": false,
-        "date": "2022-08-17T05:11:38"
+        "prerelease": false
       },
       {
         "version": "11.21",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.10.9/bearsampp-postgresql-11.21-2023.10.9.7z",
-        "prerelease": false,
-        "date": "2023-07-23T16:11:08"
+        "prerelease": false
       },
       {
         "version": "11.20",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.7.23/bearsampp-postgresql-11.20-2023.7.23.7z",
-        "prerelease": false,
-        "date": "2023-05-10T02:20:28"
+        "prerelease": false
       },
       {
         "version": "11.17",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.08.28/bearsampp-postgresql-11.17-2022.08.04.7z",
-        "prerelease": false,
-        "date": "2022-08-17T05:11:38"
+        "prerelease": false
       },
       {
         "version": "11.3",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.07.16/bearsampp-postgresql-11.3-2022.07.16.7z",
-        "prerelease": false,
-        "date": "2022-07-15T19:12:05"
+        "prerelease": false
       }
     ]
   },
@@ -2784,32 +2320,27 @@
       {
         "version": "7.6.3",
         "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.6.25/bearsampp-powershell-7.6.3-2026.6.25.7z",
-        "prerelease": false,
-        "date": "2026-06-11T09:44:41"
+        "prerelease": false
       },
       {
         "version": "7.6.2",
         "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.6.25/bearsampp-powershell-7.6.2-2026.6.25.7z",
-        "prerelease": false,
-        "date": "2026-06-11T09:44:41"
+        "prerelease": false
       },
       {
         "version": "7.6.1",
         "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.6.25/bearsampp-powershell-7.6.1-2026.6.25.7z",
-        "prerelease": false,
-        "date": "2026-06-11T09:44:41"
+        "prerelease": false
       },
       {
         "version": "7.6.0",
         "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.6.25/bearsampp-powershell-7.6.0-2026.6.25.7z",
-        "prerelease": false,
-        "date": "2026-06-11T09:44:41"
+        "prerelease": false
       },
       {
         "version": "7.5.4",
         "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.6.25/bearsampp-powershell-7.5.4-2026.6.25.7z",
-        "prerelease": false,
-        "date": "2026-06-11T09:44:41"
+        "prerelease": false
       }
     ]
   },
@@ -2819,68 +2350,57 @@
       {
         "version": "3.14.4",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2026.4.12/bearsampp-python-3.14.4-2026.4.12.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:47"
+        "prerelease": false
       },
       {
         "version": "3.13.13",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2026.4.12/bearsampp-python-3.13.13-2026.4.12.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:47"
+        "prerelease": false
       },
       {
         "version": "3.13.5",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2025.8.21/bearsampp-python-3.13.5-2025.8.21.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:29:05"
+        "prerelease": false
       },
       {
         "version": "3.13.3",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2025.6.6/bearsampp-python-3.13.3-2025.6.6.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:41"
+        "prerelease": false
       },
       {
         "version": "3.13.2",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2025.4.19/bearsampp-python-3.13.2-2025.4.19.7z",
-        "prerelease": false,
-        "date": "2025-04-16T04:57:15"
+        "prerelease": false
       },
       {
         "version": "3.12.9",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2025.4.19/bearsampp-python-3.12.9-2025.4.19.7z",
-        "prerelease": false,
-        "date": "2025-04-16T04:57:15"
+        "prerelease": false
       },
       {
         "version": "3.12.8.0-b2",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2025.2.13/bearsampp-python-3.12.8.0-b2-2025.2.13.7z",
-        "prerelease": false,
-        "date": "2024-10-02T02:25:38"
+        "prerelease": false
       },
       {
         "version": "3.12.6.0",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2024.9.17/bearsampp-python-3.12.6.0-2024.9.17.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:49"
+        "prerelease": false
       },
       {
         "version": "3.12.2",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2024.3.30/bearsampp-python-3.12.2-2024.3.30.7z",
-        "prerelease": false,
-        "date": "2024-03-30T04:36:27"
+        "prerelease": false
       },
       {
         "version": "3.10.9",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2023.4.30/bearsampp-python-3.10.9-2022.4.30.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:40"
+        "prerelease": false
       },
       {
         "version": "3.10.6",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2022.09.07/bearsampp-python-3.10.6-2022.09.30.7z",
-        "prerelease": false,
-        "date": "2022-09-07T17:15:42"
+        "prerelease": false
       }
     ]
   },
@@ -2890,86 +2410,72 @@
       {
         "version": "4.0.2-1",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2026.4.12/bearsampp-ruby-4.0.2-1-2026.4.12.7z",
-        "prerelease": false,
-        "date": "2026-03-05T11:17:48"
+        "prerelease": false
       },
       {
         "version": "3.4.7",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2025.11.23/bearsampp-ruby-3.4.7-2025.11.23.7z",
-        "prerelease": false,
-        "date": "2025-11-24T00:27:03"
+        "prerelease": false
       },
       {
         "version": "3.4.5",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2025.8.16/bearsampp-ruby-3.4.5-2025.8.16.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:29:06"
+        "prerelease": false
       },
       {
         "version": "3.4.4-2",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2025.7.2/bearsampp-ruby-3.4.4-2-2025.7.2.7z",
-        "prerelease": false,
-        "date": "2025-05-04T22:26:42"
+        "prerelease": false
       },
       {
         "version": "3.4.3",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2025.4.19/bearsampp-ruby-3.4.3-2025.4.19.7z",
-        "prerelease": false,
-        "date": "2025-04-16T04:57:17"
+        "prerelease": false
       },
       {
         "version": "3.4.1",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2025.2.13/bearsampp-ruby-3.4.1-2025.2.13.7z",
-        "prerelease": false,
-        "date": "2024-12-08T13:19:59"
+        "prerelease": false
       },
       {
         "version": "3.3.6-2",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2024.12.3/bearsampp-ruby-3.3.6-2-2024.12.3.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:50"
+        "prerelease": false
       },
       {
         "version": "3.3.0-1",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2024.4.14/bearsampp-ruby-3.3.0-1-2024.4.14.7z",
-        "prerelease": false,
-        "date": "2023-10-07T15:57:27"
+        "prerelease": false
       },
       {
         "version": "3.2.2",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2023.10.1/bearsampp-ruby-3.2.2-2023.10.1.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:41"
+        "prerelease": false
       },
       {
         "version": "3.1.4",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2023.10.1/bearsampp-ruby-3.1.4-2023.10.1.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:41"
+        "prerelease": false
       },
       {
         "version": "3.1.2",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2022.08.10/bearsampp-ruby-3.1.2-2021.08.10.7z",
-        "prerelease": false,
-        "date": "2022-08-11T06:22:56"
+        "prerelease": false
       },
       {
         "version": "3.0.6",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2023.10.1/bearsampp-ruby-3.0.6-2023.10.1.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:41"
+        "prerelease": false
       },
       {
         "version": "2.7.8",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2023.10.1/bearsampp-ruby-2.7.8-2023.10.1.7z",
-        "prerelease": false,
-        "date": "2023-03-05T23:23:41"
+        "prerelease": false
       },
       {
         "version": "2.7.6",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2022.08.10/bearsampp-ruby-2.7.6-2021.08.10.7z",
-        "prerelease": false,
-        "date": "2022-08-11T06:22:56"
+        "prerelease": false
       }
     ]
   },
@@ -2979,32 +2485,27 @@
       {
         "version": "3.9.4.2",
         "url": "https://github.com/Bearsampp/module-xlight/releases/download/2024.6.8/bearsampp-xlight-3.9.4.2-2024.6.8.7z",
-        "prerelease": false,
-        "date": null
+        "prerelease": false
       },
       {
         "version": "3.9.4.3",
         "url": "https://github.com/Bearsampp/module-xlight/releases/download/2024.9.14/bearsampp-xlight-3.9.4.3-2024.9.17.7z",
-        "prerelease": false,
-        "date": "2024-09-15T18:25:53"
+        "prerelease": false
       },
       {
         "version": "3.9.4.4",
         "url": "https://github.com/Bearsampp/module-xlight/releases/download/2024.12.8/bearsampp-xlight-3.9.4.4-2024.12.8.7z",
-        "prerelease": false,
-        "date": "2024-09-17T14:54:33"
+        "prerelease": false
       },
       {
         "version": "3.9.4.5",
         "url": "https://github.com/Bearsampp/module-xlight/releases/download/2025.2.13/bearsampp-xlight-3.9.4.5-2025.2.13.7z",
-        "prerelease": false,
-        "date": "2024-12-16T01:16:03"
+        "prerelease": false
       },
       {
         "version": "3.9.4.6",
         "url": "https://github.com/Bearsampp/module-xlight/releases/download/2025.7.31/bearsampp-xlight-3.9.4.6-2025.7.31.7z",
-        "prerelease": false,
-        "date": "2025-07-11T05:29:07"
+        "prerelease": false
       }
     ]
   }
