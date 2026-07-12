@@ -71,16 +71,23 @@ def fetch_releases_from_api(owner, repo):
                 if release.get('draft', False):
                     continue
 
-                version = release.get('tag_name', '').lstrip('v')
                 url_value = None
                 prerelease = release.get('prerelease', False)
                 release_date = release.get('published_at', '')
 
-                # Find the asset URL (usually a .7z or .zip file)
+                # Find the asset URL (usually a .7z or .zip file) and extract version from filename
+                version = None
                 if release.get('assets'):
                     for asset in release['assets']:
                         if asset['name'].endswith(('.7z', '.zip')):
                             url_value = asset['browser_download_url']
+                            # Extract version from filename: bearsampp-{module}-{VERSION}-{DATE}.7z
+                            # Example: bearsampp-mysql-9.7.0-2026.7.10.7z
+                            filename = asset['name']
+                            parts = filename.replace('bearsampp-', '').replace('.7z', '').replace('.zip', '').split('-')
+                            if len(parts) >= 2:
+                                # Version is the second-to-last part (before the date)
+                                version = parts[-2]
                             break
 
                 if version and url_value:
