@@ -827,7 +827,7 @@ class QuickPick
 
                                         <?php
                                         $moduleKey = 'module-' . strtolower( $module );
-                                        if ( isset( $versions[$moduleKey] ) && is_array( $versions[$moduleKey] ) ):
+                                        if ( isset( $versions[$moduleKey] ) ):
                                             foreach ( $versions[$moduleKey] as $version_array ):
                                                 // Skip prerelease versions if includePr is not enabled
                                                 if (isset($version_array['prerelease']) && $version_array['prerelease'] === true && $includePr != 1) {
