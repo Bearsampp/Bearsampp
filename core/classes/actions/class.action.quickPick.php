@@ -27,7 +27,6 @@ class QuickPick
      * - 'tool'
      */
     public $modules = [
-        'Adminer'     => ['type' => 'application'],
         'Apache'      => ['type' => 'binary'],
         'Bruno'       => ['type' => 'tools'],
         'Composer'    => ['type' => 'tools'],
