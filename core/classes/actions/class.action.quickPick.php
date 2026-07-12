@@ -774,6 +774,12 @@ class QuickPick
         $includePr = $bearsamppConfig->getIncludePr();
         $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
 
+        // Debug logging
+        Log::debug('getQuickpickMenu called with ' . count($modules) . ' modules and ' . count($versions) . ' version entries');
+        if (isset($versions['error'])) {
+            Log::error('Versions array contains error: ' . $versions['error']);
+        }
+
         ob_start();
         if ( HttpClient::checkInternetState() ) {
 
@@ -812,11 +818,13 @@ class QuickPick
                                         </li>
 
                                         <?php
-                                        foreach ( $versions['module-' . strtolower( $module )] as $version_array ):
-                                            // Skip prerelease versions if includePr is not enabled
-                                            if (isset($version_array['prerelease']) && $version_array['prerelease'] === true && $includePr != 1) {
-                                                continue;
-                                            }
+                                        $moduleKey = 'module-' . strtolower( $module );
+                                        if ( isset( $versions[$moduleKey] ) && is_array( $versions[$moduleKey] ) ):
+                                            foreach ( $versions[$moduleKey] as $version_array ):
+                                                // Skip prerelease versions if includePr is not enabled
+                                                if (isset($version_array['prerelease']) && $version_array['prerelease'] === true && $includePr != 1) {
+                                                    continue;
+                                                }
                                         ?>
                                             <li role = "option" class = "moduleoption"
                                                 id = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>-li"
@@ -829,7 +837,10 @@ class QuickPick
                                                 <label
                                                     for = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>"><?php echo $this->formatVersionLabel( $version_array['version'], isset($version_array['prerelease']) && $version_array['prerelease'] === true ); ?></label>
                                             </li>
-                                        <?php endforeach; ?>
+                                        <?php
+                                            endforeach;
+                                        endif;
+                                        ?>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </ul>
