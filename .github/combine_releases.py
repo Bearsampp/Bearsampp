@@ -500,7 +500,9 @@ for module_entry in combined_data:
     releases_props_url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/releases.properties"
     print(f"  Fetching releases.properties from: {releases_props_url}")
     try:
+        print(f"  Attempting to fetch: {releases_props_url}")
         response = requests.get(releases_props_url, headers=headers, timeout=30)
+        print(f"  Response status: {response.status_code}")
         if response.status_code == 200:
             properties_content = response.text
 
@@ -508,8 +510,11 @@ for module_entry in combined_data:
             pattern = r'\[\s*([^\]]+)\s*\]\s*=\s*([^\n]+)'
             matches = re.findall(pattern, properties_content)
 
+            print(f"  Parsed {len(matches)} version entries from releases.properties")
+
             if matches:
-                print(f"\nValidating {module_name} against releases.properties ({len(matches)} versions found)")
+                print(f"Successfully parsed {len(matches)} versions from releases.properties")
+                print(f"Validating {module_name} against releases.properties ({len(matches)} versions found)")
 
                 # Build a map of version -> URL from releases.properties
                 releases_props_map = {}
@@ -563,11 +568,19 @@ for module_entry in combined_data:
         print(f"Warning: Error validating {module_name} against releases.properties: {e}")
 
 print("\n" + "="*80)
-print("VALIDATION COMPLETED")
+print("VALIDATION COMPLETED - About to write JSON file")
 print("="*80 + "\n")
 
+# Show what's about to be written for mysql module
+for entry in combined_data:
+    if entry['module'] == 'module-mysql':
+        print("MySQL versions before writing:")
+        for v in entry['versions'][:5]:  # Show first 5
+            print(f"  {v['version']}: {v['url'][:70]}... (prerelease: {v['prerelease']})")
+        break
+
 # Write the file
-print(f"Writing output to {output_path}")
+print(f"\nWriting output to {output_path}")
 try:
     with open(output_path, 'w') as f:
         json.dump(combined_data, f, indent=2)
