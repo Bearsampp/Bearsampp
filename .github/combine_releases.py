@@ -152,7 +152,13 @@ try:
 
             versions_data = []
             for release in sorted_versions:
-                versions_data.append(release)
+                # Don't include release_date in final output
+                clean_release = {
+                    'version': release['version'],
+                    'url': release['url'],
+                    'prerelease': release['prerelease']
+                }
+                versions_data.append(clean_release)
                 prerelease_label = " (prerelease)" if release['prerelease'] else ""
                 print(f"  ✓ {release['version']}: {release['url']}{prerelease_label}")
 
