@@ -13,7 +13,6 @@ output_path = 'core/resources/quickpick-releases.json'
 
 # GitHub repositories to fetch releases from
 repos = [
-    'Bearsampp/module-adminer',
     'Bearsampp/module-apache',
     'Bearsampp/module-bruno',
     'Bearsampp/module-composer',
@@ -33,7 +32,6 @@ repos = [
     'Bearsampp/module-powershell',
     'Bearsampp/module-python',
     'Bearsampp/module-ruby',
-    'Bearsampp/module-svn',
     'Bearsampp/module-xlight'
 ]
 
@@ -352,7 +350,7 @@ try:
                     if prerelease_status is None:
                         prerelease_status = False
 
-                    version_list.append({'version': vstr, 'url': urlv, 'prerelease': prerelease_status, 'date': created_dt.isoformat() if created_dt else None})
+                    version_list.append({'version': vstr, 'url': urlv, 'prerelease': prerelease_status})
 
                 # Use releases.properties list directly (it acts as the authoritative list and drops old versions)
                 combined_data.append({'module': module_name, 'versions': version_list})
