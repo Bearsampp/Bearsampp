@@ -675,6 +675,15 @@ class Path
             if ($bearsamppBins->getNodejs() && $bearsamppBins->getNodejs()->isEnable()) {
                 $paths .= self::getModuleSymlinkPath($bearsamppBins->getNodejs()) . ';';
             }
+            if ($bearsamppBins->getMysql() && $bearsamppBins->getMysql()->isEnable()) {
+                $paths .= self::getModuleSymlinkPath($bearsamppBins->getMysql()) . '/bin;';
+            }
+            if ($bearsamppBins->getMariadb() && $bearsamppBins->getMariadb()->isEnable()) {
+                $paths .= self::getModuleSymlinkPath($bearsamppBins->getMariadb()) . '/bin;';
+            }
+            if ($bearsamppBins->getPostgresql() && $bearsamppBins->getPostgresql()->isEnable()) {
+                $paths .= self::getModuleSymlinkPath($bearsamppBins->getPostgresql()) . '/bin;';
+            }
         }
 
         // Add paths for enabled tools
