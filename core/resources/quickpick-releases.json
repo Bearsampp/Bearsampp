@@ -1270,7 +1270,7 @@
       {
         "version": "3.39.9",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2026.7.11/bearsampp-ngrok-3.39.9-2026.7.11.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.39.6",
