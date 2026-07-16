@@ -300,6 +300,17 @@ class QuickPick
 
         $jsonData = $this->getQuickpickJson();
 
+        // Check if JSON data is valid - detect error returns from getQuickpickJson
+        if ( is_array( $jsonData ) && isset( $jsonData['error'] ) ) {
+            Log::error( 'getQuickpickJson returned error: ' . $jsonData['error'] );
+            return $jsonData;
+        }
+
+        if ( !is_array( $jsonData ) || count( $jsonData ) === 0 ) {
+            Log::error( 'JSON data is not an array or is empty' );
+            return ['error' => 'JSON data is empty'];
+        }
+
         foreach ( $jsonData as $entry ) {
             if ( is_array( $entry ) ) {
                 if ( isset( $entry['module'] ) && is_string( $entry['module'] ) ) {
@@ -307,9 +318,6 @@ class QuickPick
                         $versions[$entry['module']] = array_column( $entry['versions'], null, 'version' );
                     }
                 }
-            }
-            else {
-                Log::error( 'Invalid entry format in JSON data' );
             }
         }
 
@@ -341,16 +349,19 @@ class QuickPick
     {
         $this->getVersions();
         Log::debug( 'getModuleUrl called for module: ' . $module . ' version: ' . $version );
-        $url = trim( $this->versions['module-' . strtolower( $module )][$version]['url'] );
+        $moduleKey = 'module-' . strtolower( $module );
+        if ( !isset( $this->versions[$moduleKey][$version]['url'] ) ) {
+            Log::error( 'Version not found: ' . $version . ' for module: ' . $module );
+            return ['error' => 'Version not found'];
+        }
+        $url = trim( $this->versions[$moduleKey][$version]['url'] );
         if ( $url <> '' ) {
             Log::debug( 'Found URL for version: ' . $version . ' URL: ' . $url );
-
             return $url;
         }
         else {
-            Log::error( 'Version not found: ' . $version );
-
-            return ['error' => 'Version not found'];
+            Log::error( 'URL is empty for version: ' . $version );
+            return ['error' => 'URL is empty'];
         }
     }
 
@@ -478,23 +489,34 @@ class QuickPick
                 $configUpdated = $this->updateModuleConfig($module, $version);
 
                 if ($configUpdated) {
-                    // Step 2: Trigger reload AFTER config update (reload will apply the new version)
-                    Log::debug('Config updated successfully, triggering reload to apply changes...');
+                    // Step 2: Launch the reload action to apply the new version automatically.
+                    // QuickPick runs in the AJAX/web context, where the winbinder GUI used by
+                    // the reload action is unavailable, so we spawn it as a detached process
+                    // (the same "php-win.exe root.php reload" command the tray menu runs). The
+                    // reload restarts the database services so clients such as phpMyAdmin pick
+                    // up the new version without the user having to reload manually.
+                    Log::debug('Config updated successfully, launching reload to apply changes...');
 
                     // Send progress update to user - flush output
                     if (ob_get_level() > 0) {
                         ob_flush();
                     }
-                    echo json_encode(['phase' => 'updating', 'message' => 'Updating system configuration...']) . PHP_EOL;
+                    echo json_encode(['phase' => 'updating', 'message' => 'Applying version changes...']) . PHP_EOL;
                     flush();
 
-                    // Note: User must manually reload from tray menu to activate the new version
-                    Log::debug('Installation complete - user must manually reload from tray menu');
-                    $response['reload_required'] = true;
-
-                    // Clear both disk and memory caches to ensure the UI shows correct icons and labels
-                    Log::debug('Clearing caches after module installation...');
+                    // Clear caches before the reload runs so it reads fresh values from disk
+                    Log::debug('Clearing caches before reload...');
                     CacheManager::clearAll();
+
+                    // Build and launch the reload command detached from this request.
+                    // Leading "" is the (empty) window title required by cmd.exe "start".
+                    $reloadCmd = '"" "' . Path::getPhpExe() . '" "'
+                        . Path::getCorePath() . '/' . Core::isRoot_FILE . '" '
+                        . Action::RELOAD;
+                    Log::debug('Launching reload command: ' . $reloadCmd);
+                    CommandRunner::background($reloadCmd);
+
+                    $response['reload_triggered'] = true;
                 } else {
                     Log::error('Config update failed for module: ' . $module);
                     $response['reload_triggered'] = false;
@@ -774,6 +796,12 @@ class QuickPick
         $includePr = $bearsamppConfig->getIncludePr();
         $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
 
+        // Debug logging
+        Log::debug('getQuickpickMenu called with ' . count($modules) . ' modules and ' . count($versions) . ' version entries');
+        if (isset($versions['error'])) {
+            Log::error('Versions array contains error: ' . $versions['error']);
+        }
+
         ob_start();
         if ( HttpClient::checkInternetState() ) {
 
@@ -812,11 +840,13 @@ class QuickPick
                                         </li>
 
                                         <?php
-                                        foreach ( $versions['module-' . strtolower( $module )] as $version_array ):
-                                            // Skip prerelease versions if includePr is not enabled
-                                            if (isset($version_array['prerelease']) && $version_array['prerelease'] === true && $includePr != 1) {
-                                                continue;
-                                            }
+                                        $moduleKey = 'module-' . strtolower( $module );
+                                        if ( isset( $versions[$moduleKey] ) ):
+                                            foreach ( $versions[$moduleKey] as $version_array ):
+                                                // Skip prerelease versions if includePr is not enabled
+                                                if (isset($version_array['prerelease']) && $version_array['prerelease'] === true && $includePr != 1) {
+                                                    continue;
+                                                }
                                         ?>
                                             <li role = "option" class = "moduleoption"
                                                 id = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>-li"
@@ -829,7 +859,10 @@ class QuickPick
                                                 <label
                                                     for = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>"><?php echo $this->formatVersionLabel( $version_array['version'], isset($version_array['prerelease']) && $version_array['prerelease'] === true ); ?></label>
                                             </li>
-                                        <?php endforeach; ?>
+                                        <?php
+                                            endforeach;
+                                        endif;
+                                        ?>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </ul>

@@ -327,24 +327,62 @@ class BinMariadb extends Module
         }
 
         $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        $stmt = @mysqli_prepare( $dbLink, 'UPDATE mysql.user SET Password=PASSWORD(?) WHERE User=?' );
-        if ( empty( $error ) && $stmt === false ) {
-            $error = mysqli_error( $dbLink );
-        }
+        if ( empty( $error ) ) {
+            // Determine MariaDB version to use appropriate password update syntax
+            $result = @mysqli_query( $dbLink, 'SELECT VERSION()' );
+            if ( $result ) {
+                $row = @mysqli_fetch_array( $result, MYSQLI_NUM );
+                $version = $row[0];
+            } else {
+                $version = '10.2.0'; // Default to newer syntax
+            }
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( empty( $error ) && !@mysqli_stmt_bind_param( $stmt, 'ss', $newPwd, $this->rootUser ) ) {
-            $error = mysqli_stmt_error( $stmt );
-        }
+            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            
+            // Use ALTER USER for MariaDB 10.2+ (preferred method, does not use deprecated PASSWORD())
+            if ( version_compare( $version, '10.2.0', '>=' ) ) {
+                $sql = "ALTER USER '{$this->rootUser}'@'localhost' IDENTIFIED BY ?";
+                $stmt = @mysqli_prepare( $dbLink, $sql );
+                if ( $stmt === false ) {
+                    $error = mysqli_error( $dbLink );
+                }
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( empty( $error ) && !@mysqli_stmt_execute( $stmt ) ) {
-            $error = mysqli_stmt_error( $stmt );
-        }
+                $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+                if ( empty( $error ) && !@mysqli_stmt_bind_param( $stmt, 's', $newPwd ) ) {
+                    $error = mysqli_stmt_error( $stmt );
+                }
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( $stmt !== false ) {
-            mysqli_stmt_close( $stmt );
+                $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+                if ( empty( $error ) && !@mysqli_stmt_execute( $stmt ) ) {
+                    $error = mysqli_stmt_error( $stmt );
+                }
+
+                $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+                if ( $stmt !== false ) {
+                    mysqli_stmt_close( $stmt );
+                }
+            } else {
+                // Fallback for very old versions using deprecated PASSWORD() function
+                $stmt = @mysqli_prepare( $dbLink, 'UPDATE mysql.user SET Password=PASSWORD(?) WHERE User=?' );
+                if ( $stmt === false ) {
+                    $error = mysqli_error( $dbLink );
+                }
+
+                $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+                if ( empty( $error ) && !@mysqli_stmt_bind_param( $stmt, 'ss', $newPwd, $this->rootUser ) ) {
+                    $error = mysqli_stmt_error( $stmt );
+                }
+
+                $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+                if ( empty( $error ) && !@mysqli_stmt_execute( $stmt ) ) {
+                    $error = mysqli_stmt_error( $stmt );
+                }
+
+                $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+                if ( $stmt !== false ) {
+                    mysqli_stmt_close( $stmt );
+                }
+            }
         }
 
         $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
