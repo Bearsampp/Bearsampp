@@ -32,7 +32,8 @@ $procMap = [
     'xlight' => __DIR__ . '/ajax/ajax.xlight.php',
     'quickpick' => __DIR__ . '/ajax/ajax.quickpick.php',
     'toggleenhancedquickpick' => __DIR__ . '/ajax/ajax.toggle.enhancedquickpick.php',
-    'applymoduleconfig' => __DIR__ . '/ajax/ajax.apply.moduleconfig.php'
+    'applymoduleconfig' => __DIR__ . '/ajax/ajax.apply.moduleconfig.php',
+    'reloadstatus' => __DIR__ . '/ajax/ajax.reload.status.php'
 ];
 
 /**

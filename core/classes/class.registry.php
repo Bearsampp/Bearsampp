@@ -259,6 +259,15 @@ class Registry
             if ($bearsamppBins->getNodejs()->isEnable()) {
                 $value .= Path::getModuleSymlinkPath($bearsamppBins->getNodejs()) . ';';
             }
+            if ($bearsamppBins->getMysql()->isEnable()) {
+                $value .= Path::getModuleSymlinkPath($bearsamppBins->getMysql()) . '/bin;';
+            }
+            if ($bearsamppBins->getMariadb()->isEnable()) {
+                $value .= Path::getModuleSymlinkPath($bearsamppBins->getMariadb()) . '/bin;';
+            }
+            if ($bearsamppBins->getPostgresql()->isEnable()) {
+                $value .= Path::getModuleSymlinkPath($bearsamppBins->getPostgresql()) . '/bin;';
+            }
             if ($bearsamppTools->getComposer()->isEnable()) {
                 $value .= Path::getModuleSymlinkPath($bearsamppTools->getComposer()) . ';';
                 $value .= Path::getModuleSymlinkPath($bearsamppTools->getComposer()) . '/vendor/bin;';
