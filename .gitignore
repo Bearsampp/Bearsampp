@@ -27,3 +27,6 @@
 
 # ResourceHacker auto-generated config
 ResourceHacker.ini
+
+# Local build overrides (may contain a GitHub token) - never commit
+build.local.properties

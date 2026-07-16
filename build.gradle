@@ -129,9 +129,33 @@ def downloadAndExtractIconography(File destDir) {
     println "* Downloading and extracting Sandbox iconography to ${destDir}..."
     def iconographyUrl = 'https://github.com/Bearsampp/sandbox/releases/download/iconography/Sandbox-iconography.zip'
     def iconZip = file("${buildTmpPath}/Sandbox-iconography.zip")
-    
+
     downloadFileNative(iconographyUrl, iconZip)
-    unzipFile(iconZip, destDir)
+
+    def tempExtractDir = file("${buildTmpPath}/iconography-extract-temp")
+    tempExtractDir.mkdirs()
+    unzipFile(iconZip, tempExtractDir)
+
+    // Check if files were extracted to the wrong path structure and fix it
+    def wrongPath = file("${tempExtractDir}/core/homepage/resources")
+    if (wrongPath.exists()) {
+        // Move from incorrect path (core/homepage/resources) to correct path (core/resources/homepage)
+        destDir.mkdirs()
+        copy {
+            from file("${tempExtractDir}/core/homepage/resources")
+            into file("${destDir}/core/resources/homepage")
+        }
+        println "* Fixed iconography path structure during extraction"
+    } else {
+        // Extract normally if structure is correct
+        copy {
+            from tempExtractDir
+            into destDir
+        }
+    }
+
+    // Clean up
+    tempExtractDir.deleteDir()
     iconZip.delete()
     println "* Successfully extracted Sandbox iconography"
 }
@@ -1070,9 +1094,31 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
                 iconographyZip.bytes = input.bytes
             }
         }
+        def tempExtractDir = file("${buildTmpPath}/iconography-extract")
+        tempExtractDir.mkdirs()
         copy {
             from zipTree(iconographyZip)
-            into projectDir
+            into tempExtractDir
+        }
+        // Check if files were extracted to the wrong path structure and fix it
+        def wrongPath = file("${tempExtractDir}/core/homepage/resources")
+        if (wrongPath.exists()) {
+            // Copy from incorrect path (core/homepage/resources) to correct path (core/resources/homepage)
+            copy {
+                from file("${tempExtractDir}/core/homepage/resources")
+                into file("${projectDir}/core/resources/homepage")
+            }
+            println "Fixed iconography path structure during extraction"
+        } else {
+            // Extract normally if structure is correct
+            copy {
+                from tempExtractDir
+                into projectDir
+            }
+        }
+        // Clean up temp directory
+        if (tempExtractDir.exists()) {
+            tempExtractDir.deleteDir()
         }
         iconographyZip.delete()
         println "Successfully downloaded and extracted Bearsampp iconography."

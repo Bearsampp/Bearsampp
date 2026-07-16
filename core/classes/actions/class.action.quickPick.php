@@ -300,6 +300,17 @@ class QuickPick
 
         $jsonData = $this->getQuickpickJson();
 
+        // Check if JSON data is valid - detect error returns from getQuickpickJson
+        if ( is_array( $jsonData ) && isset( $jsonData['error'] ) ) {
+            Log::error( 'getQuickpickJson returned error: ' . $jsonData['error'] );
+            return $jsonData;
+        }
+
+        if ( !is_array( $jsonData ) || count( $jsonData ) === 0 ) {
+            Log::error( 'JSON data is not an array or is empty' );
+            return ['error' => 'JSON data is empty'];
+        }
+
         foreach ( $jsonData as $entry ) {
             if ( is_array( $entry ) ) {
                 if ( isset( $entry['module'] ) && is_string( $entry['module'] ) ) {
@@ -307,9 +318,6 @@ class QuickPick
                         $versions[$entry['module']] = array_column( $entry['versions'], null, 'version' );
                     }
                 }
-            }
-            else {
-                Log::error( 'Invalid entry format in JSON data' );
             }
         }
 
@@ -341,16 +349,19 @@ class QuickPick
     {
         $this->getVersions();
         Log::debug( 'getModuleUrl called for module: ' . $module . ' version: ' . $version );
-        $url = trim( $this->versions['module-' . strtolower( $module )][$version]['url'] );
+        $moduleKey = 'module-' . strtolower( $module );
+        if ( !isset( $this->versions[$moduleKey][$version]['url'] ) ) {
+            Log::error( 'Version not found: ' . $version . ' for module: ' . $module );
+            return ['error' => 'Version not found'];
+        }
+        $url = trim( $this->versions[$moduleKey][$version]['url'] );
         if ( $url <> '' ) {
             Log::debug( 'Found URL for version: ' . $version . ' URL: ' . $url );
-
             return $url;
         }
         else {
-            Log::error( 'Version not found: ' . $version );
-
-            return ['error' => 'Version not found'];
+            Log::error( 'URL is empty for version: ' . $version );
+            return ['error' => 'URL is empty'];
         }
     }
 
@@ -785,6 +796,12 @@ class QuickPick
         $includePr = $bearsamppConfig->getIncludePr();
         $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
 
+        // Debug logging
+        Log::debug('getQuickpickMenu called with ' . count($modules) . ' modules and ' . count($versions) . ' version entries');
+        if (isset($versions['error'])) {
+            Log::error('Versions array contains error: ' . $versions['error']);
+        }
+
         ob_start();
         if ( HttpClient::checkInternetState() ) {
 
@@ -823,11 +840,13 @@ class QuickPick
                                         </li>
 
                                         <?php
-                                        foreach ( $versions['module-' . strtolower( $module )] as $version_array ):
-                                            // Skip prerelease versions if includePr is not enabled
-                                            if (isset($version_array['prerelease']) && $version_array['prerelease'] === true && $includePr != 1) {
-                                                continue;
-                                            }
+                                        $moduleKey = 'module-' . strtolower( $module );
+                                        if ( isset( $versions[$moduleKey] ) ):
+                                            foreach ( $versions[$moduleKey] as $version_array ):
+                                                // Skip prerelease versions if includePr is not enabled
+                                                if (isset($version_array['prerelease']) && $version_array['prerelease'] === true && $includePr != 1) {
+                                                    continue;
+                                                }
                                         ?>
                                             <li role = "option" class = "moduleoption"
                                                 id = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>-li"
@@ -840,7 +859,10 @@ class QuickPick
                                                 <label
                                                     for = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>"><?php echo $this->formatVersionLabel( $version_array['version'], isset($version_array['prerelease']) && $version_array['prerelease'] === true ); ?></label>
                                             </li>
-                                        <?php endforeach; ?>
+                                        <?php
+                                            endforeach;
+                                        endif;
+                                        ?>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </ul>
