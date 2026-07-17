@@ -398,11 +398,6 @@
     "module": "module-git",
     "versions": [
       {
-        "version": "2.55.0.2",
-        "url": "https://github.com/Bearsampp/module-git/releases/download/2026.7.10/bearsampp-git-2.55.0.2-2026.7.10.7z",
-        "prerelease": false
-      },
-      {
         "version": "2.54.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2026.5.31/bearsampp-git-2.54.0-2026.5.31.7z",
         "prerelease": false
@@ -1280,11 +1275,6 @@
       {
         "version": "3.39.6",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2026.6.2/bearsampp-ngrok-3.39.6-2026.6.2.7z",
-        "prerelease": false
-      },
-      {
-        "version": "3.35.0",
-        "url": "https://github.com/Bearsampp/module-ngrok/releases/download/Ngrok-3.35.0/bearsampp-ngrok-3.35.0-2026.1.15.7z",
         "prerelease": false
       },
       {
