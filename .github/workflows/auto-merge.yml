@@ -32,6 +32,7 @@ jobs:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       PR_URL: ${{github.event.pull_request.html_url}}
+      GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
     steps:
@@ -56,4 +57,4 @@ jobs:
         if: ${{ steps.auto-merge.conclusion == 'success' }}
         run: |
           gh pr review --approve "$PR_URL"
-          gh pr merge --auto --rebase "$PR_URL"
+          gh pr merge --auto --rebase "$PR_URL" --repo "${{ github.repository }}"
