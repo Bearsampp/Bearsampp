@@ -1,7 +1,7 @@
 <?php
 /*
  *
- *  * Copyright (c) 2021-2024 Bearsampp
+ *  * Copyright (c) 2021-2026 Bearsampp
  *  * License:  GNU General Public License version 3 or later; see LICENSE.txt
  *  * Website: https://bearsampp.com
  *  * Github: https://github.com/Bearsampp
@@ -130,6 +130,8 @@ class BinXlight extends Module
         }
 
         file_put_contents($this->bearsamppConf, $content);
+
+        self::invalidateConfigCacheForPath($this->bearsamppConf);
     }
 
     /**
