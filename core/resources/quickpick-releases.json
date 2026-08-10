@@ -2548,18 +2548,13 @@
     "module": "module-xlight",
     "versions": [
       {
-        "version": "3.9.4.2",
-        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2024.6.8/bearsampp-xlight-3.9.4.2-2024.6.8.7z",
-        "prerelease": false
+        "version": "3.9.5",
+        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2026.8.9/bearsampp-xlight-3.9.5-2026.8.9.7z",
+        "prerelease": true
       },
       {
-        "version": "3.9.4.3",
-        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2024.9.14/bearsampp-xlight-3.9.4.3-2024.9.17.7z",
-        "prerelease": false
-      },
-      {
-        "version": "3.9.4.4",
-        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2024.12.8/bearsampp-xlight-3.9.4.4-2024.12.8.7z",
+        "version": "3.9.4.6",
+        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2025.7.31/bearsampp-xlight-3.9.4.6-2025.7.31.7z",
         "prerelease": false
       },
       {
@@ -2568,8 +2563,13 @@
         "prerelease": false
       },
       {
-        "version": "3.9.4.6",
-        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2025.7.31/bearsampp-xlight-3.9.4.6-2025.7.31.7z",
+        "version": "3.9.4.4",
+        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2024.12.8/bearsampp-xlight-3.9.4.4-2024.12.8.7z",
+        "prerelease": false
+      },
+      {
+        "version": "3.9.4.3",
+        "url": "https://github.com/Bearsampp/module-xlight/releases/download/2024.9.14/bearsampp-xlight-3.9.4.3-2024.9.17.7z",
         "prerelease": false
       }
     ]
