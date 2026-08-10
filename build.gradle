@@ -1169,6 +1169,21 @@ task prepareBase(dependsOn: [updateVersions, initBuild]) {
         def apiUrl = "https://api.github.com/repos/FiloSottile/mkcert/releases/latest"
         def connection = new URL(apiUrl).openConnection()
         connection.setRequestProperty("User-Agent", "Gradle")
+        def githubToken = System.getenv('GITHUB_TOKEN')
+        if (!githubToken) {
+            githubToken = System.getenv('GH_PAT')
+        }
+        def localProps = new Properties()
+        def localPropsFile = file('build.local.properties')
+        if (localPropsFile.exists()) {
+            localPropsFile.withInputStream { localProps.load(it) }
+            if (!githubToken) {
+                githubToken = localProps.getProperty('github.token')
+            }
+        }
+        if (githubToken) {
+            connection.setRequestProperty("Authorization", "token ${githubToken}")
+        }
         def json = connection.inputStream.text
         def data = new JsonSlurper().parseText(json)
         def latestTag = data.tag_name
