@@ -2550,7 +2550,7 @@
       {
         "version": "3.9.5",
         "url": "https://github.com/Bearsampp/module-xlight/releases/download/2026.8.9/bearsampp-xlight-3.9.5-2026.8.9.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.9.4.6",
