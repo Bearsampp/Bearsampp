@@ -151,3 +151,24 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Wait for Pull Request to be merged
+        if: steps.cpr.outputs.pull-request-number != ''
+        run: |
+          set +e # Don't exit on error
+          PR_NUMBER="${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Waiting for PR #${PR_NUMBER} to be merged into main..."
+          for i in $(seq 1 60); do
+            PR_STATE=$(gh pr view "$PR_NUMBER" --json state --jq .state)
+            PR_MERGED=$(gh pr view "$PR_NUMBER" --json merged --jq .merged)
+            if [ "$PR_STATE" = "MERGED" ] || [ "$PR_MERGED" = "true" ]; then
+              echo "✓ PR #${PR_NUMBER} merged. Combined release data is now on main."
+              exit 0
+            fi
+            echo "Waiting for merge (attempt $i of 60)..."
+            sleep 15
+          done
+          echo "::warning ::PR #${PR_NUMBER} was not merged within the wait window."
+          exit 0
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
