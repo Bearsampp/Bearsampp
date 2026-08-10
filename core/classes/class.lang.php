@@ -354,6 +354,12 @@ class Lang
     const DELSSL_DELETED = 'delSslDeleted';
     const DELSSL_DELETED_ERROR = 'delSslDeletedError';
 
+    // Action SSL Root CA trust
+    const SSL_TRUST_ROOT_CA_TITLE = 'sslTrustRootCaTitle';
+    const SSL_TRUST_ROOT_CA_MSG = 'sslTrustRootCaMsg';
+    const SSL_TRUST_FIREFOX_MSG = 'sslTrustFirefoxMsg';
+    const SSL_TRUST_ROOT_CA_DONE = 'sslTrustRootCaDone';
+
     // Action restart
     const RESTART_TITLE = 'restartTitle';
     const RESTART_TEXT = 'restartText';
@@ -719,6 +725,12 @@ class Lang
             self::DELSSL_TITLE,
             self::DELSSL_DELETED,
             self::DELSSL_DELETED_ERROR,
+
+            // Action SSL Root CA trust
+            self::SSL_TRUST_ROOT_CA_TITLE,
+            self::SSL_TRUST_ROOT_CA_MSG,
+            self::SSL_TRUST_FIREFOX_MSG,
+            self::SSL_TRUST_ROOT_CA_DONE,
 
             // Action restart
             self::RESTART_TITLE,

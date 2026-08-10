@@ -89,7 +89,20 @@ class Config
         Log::trace('Replace config:');
         $content = file_get_contents(Path::getConfigFilePath());
         foreach ($params as $key => $value) {
-            $content = preg_replace('/^' . $key . '\s=\s.*/m', $key . ' = ' . '"' . $value.'"', $content, -1, $count);
+            // Only accept well-formed keys and values. The key is interpolated
+            // into a regex pattern and the value into the INI content, so an
+            // unvalidated key/value could inject arbitrary lines or corrupt
+            // other settings (config poisoning). Values that could break out
+            // of the surrounding quotes or add lines are rejected.
+            if (!is_string($key) || preg_match('/^[a-zA-Z0-9_-]+$/', $key) !== 1) {
+                throw new RuntimeException('Invalid configuration key: ' . var_export($key, true));
+            }
+            $value = (string)$value;
+            if (preg_match('/[\r\n"\x00-\x1F\x7F]/', $value) === 1) {
+                throw new RuntimeException('Invalid configuration value for key: ' . $key);
+            }
+
+            $content = preg_replace('/^' . preg_quote($key, '/') . '\s=\s.*/m', $key . ' = ' . '"' . $value . '"', $content, -1, $count);
             Log::trace('## ' . $key . ': ' . $value . ' (' . $count . ' replacements done)');
             $this->raw[$key] = $value;
         }

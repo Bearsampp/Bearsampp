@@ -336,6 +336,12 @@ delSslTitle = "SSL tanusítvány törlése"
 delSslDeleted = "SSL tanusítvány '%s' sikeresen törölve"
 delSslDeletedError = "SSL tanusítvány nem lett törölve"
 
+; Action SSL gyökértanúsítvány megbízhatósága
+sslTrustRootCaTitle = "SSL gyökértanúsítvány megbízhatósága"
+sslTrustRootCaMsg = "Új SSL gyökértanúsítvány készült.@nl@Megbízik benne a Windows böngészőkben és a Firefoxban?@nl@Ha megbízik benne, a HTTPS-oldalak (pl. https://localhost) biztonságos zárolást jelenítenek meg."
+sslTrustFirefoxMsg = "A Firefox még nincs beállítva a Bearsampp SSL gyökértanúsítvány megbízására, ezért a HTTPS-oldalak (pl. https://localhost) nem biztonságosként jelenhetnek meg.@nl@@nl@Szeretné beállítani, hogy a Firefox megbízzon benne?"
+sslTrustRootCaDone = "Az SSL gyökértanúsítvány megbízhatónak lett jelölve.@nl@Indítsa újra a Firefoxot, ha fut, az új bizalmi beállítások alkalmazásához."
+
 ; Action Restart
 restartTitle = "Újraindítás"
 restartText = "%s ujraindítása az új beállításokhoz"

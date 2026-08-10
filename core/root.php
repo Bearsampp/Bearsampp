@@ -144,6 +144,28 @@ $bearsamppRoot = new Root(dirname(__FILE__));
 $bearsamppRoot->register();
 
 /**
+ * Enables TLS certificate verification for all outbound HTTPS connections.
+ *
+ * The bundled PHP build ships with an empty certificate store on Windows, so without
+ * an explicit CA bundle any HTTPS fetch either fails or (in code that disables
+ * verification) silently accepts any certificate. Point the default stream context at
+ * the CA bundle shipped with this PHP installation so every fopen()/file_get_contents()/
+ * get_headers() over HTTPS is verified by default. cURL handles get a CAINFO option
+ * explicitly in HttpClient/Util.
+ */
+$bearsamppCacert = Path::getPhpPath() . '/extras/ssl/cacert.pem';
+if (is_file($bearsamppCacert)) {
+    stream_context_set_default(array(
+        'ssl' => array(
+            'verify_peer'       => true,
+            'verify_peer_name'  => true,
+            'allow_self_signed' => false,
+            'cafile'            => $bearsamppCacert,
+        )
+    ));
+}
+
+/**
  * Creates an instance of the Action class and processes the action based on command line arguments.
  */
 $bearsamppAction = new Action();

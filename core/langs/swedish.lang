@@ -336,6 +336,12 @@ delSslTitle = "Ta bort SSL-certifikat"
 delSslDeleted = "SSL-certifikat '%s' har tagits bort framgångsrikt."
 delSslDeletedError = "Det går inte att ta bort SSL-certifikat."
 
+; Action SSL-rotutfärdare förtroende
+sslTrustRootCaTitle = "Lita på SSL-rotutfärdaren"
+sslTrustRootCaMsg = "En ny SSL-rotutfärdare har skapats.@nl@Vill du lita på den i Windows-webbläsare och Firefox?@nl@Genom att lita på den visas HTTPS-webbplatser som https://localhost med en säkerhetslåsikon."
+sslTrustFirefoxMsg = "Firefox är ännu inte konfigurerad för att lita på Bearsampps SSL-rotutfärdare, så HTTPS-webbplatser som https://localhost kan visas som osäkra.@nl@@nl@Vill du konfigurera Firefox att lita på den?"
+sslTrustRootCaDone = "SSL-rotutfärdaren är nu betrodd.@nl@Starta om Firefox om den är igång för att tillämpa de nya förtroendeinställningarna."
+
 ; Action Restart
 restartTitle = "#Restart"
 restartText = "#Please restart %s to apply new settings"

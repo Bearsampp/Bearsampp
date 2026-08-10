@@ -941,6 +941,9 @@ class ActionStartup
         } else {
             Log::info('Apache module not found or disabled, skipping vhost SSL check');
         }
+
+        // Offer to trust an existing (previously untrusted) SSL Root CA in Firefox
+        $bearsamppOpenSsl->ensureFirefoxTrustPrompt();
     }
 
     /**

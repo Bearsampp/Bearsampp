@@ -252,8 +252,9 @@ class Core
      */
     public function getFileFromUrl(string $moduleUrl, string $filePath, $progressBar = false)
     {
-        // Open the URL for reading
-        $inputStream = @fopen( $moduleUrl, 'rb' );
+        // Open the URL for reading. The verified SSL context makes sure the module is
+        // fetched over a properly authenticated HTTPS connection.
+        $inputStream = @fopen( $moduleUrl, 'rb', false, HttpClient::getSslStreamContext() );
         if ( $inputStream === false ) {
             Log::error( 'Error fetching content from URL: ' . $moduleUrl );
 

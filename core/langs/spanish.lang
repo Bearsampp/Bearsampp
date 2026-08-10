@@ -336,6 +336,12 @@ delSslTitle = "Eliminar certificado SSL"
 delSslDeleted = "Certificado SSL '%s' eliminado con éxito."
 delSslDeletedError = "No se puede eliminar el certificado SSL."
 
+; Acción de confianza de la autoridad raíz SSL
+sslTrustRootCaTitle = "Confiar en la autoridad raíz SSL"
+sslTrustRootCaMsg = "Se ha creado una nueva autoridad raíz SSL.@nl@¿Desea confiar en ella en los navegadores de Windows y Firefox?@nl@Confiar en ella hará que los sitios HTTPS como https://localhost muestren el candado de seguridad."
+sslTrustFirefoxMsg = "Firefox aún no está configurado para confiar en la autoridad raíz SSL de Bearsampp, por lo que los sitios HTTPS como https://localhost pueden mostrarse como no seguros.@nl@@nl@¿Desea configurar Firefox para que confíe en ella?"
+sslTrustRootCaDone = "La autoridad raíz SSL fue aceptada.@nl@Reinicie Firefox si está en ejecución para aplicar la nueva configuración de confianza."
+
 ; Reiniciar
 restartTitle = "Reiniciar"
 restartText = "Por favor, reinicie %s para aplicar los nuevos ajustes..."

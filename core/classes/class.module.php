@@ -115,7 +115,18 @@ abstract class Module
         $content = file_get_contents($this->bearsamppConf);
 
         foreach ($params as $key => $value) {
-            $content = preg_replace('|' . $key . ' = .*|', $key . ' = ' . '"' . $value.'"', $content);
+            // Same hardening as Config::replaceAll() - the key is used in a
+            // regex pattern and the value in the INI content, so both must be
+            // validated to prevent config poisoning.
+            if (!is_string($key) || preg_match('/^[a-zA-Z0-9_-]+$/', $key) !== 1) {
+                throw new RuntimeException('Invalid configuration key: ' . var_export($key, true));
+            }
+            $value = (string)$value;
+            if (preg_match('/[\r\n"\x00-\x1F\x7F]/', $value) === 1) {
+                throw new RuntimeException('Invalid configuration value for key: ' . $key);
+            }
+
+            $content = preg_replace('|' . preg_quote($key, '|') . ' = .*|', $key . ' = ' . '"' . $value . '"', $content);
             $this->bearsamppConfRaw[$key] = $value;
         }
 

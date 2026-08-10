@@ -336,6 +336,12 @@ delSslTitle = "Supprimer le certificat SSL"
 delSslDeleted = "Certificat SSL '%s' supprimé avec succès."
 delSslDeletedError = "Impossible de supprimer le certificat SSL."
 
+; Action SSL Root CA trust
+sslTrustRootCaTitle = "Faire confiance à l'autorité racine SSL"
+sslTrustRootCaMsg = "Une nouvelle autorité racine SSL a été créée.@nl@Voulez-vous lui faire confiance dans les navigateurs Windows et Firefox ?@nl@En lui faisant confiance, les sites HTTPS comme https://localhost afficheront le cadenas de sécurité."
+sslTrustFirefoxMsg = "Firefox n'est pas encore configuré pour faire confiance à l'autorité racine SSL de Bearsampp, les sites HTTPS comme https://localhost peuvent donc être affichés comme non sécurisés.@nl@@nl@Voulez-vous configurer Firefox pour lui faire confiance ?"
+sslTrustRootCaDone = "L'autorité racine SSL est maintenant approuvée.@nl@Veuillez redémarrer Firefox s'il est en cours d'exécution pour appliquer les nouveaux paramètres de confiance."
+
 ; Action Restart
 restartTitle = "Redémarrer"
 restartText = "Veuillez redémarrez %s pour appliquer les nouveaux paramètres"

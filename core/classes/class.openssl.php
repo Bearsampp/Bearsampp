@@ -24,6 +24,8 @@ class OpenSsl
     private $wbDelSslBtnDelete;
     private $wbDelSslBtnCancel;
     private $rootCaName = 'BearsamppRootCA';
+    private $trustPromptShownThisRun = false;
+    private $firefoxTrustDeclinedFile = 'firefoxTrustDeclined';
 
 
     /**
@@ -121,6 +123,9 @@ class OpenSsl
         if ($caRootInfo && isset($caRootInfo[0])) {
             Log::info('mkcert CAROOT is set to: ' . $caRootInfo[0]);
         }
+
+        // A brand new Root CA was created: ask the user whether to trust it
+        $this->maybePromptTrustRootCa($rootCaPath, true);
 
         Log::info('Root CA created. Rebuilding all existing certificates and ensuring localhost exists...');
         
@@ -283,8 +288,204 @@ class OpenSsl
                 return false;
             }
             Log::info('Root CA successfully created and verified.');
+
+            // A brand new Root CA was created: ask the user whether to trust it
+            $this->maybePromptTrustRootCa($rootCaPath, true);
+        } else {
+            // Root CA already exists: if Firefox does not trust it yet, offer to configure it
+            $this->maybePromptTrustRootCa($rootCaPath, false);
         }
         return true;
+    }
+
+    /**
+     * Checks whether the SSL Root CA should be trusted, asking the user if necessary.
+     * Called during startup so that an existing (previously untrusted) Root CA can be
+     * trusted without having to regenerate it.
+     *
+     * @return bool True if the Root CA exists and the trust state was checked.
+     */
+    public function ensureFirefoxTrustPrompt()
+    {
+        $destPath = Path::getSslPath();
+        $rootCaPath = $destPath . '/' . Path::getMkcertRootCaName();
+        if (!file_exists($rootCaPath)) {
+            return false;
+        }
+
+        $this->maybePromptTrustRootCa($rootCaPath, false);
+        return true;
+    }
+
+    /**
+     * Asks the user whether to trust the SSL Root CA and, if accepted, configures
+     * the browsers to trust it. The prompt is shown at most once per run.
+     *
+     * @param string $rootCaPath The path to the Root CA certificate file.
+     * @param bool $force True when a brand new Root CA was just created, false when checking an existing one.
+     * @return bool True if the user accepted and the trust was configured, false otherwise.
+     */
+    private function maybePromptTrustRootCa($rootCaPath, $force)
+    {
+        global $bearsamppLang, $bearsamppWinbinder;
+
+        if ($this->trustPromptShownThisRun) {
+            return false;
+        }
+
+        $declinedFile = Path::getSslPath() . '/' . $this->firefoxTrustDeclinedFile;
+
+        if ($force) {
+            // A brand new Root CA was created: forget any previous decline and offer trust again
+            @unlink($declinedFile);
+        } else {
+            // Existing Root CA: only offer to configure Firefox if it is not configured yet
+            if ($this->isFirefoxEnterpriseRootsConfigured()) {
+                return false;
+            }
+            if (file_exists($declinedFile)) {
+                Log::info('Skipping SSL Root CA trust prompt (previously declined).');
+                return false;
+            }
+        }
+
+        $this->trustPromptShownThisRun = true;
+
+        $message = $force
+            ? $bearsamppLang->getValue(Lang::SSL_TRUST_ROOT_CA_MSG)
+            : $bearsamppLang->getValue(Lang::SSL_TRUST_FIREFOX_MSG);
+        $title = $bearsamppLang->getValue(Lang::SSL_TRUST_ROOT_CA_TITLE);
+
+        $trusted = false;
+        if (is_object($bearsamppWinbinder) && method_exists($bearsamppWinbinder, 'messageBoxYesNo')) {
+            $trusted = (bool)$bearsamppWinbinder->messageBoxYesNo($message, $title);
+        } else {
+            Log::warning('WinBinder not available, cannot prompt to trust the SSL Root CA.');
+        }
+
+        if (!$trusted) {
+            Log::info('User declined to trust the SSL Root CA: ' . $rootCaPath);
+            file_put_contents($declinedFile, date('Y-m-d H:i:s') . PHP_EOL);
+            return false;
+        }
+
+        Log::info('User accepted to trust the SSL Root CA. Configuring browsers...');
+        $this->trustRootCaInFirefox($rootCaPath);
+        @unlink($declinedFile);
+
+        if (is_object($bearsamppWinbinder) && method_exists($bearsamppWinbinder, 'messageBoxInfo')) {
+            $bearsamppWinbinder->messageBoxInfo(
+                $bearsamppLang->getValue(Lang::SSL_TRUST_ROOT_CA_DONE),
+                $title
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * Finds the Firefox profile directories that contain a prefs.js file.
+     *
+     * @return array List of absolute paths to Firefox profiles.
+     */
+    private function getFirefoxProfileDirs()
+    {
+        $dirs = array();
+        $bases = array();
+        $appData = getenv('APPDATA');
+        $localAppData = getenv('LOCALAPPDATA');
+        if (!empty($appData)) {
+            $bases[] = $appData . '/Mozilla/Firefox/Profiles';
+        }
+        if (!empty($localAppData)) {
+            $bases[] = $localAppData . '/Mozilla/Firefox/Profiles';
+        }
+
+        foreach ($bases as $base) {
+            if (!is_dir($base)) {
+                continue;
+            }
+            $entries = @scandir($base);
+            if ($entries === false) {
+                continue;
+            }
+            foreach ($entries as $entry) {
+                if ($entry === '.' || $entry === '..') {
+                    continue;
+                }
+                $dir = $base . '/' . $entry;
+                if (is_dir($dir) && file_exists($dir . '/prefs.js')) {
+                    $dirs[] = $dir;
+                }
+            }
+        }
+
+        return array_values(array_unique($dirs));
+    }
+
+    /**
+     * Checks whether all found Firefox profiles are configured to trust
+     * the system root certificates (security.enterprise_roots.enabled).
+     *
+     * @return bool True if all profiles are configured, or if no Firefox profiles were found.
+     */
+    private function isFirefoxEnterpriseRootsConfigured()
+    {
+        $profiles = $this->getFirefoxProfileDirs();
+        if (empty($profiles)) {
+            return true;
+        }
+
+        foreach ($profiles as $profile) {
+            $userJs = $profile . '/user.js';
+            $content = file_exists($userJs) ? @file_get_contents($userJs) : '';
+            if ($content === false) {
+                $content = '';
+            }
+            if (!preg_match('/user_pref\(\s*["\']security\.enterprise_roots\.enabled["\']\s*,\s*true\s*\)/i', $content)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Configures all found Firefox profiles to trust the system root certificates,
+     * which makes HTTPS sites signed by the Bearsampp Root CA display the secure lock.
+     *
+     * @param string $rootCaPath The path to the Root CA certificate file.
+     * @return void
+     */
+    private function trustRootCaInFirefox($rootCaPath)
+    {
+        $profiles = $this->getFirefoxProfileDirs();
+        if (empty($profiles)) {
+            Log::info('No Firefox profiles found. Skipping Firefox SSL Root CA configuration.');
+            return;
+        }
+
+        foreach ($profiles as $profile) {
+            $userJs = $profile . '/user.js';
+            $content = file_exists($userJs) ? @file_get_contents($userJs) : '';
+            if ($content === false) {
+                $content = '';
+            }
+            $lines = $content === '' ? array() : explode("\n", str_replace("\r\n", "\n", $content));
+
+            // Remove any existing enterprise_roots pref so we only keep the trusted one
+            $lines = array_values(array_filter($lines, function ($line) {
+                return preg_match('/security\.enterprise_roots\.enabled/i', trim($line)) ? false : true;
+            }));
+
+            $lines[] = 'user_pref("security.enterprise_roots.enabled", true);';
+
+            if (@file_put_contents($userJs, implode("\n", $lines) . PHP_EOL) !== false) {
+                Log::info('Configured Firefox profile to trust system root certificates: ' . $profile);
+            } else {
+                Log::error('Failed to write Firefox user.js: ' . $userJs);
+            }
+        }
     }
 
     /**

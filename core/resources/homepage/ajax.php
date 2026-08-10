@@ -57,32 +57,37 @@ $csrfProtectedEndpoints = [
 ];
 
 /**
- * Initialize CSRF protection
- */
-if ($proc !== 'quickpick') {
-    Csrf::init();
-}
-
-/**
- * Validate CSRF token for protected endpoints
+ * Validate CSRF token for protected endpoints.
+ * Sessions are only started for state-changing endpoints so that read-only
+ * polling endpoints (e.g. reload status) never block on a session lock held
+ * by a long-running operation such as a module install.
  */
 if (in_array($proc, $csrfProtectedEndpoints, true)) {
-    if ($proc === 'quickpick') {
-        // quickpick handles its own headers and needs session started carefully
-        if (session_status() === PHP_SESSION_NONE) {
-            @session_start();
-        }
+    // State-changing endpoints must be reached via POST only
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        header('Content-Type: application/json');
+        header('Cache-Control: no-store');
+        echo json_encode(['error' => 'Method not allowed']);
+        exit;
     }
+
+    Csrf::init();
 
     if (!Csrf::validateRequest()) {
         http_response_code(403);
         header('Content-Type: application/json');
+        header('Cache-Control: no-store');
         echo json_encode([
             'error' => 'CSRF validation failed',
             'message' => 'Invalid or expired security token. Please refresh the page and try again.'
         ]);
         exit;
     }
+
+    // Release the session lock so long-running handlers (module downloads /
+    // extraction) do not block other requests sharing this session.
+    session_write_close();
 }
 
 /**

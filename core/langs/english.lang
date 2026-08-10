@@ -336,6 +336,12 @@ delSslTitle = "Delete SSL certificate"
 delSslDeleted = "SSL certificate '%s' successfully deleted."
 delSslDeletedError = "Unable to delete SSL certificate."
 
+; Action SSL Root CA trust
+sslTrustRootCaTitle = "Trust SSL Root CA"
+sslTrustRootCaMsg = "A new SSL Root CA has been created.@nl@Do you want to trust it in Windows browsers and Firefox?@nl@Trusting it makes HTTPS sites such as https://localhost show the secure lock icon."
+sslTrustFirefoxMsg = "Firefox is not yet configured to trust the Bearsampp SSL Root CA, so HTTPS sites such as https://localhost may be shown as not secure.@nl@@nl@Do you want to configure Firefox to trust it?"
+sslTrustRootCaDone = "The SSL Root CA was trusted.@nl@Please restart Firefox if it is running to apply the new trust settings."
+
 ; Action Restart
 restartTitle = "Restart"
 restartText = "Please restart %s to apply new settings"

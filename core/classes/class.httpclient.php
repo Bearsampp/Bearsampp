@@ -22,15 +22,18 @@ class HttpClient
      * Retrieves HTTP headers from a given URL using either cURL or fopen, depending on availability.
      *
      * @param   string  $pingUrl  The URL to ping for headers.
+     * @param   bool    $verify   Whether to verify the peer certificate. Defaults to true.
+     *                            Pass false only for local/self-signed endpoints (e.g. the
+     *                            app's own Apache SSL on localhost).
      *
      * @return array An array of HTTP headers.
      */
-    public static function getHttpHeaders($pingUrl)
+    public static function getHttpHeaders($pingUrl, $verify = true)
     {
         if (function_exists('curl_version')) {
-            $result = self::getCurlHttpHeaders($pingUrl);
+            $result = self::getCurlHttpHeaders($pingUrl, $verify);
         } else {
-            $result = self::getFopenHttpHeaders($pingUrl);
+            $result = self::getFopenHttpHeaders($pingUrl, $verify);
         }
 
         if (!empty($result)) {
@@ -55,27 +58,19 @@ class HttpClient
     /**
      * Retrieves HTTP headers from a given URL using the fopen function.
      *
-     * This method creates a stream context to disable SSL peer and peer name verification,
-     * which allows self-signed certificates. It attempts to open the URL and read the HTTP
-     * response headers.
+     * The stream context verifies the peer certificate against the bundled CA bundle
+     * unless $verify is false (used only for local/self-signed endpoints).
      *
-     * @param   string  $url  The URL from which to fetch the headers.
+     * @param   string  $url     The URL from which to fetch the headers.
+     * @param   bool    $verify  Whether to verify the peer certificate. Defaults to true.
      *
      * @return array An array of headers if successful, otherwise an empty array.
      */
-    public static function getFopenHttpHeaders($url)
+    public static function getFopenHttpHeaders($url, $verify = true)
     {
         $result = array();
 
-        $context = stream_context_create(array(
-            'ssl' => array(
-                'verify_peer'       => false,
-                'verify_peer_name'  => false,
-                'allow_self_signed' => true,
-            )
-        ));
-
-        $fp = @fopen($url, 'r', false, $context);
+        $fp = @fopen($url, 'r', false, self::getSslStreamContext($verify));
         if ($fp) {
             $meta   = stream_get_meta_data($fp);
             $result = isset($meta['wrapper_data']) ? $meta['wrapper_data'] : $result;
@@ -88,15 +83,15 @@ class HttpClient
     /**
      * Retrieves HTTP headers from a given URL using cURL.
      *
-     * This method initializes a cURL session, sets various options to fetch headers
-     * including disabling SSL peer verification, and executes the request. It logs
-     * the raw response for debugging purposes and parses the headers from the response.
+     * The peer certificate is verified against the bundled CA bundle unless $verify is
+     * false (used only for local/self-signed endpoints).
      *
-     * @param   string  $url  The URL from which to fetch the headers.
+     * @param   string  $url     The URL from which to fetch the headers.
+     * @param   bool    $verify  Whether to verify the peer certificate. Defaults to true.
      *
      * @return array An array of headers if successful, otherwise an empty array.
      */
-    public static function getCurlHttpHeaders($url)
+    public static function getCurlHttpHeaders($url, $verify = true)
     {
         $result = array();
 
@@ -105,8 +100,7 @@ class HttpClient
         curl_setopt($ch, CURLOPT_VERBOSE, true);
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        self::applyCurlSslOptions($ch, $verify);
 
         $response = @curl_exec($ch);
         if (empty($response)) {
@@ -241,9 +235,10 @@ class HttpClient
     /**
      * Retrieves the initial response line from a specified host and port using a socket connection.
      *
-     * This method optionally uses SSL and creates a stream context similar to `getFopenHttpHeaders`.
-     * It attempts to connect to the host and port, reads the first line of the response, and parses it.
-     * Detailed debug information is logged for each header line received.
+     * This is a local connectivity probe (used to detect which local service owns a port).
+     * Certificate verification is intentionally disabled here: it only reads the first
+     * response line from localhost/self-signed services and never processes untrusted
+     * content.
      *
      * @param   string  $host  The host name or IP address to connect to.
      * @param   int     $port  The port number to connect to.
@@ -291,11 +286,15 @@ class HttpClient
     /**
      * Sends a GET request to the specified URL and returns the response.
      *
-     * @param   string  $url  The URL to send the GET request to.
+     * The peer certificate is verified against the bundled CA bundle unless $verify is
+     * false (used only for local/self-signed endpoints).
+     *
+     * @param   string  $url     The URL to send the GET request to.
+     * @param   bool    $verify  Whether to verify the peer certificate. Defaults to true.
      *
      * @return string The trimmed response data from the URL.
      */
-    public static function getApiJson($url)
+    public static function getApiJson($url, $verify = true)
     {
         $header = self::setupCurlHeaderWithToken();
 
@@ -304,8 +303,7 @@ class HttpClient
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_VERBOSE, false); // Set to false to avoid polluting logs unless needed
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        self::applyCurlSslOptions($ch, $verify);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $data = curl_exec($ch);
         if (curl_errno($ch)) {
@@ -379,6 +377,65 @@ class HttpClient
     }
 
     /**
+     * Returns the path to the CA bundle shipped with the PHP installation.
+     *
+     * @return string The absolute path to the cacert.pem file.
+     */
+    public static function getCacertPath()
+    {
+        return Path::getPhpPath() . '/extras/ssl/cacert.pem';
+    }
+
+    /**
+     * Builds a stream context that verifies the peer certificate against the bundled CA bundle.
+     *
+     * @param   bool  $verify  Whether to verify the peer certificate. Defaults to true.
+     *
+     * @return resource The stream context.
+     */
+    public static function getSslStreamContext($verify = true)
+    {
+        $ssl = array(
+            'verify_peer'       => $verify,
+            'verify_peer_name'  => $verify,
+            'allow_self_signed' => !$verify,
+        );
+
+        if ($verify) {
+            $cacert = self::getCacertPath();
+            if (is_file($cacert)) {
+                $ssl['cafile'] = $cacert;
+            }
+        }
+
+        return stream_context_create(array('ssl' => $ssl));
+    }
+
+    /**
+     * Applies certificate verification options to a cURL handle.
+     *
+     * When $verify is true the peer certificate is checked against the bundled CA bundle.
+     * Pass false only for local/self-signed endpoints (e.g. the app's own Apache SSL).
+     *
+     * @param   resource  $ch      The cURL handle.
+     * @param   bool      $verify  Whether to verify the peer certificate. Defaults to true.
+     *
+     * @return void
+     */
+    public static function applyCurlSslOptions($ch, $verify = true)
+    {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $verify);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $verify ? 2 : 0);
+
+        if ($verify) {
+            $cacert = self::getCacertPath();
+            if (is_file($cacert)) {
+                curl_setopt($ch, CURLOPT_CAINFO, $cacert);
+            }
+        }
+    }
+
+    /**
      * Retrieves the file size of a remote file.
      *
      * @param   string  $url            The URL of the remote file.
@@ -390,7 +447,7 @@ class HttpClient
     {
         $size = 0;
 
-        $data = get_headers($url, true);
+        $data = get_headers($url, true, self::getSslStreamContext());
         if (isset($data['Content-Length'])) {
             $size = intval($data['Content-Length']);
         }

@@ -241,7 +241,9 @@ class BinApache extends Module
             return false;
         }
 
-        $headers = HttpClient::getHttpHeaders( 'http' . ($ssl ? 's' : '') . '://localhost:' . $port . '/' . Path::getWebResourcesPath() . '/ping.php' );
+        // $verify = false: this pings the app's own Apache on localhost, which uses a local
+        // self-signed certificate. Certificate verification stays on for all remote fetches.
+        $headers = HttpClient::getHttpHeaders( 'http' . ($ssl ? 's' : '') . '://localhost:' . $port . '/' . Path::getWebResourcesPath() . '/ping.php', false );
         if ( !empty( $headers ) ) {
             foreach ( $headers as $row ) {
                 if ( UtilString::startWith( $row, 'Server: ' ) || UtilString::startWith( $row, 'server: ' ) ) {

@@ -336,6 +336,12 @@ delSslTitle = "SSL-Zertifikat löschen"
 delSslDeleted = "SSL-Zertifikat '%s' erfolgreich gelöscht."
 delSslDeletedError = "SSL-Zertifikat konnte nicht gelöscht werden."
 
+; Action SSL Root CA trust
+sslTrustRootCaTitle = "SSL-Root-Zertifikat vertrauen"
+sslTrustRootCaMsg = "Ein neues SSL-Root-Zertifikat wurde erstellt.@nl@Möchten Sie ihm in Windows-Browsern und Firefox vertrauen?@nl@Dadurch zeigen HTTPS-Websites wie https://localhost das Sicherheitsschloss-Symbol."
+sslTrustFirefoxMsg = "Firefox ist noch nicht konfiguriert, um dem Bearsampp SSL-Root-Zertifikat zu vertrauen. HTTPS-Websites wie https://localhost können daher als nicht sicher angezeigt werden.@nl@@nl@Möchten Sie Firefox so konfigurieren, dass es ihm vertraut?"
+sslTrustRootCaDone = "Dem SSL-Root-Zertifikat wurde vertraut.@nl@Bitte starten Sie Firefox neu, falls er ausgeführt wird, um die neuen Vertrauenseinstellungen zu übernehmen."
+
 ; Action Restart
 restartTitle = "Neustart"
 restartText = "Bitte starten Sie %s neu, um die neuen Einstellungen anzuwenden"
