@@ -271,7 +271,7 @@ class Csrf
         // defense against DNS rebinding: an attacker's domain, even resolved
         // to 127.0.0.1, will not be in the allowlist.
         $requestHost = self::normalizeHost($httpHost);
-        if (!in_array($requestHost, $allowedHosts, true)) {
+        if (!self::isHostAllowed($requestHost, $allowedHosts)) {
             Log::warning('CSRF validation failed: Request host "' . $requestHost . '" is not an allowed host');
             return false;
         }
@@ -321,10 +321,54 @@ class Csrf
             try {
                 $apache = $bearsamppBins->getApache();
                 if (is_object($apache) && method_exists($apache, 'getVhosts')) {
+                    $vhostNames = array();
                     foreach ($apache->getVhosts() as $vhost) {
                         if (is_string($vhost) && $vhost !== '') {
-                            $allowed[] = self::normalizeHost($vhost);
+                            $vhostNames[] = $vhost;
                         }
+                    }
+
+                    // Resolve the actual host names each vhost config serves.
+                    // Relying on the config file names alone would miss ServerAlias
+                    // entries and hosts that differ from the file name, which would
+                    // wrongly reject legitimate requests when HTTPS (secure Apache
+                    // settings) is used.
+                    $parsedHosts = array();
+                    $vhostsPath = Path::getVhostsPath();
+                    if (is_dir($vhostsPath)) {
+                        foreach ($vhostNames as $vhost) {
+                            $content = @file_get_contents($vhostsPath . '/' . $vhost . '.conf');
+                            if ($content === false) {
+                                // Fall back to the config file name when it cannot be read
+                                $parsedHosts[] = $vhost;
+                                continue;
+                            }
+
+                            $found = false;
+                            foreach (array('ServerName', 'ServerAlias') as $directive) {
+                                if (preg_match_all('/^\s*' . $directive . '\s+([^\s#]+)/mi', $content, $matches)) {
+                                    foreach ($matches[1] as $declaredHost) {
+                                        $normalized = self::normalizeHost($declaredHost);
+                                        if ($normalized !== '') {
+                                            $parsedHosts[] = $normalized;
+                                            $found = true;
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Keep the file name when the config declares no host name
+                            if (!$found) {
+                                $parsedHosts[] = $vhost;
+                            }
+                        }
+                    }
+
+                    foreach (array_unique($parsedHosts) as $vhost) {
+                        $allowed[] = $vhost;
+                        // Vhost certificates cover any subdomain (e.g. www.vhost.local),
+                        // so those hosts must be accepted as well.
+                        $allowed[] = '*.' . $vhost;
                     }
                 }
             } catch (\Throwable $e) {
@@ -334,6 +378,39 @@ class Csrf
         }
 
         return array_values(array_unique($allowed));
+    }
+
+    /**
+     * Checks whether a host is allowed, either by exact match against the
+     * allowlist or as a subdomain of an allowed wildcard host (e.g.
+     * www.vhost.local matches *.vhost.local). Wildcards mirror the certificate
+     * coverage BearSampp generates for virtual hosts.
+     *
+     * @param string $host The raw host to check.
+     * @param array $allowedHosts The allowlist of normalized hosts and wildcards.
+     * @return bool True if the host is allowed, false otherwise.
+     */
+    private static function isHostAllowed($host, array $allowedHosts)
+    {
+        $host = self::normalizeHost($host);
+        if ($host === '') {
+            return false;
+        }
+
+        if (in_array($host, $allowedHosts, true)) {
+            return true;
+        }
+
+        foreach ($allowedHosts as $allowedHost) {
+            if (strpos($allowedHost, '*.') === 0) {
+                $suffix = substr($allowedHost, 1);
+                if ($suffix !== '' && substr($host, -strlen($suffix)) === $suffix) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -394,7 +471,7 @@ class Csrf
         }
 
         $originHost = self::normalizeHost($parts['host']);
-        if (!in_array($originHost, $allowedHosts, true)) {
+        if (!self::isHostAllowed($originHost, $allowedHosts)) {
             Log::warning('CSRF validation failed: Origin/Referer host "' . $originHost . '" is not an allowed host');
             return false;
         }
