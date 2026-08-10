@@ -303,6 +303,17 @@ class Csrf
     {
         $allowed = array('localhost', '127.0.0.1', '[::1]', '::1');
 
+        // The local address this very request was received on. This is the
+        // reachable address (e.g. a LAN IP) clients use when the application
+        // has been put online, so requests addressed to the server's own
+        // reachable addresses must be accepted.
+        if (isset($_SERVER['SERVER_ADDR'])) {
+            $serverAddr = self::normalizeHost((string)$_SERVER['SERVER_ADDR']);
+            if ($serverAddr !== '') {
+                $allowed[] = $serverAddr;
+            }
+        }
+
         $hostname = function_exists('gethostname') ? @gethostname() : false;
         if ($hostname !== false && $hostname !== '') {
             $allowed[] = self::normalizeHost($hostname);
