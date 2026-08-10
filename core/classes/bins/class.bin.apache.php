@@ -177,6 +177,8 @@ class BinApache extends Module
         }
 
         file_put_contents( $this->bearsamppConf, $content );
+
+        self::invalidateConfigCacheForPath( $this->bearsamppConf );
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
+ * Copyright (c) 2021-2026 Bearsampp
  * License:  GNU General Public License version 3 or later; see LICENSE.txt
  * Author: Bear
  * Website: https://bearsampp.com
@@ -170,6 +170,8 @@ class BinMysql extends Module
         }
 
         file_put_contents($this->bearsamppConf, $content);
+
+        self::invalidateConfigCacheForPath($this->bearsamppConf);
     }
 
     /**
@@ -292,8 +294,7 @@ class BinMysql extends Module
 
             $version = explode('-', $row[0]);
             $version = count($version) > 1 ? $version[0] : $row[0];
-            $versionComment = isset($row[1]) ? strtolower($row[1]) : '';
-            $isMysql = !empty($versionComment) && (UtilString::startWith($versionComment, 'mysql') || stripos($versionComment, 'mysql') !== false);
+            $isMysql = UtilString::startWith(strtolower($row[1]), 'mysql');
 
             if (!$isMysql) {
                 Log::debug($this->getName() . ' port used by another DBMS: ' . $port);

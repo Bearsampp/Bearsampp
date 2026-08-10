@@ -15,7 +15,7 @@ class StatusFetcher {
     this.serviceName = serviceName;
     this.fields = this.normalizeFields(fields);
     this.options = Object.assign({
-      interval: 10000,
+      interval: 2000,
       proc: serviceName
     }, options);
     this.timer = null;

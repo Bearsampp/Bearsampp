@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2021-2024 Bearsampp
+ * Copyright (c) 2021-2026 Bearsampp
  * License:  GNU General Public License version 3 or later; see LICENSE.txt
  * Author: Bear
  * Website: https://bearsampp.com
@@ -104,6 +104,12 @@ class ActionChangePort
                 if ( $changePort === true ) {
                     Util::updateLoadingText('Restarting ' . $this->bin->getName() . '...');
                     $this->bin->getService()->restart();
+
+                    // Rebuild tray/menu links (including localhost URL) with the new port values.
+                    $menuContent = TplApp::process();
+                    if ($menuContent !== false) {
+                        file_put_contents(Path::getIniFilePath(), Util::utf8ToCp1252($menuContent));
+                    }
 
                     $bearsamppWinbinder->messageBoxInfo(
                         sprintf( $bearsamppLang->getValue( Lang::PORT_CHANGED ), $this->bin, $port ),

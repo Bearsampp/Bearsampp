@@ -1,0 +1,542 @@
+{
+    "@context": "https://openvex.dev/ns/v0.2.0",
+    "@id": "https://php.net/sbom/windows/php/8.5.9/vex/d6cf4843-7b51-4785-8291-eaed1c0176a9",
+    "author": "PHP Group",
+    "timestamp": "2026-07-28T13:27:35Z",
+    "version": 1,
+    "statements": [
+        {
+            "vulnerability": {
+                "name": "CVE-1999-0289"
+            },
+            "timestamp": "2026-07-18T08:34:11Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/apache@2.4.68",
+                    "identifiers": {
+                        "purl": "pkg:generic/apache-httpd@2.4.68"
+                    }
+                }
+            ],
+            "status": "not_affected",
+            "justification": "vulnerable_code_not_present",
+            "impact_statement": "The affected legacy Win32 path handling is not present in Apache HTTP Server 2.4 builds."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-1999-0678"
+            },
+            "timestamp": "2026-07-18T08:34:11Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/apache@2.4.68",
+                    "identifiers": {
+                        "purl": "pkg:generic/apache-httpd@2.4.68"
+                    }
+                }
+            ],
+            "status": "not_affected",
+            "justification": "component_not_present",
+            "impact_statement": "This CVE concerns a Debian default ServerRoot configuration; Debian packaging and configuration are not present in the Windows artifact."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-3891"
+            },
+            "timestamp": "2026-07-18T08:34:11Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/apache@2.4.68",
+                    "identifiers": {
+                        "purl": "pkg:generic/apache-httpd@2.4.68"
+                    }
+                }
+            ],
+            "status": "not_affected",
+            "justification": "component_not_present",
+            "impact_statement": "This CVE affects mod_auth_openidc, which is a separate module and is not included in the Apache dependency artifact."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2017-8806"
+            },
+            "timestamp": "2026-07-16T10:59:08Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libpq@16.14",
+                    "identifiers": {
+                        "purl": "pkg:generic/postgresql@16.14"
+                    }
+                }
+            ],
+            "status": "not_affected",
+            "justification": "component_not_present",
+            "impact_statement": "This CVE affects Debian and Ubuntu postgresql-common cluster scripts, which are not included in the Windows libpq artifact."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-7598"
+            },
+            "timestamp": "2026-07-16T10:59:11Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "identifiers": {
+                        "purl": "pkg:generic/libssh2@1.11.1"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting upstream username_len bounds checking in src/userauth.c."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-15661"
+            },
+            "timestamp": "2026-07-16T10:59:11Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "identifiers": {
+                        "purl": "pkg:generic/libssh2@1.11.1"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream bounds-checked parsing for malformed SFTP symlink responses in src/sftp.c and the follow-up SSH_FXP_STATUS response handling fix."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-55199"
+            },
+            "timestamp": "2026-07-16T10:59:11Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "identifiers": {
+                        "purl": "pkg:generic/libssh2@1.11.1"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream parse-failure handling for SSH_MSG_EXT_INFO extension name and value strings in src/packet.c."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-55200"
+            },
+            "timestamp": "2026-07-16T10:59:11Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "identifiers": {
+                        "purl": "pkg:generic/libssh2@1.11.1"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream packet length upper-bound validation in src/transport.c."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-58050"
+            },
+            "timestamp": "2026-07-16T10:59:11Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "identifiers": {
+                        "purl": "pkg:generic/libssh2@1.11.1"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream bounds checking for public-key attribute counts in src/publickey.c."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-58051"
+            },
+            "timestamp": "2026-07-16T10:59:11Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "identifiers": {
+                        "purl": "pkg:generic/libssh2@1.11.1"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream initialization of newly allocated public-key list entries in src/publickey.c."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2024-56171"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxml2 backport in tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-24928"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxml2 backport in tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-27113"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by winlibs/libxml2 backport in tag libxml2-2.11.9-1."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-32414"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxml2 backport in tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-32415"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the xmlSchemaIDCFillNodeTables heap buffer overflow backport in winlibs/libxml2 tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-49794"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxml2 schematron backport in tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-49795"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxml2 schematron backport in tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-49796"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxml2 schematron backport in tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-6021"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxml2 backport in tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-6170"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the debugXML interactive shell buffer overflow backport in winlibs/libxml2 tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-7425"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by preserving libxslt private flag bits in winlibs/libxml2 tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-8732"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by SGML catalog recursion limit backport in winlibs/libxml2 tag libxml2-2.11.9-5."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-0989"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxml2 backport in tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-0990"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxml2 backport in tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-0992"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxml2 backport and compatibility follow-up in tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-1757"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxml2 backport in tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2023-45322"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream DTD-copy use-after-free fix in xmlStaticCopyNodeList and its regression follow-up in winlibs/libxml2 tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-11979"
+            },
+            "timestamp": "2026-07-16T19:59:36Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxml2@2.11.9-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxml2@2.11.9"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream bounds checks for xmlcatalog --shell command and argument parsing in winlibs/libxml2 tag libxml2-2.11.9-7."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-10911"
+            },
+            "timestamp": "2026-07-16T20:01:12Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxslt@1.1.43-2",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxslt@1.1.43"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxslt backport in tag libxslt-1.1.43-2."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-11731"
+            },
+            "timestamp": "2026-07-16T20:01:12Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxslt@1.1.43-2",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxslt@1.1.43"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxslt backport in tag libxslt-1.1.43-2."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-7424"
+            },
+            "timestamp": "2026-07-16T20:01:12Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxslt@1.1.43-2",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxslt@1.1.43"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by the winlibs/libxslt backport in tag libxslt-1.1.43-2."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2025-7425"
+            },
+            "timestamp": "2026-07-16T20:01:12Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libxslt@1.1.43-2",
+                    "identifiers": {
+                        "purl": "pkg:generic/libxslt@1.1.43"
+                    }
+                }
+            ],
+            "status": "not_affected",
+            "justification": "inline_mitigations_already_exist",
+            "impact_statement": "The patched libxml2 dependency shipped with this Winlibs build preserves the private atype flag bits, preventing the corruption in libxslt."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-58055"
+            },
+            "timestamp": "2026-07-16T20:00:20Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/nghttp2@1.69.0-1",
+                    "identifiers": {
+                        "purl": "pkg:generic/nghttp2@1.69.0"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream nghttpx request-header validation in winlibs/nghttp2 tag nghttp2-1.69.0-1."
+        }
+    ]
+}
