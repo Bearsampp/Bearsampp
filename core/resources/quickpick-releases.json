@@ -2463,6 +2463,16 @@
     "module": "module-ruby",
     "versions": [
       {
+        "version": "4.0.6-1",
+        "url": "https://github.com/Bearsampp/module-ruby/releases/download/2026.8.9/bearsampp-ruby-4.0.6-1-2026.8.9.7z",
+        "prerelease": true
+      },
+      {
+        "version": "4.0.5-1",
+        "url": "https://github.com/Bearsampp/module-ruby/releases/download/2026.6.5/bearsampp-ruby-4.0.5-1-2026.6.5.7z",
+        "prerelease": false
+      },
+      {
         "version": "4.0.2-1",
         "url": "https://github.com/Bearsampp/module-ruby/releases/download/2026.4.12/bearsampp-ruby-4.0.2-1-2026.4.12.7z",
         "prerelease": false
