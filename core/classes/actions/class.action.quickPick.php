@@ -304,7 +304,11 @@ class QuickPick
             if ( is_array( $entry ) ) {
                 if ( isset( $entry['module'] ) && is_string( $entry['module'] ) ) {
                     if ( isset( $entry['versions'] ) && is_array( $entry['versions'] ) ) {
-                        $versions[$entry['module']] = array_column( $entry['versions'], null, 'version' );
+                        $moduleVersions = array_column( $entry['versions'], null, 'version' );
+                        uasort( $moduleVersions, function( $a, $b ) {
+                            return version_compare( $b['version'], $a['version'] );
+                        } );
+                        $versions[$entry['module']] = $moduleVersions;
                     }
                 }
             }
