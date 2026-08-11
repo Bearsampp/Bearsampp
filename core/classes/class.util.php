@@ -1180,7 +1180,7 @@ class Util
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, false); // Disabled to prevent leaking the Authorization header into logs
         curl_setopt($ch, CURLOPT_URL, $url);
         HttpClient::applyCurlSslOptions($ch, $verify);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
@@ -1549,6 +1549,8 @@ class Util
             $token = getenv('GH_PAT');
         }
         if (!empty($token)) {
+            // Strip any CR/LF characters that could enable header injection
+            $token = str_replace(array("\r", "\n"), '', $token);
             $headers[] = 'Authorization: token ' . $token;
         }
 
