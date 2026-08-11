@@ -2063,8 +2063,8 @@
     "module": "module-phppgadmin",
     "versions": [
       {
-        "version": "7.13.0",
-        "url": "https://github.com/Bearsampp/module-phppgadmin/releases/download/2022.08.28/phppgadmin7.13.0-2022.08.28.7z",
+        "version": "7.14.7",
+        "url": "https://github.com/Bearsampp/module-phppgadmin/releases/download/2024.4.14/bearsampp-phppgadmin-7.14.7-2024.4.14.7z",
         "prerelease": false
       },
       {
@@ -2073,8 +2073,8 @@
         "prerelease": false
       },
       {
-        "version": "7.14.7",
-        "url": "https://github.com/Bearsampp/module-phppgadmin/releases/download/2024.4.14/bearsampp-phppgadmin-7.14.7-2024.4.14.7z",
+        "version": "7.13.0",
+        "url": "https://github.com/Bearsampp/module-phppgadmin/releases/download/2022.08.28/phppgadmin7.13.0-2022.08.28.7z",
         "prerelease": false
       }
     ]
