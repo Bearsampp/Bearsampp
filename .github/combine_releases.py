@@ -345,7 +345,17 @@ def process_repo(repo_path):
 
             version_list.append({'version': vstr, 'url': urlv, 'prerelease': prerelease_status})
 
-        # Use releases.properties list directly (it acts as the authoritative list and drops old versions)
+        # releases.properties acts as the authoritative list (drops old versions), but its entries
+        # are not guaranteed to be ordered newest-first. Sort by version the same way the
+        # GitHub Releases fallback path does, so the menu always shows newest versions on top.
+        try:
+            version_list.sort(key=lambda x: version.parse(x['version']), reverse=True)
+        except Exception:
+            try:
+                version_list.sort(key=lambda x: version_tuple(x['version']), reverse=True)
+            except Exception:
+                version_list.sort(key=lambda x: normalize_version(x['version']), reverse=True)
+
         return {'module': module_name, 'versions': version_list}, len(version_list), None
 
     # Fallback: releases.properties not found — fall back to GitHub Releases API scanning
