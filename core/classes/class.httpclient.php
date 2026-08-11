@@ -370,21 +370,10 @@ class HttpClient
     public static function setupCurlHeaderWithToken()
     {
         // Return headers with User-Agent, which is required by GitHub API
-        $headers = array(
+        return array(
             'User-Agent: ' . APP_GITHUB_USERAGENT . ' (https://github.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . ')',
             'Accept: application/vnd.github.v3+json'
         );
-
-        // Authenticate when a token is available to raise the GitHub API rate limit
-        $token = getenv('GITHUB_TOKEN');
-        if (empty($token)) {
-            $token = getenv('GH_PAT');
-        }
-        if (!empty($token)) {
-            $headers[] = 'Authorization: token ' . $token;
-        }
-
-        return $headers;
     }
 
     /**

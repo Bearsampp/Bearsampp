@@ -820,16 +820,6 @@ class Util
             );
         }
 
-        // Xlight
-        $folderList = self::getFolderList(Path::getModuleRootPath($bearsamppBins->getXlight()));
-        foreach ($folderList as $folder) {
-            $paths[] = array(
-                'path'      => Path::getModuleRootPath($bearsamppBins->getXlight()) . '/' . $folder,
-                'includes'  => array('ftpd.users', 'ftpd.hosts', 'ftpd.option', 'ftpd.password', 'ftpd.rules'),
-                'recursive' => true
-            );
-        }
-
         return $paths;
     }
 
@@ -1180,7 +1170,7 @@ class Util
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_VERBOSE, false); // Disabled to prevent leaking the Authorization header into logs
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
         curl_setopt($ch, CURLOPT_URL, $url);
         HttpClient::applyCurlSslOptions($ch, $verify);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
@@ -1538,22 +1528,9 @@ class Util
     public static function setupCurlHeaderWithToken()
     {
         // Return headers with User-Agent, which is required by GitHub API
-        $headers = array(
+        return array(
             'User-Agent: ' . APP_GITHUB_USERAGENT . ' (https://github.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . ')',
             'Accept: application/vnd.github.v3+json'
         );
-
-        // Authenticate when a token is available to raise the GitHub API rate limit
-        $token = getenv('GITHUB_TOKEN');
-        if (empty($token)) {
-            $token = getenv('GH_PAT');
-        }
-        if (!empty($token)) {
-            // Strip any CR/LF characters that could enable header injection
-            $token = str_replace(array("\r", "\n"), '', $token);
-            $headers[] = 'Authorization: token ' . $token;
-        }
-
-        return $headers;
     }
 }

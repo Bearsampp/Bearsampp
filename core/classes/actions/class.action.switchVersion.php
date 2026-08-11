@@ -164,7 +164,7 @@ class ActionSwitchVersion
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
                         'path'      => Path::getModuleRootPath($bearsamppBins->getXlight()) . '/' . $folder,
-                        'includes'  => array('ftpd.users', 'ftpd.hosts', 'ftpd.option', 'ftpd.password', 'ftpd.rules'),
+                        'includes'  => array('.conf, ftpd.hosts, ftpd.option, ftpd.password, ftpd.rules, ftpd.users, .ini'),
                         'recursive' => true
                     );
                 }
