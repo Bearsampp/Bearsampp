@@ -55,6 +55,12 @@ jobs:
 
       - name: auto approve pr
         if: ${{ steps.auto-merge.conclusion == 'success' }}
+        env:
+          GH_TOKEN: ${{ secrets.BEARSAMPP_BOT_PAT }}
+          GITHUB_TOKEN: ${{ secrets.BEARSAMPP_BOT_PAT }}
         run: |
           gh pr review --approve "$PR_URL"
-          gh pr merge --auto --rebase "$PR_URL" --repo "${{ github.repository }}"
+          gh pr merge --rebase "$PR_URL" --repo "${{ github.repository }}" \
+            || gh pr merge --squash "$PR_URL" --repo "${{ github.repository }}" \
+            || gh pr merge --merge "$PR_URL" --repo "${{ github.repository }}" \
+            || echo "Merge skipped (PR already merged or not mergeable)."
