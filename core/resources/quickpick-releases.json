@@ -408,6 +408,11 @@
     "module": "module-git",
     "versions": [
       {
+        "version": "2.55.0.5",
+        "url": "https://github.com/Bearsampp/module-git/releases/download/2026.8.26/bearsampp-git-2.55.0.5-2026.8.26.7z",
+        "prerelease": true
+      },
+      {
         "version": "2.54.0",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2026.5.31/bearsampp-git-2.54.0-2026.5.31.7z",
         "prerelease": false
@@ -474,7 +479,7 @@
       },
       {
         "version": "2.47.0-rc1",
-        "url": "https://github.com/Bearsampp/module-git/releases/download/2024.10.7/bearsampp-git-2.47.0-2024.10.7.7z",
+        "url": "https://github.com/Bearsampp/module-git/releases/download/2024.10.7/bearsampp-git-2.47.0-rc1-2024.10.7.7z",
         "prerelease": false
       },
       {
@@ -1323,6 +1328,11 @@
     "module": "module-ngrok",
     "versions": [
       {
+        "version": "3.39.11",
+        "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2026.8.26/bearsampp-ngrok-3.39.11-2026.8.26.7z",
+        "prerelease": true
+      },
+      {
         "version": "3.39.9",
         "url": "https://github.com/Bearsampp/module-ngrok/releases/download/2026.7.11/bearsampp-ngrok-3.39.9-2026.7.11.7z",
         "prerelease": false
@@ -1357,6 +1367,11 @@
   {
     "module": "module-nodejs",
     "versions": [
+      {
+        "version": "26.7.0",
+        "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.8.26/bearsampp-nodejs-26.7.0-2026.8.26.7z",
+        "prerelease": true
+      },
       {
         "version": "26.5.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.7.11/bearsampp-nodejs-26.5.0-2026.7.11.7z",
@@ -2397,6 +2412,11 @@
   {
     "module": "module-powershell",
     "versions": [
+      {
+        "version": "7.6.5",
+        "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.8.26/bearsampp-powershell-7.6.5-2026.8.26.7z",
+        "prerelease": true
+      },
       {
         "version": "7.6.4",
         "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.7.30/bearsampp-powershell-7.6.4-2026.6.25.7z",
