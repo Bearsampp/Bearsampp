@@ -2153,6 +2153,11 @@
     "module": "module-postgresql",
     "versions": [
       {
+        "version": "18.6",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.8.28/bearsampp-postgresql-18.6-2026.8.28.7z",
+        "prerelease": true
+      },
+      {
         "version": "18.4",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-18.4-2025.6.2.7z",
         "prerelease": false
@@ -2166,6 +2171,11 @@
         "version": "18.1",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2025.11.22/bearsampp-postgresql-18.1-2025.7.2.7z",
         "prerelease": false
+      },
+      {
+        "version": "17.11",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.8.28/bearsampp-postgresql-17.11-2026.8.28.7z",
+        "prerelease": true
       },
       {
         "version": "17.10",
@@ -2208,6 +2218,11 @@
         "prerelease": false
       },
       {
+        "version": "16.15",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.8.28/bearsampp-postgresql-16.15-2026.8.28.7z",
+        "prerelease": true
+      },
+      {
         "version": "16.14",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.6.2/bearsampp-postgresql-16.14-2025.6.2.7z",
         "prerelease": false
@@ -2246,6 +2261,11 @@
         "version": "16.0",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2023.10.9/bearsampp-postgresql-16.0-2023.10.9.7z",
         "prerelease": false
+      },
+      {
+        "version": "15.19",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.8.28/bearsampp-postgresql-15.19-2026.8.28.7z",
+        "prerelease": true
       },
       {
         "version": "15.18",
@@ -2296,6 +2316,11 @@
         "version": "15.0",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2022.10.28/bearsampp-postgresql-15.0-2022.10.28.7z",
         "prerelease": false
+      },
+      {
+        "version": "14.24",
+        "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.8.28/bearsampp-postgresql-14.24-2026.8.28.7z",
+        "prerelease": true
       },
       {
         "version": "14.23",
