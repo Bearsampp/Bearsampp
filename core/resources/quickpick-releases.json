@@ -2128,6 +2128,11 @@
     "module": "module-phppgadmin",
     "versions": [
       {
+        "version": "7.14.8",
+        "url": "https://github.com/Bearsampp/module-phppgadmin/releases/download/2026.8.28/bearsampp-phppgadmin-7.14.8-2026.8.28.7z",
+        "prerelease": true
+      },
+      {
         "version": "7.14.7",
         "url": "https://github.com/Bearsampp/module-phppgadmin/releases/download/2024.4.14/bearsampp-phppgadmin-7.14.7-2024.4.14.7z",
         "prerelease": false
