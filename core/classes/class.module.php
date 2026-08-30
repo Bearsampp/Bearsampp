@@ -13,8 +13,6 @@
  */
 abstract class Module
 {
-    const BUNDLE_RELEASE = 'bundleRelease';
-
     private static $configCache = array();
 
     private $type;
@@ -78,7 +76,7 @@ abstract class Module
                 function($path) { return @parse_ini_file($path) ?: []; },
                 $cacheKey
             );
-            
+
             if (!empty($data)) {
                 $this->bearsamppConfRaw = $data;
                 self::$configCache[$cacheKey] = $this->bearsamppConfRaw;

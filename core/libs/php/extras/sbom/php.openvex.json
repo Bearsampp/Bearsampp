@@ -1,8 +1,8 @@
 {
     "@context": "https://openvex.dev/ns/v0.2.0",
-    "@id": "https://php.net/sbom/windows/php/8.5.9/vex/d6cf4843-7b51-4785-8291-eaed1c0176a9",
+    "@id": "https://php.net/sbom/windows/php/8.5.10/vex/a98af6fc-bdf1-49f3-bb4b-dcab3518ce6b",
     "author": "PHP Group",
-    "timestamp": "2026-07-28T13:27:35Z",
+    "timestamp": "2026-08-25T21:27:50Z",
     "version": 1,
     "statements": [
         {
@@ -60,12 +60,12 @@
             "vulnerability": {
                 "name": "CVE-2017-8806"
             },
-            "timestamp": "2026-07-16T10:59:08Z",
+            "timestamp": "2026-08-15T04:25:38Z",
             "products": [
                 {
-                    "@id": "pkg:php-windows-deps/libpq@16.14",
+                    "@id": "pkg:php-windows-deps/libpq@16.15",
                     "identifiers": {
-                        "purl": "pkg:generic/postgresql@16.14"
+                        "purl": "pkg:generic/postgresql@16.15"
                     }
                 }
             ],
@@ -77,10 +77,10 @@
             "vulnerability": {
                 "name": "CVE-2026-7598"
             },
-            "timestamp": "2026-07-16T10:59:11Z",
+            "timestamp": "2026-08-02T09:28:50Z",
             "products": [
                 {
-                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-7",
                     "identifiers": {
                         "purl": "pkg:generic/libssh2@1.11.1"
                     }
@@ -93,10 +93,10 @@
             "vulnerability": {
                 "name": "CVE-2025-15661"
             },
-            "timestamp": "2026-07-16T10:59:11Z",
+            "timestamp": "2026-08-02T09:28:50Z",
             "products": [
                 {
-                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-7",
                     "identifiers": {
                         "purl": "pkg:generic/libssh2@1.11.1"
                     }
@@ -109,10 +109,10 @@
             "vulnerability": {
                 "name": "CVE-2026-55199"
             },
-            "timestamp": "2026-07-16T10:59:11Z",
+            "timestamp": "2026-08-02T09:28:50Z",
             "products": [
                 {
-                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-7",
                     "identifiers": {
                         "purl": "pkg:generic/libssh2@1.11.1"
                     }
@@ -125,10 +125,10 @@
             "vulnerability": {
                 "name": "CVE-2026-55200"
             },
-            "timestamp": "2026-07-16T10:59:11Z",
+            "timestamp": "2026-08-02T09:28:50Z",
             "products": [
                 {
-                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-7",
                     "identifiers": {
                         "purl": "pkg:generic/libssh2@1.11.1"
                     }
@@ -141,10 +141,10 @@
             "vulnerability": {
                 "name": "CVE-2026-58050"
             },
-            "timestamp": "2026-07-16T10:59:11Z",
+            "timestamp": "2026-08-02T09:28:50Z",
             "products": [
                 {
-                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-7",
                     "identifiers": {
                         "purl": "pkg:generic/libssh2@1.11.1"
                     }
@@ -157,10 +157,10 @@
             "vulnerability": {
                 "name": "CVE-2026-58051"
             },
-            "timestamp": "2026-07-16T10:59:11Z",
+            "timestamp": "2026-08-02T09:28:50Z",
             "products": [
                 {
-                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-5",
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-7",
                     "identifiers": {
                         "purl": "pkg:generic/libssh2@1.11.1"
                     }
@@ -168,6 +168,70 @@
             ],
             "status": "fixed",
             "action_statement": "Fixed by backporting the upstream initialization of newly allocated public-key list entries in src/publickey.c."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-66032"
+            },
+            "timestamp": "2026-08-02T09:28:50Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libssh2@1.11.1"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream nullification of freed SFTP response data in src/sftp.c."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-66033"
+            },
+            "timestamp": "2026-08-02T09:28:50Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libssh2@1.11.1"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream runtime bounds checks for AES-GCM block processing in src/openssl.c."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-66034"
+            },
+            "timestamp": "2026-08-02T09:28:50Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libssh2@1.11.1"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream bounds checking for public-key comment lengths in src/publickey.c."
+        },
+        {
+            "vulnerability": {
+                "name": "CVE-2026-66035"
+            },
+            "timestamp": "2026-08-02T09:28:50Z",
+            "products": [
+                {
+                    "@id": "pkg:php-windows-deps/libssh2@1.11.1-7",
+                    "identifiers": {
+                        "purl": "pkg:generic/libssh2@1.11.1"
+                    }
+                }
+            ],
+            "status": "fixed",
+            "action_statement": "Fixed by backporting the upstream lower-bound validation for Encrypt-then-MAC packet decryption in src/transport.c."
         },
         {
             "vulnerability": {
@@ -521,22 +585,6 @@
             "status": "not_affected",
             "justification": "inline_mitigations_already_exist",
             "impact_statement": "The patched libxml2 dependency shipped with this Winlibs build preserves the private atype flag bits, preventing the corruption in libxslt."
-        },
-        {
-            "vulnerability": {
-                "name": "CVE-2026-58055"
-            },
-            "timestamp": "2026-07-16T20:00:20Z",
-            "products": [
-                {
-                    "@id": "pkg:php-windows-deps/nghttp2@1.69.0-1",
-                    "identifiers": {
-                        "purl": "pkg:generic/nghttp2@1.69.0"
-                    }
-                }
-            ],
-            "status": "fixed",
-            "action_statement": "Fixed by backporting the upstream nghttpx request-header validation in winlibs/nghttp2 tag nghttp2-1.69.0-1."
         }
     ]
 }

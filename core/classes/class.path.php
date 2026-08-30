@@ -772,6 +772,18 @@ class Path
         return self::getLibsPath($aetrayPath) . '/php';
     }
 
+
+    /**
+     * Retrieves the path to the PEAR directory.
+     *
+     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @return string The path to the PEAR directory.
+     */
+    public static function getPearPath($aetrayPath = false)
+    {
+        return self::getPhpPath($aetrayPath) . '/pear';
+    }
+
     /**
      * Retrieves the path to the PHP executable.
      *
