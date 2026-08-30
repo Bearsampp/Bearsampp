@@ -630,12 +630,12 @@
       {
         "version": "13.0.1-RC",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.8.23/bearsampp-mariadb-13.0.1-RC-2026.8.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "12.3.3",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.8.23/bearsampp-mariadb-12.3.3-2026.8.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "12.3.2",
@@ -660,7 +660,7 @@
       {
         "version": "11.8.9",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.8.23/bearsampp-mariadb-11.8.9-2026.8.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "11.8.8",
@@ -710,7 +710,7 @@
       {
         "version": "11.4.13",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.8.23/bearsampp-mariadb-11.4.13-2026.8.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "11.4.12",
@@ -815,7 +815,7 @@
       {
         "version": "10.11.19",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.8.23/bearsampp-mariadb-10.11.19-2026.8.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "10.11.18",
@@ -1175,7 +1175,7 @@
       {
         "version": "9.7.2",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2026.8.27/bearsampp-mysql-9.7.2-2026.8.27.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "9.7.1",
@@ -2130,7 +2130,7 @@
       {
         "version": "7.14.8",
         "url": "https://github.com/Bearsampp/module-phppgadmin/releases/download/2026.8.28/bearsampp-phppgadmin-7.14.8-2026.8.28.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "7.14.7",
@@ -2155,7 +2155,7 @@
       {
         "version": "18.6",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.8.28/bearsampp-postgresql-18.6-2026.8.28.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "18.4",
@@ -2175,7 +2175,7 @@
       {
         "version": "17.11",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.8.28/bearsampp-postgresql-17.11-2026.8.28.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "17.10",
@@ -2220,7 +2220,7 @@
       {
         "version": "16.15",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.8.28/bearsampp-postgresql-16.15-2026.8.28.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "16.14",
@@ -2265,7 +2265,7 @@
       {
         "version": "15.19",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.8.28/bearsampp-postgresql-15.19-2026.8.28.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "15.18",
@@ -2320,7 +2320,7 @@
       {
         "version": "14.24",
         "url": "https://github.com/Bearsampp/module-postgresql/releases/download/2026.8.28/bearsampp-postgresql-14.24-2026.8.28.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "14.23",
