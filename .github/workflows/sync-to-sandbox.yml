@@ -31,6 +31,7 @@ jobs:
 
   trigger-sandbox:
     runs-on: ubuntu-latest
+    needs: sync-files
     # Run on manual dispatch or successful release workflow completion
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     steps:
