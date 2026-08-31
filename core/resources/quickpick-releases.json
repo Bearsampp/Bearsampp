@@ -4,8 +4,8 @@
     "versions": [
       {
         "version": "2.4.68",
-        "url": "https://github.com/Bearsampp/module-apache/releases/download/2026.7.10/bearsampp-apache-2.4.68-2026.7.10.7z",
-        "prerelease": false
+        "url": "https://github.com/Bearsampp/module-apache/releases/download/2026.8.30/bearsampp-apache-2.4.68-2026.8.30.7z",
+        "prerelease": true
       },
       {
         "version": "2.4.67",
@@ -2465,7 +2465,7 @@
       {
         "version": "7.6.5",
         "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.8.26/bearsampp-powershell-7.6.5-2026.8.26.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "7.6.4",
