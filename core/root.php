@@ -20,6 +20,9 @@ const APP_GITHUB_LATEST_URL = 'https://api.github.com/repos/' . APP_GITHUB_USER 
 const RETURN_TAB = '	';
 
 // Membership Pro API key & URL
+// NOTE: This key is a PUBLIC identifier baked into an open-source (GPL-3) build.
+// It is not a secret/credential and must not be used for authorization decisions;
+// license validation relies on the per-user DOWNLOADID + server-side check instead.
 const QUICKPICK_API_KEY = '4abe15e5-95f2-4663-ad12-eadb245b28b4';
 const QUICKPICK_API_URL = 'https://bearsampp.com/index.php?option=com_osmembership&task=api.get_active_plan_ids&api_key=';
 

@@ -185,6 +185,16 @@ class Core
         if ($progressCallback) {
             call_user_func($progressCallback, 'Analyzing archive...');
         }
+
+        // Defensive path-traversal scan: parse the structured `7z l -slt` output into
+        // each individual entry path and validate every one relative to the destination,
+        // so extraction can never escape the intended directory. This must fail closed:
+        // any listing/parse failure aborts the operation rather than proceeding unverified.
+        if (!self::isSafeDestinationFileList($sevenZipPath, $filePath)) {
+            Log::error('Archive path-traversal scan failed or rejected for: ' . $filePath);
+            return false;
+        }
+
         $testOutput = CommandRunner::exec($sevenZipPath, ['t', $filePath, '-y', '-bsp1']);
         preg_match('/Files: (\d+)/', $testOutput !== false ? $testOutput : '', $matches);
         $numFiles = isset($matches[1]) ? (int) $matches[1] : 0;
@@ -234,6 +244,94 @@ class Core
 
         Log::error('Failed to unzip file. Command return value: ' . $returnVar);
         return ['error' => 'Failed to unzip file', 'numFiles' => $numFiles];
+    }
+
+    /**
+     * Parses `7z l -slt` output and verifies every listed entry path is safe to
+     * extract relative to the destination.
+     *
+     * The listing uses a header block followed by one block per entry, each block
+     * containing a `Path = <value>` line. We extract each entry path individually and
+     * reject any that is empty, is absolute (drive-letter or rooted path), or contains
+     * a parent-directory (`..`) traversal. This must fail closed: a failure to list the
+     * archive, or any inability to parse a valid entry path, returns false so extraction
+     * is aborted rather than performed on an unverified archive.
+     *
+     * @param   string  $sevenZipPath  Path to the 7za executable.
+     * @param   string  $filePath      Path to the archive file.
+     * @return  bool                   True only if the listing succeeded and every entry
+     *                                 path is safe; false otherwise.
+     */
+    private static function isSafeDestinationFileList($sevenZipPath, $filePath)
+    {
+        $listingOutput = CommandRunner::exec($sevenZipPath, ['l', '-slt', $filePath]);
+        if (!is_string($listingOutput) || $listingOutput === '') {
+            Log::error('Path-traversal scan: unable to list archive: ' . $filePath);
+            return false;
+        }
+
+        $blockSeparatorRegex = '/^\-{10,}\s*$/m';
+        $blocks = preg_split($blockSeparatorRegex, $listingOutput);
+
+        // $blocks[0] is the header preamble (banner + archive metadata), not an entry.
+        // Every subsequent block is one archive entry.
+        array_shift($blocks);
+
+        if (empty($blocks)) {
+            // No entries listed at all - cannot validate, fail closed.
+            Log::error('Path-traversal scan: no entries found in archive: ' . $filePath);
+            return false;
+        }
+
+        foreach ($blocks as $block) {
+            $block = trim($block);
+            if ($block === '') {
+                continue;
+            }
+
+            if (!preg_match('/^Path\s*=\s*(.*)$/m', $block, $match)) {
+                // A block without a parseable Path is unexpected - fail closed.
+                Log::error('Path-traversal scan: could not parse an entry path in ' . $filePath);
+                return false;
+            }
+
+            $entryPath = trim($match[1]);
+            if (self::isUnsafeArchiveEntryPath($entryPath)) {
+                Log::error('Archive contains an unsafe entry path ("' . $entryPath . '"): ' . $filePath);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Determines whether a single archive entry path is unsafe to extract.
+     *
+     * A path is considered unsafe if it is empty, contains a parent-directory (`..`)
+     * token, or is absolute (a Windows drive path such as `C:\...` or a rooted path
+     * beginning with `/` or `\`).
+     *
+     * @param   string  $entryPath  The entry path extracted from the archive listing.
+     * @return  bool                True if the path is unsafe, false if safe.
+     */
+    private static function isUnsafeArchiveEntryPath($entryPath)
+    {
+        if ($entryPath === '') {
+            return true;
+        }
+
+        // Parent-directory traversal (matches any path segment equal to '..').
+        if (preg_match('/(?:^|[\\/\\\\])\.\.(?:[\\/\\\\]|$)/', $entryPath)) {
+            return true;
+        }
+
+        // Absolute / rooted paths.
+        if (preg_match('#^(?:[A-Za-z]:[\\/\\\\]|[\\/\\\\])#', $entryPath)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

@@ -107,7 +107,9 @@ class HttpClient
             return $result;
         }
 
-        Log::trace('getCurlHttpHeaders:' . $response);
+        // Cap the logged response to a small prefix so headers/body never saturate
+        // the log and any transient sensitive data in the body is not written verbatim.
+        Log::trace('getCurlHttpHeaders: ' . substr($response, 0, 512));
         $responseHeaders = explode("\r\n\r\n", $response, 2);
         if (!isset($responseHeaders[0]) || empty($responseHeaders[0])) {
             return $result;
@@ -307,12 +309,12 @@ class HttpClient
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $data = curl_exec($ch);
         if (curl_errno($ch)) {
-            Log::error('CURL Error (' . curl_errno($ch) . '): ' . curl_error($ch) . ' (URL: ' . $url . ')');
+            Log::error('CURL Error (' . curl_errno($ch) . '): ' . curl_error($ch) . ' (URL: ' . self::redactUrl($url) . ')');
         }
 
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($httpCode >= 400) {
-            Log::error('HTTP Error ' . $httpCode . ' for URL: ' . $url);
+            Log::error('HTTP Error ' . $httpCode . ' for URL: ' . self::redactUrl($url));
         }
 
         // curl_close() is deprecated in PHP 8.5+ as it has no effect since PHP 8.0
@@ -387,6 +389,41 @@ class HttpClient
     }
 
     /**
+     * Redacts sensitive query-string parameters from a URL before it is logged.
+     *
+     * URLs passed to this class can carry credentials such as an API key or a
+     * license/download ID (e.g. `?api_key=...&download_id=...`). Writing those
+     * verbatim into log files would leak them, so any matching parameter's value
+     * is masked.
+     *
+     * @param   string  $url  The URL to redact.
+     * @return  string        The URL with sensitive parameter values replaced by '******'.
+     */
+    public static function redactUrl($url)
+    {
+        $url = (string)$url;
+        if ($url === '' || strpos($url, '?') === false) {
+            return $url;
+        }
+
+        $sensitiveParams = ['api_key', 'download_id', 'token', 'access_token', 'auth', 'password', 'passwd', 'key', 'secret'];
+
+        [$base, $query] = explode('?', $url, 2);
+        parse_str($query, $params);
+
+        foreach ($params as $name => &$value) {
+            foreach ($sensitiveParams as $sensitive) {
+                if (stripos($name, $sensitive) !== false) {
+                    $value = '******';
+                    break;
+                }
+            }
+        }
+
+        return $base . '?' . http_build_query($params);
+    }
+
+    /**
      * Builds a stream context that verifies the peer certificate against the bundled CA bundle.
      *
      * @param   bool  $verify  Whether to verify the peer certificate. Defaults to true.
@@ -458,21 +495,34 @@ class HttpClient
     /**
      * Checks the current state of the internet connection.
      *
-     * This method attempts to reach a well-known website (e.g., www.google.com) to determine the state of the internet connection.
-     * It returns `true` if the connection is successful, otherwise it returns `false`.
+     * Opens a verified TLS connection to the project's own website over port 443.
+     * This keeps the probe encrypted (no plaintext traffic to a third party) and
+     * independent of external hosts such as Google.
      *
      * @return bool True if the internet connection is active, false otherwise.
      */
     public static function checkInternetState()
     {
-        $connected = @fsockopen('www.google.com', 80);
+        $host = str_replace(['https://', 'http://'], '', APP_WEBSITE);
+        $host = rtrim(parse_url($host, PHP_URL_HOST) ?: $host, '/');
+
+        // Verified TLS context: we only need to establish a clean TLS handshake, not
+        // fetch any content, so a successful connection is enough to confirm internet.
+        $connected = @stream_socket_client(
+            'tls://' . $host . ':443',
+            $errno,
+            $errstr,
+            5,
+            STREAM_CLIENT_CONNECT,
+            self::getSslStreamContext()
+        );
+
         if ($connected) {
             fclose($connected);
-
-            return true; // Internet connection is active
-        } else {
-            return false; // Internet connection is not active
+            return true;
         }
+
+        return false;
     }
 }
 

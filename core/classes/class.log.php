@@ -34,6 +34,15 @@ class Log
     const DEBUG   = 'DEBUG';
     const TRACE   = 'TRACE';
 
+    /** @var int Maximum size (bytes) of a single async queue content entry. */
+    const MAX_QUEUE_CONTENT_LENGTH = 1048576; // 1 MB
+
+    /** @var int Maximum number of queue files read and processed in a single pass. */
+    const MAX_QUEUE_BATCH = 200;
+
+    /** @var int Maximum number of sanitized target files processed in one pass. */
+    const MAX_QUEUE_TARGETS = 50;
+
     /** @var array Log buffer for batching log writes */
     private static $logBuffer = [];
 
@@ -73,7 +82,7 @@ class Log
     {
         if (!self::$shutdownRegistered) {
             register_shutdown_function([__CLASS__, 'flush']);
-            register_shutdown_function([__CLASS__, 'processAsyncQueue']);
+            register_shutdown_function([__CLASS__, 'flushAsyncQueue']);
             self::$shutdownRegistered = true;
 
             // Initialize async queue directory
@@ -193,9 +202,10 @@ class Log
         }
 
         if ($writeLog) {
+            // Sanitize line breaks to prevent log forging (injecting fake log lines).
             self::$logBuffer[] = [
                 'file' => $file,
-                'data' => $data,
+                'data' => str_replace(["\r", "\n"], ' ', (string)$data),
                 'type' => $type,
                 'time' => time(),
             ];
@@ -314,6 +324,11 @@ class Log
             return false;
         }
 
+        // Defense-in-depth: reject oversized content at the source.
+        if (strlen((string)$content) > self::MAX_QUEUE_CONTENT_LENGTH) {
+            return false;
+        }
+
         try {
             // Create a unique queue file for this write
             $queueFile = self::$asyncQueueDir . '/' . uniqid('log_', true) . '.queue';
@@ -337,6 +352,40 @@ class Log
     }
 
     /**
+     * Validates and normalizes a queue-entry target path.
+     *
+     * Queue files live in a shared tmp directory, so a local attacker could plant a
+     * rogue entry whose 'file' value points anywhere on disk. To prevent arbitrary
+     * file appends, we only accept paths that resolve inside the Bearsampp logs
+     * directory and contain no path-traversal ('..') segments.
+     *
+     * @param   string      $file  Raw target path from a queue entry.
+     * @return  string|null        Normalized safe path, or null if rejected.
+     */
+    private static function sanitizeQueueTarget($file)
+    {
+        $file = (string)$file;
+        if ($file === '' ) {
+            return null;
+        }
+
+        $normalized = str_replace('\\', '/', $file);
+        if (strpos($normalized, '..') !== false) {
+            return null;
+        }
+
+        $logsPath = Path::getLogsPath();
+        $logsPathNormalized = str_replace('\\', '/', rtrim($logsPath, '/\\')) . '/';
+
+        // Only allow appends into the application logs directory.
+        if (strpos($normalized, $logsPathNormalized) !== 0) {
+            return null;
+        }
+
+        return $file;
+    }
+
+    /**
      * Process all queued log entries immediately (public method for manual flushing).
      * Useful for live log monitoring or ensuring logs are written before critical operations.
      *
@@ -346,7 +395,20 @@ class Log
      */
     public static function flushAsyncQueue()
     {
-        return self::processAsyncQueue();
+        $totalProcessed = 0;
+
+        // processAsyncQueue() processes one bounded batch; loop until nothing is left so the
+        // manual flush and the shutdown path drain the queue completely.
+        $iterationCap = 1000;
+        for ($i = 0; $i < $iterationCap; $i++) {
+            $processed = self::processAsyncQueue();
+            if ($processed <= 0) {
+                break;
+            }
+            $totalProcessed += $processed;
+        }
+
+        return $totalProcessed;
     }
 
     /**
@@ -365,15 +427,19 @@ class Log
 
         try {
             $queueFiles = glob(self::$asyncQueueDir . '/*.queue');
-
-            if (empty($queueFiles)) {
+            if (!is_array($queueFiles) || empty($queueFiles)) {
                 return 0;
             }
+
+            // Bound the work performed in one pass: read at most MAX_QUEUE_BATCH files so
+            // a flood of queue entries cannot exhaust memory. Anything beyond the batch,
+            // or deferred by the target cap below, is left on disk for a later pass.
+            $batchFiles = array_slice($queueFiles, 0, self::MAX_QUEUE_BATCH);
 
             // Group entries by target file
             $entriesByFile = [];
 
-            foreach ($queueFiles as $queueFile) {
+            foreach ($batchFiles as $queueFile) {
                 try {
                     // Read and deserialize queue entry
                     $serialized = @file_get_contents($queueFile);
@@ -388,13 +454,36 @@ class Log
                         continue;
                     }
 
-                    // Group by target file
-                    $targetFile = $entry['file'];
+                    // Validate the destination is inside the logs directory and not a path traversal.
+                    // Queue files live in a shared tmp dir, so a local attacker could plant a rogue
+                    // entry and redirect appends to arbitrary files if we trusted $entry['file'] blindly.
+                    $targetFile = self::sanitizeQueueTarget($entry['file']);
+                    if ($targetFile === null) {
+                        // Invalid/unsafe target - discard the rogue entry
+                        @unlink($queueFile);
+                        continue;
+                    }
+
+                    // Cap the distinct target files processed in this pass. Once reached, stop
+                    // accumulating and leave this entry (and those after it) untouched so they
+                    // are preserved for a later pass rather than being dropped.
+                    if (!isset($entriesByFile[$targetFile]) &&
+                        count($entriesByFile) >= self::MAX_QUEUE_TARGETS) {
+                        break;
+                    }
+
+                    // Cap the content size to prevent log bloat / disk exhaustion from rogue entries.
+                    $content = (string)$entry['content'];
+                    if (strlen($content) > self::MAX_QUEUE_CONTENT_LENGTH) {
+                        @unlink($queueFile);
+                        continue;
+                    }
+
                     if (!isset($entriesByFile[$targetFile])) {
                         $entriesByFile[$targetFile] = [];
                     }
 
-                    $entriesByFile[$targetFile][] = $entry['content'];
+                    $entriesByFile[$targetFile][] = $content;
                     $processed++;
 
                     // Remove the processed queue file

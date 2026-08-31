@@ -64,6 +64,13 @@ class QuickPick
     private $jsonFilePath;
 
     /**
+     * @var array $allowedArchiveExtensions
+     *
+     * Whitelist of archive extensions that may be downloaded and extracted.
+     */
+    private static $allowedArchiveExtensions = ['7z', 'zip'];
+
+    /**
      * Constructor to initialize the jsonFilePath.
      */
     public function __construct()
@@ -345,7 +352,12 @@ class QuickPick
     {
         $this->getVersions();
         Log::debug( 'getModuleUrl called for module: ' . $module . ' version: ' . $version );
-        $url = trim( $this->versions['module-' . strtolower( $module )][$version]['url'] );
+        $moduleKey = 'module-' . strtolower( $module );
+        if ( !isset( $this->versions[$moduleKey][$version]['url'] ) ) {
+            Log::error( 'Version not found: ' . $version );
+            return ['error' => 'Version not found'];
+        }
+        $url = trim( $this->versions[$moduleKey][$version]['url'] );
         if ( $url <> '' ) {
             Log::debug( 'Found URL for version: ' . $version . ' URL: ' . $url );
 
@@ -387,7 +399,6 @@ class QuickPick
         }
 
         $DownloadId = $bearsamppConfig->getDownloadId();
-        Log::debug( 'DownloadId is: ' . $DownloadId );
 
         // Ensure the license key is not empty
         if ( empty( $DownloadId ) ) {
@@ -397,7 +408,8 @@ class QuickPick
         }
 
         $url = QUICKPICK_API_URL . QUICKPICK_API_KEY . '&download_id=' . $DownloadId;
-        Log::debug( 'API URL: ' . $url );
+        // Never log the raw URL: it embeds both the API key and the per-user download ID.
+        Log::debug( 'Validating download ID via QuickPick API.' );
 
         // Attempt to fetch the API response (verified TLS context)
         // Note: If this fails, PHP will generate a warning which will be logged by the error handler
@@ -553,6 +565,13 @@ class QuickPick
     $tmpFilePath = $tmpDir . '/' . $fileName;
     Log::debug('File Path: ' . $tmpFilePath);
 
+    // Strictly validate the archive extension BEFORE downloading, so we never fetch
+    // or unpack anything other than an allowed 7z/zip archive regardless of the URL.
+    if (!self::isAllowedArchive($fileName)) {
+        Log::error('Unsupported archive type rejected before download: ' . $fileName);
+        return ['error' => 'Unsupported archive type'];
+    }
+
     $moduleName = str_replace('module-', '', $module);
     Log::debug('Module Name: ' . $moduleName);
 
@@ -582,14 +601,32 @@ class QuickPick
     // passing the module URL and temporary file path, with the use Progress Bar parameter set to true.
     $result = $bearsamppCore->getFileFromUrl($moduleUrl, $tmpFilePath, true);
 
-    // Check if $result is false
-    if ($result === false) {
+    // Check if $result indicates an error (getFileFromUrl returns ['error' => ...] on failure)
+    if (!is_array($result) || isset($result['error'])) {
         Log::error('Failed to retrieve file from URL: ' . $moduleUrl);
+        @unlink($tmpFilePath);
         return ['error' => 'Failed to retrieve file from URL'];
     }
 
-    // Determine the file extension and call the appropriate unzipping function
-    $fileExtension = pathinfo($tmpFilePath, PATHINFO_EXTENSION);
+    // Verify the downloaded archive against the SHA-256 sidecar published with the release.
+    // This guards against a tampered JSON, a bypassed/disabled TLS check, or a corrupted
+    // download, ensuring we never extract/modify an unverified archive.
+    if (!self::verifyModuleChecksum($moduleUrl, $tmpFilePath)) {
+        Log::error('SHA-256 checksum verification failed for module: ' . $module . ' (URL: ' . $moduleUrl . ')');
+        @unlink($tmpFilePath);
+        return ['error' => 'Checksum verification failed. Download aborted. File: ' . basename($moduleUrl)];
+    }
+
+    // Determine the file extension and call the appropriate unzipping function.
+    // Enforce the strict whitelist on the actual downloaded file as a second layer
+    // of defense, even though it was pre-validated before download.
+    if (!self::isAllowedArchive($tmpFilePath)) {
+        Log::error('Unsupported archive extension after download: ' . $tmpFilePath);
+        @unlink($tmpFilePath);
+        return ['error' => 'Unsupported archive extension'];
+    }
+
+    $fileExtension = strtolower(pathinfo($tmpFilePath, PATHINFO_EXTENSION));
     Log::debug('File extension: ' . $fileExtension);
 
     if ($fileExtension === '7z' || $fileExtension === 'zip') {
@@ -618,6 +655,96 @@ class QuickPick
 
     return ['success' => 'Module installed successfully'];
 }
+
+    /**
+     * Verifies the SHA-256 checksum of a downloaded module archive.
+     *
+     * The expected hash is read from the `.sha256` sidecar published alongside the
+     * release asset (e.g. `<archive>.7z.sha256`), fetched over a verified TLS context.
+     * The archive is only considered valid if its computed hash matches exactly.
+     *
+     * @param   string      $moduleUrl     The URL the archive was downloaded from.
+     * @param   string      $tmpFilePath   The local path of the downloaded archive.
+     * @return  bool                       True if the hash matches, false otherwise.
+     */
+    private static function verifyModuleChecksum(string $moduleUrl, string $tmpFilePath): bool
+    {
+        if (!is_file($tmpFilePath)) {
+            Log::error('Checksum verify: downloaded file not found: ' . $tmpFilePath);
+            return false;
+        }
+
+        $expectedHash = self::fetchChecksumFromSidecar($moduleUrl);
+        if ($expectedHash === null) {
+            Log::error('Checksum verify: could not retrieve SHA-256 sidecar for: ' . $moduleUrl);
+            return false;
+        }
+
+        $actualHash = @hash_file('sha256', $tmpFilePath);
+        if ($actualHash === false) {
+            Log::error('Checksum verify: failed to hash local file: ' . $tmpFilePath);
+            return false;
+        }
+
+        if (!hash_equals($expectedHash, strtolower($actualHash))) {
+            Log::error(
+                'Checksum verify: mismatch for ' . basename($moduleUrl) .
+                ' (expected ' . $expectedHash . ', got ' . $actualHash . ')'
+            );
+            return false;
+        }
+
+        Log::debug('Checksum verify: OK for ' . basename($moduleUrl));
+        return true;
+    }
+
+    /**
+     * Fetches and parses the expected SHA-256 digest from the asset sidecar file.
+     *
+     * The sidecar URL is the module download URL with '.sha256' appended, and its
+     * contents follow the standard "<hex-hash> <filename>" format. Only a full
+     * 64-char lowercase hex digest is accepted.
+     *
+     * @param   string      $moduleUrl  The module download URL.
+     * @return  string|null             The expected SHA-256 hex digest, or null on failure.
+     */
+    private static function fetchChecksumFromSidecar(string $moduleUrl): ?string
+    {
+        $sidecarUrl = $moduleUrl . '.sha256';
+        $content = @file_get_contents($sidecarUrl, false, HttpClient::getSslStreamContext());
+
+        if ($content === false) {
+            Log::error('Checksum verify: sidecar fetch failed for: ' . $sidecarUrl);
+            return null;
+        }
+
+        if (preg_match('/\b([0-9a-f]{64})\b/i', $content, $match) !== 1) {
+            Log::error('Checksum verify: unexpected sidecar content for: ' . $sidecarUrl);
+            return null;
+        }
+
+        return strtolower($match[1]);
+    }
+
+    /**
+     * Checks whether a file path/name has an allowed archive extension.
+     *
+     * Only lowercase '.7z' and '.zip' are accepted. This is used both before
+     * download (from the URL filename) and after download (from the actual file)
+     * to strictly reject anything else.
+     *
+     * @param   string  $fileName  File name or path to validate.
+     * @return  bool               True if the extension is allowed.
+     */
+    private static function isAllowedArchive(string $fileName): bool
+    {
+        if ($fileName === '' || $fileName === false) {
+            return false;
+        }
+
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        return in_array($extension, self::$allowedArchiveExtensions, true);
+    }
 
     /**
      * Get the destination path for a given module type and name.
