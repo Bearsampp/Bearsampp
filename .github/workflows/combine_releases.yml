@@ -5,18 +5,18 @@ on:
   push:
     branches:
       - main
-  
+
   # Run on release events in the main repository
   release:
     types: [published, edited, prereleased]
-  
+
   # Run when manually triggered
   workflow_dispatch:
-  
+
   # Run when triggered by module repositories
   repository_dispatch:
     types: [module_release_created]
-  
+
   # Run monthly to catch any missed updates
   schedule:
     # Run on the 1st day of each month at midnight
@@ -158,14 +158,14 @@ jobs:
           set +e # Don't exit on error
           PR_NUMBER="${{ steps.cpr.outputs.pull-request-number }}"
           echo "Waiting for PR #${PR_NUMBER} to be merged into main..."
-          for i in $(seq 1 60); do
+          for i in $(seq 1 90); do
             PR_STATE=$(gh pr view "$PR_NUMBER" --json state --jq .state)
             PR_MERGED=$(gh pr view "$PR_NUMBER" --json merged --jq .merged)
             if [ "$PR_STATE" = "MERGED" ] || [ "$PR_MERGED" = "true" ]; then
               echo "✓ PR #${PR_NUMBER} merged. Combined release data is now on main."
               exit 0
             fi
-            echo "Waiting for merge (attempt $i of 60)..."
+            echo "Waiting for merge (attempt $i of 90)..."
             sleep 15
           done
           echo "::warning ::PR #${PR_NUMBER} was not merged within the wait window."
