@@ -233,12 +233,12 @@ class BinMariadb extends Module
 
         $fp = @fsockopen( '127.0.0.1', $port, $errno, $errstr, 5 );
         if ( $fp ) {
-            if ( version_compare( phpversion(), '5.3' ) === -1 ) {
-                $dbLink = mysqli_connect( '127.0.0.1', $this->rootUser, $this->rootPwd, '', $port );
-            }
-            else {
-                $dbLink = mysqli_connect( '127.0.0.1:' . $port, $this->rootUser, $this->rootPwd );
-            }
+            // Reset mysqli to non-exception mode so connect/query failures
+            // return false instead of throwing an uncaught mysqli_sql_exception
+            // that would freeze the WinBinder GUI thread.
+            mysqli_report( MYSQLI_REPORT_OFF );
+
+            $dbLink    = mysqli_connect( '127.0.0.1:' . $port, $this->rootUser, $this->rootPwd );
             $isMariadb = false;
             $version   = false;
 
@@ -315,48 +315,65 @@ class BinMariadb extends Module
     public function changeRootPassword($currentPwd, $newPwd, $wbProgressBar = null)
     {
         global $bearsamppWinbinder;
+
         $error = null;
+        $dbLink = false;
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( version_compare( phpversion(), '5.3' ) === -1 ) {
-            $dbLink = @mysqli_connect( '127.0.0.1', $this->rootUser, $currentPwd, '', $this->port );
-        }
-        else {
-            $dbLink = @mysqli_connect( '127.0.0.1:' . $this->port, $this->rootUser, $currentPwd );
-        }
-        if ( !$dbLink ) {
-            $error = mysqli_connect_error();
-        }
+        try {
+            // Connect
+            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        $stmt = @mysqli_prepare( $dbLink, 'UPDATE mysql.user SET Password=PASSWORD(?) WHERE User=?' );
-        if ( empty( $error ) && $stmt === false ) {
-            $error = mysqli_error( $dbLink );
-        }
+            // Since PHP 8.1 mysqli defaults to exception mode (MYSQLI_REPORT_STRICT),
+            // so a failed auth throws mysqli_sql_exception instead of returning false.
+            // Reset to OFF so calls return false and mysqli_connect_error() is set,
+            // keeping the documented bool|string contract and avoiding an uncaught
+            // exception that would freeze the WinBinder GUI thread.
+            mysqli_report( MYSQLI_REPORT_OFF );
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( empty( $error ) && !@mysqli_stmt_bind_param( $stmt, 'ss', $newPwd, $this->rootUser ) ) {
-            $error = mysqli_stmt_error( $stmt );
-        }
+            $dbLink = mysqli_init();
+            mysqli_options( $dbLink, MYSQLI_OPT_CONNECT_TIMEOUT, 5 );
+            if ( !mysqli_real_connect( $dbLink, '127.0.0.1', $this->rootUser, $currentPwd, null, $this->port ) ) {
+                throw new \RuntimeException( mysqli_connect_error() );
+            }
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( empty( $error ) && !@mysqli_stmt_execute( $stmt ) ) {
-            $error = mysqli_stmt_error( $stmt );
-        }
+            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( $stmt !== false ) {
-            mysqli_stmt_close( $stmt );
-        }
+            // Bound metadata-lock/table-lock waits so a password change can
+            // never freeze the UI: any lock contention times out in seconds
+            // instead of waiting for the server's default (often very large)
+            // lock_wait_timeout.
+            mysqli_query( $dbLink, 'SET SESSION lock_wait_timeout = 5' );
+            mysqli_query( $dbLink, 'SET SESSION innodb_lock_wait_timeout = 5' );
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( empty( $error ) && @mysqli_query( $dbLink, 'FLUSH PRIVILEGES' ) === false ) {
-            $error = mysqli_error( $dbLink );
-        }
+            // ALTER USER works reliably across MariaDB 10.3+ and avoids
+            // known SET PASSWORD bugs (MDEV-16774, MDEV-17136) and
+            // metadata lock contention on the mysql.user table in 10.3.
+            // The user and host are given explicitly (not CURRENT_USER()).
+            // The password is escaped so an empty (blank) password is
+            // allowed: IDENTIFIED BY '' sets a blank password.
+            $escapedUser = mysqli_real_escape_string( $dbLink, $this->rootUser );
+            $escapedPwd  = mysqli_real_escape_string( $dbLink, $newPwd );
+            $sql         = "ALTER USER '" . $escapedUser . "'@'localhost' IDENTIFIED BY '" . $escapedPwd . "'";
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( $dbLink ) {
+            if ( mysqli_query( $dbLink, $sql ) === false ) {
+                throw new \RuntimeException( mysqli_error( $dbLink ) );
+            }
+
+            // Preserve the existing progress-step count.
+            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+
             mysqli_close( $dbLink );
+            $dbLink = false;
+
+            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+        }
+        catch ( \Throwable $e ) {
+            $error = $e->getMessage();
+
+            if ( $dbLink ) {
+                @mysqli_close( $dbLink );
+            }
         }
 
         if ( !empty( $error ) ) {
@@ -389,13 +406,15 @@ class BinMariadb extends Module
         $error      = null;
 
         $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( version_compare( phpversion(), '5.3' ) === -1 ) {
-            $dbLink = @mysqli_connect( '127.0.0.1', $this->rootUser, $currentPwd, '', $this->port );
-        }
-        else {
-            $dbLink = @mysqli_connect( '127.0.0.1:' . $this->port, $this->rootUser, $currentPwd );
-        }
-        if ( !$dbLink ) {
+
+        // Reset mysqli to non-exception mode so a bad password returns false
+        // (with mysqli_connect_error() set) instead of throwing an uncaught
+        // mysqli_sql_exception that would freeze the WinBinder GUI thread.
+        mysqli_report( MYSQLI_REPORT_OFF );
+
+        $dbLink = mysqli_init();
+        mysqli_options( $dbLink, MYSQLI_OPT_CONNECT_TIMEOUT, 5 );
+        if ( !mysqli_real_connect( $dbLink, '127.0.0.1', $this->rootUser, $currentPwd, null, $this->port ) ) {
             $error = mysqli_connect_error();
         }
 
@@ -486,286 +505,287 @@ class BinMariadb extends Module
 
         return true;
     }
-/**
- * Retrieves the command line output for a given command.
- *
- * @param string $cmd The command to execute.
- * @return array An associative array containing:
- *               - 'syntaxOk' (bool): Whether the command executed without syntax errors.
- *               - 'content' (string|null): The output content of the command.
- */
-public function getCmdLineOutput($cmd) {
-    $result = array(
-        'syntaxOk' => false,
-        'content'  => null,
-    );
 
-    $bin = $this->getExe();
-    $removeLines = 0;
-    $outputFrom = '';
-    if ($cmd == self::CMD_SYNTAX_CHECK) {
-        $outputFrom = '2';
-    } elseif ($cmd == self::CMD_VARIABLES) {
-        $bin = $this->getAdmin();
-        $cmd .= ' --user=' . $this->getRootUser();
-        if ($this->getRootPwd()) {
-            $cmd .= ' --password=' . $this->getRootPwd();
-        }
-        $removeLines = 2;
-    }
+    /**
+     * Retrieves the command line output for a given command.
+     *
+     * @param string $cmd The command to execute.
+     * @return array An associative array containing:
+     *               - 'syntaxOk' (bool): Whether the command executed without syntax errors.
+     *               - 'content' (string|null): The output content of the command.
+     */
+    public function getCmdLineOutput($cmd) {
+        $result = array(
+            'syntaxOk' => false,
+            'content'  => null,
+        );
 
-    if (file_exists($bin)) {
-        $tmpResult = Batch::exec('mariadbGetCmdLineOutput', '"' . $bin . '" ' . $cmd . ' ' . $outputFrom, 5);
-        if ($tmpResult !== false && is_array($tmpResult)) {
-            $result['syntaxOk'] = empty($tmpResult) || !UtilString::contains(trim($tmpResult[count($tmpResult) - 1]), '[ERROR]');
-            for ($i = 0; $i < $removeLines; $i++) {
-                unset($tmpResult[$i]);
+        $bin = $this->getExe();
+        $removeLines = 0;
+        $outputFrom = '';
+        if ($cmd == self::CMD_SYNTAX_CHECK) {
+            $outputFrom = '2';
+        } elseif ($cmd == self::CMD_VARIABLES) {
+            $bin = $this->getAdmin();
+            $cmd .= ' --user=' . $this->getRootUser();
+            if ($this->getRootPwd()) {
+                $cmd .= ' --password=' . $this->getRootPwd();
             }
-            $result['content'] = trim(str_replace($bin, '', implode(PHP_EOL, $tmpResult)));
+            $removeLines = 2;
+        }
+
+        if (file_exists($bin)) {
+            $tmpResult = Batch::exec('mariadbGetCmdLineOutput', '"' . $bin . '" ' . $cmd . ' ' . $outputFrom, 5);
+            if ($tmpResult !== false && is_array($tmpResult)) {
+                $result['syntaxOk'] = empty($tmpResult) || !UtilString::contains(trim($tmpResult[count($tmpResult) - 1]), '[ERROR]');
+                for ($i = 0; $i < $removeLines; $i++) {
+                    unset($tmpResult[$i]);
+                }
+                $result['content'] = trim(str_replace($bin, '', implode(PHP_EOL, $tmpResult)));
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Sets the version of the module.
+     *
+     * @param string $version The version to set.
+     */
+    public function setVersion($version) {
+        global $bearsamppConfig;
+        $this->version = $version;
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
+        $this->reload();
+    }
+
+    /**
+     * Retrieves the service associated with the module.
+     *
+     * @return Win32Service The service object.
+     */
+    public function getService() {
+        return $this->service;
+    }
+
+    /**
+     * Enables or disables the module.
+     *
+     * @param bool $enabled Whether to enable or disable the module.
+     * @param bool $showWindow Whether to show a window with the result.
+     */
+    public function setEnable($enabled, $showWindow = false) {
+        global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
+
+        if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
+            Log::debug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
+            if ($showWindow) {
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_TITLE), $this->getName())
+                );
+            }
+            $enabled = Config::DISABLED;
+        }
+
+        Log::info($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
+        $this->enable = $enabled == Config::ENABLED;
+        $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
+
+        $this->reload();
+        if ($this->enable) {
+            Util::installService($this, $this->port, self::CMD_SYNTAX_CHECK, $showWindow);
+        } else {
+            Util::removeService($this->service, $this->name);
         }
     }
 
-    return $result;
-}
-
-/**
- * Sets the version of the module.
- *
- * @param string $version The version to set.
- */
-public function setVersion($version) {
-    global $bearsamppConfig;
-    $this->version = $version;
-    $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
-    $this->reload();
-}
-
-/**
- * Retrieves the service associated with the module.
- *
- * @return Win32Service The service object.
- */
-public function getService() {
-    return $this->service;
-}
-
-/**
- * Enables or disables the module.
- *
- * @param bool $enabled Whether to enable or disable the module.
- * @param bool $showWindow Whether to show a window with the result.
- */
-public function setEnable($enabled, $showWindow = false) {
-    global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
-
-    if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
-        Log::debug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
-        if ($showWindow) {
-            $bearsamppWinbinder->messageBoxError(
-                sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
-                sprintf($bearsamppLang->getValue(Lang::ENABLE_TITLE), $this->getName())
-            );
-        }
-        $enabled = Config::DISABLED;
+    /**
+     * Retrieves the error log path for the module.
+     *
+     * @return string The error log path.
+     */
+    public function getErrorLog() {
+        return $this->errorLog;
     }
 
-    Log::info($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
-    $this->enable = $enabled == Config::ENABLED;
-    $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
-
-    $this->reload();
-    if ($this->enable) {
-        Util::installService($this, $this->port, self::CMD_SYNTAX_CHECK, $showWindow);
-    } else {
-        Util::removeService($this->service, $this->name);
-    }
-}
-
-/**
- * Retrieves the error log path for the module.
- *
- * @return string The error log path.
- */
-public function getErrorLog() {
-    return $this->errorLog;
-}
-
-/**
- * Retrieves the executable path for the module.
- *
- * @return string The executable path.
- */
-public function getExe() {
-    return $this->exe;
-}
-
-/**
- * Retrieves the configuration file path for the module.
- *
- * @return string The configuration file path.
- */
-public function getConf() {
-    return $this->conf;
-}
-
-/**
- * Retrieves the port number for the module.
- *
- * @return int The port number.
- */
-public function getPort() {
-    return $this->port;
-}
-
-/**
- * Sets the port number for the module.
- *
- * @param int $port The port number to set.
- */
-public function setPort($port) {
-    $this->replace(self::LOCAL_CFG_PORT, $port);
-}
-
-/**
- * Retrieves the root user for the module.
- *
- * @return string The root user.
- */
-public function getRootUser() {
-    return $this->rootUser;
-}
-
-/**
- * Sets the root user for the module.
- *
- * @param string $rootUser The root user to set.
- */
-public function setRootUser($rootUser) {
-    $this->replace(self::LOCAL_CFG_ROOT_USER, $rootUser);
-}
-
-/**
- * Retrieves the root password for the module.
- *
- * @return string The root password.
- */
-public function getRootPwd() {
-    return $this->rootPwd;
-}
-
-/**
- * Sets the root password for the module.
- *
- * @param string $rootPwd The root password to set.
- */
-public function setRootPwd($rootPwd) {
-    $this->replace(self::LOCAL_CFG_ROOT_PWD, $rootPwd);
-}
-
-/**
- * Retrieves the CLI executable path for the module.
- *
- * @return string The CLI executable path.
- */
-public function getCliExe()
-{
-    return $this->cliExe;
-}
-
-/**
- * Retrieves the admin executable path for the module.
- *
- * @return string The admin executable path.
- */
-public function getAdmin()
-{
-    return $this->admin;
-}
-
-/**
- * Retrieves the data directory path for MariaDB.
- *
- * @return string The data directory path.
- */
-public function getDataDir()
-{
-    return $this->currentPath . '/data';
-}
-
-/**
- * Initializes the MariaDB data directory if needed.
- *
- * @param   string|null  $path     The path to the MariaDB installation. If null, the current path is used.
- * @param   string|null  $version  The version of MariaDB. If null, the current version is used.
- *
- * @return  bool         True if initialization was successful or not needed
- */
-public function initData($path = null, $version = null)
-{
-    Log::trace( 'Starting MariaDB data initialization' );
-    $startTime = microtime( true );
-
-    $path    = $path != null ? $path : Path::getModuleCurrentPath($this);
-    $version = $version != null ? $version : $this->getVersion();
-    $dataDir = $path . '/data';
-
-    if ( is_dir( $dataDir . '/mysql' ) ) {
-        Log::trace( 'MariaDB data directory already initialized' );
-
-        return true;
+    /**
+     * Retrieves the executable path for the module.
+     *
+     * @return string The executable path.
+     */
+    public function getExe() {
+        return $this->exe;
     }
 
-    if ( !is_dir( $dataDir ) ) {
-        @mkdir( $dataDir, 0777, true );
-        Log::trace( 'Created MariaDB data directory' );
+    /**
+     * Retrieves the configuration file path for the module.
+     *
+     * @return string The configuration file path.
+     */
+    public function getConf() {
+        return $this->conf;
     }
 
-    // Check for init.bat first
-    if ( file_exists( $path . '/init.bat' ) ) {
-        Log::trace( 'Initializing MariaDB via init.bat' );
-        try {
-            Batch::initializeMariadb( $path );
-        } catch ( \Throwable $e ) {
-            Log::trace( 'Error during MariaDB initialization via Batch: ' . $e->getMessage() );
+    /**
+     * Retrieves the port number for the module.
+     *
+     * @return int The port number.
+     */
+    public function getPort() {
+        return $this->port;
+    }
 
-            return false;
-        }
-    } else {
-        // Use mariadb-install-db.exe
-        Log::trace( 'Initializing MariaDB via mariadb-install-db.exe' );
-        $installDbExe = $path . '/bin/mariadb-install-db.exe';
-        if ( !file_exists( $installDbExe ) ) {
-            $installDbExe = $path . '/bin/mysql_install_db.exe';
+    /**
+     * Sets the port number for the module.
+     *
+     * @param int $port The port number to set.
+     */
+    public function setPort($port) {
+        $this->replace(self::LOCAL_CFG_PORT, $port);
+    }
+
+    /**
+     * Retrieves the root user for the module.
+     *
+     * @return string The root user.
+     */
+    public function getRootUser() {
+        return $this->rootUser;
+    }
+
+    /**
+     * Sets the root user for the module.
+     *
+     * @param string $rootUser The root user to set.
+     */
+    public function setRootUser($rootUser) {
+        $this->replace(self::LOCAL_CFG_ROOT_USER, $rootUser);
+    }
+
+    /**
+     * Retrieves the root password for the module.
+     *
+     * @return string The root password.
+     */
+    public function getRootPwd() {
+        return $this->rootPwd;
+    }
+
+    /**
+     * Sets the root password for the module.
+     *
+     * @param string $rootPwd The root password to set.
+     */
+    public function setRootPwd($rootPwd) {
+        $this->replace(self::LOCAL_CFG_ROOT_PWD, $rootPwd);
+    }
+
+    /**
+     * Retrieves the CLI executable path for the module.
+     *
+     * @return string The CLI executable path.
+     */
+    public function getCliExe()
+    {
+        return $this->cliExe;
+    }
+
+    /**
+     * Retrieves the admin executable path for the module.
+     *
+     * @return string The admin executable path.
+     */
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * Retrieves the data directory path for MariaDB.
+     *
+     * @return string The data directory path.
+     */
+    public function getDataDir()
+    {
+        return $this->currentPath . '/data';
+    }
+
+    /**
+     * Initializes the MariaDB data directory if needed.
+     *
+     * @param   string|null  $path     The path to the MariaDB installation. If null, the current path is used.
+     * @param   string|null  $version  The version of MariaDB. If null, the current version is used.
+     *
+     * @return  bool         True if initialization was successful or not needed
+     */
+    public function initData($path = null, $version = null)
+    {
+        Log::trace( 'Starting MariaDB data initialization' );
+        $startTime = microtime( true );
+
+        $path    = $path != null ? $path : Path::getModuleCurrentPath($this);
+        $version = $version != null ? $version : $this->getVersion();
+        $dataDir = $path . '/data';
+
+        if ( is_dir( $dataDir . '/mysql' ) ) {
+            Log::trace( 'MariaDB data directory already initialized' );
+
+            return true;
         }
 
-        if ( file_exists( $installDbExe ) ) {
-            $cmd = '"' . Path::formatWindowsPath( $installDbExe ) . '"';
-            $cmd .= ' --datadir="' . Path::formatWindowsPath( $dataDir ) . '"';
+        if ( !is_dir( $dataDir ) ) {
+            @mkdir( $dataDir, 0777, true );
+            Log::trace( 'Created MariaDB data directory' );
+        }
 
+        // Check for init.bat first
+        if ( file_exists( $path . '/init.bat' ) ) {
+            Log::trace( 'Initializing MariaDB via init.bat' );
             try {
-                Batch::exec( 'initializeMariadb', $cmd, 60 );
+                Batch::initializeMariadb( $path );
             } catch ( \Throwable $e ) {
-                Log::trace( 'Error during MariaDB initialization via mariadb-install-db: ' . $e->getMessage() );
+                Log::trace( 'Error during MariaDB initialization via Batch: ' . $e->getMessage() );
 
                 return false;
             }
         } else {
-            Log::error( 'MariaDB initialization failed: No init.bat or mariadb-install-db.exe found' );
+            // Use mariadb-install-db.exe
+            Log::trace( 'Initializing MariaDB via mariadb-install-db.exe' );
+            $installDbExe = $path . '/bin/mariadb-install-db.exe';
+            if ( !file_exists( $installDbExe ) ) {
+                $installDbExe = $path . '/bin/mysql_install_db.exe';
+            }
+
+            if ( file_exists( $installDbExe ) ) {
+                $cmd = '"' . Path::formatWindowsPath( $installDbExe ) . '"';
+                $cmd .= ' --datadir="' . Path::formatWindowsPath( $dataDir ) . '"';
+
+                try {
+                    Batch::exec( 'initializeMariadb', $cmd, 60 );
+                } catch ( \Throwable $e ) {
+                    Log::trace( 'Error during MariaDB initialization via mariadb-install-db: ' . $e->getMessage() );
+
+                    return false;
+                }
+            } else {
+                Log::error( 'MariaDB initialization failed: No init.bat or mariadb-install-db.exe found' );
+
+                return false;
+            }
+        }
+
+        // Verify initialization
+        if ( !is_dir( $dataDir . '/mysql' ) ) {
+            Log::trace( 'MariaDB initialization appears to have failed: mysql directory still missing' );
 
             return false;
         }
+
+        $totalTime = round( microtime( true ) - $startTime, 2 );
+        Log::trace( "MariaDB initialization completed in {$totalTime}s" );
+
+        return true;
     }
-
-    // Verify initialization
-    if ( !is_dir( $dataDir . '/mysql' ) ) {
-        Log::trace( 'MariaDB initialization appears to have failed: mysql directory still missing' );
-
-        return false;
-    }
-
-    $totalTime = round( microtime( true ) - $startTime, 2 );
-    Log::trace( "MariaDB initialization completed in {$totalTime}s" );
-
-    return true;
-}
 }
