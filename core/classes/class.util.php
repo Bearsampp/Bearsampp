@@ -881,9 +881,12 @@ class Util
      */
     public static function getLatestVersion($url)
     {
+        Log::trace('[VCHK-3] getLatestVersion() START - fetching latest version from: ' . $url);
+
         $result = self::getApiJson($url);
         if (empty($result)) {
             Log::error('Cannot retrieve latest github info for: ' . $result . ' RESULT');
+            Log::trace('[VCHK-3] getLatestVersion() EXIT - empty response received');
 
             return null;
         }
@@ -896,10 +899,12 @@ class Util
             Log::debug('Latest version tag name: ' . $tagName);
             Log::debug('Download URL: ' . $downloadUrl);
             Log::debug('Name: ' . $name);
+            Log::trace('[VCHK-3] getLatestVersion() SUCCESS - version found: ' . $tagName);
 
             return ['version' => $tagName, 'html_url' => $downloadUrl, 'name' => $name];
         } else {
             Log::error('Tag name, download URL, or name not found in the response: ' . $result);
+            Log::trace('[VCHK-3] getLatestVersion() EXIT - tag_name/download_url missing in JSON response');
 
             return null;
         }
@@ -957,7 +962,7 @@ class Util
     {
         $size = 0;
 
-        $data = get_headers($url, true, HttpClient::getSslStreamContext());
+        $data = get_headers($url, true, HttpClient::getSslStreamContext(true, $url));
         if (isset($data['Content-Length'])) {
             $size = intval($data['Content-Length']);
         }
@@ -1055,7 +1060,7 @@ class Util
     {
         $result = array();
 
-        $fp = @fopen($url, 'r', false, HttpClient::getSslStreamContext($verify));
+        $fp = @fopen($url, 'r', false, HttpClient::getSslStreamContext($verify, $url));
         if ($fp) {
             $meta   = stream_get_meta_data($fp);
             $result = isset($meta['wrapper_data']) ? $meta['wrapper_data'] : $result;
@@ -1166,6 +1171,7 @@ class Util
     public static function getApiJson($url, $verify = true)
     {
         $header = self::setupCurlHeaderWithToken();
+        Log::trace('[VCHK-3] getApiJson() sending GET request to: ' . $url);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
@@ -1177,6 +1183,7 @@ class Util
         $data = curl_exec($ch);
         if (curl_errno($ch)) {
             Log::error('CURL Error: ' . curl_error($ch));
+            Log::trace('[VCHK-3] getApiJson() CURL error: ' . curl_error($ch));
         }
 
         // curl_close() is deprecated in PHP 8.5+ as it has no effect since PHP 8.0
@@ -1184,6 +1191,8 @@ class Util
         if (PHP_VERSION_ID < 80500) {
             curl_close($ch);
         }
+
+        Log::trace('[VCHK-3] getApiJson() response length: ' . strlen((string)$data));
 
         return trim($data);
     }
@@ -1521,16 +1530,120 @@ class Util
     }
 
     /**
-     * Sets up cURL headers with token for API requests.
+     * Decrypts the GitHub Personal Access Token bundled with the application.
+     *
+     * The token is stored encrypted in github.dat (base64 + AES-256-CBC) using a
+     * key derived from string.dat (uudecoded). Authenticating against the GitHub
+     * API with this token raises the rate limit from 60 to 5000 requests/hour,
+     * which keeps the manual "check for update" reliable on shared/residential IPs.
+     *
+     * @return string|false The decrypted token, or false when the token
+     *                      files/cipher are unavailable or cannot be decoded.
+     */
+    public static function decryptFile()
+    {
+        Log::trace('[VCHK-3] decryptFile() START');
+
+        $stringFile     = Path::getResourcesPath() . '/string.dat';
+        $encryptedFile  = Path::getResourcesPath() . '/github.dat';
+        $method         = 'AES-256-CBC';
+
+        $stringPhrase = @file_get_contents($stringFile);
+        if ($stringPhrase === false) {
+            Log::debug('Failed to read the key file at path: ' . $stringFile);
+            Log::trace('[VCHK-3] decryptFile() FAILED - key file unreadable: ' . $stringFile);
+            return false;
+        }
+
+        $stringKey = convert_uudecode($stringPhrase);
+
+        $encryptedData = @file_get_contents($encryptedFile);
+        if ($encryptedData === false) {
+            Log::debug('Failed to read the encrypted token file at path: ' . $encryptedFile);
+            Log::trace('[VCHK-3] decryptFile() FAILED - token file unreadable: ' . $encryptedFile);
+            return false;
+        }
+
+        $data = base64_decode($encryptedData);
+        if ($data === false) {
+            Log::debug('Failed to decode the token data from path: ' . $encryptedFile);
+            Log::trace('[VCHK-3] decryptFile() FAILED - base64 decode error');
+            return false;
+        }
+
+        $ivLength  = openssl_cipher_iv_length($method);
+        $iv        = substr($data, 0, $ivLength);
+        $encrypted = substr($data, $ivLength);
+
+        $decrypted = openssl_decrypt($encrypted, $method, $stringKey, 0, $iv);
+        if ($decrypted === false) {
+            Log::debug('Decryption failed for token data from path: ' . $encryptedFile);
+            Log::trace('[VCHK-3] decryptFile() FAILED - AES-256-CBC decryption failed');
+            return false;
+        }
+
+        Log::trace('[VCHK-3] decryptFile() SUCCESS - GitHub token decrypted');
+
+        return $decrypted;
+    }
+
+    /**
+     * Resolves the GitHub token to use for authenticated requests.
+     *
+     * The bundled token (decrypted from github.dat) takes precedence so a stale
+     * or revoked GITHUB_TOKEN/GH_PAT on the host cannot break automated checks.
+     *
+     * @return string The resolved GitHub token, or '' when none is available.
+     */
+    public static function getGithubToken()
+    {
+        $token = self::decryptFile();
+        if (empty($token)) {
+            Log::trace('[VCHK-3] getGithubToken() bundled token unavailable - falling back to GITHUB_TOKEN env');
+            $token = getenv('GITHUB_TOKEN');
+        } else {
+            Log::trace('[VCHK-3] getGithubToken() bundled token decrypted successfully');
+        }
+        if (empty($token)) {
+            $token = getenv('GH_PAT');
+        }
+
+        return (string)$token;
+    }
+
+    /**
+     * Sets up cURL headers for GitHub API requests.
+     *
+     * Authenticates with the bundled GitHub Personal Access Token when it can be
+     * decoded, to raise the API rate limit. Falls back to unauthenticated headers
+     * (which GitHub limits to 60 requests/hour) if the token is unavailable, so
+     * automated/background checks never hard-fail.
      *
      * @return array The array of cURL headers.
      */
     public static function setupCurlHeaderWithToken()
     {
+        Log::trace('[VCHK-3] setupCurlHeaderWithToken() START - building GitHub API headers');
+
         // Return headers with User-Agent, which is required by GitHub API
-        return array(
+        $headers = array(
             'User-Agent: ' . APP_GITHUB_USERAGENT . ' (https://github.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . ')',
             'Accept: application/vnd.github.v3+json'
         );
+
+        // Authenticate with the bundled token to raise the rate limit. The bundled
+        // token is preferred over environment tokens so a stale/expired GITHUB_TOKEN
+        // or GH_PAT on a user's machine cannot break the version check.
+        $token = self::getGithubToken();
+        if (!empty($token)) {
+            $headers[] = 'Authorization: token ' . $token;
+            Log::trace('[VCHK-3] setupCurlHeaderWithToken() token IS in use - Authorization header attached (value never logged)');
+        } else {
+            Log::trace('[VCHK-3] setupCurlHeaderWithToken() NO token available - requests will be unauthenticated');
+        }
+
+        Log::trace('[VCHK-3] setupCurlHeaderWithToken() END - ' . count($headers) . ' headers built');
+
+        return $headers;
     }
 }

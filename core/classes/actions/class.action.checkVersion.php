@@ -55,7 +55,7 @@ class ActionCheckVersion
             Log::debug('ActionCheckVersion: Current version: ' . $this->currentVersion);
 
             // Assuming getLatestVersion now returns an array with version and URL
-            $githubVersionData = HttpClient::getLatestVersion(APP_GITHUB_LATEST_URL);
+            $githubVersionData = Util::getLatestVersion(APP_GITHUB_LATEST_URL);
             Log::debug('ActionCheckVersion: GitHub version data: ' . var_export($githubVersionData, true));
 
             if ($githubVersionData != null && isset($githubVersionData['version'], $githubVersionData['html_url'])) {
@@ -158,7 +158,7 @@ class ActionCheckVersion
 
         switch ($id) {
             case $this->wbLinkFull[WinBinder::CTRL_ID]:
-                $latestVersionInfo = HttpClient::getLatestVersion(APP_GITHUB_LATEST_URL);
+                $latestVersionInfo = Util::getLatestVersion(APP_GITHUB_LATEST_URL);
                 if ($latestVersionInfo && isset($latestVersionInfo['html_url'])) {
                     $browserPath = $bearsamppConfig->getBrowser();
                     if (!$bearsamppWinbinder->exec($browserPath, $latestVersionInfo['html_url'])) {

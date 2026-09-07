@@ -470,9 +470,11 @@ class Batch
             $maxtime = time() + $timeout;
             $noTimeout = $timeout === false;
             while ($result === false || empty($result)) {
+                $finished = false;
                 if (file_exists($checkFile)) {
                     $check = file($checkFile);
                     if (!empty($check) && trim($check[0]) == self::END_PROCESS_STR) {
+                        $finished = true;
                         if ($catchOutput && file_exists($resultFile)) {
                             $result = file($resultFile);
                         } else {
@@ -480,6 +482,14 @@ class Batch
                         }
                     }
                 }
+
+                // The script completed once the FINISHED! marker appears, even if it
+                // produced no output. Without this, empty output (e.g. mysqld
+                // --initialize-insecure) makes us spin until the timeout elapses.
+                if ($finished) {
+                    break;
+                }
+
                 if ($maxtime < time() && !$noTimeout) {
                     break;
                 }

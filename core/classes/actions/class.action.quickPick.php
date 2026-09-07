@@ -176,7 +176,7 @@ class QuickPick
         $localFileCreationTime = $this->getLocalFileCreationTime();
 
         // Attempt to retrieve remote file headers (verified TLS context)
-        $headers = get_headers(QUICKPICK_JSON_URL, 1, HttpClient::getSslStreamContext());
+        $headers = get_headers(QUICKPICK_JSON_URL, 1, HttpClient::getSslStreamContext(true, QUICKPICK_JSON_URL));
         if (!$this->isValidHeaderResponse($headers)) {
             // If headers or Date are invalid, assume no update needed
             return false;
@@ -271,10 +271,10 @@ class QuickPick
     {
         Log::debug( 'Fetching JSON file: ' . $this->jsonFilePath );
 
-        // Fetch the JSON content from the URL (verified TLS context)
-        $jsonContent = file_get_contents( QUICKPICK_JSON_URL, false, HttpClient::getSslStreamContext() );
+        // Fetch the JSON content from the URL via cURL (verified TLS + bundled GitHub token)
+        $jsonContent = Util::getApiJson( QUICKPICK_JSON_URL );
 
-        if ( $jsonContent === false ) {
+        if ( $jsonContent === '' ) {
             // Handle error if the file could not be fetched
             throw new Exception( 'Failed to fetch JSON content from the URL.' );
         }
@@ -711,7 +711,7 @@ class QuickPick
     private static function fetchChecksumFromSidecar(string $moduleUrl): ?string
     {
         $sidecarUrl = $moduleUrl . '.sha256';
-        $content = @file_get_contents($sidecarUrl, false, HttpClient::getSslStreamContext());
+        $content = @file_get_contents($sidecarUrl, false, HttpClient::getSslStreamContext(true, $sidecarUrl));
 
         if ($content === false) {
             Log::error('Checksum verify: sidecar fetch failed for: ' . $sidecarUrl);

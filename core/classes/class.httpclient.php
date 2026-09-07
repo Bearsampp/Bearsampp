@@ -296,86 +296,29 @@ class HttpClient
      *
      * @return string The trimmed response data from the URL.
      */
-    public static function getApiJson($url, $verify = true)
-    {
-        $header = self::setupCurlHeaderWithToken();
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_VERBOSE, false); // Set to false to avoid polluting logs unless needed
-        curl_setopt($ch, CURLOPT_URL, $url);
-        self::applyCurlSslOptions($ch, $verify);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $data = curl_exec($ch);
-        if (curl_errno($ch)) {
-            Log::error('CURL Error (' . curl_errno($ch) . '): ' . curl_error($ch) . ' (URL: ' . self::redactUrl($url) . ')');
-        }
-
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if ($httpCode >= 400) {
-            Log::error('HTTP Error ' . $httpCode . ' for URL: ' . self::redactUrl($url));
-        }
-
-        // curl_close() is deprecated in PHP 8.5+ as it has no effect since PHP 8.0
-        // The resource is automatically closed when it goes out of scope
-        if (PHP_VERSION_ID < 80500) {
-            curl_close($ch);
-        }
-
-        return $data === false ? '' : trim($data);
-    }
-
     /**
-     * Fetches the latest version information from a given url.
+     * Determines whether a URL is hosted on GitHub.
      *
-     * @param   string  $url  The URL to fetch version information from.
+     * Used to scope the bundled GitHub token strictly to GitHub endpoints so it
+     * is never sent to third-party hosts (e.g. the QuickPick license API or
+     * mirror servers).
      *
-     * @return array|null Returns an array with 'version' and 'url' if successful, null otherwise.
+     * @param   string  $url  The URL to check.
+     *
+     * @return bool True when the URL host is a GitHub endpoint.
      */
-    public static function getLatestVersion($url)
+    private static function isGithubHost($url)
     {
-        $result = self::getApiJson($url);
-        if (empty($result)) {
-            Log::error('Cannot retrieve latest github info: empty result or error for URL: ' . $url);
+        $host = strtolower(parse_url($url, PHP_URL_HOST) ?: '');
 
-            return null;
-        }
-
-        $resultArray = json_decode($result, true);
-        if ($resultArray === null) {
-            Log::error('Failed to decode JSON response from: ' . $url . '. Response snippet: ' . substr($result, 0, 100));
-            return null;
-        }
-
-        if (isset($resultArray['tag_name']) && isset($resultArray['assets'][0]['browser_download_url'])) {
-            $tagName     = $resultArray['tag_name'];
-            $downloadUrl = $resultArray['assets'][0]['browser_download_url'];
-            $name        = $resultArray['name'];
-            Log::debug('Latest version tag name: ' . $tagName);
-            Log::debug('Download URL: ' . $downloadUrl);
-            Log::debug('Name: ' . $name);
-
-            return ['version' => $tagName, 'html_url' => $downloadUrl, 'name' => $name];
-        } else {
-            Log::error('Tag name, download URL, or name not found in the response: ' . $result);
-
-            return null;
-        }
-    }
-
-    /**
-     * Sets up cURL headers with token for API requests.
-     *
-     * @return array The array of cURL headers.
-     */
-    public static function setupCurlHeaderWithToken()
-    {
-        // Return headers with User-Agent, which is required by GitHub API
-        return array(
-            'User-Agent: ' . APP_GITHUB_USERAGENT . ' (https://github.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . ')',
-            'Accept: application/vnd.github.v3+json'
-        );
+        return in_array($host, array(
+            'github.com',
+            'api.github.com',
+            'raw.githubusercontent.com',
+            'objects.githubusercontent.com',
+            'codeload.github.com',
+            'gist.github.com',
+        ), true);
     }
 
     /**
@@ -426,11 +369,18 @@ class HttpClient
     /**
      * Builds a stream context that verifies the peer certificate against the bundled CA bundle.
      *
-     * @param   bool  $verify  Whether to verify the peer certificate. Defaults to true.
+     * When the optional $url targets a GitHub endpoint, the bundled GitHub token
+     * is attached as an Authorization header so fopen-based GitHub requests
+     * (quickpick JSON feeds, module downloads, checksum sidecars) are
+     * authenticated and avoid the unauthenticated rate limit.
+     *
+     * @param   bool         $verify  Whether to verify the peer certificate. Defaults to true.
+     * @param   string|null  $url     Optional target URL. When present and hosted on
+     *                                GitHub, the request is authenticated with the bundled token.
      *
      * @return resource The stream context.
      */
-    public static function getSslStreamContext($verify = true)
+    public static function getSslStreamContext($verify = true, $url = null)
     {
         $ssl = array(
             'verify_peer'       => $verify,
@@ -445,7 +395,23 @@ class HttpClient
             }
         }
 
-        return stream_context_create(array('ssl' => $ssl));
+        $options = array('ssl' => $ssl);
+
+        // Authenticate fopen-based GitHub requests with the bundled token. The token
+        // is only attached to GitHub hosts so it is never leaked to third-party
+        // endpoints (e.g. the QuickPick license API or mirror servers).
+        if (!empty($url) && self::isGithubHost($url)) {
+            $token = Util::getGithubToken();
+            if ($token !== '') {
+                $options['http'] = array(
+                    'header' => 'User-Agent: ' . APP_GITHUB_USERAGENT . ' (https://github.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . ')' . "\r\n"
+                              . 'Accept: application/vnd.github.v3+json' . "\r\n"
+                              . 'Authorization: token ' . $token . "\r\n",
+                );
+            }
+        }
+
+        return stream_context_create($options);
     }
 
     /**
@@ -484,7 +450,7 @@ class HttpClient
     {
         $size = 0;
 
-        $data = get_headers($url, true, self::getSslStreamContext());
+        $data = get_headers($url, true, self::getSslStreamContext(true, $url));
         if (isset($data['Content-Length'])) {
             $size = intval($data['Content-Length']);
         }

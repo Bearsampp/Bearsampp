@@ -352,7 +352,7 @@ class Core
     {
         // Open the URL for reading. The verified SSL context makes sure the module is
         // fetched over a properly authenticated HTTPS connection.
-        $inputStream = @fopen( $moduleUrl, 'rb', false, HttpClient::getSslStreamContext() );
+        $inputStream = @fopen( $moduleUrl, 'rb', false, HttpClient::getSslStreamContext(true, $moduleUrl) );
         if ( $inputStream === false ) {
             Log::error( 'Error fetching content from URL: ' . $moduleUrl );
 
