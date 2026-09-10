@@ -231,14 +231,14 @@ class BinMariadb extends Module
             return false;
         }
 
-        $fp = @fsockopen( '127.0.0.1', $port, $errno, $errstr, 5 );
+        $fp = @fsockopen( APP_LOCALHOST, $port, $errno, $errstr, 5 );
         if ( $fp ) {
             // Reset mysqli to non-exception mode so connect/query failures
             // return false instead of throwing an uncaught mysqli_sql_exception
             // that would freeze the WinBinder GUI thread.
             mysqli_report( MYSQLI_REPORT_OFF );
 
-            $dbLink    = mysqli_connect( '127.0.0.1:' . $port, $this->rootUser, $this->rootPwd );
+            $dbLink    = mysqli_connect( APP_LOCALHOST . ':' . $port, $this->rootUser, $this->rootPwd );
             $isMariadb = false;
             $version   = false;
 
@@ -332,7 +332,7 @@ class BinMariadb extends Module
 
             $dbLink = mysqli_init();
             mysqli_options( $dbLink, MYSQLI_OPT_CONNECT_TIMEOUT, 5 );
-            if ( !mysqli_real_connect( $dbLink, '127.0.0.1', $this->rootUser, $currentPwd, null, $this->port ) ) {
+            if ( !mysqli_real_connect( $dbLink, APP_LOCALHOST, $this->rootUser, $currentPwd, null, $this->port ) ) {
                 throw new \RuntimeException( mysqli_connect_error() );
             }
 
@@ -414,7 +414,7 @@ class BinMariadb extends Module
 
         $dbLink = mysqli_init();
         mysqli_options( $dbLink, MYSQLI_OPT_CONNECT_TIMEOUT, 5 );
-        if ( !mysqli_real_connect( $dbLink, '127.0.0.1', $this->rootUser, $currentPwd, null, $this->port ) ) {
+        if ( !mysqli_real_connect( $dbLink, APP_LOCALHOST, $this->rootUser, $currentPwd, null, $this->port ) ) {
             $error = mysqli_connect_error();
         }
 

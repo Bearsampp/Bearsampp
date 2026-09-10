@@ -60,6 +60,9 @@ class Log
         'async'    => 0,
     ];
 
+    /** @var bool When true, all log entries are buffered but not flushed. */
+    private static $silentMode = false;
+
     /** @var string Directory for async log queues */
     private static $asyncQueueDir = null;
 
@@ -210,6 +213,13 @@ class Log
                 'time' => time(),
             ];
             self::$logStats['buffered']++;
+
+            // In silent mode, suppress auto-flush so the caller can decide
+            // whether to commit (flush) or rollback (discard) the buffer.
+            // ERROR entries always flush — they must never be silently dropped.
+            if (self::$silentMode && $type !== self::ERROR) {
+                return;
+            }
 
             // Flush immediately for:
             // 1. Errors (always)
@@ -661,6 +671,10 @@ class Log
      */
     public static function separator()
     {
+        if (self::$silentMode) {
+            return;
+        }
+
         global $bearsamppRoot;
 
         $logs = [
@@ -671,6 +685,7 @@ class Log
             Path::getStartupLogFilePath(),
             Path::getBatchLogFilePath(),
             Path::getWinbinderLogFilePath(),
+            Path::getHomepageLogFilePath(),
         ];
 
         $separator = '========================================================================================' . PHP_EOL;
@@ -680,7 +695,7 @@ class Log
             }
             $logContent = @file_get_contents($log);
             if ($logContent !== false && !str_ends_with($logContent, $separator)) {
-                file_put_contents($log, $separator, FILE_APPEND);
+                @file_put_contents($log, $separator, FILE_APPEND);
             }
         }
     }
@@ -742,23 +757,102 @@ class Log
     }
 
     /**
+     * Tracks which class names have been logged in the current request
+     * to avoid duplicate init/reload messages for the same class.
+     *
+     * @var array<string, int>
+     */
+    private static $initClassCounts = array();
+    private static $reloadClassCounts = array();
+
+    /**
      * Logs the initialisation of a class instance at TRACE level.
+     * First occurrence of each class is logged at INFO level;
+     * subsequent occurrences are silently counted and a summary
+     * is emitted when the process terminates or on next unique init.
      *
      * @param   object  $classInstance
      */
     public static function initClass($classInstance)
     {
-        self::trace('Init ' . get_class($classInstance));
+        $className = get_class($classInstance);
+
+        if (isset(self::$initClassCounts[$className])) {
+            self::$initClassCounts[$className]++;
+            return;
+        }
+
+        self::$initClassCounts[$className] = 1;
+        self::trace('Init ' . $className);
     }
 
     /**
      * Logs the reloading of a class instance at TRACE level.
+     * Only the first occurrence per class name is logged;
+     * subsequent duplicates are silently skipped.
      *
      * @param   object  $classInstance
      */
     public static function reloadClass($classInstance)
     {
-        self::trace('Reload ' . get_class($classInstance));
+        $className = get_class($classInstance);
+
+        if (isset(self::$reloadClassCounts[$className])) {
+            self::$reloadClassCounts[$className]++;
+            return;
+        }
+
+        self::$reloadClassCounts[$className] = 1;
+        self::trace('Reload ' . $className);
+    }
+
+    /**
+     * Enters silent buffer mode: all subsequent log entries are held in
+     * memory and not flushed to disk. ERROR-level entries always flush
+     * even in silent mode so critical failures are never lost.
+     *
+     * Use commitSilentBuffer() to flush on success, or
+     * rollbackSilentBuffer() to discard the buffer.
+     *
+     * @return void
+     */
+    public static function startSilentBuffer()
+    {
+        self::$silentMode = true;
+        // Discard anything already buffered from early bootstrap (e.g. separator)
+        self::$logBuffer = [];
+    }
+
+    /**
+     * Exits silent mode and flushes all buffered entries to disk.
+     *
+     * @return void
+     */
+    public static function commitSilentBuffer()
+    {
+        self::$silentMode = false;
+        self::flush();
+    }
+
+    /**
+     * Exits silent mode and discards all buffered entries without writing.
+     *
+     * @return void
+     */
+    public static function rollbackSilentBuffer()
+    {
+        self::$silentMode = false;
+        self::$logBuffer = [];
+    }
+
+    /**
+     * Returns whether the logger is currently in silent buffer mode.
+     *
+     * @return bool
+     */
+    public static function isSilent()
+    {
+        return self::$silentMode;
     }
 }
 

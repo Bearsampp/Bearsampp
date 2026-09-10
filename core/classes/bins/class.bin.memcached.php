@@ -211,7 +211,7 @@ class BinMemcached extends Module
         }
 
         // Use fsockopen instead of memcache_connect to avoid file descriptor leaks in PHP 8.4+
-        $fp = @fsockopen('127.0.0.1', $port, $errno, $errstr, 1);
+        $fp = @fsockopen(APP_LOCALHOST, $port, $errno, $errstr, 1);
         if ($fp) {
             // Port is open, verify it's memcached by sending a simple command
             @stream_set_timeout($fp, 1);

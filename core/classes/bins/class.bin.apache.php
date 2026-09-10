@@ -683,7 +683,7 @@ class BinApache extends Module
         else {
             $result .= 'Order Deny,Allow' . PHP_EOL .
                 'Deny from all' . PHP_EOL .
-                'Allow from 127.0.0.1 ::1' . PHP_EOL;
+                'Allow from ' . APP_LOCALHOST . ' ::1' . PHP_EOL;
         }
 
         return $result . self::TAG_END_SWITCHONLINE;

@@ -7,6 +7,79 @@
  * Github: https://github.com/Bearsampp
  */
 /**
+ * Silent logging gate for read-only homepage polls.
+ *
+ * Read-only polls (e.g. summary, service status, latest version) are the main
+ * source of homepage log growth because root.php re-initialises every class on
+ * each 2s poll. To keep the log useful without the noise, such polls run inside
+ * a silent logging transaction:
+ *
+ *   1. Log::startSilentBuffer() holds every entry in memory (ERROR still writes
+ *      immediately so critical failures are never lost).
+ *   2. The handler response body (the exact homepage state rendered) is hashed.
+ *   3. At shutdown (registered BEFORE Log::init(), so it runs before Log::flush)
+ *      the hash is compared with the one stored for this proc:
+ *        - identical  -> nothing changed on the homepage -> rollback (discard)
+ *        - different  -> a real state change occurred -> commit (write) + store
+ *
+ * No "heartbeat" entries are produced - identical polls write nothing at all.
+ * State-changing endpoints (quickpick, toggleenhancedquickpick,
+ * applymoduleconfig) are excluded and always log normally.
+ */
+$ajaxProcRaw = isset($_POST['proc']) ? $_POST['proc'] : '';
+$ajaxReadOnlyProcs = array(
+    'summary',
+    'latestversion',
+    'apache',
+    'mailpit',
+    'memcached',
+    'mariadb',
+    'mysql',
+    'nodejs',
+    'php',
+    'postgresql',
+    'xlight',
+    'reloadstatus',
+);
+
+if (in_array($ajaxProcRaw, $ajaxReadOnlyProcs, true)) {
+    require_once __DIR__ . '/../../classes/class.log.php';
+    Log::startSilentBuffer();
+    ob_start();
+
+    register_shutdown_function(function () use ($ajaxProcRaw) {
+        try {
+            $output = ob_get_contents();
+            if ($output === false) {
+                $output = '';
+            }
+            $fingerprint = md5($output);
+
+            if (!class_exists('Path')) {
+                // Bootstrap failed before Path was available -> keep the entries.
+                Log::commitSilentBuffer();
+                return;
+            }
+            $fingerprintFile = Path::getTmpPath() . '/homepage-ajax-state-' . md5($ajaxProcRaw) . '.md5';
+            $stored = @file_get_contents($fingerprintFile);
+
+            if ($stored !== false && trim($stored) === $fingerprint) {
+                // Homepage state unchanged -> discard this poll's log entries.
+                Log::rollbackSilentBuffer();
+            } else {
+                // State changed (service started/stopped, version changed, ...) ->
+                // write this poll's log entries and remember the new state.
+                @file_put_contents($fingerprintFile, $fingerprint, LOCK_EX);
+                Log::commitSilentBuffer();
+            }
+        } catch (Exception $e) {
+            // On any failure, commit (write) the entries rather than lose them.
+            Log::commitSilentBuffer();
+        }
+    });
+}
+
+/**
  * Include the root configuration file.
  * This file is expected to set up the environment and include necessary configurations.
  */

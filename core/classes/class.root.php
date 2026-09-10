@@ -415,7 +415,7 @@ class Root
         $content .= ' on line ' . $errline . PHP_EOL;
         $content .= self::debugStringBacktrace() . PHP_EOL;
 
-        file_put_contents(Path::getErrorLogFilePath(), $content, FILE_APPEND);
+        @file_put_contents(Path::getErrorLogFilePath(), $content, FILE_APPEND);
     }
 
     /**

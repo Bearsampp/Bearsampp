@@ -175,18 +175,41 @@ class QuickPick
         // Determine local file creation time or rebuild if missing
         $localFileCreationTime = $this->getLocalFileCreationTime();
 
-        // Attempt to retrieve remote file headers (verified TLS context)
-        $headers = get_headers(QUICKPICK_JSON_URL, 1, HttpClient::getSslStreamContext(true, QUICKPICK_JSON_URL));
+        // Attempt to retrieve remote file headers. GitHub-hosted content is reached
+        // through the GitHub proxy (verified TLS context); otherwise fetch directly.
+        $headers = false;
+        if (HttpClient::isGithubHost(QUICKPICK_JSON_URL)) {
+            // Rebuild a get_headers($url, 1)-compatible structure from the proxy
+            // response (status line at index 0 plus every forwarded header) so the
+            // downstream validation/comparison behaves identically to the direct
+            // fetch path. Only a successful (2xx) response is trusted; error pages
+            // carry headers but must not drive update decisions. Proxy header keys
+            // are lowercase, so lookups below are case-insensitive.
+            $result = HttpClient::proxyFetch(QUICKPICK_JSON_URL, 'HEAD', true);
+            if ($result !== false && $result['status'] >= 200 && $result['status'] < 300) {
+                $headers = array('HTTP/1.1 ' . $result['status']);
+                foreach ($result['headers'] as $name => $value) {
+                    $headers[$name] = $value;
+                }
+            }
+        } else {
+            $headers = get_headers(QUICKPICK_JSON_URL, 1, HttpClient::getSslStreamContext(true, QUICKPICK_JSON_URL));
+        }
         if (!$this->isValidHeaderResponse($headers)) {
-            // If headers or Date are invalid, assume no update needed
+            // If headers or Date/Last-Modified are invalid, assume no update needed
             return false;
         }
 
         // Optionally log headers for verbose output
         $this->logHeaders($headers);
 
-        // Compare the creation times (remote vs. local)
-        $remoteFileCreationTime = strtotime(isset($headers['Date']) ? $headers['Date'] : '');
+        // Compare the creation times (remote vs. local). Last-Modified reflects the
+        // actual file modification time; Date is only a fallback for servers (or
+        // proxies) that do not forward Last-Modified.
+        $remoteModTime = $this->getHeaderValue($headers, 'Last-Modified')
+            ?? $this->getHeaderValue($headers, 'Date')
+            ?? '';
+        $remoteFileCreationTime = strtotime($remoteModTime);
 		if ($remoteFileCreationTime > $localFileCreationTime) { return $this->rebuildQuickpickJson(); }
 
         // Return false if local file is already up-to-date
@@ -209,18 +232,53 @@ class QuickPick
     }
 
     /**
-     * Determines whether the header response is valid and includes a 'Date' key.
+     * Determines whether the header response is valid and includes a 'Date' or
+     * 'Last-Modified' key.
      *
-     * @param mixed $headers Headers retrieved from get_headers().
-     * @return bool True if headers are valid and contain 'Date', false otherwise.
+     * Both direct (get_headers) and GitHub-proxy HEAD responses are accepted, so
+     * update checks keep working even if the proxy forwards Last-Modified but not
+     * Date (or vice versa). Header name matching is case-insensitive.
+     *
+     * @param mixed $headers Headers retrieved from get_headers() or the GitHub proxy.
+     * @return bool True if headers are valid and contain 'Date' or 'Last-Modified',
+     *              false otherwise.
      */
     private function isValidHeaderResponse($headers): bool
     {
-        // If headers retrieval failed or Date is not set, return false
-        if ($headers === false || !isset($headers['Date'])) {
+        // If headers retrieval failed or neither Date nor Last-Modified is set, return false
+        if ($headers === false ||
+            ($this->getHeaderValue($headers, 'Date') === null &&
+             $this->getHeaderValue($headers, 'Last-Modified') === null)) {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Retrieves a header value case-insensitively.
+     *
+     * HTTP header names are case-insensitive. get_headers() may return keys in
+     * any case, while the GitHub proxy normalizes them to lowercase, so lookups
+     * must not rely on exact key casing.
+     *
+     * @param mixed  $headers The header map (or false on failure).
+     * @param string $name    The header name to look up.
+     * @return string|null The header value, or null if absent.
+     */
+    private function getHeaderValue($headers, string $name): ?string
+    {
+        if (!is_array($headers)) {
+            return null;
+        }
+        foreach ($headers as $key => $value) {
+            if (is_string($key) && strcasecmp($key, $name) === 0) {
+                if (is_array($value)) {
+                    $value = reset($value);
+                }
+                return is_string($value) ? $value : null;
+            }
+        }
+        return null;
     }
 
     /**
@@ -711,7 +769,16 @@ class QuickPick
     private static function fetchChecksumFromSidecar(string $moduleUrl): ?string
     {
         $sidecarUrl = $moduleUrl . '.sha256';
-        $content = @file_get_contents($sidecarUrl, false, HttpClient::getSslStreamContext(true, $sidecarUrl));
+
+        // GitHub-hosted sidecars are fetched through the GitHub proxy; everything
+        // else uses the verified TLS stream context.
+        if (HttpClient::isGithubHost($sidecarUrl)) {
+            Log::trace('verifyModuleChecksum() fetching sidecar via GitHub proxy: ' . $sidecarUrl);
+            $result  = HttpClient::proxyFetch($sidecarUrl, 'GET', true);
+            $content = ($result === false) ? false : $result['body'];
+        } else {
+            $content = @file_get_contents($sidecarUrl, false, HttpClient::getSslStreamContext(true, $sidecarUrl));
+        }
 
         if ($content === false) {
             Log::error('Checksum verify: sidecar fetch failed for: ' . $sidecarUrl);

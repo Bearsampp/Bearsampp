@@ -18,6 +18,10 @@
  */
 class HttpClient
 {
+    const PROXY_CONNECT_TIMEOUT = 30;
+    const PROXY_LOW_SPEED_LIMIT = 1024;
+    const PROXY_LOW_SPEED_TIME = 30;
+
     /**
      * Retrieves HTTP headers from a given URL using either cURL or fopen, depending on availability.
      *
@@ -46,10 +50,7 @@ class HttpClient
             }
             $result = $rebuildResult;
 
-            Log::debug('getHttpHeaders:');
-            foreach ($result as $header) {
-                Log::debug('-> ' . $header);
-            }
+            Log::trace('getHttpHeaders: ' . count($result) . ' header(s)');
         }
 
         return $result;
@@ -276,17 +277,18 @@ class HttpClient
             }
             $result = $rebuildResult;
 
-            Log::debug('getHeaders:');
-            foreach ($result as $header) {
-                Log::debug('-> ' . $header);
-            }
+            Log::trace('getHeaders: ' . count($result) . ' header(s)');
         }
 
         return $result;
     }
 
     /**
-     * Sends a GET request to the specified URL and returns the response.
+     * Sends a GET request to the specified URL and returns the trimmed response body.
+     *
+     * This is the generic non-proxied GET method. For GitHub-hosted URLs, prefer
+     * {@see proxyFetch()} which routes through the proxy and never exposes a token
+     * to the client.
      *
      * The peer certificate is verified against the bundled CA bundle unless $verify is
      * false (used only for local/self-signed endpoints).
@@ -294,20 +296,40 @@ class HttpClient
      * @param   string  $url     The URL to send the GET request to.
      * @param   bool    $verify  Whether to verify the peer certificate. Defaults to true.
      *
-     * @return string The trimmed response data from the URL.
+     * @return string The trimmed response body, or empty string on failure.
      */
+    public static function fetchGet($url, $verify = true)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'User-Agent: ' . APP_GITHUB_USERAGENT . ' (https://github.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . ')',
+            'Accept: application/json, text/plain, */*',
+        ));
+        self::applyCurlSslOptions($ch, $verify);
+        $data = curl_exec($ch);
+        if (curl_errno($ch)) {
+            Log::error('CURL Error: ' . curl_error($ch));
+        }
+
+        return trim((string)$data);
+    }
+
     /**
      * Determines whether a URL is hosted on GitHub.
      *
-     * Used to scope the bundled GitHub token strictly to GitHub endpoints so it
-     * is never sent to third-party hosts (e.g. the QuickPick license API or
-     * mirror servers).
+     * Used to decide which requests must be routed through the GitHub proxy.
+     * Only these hosts are ever sent to the proxy; everything else (e.g. the
+     * QuickPick license API or mirror servers) is fetched directly.
      *
      * @param   string  $url  The URL to check.
      *
      * @return bool True when the URL host is a GitHub endpoint.
      */
-    private static function isGithubHost($url)
+    public static function isGithubHost($url)
     {
         $host = strtolower(parse_url($url, PHP_URL_HOST) ?: '');
 
@@ -367,16 +389,37 @@ class HttpClient
     }
 
     /**
+     * Returns a log-safe representation of a URL, keeping only scheme + host + path.
+     *
+     * Query strings, fragments, and any embedded credentials are stripped so
+     * sensitive tokens never appear in log files.
+     *
+     * @param   string  $url  The URL to sanitise.
+     * @return  string        The safe representation (e.g. "https://github.com/foo/bar").
+     */
+    private static function safeUrlForLog($url)
+    {
+        $url = (string)$url;
+        $scheme = parse_url($url, PHP_URL_SCHEME) ?: 'https';
+        $host   = parse_url($url, PHP_URL_HOST)   ?: '';
+        $path   = parse_url($url, PHP_URL_PATH)   ?: '';
+
+        if ($host === '') {
+            return '(invalid-url)';
+        }
+
+        return $scheme . '://' . $host . $path;
+    }
+
+    /**
      * Builds a stream context that verifies the peer certificate against the bundled CA bundle.
      *
-     * When the optional $url targets a GitHub endpoint, the bundled GitHub token
-     * is attached as an Authorization header so fopen-based GitHub requests
-     * (quickpick JSON feeds, module downloads, checksum sidecars) are
-     * authenticated and avoid the unauthenticated rate limit.
+     * GitHub-hosted content is fetched through the GitHub proxy (APP_GITHUB_PROXY_URL)
+     * instead of directly, so no token is ever attached to fopen-based requests here.
+     * The $url parameter is kept for API compatibility.
      *
      * @param   bool         $verify  Whether to verify the peer certificate. Defaults to true.
-     * @param   string|null  $url     Optional target URL. When present and hosted on
-     *                                GitHub, the request is authenticated with the bundled token.
+     * @param   string|null  $url     Optional target URL (unused; kept for compatibility).
      *
      * @return resource The stream context.
      */
@@ -395,23 +438,7 @@ class HttpClient
             }
         }
 
-        $options = array('ssl' => $ssl);
-
-        // Authenticate fopen-based GitHub requests with the bundled token. The token
-        // is only attached to GitHub hosts so it is never leaked to third-party
-        // endpoints (e.g. the QuickPick license API or mirror servers).
-        if (!empty($url) && self::isGithubHost($url)) {
-            $token = Util::getGithubToken();
-            if ($token !== '') {
-                $options['http'] = array(
-                    'header' => 'User-Agent: ' . APP_GITHUB_USERAGENT . ' (https://github.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . ')' . "\r\n"
-                              . 'Accept: application/vnd.github.v3+json' . "\r\n"
-                              . 'Authorization: token ' . $token . "\r\n",
-                );
-            }
-        }
-
-        return stream_context_create($options);
+        return stream_context_create(array('ssl' => $ssl));
     }
 
     /**
@@ -439,23 +466,231 @@ class HttpClient
     }
 
     /**
-     * Retrieves the file size of a remote file.
+     * Fetches a resource through the GitHub proxy.
      *
-     * @param   string  $url            The URL of the remote file.
-     * @param   bool    $humanFileSize  Whether to return the size in a human-readable format.
+     * Sends a POST to APP_GITHUB_PROXY_URL carrying the target URL and method as
+     * a JSON body, authenticated with the shared public proxy key. The GitHub PAT
+     * never leaves the proxy server, so the client holds no token at all.
      *
-     * @return mixed The file size, either in bytes or as a formatted string.
+     * The proxy key is never logged.
+     *
+     * @param   string  $url     The target GitHub URL to retrieve.
+     * @param   string  $method  The upstream method: GET, HEAD or POST. Defaults to GET.
+     * @param   bool    $verify  Whether to verify the peer certificate. Defaults to true.
+     *
+     * @return array|false An array with 'status', 'headers' (associative) and 'body',
+     *                     or false when the proxy request itself failed.
+     *                     Header name keys are normalized to lowercase; the first
+     *                     occurrence of a duplicate header name wins.
      */
-    public static function getRemoteFilesize($url, $humanFileSize = true)
+    public static function proxyFetch($url, $method = 'GET', $verify = true)
     {
-        $size = 0;
-
-        $data = get_headers($url, true, self::getSslStreamContext(true, $url));
-        if (isset($data['Content-Length'])) {
-            $size = intval($data['Content-Length']);
+        if (!self::isGithubHost($url)) {
+            Log::error('[PROXY] proxyFetch() blocked non-GitHub URL: ' . self::safeUrlForLog($url));
+            return false;
         }
 
-        return $humanFileSize ? Util::humanFileSize($size) : $size;
+        $method = strtoupper($method);
+        Log::trace('[PROXY] proxyFetch() ' . $method . ' target: ' . self::safeUrlForLog($url));
+
+        $payload = array(
+            'url'    => (string)$url,
+            'method' => $method,
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, APP_GITHUB_PROXY_URL);
+        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'X-Bearsampp-Key: ' . APP_GITHUB_PROXY_KEY,
+            'User-Agent: ' . APP_GITHUB_USERAGENT . ' (https://github.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . ')',
+        ));
+        self::applyCurlSslOptions($ch, $verify);
+
+        $response = curl_exec($ch);
+        if ($response === false) {
+            Log::error('Proxy request failed: ' . curl_error($ch));
+            Log::trace('[PROXY] proxyFetch() FAILED - target: ' . self::safeUrlForLog($url) . ' - ' . curl_error($ch));
+
+            return false;
+        }
+
+        $status     = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        $headerSize = (int)curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+
+        $response = (string)$response;
+
+        $headers = array();
+        $body    = '';
+
+        if ($headerSize > 0 && strlen($response) >= $headerSize) {
+            // CURLINFO_HEADER_SIZE includes every received header block, so the
+            // body is exactly the bytes after it - even when the response contains
+            // interim header sections (e.g. "100 Continue" or redirects) that make
+            // a naive "first \r\n\r\n" split corrupt.
+            $headerData = substr($response, 0, $headerSize);
+            $body       = substr($response, $headerSize);
+
+            // Keep only the LAST header block (the final status line and headers).
+            $blocks = preg_split('/\r?\n\r?\n/', trim($headerData));
+            $headerBlock = end($blocks);
+
+            foreach (explode("\r\n", $headerBlock) as $line) {
+                if (strpos($line, ':') === false) {
+                    continue;
+                }
+                list($name, $value) = explode(':', $line, 2);
+                // HTTP header names are case-insensitive, so normalize to a
+                // consistent lowercase key. The first occurrence of a duplicate
+                // name still wins (matching the previous behaviour).
+                $name  = strtolower(trim($name));
+                $value = trim($value);
+                if ($name !== '' && !isset($headers[$name])) {
+                    $headers[$name] = $value;
+                }
+            }
+        } else {
+            // Defensive fallback: no usable header size reported. Keep the whole
+            // body, but still surface any headers found after the first separator.
+            $separatorPos = strpos($response, "\r\n\r\n");
+            $body = ($separatorPos === false) ? $response : substr($response, $separatorPos + 4);
+            if ($separatorPos !== false) {
+                foreach (explode("\r\n", substr($response, 0, $separatorPos)) as $line) {
+                    if (strpos($line, ':') === false) {
+                        continue;
+                    }
+                    list($name, $value) = explode(':', $line, 2);
+                    $name  = strtolower(trim($name));
+                    $value = trim($value);
+                    if ($name !== '' && !isset($headers[$name])) {
+                        $headers[$name] = $value;
+                    }
+                }
+            }
+        }
+
+        Log::trace('[PROXY] proxyFetch() END - status ' . $status . ', body length: ' . strlen($body));
+
+        return array('status' => $status, 'headers' => $headers, 'body' => $body);
+    }
+
+    /**
+     * Downloads a resource through the GitHub proxy, streaming the body to a file.
+     *
+     * Used for large payloads (module archives) fetched from GitHub hosts. The
+     * response body is streamed in chunks to the given file so it is never held
+     * in memory, and an optional progress bar emits one JSON progress line per
+     * 8KB chunk, matching the behaviour of the legacy stream download.
+     *
+     * @param   string  $url          The target GitHub URL to download.
+     * @param   string  $filePath     Local path to write the body to.
+     * @param   bool    $progressBar  Whether to emit progress lines. Defaults to false.
+     * @param   bool    $verify       Whether to verify the peer certificate. Defaults to true.
+     *                                Pass false only for local/self-signed endpoints.
+     *
+     * @return bool True when the download completed with a 2xx status, false otherwise.
+     */
+    public static function proxyDownload($url, $filePath, $progressBar = false, $verify = true)
+    {
+        if (!self::isGithubHost($url)) {
+            Log::error('[PROXY] proxyDownload() blocked non-GitHub URL: ' . self::safeUrlForLog($url));
+            return false;
+        }
+
+        Log::trace('[PROXY] proxyDownload() START target: ' . self::safeUrlForLog($url) . ' -> ' . $filePath);
+
+        $outputStream = @fopen($filePath, 'wb');
+        if ($outputStream === false) {
+            Log::trace('[PROXY] proxyDownload() FAILED - cannot open output file: ' . $filePath);
+
+            return false;
+        }
+
+        $status     = 0;
+        $chunksRead = 0;
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, APP_GITHUB_PROXY_URL);
+        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array(
+            'url'    => (string)$url,
+            'method' => 'GET',
+        )));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'X-Bearsampp-Key: ' . APP_GITHUB_PROXY_KEY,
+            'User-Agent: ' . APP_GITHUB_USERAGENT . ' (https://github.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . ')',
+        ));
+        self::applyCurlSslOptions($ch, $verify);
+
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, self::PROXY_CONNECT_TIMEOUT);
+        curl_setopt($ch, CURLOPT_LOW_SPEED_LIMIT, self::PROXY_LOW_SPEED_LIMIT);
+        curl_setopt($ch, CURLOPT_LOW_SPEED_TIME, self::PROXY_LOW_SPEED_TIME);
+
+        // Capture the status line from the response headers without writing them to the file.
+        curl_setopt($ch, CURLOPT_HEADERFUNCTION, function ($ch, $line) use (&$status) {
+            if (preg_match('#^HTTP/\S+\s+(\d{3})#', $line, $match) === 1) {
+                $status = (int)$match[1];
+            }
+
+            return strlen($line);
+        });
+
+        // Stream the body to the output file in chunks, mirroring the legacy
+        // 8KB chunk loop and progress reporting.
+        curl_setopt($ch, CURLOPT_WRITEFUNCTION, function ($ch, $data) use (&$outputStream, &$chunksRead, $progressBar) {
+            if ($outputStream === false) {
+                return -1; // abort the transfer
+            }
+
+            $len = fwrite($outputStream, $data);
+            if ($len === false) {
+                return -1;
+            }
+
+            $chunksRead++;
+            if ($progressBar) {
+                echo json_encode(array('progress' => $chunksRead)) . PHP_EOL;
+
+                if (ob_get_length() !== false) {
+                    ob_flush();
+                }
+                flush();
+            }
+
+            return $len;
+        });
+
+        $success = (curl_exec($ch) !== false);
+        $error   = curl_error($ch);
+
+        // CURLINFO_RESPONSE_CODE is the authoritative status: it works even when
+        // the raw header lines cannot be parsed (e.g. HTTP/2 ":status" pseudo
+        // headers, interim 1xx blocks, or a proxy omitting a status line), which
+        // the header callback above may silently miss. The callback capture is
+        // only kept as a fallback for the rare case cURL reports no code.
+        $curlStatus = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        if ($curlStatus > 0) {
+            $status = $curlStatus;
+        }
+
+        fclose($outputStream);
+
+        if (!$success) {
+            Log::error('Proxy download failed: ' . $error);
+            Log::trace('[PROXY] proxyDownload() FAILED - status ' . $status . ', target: ' . self::safeUrlForLog($url) . ' - ' . $error);
+        } else {
+            Log::trace('[PROXY] proxyDownload() END - status ' . $status . ', chunks ' . $chunksRead . ', target: ' . self::safeUrlForLog($url));
+        }
+
+        return $success && $status >= 200 && $status < 300;
     }
 
     /**

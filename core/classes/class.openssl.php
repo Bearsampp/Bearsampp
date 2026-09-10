@@ -220,9 +220,9 @@ class OpenSsl
 
         $mkcertNames = '"' . $name . '"';
         if ($name === 'localhost') {
-            $mkcertNames .= ' 127.0.0.1 ::1';
+            $mkcertNames .= ' ' . APP_LOCALHOST . ' ::1';
         } else {
-            $mkcertNames .= ' "*.' . $name . '" localhost 127.0.0.1 ::1';
+            $mkcertNames .= ' "*.' . $name . '" localhost ' . APP_LOCALHOST . ' ::1';
         }
 
         Log::trace('Executing mkcert for "' . $name . '"');

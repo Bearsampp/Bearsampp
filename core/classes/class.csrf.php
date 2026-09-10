@@ -301,7 +301,7 @@ class Csrf
      */
     private static function getAllowedHosts()
     {
-        $allowed = array('localhost', '127.0.0.1', '[::1]', '::1');
+        $allowed = array('localhost', APP_LOCALHOST, '[::1]', '::1');
 
         // The local address this very request was received on. This is the
         // reachable address (e.g. a LAN IP) clients use when the application

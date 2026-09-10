@@ -56,7 +56,7 @@ class ActionCheckVersion
 
             // Assuming getLatestVersion now returns an array with version and URL
             $githubVersionData = Util::getLatestVersion(APP_GITHUB_LATEST_URL);
-            Log::debug('ActionCheckVersion: GitHub version data: ' . var_export($githubVersionData, true));
+            Log::trace('ActionCheckVersion: GitHub version data: ' . var_export($githubVersionData, true));
 
             if ($githubVersionData != null && isset($githubVersionData['version'], $githubVersionData['html_url'])) {
                 $githubLatestVersion = $githubVersionData['version'];

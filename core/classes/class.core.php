@@ -345,11 +345,30 @@ class Core
      * @param   string  $moduleUrl    The URL from which to fetch the file content.
      * @param   string  $filePath     The path where the file content should be saved.
      * @param   bool    $progressBar  Optional. Whether to display a progress bar during the download process. Default is false.
+     * @param   bool    $verify       Whether to verify the peer certificate. Defaults to true.
+     *                                Pass false only for local/self-signed endpoints.
      *
      * @return array Returns the file path if successful, or an array with an error message if an error occurs.
      */
-    public function getFileFromUrl(string $moduleUrl, string $filePath, $progressBar = false)
+    public function getFileFromUrl(string $moduleUrl, string $filePath, $progressBar = false, $verify = true)
     {
+        // GitHub-hosted module archives are downloaded through the GitHub proxy so
+        // the client never holds or transmits a GitHub token. The body is streamed
+        // in 8KB chunks to avoid loading the whole archive into memory.
+        if (HttpClient::isGithubHost($moduleUrl)) {
+            Log::trace('getFileFromUrl() downloading via GitHub proxy: ' . $moduleUrl);
+            $downloaded = HttpClient::proxyDownload($moduleUrl, $filePath, $progressBar, $verify);
+            if (!$downloaded) {
+                Log::error('Error fetching content from URL: ' . $moduleUrl);
+
+                return ['error' => 'Error fetching module'];
+            }
+
+            return ['success' => true];
+        }
+
+        Log::trace('getFileFromUrl() downloading directly (non-GitHub): ' . $moduleUrl);
+
         // Open the URL for reading. The verified SSL context makes sure the module is
         // fetched over a properly authenticated HTTPS connection.
         $inputStream = @fopen( $moduleUrl, 'rb', false, HttpClient::getSslStreamContext(true, $moduleUrl) );

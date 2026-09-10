@@ -14,7 +14,6 @@
  * - String manipulation methods have been moved to UtilString. @see UtilString
  * - File and directory management functions for deleting, clearing, or finding files and directories.
  * - System utilities for handling registry operations, managing environment variables, and executing system commands.
- * - Network utilities to validate IPs, domains, and manage HTTP requests.
  * - Helper functions for encoding, decoding, and file operations.
  *
  * Path formatting (formatWindowsPath / formatUnixPath) has been moved to Path. @see Path
@@ -896,9 +895,9 @@ class Util
             $tagName     = $resultArray['tag_name'];
             $downloadUrl = $resultArray['assets'][0]['browser_download_url'];
             $name        = $resultArray['name'];
-            Log::debug('Latest version tag name: ' . $tagName);
-            Log::debug('Download URL: ' . $downloadUrl);
-            Log::debug('Name: ' . $name);
+            Log::trace('Latest version tag name: ' . $tagName);
+            Log::trace('Download URL: ' . $downloadUrl);
+            Log::trace('Name: ' . $name);
             Log::trace('[VCHK-3] getLatestVersion() SUCCESS - version found: ' . $tagName);
 
             return ['version' => $tagName, 'html_url' => $downloadUrl, 'name' => $name];
@@ -908,66 +907,6 @@ class Util
 
             return null;
         }
-    }
-
-    /**
-     * Constructs a complete website URL with optional path, fragment, and UTM source parameters.
-     *
-     * @param   string  $path       Optional path to append to the base URL.
-     * @param   string  $fragment   Optional fragment to append to the URL.
-     * @param   bool    $utmSource  Whether to include UTM source parameters. Defaults to true.
-     *
-     * @return string The constructed URL.
-     */
-    public static function getWebsiteUrl($path = '', $fragment = '', $utmSource = true)
-    {
-        global $bearsamppCore;
-
-        $url = APP_WEBSITE;
-        if (!empty($path)) {
-            $url .= '/' . ltrim($path, '/');
-        }
-        if ($utmSource) {
-            $url = rtrim($url, '/') . '/?utm_source=bearsampp-' . $bearsamppCore->getAppVersion();
-        }
-        if (!empty($fragment)) {
-            $url .= $fragment;
-        }
-
-        return $url;
-    }
-
-    /**
-     * Constructs a website URL without UTM parameters.
-     *
-     * @param   string  $path      Optional path to append to the base URL.
-     * @param   string  $fragment  Optional fragment to append to the URL.
-     *
-     * @return string The constructed URL without UTM parameters.
-     */
-    public static function getWebsiteUrlNoUtm($path = '', $fragment = '')
-    {
-        return self::getWebsiteUrl($path, $fragment, false);
-    }
-
-    /**
-     * Retrieves the file size of a remote file.
-     *
-     * @param   string  $url            The URL of the remote file.
-     * @param   bool    $humanFileSize  Whether to return the size in a human-readable format.
-     *
-     * @return mixed The file size, either in bytes or as a formatted string.
-     */
-    public static function getRemoteFilesize($url, $humanFileSize = true)
-    {
-        $size = 0;
-
-        $data = get_headers($url, true, HttpClient::getSslStreamContext(true, $url));
-        if (isset($data['Content-Length'])) {
-            $size = intval($data['Content-Length']);
-        }
-
-        return $humanFileSize ? self::humanFileSize($size) : $size;
     }
 
     /**
@@ -1011,157 +950,10 @@ class Util
     }
 
     /**
-     * Retrieves HTTP headers from a given URL using either cURL or fopen, depending on availability.
-     *
-     * @param   string  $pingUrl  The URL to ping for headers.
-     * @param   bool    $verify   Whether to verify the peer certificate. Defaults to true.
-     *
-     * @return array An array of HTTP headers.
-     */
-    public static function getHttpHeaders($pingUrl, $verify = true)
-    {
-        if (function_exists('curl_version')) {
-            $result = self::getCurlHttpHeaders($pingUrl, $verify);
-        } else {
-            $result = self::getFopenHttpHeaders($pingUrl, $verify);
-        }
-
-        if (!empty($result)) {
-            $rebuildResult = array();
-            foreach ($result as $row) {
-                $row = trim($row);
-                if (!empty($row)) {
-                    $rebuildResult[] = $row;
-                }
-            }
-            $result = $rebuildResult;
-
-            Log::debug('getHttpHeaders:');
-            foreach ($result as $header) {
-                Log::debug('-> ' . $header);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Retrieves HTTP headers from a given URL using the fopen function.
-     *
-     * The stream context verifies the peer certificate against the bundled CA bundle
-     * unless $verify is false (used only for local/self-signed endpoints).
-     *
-     * @param   string  $url     The URL from which to fetch the headers.
-     * @param   bool    $verify  Whether to verify the peer certificate. Defaults to true.
-     *
-     * @return array An array of headers if successful, otherwise an empty array.
-     */
-    public static function getFopenHttpHeaders($url, $verify = true)
-    {
-        $result = array();
-
-        $fp = @fopen($url, 'r', false, HttpClient::getSslStreamContext($verify, $url));
-        if ($fp) {
-            $meta   = stream_get_meta_data($fp);
-            $result = isset($meta['wrapper_data']) ? $meta['wrapper_data'] : $result;
-            fclose($fp);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Retrieves HTTP headers from a given URL using cURL.
-     *
-     * The peer certificate is verified against the bundled CA bundle unless $verify is
-     * false (used only for local/self-signed endpoints).
-     *
-     * @param   string  $url     The URL from which to fetch the headers.
-     * @param   bool    $verify  Whether to verify the peer certificate. Defaults to true.
-     *
-     * @return array An array of headers if successful, otherwise an empty array.
-     */
-    public static function getCurlHttpHeaders($url, $verify = true)
-    {
-        $result = array();
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        HttpClient::applyCurlSslOptions($ch, $verify);
-
-        $response = @curl_exec($ch);
-        if (empty($response)) {
-            return $result;
-        }
-
-        Log::trace('getCurlHttpHeaders:' . $response);
-        $responseHeaders = explode("\r\n\r\n", $response, 2);
-        if (!isset($responseHeaders[0]) || empty($responseHeaders[0])) {
-            return $result;
-        }
-
-        return explode("\n", $responseHeaders[0]);
-    }
-
-    /**
-     * Retrieves the initial response line from a specified host and port using a socket connection.
-     *
-     * This is a local connectivity probe (used to detect which local service owns a port).
-     * Certificate verification is intentionally disabled here: it only reads the first
-     * response line from localhost/self-signed services and never processes untrusted
-     * content.
-     *
-     * @param   string  $host  The host name or IP address to connect to.
-     * @param   int     $port  The port number to connect to.
-     * @param   bool    $ssl   Whether to use SSL (defaults to false).
-     *
-     * @return array An array containing the first line of the response, split into parts, or an empty array if unsuccessful.
-     */
-    public static function getHeaders($host, $port, $ssl = false)
-    {
-        $result  = array();
-        $context = stream_context_create(array(
-            'ssl' => array(
-                'verify_peer'       => false,
-                'verify_peer_name'  => false,
-                'allow_self_signed' => true,
-            )
-        ));
-
-        $fp = @stream_socket_client(($ssl ? 'ssl://' : '') . $host . ':' . $port, $errno, $errstr, 5, STREAM_CLIENT_CONNECT, $context);
-        if ($fp) {
-            $out    = fgets($fp);
-            $result = explode(PHP_EOL, $out);
-            @fclose($fp);
-        }
-
-        if (!empty($result)) {
-            $rebuildResult = array();
-            foreach ($result as $row) {
-                $row = trim($row);
-                if (!empty($row)) {
-                    $rebuildResult[] = $row;
-                }
-            }
-            $result = $rebuildResult;
-
-            Log::debug('getHeaders:');
-            foreach ($result as $header) {
-                Log::debug('-> ' . $header);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Sends a GET request to the specified URL and returns the response.
      *
-     * The peer certificate is verified against the bundled CA bundle unless $verify is
-     * false (used only for local/self-signed endpoints).
+     * GitHub-hosted URLs are fetched through the GitHub proxy so no token is ever
+     * sent by the client. Non-GitHub URLs are fetched directly over verified TLS.
      *
      * @param   string  $url     The URL to send the GET request to.
      * @param   bool    $verify  Whether to verify the peer certificate. Defaults to true.
@@ -1170,31 +962,27 @@ class Util
      */
     public static function getApiJson($url, $verify = true)
     {
-        $header = self::setupCurlHeaderWithToken();
         Log::trace('[VCHK-3] getApiJson() sending GET request to: ' . $url);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        HttpClient::applyCurlSslOptions($ch, $verify);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $data = curl_exec($ch);
-        if (curl_errno($ch)) {
-            Log::error('CURL Error: ' . curl_error($ch));
-            Log::trace('[VCHK-3] getApiJson() CURL error: ' . curl_error($ch));
+        if (HttpClient::isGithubHost($url)) {
+            $result = HttpClient::proxyFetch($url, 'GET', $verify);
+            if ($result === false || (int)$result['status'] !== 200) {
+                Log::error('GitHub request via proxy failed for: ' . $url);
+                Log::trace('[VCHK-3] getApiJson() EXIT - proxy request failed');
+
+                return '';
+            }
+
+            Log::trace('[VCHK-3] getApiJson() response length: ' . strlen((string)$result['body']));
+
+            return trim($result['body']);
         }
 
-        // curl_close() is deprecated in PHP 8.5+ as it has no effect since PHP 8.0
-        // The resource is automatically closed when it goes out of scope
-        if (PHP_VERSION_ID < 80500) {
-            curl_close($ch);
-        }
+        $data = HttpClient::fetchGet($url, $verify);
 
-        Log::trace('[VCHK-3] getApiJson() response length: ' . strlen((string)$data));
+        Log::trace('[VCHK-3] getApiJson() response length: ' . strlen($data));
 
-        return trim($data);
+        return $data;
     }
 
     /**
@@ -1207,7 +995,7 @@ class Util
     public static function isPortInUse($port)
     {
         // Set localIP statically
-        $localIP = '127.0.0.1';
+        $localIP = APP_LOCALHOST;
 
         // Save current error reporting level
         $errorReporting = error_reporting();
@@ -1403,83 +1191,6 @@ class Util
     }
 
     /**
-     * Generates various GitHub URLs based on the specified type.
-     *
-     * @param string $type The type of URL ('user', 'repo', 'raw'). Defaults to 'user'.
-     * @param string $user The GitHub username. Defaults to 'Bearsampp'.
-     * @param string|null $repo The repository name (required for 'repo' and 'raw' types).
-     * @param string|null $branch The branch name (required for 'raw' type).
-     * @param string|null $path The file path (required for 'raw' type).
-     * @return string|false The generated URL or false on invalid input.
-     */
-    public static function getGithubUrl($type = 'user', $user = APP_GITHUB_USER, $repo = null, $branch = null, $path = null) {
-        if (empty($user) || !is_string($user)) {
-            return false;
-        }
-
-        // Encode as URL path segment (not query encoding)
-        $user = rawurlencode($user);
-
-        switch ($type) {
-            case 'user':
-                return "https://github.com/{$user}";
-
-            case 'repo':
-                if (empty($repo) || !is_string($repo)) {
-                    return false;
-                }
-                $repo = rawurlencode($repo);
-                return "https://github.com/{$user}/{$repo}";
-
-            case 'raw':
-                if (empty($repo) || empty($branch) || empty($path) || !is_string($repo) || !is_string($branch) || !is_string($path)) {
-                    return false;
-                }
-                $repo = rawurlencode($repo);
-                $branch = rawurlencode($branch);
-
-                $path = ltrim($path, '/');
-                $segments = array_map('rawurlencode', explode('/', $path));
-                $pathEncoded = implode('/', $segments);
-
-                return "https://raw.githubusercontent.com/{$user}/{$repo}/{$branch}/{$pathEncoded}";
-
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Gets the GitHub user URL for Bearsampp.
-     *
-     * @return string The GitHub user URL.
-     */
-    public static function getGithubUserUrl()
-    {
-        return self::getGithubUrl('user', APP_GITHUB_USER);
-    }
-
-    /**
-     * Checks the current state of the internet connection.
-     *
-     * This method attempts to reach a well-known website (e.g., www.google.com) to determine the state of the internet connection.
-     * It returns `true` if the connection is successful, otherwise it returns `false`.
-     *
-     * @return bool True if the internet connection is active, false otherwise.
-     */
-    public static function checkInternetState()
-    {
-        $connected = @fsockopen('www.google.com', 80);
-        if ($connected) {
-            fclose($connected);
-
-            return true; // Internet connection is active
-        } else {
-            return false; // Internet connection is not active
-        }
-    }
-
-    /**
      * Gets the list of folders in the specified path.
      *
      * @param   string  $path  The directory path to scan for folders.
@@ -1527,123 +1238,5 @@ class Util
         // Open the file with the configured editor from bearsampp.conf
         $editor = $bearsamppConfig->getNotepad();
         $bearsamppCore->getWinbinder()->exec($editor, '"' . $tmpFile . '"');
-    }
-
-    /**
-     * Decrypts the GitHub Personal Access Token bundled with the application.
-     *
-     * The token is stored encrypted in github.dat (base64 + AES-256-CBC) using a
-     * key derived from string.dat (uudecoded). Authenticating against the GitHub
-     * API with this token raises the rate limit from 60 to 5000 requests/hour,
-     * which keeps the manual "check for update" reliable on shared/residential IPs.
-     *
-     * @return string|false The decrypted token, or false when the token
-     *                      files/cipher are unavailable or cannot be decoded.
-     */
-    public static function decryptFile()
-    {
-        Log::trace('[VCHK-3] decryptFile() START');
-
-        $stringFile     = Path::getResourcesPath() . '/string.dat';
-        $encryptedFile  = Path::getResourcesPath() . '/github.dat';
-        $method         = 'AES-256-CBC';
-
-        $stringPhrase = @file_get_contents($stringFile);
-        if ($stringPhrase === false) {
-            Log::debug('Failed to read the key file at path: ' . $stringFile);
-            Log::trace('[VCHK-3] decryptFile() FAILED - key file unreadable: ' . $stringFile);
-            return false;
-        }
-
-        $stringKey = convert_uudecode($stringPhrase);
-
-        $encryptedData = @file_get_contents($encryptedFile);
-        if ($encryptedData === false) {
-            Log::debug('Failed to read the encrypted token file at path: ' . $encryptedFile);
-            Log::trace('[VCHK-3] decryptFile() FAILED - token file unreadable: ' . $encryptedFile);
-            return false;
-        }
-
-        $data = base64_decode($encryptedData);
-        if ($data === false) {
-            Log::debug('Failed to decode the token data from path: ' . $encryptedFile);
-            Log::trace('[VCHK-3] decryptFile() FAILED - base64 decode error');
-            return false;
-        }
-
-        $ivLength  = openssl_cipher_iv_length($method);
-        $iv        = substr($data, 0, $ivLength);
-        $encrypted = substr($data, $ivLength);
-
-        $decrypted = openssl_decrypt($encrypted, $method, $stringKey, 0, $iv);
-        if ($decrypted === false) {
-            Log::debug('Decryption failed for token data from path: ' . $encryptedFile);
-            Log::trace('[VCHK-3] decryptFile() FAILED - AES-256-CBC decryption failed');
-            return false;
-        }
-
-        Log::trace('[VCHK-3] decryptFile() SUCCESS - GitHub token decrypted');
-
-        return $decrypted;
-    }
-
-    /**
-     * Resolves the GitHub token to use for authenticated requests.
-     *
-     * The bundled token (decrypted from github.dat) takes precedence so a stale
-     * or revoked GITHUB_TOKEN/GH_PAT on the host cannot break automated checks.
-     *
-     * @return string The resolved GitHub token, or '' when none is available.
-     */
-    public static function getGithubToken()
-    {
-        $token = self::decryptFile();
-        if (empty($token)) {
-            Log::trace('[VCHK-3] getGithubToken() bundled token unavailable - falling back to GITHUB_TOKEN env');
-            $token = getenv('GITHUB_TOKEN');
-        } else {
-            Log::trace('[VCHK-3] getGithubToken() bundled token decrypted successfully');
-        }
-        if (empty($token)) {
-            $token = getenv('GH_PAT');
-        }
-
-        return (string)$token;
-    }
-
-    /**
-     * Sets up cURL headers for GitHub API requests.
-     *
-     * Authenticates with the bundled GitHub Personal Access Token when it can be
-     * decoded, to raise the API rate limit. Falls back to unauthenticated headers
-     * (which GitHub limits to 60 requests/hour) if the token is unavailable, so
-     * automated/background checks never hard-fail.
-     *
-     * @return array The array of cURL headers.
-     */
-    public static function setupCurlHeaderWithToken()
-    {
-        Log::trace('[VCHK-3] setupCurlHeaderWithToken() START - building GitHub API headers');
-
-        // Return headers with User-Agent, which is required by GitHub API
-        $headers = array(
-            'User-Agent: ' . APP_GITHUB_USERAGENT . ' (https://github.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . ')',
-            'Accept: application/vnd.github.v3+json'
-        );
-
-        // Authenticate with the bundled token to raise the rate limit. The bundled
-        // token is preferred over environment tokens so a stale/expired GITHUB_TOKEN
-        // or GH_PAT on a user's machine cannot break the version check.
-        $token = self::getGithubToken();
-        if (!empty($token)) {
-            $headers[] = 'Authorization: token ' . $token;
-            Log::trace('[VCHK-3] setupCurlHeaderWithToken() token IS in use - Authorization header attached (value never logged)');
-        } else {
-            Log::trace('[VCHK-3] setupCurlHeaderWithToken() NO token available - requests will be unauthenticated');
-        }
-
-        Log::trace('[VCHK-3] setupCurlHeaderWithToken() END - ' . count($headers) . ' headers built');
-
-        return $headers;
     }
 }

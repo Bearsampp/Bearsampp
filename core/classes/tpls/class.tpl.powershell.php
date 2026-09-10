@@ -316,7 +316,7 @@ class TplPowerShell
         global $bearsamppBins, $bearsamppTools;
 
         $shell = $bearsamppTools->getPowerShell()->getShell('&quot;' . $bearsamppBins->getPostgresql()->getCliExe() . '&quot;' .
-            ' -h 127.0.0.1' .
+            ' -h ' . APP_LOCALHOST .
             ' -p ' . $bearsamppBins->getPostgresql()->getPort() .
             ' -U ' . $bearsamppBins->getPostgresql()->getRootUser() .
             ' -d postgres');

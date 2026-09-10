@@ -235,7 +235,7 @@ class BinMysql extends Module
 
         // Quick socket check first - much faster than PDO connection
         $timeout = 1; // Reduced timeout for better performance
-        $fp      = @fsockopen('127.0.0.1', $port, $errno, $errstr, $timeout);
+        $fp      = @fsockopen(APP_LOCALHOST, $port, $errno, $errstr, $timeout);
         if (!$fp) {
             Log::debug($this->getName() . ' port ' . $port . ' is not used');
             if ($showWindow) {
@@ -268,7 +268,7 @@ class BinMysql extends Module
                     $initCommandAttr => "SET SESSION sql_mode=''"
                 ];
 
-                $dsn = 'mysql:host=127.0.0.1;port=' . $port;
+                $dsn = 'mysql:host=' . APP_LOCALHOST . ';port=' . $port;
                 $cachedConnection = new \PDO($dsn, $this->rootUser, $this->rootPwd, $options);
                 $lastPort = $port;
             } catch (\PDOException $e) {
@@ -356,7 +356,7 @@ class BinMysql extends Module
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
             ];
 
-            $dsn    = 'mysql:host=127.0.0.1;port=' . $this->port;
+            $dsn    = 'mysql:host=' . APP_LOCALHOST . ';port=' . $this->port;
             $dbLink = new \PDO($dsn, $this->rootUser, $currentPwd, $options);
 
             $bearsamppWinbinder->incrProgressBar($wbProgressBar);
@@ -460,7 +460,7 @@ class BinMysql extends Module
                 $initCommandAttr => "SET SESSION sql_mode=''"
             ];
 
-            $dsn    = 'mysql:host=127.0.0.1;port=' . $this->port;
+            $dsn    = 'mysql:host=' . APP_LOCALHOST . ';port=' . $this->port;
             $dbLink = new \PDO($dsn, $this->rootUser, $currentPwd, $options);
 
             // Quick validation query

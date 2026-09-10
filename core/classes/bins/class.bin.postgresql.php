@@ -253,7 +253,7 @@ class BinPostgresql extends Module
             return false;
         }
 
-        $dbLink = @pg_connect("host=127.0.0.1 port=$port user={$this->rootUser} password={$this->rootPwd}");
+        $dbLink = @pg_connect('host=' . APP_LOCALHOST . " port=$port user={$this->rootUser} password={$this->rootPwd}");
         if (!$dbLink) {
             $lastError = error_get_last();
             $errorMsg = $lastError ? $lastError['message'] : 'Unknown error';
@@ -322,7 +322,7 @@ class BinPostgresql extends Module
         $error = null;
 
         $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        $dbLink = pg_connect( 'host=127.0.0.1 port=' . $this->port . ' user=' . $this->rootUser . ' password=' . $currentPwd );
+        $dbLink = pg_connect( 'host=' . APP_LOCALHOST . ' port=' . $this->port . ' user=' . $this->rootUser . ' password=' . $currentPwd );
 
         if ( !$dbLink ) {
             $error = error_get_last()['message'];
@@ -372,7 +372,7 @@ class BinPostgresql extends Module
         $error      = null;
 
         $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        $dbLink = pg_connect( 'host=127.0.0.1 port=' . $this->port . ' user=' . $this->rootUser . ' password=' . $currentPwd );
+        $dbLink = pg_connect( 'host=' . APP_LOCALHOST . ' port=' . $this->port . ' user=' . $this->rootUser . ' password=' . $currentPwd );
         if ( !$dbLink ) {
             $error = error_get_last()['message'];
         }

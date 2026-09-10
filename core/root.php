@@ -12,6 +12,7 @@
 const APP_AUTHOR_NAME = 'N6REJ';
 const APP_TITLE = 'Bearsampp';
 const APP_WEBSITE = 'https://bearsampp.com';
+const APP_LOCALHOST = '127.0.0.1';
 const APP_LICENSE = 'GPL3 License';
 const APP_GITHUB_USER = 'Bearsampp';
 const APP_GITHUB_REPO = 'Bearsampp';
@@ -24,10 +25,18 @@ const RETURN_TAB = '	';
 // It is not a secret/credential and must not be used for authorization decisions;
 // license validation relies on the per-user DOWNLOADID + server-side check instead.
 const QUICKPICK_API_KEY = '4abe15e5-95f2-4663-ad12-eadb245b28b4';
-const QUICKPICK_API_URL = 'https://bearsampp.com/index.php?option=com_osmembership&task=api.get_active_plan_ids&api_key=';
+const QUICKPICK_API_URL = APP_WEBSITE . '/index.php?option=com_osmembership&task=api.get_active_plan_ids&api_key=';
 
 // URL where quickpick-releases.json lives
 const QUICKPICK_JSON_URL = 'https://raw.githubusercontent.com/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . '/main/core/resources/quickpick-releases.json';
+
+// GitHub API proxy. Authentication for GitHub requests is handled server-side
+// (the real PAT is held by the proxy at bearsampp.com and never ships with the
+// client). The proxy key below is a PUBLIC shared identifier baked into an
+// open-source (GPL-3) build - it only gates proxy usage/rate limits and must
+// never be treated as a credential. All GitHub-hosted traffic is routed here.
+const APP_GITHUB_PROXY_URL = APP_WEBSITE . '/proxy.php';
+const APP_GITHUB_PROXY_KEY = '050390e9727be9a24566d641d17a16fdfafb639b14db443e70718f9334851154';
 
 // CRITICAL: Check for elevation IMMEDIATELY - must be FAST to minimize console window visibility
 if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === 'startup') {
