@@ -101,6 +101,7 @@ menuStopService = "Szerviz leállítása"
 menuStopServices = "Minden szerviz leállítása"
 menuTransferLogs = "Átviteli napló"
 menuUpdateEnvPath = "PATH körny. frissít."
+menuViewCacheStats = "Gyorsítótár-statisztikák megtekintése"
 menuWwwDirectory = "www mappa"
 
 ; Bins

@@ -912,8 +912,9 @@ class Util
     /**
      * Converts a file size in bytes to a human-readable format.
      *
-     * Uses PHP's native human_readable_size() when no unit is forced.
-     * Falls back to manual conversion when a specific unit is requested.
+     * Uses PHP's native human_readable_size() when available.
+     * Falls back to manual conversion when a specific unit is requested
+     * or when the native function is unavailable.
      *
      * @param  int     $size  The file size in bytes.
      * @param  string  $unit  Optional forced unit ('GB', 'MB', 'KB', or '').
@@ -932,8 +933,17 @@ class Util
             };
         }
 
-        // Native PHP 8.3+ auto-selection
-        return human_readable_size($size, precision: 2);
+        // Native PHP auto-selection when the function is available
+        if (function_exists('human_readable_size')) {
+            return human_readable_size($size, precision: 2);
+        }
+
+        // Manual fallback
+        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+        $power = $size > 0 ? (int)floor(log($size, 1024)) : 0;
+        $power = min($power, count($units) - 1);
+
+        return number_format($size / (1024 ** $power), 2) . $units[$power];
     }
 
     /**

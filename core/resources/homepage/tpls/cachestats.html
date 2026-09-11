@@ -1,0 +1,186 @@
+<?php
+/*
+ *
+ *  * Copyright (c) 2021-2026 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
+ */
+
+// Cache stats page - populated from Root::getCacheStats()
+$cacheStats = Root::getCacheStats();
+
+$cacheAgeText = '';
+if ($cacheStats['enabled'] && $cacheStats['oldestEntry'] !== null) {
+    $ageSeconds = time() - (int) $cacheStats['oldestEntry'];
+    if ($ageSeconds < 60) {
+        $cacheAgeText = 'just now';
+    } elseif ($ageSeconds < 3600) {
+        $cacheAgeText = floor($ageSeconds / 60) . ' minute(s) ago';
+    } elseif ($ageSeconds < 86400) {
+        $cacheAgeText = floor($ageSeconds / 3600) . ' hour(s) ago';
+    } else {
+        $cacheAgeText = floor($ageSeconds / 86400) . ' day(s) ago';
+    }
+}
+
+$cacheNewestText = 'never';
+if ($cacheStats['enabled'] && $cacheStats['newestEntry'] !== null) {
+    $ageSeconds = time() - (int) $cacheStats['newestEntry'];
+    if ($ageSeconds < 60) {
+        $cacheNewestText = 'just now';
+    } elseif ($ageSeconds < 3600) {
+        $cacheNewestText = floor($ageSeconds / 60) . ' minute(s) ago';
+    } elseif ($ageSeconds < 86400) {
+        $cacheNewestText = floor($ageSeconds / 3600) . ' hour(s) ago';
+    } else {
+        $cacheNewestText = floor($ageSeconds / 86400) . ' day(s) ago';
+    }
+}
+?>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="<?php echo $bearsamppHomepage->getPageQuery(Homepage::PAGE_INDEX); ?>" class="btn btn-dark" role="button"><i class = 'fa-solid fa-circle-left'></i>  <?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_BACK_TEXT); ?></a>
+    </div>
+
+    <div class="card">
+        <div class="card-heading">
+            <h3 class="card-title bg-dark text-light p-1">
+                <i class="fa-solid fa-database"></i> Cache Statistics
+            </h3>
+        </div>
+        <div class="card-body">
+            <?php if (!$cacheStats['enabled']) : ?>
+                <div class="alert alert-danger" role="alert">
+                    Caching is disabled
+                </div>
+            <?php else : ?>
+                <div class="alert alert-success d-flex justify-content-between align-items-center" role="alert">
+                    <span>Caching is enabled</span>
+                    <span class="d-flex align-items-center">
+                        <span class="text-muted me-3" id="cacheAgeText"><i class="fa-solid fa-clock"></i> Last cleared: <?php echo $cacheAgeText; ?></span>
+                        <button id="clearCacheBtn" class="btn btn-outline-danger fs-6" onclick="clearCache()">
+                            <i class="fa-solid fa-trash-can"></i> Clear cache
+                        </button>
+                    </span>
+                </div>
+            <?php endif; ?>
+
+            <div id="cacheAlert" class="d-none"></div>
+
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th scope="row">Status</th>
+                        <td>
+                            <?php if ($cacheStats['enabled']) : ?>
+                                <span class="badge text-bg-success">Enabled</span>
+                            <?php else : ?>
+                                <span class="badge text-bg-danger">Disabled</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Cache directory</th>
+                        <td><code><?php echo htmlspecialchars($cacheStats['cacheDir']); ?></code></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Cache files</th>
+                        <td id="statFilesCount"><?php echo $cacheStats['filesCount']; ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Total size</th>
+                        <td id="statTotalSize"><?php echo Util::humanFileSize((int) $cacheStats['totalSize']); ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Largest entry</th>
+                        <td id="statLargestEntry"><?php echo Util::humanFileSize((int) $cacheStats['largestEntry']); ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Last update</th>
+                        <td id="statLastUpdate"><?php echo $cacheNewestText; ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Cache hits</th>
+                        <td><?php echo $cacheStats['cacheHits']; ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Cache misses</th>
+                        <td><?php echo $cacheStats['cacheMisses']; ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Cache writes</th>
+                        <td><?php echo $cacheStats['cachewrites']; ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Hit rate</th>
+                        <td><?php echo $cacheStats['hitRate']; ?>%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function clearCache() {
+    var btn = document.getElementById('clearCacheBtn');
+    var alert = document.getElementById('cacheAlert');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Clearing...';
+    alert.className = 'd-none';
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', AJAX_URL, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
+        try {
+            var data = JSON.parse(xhr.responseText);
+            if (data.success) {
+                alert.className = 'alert alert-success';
+                alert.innerHTML = '<i class="fa-solid fa-check-circle"></i> Cache cleared — ' + data.deleted + ' file(s) deleted.';
+                document.getElementById('statFilesCount').textContent = data.filesCount;
+                document.getElementById('statTotalSize').textContent = formatBytes(data.totalSize);
+                document.getElementById('statLargestEntry').textContent = formatBytes(data.largestEntry);
+                document.getElementById('statLastUpdate').textContent = data.newestEntry ? formatAge(data.newestEntry) : 'never';
+                document.getElementById('cacheAgeText').textContent = 'Last cleared: ' + (data.oldestEntry ? formatAge(data.oldestEntry) : 'just now');
+            } else {
+                alert.className = 'alert alert-danger';
+                alert.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> Error: ' + (data.error || 'Unknown error');
+            }
+        } catch (e) {
+            alert.className = 'alert alert-danger';
+            alert.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> Unexpected server response.';
+        }
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-trash-can"></i> Clear cache';
+    };
+    xhr.onerror = function() {
+        alert.className = 'alert alert-danger';
+        alert.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> Network error.';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-trash-can"></i> Clear cache';
+    };
+    xhr.send('proc=clearcache&csrf_token=' + encodeURIComponent(getCsrfToken()));
+}
+
+function formatAge(ts) {
+    if (!ts) return 'never';
+    var s = Math.floor(Date.now() / 1000) - ts;
+    if (s < 60) return 'just now';
+    if (s < 3600) return Math.floor(s / 60) + ' minute(s) ago';
+    if (s < 86400) return Math.floor(s / 3600) + ' hour(s) ago';
+    return Math.floor(s / 86400) + ' day(s) ago';
+}
+
+function formatBytes(bytes) {
+    bytes = parseInt(bytes, 10);
+    if (bytes === 0) return '0 B';
+    var units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    var i = Math.floor(Math.log(bytes) / Math.log(1024));
+    i = Math.min(i, units.length - 1);
+    return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + units[i];
+}
+</script>

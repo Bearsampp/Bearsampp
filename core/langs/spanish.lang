@@ -101,6 +101,7 @@ menuStopService = "Detener servicio"
 menuStopServices = "Detener todos los servicios"
 menuTransferLogs = "Transferir registros"
 menuUpdateEnvPath = "Actualizar ruta env. PATH"
+menuViewCacheStats = "Ver estadísticas de caché"
 menuWwwDirectory = "Directorio www"
 
 ; Binarios

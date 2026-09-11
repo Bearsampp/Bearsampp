@@ -221,6 +221,9 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
     try {
         $page = preg_replace('/[^a-z0-9_-]/i', '', (string) $bearsamppHomepage->getPage());
         $pagePath = __DIR__ . '/tpls/hp.' . $page . '.html';
+        if (!is_file($pagePath)) {
+            $pagePath = __DIR__ . '/tpls/' . $page . '.html';
+        }
         if (is_file($pagePath)) {
             include $pagePath;
         } else {

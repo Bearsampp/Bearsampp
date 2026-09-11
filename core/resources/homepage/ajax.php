@@ -106,7 +106,8 @@ $procMap = [
     'quickpick' => __DIR__ . '/ajax/ajax.quickpick.php',
     'toggleenhancedquickpick' => __DIR__ . '/ajax/ajax.toggle.enhancedquickpick.php',
     'applymoduleconfig' => __DIR__ . '/ajax/ajax.apply.moduleconfig.php',
-    'reloadstatus' => __DIR__ . '/ajax/ajax.reload.status.php'
+    'reloadstatus' => __DIR__ . '/ajax/ajax.reload.status.php',
+    'clearcache' => __DIR__ . '/ajax/ajax.clearcache.php'
 ];
 
 /**
@@ -126,7 +127,8 @@ $proc = UtilInput::cleanPostVar('proc', 'text');  // Ensure 'proc' is cleaned an
 $csrfProtectedEndpoints = [
     'quickpick',                    // Installs modules
     'toggleenhancedquickpick',      // Changes configuration
-    'applymoduleconfig'             // Applies configuration changes
+    'applymoduleconfig',            // Applies configuration changes
+    'clearcache'                    // Clears cache files
 ];
 
 /**

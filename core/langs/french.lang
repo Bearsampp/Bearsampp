@@ -101,6 +101,7 @@ menuStopService = "Arrêter le service"
 menuStopServices = "Arrêter tous les services"
 menuTransferLogs = "Journaux des transferts"
 menuUpdateEnvPath = "Màj env. PATH"
+menuViewCacheStats = "Afficher les statistiques du cache"
 menuWwwDirectory = "Répertoire www"
 
 ; Bins

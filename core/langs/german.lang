@@ -101,6 +101,7 @@ menuStopService = "Dienst stoppen"
 menuStopServices = "Alle Dienste stoppen"
 menuTransferLogs = "Protokolle übertragen"
 menuUpdateEnvPath = "Umgebung aktualisieren. PATH"
+menuViewCacheStats = "Cache-Statistiken anzeigen"
 menuWwwDirectory = "www Verzeichnis"
 
 ; Bins
