@@ -1845,6 +1845,33 @@ task sync(dependsOn: buildFull) {
             println "* Sandbox core folder (with orange icons) copied to sync path"
         }
 
+        println "* Syncing version.dat and quickpick-releases.json to sync path..."
+        def syncResourcesPath = file("${syncFinalPath}/core/resources")
+
+        def versionDatSource = file("${releaseBasePath}/core/resources/version.dat")
+        if (versionDatSource.exists()) {
+            copy {
+                from versionDatSource
+                into syncResourcesPath
+                duplicatesStrategy = 'include'
+            }
+            println "* version.dat (${releaseFullVersion}) synced to ${syncResourcesPath}"
+        } else {
+            println "WARNING: version.dat not found at ${versionDatSource}"
+        }
+
+        def quickpickSource = file("${releaseBasePath}/core/resources/quickpick-releases.json")
+        if (quickpickSource.exists()) {
+            copy {
+                from quickpickSource
+                into syncResourcesPath
+                duplicatesStrategy = 'include'
+            }
+            println "* quickpick-releases.json synced to ${syncResourcesPath}"
+        } else {
+            println "WARNING: quickpick-releases.json not found at ${quickpickSource}"
+        }
+
         println "* Creating Sandbox favicon.ico..."
         def sandboxFavicon = file("${syncFinalPath}/core/resources/homepage/img/icons/app.ico")
         if (sandboxFavicon.exists()) {
@@ -1914,7 +1941,35 @@ task postBuildSync {
             
             // Ensure icons are up-to-date
             downloadAndExtractIconography(sandboxDir)
-            
+
+            // Keep version.dat and quickpick-releases.json in sync with the project
+            println "* Syncing version.dat and quickpick-releases.json to sandbox..."
+            def syncResourcesPath = file("${sandboxDir}/core/resources")
+
+            def versionDatSource = file("${projectDir}/core/resources/version.dat")
+            if (versionDatSource.exists()) {
+                copy {
+                    from versionDatSource
+                    into syncResourcesPath
+                    duplicatesStrategy = 'include'
+                }
+                println "* version.dat (${releaseFullVersion}) synced to ${syncResourcesPath}"
+            } else {
+                println "WARNING: version.dat not found at ${versionDatSource}"
+            }
+
+            def quickpickSource = file("${projectDir}/core/resources/quickpick-releases.json")
+            if (quickpickSource.exists()) {
+                copy {
+                    from quickpickSource
+                    into syncResourcesPath
+                    duplicatesStrategy = 'include'
+                }
+                println "* quickpick-releases.json synced to ${syncResourcesPath}"
+            } else {
+                println "WARNING: quickpick-releases.json not found at ${quickpickSource}"
+            }
+
             // Migrate fix-icon.bat logic here
             def resourceHackerExe = file("${sandboxDir}/ResourceHacker.exe")
             def iconPath = file("${sandboxDir}/core/resources/homepage/img/icons/bearsampp.ico")
