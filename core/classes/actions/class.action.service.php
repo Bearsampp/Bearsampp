@@ -124,7 +124,7 @@ class ActionService
         // Update loading screen to show which service is starting
         Util::updateLoadingText('Starting ' . $bin->getName() . '...');
         
-        Util::startService( $bin, $syntaxCheckCmd, true );
+        ServiceHelper::startService( $bin, $syntaxCheckCmd, true );
     }
 
     /**
@@ -165,7 +165,7 @@ class ActionService
      */
     private function install($bin, $port, $syntaxCheckCmd)
     {
-        Util::installService( $bin, $port, $syntaxCheckCmd, true );
+        ServiceHelper::installService( $bin, $port, $syntaxCheckCmd, true );
     }
 
     /**
@@ -176,7 +176,7 @@ class ActionService
      */
     private function remove($service, $name)
     {
-        Util::removeService( $service, $name );
+        ServiceHelper::removeService( $service, $name );
     }
 }
 

@@ -319,6 +319,42 @@ class HttpClient
     }
 
     /**
+     * Sends a GET request to the specified URL and returns the response.
+     *
+     * GitHub-hosted URLs are fetched through the GitHub proxy so no token is ever
+     * sent by the client. Non-GitHub URLs are fetched directly over verified TLS.
+     *
+     * @param   string  $url     The URL to send the GET request to.
+     * @param   bool    $verify  Whether to verify the peer certificate. Defaults to true.
+     *
+     * @return string The trimmed response data from the URL.
+     */
+    public static function getApiJson($url, $verify = true)
+    {
+        Log::trace('[VCHK-3] getApiJson() sending GET request to: ' . $url);
+
+        if (self::isGithubHost($url)) {
+            $result = self::proxyFetch($url, 'GET', $verify);
+            if ($result === false || (int)$result['status'] !== 200) {
+                Log::error('GitHub request via proxy failed for: ' . $url);
+                Log::trace('[VCHK-3] getApiJson() EXIT - proxy request failed');
+
+                return '';
+            }
+
+            Log::trace('[VCHK-3] getApiJson() response length: ' . strlen((string)$result['body']));
+
+            return trim($result['body']);
+        }
+
+        $data = self::fetchGet($url, $verify);
+
+        Log::trace('[VCHK-3] getApiJson() response length: ' . strlen($data));
+
+        return $data;
+    }
+
+    /**
      * Determines whether a URL is hosted on GitHub.
      *
      * Used to decide which requests must be routed through the GitHub proxy.
@@ -691,6 +727,87 @@ class HttpClient
         }
 
         return $success && $status >= 200 && $status < 300;
+    }
+
+    /**
+     * Downloads a file from a given URL and saves it to a specified file path.
+     *
+     * GitHub-hosted archives are downloaded through the GitHub proxy. Non-GitHub
+     * URLs are streamed over a verified TLS connection in 8KB chunks to avoid
+     * loading the whole file into memory, emitting one JSON progress line per
+     * chunk when $progressBar is enabled.
+     *
+     * @param   string  $url          The URL from which to fetch the file content.
+     * @param   string  $filePath     The path where the file content should be saved.
+     * @param   bool    $progressBar  Optional. Whether to display a progress bar during the download process. Default is false.
+     * @param   bool    $verify       Whether to verify the peer certificate. Defaults to true.
+     *                                Pass false only for local/self-signed endpoints.
+     *
+     * @return array Returns the file path if successful, or an array with an error message if an error occurs.
+     */
+    public static function downloadFile(string $url, string $filePath, $progressBar = false, $verify = true)
+    {
+        // GitHub-hosted module archives are downloaded through the GitHub proxy so
+        // the client never holds or transmits a GitHub token. The body is streamed
+        // in 8KB chunks to avoid loading the whole archive into memory.
+        if (self::isGithubHost($url)) {
+            Log::trace('downloadFile() downloading via GitHub proxy: ' . $url);
+            $downloaded = self::proxyDownload($url, $filePath, $progressBar, $verify);
+            if (!$downloaded) {
+                Log::error('Error fetching content from URL: ' . $url);
+
+                return ['error' => 'Error fetching module'];
+            }
+
+            return ['success' => true];
+        }
+
+        Log::trace('downloadFile() downloading directly (non-GitHub): ' . $url);
+
+        // Open the URL for reading. The verified SSL context makes sure the file is
+        // fetched over a properly authenticated HTTPS connection.
+        $inputStream = @fopen( $url, 'rb', false, self::getSslStreamContext(true, $url) );
+        if ( $inputStream === false ) {
+            Log::error( 'Error fetching content from URL: ' . $url );
+
+            return ['error' => 'Error fetching module'];
+        }
+
+        // Open the file for writing
+        $outputStream = @fopen( $filePath, 'wb' );
+        if ( $outputStream === false ) {
+            Log::error( 'Error opening file for writing: ' . $filePath );
+            fclose( $inputStream );
+
+            return ['error' => 'Error saving module'];
+        }
+
+        // Read and write in chunks to avoid memory overload
+        $bufferSize = 8096; // 8KB
+        $chunksRead = 0;
+
+        while ( !feof( $inputStream ) ) {
+            $buffer = fread( $inputStream, $bufferSize );
+            fwrite( $outputStream, $buffer );
+            $chunksRead++;
+
+            // Send progress update
+            if ( $progressBar ) {
+                $progress = $chunksRead;
+                echo json_encode( ['progress' => $progress] ) . PHP_EOL;
+
+                // Check if output buffering is active before calling ob_flush()
+                if ( ob_get_length() !== false ) {
+                    ob_flush();
+                }
+                flush();
+            }
+        }
+
+        fclose( $inputStream );
+        fclose( $outputStream );
+
+        return ['success' => true];
     }
 
     /**

@@ -330,7 +330,7 @@ class QuickPick
         Log::debug( 'Fetching JSON file: ' . $this->jsonFilePath );
 
         // Fetch the JSON content from the URL via cURL (verified TLS + bundled GitHub token)
-        $jsonContent = Util::getApiJson( QUICKPICK_JSON_URL );
+        $jsonContent = HttpClient::getApiJson( QUICKPICK_JSON_URL );
 
         if ( $jsonContent === '' ) {
             // Handle error if the file could not be fetched
@@ -655,11 +655,11 @@ class QuickPick
     $destination = $this->getModuleDestinationPath($moduleType, $moduleName);
     Log::debug('Destination: ' . $destination);
 
-    // Retrieve the file path from the URL using the bearsamppCore module,
+    // Retrieve the file path from the URL via HttpClient's streaming download,
     // passing the module URL and temporary file path, with the use Progress Bar parameter set to true.
-    $result = $bearsamppCore->getFileFromUrl($moduleUrl, $tmpFilePath, true);
+    $result = HttpClient::downloadFile($moduleUrl, $tmpFilePath, true);
 
-    // Check if $result indicates an error (getFileFromUrl returns ['error' => ...] on failure)
+    // Check if $result indicates an error (downloadFile returns ['error' => ...] on failure)
     if (!is_array($result) || isset($result['error'])) {
         Log::error('Failed to retrieve file from URL: ' . $moduleUrl);
         @unlink($tmpFilePath);

@@ -178,7 +178,7 @@ class BinXlight extends Module
         $port = intval($port);
         $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
-        $isPortInUse = Util::isPortInUse($port);
+        $isPortInUse = ServiceHelper::isPortInUse($port);
         if (!$checkUsed || $isPortInUse === false) {
             // bearsampp.conf
             $this->setPort($port);
@@ -352,9 +352,9 @@ class BinXlight extends Module
 
         $this->reload();
         if ($this->enable) {
-            Util::installService($this, $this->port, null, $showWindow);
+            ServiceHelper::installService($this, $this->port, null, $showWindow);
         } else {
-            Util::removeService($this->service, $this->name);
+            ServiceHelper::removeService($this->service, $this->name);
         }
     }
 

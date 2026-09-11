@@ -186,7 +186,7 @@ class Symlinks
         }
 
         // Check if path exists
-        if (!file_exists($path) && !is_link($path)) {
+        if (!file_exists($path) && !self::isSymlink($path)) {
             Log::trace('Symlink or directory already deleted or missing: ' . $path);
             return false;
         }
@@ -201,7 +201,7 @@ class Symlinks
 
             // If it failed and it's NOT a link, it's a real directory with content.
             // We MUST NOT recursively delete it to avoid data loss.
-            if (!is_link($path)) {
+            if (!self::isSymlink($path)) {
                 Log::error('Symlink removal blocked - path is a real directory with content: ' . $path);
                 return false;
             } else {
@@ -214,14 +214,14 @@ class Symlinks
         }
 
         // If it's a symlink but not a directory (e.g. file symlink), or if rmdir failed
-        if (is_link($path)) {
+        if (self::isSymlink($path)) {
             if (@unlink($path) || @rmdir($path)) {
                 Log::debug('Safely removed symlink: ' . $path);
                 return true;
             }
         }
 
-        if (is_link($path)) {
+        if (self::isSymlink($path)) {
             Log::error('Failed to remove symlink: ' . $path);
             return false;
         }

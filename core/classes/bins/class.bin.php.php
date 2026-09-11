@@ -673,7 +673,7 @@ class BinPhp extends Module
         $bearsamppBins->getApache()->update();
         if ($bearsamppBins->getApache()->isEnable() && $bearsamppBins->getApache()->getService()->isRunning()) {
             $bearsamppBins->getApache()->getService()->stop();
-            Util::startService($bearsamppBins->getApache(), BinApache::CMD_SYNTAX_CHECK, $showWindow);
+            ServiceHelper::startService($bearsamppBins->getApache(), BinApache::CMD_SYNTAX_CHECK, $showWindow);
         }
     }
 
