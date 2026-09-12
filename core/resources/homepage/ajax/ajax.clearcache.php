@@ -12,6 +12,16 @@ header('Cache-Control: no-store');
 $response = [];
 
 try {
+    if (!CacheManager::isEnabled()) {
+        Log::error('Cache clear attempted while caching is disabled');
+        $response = [
+            'success' => false,
+            'error'   => 'Caching is disabled.',
+        ];
+        echo json_encode($response);
+        exit;
+    }
+
     $deleted = CacheManager::clearAll();
     $stats   = Root::getCacheStats();
 

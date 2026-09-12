@@ -11,7 +11,7 @@
 // Cache stats page - populated from Root::getCacheStats()
 $cacheStats = Root::getCacheStats();
 
-$cacheAgeText = '';
+$cacheAgeText = $bearsamppLang->getValue(Lang::CACHE_NEVER);
 if ($cacheStats['enabled'] && $cacheStats['oldestEntry'] !== null) {
     $ageSeconds = time() - (int) $cacheStats['oldestEntry'];
     if ($ageSeconds < 60) {
@@ -46,9 +46,9 @@ if ($cacheStats['enabled'] && $cacheStats['newestEntry'] !== null) {
 
     <div class="card">
         <div class="card-heading">
-            <h3 class="card-title bg-dark text-light p-1">
-                <i class="fa-solid fa-database"></i> Cache Statistics
-            </h3>
+<h3 class="card-title bg-dark text-light p-1">
+    <i class="fa-solid fa-database"></i> <?php echo $bearsamppLang->getValue(Lang::MENU_CACHE_STATS_TITLE); ?>
+</h3>
         </div>
         <div class="card-body">
             <?php if (!$cacheStats['enabled']) : ?>
@@ -59,7 +59,7 @@ if ($cacheStats['enabled'] && $cacheStats['newestEntry'] !== null) {
                 <div class="alert alert-success d-flex justify-content-between align-items-center" role="alert">
                     <span>Caching is enabled</span>
                     <span class="d-flex align-items-center">
-                        <span class="text-muted me-3" id="cacheAgeText"><i class="fa-solid fa-clock"></i> Last cleared: <?php echo $cacheAgeText; ?></span>
+                        <span class="text-muted me-3" id="cacheAgeText"><i class="fa-solid fa-clock"></i> <?php echo $bearsamppLang->getValue(Lang::CACHE_OLDEST_ENTRY); ?>: <?php echo $cacheAgeText; ?></span>
                         <button id="clearCacheBtn" class="btn btn-outline-danger fs-6" onclick="clearCache()">
                             <i class="fa-solid fa-trash-can"></i> Clear cache
                         </button>
@@ -145,7 +145,7 @@ function clearCache() {
                 document.getElementById('statTotalSize').textContent = formatBytes(data.totalSize);
                 document.getElementById('statLargestEntry').textContent = formatBytes(data.largestEntry);
                 document.getElementById('statLastUpdate').textContent = data.newestEntry ? formatAge(data.newestEntry) : 'never';
-                document.getElementById('cacheAgeText').textContent = 'Last cleared: ' + (data.oldestEntry ? formatAge(data.oldestEntry) : 'just now');
+                document.getElementById('cacheAgeText').textContent = 'Oldest entry: ' + (data.oldestEntry ? formatAge(data.oldestEntry) : 'just now');
             } else {
                 alert.className = 'alert alert-danger';
                 alert.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> Error: ' + (data.error || 'Unknown error');

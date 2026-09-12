@@ -120,6 +120,7 @@ class Lang
     const MENU_TRANSFER_LOGS = 'menuTransferLogs';
     const MENU_UPDATE_ENV_PATH = 'menuUpdateEnvPath';
     const MENU_VIEW_CACHE_STATS = 'menuViewCacheStats';
+    const MENU_CACHE_STATS_TITLE = 'menuCacheStatsTitle';
     const MENU_WWW_DIRECTORY = 'menuWwwDirectory';
 
     // Bins
@@ -394,6 +395,29 @@ class Lang
     const HOMEPAGE_XLIGHT_TEXT = 'homepageXlightText';
     const HOMEPAGE_BACK_TEXT = 'homepageBackText';
 
+    // Homepage cache stats
+    const CACHE_NEVER = 'cacheNever';
+    const CACHE_JUST_NOW = 'cacheJustNow';
+    const CACHE_MINUTES_AGO = 'cacheMinutesAgo';
+    const CACHE_HOURS_AGO = 'cacheHoursAgo';
+    const CACHE_DAYS_AGO = 'cacheDaysAgo';
+    const CACHE_OLDEST_ENTRY = 'cacheOldestEntry';
+    const CACHE_CLEAR = 'cacheClear';
+    const CACHE_CLEARING = 'cacheClearing';
+    const CACHE_CLEARED = 'cacheCleared';
+    const CACHE_FILES = 'cacheFiles';
+    const CACHE_TOTAL_SIZE = 'cacheTotalSize';
+    const CACHE_LARGEST_ENTRY = 'cacheLargestEntry';
+    const CACHE_LAST_UPDATE = 'cacheLastUpdate';
+    const CACHE_HITS = 'cacheHits';
+    const CACHE_MISSES = 'cacheMisses';
+    const CACHE_WRITES = 'cacheWrites';
+    const CACHE_HIT_RATE = 'cacheHitRate';
+    const CACHE_ERROR_PREFIX = 'cacheErrorPrefix';
+    const CACHE_UNKNOWN_ERROR = 'cacheUnknownError';
+    const CACHE_UNEXPECTED_ERROR = 'cacheUnexpectedError';
+    const CACHE_NETWORK_ERROR = 'cacheNetworkError';
+
     /**
      * Get all the keys defined in the Lang class.
      *
@@ -502,6 +526,7 @@ class Lang
             self::MENU_TRANSFER_LOGS,
             self::MENU_UPDATE_ENV_PATH,
             self::MENU_VIEW_CACHE_STATS,
+            self::MENU_CACHE_STATS_TITLE,
             self::MENU_WWW_DIRECTORY,
 
             // Bins
@@ -766,6 +791,29 @@ class Lang
             self::HOMEPAGE_MAILPIT_TEXT,
             self::HOMEPAGE_XLIGHT_TEXT,
             self::HOMEPAGE_BACK_TEXT,
+
+            // Homepage cache stats
+            self::CACHE_NEVER,
+            self::CACHE_JUST_NOW,
+            self::CACHE_MINUTES_AGO,
+            self::CACHE_HOURS_AGO,
+            self::CACHE_DAYS_AGO,
+            self::CACHE_OLDEST_ENTRY,
+            self::CACHE_CLEAR,
+            self::CACHE_CLEARING,
+            self::CACHE_CLEARED,
+            self::CACHE_FILES,
+            self::CACHE_TOTAL_SIZE,
+            self::CACHE_LARGEST_ENTRY,
+            self::CACHE_LAST_UPDATE,
+            self::CACHE_HITS,
+            self::CACHE_MISSES,
+            self::CACHE_WRITES,
+            self::CACHE_HIT_RATE,
+            self::CACHE_ERROR_PREFIX,
+            self::CACHE_UNKNOWN_ERROR,
+            self::CACHE_UNEXPECTED_ERROR,
+            self::CACHE_NETWORK_ERROR,
         );
     }
 }
