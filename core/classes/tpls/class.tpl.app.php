@@ -283,6 +283,7 @@ class TplApp
             ) . PHP_EOL .
             TplAestan::getItemLink($bearsamppLang->getValue(Lang::DOCUMENTATION), 'https://documentation.bearsampp.com/') . PHP_EOL .
             TplAestan::getItemLink('FAQ', HttpClient::getWebsiteUrl('documentation/faqs')) . PHP_EOL .
+            TplAestan::getItemLink($bearsamppLang->getValue(Lang::MENU_VIEW_CACHE_STATS), Path::getLocalUrl('?p=' . Homepage::PAGE_CACHE_STATS)) . PHP_EOL .
 
             TplAestan::getItemSeparator() . PHP_EOL .
             TplAppClearFolders::process() . PHP_EOL .

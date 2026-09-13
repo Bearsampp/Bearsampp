@@ -217,10 +217,28 @@ class CacheManager
     {
         $files = @glob(self::$cacheDir . '/*.cache');
         $totalSize = 0;
+        $oldestEntry = null;
+        $newestEntry = null;
+        $largestEntry = 0;
 
         if (is_array($files)) {
             foreach ($files as $file) {
-                $totalSize += filesize($file);
+                $fileSize = @filesize($file);
+                if ($fileSize !== false) {
+                    $totalSize += $fileSize;
+                    if ($fileSize > $largestEntry) {
+                        $largestEntry = $fileSize;
+                    }
+                }
+                $fileMtime = @filemtime($file);
+                if ($fileMtime !== false) {
+                    if ($oldestEntry === null || $fileMtime < $oldestEntry) {
+                        $oldestEntry = $fileMtime;
+                    }
+                    if ($newestEntry === null || $fileMtime > $newestEntry) {
+                        $newestEntry = $fileMtime;
+                    }
+                }
             }
         }
 
@@ -229,6 +247,9 @@ class CacheManager
             'cacheDir' => self::$cacheDir,
             'filesCount' => count($files ?? []),
             'totalSize' => $totalSize,
+            'oldestEntry' => $oldestEntry,
+            'newestEntry' => $newestEntry,
+            'largestEntry' => $largestEntry,
             'cacheHits' => self::$stats['hits'],
             'cacheMisses' => self::$stats['misses'],
             'cachewrites' => self::$stats['writes'],

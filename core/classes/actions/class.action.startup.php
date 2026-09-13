@@ -1264,7 +1264,7 @@ class ActionStartup
         }
 
         // Check port availability (no progress increment - part of check phase)
-        $isPortInUse = Util::isPortInUse($port);
+        $isPortInUse = ServiceHelper::isPortInUse($port);
         if ($isPortInUse !== false) {
             // Port is in use - check if it's our service that's already running
             $isRunning = false;

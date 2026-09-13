@@ -55,6 +55,9 @@ class ActionClearFolders
          * @param array $exclusions List of folders and files to be excluded from deletion.
          */
         Util::clearFolder(Path::getTmpPath(), array('.gitignore'));
+
+        // Clear configuration caches (disk .cache files + in-memory module/config caches)
+        Root::clearCaches();
     }
 }
 

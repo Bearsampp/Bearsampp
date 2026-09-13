@@ -18,6 +18,7 @@ class Homepage
 {
     const PAGE_INDEX = 'index';
     const PAGE_PHPINFO = 'phpinfo';
+    const PAGE_CACHE_STATS = 'cachestats';
 
     private $page;
 
@@ -27,6 +28,7 @@ class Homepage
     private $pageList = array(
         self::PAGE_INDEX,
         self::PAGE_PHPINFO,
+        self::PAGE_CACHE_STATS,
     );
 
     /**

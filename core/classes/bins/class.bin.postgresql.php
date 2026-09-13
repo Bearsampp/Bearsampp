@@ -219,7 +219,7 @@ class BinPostgresql extends Module
         $port = intval( $port );
         $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
 
-        $isPortInUse = Util::isPortInUse( $port );
+        $isPortInUse = ServiceHelper::isPortInUse( $port );
         if ( !$checkUsed || $isPortInUse === false ) {
             // bearsampp.conf
             $this->setPort( $port );
@@ -287,7 +287,7 @@ class BinPostgresql extends Module
     {
         global $bearsamppLang, $bearsamppWinbinder;
 
-        if (Util::isPortInUse($port)) {
+        if (ServiceHelper::isPortInUse($port)) {
             Log::debug($this->getName() . " port $port used by non-PostgreSQL service");
             if ($showWindow) {
                 $bearsamppWinbinder->messageBoxWarning(
@@ -597,10 +597,10 @@ class BinPostgresql extends Module
 
         $this->reload();
         if ( $this->enable ) {
-            Util::installService( $this, $this->port, null, $showWindow );
+            ServiceHelper::installService( $this, $this->port, null, $showWindow );
         }
         else {
-            Util::removeService( $this->service, $this->name );
+            ServiceHelper::removeService( $this->service, $this->name );
         }
     }
 

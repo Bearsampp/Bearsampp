@@ -123,12 +123,40 @@ class ServiceHelper
      *
      * @param object $bin The binary instance
      * @param string|null $syntaxCheckCmd The syntax check command (optional)
-     * @param bool $showErrors Whether to show error messages (default: true)
+     * @param bool $showWindow Whether to show error messages in a window (default: false)
      * @return bool True if service started successfully, false otherwise
      */
-    public static function startService($bin, $syntaxCheckCmd = null, $showErrors = true)
+    public static function startService($bin, $syntaxCheckCmd = null, $showWindow = false)
     {
-        return Util::startService($bin, $syntaxCheckCmd, $showErrors);
+        global $bearsamppLang, $bearsamppWinbinder;
+
+        if (method_exists($bin, 'initData')) {
+            $bin->initData();
+        }
+
+        $name     = $bin->getName();
+        $service  = $bin->getService();
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::START_SERVICE_TITLE), $name);
+
+        if (!$service->start()) {
+            $serviceError    = sprintf($bearsamppLang->getValue(Lang::START_SERVICE_ERROR), $name);
+            $serviceErrorLog = sprintf('Error while starting the %s service', $name);
+            if (!empty($syntaxCheckCmd)) {
+                $cmdSyntaxCheck = $bin->getCmdLineOutput($syntaxCheckCmd);
+                if (!$cmdSyntaxCheck['syntaxOk']) {
+                    $serviceError    .= PHP_EOL . sprintf($bearsamppLang->getValue(Lang::STARTUP_SERVICE_SYNTAX_ERROR), $cmdSyntaxCheck['content']);
+                    $serviceErrorLog .= sprintf(' (conf errors detected : %s)', $cmdSyntaxCheck['content']);
+                }
+            }
+            Log::error($serviceErrorLog);
+            if ($showWindow) {
+                $bearsamppWinbinder->messageBoxError($serviceError, $boxTitle);
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -143,14 +171,154 @@ class ServiceHelper
     }
 
     /**
-     * Restart a service
+     * Checks if a specific port is in use.
      *
-     * @param object $service The service instance
-     * @return bool True if service restarted successfully, false otherwise
+     * @param   int  $port  The port number to check
+     *
+     * @return mixed False if the port is not in use, otherwise returns the process using the port
      */
-    public static function restartService($service)
+    public static function isPortInUse($port)
     {
-        return $service->restart();
+        // Set localIP statically
+        $localIP = APP_LOCALHOST;
+
+        // Save current error reporting level
+        $errorReporting = error_reporting();
+
+        // Disable error reporting temporarily
+        error_reporting(0);
+
+        $connection = @fsockopen($localIP, $port);
+
+        // Restore original error reporting level
+        error_reporting($errorReporting);
+
+        if (is_resource($connection)) {
+            fclose($connection);
+            $process = Batch::getProcessUsingPort($port);
+
+            return $process != null ? $process : 'N/A';
+        }
+
+        return false;
+    }
+
+    /**
+     * Attempts to install and start a service on a specific port, with optional syntax checking and user notifications.
+     *
+     * @param   object  $bin             An object containing the binary information and methods related to the service.
+     * @param   int     $port            The port number on which the service should run.
+     * @param   string  $syntaxCheckCmd  The command to execute for syntax checking of the service configuration.
+     * @param   bool    $showWindow      Optional. Whether to show message boxes for information, warnings, and errors. Defaults to false.
+     *
+     * @return bool Returns true if the service is successfully installed and started, false otherwise.
+     */
+    public static function installService($bin, $port, $syntaxCheckCmd, $showWindow = false)
+    {
+        global $bearsamppLang, $bearsamppWinbinder;
+
+        if (method_exists($bin, 'initData')) {
+            $bin->initData();
+        }
+
+        $name     = $bin->getName();
+        $service  = $bin->getService();
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::INSTALL_SERVICE_TITLE), $name);
+
+        $isPortInUse = self::isPortInUse($port);
+        if ($isPortInUse === false) {
+            if (!$service->isInstalled()) {
+                $service->create();
+                if ($service->start()) {
+                    Log::info(sprintf('%s service successfully installed. (name: %s ; port: %s)', $name, $service->getName(), $port));
+                    if ($showWindow) {
+                        $bearsamppWinbinder->messageBoxInfo(
+                            sprintf($bearsamppLang->getValue(Lang::SERVICE_INSTALLED), $name, $service->getName(), $port),
+                            $boxTitle
+                        );
+                    }
+
+                    return true;
+                } else {
+                    $serviceError    = sprintf($bearsamppLang->getValue(Lang::SERVICE_INSTALL_ERROR), $name);
+                    $serviceErrorLog = sprintf('Error during the installation of %s service', $name);
+                    if (!empty($syntaxCheckCmd)) {
+                        $cmdSyntaxCheck = $bin->getCmdLineOutput($syntaxCheckCmd);
+                        if (!$cmdSyntaxCheck['syntaxOk']) {
+                            $serviceError    .= PHP_EOL . sprintf($bearsamppLang->getValue(Lang::STARTUP_SERVICE_SYNTAX_ERROR), $cmdSyntaxCheck['content']);
+                            $serviceErrorLog .= sprintf(' (conf errors detected : %s)', $cmdSyntaxCheck['content']);
+                        }
+                    }
+                    Log::error($serviceErrorLog);
+                    if ($showWindow) {
+                        $bearsamppWinbinder->messageBoxError($serviceError, $boxTitle);
+                    }
+                }
+            } else {
+                Log::warning(sprintf('%s service already installed', $name));
+                if ($showWindow) {
+                    $bearsamppWinbinder->messageBoxWarning(
+                        sprintf($bearsamppLang->getValue(Lang::SERVICE_ALREADY_INSTALLED), $name),
+                        $boxTitle
+                    );
+                }
+
+                return true;
+            }
+        } elseif ($service->isRunning()) {
+            Log::warning(sprintf('%s service already installed and running', $name));
+            if ($showWindow) {
+                $bearsamppWinbinder->messageBoxWarning(
+                    sprintf($bearsamppLang->getValue(Lang::SERVICE_ALREADY_INSTALLED), $name),
+                    $boxTitle
+                );
+            }
+
+            return true;
+        } else {
+            Log::error(sprintf('Port %s is used by an other application : %s', $port, $isPortInUse));
+            if ($showWindow) {
+                $bearsamppWinbinder->messageBoxError(
+                    sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port, $isPortInUse),
+                    $boxTitle
+                );
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Removes a service if it is installed.
+     *
+     * @param   Win32Service  $service  The service object to be removed.
+     * @param   string        $name     The name of the service.
+     *
+     * @return bool Returns true if the service is successfully removed, false otherwise.
+     */
+    public static function removeService($service, $name)
+    {
+        if (!($service instanceof Win32Service)) {
+            Log::error('$service not an instance of Win32Service');
+
+            return false;
+        }
+
+        if ($service->isInstalled()) {
+            if ($service->delete()) {
+                Log::info(sprintf('%s service successfully removed', $name));
+
+                return true;
+            } else {
+                Log::error(sprintf('Error during the uninstallation of %s service', $name));
+
+                return false;
+            }
+        } else {
+            Log::warning(sprintf('%s service does not exist', $name));
+        }
+
+        return true;
     }
 
     /**
