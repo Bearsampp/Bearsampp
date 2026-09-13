@@ -708,6 +708,53 @@ def getEnableTokens(Map config) {
     return tokens
 }
 
+// Helper to resolve the GitHub API token (env vars or build.local.properties)
+def getGithubToken() {
+    def githubToken = System.getenv('GITHUB_TOKEN')
+    if (!githubToken) {
+        githubToken = System.getenv('GH_PAT')
+    }
+    if (!githubToken) {
+        def localProps = new Properties()
+        def localPropsFile = file('build.local.properties')
+        if (localPropsFile.exists()) {
+            localPropsFile.withInputStream { localProps.load(it) }
+            githubToken = localProps.getProperty('github.token')
+        }
+    }
+    return githubToken
+}
+
+// Fetch the set of release tags flagged as prereleases for a module repository
+def getPrereleaseTags(String releasesUrl) {
+    def prereleaseTags = [] as Set
+    def githubToken = getGithubToken()
+    def repo = releasesUrl.replace('https://github.com/', '').replace('/releases', '')
+    def page = 1
+    while (true) {
+        def apiUrl = "https://api.github.com/repos/${repo}/releases?per_page=100&page=${page}"
+        def connection = new URL(apiUrl).openConnection()
+        connection.setRequestProperty('User-Agent', 'Gradle')
+        if (githubToken) {
+            connection.setRequestProperty('Authorization', "token ${githubToken}")
+        }
+        def releases = new JsonSlurper().parseText(connection.inputStream.text)
+        if (!(releases instanceof List) || releases.isEmpty()) {
+            break
+        }
+        releases.each { release ->
+            if (release.prerelease) {
+                prereleaseTags.add(release.tag_name)
+            }
+        }
+        if (releases.size() < 100) {
+            break
+        }
+        page++
+    }
+    return prereleaseTags
+}
+
 // Task: updateVersions
 task updateVersions {
     group = 'build setup'
@@ -806,9 +853,11 @@ task updateVersions {
                         def releaseProps = new Properties()
                         propsFile.withInputStream { releaseProps.load(it) }
                         
+                        def prereleaseTags = getPrereleaseTags("https://github.com/Bearsampp/${repoName}/releases")
+                        
                         def versions = releaseProps.stringPropertyNames().toList()
                         if (!versions.isEmpty()) {
-                            // Filter out date-like versions and versions with year suffixes
+                            // Filter out date-like versions, versions with year suffixes, and prereleases
                             def validVersions = versions.findAll { version ->
                                 def parts = version.split('[.-]')
                                 
@@ -834,6 +883,13 @@ task updateVersions {
                                     }
                                 }
                                 
+                                // Exclude versions whose GitHub release is flagged as a prerelease
+                                def downloadUrlForVersion = releaseProps.getProperty(version)
+                                def tagMatcher = (downloadUrlForVersion =~ /\/releases\/download\/([^\/]+)\//)
+                                if (tagMatcher.find() && prereleaseTags.contains(tagMatcher.group(1))) {
+                                    return false
+                                }
+                                
                                 return true
                             }
                             
@@ -852,7 +908,7 @@ task updateVersions {
                                 updated = "${propName} = ${latest}"
                                 println "  [OK] Updated to ${latest}"
                             } else {
-                                println "  [SKIP] No valid versions found (filtered out date-like versions)"
+                                println "  [SKIP] No valid versions found (filtered out date-like/prerelease versions)"
                             }
                         }
                     } catch (Exception e) {
