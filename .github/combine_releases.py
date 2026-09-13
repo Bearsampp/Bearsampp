@@ -464,11 +464,17 @@ try:
     print(f"Summary: Processed {stats['processed_repos']}/{stats['total_repos']} repositories")
     print(f"Total versions found: {stats['total_versions']}")
     if stats['failed_repos']:
-        print(f"Failed repositories: {', '.join(stats['failed_repos'])}")
+        print("")
+        print("FATAL: The following module repositories could not be accessed.")
+        print("The combined releases file will NOT be updated because the release data is incomplete.")
+        for failed_repo in stats['failed_repos']:
+            print(f"  - {failed_repo}")
+        sys.exit(1)
 
 except Exception as e:
     print(f"Error during release processing: {e}")
     traceback.print_exc()
+    sys.exit(1)
 
 
 # Validation step: Override with releases.properties if it has different URLs

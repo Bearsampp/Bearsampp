@@ -29,6 +29,8 @@ permissions:
 jobs:
   combine-releases:
     runs-on: ubuntu-latest
+    outputs:
+      changes: ${{ steps.git-check.outputs.changes }}
 
     steps:
       - name: Checkout repository
@@ -65,7 +67,7 @@ jobs:
         id: git-check
         run: |
           git status
-          if [[ -n $(git status -s) ]]; then
+          if ! git diff --quiet HEAD -- core/resources/quickpick-releases.json; then
             echo "changes=true" >> $GITHUB_OUTPUT
             echo "Changes detected"
             echo "### Changes to quickpick-releases.json:"
@@ -75,8 +77,42 @@ jobs:
             echo "No changes detected"
           fi
 
-      - name: Create Pull Request
+      - name: Upload combined releases file
         if: steps.git-check.outputs.changes == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: quickpick-releases
+          path: core/resources/quickpick-releases.json
+          if-no-files-found: error
+
+  create-update-pr:
+    runs-on: ubuntu-latest
+    needs: combine-releases
+    # Run only when the combined file actually changed; this job is SKIPPED
+    # when there are no new updates
+    if: needs.combine-releases.outputs.changes == 'true'
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # Fetch all history for proper comparisons
+
+      - name: Download combined releases file
+        uses: actions/download-artifact@v4
+        with:
+          name: quickpick-releases
+          path: quickpick-releases
+
+      - name: Apply combined releases file
+        run: |
+          cp quickpick-releases/quickpick-releases.json core/resources/quickpick-releases.json
+          git status
+
+      - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
@@ -87,7 +123,7 @@ jobs:
           title: 'Update combined releases JSON'
           body: |
             This PR updates the combined releases JSON file with the latest versions from module repositories.
-            
+
             Verified by automated workflow.
           commit-message: 'Update quickpick combined releases JSON'
           delete-branch: true
@@ -96,41 +132,41 @@ jobs:
         if: steps.cpr.outputs.pull-request-operation != 'none' && steps.cpr.outputs.pull-request-operation != ''
         run: |
           set +e # Don't exit on error
-          
+
           echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
           echo "Operation - ${{ steps.cpr.outputs.pull-request-operation }}"
-          
+
           PR_NUMBER="${{ steps.cpr.outputs.pull-request-number }}"
-          
+
           # Attempt to approve the PR
           echo "Step 1: Attempting to approve PR..."
           if ! gh pr review --approve "$PR_NUMBER"; then
             echo "::notice ::Could not approve PR (possibly self-approval or permissions), continuing..."
           fi
-          
+
           # Check repo settings and PR status
           echo "Step 2: Checking repository and PR status..."
           gh repo view --json autoMergeAllowed,branchProtectionRules || echo "Failed to get repo status"
           gh pr view "$PR_NUMBER" --json state,mergeable,mergeStateStatus,statusCheckRollup || echo "Failed to get PR status"
-          
+
           # Attempt to enable auto-merge
           echo "Step 3: Attempting to enable auto-merge..."
           if gh pr merge --merge --auto --admin "$PR_NUMBER"; then
             echo "✓ Auto-merge enabled successfully"
             exit 0
           fi
-          
+
           echo "Auto-merge could not be enabled. Waiting for checks and background processes..."
-          
+
           # Wait for any background processes and status checks to register
           echo "Waiting 60 seconds before manual merge attempt..."
           sleep 60
-          
+
           # Final PR status check before direct merge
           echo "Step 4: Final PR status check..."
           gh pr view "$PR_NUMBER" --json state,mergeable,mergeStateStatus,statusCheckRollup
-          
+
           # Attempt direct merge
           echo "Step 5: Attempting direct merge..."
           if gh pr merge --merge --admin "$PR_NUMBER"; then
@@ -142,12 +178,12 @@ jobs:
             gh pr view "$PR_NUMBER"
             echo "Recent checks:"
             gh pr check "$PR_NUMBER" || echo "No checks found."
-          
-            # We don't exit with error here to prevent the workflow from showing as failed 
+
+            # We don't exit with error here to prevent the workflow from showing as failed
             # if the PR is just waiting for checks or needs manual attention.
             # But the user wants it to be fixed, so maybe it SHOULD fail if it's supposed to work.
             # However, "didn't fix things" often refers to the workflow failing when it should have succeeded.
-            exit 0 
+            exit 0
           fi
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
