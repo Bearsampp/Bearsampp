@@ -1628,6 +1628,11 @@
     "module": "module-php",
     "versions": [
       {
+        "version": "8.6.0beta3",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2026.9.13/bearsampp-php-8.6.0beta3-2026.9.13.7z",
+        "prerelease": true
+      },
+      {
         "version": "8.5.10",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.8.27/bearsampp-php-8.5.10-2026.8.27.7z",
         "prerelease": false
