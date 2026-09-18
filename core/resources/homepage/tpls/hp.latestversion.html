@@ -6,15 +6,16 @@
   ~ Github: https://github.com/Bearsampp
   -->
 
-<div class="col-3 alert alert-dismissible alert-success no-display latestversion" id="latestversionnotify" role="alert">
-    <button data-dismiss="alert" class="close-button float-end" type="button" onclick="closeNotify()"><i class="fa-regular fa-circle-xmark"></i></button>
-    <h4><?php echo $bearsamppLang->getValue(Lang::CHECK_VERSION_AVAILABLE_TEXT); ?></h4>
-    <div class="latestversion-download"></div>
-    <div class="latestversion-changelog"></div>
+<div class = "col-3 alert alert-dismissible alert-success no-display latestversion" id = "latestversionnotify" role = "alert">
+	<button data-dismiss = "alert" class = "close-button float-end" type = "button" onclick = "closeNotify()"><i class = "fa-regular fa-circle-xmark"></i></button>
+	<h4><?php echo $bearsamppLang->getValue(Lang::CHECK_VERSION_AVAILABLE_TEXT); ?></h4>
+	<div class = "latestversion-download"></div>
+	<div class = "latestversion-changelog"></div>
 </div>
 <script>
-    function closeNotify() {
-        var x = document.getElementById("latestversionnotify");
-        x.style.display = "none";
-    }
+	function closeNotify()
+	{
+		var x = document.getElementById("latestversionnotify");
+		x.style.display = "none";
+	}
 </script>

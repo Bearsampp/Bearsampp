@@ -15,16 +15,16 @@
  * verification for outbound HTTPS connections, processes the requested action,
  * and retrieves the global locale setting.
  */
-const APP_AUTHOR_NAME = 'N6REJ';
-const APP_TITLE = 'Bearsampp';
-const APP_WEBSITE = 'https://bearsampp.com';
-const APP_LOCALHOST = '127.0.0.1';
-const APP_LICENSE = 'GPL3 License';
-const APP_GITHUB_USER = 'Bearsampp';
-const APP_GITHUB_REPO = 'Bearsampp';
-const APP_GITHUB_USERAGENT = 'Bearsampp';
+const APP_AUTHOR_NAME       = 'N6REJ';
+const APP_TITLE             = 'Bearsampp';
+const APP_WEBSITE           = 'https://bearsampp.com';
+const APP_LOCALHOST         = '127.0.0.1';
+const APP_LICENSE           = 'GPL3 License';
+const APP_GITHUB_USER       = 'Bearsampp';
+const APP_GITHUB_REPO       = 'Bearsampp';
+const APP_GITHUB_USERAGENT  = 'Bearsampp';
 const APP_GITHUB_LATEST_URL = 'https://api.github.com/repos/' . APP_GITHUB_USER . '/' . APP_GITHUB_REPO . '/releases/latest';
-const RETURN_TAB = '	';
+const RETURN_TAB            = '	';
 
 // Membership Pro API key & URL
 // NOTE: This key is a PUBLIC identifier baked into an open-source (GPL-3) build.
@@ -51,7 +51,7 @@ if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1]
     // Quick exit if we already determined no admin recently
     if (file_exists($flagFile) && (time() - filemtime($flagFile)) < 10) {
         $currentPid = getmypid();
-        $killCmd = 'powershell.exe -WindowStyle Hidden -Command "Stop-Process -Id ' . (int)$currentPid . ' -Force -ErrorAction SilentlyContinue; Stop-Process -Name bearsampp -Force -ErrorAction SilentlyContinue"';
+        $killCmd    = 'powershell.exe -WindowStyle Hidden -Command "Stop-Process -Id ' . (int)$currentPid . ' -Force -ErrorAction SilentlyContinue; Stop-Process -Name bearsampp -Force -ErrorAction SilentlyContinue"';
         try {
             // WScript.Shell.Run with style=0 (hidden) avoids cmd.exe flash that popen causes
             $wshKill = new COM('WScript.Shell');
@@ -68,7 +68,7 @@ if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1]
         $wsh = new COM('WScript.Shell');
         // intWindowStyle=0 = completely hidden (no window, no taskbar entry), bWaitOnReturn=true
         // net session exits 0 when elevated, non-zero when access denied
-        $exitCode = $wsh->Run('net session', 0, true);
+        $exitCode   = $wsh->Run('net session', 0, true);
         $isElevated = ($exitCode === 0);
     } catch (Exception $e) {
         // COM unavailable — fall back to shell_exec (may flash briefly)
@@ -91,7 +91,7 @@ if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1]
         $langData = @parse_ini_file($langFile);
 
         // Get localized messages
-        $title = isset($langData['errorAdminRequiredTitle']) ? $langData['errorAdminRequiredTitle'] : 'Administrator Rights Required';
+        $title       = isset($langData['errorAdminRequiredTitle']) ? $langData['errorAdminRequiredTitle'] : 'Administrator Rights Required';
         $messageText = isset($langData['errorAdminRequiredText']) ? $langData['errorAdminRequiredText'] : '%s requires administrator privileges to install and manage Windows services.@nl@@nl@Please right-click on bearsampp.exe and select "Run as administrator" to start the application.';
 
         // Replace placeholders
@@ -102,12 +102,12 @@ if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1]
         $messageParts = explode('|||NEWLINE|||', $messageText);
 
         // Create PowerShell script that handles everything (no window flashing)
-        $psFile = sys_get_temp_dir() . '/bearsampp_admin_error.ps1';
+        $psFile     = sys_get_temp_dir() . '/bearsampp_admin_error.ps1';
         $flagFilePs = str_replace('/', '\\', $flagFile);
-        $psFilePs = str_replace('/', '\\', $psFile);
+        $psFilePs   = str_replace('/', '\\', $psFile);
 
         // Escape for PowerShell
-        $title = str_replace("'", "''", $title);
+        $title      = str_replace("'", "''", $title);
         $currentPid = getmypid();
 
         // PowerShell script that shows message FIRST, then kills processes
@@ -120,7 +120,7 @@ if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && $_SERVER['argv'][1]
         foreach ($messageParts as $index => $part) {
             $part = str_replace("'", "''", trim($part));
             // Don't add comma after last item
-            $comma = ($index < $lastIndex) ? ',' : '';
+            $comma     = ($index < $lastIndex) ? ',' : '';
             $psContent .= "    '" . $part . "'" . $comma . "\n";
         }
         $psContent .= ")\n";

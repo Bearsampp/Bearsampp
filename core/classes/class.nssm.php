@@ -67,7 +67,7 @@ class Nssm
      */
     public function __construct($name)
     {
-        Log::initClass( $this );
+        Log::initClass($this);
         $this->name = $name;
     }
 
@@ -79,7 +79,7 @@ class Nssm
     private function writeLog($log)
     {
         global $bearsamppRoot;
-        Log::debug( $log, Path::getNssmLogFilePath() );
+        Log::debug($log, Path::getNssmLogFilePath());
     }
 
     /**
@@ -90,7 +90,7 @@ class Nssm
     private function writeLogInfo($log)
     {
         global $bearsamppRoot;
-        Log::info( $log, Path::getNssmLogFilePath() );
+        Log::info($log, Path::getNssmLogFilePath());
     }
 
     /**
@@ -101,7 +101,7 @@ class Nssm
     private function writeLogError($log)
     {
         global $bearsamppRoot;
-        Log::error( $log, Path::getNssmLogFilePath() );
+        Log::error($log, Path::getNssmLogFilePath());
     }
 
     /**
@@ -116,20 +116,20 @@ class Nssm
         global $bearsamppCore;
 
         $command = '"' . Path::getNssmExe() . '" ' . $args;
-        $this->writeLogInfo( 'Cmd: ' . $command );
+        $this->writeLogInfo('Cmd: ' . $command);
 
-        $result = Batch::exec( 'nssm', $command, 10 );
-        if ( is_array( $result ) ) {
+        $result = Batch::exec('nssm', $command, 10);
+        if (is_array($result)) {
             $rebuildResult = array();
-            foreach ( $result as $row ) {
-                $row = trim( $row );
-                if ( !empty( $row ) ) {
-                    $rebuildResult[] = preg_replace( '/[\x00-\x1F\x80-\xFF]/', '', $row );
+            foreach ($result as $row) {
+                $row = trim($row);
+                if (!empty($row)) {
+                    $rebuildResult[] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row);
                 }
             }
             $result = $rebuildResult;
-            if ( count( $result ) > 1 ) {
-                $this->latestError = implode( ' ; ', $result );
+            if (count($result) > 1) {
+                $this->latestError = implode(' ; ', $result);
             }
 
             return $result;
@@ -150,17 +150,16 @@ class Nssm
         $this->latestStatus = self::STATUS_NA;
         $maxtime            = time() + self::PENDING_TIMEOUT;
 
-        while ( $this->latestStatus == self::STATUS_NA || $this->isPending( $this->latestStatus ) ) {
-            $exec = $this->exec( 'status ' . $this->getName() );
-            if ( $exec !== false ) {
-                if ( count( $exec ) > 1 ) {
+        while ($this->latestStatus == self::STATUS_NA || $this->isPending($this->latestStatus)) {
+            $exec = $this->exec('status ' . $this->getName());
+            if ($exec !== false) {
+                if (count($exec) > 1) {
                     $this->latestStatus = self::STATUS_NOT_EXIST;
-                }
-                else {
+                } else {
                     $this->latestStatus = $exec[0];
                 }
             }
-            if ( $timeout && $maxtime < time() ) {
+            if ($timeout && $maxtime < time()) {
                 break;
             }
 
@@ -170,7 +169,7 @@ class Nssm
             }
         }
 
-        if ( $this->latestStatus == self::STATUS_NOT_EXIST ) {
+        if ($this->latestStatus == self::STATUS_NOT_EXIST) {
             $this->latestError  = 'Error 3: The specified service does not exist as an installed service.';
             $this->latestStatus = self::STATUS_NA;
         }
@@ -185,72 +184,72 @@ class Nssm
      */
     public function create()
     {
-        $this->writeLog( 'Create service' );
-        $this->writeLog( '-> service: ' . $this->getName() );
-        $this->writeLog( '-> display: ' . $this->getDisplayName() );
-        $this->writeLog( '-> description: ' . $this->getDisplayName() );
-        $this->writeLog( '-> path: ' . $this->getBinPath() );
-        $this->writeLog( '-> params: ' . $this->getParams() );
-        $this->writeLog( '-> stdout: ' . $this->getStdout() );
-        $this->writeLog( '-> stderr: ' . $this->getStderr() );
-        $this->writeLog( '-> environment extra: ' . $this->getEnvironmentExtra() );
-        $this->writeLog( '-> start_type: ' . ($this->getStart() != null ? $this->getStart() : self::SERVICE_DEMAND_START) );
+        $this->writeLog('Create service');
+        $this->writeLog('-> service: ' . $this->getName());
+        $this->writeLog('-> display: ' . $this->getDisplayName());
+        $this->writeLog('-> description: ' . $this->getDisplayName());
+        $this->writeLog('-> path: ' . $this->getBinPath());
+        $this->writeLog('-> params: ' . $this->getParams());
+        $this->writeLog('-> stdout: ' . $this->getStdout());
+        $this->writeLog('-> stderr: ' . $this->getStderr());
+        $this->writeLog('-> environment extra: ' . $this->getEnvironmentExtra());
+        $this->writeLog('-> start_type: ' . ($this->getStart() != null ? $this->getStart() : self::SERVICE_DEMAND_START));
 
         // Install bin
-        $exec = $this->exec( 'install ' . $this->getName() . ' "' . $this->getBinPath() . '"' );
-        if ( $exec === false ) {
+        $exec = $this->exec('install ' . $this->getName() . ' "' . $this->getBinPath() . '"');
+        if ($exec === false) {
             return false;
         }
 
         // Params
-        $exec = $this->exec( 'set ' . $this->getName() . ' AppParameters "' . $this->getParams() . '"' );
-        if ( $exec === false ) {
+        $exec = $this->exec('set ' . $this->getName() . ' AppParameters "' . $this->getParams() . '"');
+        if ($exec === false) {
             return false;
         }
 
         // DisplayName
-        $exec = $this->exec( 'set ' . $this->getName() . ' DisplayName "' . $this->getDisplayName() . '"' );
-        if ( $exec === false ) {
+        $exec = $this->exec('set ' . $this->getName() . ' DisplayName "' . $this->getDisplayName() . '"');
+        if ($exec === false) {
             return false;
         }
 
         // Description
-        $exec = $this->exec( 'set ' . $this->getName() . ' Description "' . $this->getDisplayName() . '"' );
-        if ( $exec === false ) {
+        $exec = $this->exec('set ' . $this->getName() . ' Description "' . $this->getDisplayName() . '"');
+        if ($exec === false) {
             return false;
         }
 
         // No AppNoConsole to fix nssm problems with Windows 10 Creators update.
-        $exec = $this->exec( 'set ' . $this->getName() . ' AppNoConsole "1"' );
-        if ( $exec === false ) {
+        $exec = $this->exec('set ' . $this->getName() . ' AppNoConsole "1"');
+        if ($exec === false) {
             return false;
         }
 
         // Start
-        $exec = $this->exec( 'set ' . $this->getName() . ' Start "' . ($this->getStart() != null ? $this->getStart() : self::SERVICE_DEMAND_START) . '"' );
-        if ( $exec === false ) {
+        $exec = $this->exec('set ' . $this->getName() . ' Start "' . ($this->getStart() != null ? $this->getStart() : self::SERVICE_DEMAND_START) . '"');
+        if ($exec === false) {
             return false;
         }
 
         // Stdout
-        $exec = $this->exec( 'set ' . $this->getName() . ' AppStdout "' . $this->getStdout() . '"' );
-        if ( $exec === false ) {
+        $exec = $this->exec('set ' . $this->getName() . ' AppStdout "' . $this->getStdout() . '"');
+        if ($exec === false) {
             return false;
         }
 
         // Stderr
-        $exec = $this->exec( 'set ' . $this->getName() . ' AppStderr "' . $this->getStderr() . '"' );
-        if ( $exec === false ) {
+        $exec = $this->exec('set ' . $this->getName() . ' AppStderr "' . $this->getStderr() . '"');
+        if ($exec === false) {
             return false;
         }
 
         // Environment Extra
-        $exec = $this->exec( 'set ' . $this->getName() . ' AppEnvironmentExtra ' . $this->getEnvironmentExtra() );
-        if ( $exec === false ) {
+        $exec = $this->exec('set ' . $this->getName() . ' AppEnvironmentExtra ' . $this->getEnvironmentExtra());
+        if ($exec === false) {
             return false;
         }
 
-        if ( !$this->isInstalled() ) {
+        if (!$this->isInstalled()) {
             $this->latestError = null;
 
             return false;
@@ -268,13 +267,13 @@ class Nssm
     {
         $this->stop();
 
-        $this->writeLog( 'Delete service ' . $this->getName() );
-        $exec = $this->exec( 'remove ' . $this->getName() . ' confirm' );
-        if ( $exec === false ) {
+        $this->writeLog('Delete service ' . $this->getName());
+        $exec = $this->exec('remove ' . $this->getName() . ' confirm');
+        if ($exec === false) {
             return false;
         }
 
-        if ( $this->isInstalled() ) {
+        if ($this->isInstalled()) {
             $this->latestError = null;
 
             return false;
@@ -290,14 +289,14 @@ class Nssm
      */
     public function start()
     {
-        $this->writeLog( 'Start service ' . $this->getName() );
+        $this->writeLog('Start service ' . $this->getName());
 
-        $exec = $this->exec( 'start ' . $this->getName() );
-        if ( $exec === false ) {
+        $exec = $this->exec('start ' . $this->getName());
+        if ($exec === false) {
             return false;
         }
 
-        if ( !$this->isRunning() ) {
+        if (!$this->isRunning()) {
             $this->latestError = null;
 
             return false;
@@ -313,14 +312,14 @@ class Nssm
      */
     public function stop()
     {
-        $this->writeLog( 'Stop service ' . $this->getName() );
+        $this->writeLog('Stop service ' . $this->getName());
 
-        $exec = $this->exec( 'stop ' . $this->getName() );
-        if ( $exec === false ) {
+        $exec = $this->exec('stop ' . $this->getName());
+        if ($exec === false) {
             return false;
         }
 
-        if ( !$this->isStopped() ) {
+        if (!$this->isStopped()) {
             $this->latestError = null;
 
             return false;
@@ -336,7 +335,7 @@ class Nssm
      */
     public function restart()
     {
-        if ( $this->stop() ) {
+        if ($this->stop()) {
             return $this->start();
         }
 
@@ -352,8 +351,8 @@ class Nssm
     {
         global $bearsamppRegistry;
 
-        $infos = Win32Native::getServiceInfo( $this->getName() );
-        if ( $infos === false ) {
+        $infos = Win32Native::getServiceInfo($this->getName());
+        if ($infos === false) {
             return false;
         }
 
@@ -363,14 +362,14 @@ class Nssm
             self::INFO_APP_PARAMETERS,
         );
 
-        foreach ( $infosKeys as $infoKey ) {
+        foreach ($infosKeys as $infoKey) {
             $value  = null;
             $exists = $bearsamppRegistry->exists(
                 Registry::HKEY_LOCAL_MACHINE,
                 'SYSTEM\CurrentControlSet\Services\\' . $this->getName() . '\Parameters',
                 $infoKey
             );
-            if ( $exists ) {
+            if ($exists) {
                 $value = $bearsamppRegistry->getValue(
                     Registry::HKEY_LOCAL_MACHINE,
                     'SYSTEM\CurrentControlSet\Services\\' . $this->getName() . '\Parameters',
@@ -380,7 +379,7 @@ class Nssm
             $infosNssm[$infoKey] = $value;
         }
 
-        if ( !isset( $infosNssm[self::INFO_APPLICATION] ) ) {
+        if (!isset($infosNssm[self::INFO_APPLICATION])) {
             return $infos;
         }
 
@@ -397,7 +396,7 @@ class Nssm
     public function isInstalled()
     {
         $status = $this->status();
-        $this->writeLog( 'isInstalled ' . $this->getName() . ': ' . ($status != self::STATUS_NA ? 'YES' : 'NO') . ' (status: ' . $status . ')' );
+        $this->writeLog('isInstalled ' . $this->getName() . ': ' . ($status != self::STATUS_NA ? 'YES' : 'NO') . ' (status: ' . $status . ')');
 
         return $status != self::STATUS_NA;
     }
@@ -410,7 +409,7 @@ class Nssm
     public function isRunning()
     {
         $status = $this->status();
-        $this->writeLog( 'isRunning ' . $this->getName() . ': ' . ($status == self::STATUS_RUNNING ? 'YES' : 'NO') . ' (status: ' . $status . ')' );
+        $this->writeLog('isRunning ' . $this->getName() . ': ' . ($status == self::STATUS_RUNNING ? 'YES' : 'NO') . ' (status: ' . $status . ')');
 
         return $status == self::STATUS_RUNNING;
     }
@@ -423,7 +422,7 @@ class Nssm
     public function isStopped()
     {
         $status = $this->status();
-        $this->writeLog( 'isStopped ' . $this->getName() . ': ' . ($status == self::STATUS_STOPPED ? 'YES' : 'NO') . ' (status: ' . $status . ')' );
+        $this->writeLog('isStopped ' . $this->getName() . ': ' . ($status == self::STATUS_STOPPED ? 'YES' : 'NO') . ' (status: ' . $status . ')');
 
         return $status == self::STATUS_STOPPED;
     }
@@ -436,7 +435,7 @@ class Nssm
     public function isPaused()
     {
         $status = $this->status();
-        $this->writeLog( 'isPaused ' . $this->getName() . ': ' . ($status == self::STATUS_PAUSED ? 'YES' : 'NO') . ' (status: ' . $status . ')' );
+        $this->writeLog('isPaused ' . $this->getName() . ': ' . ($status == self::STATUS_PAUSED ? 'YES' : 'NO') . ' (status: ' . $status . ')');
 
         return $status == self::STATUS_PAUSED;
     }
@@ -463,7 +462,7 @@ class Nssm
      */
     private function getServiceStatusDesc($status)
     {
-        switch ( $status ) {
+        switch ($status) {
             case self::STATUS_CONTINUE_PENDING:
                 return 'The service continue is pending.';
 
@@ -550,7 +549,7 @@ class Nssm
      */
     public function setBinPath($binPath)
     {
-        $this->binPath = str_replace( '"', '', Path::formatWindowsPath( $binPath ) );
+        $this->binPath = str_replace('"', '', Path::formatWindowsPath($binPath));
     }
 
     /**
@@ -650,7 +649,7 @@ class Nssm
      */
     public function setEnvironmentExtra($environmentExtra)
     {
-        $this->environmentExtra = Path::formatWindowsPath( $environmentExtra );
+        $this->environmentExtra = Path::formatWindowsPath($environmentExtra);
     }
 
     /**
@@ -682,11 +681,10 @@ class Nssm
     {
         global $bearsamppLang;
 
-        if ( !empty( $this->latestError ) ) {
-            return $bearsamppLang->getValue( Lang::ERROR ) . ' ' . $this->latestError;
-        }
-        elseif ( $this->latestStatus != self::STATUS_NA ) {
-            return $bearsamppLang->getValue( Lang::STATUS ) . ' ' . $this->latestStatus . ' : ' . $this->getWin32ServiceStatusDesc( $this->latestStatus );
+        if (!empty($this->latestError)) {
+            return $bearsamppLang->getValue(Lang::ERROR) . ' ' . $this->latestError;
+        } elseif ($this->latestStatus != self::STATUS_NA) {
+            return $bearsamppLang->getValue(Lang::STATUS) . ' ' . $this->latestStatus . ' : ' . $this->getWin32ServiceStatusDesc($this->latestStatus);
         }
 
         return null;

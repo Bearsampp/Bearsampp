@@ -174,14 +174,16 @@ class HttpClient
     /**
      * Generates various GitHub URLs based on the specified type.
      *
-     * @param string $type The type of URL ('user', 'repo', 'raw'). Defaults to 'user'.
-     * @param string $user The GitHub username. Defaults to 'Bearsampp'.
-     * @param string|null $repo The repository name (required for 'repo' and 'raw' types).
-     * @param string|null $branch The branch name (required for 'raw' type).
-     * @param string|null $path The file path (required for 'raw' type).
+     * @param   string       $type    The type of URL ('user', 'repo', 'raw'). Defaults to 'user'.
+     * @param   string       $user    The GitHub username. Defaults to 'Bearsampp'.
+     * @param   string|null  $repo    The repository name (required for 'repo' and 'raw' types).
+     * @param   string|null  $branch  The branch name (required for 'raw' type).
+     * @param   string|null  $path    The file path (required for 'raw' type).
+     *
      * @return string|false The generated URL or false on invalid input.
      */
-    public static function getGithubUrl($type = 'user', $user = APP_GITHUB_USER, $repo = null, $branch = null, $path = null) {
+    public static function getGithubUrl($type = 'user', $user = APP_GITHUB_USER, $repo = null, $branch = null, $path = null)
+    {
         if (empty($user) || !is_string($user)) {
             return false;
         }
@@ -198,6 +200,7 @@ class HttpClient
                     return false;
                 }
                 $repo = rawurlencode($repo);
+
                 return "https://github.com/{$user}/{$repo}";
 
             case 'issues':
@@ -205,17 +208,18 @@ class HttpClient
                     return false;
                 }
                 $repo = rawurlencode($repo);
+
                 return "https://github.com/{$user}/{$repo}/issues";
 
             case 'raw':
                 if (empty($repo) || empty($branch) || empty($path) || !is_string($repo) || !is_string($branch) || !is_string($path)) {
                     return false;
                 }
-                $repo = rawurlencode($repo);
+                $repo   = rawurlencode($repo);
                 $branch = rawurlencode($branch);
 
-                $path = ltrim($path, '/');
-                $segments = array_map('rawurlencode', explode('/', $path));
+                $path        = ltrim($path, '/');
+                $segments    = array_map('rawurlencode', explode('/', $path));
                 $pathEncoded = implode('/', $segments);
 
                 return "https://raw.githubusercontent.com/{$user}/{$repo}/{$branch}/{$pathEncoded}";
@@ -398,6 +402,7 @@ class HttpClient
      * is masked.
      *
      * @param   string  $url  The URL to redact.
+     *
      * @return  string        The URL with sensitive parameter values replaced by '******'.
      */
     public static function redactUrl($url)
@@ -431,14 +436,15 @@ class HttpClient
      * sensitive tokens never appear in log files.
      *
      * @param   string  $url  The URL to sanitise.
+     *
      * @return  string        The safe representation (e.g. "https://github.com/foo/bar").
      */
     private static function safeUrlForLog($url)
     {
-        $url = (string)$url;
+        $url    = (string)$url;
         $scheme = parse_url($url, PHP_URL_SCHEME) ?: 'https';
-        $host   = parse_url($url, PHP_URL_HOST)   ?: '';
-        $path   = parse_url($url, PHP_URL_PATH)   ?: '';
+        $host   = parse_url($url, PHP_URL_HOST) ?: '';
+        $path   = parse_url($url, PHP_URL_PATH) ?: '';
 
         if ($host === '') {
             return '(invalid-url)';
@@ -523,6 +529,7 @@ class HttpClient
     {
         if (!self::isGithubHost($url)) {
             Log::error('[PROXY] proxyFetch() blocked non-GitHub URL: ' . self::safeUrlForLog($url));
+
             return false;
         }
 
@@ -573,7 +580,7 @@ class HttpClient
             $body       = substr($response, $headerSize);
 
             // Keep only the LAST header block (the final status line and headers).
-            $blocks = preg_split('/\r?\n\r?\n/', trim($headerData));
+            $blocks      = preg_split('/\r?\n\r?\n/', trim($headerData));
             $headerBlock = end($blocks);
 
             foreach (explode("\r\n", $headerBlock) as $line) {
@@ -594,7 +601,7 @@ class HttpClient
             // Defensive fallback: no usable header size reported. Keep the whole
             // body, but still surface any headers found after the first separator.
             $separatorPos = strpos($response, "\r\n\r\n");
-            $body = ($separatorPos === false) ? $response : substr($response, $separatorPos + 4);
+            $body         = ($separatorPos === false) ? $response : substr($response, $separatorPos + 4);
             if ($separatorPos !== false) {
                 foreach (explode("\r\n", substr($response, 0, $separatorPos)) as $line) {
                     if (strpos($line, ':') === false) {
@@ -635,6 +642,7 @@ class HttpClient
     {
         if (!self::isGithubHost($url)) {
             Log::error('[PROXY] proxyDownload() blocked non-GitHub URL: ' . self::safeUrlForLog($url));
+
             return false;
         }
 
@@ -766,18 +774,18 @@ class HttpClient
 
         // Open the URL for reading. The verified SSL context makes sure the file is
         // fetched over a properly authenticated HTTPS connection.
-        $inputStream = @fopen( $url, 'rb', false, self::getSslStreamContext(true, $url) );
-        if ( $inputStream === false ) {
-            Log::error( 'Error fetching content from URL: ' . $url );
+        $inputStream = @fopen($url, 'rb', false, self::getSslStreamContext(true, $url));
+        if ($inputStream === false) {
+            Log::error('Error fetching content from URL: ' . $url);
 
             return ['error' => 'Error fetching module'];
         }
 
         // Open the file for writing
-        $outputStream = @fopen( $filePath, 'wb' );
-        if ( $outputStream === false ) {
-            Log::error( 'Error opening file for writing: ' . $filePath );
-            fclose( $inputStream );
+        $outputStream = @fopen($filePath, 'wb');
+        if ($outputStream === false) {
+            Log::error('Error opening file for writing: ' . $filePath);
+            fclose($inputStream);
 
             return ['error' => 'Error saving module'];
         }
@@ -786,26 +794,26 @@ class HttpClient
         $bufferSize = 8096; // 8KB
         $chunksRead = 0;
 
-        while ( !feof( $inputStream ) ) {
-            $buffer = fread( $inputStream, $bufferSize );
-            fwrite( $outputStream, $buffer );
+        while (!feof($inputStream)) {
+            $buffer = fread($inputStream, $bufferSize);
+            fwrite($outputStream, $buffer);
             $chunksRead++;
 
             // Send progress update
-            if ( $progressBar ) {
+            if ($progressBar) {
                 $progress = $chunksRead;
-                echo json_encode( ['progress' => $progress] ) . PHP_EOL;
+                echo json_encode(['progress' => $progress]) . PHP_EOL;
 
                 // Check if output buffering is active before calling ob_flush()
-                if ( ob_get_length() !== false ) {
+                if (ob_get_length() !== false) {
                     ob_flush();
                 }
                 flush();
             }
         }
 
-        fclose( $inputStream );
-        fclose( $outputStream );
+        fclose($inputStream);
+        fclose($outputStream);
 
         return ['success' => true];
     }
@@ -837,6 +845,7 @@ class HttpClient
 
         if ($connected) {
             fclose($connected);
+
             return true;
         }
 

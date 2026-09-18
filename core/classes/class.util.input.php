@@ -64,6 +64,7 @@ class UtilInput
                 $value = str_replace("\0", '', $value);
                 $value = preg_replace('/[\x00-\x1F\x7F]/u', '', $value);
                 $value = trim($value);
+
                 return filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             } elseif ($type == 'numeric') {
                 return (isset($_GET[$name]) && is_numeric($_GET[$name])) ? intval($_GET[$name]) : '';
@@ -93,6 +94,7 @@ class UtilInput
                 $value = str_replace("\0", '', $value);
                 $value = preg_replace('/[\x00-\x1F\x7F]/u', '', $value);
                 $value = trim($value);
+
                 return filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             } elseif ($type == 'number') {
                 return (isset($_POST[$name]) && is_numeric($_POST[$name])) ? intval($_POST[$name]) : '';
@@ -124,6 +126,7 @@ class UtilInput
 
         if (empty($sanitized)) {
             Log::warning('Invalid PID provided: ' . var_export($pid, true));
+
             return false;
         }
 
@@ -131,6 +134,7 @@ class UtilInput
 
         if ($pidInt <= 0 || $pidInt > 2147483647) {
             Log::warning('PID out of valid range: ' . $pidInt);
+
             return false;
         }
 
@@ -151,6 +155,7 @@ class UtilInput
 
         if ($portStr === '' || !preg_match('/^\d+$/', $portStr)) {
             Log::warning('Invalid port provided: ' . var_export($port, true));
+
             return false;
         }
 
@@ -158,6 +163,7 @@ class UtilInput
 
         if ($portInt < 1 || $portInt > 65535) {
             Log::warning('Port out of valid range: ' . $portInt);
+
             return false;
         }
 
@@ -176,6 +182,7 @@ class UtilInput
     {
         if (!is_string($serviceName) || empty($serviceName)) {
             Log::warning('Invalid service name: not a string or empty');
+
             return false;
         }
 
@@ -183,6 +190,7 @@ class UtilInput
 
         if (empty($sanitized)) {
             Log::warning('Service name became empty after sanitization: ' . $serviceName);
+
             return false;
         }
 
@@ -214,6 +222,7 @@ class UtilInput
         $pathWithoutEnvVars = preg_replace('/%[^%]+%/', '', $sanitized);
         if (strpos($pathWithoutEnvVars, '..') !== false) {
             Log::warning('Path traversal attempt detected: ' . $path);
+
             return false;
         }
 

@@ -43,9 +43,10 @@ class FiberModuleLoader
      * Load module in a Fiber (true concurrent)
      * Returns immediately; module loads in background
      *
-     * @param string $module Module name
-     * @param callable $loader Function that loads the module
-     * @param int $timeout Maximum wait time if accessed before ready (ms)
+     * @param   string    $module   Module name
+     * @param   callable  $loader   Function that loads the module
+     * @param   int       $timeout  Maximum wait time if accessed before ready (ms)
+     *
      * @return bool True if fiber started, false if Fibers unavailable
      */
     public static function loadInFiber(
@@ -56,11 +57,12 @@ class FiberModuleLoader
         if (!self::$enabled) {
             // Fallback: load synchronously
             call_user_func($loader);
+
             return false;
         }
 
         // Create fiber for concurrent execution
-        $fiberModule = new FiberModule($module, $loader, $timeout);
+        $fiberModule           = new FiberModule($module, $loader, $timeout);
         self::$fibers[$module] = $fiberModule;
 
         return true;
@@ -70,8 +72,9 @@ class FiberModuleLoader
      * Wait for a specific module to finish loading
      * Blocks until module is ready or timeout expires
      *
-     * @param string $module Module name
-     * @param int $timeout Maximum wait time (ms)
+     * @param   string  $module   Module name
+     * @param   int     $timeout  Maximum wait time (ms)
+     *
      * @return bool True if module loaded, false if timeout
      */
     public static function waitForModule(string $module, int $timeout = 5000): bool
@@ -87,7 +90,8 @@ class FiberModuleLoader
      * Wait for all fibers to complete
      * Useful for synchronization before proceeding
      *
-     * @param int $timeout Maximum total wait time (ms)
+     * @param   int  $timeout  Maximum total wait time (ms)
+     *
      * @return bool True if all loaded, false if timeout
      */
     public static function waitAll(int $timeout = 5000): bool
@@ -96,15 +100,16 @@ class FiberModuleLoader
             return true;
         }
 
-        $start = microtime(true);
+        $start   = microtime(true);
         $maxWait = $timeout / 1000;
 
         foreach (self::$fibers as $module => $fiber) {
-            $elapsed = microtime(true) - $start;
+            $elapsed   = microtime(true) - $start;
             $remaining = max(100, ($maxWait - $elapsed) * 1000);
 
             if (!$fiber->wait((int)$remaining)) {
                 Log::warning('Timeout waiting for module: ' . $module);
+
                 return false;
             }
         }
@@ -115,7 +120,8 @@ class FiberModuleLoader
     /**
      * Check if a module is loaded
      *
-     * @param string $module Module name
+     * @param   string  $module  Module name
+     *
      * @return bool True if module finished loading
      */
     public static function isLoaded(string $module): bool
@@ -130,7 +136,8 @@ class FiberModuleLoader
     /**
      * Check if a module is currently loading
      *
-     * @param string $module Module name
+     * @param   string  $module  Module name
+     *
      * @return bool True if still loading
      */
     public static function isLoading(string $module): bool
@@ -145,7 +152,8 @@ class FiberModuleLoader
     /**
      * Get fiber for a module (advanced usage)
      *
-     * @param string $module Module name
+     * @param   string  $module  Module name
+     *
      * @return FiberModule|null The fiber module or null
      */
     public static function getFiber(string $module): ?FiberModule
@@ -202,19 +210,19 @@ class FiberModule
      *
      * Creates and starts the fiber that runs the loader callback.
      *
-     * @param string $moduleName The module name this fiber loads.
-     * @param callable $loader The callback that loads the module.
-     * @param int $timeout Maximum wait time in milliseconds.
+     * @param   string    $moduleName  The module name this fiber loads.
+     * @param   callable  $loader      The callback that loads the module.
+     * @param   int       $timeout     Maximum wait time in milliseconds.
      */
     public function __construct(string $moduleName, callable $loader, int $timeout = 5000)
     {
         $this->moduleName = $moduleName;
-        $this->timeout = $timeout;
+        $this->timeout    = $timeout;
 
         // Create fiber (PHP 8.1+)
-        $this->fiber = new Fiber(function() use ($loader) {
+        $this->fiber = new Fiber(function () use ($loader) {
             try {
-                $this->result = call_user_func($loader);
+                $this->result      = call_user_func($loader);
                 $this->initialized = true;
             } catch (Throwable $e) {
                 Log::error('Fiber error in ' . $this->moduleName . ': ' . $e->getMessage());
@@ -235,7 +243,8 @@ class FiberModule
      * Wait for module to finish loading
      * Returns immediately if already done
      *
-     * @param int $timeout Maximum wait time (ms)
+     * @param   int  $timeout  Maximum wait time (ms)
+     *
      * @return bool True if loaded, false if timeout
      */
     public function wait(int $timeout = 5000): bool
@@ -244,7 +253,7 @@ class FiberModule
             return true;
         }
 
-        $start = microtime(true);
+        $start   = microtime(true);
         $maxWait = $timeout / 1000;
 
         while (!$this->initialized) {
@@ -268,6 +277,7 @@ class FiberModule
             // Timeout check
             if ((microtime(true) - $start) > $maxWait) {
                 Log::warning('Timeout waiting for module: ' . $this->moduleName);
+
                 return false;
             }
 

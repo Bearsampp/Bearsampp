@@ -114,6 +114,7 @@ class Tools
         if ($this->bruno == null) {
             $this->bruno = new ToolBruno('bruno', self::TYPE);
         }
+
         return $this->bruno;
     }
 
@@ -127,6 +128,7 @@ class Tools
         if ($this->composer == null) {
             $this->composer = new ToolComposer('composer', self::TYPE);
         }
+
         return $this->composer;
     }
 
@@ -140,6 +142,7 @@ class Tools
         if ($this->powershell == null) {
             $this->powershell = new ToolPowerShell('powershell', self::TYPE);
         }
+
         return $this->powershell;
     }
 
@@ -153,6 +156,7 @@ class Tools
         if ($this->ghostscript == null) {
             $this->ghostscript = new ToolGhostscript('ghostscript', self::TYPE);
         }
+
         return $this->ghostscript;
     }
 
@@ -166,6 +170,7 @@ class Tools
         if ($this->git == null) {
             $this->git = new ToolGit('git', self::TYPE);
         }
+
         return $this->git;
     }
 
@@ -179,6 +184,7 @@ class Tools
         if ($this->git == null) {
             $this->git = new ToolGit('git-gui', self::TYPE);
         }
+
         return $this->git;
     }
 
@@ -192,6 +198,7 @@ class Tools
         if ($this->ngrok == null) {
             $this->ngrok = new ToolNgrok('ngrok', self::TYPE);
         }
+
         return $this->ngrok;
     }
 
@@ -205,6 +212,7 @@ class Tools
         if ($this->perl == null) {
             $this->perl = new ToolPerl('perl', self::TYPE);
         }
+
         return $this->perl;
     }
 
@@ -218,6 +226,7 @@ class Tools
         if ($this->python == null) {
             $this->python = new ToolPython('python', self::TYPE);
         }
+
         return $this->python;
     }
 
@@ -231,6 +240,7 @@ class Tools
         if ($this->ruby == null) {
             $this->ruby = new ToolRuby('ruby', self::TYPE);
         }
+
         return $this->ruby;
     }
 }

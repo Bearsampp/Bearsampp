@@ -15,14 +15,14 @@ global $bearsamppBins, $bearsamppLang;
  * It also retrieves the list of PostgreSQL versions and displays them as badges.
  * The final result is encoded in JSON format and returned.
  *
- * @global object $bearsamppBins  Provides access to various binaries including PostgreSQL.
- * @global object $bearsamppLang  Provides access to language strings for localization.
+ * @global object $bearsamppBins Provides access to various binaries including PostgreSQL.
+ * @global object $bearsamppLang Provides access to language strings for localization.
  */
 
 // Initialize result array to store the status and version information
 $result = array(
     'checkport' => '',
-    'versions' => '',
+    'versions'  => '',
 );
 
 // Check port
@@ -30,7 +30,7 @@ $port = $bearsamppBins->getPostgresql()->getPort();
 
 $textServiceStarted = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
 $textServiceStopped = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
-$textDisabled = $bearsamppLang->getValue(Lang::DISABLED);
+$textDisabled       = $bearsamppLang->getValue(Lang::DISABLED);
 
 /**
  * Check if PostgreSQL service is enabled and update the result array with the port status.

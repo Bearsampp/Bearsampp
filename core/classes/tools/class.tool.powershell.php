@@ -65,10 +65,11 @@ class ToolPowerShell extends Module
     /**
      * Constructor for the ToolPowerShell class.
      *
-     * @param string $id The ID of the module.
-     * @param string $type The type of the module.
+     * @param   string  $id    The ID of the module.
+     * @param   string  $type  The type of the module.
      */
-    public function __construct($id, $type) {
+    public function __construct($id, $type)
+    {
         Log::initClass($this);
         $this->reload($id, $type);
     }
@@ -76,27 +77,29 @@ class ToolPowerShell extends Module
     /**
      * Reloads the configuration for the PowerShell tool.
      *
-     * @param string|null $id The ID of the module. If null, the current ID is used.
-     * @param string|null $type The type of the module. If null, the current type is used.
+     * @param   string|null  $id    The ID of the module. If null, the current ID is used.
+     * @param   string|null  $type  The type of the module. If null, the current type is used.
      */
-    public function reload($id = null, $type = null) {
+    public function reload($id = null, $type = null)
+    {
         global $bearsamppConfig, $bearsamppLang;
         Log::reloadClass($this);
 
-        $this->name = $bearsamppLang->getValue(Lang::POWERSHELL);
+        $this->name    = $bearsamppLang->getValue(Lang::POWERSHELL);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
         if ($this->bearsamppConfRaw !== false) {
-            $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
+            $this->exe       = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->launchExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_LAUNCH_EXE];
-            $this->conf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
-            $this->rows = intval($this->bearsamppConfRaw[self::LOCAL_CFG_ROWS]);
-            $this->cols = intval($this->bearsamppConfRaw[self::LOCAL_CFG_COLS]);
+            $this->conf      = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
+            $this->rows      = intval($this->bearsamppConfRaw[self::LOCAL_CFG_ROWS]);
+            $this->cols      = intval($this->bearsamppConfRaw[self::LOCAL_CFG_COLS]);
         }
 
         if (!$this->enable) {
             Log::info($this->name . ' is not enabled!');
+
             return;
         }
         if (!is_dir($this->currentPath)) {
@@ -104,6 +107,7 @@ class ToolPowerShell extends Module
         }
         if (!is_dir($this->symlinkPath)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+
             return;
         }
         if (!is_file($this->bearsamppConf)) {
@@ -129,9 +133,10 @@ class ToolPowerShell extends Module
     /**
      * Sets the version of the PowerShell tool.
      *
-     * @param string $version The version to set.
+     * @param   string  $version  The version to set.
      */
-    public function setVersion($version) {
+    public function setVersion($version)
+    {
         global $bearsamppConfig;
         $this->version = $version;
         $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
@@ -143,7 +148,8 @@ class ToolPowerShell extends Module
      *
      * @return string The executable path.
      */
-    public function getExe() {
+    public function getExe()
+    {
         return $this->exe;
     }
 
@@ -152,7 +158,8 @@ class ToolPowerShell extends Module
      *
      * @return string The launch executable path.
      */
-    public function getLaunchExe() {
+    public function getLaunchExe()
+    {
         return $this->launchExe;
     }
 
@@ -161,7 +168,8 @@ class ToolPowerShell extends Module
      *
      * @return string The configuration file path.
      */
-    public function getConf() {
+    public function getConf()
+    {
         return $this->conf;
     }
 
@@ -170,7 +178,8 @@ class ToolPowerShell extends Module
      *
      * @return int The number of rows.
      */
-    public function getRows() {
+    public function getRows()
+    {
         return $this->rows;
     }
 
@@ -179,17 +188,20 @@ class ToolPowerShell extends Module
      *
      * @return int The number of columns.
      */
-    public function getCols() {
+    public function getCols()
+    {
         return $this->cols;
     }
 
     /**
      * Gets the shell command to launch PowerShell.
      *
-     * @param string|null $args Additional arguments for the shell command.
+     * @param   string|null  $args  Additional arguments for the shell command.
+     *
      * @return string The shell command.
      */
-    public function getShell($args = null) {
+    public function getShell($args = null)
+    {
         if (empty($args)) {
             return 'cmd /c &quot;' . Path::formatWindowsPath($this->launchExe) . '&quot;';
         } else {
@@ -202,7 +214,8 @@ class ToolPowerShell extends Module
      *
      * @return string The default tab title.
      */
-    public function getTabTitleDefault() {
+    public function getTabTitleDefault()
+    {
         return 'Bearsampp PowerShell Console';
     }
 
@@ -211,7 +224,8 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for PowerShell.
      */
-    public function getTabTitlePowershell() {
+    public function getTabTitlePowershell()
+    {
         return 'PowerShell';
     }
 
@@ -220,8 +234,10 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for PEAR.
      */
-    public function getTabTitlePear() {
+    public function getTabTitlePear()
+    {
         global $bearsamppLang, $bearsamppBins;
+
         return $bearsamppLang->getValue(Lang::PEAR) . ' ' . $bearsamppBins->getPhp()->getPearVersion(true);
     }
 
@@ -230,8 +246,10 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for MySQL.
      */
-    public function getTabTitleMysql() {
+    public function getTabTitleMysql()
+    {
         global $bearsamppLang, $bearsamppBins;
+
         return $bearsamppLang->getValue(Lang::MYSQL) . ' ' . $bearsamppBins->getMysql()->getVersion();
     }
 
@@ -240,8 +258,10 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for MariaDB.
      */
-    public function getTabTitleMariadb() {
+    public function getTabTitleMariadb()
+    {
         global $bearsamppLang, $bearsamppBins;
+
         return $bearsamppLang->getValue(Lang::MARIADB) . ' ' . $bearsamppBins->getMariadb()->getVersion();
     }
 
@@ -250,23 +270,28 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for PostgreSQL.
      */
-    public function getTabTitlePostgresql() {
+    public function getTabTitlePostgresql()
+    {
         global $bearsamppLang, $bearsamppBins;
+
         return $bearsamppLang->getValue(Lang::POSTGRESQL) . ' ' . $bearsamppBins->getPostgresql()->getVersion();
     }
 
     /**
      * Gets the tab title for Git.
      *
-     * @param string|null $repoPath The repository path.
+     * @param   string|null  $repoPath  The repository path.
+     *
      * @return string The tab title for Git.
      */
-    public function getTabTitleGit($repoPath = null) {
+    public function getTabTitleGit($repoPath = null)
+    {
         global $bearsamppLang, $bearsamppTools;
         $result = $bearsamppLang->getValue(Lang::GIT) . ' ' . $bearsamppTools->getGit()->getVersion();
         if ($repoPath != null) {
             $result .= ' - ' . basename($repoPath);
         }
+
         return $result;
     }
 
@@ -275,8 +300,10 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for Node.js.
      */
-    public function getTabTitleNodejs() {
+    public function getTabTitleNodejs()
+    {
         global $bearsamppLang, $bearsamppBins;
+
         return $bearsamppLang->getValue(Lang::NODEJS) . ' ' . $bearsamppBins->getNodejs()->getVersion();
     }
 
@@ -285,8 +312,10 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for Composer.
      */
-    public function getTabTitleComposer() {
+    public function getTabTitleComposer()
+    {
         global $bearsamppLang, $bearsamppTools;
+
         return $bearsamppLang->getValue(Lang::COMPOSER) . ' ' . $bearsamppTools->getComposer()->getVersion();
     }
 
@@ -295,8 +324,10 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for Python.
      */
-    public function getTabTitlePython() {
+    public function getTabTitlePython()
+    {
         global $bearsamppLang, $bearsamppTools;
+
         return $bearsamppLang->getValue(Lang::PYTHON) . ' ' . $bearsamppTools->getPython()->getVersion();
     }
 
@@ -305,8 +336,10 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for Ruby.
      */
-    public function getTabTitleRuby() {
+    public function getTabTitleRuby()
+    {
         global $bearsamppLang, $bearsamppTools;
+
         return $bearsamppLang->getValue(Lang::RUBY) . ' ' . $bearsamppTools->getRuby()->getVersion();
     }
 
@@ -315,8 +348,10 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for Perl.
      */
-    public function getTabTitlePerl() {
+    public function getTabTitlePerl()
+    {
         global $bearsamppLang, $bearsamppTools;
+
         return $bearsamppLang->getValue(Lang::PERL) . ' ' . $bearsamppTools->getPerl()->getVersion();
     }
 
@@ -325,8 +360,10 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for Ghostscript.
      */
-    public function getTabTitleGhostscript() {
+    public function getTabTitleGhostscript()
+    {
         global $bearsamppLang, $bearsamppTools;
+
         return $bearsamppLang->getValue(Lang::GHOSTSCRIPT) . ' ' . $bearsamppTools->getGhostscript()->getVersion();
     }
 
@@ -335,8 +372,10 @@ class ToolPowerShell extends Module
      *
      * @return string The tab title for Ngrok.
      */
-    public function getTabTitleNgrok() {
+    public function getTabTitleNgrok()
+    {
         global $bearsamppLang, $bearsamppTools;
+
         return $bearsamppLang->getValue(Lang::NGROK) . ' ' . $bearsamppTools->getNgrok()->getVersion();
     }
 }

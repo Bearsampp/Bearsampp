@@ -93,8 +93,8 @@ class BinMailpit extends Module
      */
     public function __construct($id, $type)
     {
-        Log::initClass( $this );
-        $this->reload( $id, $type );
+        Log::initClass($this);
+        $this->reload($id, $type);
     }
 
     /**
@@ -106,79 +106,79 @@ class BinMailpit extends Module
     public function reload($id = null, $type = null)
     {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
-        Log::reloadClass( $this );
+        Log::reloadClass($this);
 
-        $this->name    = $bearsamppLang->getValue( Lang::MAILPIT );
-        $this->version = $bearsamppConfig->getRaw( self::ROOT_CFG_VERSION );
-        parent::reload( $id, $type );
+        $this->name    = $bearsamppLang->getValue(Lang::MAILPIT);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
+        parent::reload($id, $type);
 
-        $this->enable  = $this->enable && $bearsamppConfig->getRaw( self::ROOT_CFG_ENABLE );
-        $this->service = new Win32Service( self::SERVICE_NAME );
+        $this->enable  = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
+        $this->service = new Win32Service(self::SERVICE_NAME);
         $this->log     = Path::getLogsPath() . '/mailpit.log';
 
-        if ( $this->bearsamppConfRaw !== false ) {
+        if ($this->bearsamppConfRaw !== false) {
             $this->exe      = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->webRoot  = $this->bearsamppConfRaw[self::LOCAL_CFG_WEB_ROOT];
-            $this->uiPort   = intval( $this->bearsamppConfRaw[self::LOCAL_CFG_UI_PORT] );
-            $this->smtpPort = intval( $this->bearsamppConfRaw[self::LOCAL_CFG_SMTP_PORT] );
+            $this->uiPort   = intval($this->bearsamppConfRaw[self::LOCAL_CFG_UI_PORT]);
+            $this->smtpPort = intval($this->bearsamppConfRaw[self::LOCAL_CFG_SMTP_PORT]);
             $this->listen   = $this->bearsamppConfRaw[self::LOCAL_CFG_LISTEN];
         }
 
-        if ( !$this->enable ) {
-            Log::info( $this->name . ' is not enabled!' );
+        if (!$this->enable) {
+            Log::info($this->name . ' is not enabled!');
 
             return;
         }
-        if ( !is_dir( $this->currentPath ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->currentPath ) );
+        if (!is_dir($this->currentPath)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
 
             return;
         }
-        if ( !is_dir( $this->symlinkPath ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->symlinkPath ) );
+        if (!is_dir($this->symlinkPath)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
 
             return;
         }
-        if ( !is_file( $this->bearsamppConf ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->bearsamppConf ) );
+        if (!is_file($this->bearsamppConf)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
 
             return;
         }
-        if ( !is_file( $this->exe ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->exe ) );
+        if (!is_file($this->exe)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
 
             return;
         }
-        if ( (empty( $this->webRoot ) && $this->webRoot !== '' || is_numeric( $this->webRoot )) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_WEB_ROOT, $this->webRoot ) );
+        if ((empty($this->webRoot) && $this->webRoot !== '' || is_numeric($this->webRoot))) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_WEB_ROOT, $this->webRoot));
 
             return;
         }
-        if ( empty( $this->uiPort ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_UI_PORT, $this->uiPort ) );
+        if (empty($this->uiPort)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_UI_PORT, $this->uiPort));
 
             return;
         }
-        if ( empty( $this->smtpPort ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_SMTP_PORT, $this->smtpPort ) );
+        if (empty($this->smtpPort)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_SMTP_PORT, $this->smtpPort));
 
             return;
         }
-        if ( empty( $this->listen ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_LISTEN, $this->listen ) );
+        if (empty($this->listen)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_LISTEN, $this->listen));
 
             return;
         }
 
-        $nssm = new Nssm( self::SERVICE_NAME );
-        $nssm->setDisplayName( APP_TITLE . ' ' . $this->getName() );
-        $nssm->setBinPath( $this->exe );
-        $nssm->setParams( sprintf( self::SERVICE_PARAMS, $this->listen, $this->uiPort, $this->listen, $this->smtpPort, $this->webRoot ) );
-        $nssm->setStart( Nssm::SERVICE_DEMAND_START );
-        $nssm->setStdout( Path::getLogsPath() . '/mailpit.out.log' );
-        $nssm->setStderr( Path::getLogsPath() . '/mailpit.err.log' );
+        $nssm = new Nssm(self::SERVICE_NAME);
+        $nssm->setDisplayName(APP_TITLE . ' ' . $this->getName());
+        $nssm->setBinPath($this->exe);
+        $nssm->setParams(sprintf(self::SERVICE_PARAMS, $this->listen, $this->uiPort, $this->listen, $this->smtpPort, $this->webRoot));
+        $nssm->setStart(Nssm::SERVICE_DEMAND_START);
+        $nssm->setStdout(Path::getLogsPath() . '/mailpit.out.log');
+        $nssm->setStderr(Path::getLogsPath() . '/mailpit.err.log');
 
-        $this->service->setNssm( $nssm );
+        $this->service->setNssm($nssm);
     }
 
     /**
@@ -188,24 +188,24 @@ class BinMailpit extends Module
      */
     protected function replaceAll($params)
     {
-        $content = file_get_contents( $this->bearsamppConf );
+        $content = file_get_contents($this->bearsamppConf);
 
-        foreach ( $params as $key => $value ) {
-            $content                      = preg_replace( '|' . $key . ' = .*|', $key . ' = ' . '"' . $value . '"', $content );
+        foreach ($params as $key => $value) {
+            $content                      = preg_replace('|' . $key . ' = .*|', $key . ' = ' . '"' . $value . '"', $content);
             $this->bearsamppConfRaw[$key] = $value;
-            switch ( $key ) {
+            switch ($key) {
                 case self::LOCAL_CFG_UI_PORT:
-                    $this->uiPort = intval( $value );
+                    $this->uiPort = intval($value);
                     break;
                 case self::LOCAL_CFG_SMTP_PORT:
-                    $this->smtpPort = intval( $value );
+                    $this->smtpPort = intval($value);
                     break;
             }
         }
 
-        file_put_contents( $this->bearsamppConf, $content );
+        file_put_contents($this->bearsamppConf, $content);
 
-        self::invalidateConfigCacheForPath( $this->bearsamppConf );
+        self::invalidateConfigCacheForPath($this->bearsamppConf);
     }
 
     /**
@@ -229,7 +229,7 @@ class BinMailpit extends Module
             Nssm::INFO_APP_PARAMETERS
         );
 
-        if ( $exists ) {
+        if ($exists) {
             Log::trace("Registry key exists, updating service parameters");
 
             $serviceParams = sprintf(self::SERVICE_PARAMS, $this->listen, $this->uiPort, $this->listen, $this->smtpPort, $this->webRoot);
@@ -243,10 +243,12 @@ class BinMailpit extends Module
             );
 
             Log::trace("Registry update " . ($result ? "succeeded" : "failed"));
+
             return $result;
         }
 
         Log::trace("Registry key does not exist for Mailpit service parameters");
+
         return false;
     }
 
@@ -263,29 +265,29 @@ class BinMailpit extends Module
     {
         global $bearsamppWinbinder;
 
-        if ( !Util::isValidPort( $port ) ) {
-            Log::error( $this->getName() . ' port not valid: ' . $port );
+        if (!Util::isValidPort($port)) {
+            Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
         }
 
-        $port = intval( $port );
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+        $port = intval($port);
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
-        $isPortInUse = ServiceHelper::isPortInUse( $port );
-        if ( !$checkUsed || $isPortInUse === false ) {
+        $isPortInUse = ServiceHelper::isPortInUse($port);
+        if (!$checkUsed || $isPortInUse === false) {
             // bearsampp.conf
-            $this->setSmtpPort( $port );
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $this->setSmtpPort($port);
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             // conf
             $this->update();
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             return true;
         }
 
-        Log::debug( $this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse );
+        Log::debug($this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse);
 
         return $isPortInUse;
     }
@@ -301,40 +303,39 @@ class BinMailpit extends Module
     public function checkPort($port, $showWindow = false)
     {
         global $bearsamppLang, $bearsamppWinbinder;
-        $boxTitle = sprintf( $bearsamppLang->getValue( Lang::CHECK_PORT_TITLE ), $this->getName(), $port );
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
-        if ( !Util::isValidPort( $port ) ) {
-            Log::error( $this->getName() . ' port not valid: ' . $port );
+        if (!Util::isValidPort($port)) {
+            Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
         }
 
-        $headers = HttpClient::getHeaders( $this->listen, $port );
-        if ( !empty( $headers ) ) {
-            if ( UtilString::contains( $headers[0], 'Mailpit' ) ) {
-                Log::debug( $this->getName() . ' port ' . $port . ' is used by: ' . str_replace( '220 ', '', $headers[0] ) );
-                if ( $showWindow ) {
+        $headers = HttpClient::getHeaders($this->listen, $port);
+        if (!empty($headers)) {
+            if (UtilString::contains($headers[0], 'Mailpit')) {
+                Log::debug($this->getName() . ' port ' . $port . ' is used by: ' . str_replace('220 ', '', $headers[0]));
+                if ($showWindow) {
                     $bearsamppWinbinder->messageBoxInfo(
-                        sprintf( $bearsamppLang->getValue( Lang::PORT_USED_BY ), $port, str_replace( '220 ', '', $headers[0] ) ),
+                        sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY), $port, str_replace('220 ', '', $headers[0])),
                         $boxTitle
                     );
                 }
 
                 return true;
             }
-            Log::debug( $this->getName() . ' port ' . $port . ' is used by another application' );
-            if ( $showWindow ) {
+            Log::debug($this->getName() . ' port ' . $port . ' is used by another application');
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxWarning(
-                    sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED_BY ), $port ),
+                    sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port),
                     $boxTitle
                 );
             }
-        }
-        else {
-            Log::debug( $this->getName() . ' port ' . $port . ' is not used' );
-            if ( $showWindow ) {
+        } else {
+            Log::debug($this->getName() . ' port ' . $port . ' is not used');
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED ), $port ),
+                    sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED), $port),
                     $boxTitle
                 );
             }
@@ -353,9 +354,9 @@ class BinMailpit extends Module
      */
     public function switchVersion($version, $showWindow = false)
     {
-        Log::debug( 'Switch ' . $this->name . ' version to ' . $version );
+        Log::debug('Switch ' . $this->name . ' version to ' . $version);
 
-        return $this->updateConfig( $version, 0, $showWindow );
+        return $this->updateConfig($version, 0, $showWindow);
     }
 
     /**
@@ -371,21 +372,21 @@ class BinMailpit extends Module
     {
         global $bearsamppLang, $bearsamppWinbinder;
 
-        if ( !$this->enable ) {
+        if (!$this->enable) {
             return true;
         }
 
         $version = $version == null ? $this->version : $version;
-        Log::debug( ($sub > 0 ? str_repeat( ' ', 2 * $sub ) : '') . 'Update ' . $this->name . ' ' . $version . ' config' );
+        Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
 
-        $boxTitle = sprintf( $bearsamppLang->getValue( Lang::SWITCH_VERSION_TITLE ), $this->getName(), $version );
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
-        $bearsamppConf = str_replace( 'mailpit' . $this->getVersion(), 'mailpit' . $version, $this->bearsamppConf );
-        if ( !file_exists( $bearsamppConf ) ) {
-            Log::error( 'bearsampp config files not found for ' . $this->getName() . ' ' . $version );
-            if ( $showWindow ) {
+        $bearsamppConf = str_replace('mailpit' . $this->getVersion(), 'mailpit' . $version, $this->bearsamppConf);
+        if (!file_exists($bearsamppConf)) {
+            Log::error('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR ), $this->getName() . ' ' . $version ),
+                    sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
@@ -393,12 +394,12 @@ class BinMailpit extends Module
             return false;
         }
 
-        $bearsamppConfRaw = parse_ini_file( $bearsamppConf );
-        if ( $bearsamppConfRaw === false || !isset( $bearsamppConfRaw[self::ROOT_CFG_VERSION] ) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version ) {
-            Log::error( 'bearsampp config file malformed for ' . $this->getName() . ' ' . $version );
-            if ( $showWindow ) {
+        $bearsamppConfRaw = parse_ini_file($bearsamppConf);
+        if ($bearsamppConfRaw === false || !isset($bearsamppConfRaw[self::ROOT_CFG_VERSION]) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version) {
+            Log::error('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::BEARSAMPP_CONF_MALFORMED_ERROR ), $this->getName() . ' ' . $version ),
+                    sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
@@ -407,7 +408,7 @@ class BinMailpit extends Module
         }
 
         // bearsampp.conf
-        $this->setVersion( $version );
+        $this->setVersion($version);
 
         return true;
     }
@@ -421,7 +422,7 @@ class BinMailpit extends Module
     {
         global $bearsamppConfig;
         $this->version = $version;
-        $bearsamppConfig->replace( self::ROOT_CFG_VERSION, $version );
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
 
         // Rebuild NSSM configuration after version change
@@ -449,27 +450,26 @@ class BinMailpit extends Module
     {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
-        if ( $enabled == Config::ENABLED && !is_dir( $this->currentPath ) ) {
-            Log::debug( $this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath );
-            if ( $showWindow ) {
+        if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
+            Log::debug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::ENABLE_BUNDLE_NOT_EXIST ), $this->getName(), $this->getVersion(), $this->currentPath ),
-                    sprintf( $bearsamppLang->getValue( Lang::ENABLE_TITLE ), $this->getName() )
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_TITLE), $this->getName())
                 );
             }
             $enabled = Config::DISABLED;
         }
 
-        Log::info( $this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled') );
+        Log::info($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
         $this->enable = $enabled == Config::ENABLED;
-        $bearsamppConfig->replace( self::ROOT_CFG_ENABLE, $enabled );
+        $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
 
         $this->reload();
-        if ( $this->enable ) {
-            ServiceHelper::installService( $this, $this->smtpPort, null, $showWindow );
-        }
-        else {
-            ServiceHelper::removeService( $this->service, $this->name );
+        if ($this->enable) {
+            ServiceHelper::installService($this, $this->smtpPort, null, $showWindow);
+        } else {
+            ServiceHelper::removeService($this->service, $this->name);
         }
     }
 
@@ -510,7 +510,7 @@ class BinMailpit extends Module
      */
     public function setWebRoot($webRoot)
     {
-        $this->replace( self::LOCAL_CFG_WEB_ROOT, $webRoot );
+        $this->replace(self::LOCAL_CFG_WEB_ROOT, $webRoot);
     }
 
     /**
@@ -530,7 +530,7 @@ class BinMailpit extends Module
      */
     public function setUiPort($uiPort)
     {
-        $this->replace( self::LOCAL_CFG_UI_PORT, $uiPort );
+        $this->replace(self::LOCAL_CFG_UI_PORT, $uiPort);
     }
 
     /**
@@ -550,7 +550,7 @@ class BinMailpit extends Module
      */
     public function setSmtpPort($smtpPort)
     {
-        $this->replace( self::LOCAL_CFG_SMTP_PORT, $smtpPort );
+        $this->replace(self::LOCAL_CFG_SMTP_PORT, $smtpPort);
     }
 
     /**
@@ -570,7 +570,7 @@ class BinMailpit extends Module
      */
     public function setListen()
     {
-        return $this->replace( self::LOCAL_CFG_LISTEN, $this->listen );
+        return $this->replace(self::LOCAL_CFG_LISTEN, $this->listen);
     }
 }
 

@@ -35,40 +35,34 @@ class ActionService
         // Reload bins
         $bearsamppBins->reload();
 
-        if ( isset( $args[0] ) && !empty( $args[0] ) && isset( $args[1] ) && !empty( $args[1] ) ) {
+        if (isset($args[0]) && !empty($args[0]) && isset($args[1]) && !empty($args[1])) {
             $sName          = $args[0];
             $bin            = null;
             $port           = 0;
             $syntaxCheckCmd = null;
 
-            if ( $sName == BinMailpit::SERVICE_NAME ) {
+            if ($sName == BinMailpit::SERVICE_NAME) {
                 $bin  = $bearsamppBins->getMailpit();
                 $port = $bin->getSmtpPort();
-            }
-            elseif ( $sName == BinMemcached::SERVICE_NAME ) {
+            } elseif ($sName == BinMemcached::SERVICE_NAME) {
                 $bin  = $bearsamppBins->getMemcached();
                 $port = $bin->getPort();
-            }
-            elseif ( $sName == BinApache::SERVICE_NAME ) {
+            } elseif ($sName == BinApache::SERVICE_NAME) {
                 $bin            = $bearsamppBins->getApache();
                 $port           = $bin->getPort();
                 $syntaxCheckCmd = BinApache::CMD_SYNTAX_CHECK;
-            }
-            elseif ( $sName == BinMysql::SERVICE_NAME ) {
+            } elseif ($sName == BinMysql::SERVICE_NAME) {
                 $bin            = $bearsamppBins->getMysql();
                 $port           = $bin->getPort();
                 $syntaxCheckCmd = BinMysql::CMD_SYNTAX_CHECK;
-            }
-            elseif ( $sName == BinMariadb::SERVICE_NAME ) {
+            } elseif ($sName == BinMariadb::SERVICE_NAME) {
                 $bin            = $bearsamppBins->getMariadb();
                 $port           = $bin->getPort();
                 $syntaxCheckCmd = BinMariadb::CMD_SYNTAX_CHECK;
-            }
-            elseif ( $sName == BinPostgresql::SERVICE_NAME ) {
+            } elseif ($sName == BinPostgresql::SERVICE_NAME) {
                 $bin  = $bearsamppBins->getPostgresql();
                 $port = $bin->getPort();
-            }
-            elseif ( $sName == BinXlight::SERVICE_NAME ) {
+            } elseif ($sName == BinXlight::SERVICE_NAME) {
                 $bin  = $bearsamppBins->getXlight();
                 $port = $bin->getPort();
             }
@@ -76,26 +70,21 @@ class ActionService
             $name    = $bin->getName();
             $service = $bin->getService();
 
-            if ( !empty( $service ) && $service instanceof Win32Service ) {
-                if ( $args[1] == self::CREATE ) {
-                    $this->create( $service );
-                }
-                elseif ( $args[1] == self::START ) {
-                    $this->start( $bin, $syntaxCheckCmd );
-                }
-                elseif ( $args[1] == self::STOP ) {
-                    $this->stop( $service );
-                }
-                elseif ( $args[1] == self::RESTART ) {
-                    $this->restart( $bin, $syntaxCheckCmd );
-                }
-                elseif ( $args[1] == self::INSTALL ) {
-                    if ( !empty( $port ) ) {
-                        $this->install( $bin, $port, $syntaxCheckCmd );
+            if (!empty($service) && $service instanceof Win32Service) {
+                if ($args[1] == self::CREATE) {
+                    $this->create($service);
+                } elseif ($args[1] == self::START) {
+                    $this->start($bin, $syntaxCheckCmd);
+                } elseif ($args[1] == self::STOP) {
+                    $this->stop($service);
+                } elseif ($args[1] == self::RESTART) {
+                    $this->restart($bin, $syntaxCheckCmd);
+                } elseif ($args[1] == self::INSTALL) {
+                    if (!empty($port)) {
+                        $this->install($bin, $port, $syntaxCheckCmd);
                     }
-                }
-                elseif ( $args[1] == self::REMOVE ) {
-                    $this->remove( $service, $name );
+                } elseif ($args[1] == self::REMOVE) {
+                    $this->remove($service, $name);
                 }
             }
         }
@@ -123,8 +112,8 @@ class ActionService
     {
         // Update loading screen to show which service is starting
         Util::updateLoadingText('Starting ' . $bin->getName() . '...');
-        
-        ServiceHelper::startService( $bin, $syntaxCheckCmd, true );
+
+        ServiceHelper::startService($bin, $syntaxCheckCmd, true);
     }
 
     /**
@@ -136,7 +125,7 @@ class ActionService
     {
         // Update loading screen to show which service is stopping
         Util::updateLoadingText('Stopping ' . $service->getName() . '...');
-        
+
         $service->stop();
     }
 
@@ -150,9 +139,9 @@ class ActionService
     {
         // Update loading screen to show service is restarting
         Util::updateLoadingText('Restarting ' . $bin->getName() . '...');
-        
-        if ( $bin->getService()->stop() ) {
-            $this->start( $bin, $syntaxCheckCmd );
+
+        if ($bin->getService()->stop()) {
+            $this->start($bin, $syntaxCheckCmd);
         }
     }
 
@@ -165,7 +154,7 @@ class ActionService
      */
     private function install($bin, $port, $syntaxCheckCmd)
     {
-        ServiceHelper::installService( $bin, $port, $syntaxCheckCmd, true );
+        ServiceHelper::installService($bin, $port, $syntaxCheckCmd, true);
     }
 
     /**
@@ -176,7 +165,7 @@ class ActionService
      */
     private function remove($service, $name)
     {
-        ServiceHelper::removeService( $service, $name );
+        ServiceHelper::removeService($service, $name);
     }
 }
 

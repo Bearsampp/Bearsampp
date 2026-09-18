@@ -227,7 +227,7 @@ class Lang
     const EDIT_ALIAS_TITLE = 'editAliasTitle';
 
     // Action Delete vhost
-    const DELETE_VHOST_TITLE =  'deleteVhostTitle';
+    const DELETE_VHOST_TITLE = 'deleteVhostTitle';
     const DELETE_VHOST = 'deleteVhost';
     const VHOST_REMOVED = 'vhostRemoved';
     const VHOST_REMOVE_ERROR = 'vhostRemoveError';

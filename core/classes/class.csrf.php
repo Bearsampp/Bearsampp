@@ -92,8 +92,8 @@ class Csrf
 
         session_set_cookie_params([
             'lifetime' => 0,
-            'path' => '/',
-            'secure' => $secure,
+            'path'     => '/',
+            'secure'   => $secure,
             'httponly' => true,
             'samesite' => 'Strict'
         ]);
@@ -163,8 +163,9 @@ class Csrf
     /**
      * Validates a CSRF token.
      *
-     * @param string|null $token The token to validate
-     * @param bool $removeAfterValidation Whether to remove the token after successful validation (one-time use)
+     * @param   string|null  $token                  The token to validate
+     * @param   bool         $removeAfterValidation  Whether to remove the token after successful validation (one-time use)
+     *
      * @return bool True if token is valid, false otherwise
      */
     public static function validateToken($token, $removeAfterValidation = false)
@@ -174,12 +175,14 @@ class Csrf
         // Check if token is provided
         if (empty($token) || !is_string($token)) {
             Log::warning('CSRF validation failed: No token provided');
+
             return false;
         }
 
         // Check if token exists in session
         if (!isset($_SESSION[self::SESSION_KEY][$token])) {
             Log::warning('CSRF validation failed: Token not found in session');
+
             return false;
         }
 
@@ -188,6 +191,7 @@ class Csrf
         if (time() - $tokenTimestamp > self::TOKEN_EXPIRATION) {
             Log::warning('CSRF validation failed: Token expired');
             unset($_SESSION[self::SESSION_KEY][$token]);
+
             return false;
         }
 
@@ -207,7 +211,8 @@ class Csrf
      * Checks $_POST['csrf_token'] first, then the X-CSRF-Token header.
      * Also verifies the request is same-origin.
      *
-     * @param bool $removeAfterValidation Whether to remove the token after successful validation
+     * @param   bool  $removeAfterValidation  Whether to remove the token after successful validation
+     *
      * @return bool True if token is valid, false otherwise
      */
     public static function validateRequest($removeAfterValidation = false)
@@ -237,6 +242,7 @@ class Csrf
         }
 
         Log::warning('CSRF validation failed: No token in request');
+
         return false;
     }
 
@@ -262,6 +268,7 @@ class Csrf
         $httpHost = isset($_SERVER['HTTP_HOST']) ? (string)$_SERVER['HTTP_HOST'] : '';
         if ($httpHost === '') {
             Log::warning('CSRF validation failed: HTTP_HOST not available');
+
             return false;
         }
 
@@ -273,6 +280,7 @@ class Csrf
         $requestHost = self::normalizeHost($httpHost);
         if (!self::isHostAllowed($requestHost, $allowedHosts)) {
             Log::warning('CSRF validation failed: Request host "' . $requestHost . '" is not an allowed host');
+
             return false;
         }
 
@@ -289,6 +297,7 @@ class Csrf
         }
 
         Log::warning('CSRF validation failed: Missing Origin and Referer headers');
+
         return false;
     }
 
@@ -345,7 +354,7 @@ class Csrf
                     // wrongly reject legitimate requests when HTTPS (secure Apache
                     // settings) is used.
                     $parsedHosts = array();
-                    $vhostsPath = Path::getVhostsPath();
+                    $vhostsPath  = Path::getVhostsPath();
                     if (is_dir($vhostsPath)) {
                         foreach ($vhostNames as $vhost) {
                             $content = @file_get_contents($vhostsPath . '/' . $vhost . '.conf');
@@ -362,7 +371,7 @@ class Csrf
                                         $normalized = self::normalizeHost($declaredHost);
                                         if ($normalized !== '') {
                                             $parsedHosts[] = $normalized;
-                                            $found = true;
+                                            $found         = true;
                                         }
                                     }
                                 }
@@ -397,8 +406,9 @@ class Csrf
      * www.vhost.local matches *.vhost.local). Wildcards mirror the certificate
      * coverage BearSampp generates for virtual hosts.
      *
-     * @param string $host The raw host to check.
-     * @param array $allowedHosts The allowlist of normalized hosts and wildcards.
+     * @param   string  $host          The raw host to check.
+     * @param   array   $allowedHosts  The allowlist of normalized hosts and wildcards.
+     *
      * @return bool True if the host is allowed, false otherwise.
      */
     private static function isHostAllowed($host, array $allowedHosts)
@@ -428,7 +438,8 @@ class Csrf
      * Normalizes a host header/name to a comparable form: lowercased, with any
      * explicit port removed and IPv6 addresses bracketed ([::1]).
      *
-     * @param string $host The raw host.
+     * @param   string  $host  The raw host.
+     *
      * @return string The normalized host.
      */
     private static function normalizeHost($host)
@@ -454,10 +465,11 @@ class Csrf
      * Checks that an Origin/Referer URL belongs to an allowed host and matches
      * the scheme, host and effective port the request was addressed to.
      *
-     * @param string $url The Origin or Referer header value.
-     * @param string $httpHost The raw HTTP_HOST header (may include a port).
-     * @param string $scheme The request scheme ('http' or 'https').
-     * @param array $allowedHosts The allowlist of permitted hosts.
+     * @param   string  $url           The Origin or Referer header value.
+     * @param   string  $httpHost      The raw HTTP_HOST header (may include a port).
+     * @param   string  $scheme        The request scheme ('http' or 'https').
+     * @param   array   $allowedHosts  The allowlist of permitted hosts.
+     *
      * @return bool True if the origin is allowed, false otherwise.
      */
     private static function isAllowedOrigin($url, $httpHost, $scheme, array $allowedHosts)
@@ -465,6 +477,7 @@ class Csrf
         $parts = parse_url($url);
         if ($parts === false || empty($parts['host'])) {
             Log::warning('CSRF validation failed: Unparseable Origin/Referer header');
+
             return false;
         }
 
@@ -472,24 +485,28 @@ class Csrf
         // never contain them, so this is purely defense in depth.
         if (isset($parts['user']) || isset($parts['pass'])) {
             Log::warning('CSRF validation failed: Origin/Referer header must not contain credentials');
+
             return false;
         }
 
         $originScheme = isset($parts['scheme']) ? strtolower($parts['scheme']) : '';
         if (!in_array($originScheme, array('http', 'https'), true)) {
             Log::warning('CSRF validation failed: Unsupported Origin/Referer scheme "' . $originScheme . '"');
+
             return false;
         }
 
         $originHost = self::normalizeHost($parts['host']);
         if (!self::isHostAllowed($originHost, $allowedHosts)) {
             Log::warning('CSRF validation failed: Origin/Referer host "' . $originHost . '" is not an allowed host');
+
             return false;
         }
 
         // The scheme of the origin must match the scheme the request was made over
         if ($originScheme !== $scheme) {
             Log::warning('CSRF validation failed: Origin/Referer scheme "' . $originScheme . '" does not match request scheme "' . $scheme . '"');
+
             return false;
         }
 
@@ -497,12 +514,14 @@ class Csrf
         $requestHost = self::normalizeHost($httpHost);
         if ($originHost !== $requestHost) {
             Log::warning('CSRF validation failed: Origin/Referer host "' . $originHost . '" does not match request host "' . $requestHost . '"');
+
             return false;
         }
 
         // The effective port of the origin must match the request port
         if (self::getOriginPort($parts, $originScheme) !== self::getRequestPort($httpHost, $scheme)) {
             Log::warning('CSRF validation failed: Origin/Referer port mismatch');
+
             return false;
         }
 
@@ -513,8 +532,9 @@ class Csrf
      * Resolves the effective port of an Origin/Referer URL, falling back to the
      * default port of the scheme when none is explicitly present.
      *
-     * @param array $parts The parsed URL components.
-     * @param string $scheme The origin scheme ('http' or 'https').
+     * @param   array   $parts   The parsed URL components.
+     * @param   string  $scheme  The origin scheme ('http' or 'https').
+     *
      * @return int The effective port.
      */
     private static function getOriginPort(array $parts, $scheme)
@@ -522,6 +542,7 @@ class Csrf
         if (isset($parts['port']) && is_numeric($parts['port'])) {
             return (int)$parts['port'];
         }
+
         return $scheme === 'https' ? 443 : 80;
     }
 
@@ -529,8 +550,9 @@ class Csrf
      * Resolves the effective port of the request from the HTTP_HOST header,
      * falling back to the default port of the scheme when none is present.
      *
-     * @param string $httpHost The raw HTTP_HOST header (may include a port).
-     * @param string $scheme The request scheme ('http' or 'https').
+     * @param   string  $httpHost  The raw HTTP_HOST header (may include a port).
+     * @param   string  $scheme    The request scheme ('http' or 'https').
+     *
      * @return int The effective port.
      */
     private static function getRequestPort($httpHost, $scheme)
@@ -538,6 +560,7 @@ class Csrf
         if (preg_match('/:(\d+)$/', $httpHost, $matches)) {
             return (int)$matches[1];
         }
+
         return $scheme === 'https' ? 443 : 80;
     }
 
@@ -563,12 +586,11 @@ class Csrf
             // Extract HTTP headers from $_SERVER
             if (substr($key, 0, 5) === 'HTTP_') {
                 // Convert HTTP_X_CSRF_TOKEN to X-Csrf-Token
-                $headerName = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
+                $headerName           = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
                 $headers[$headerName] = $value;
-            }
-            // Handle CONTENT_TYPE and CONTENT_LENGTH specially
+            } // Handle CONTENT_TYPE and CONTENT_LENGTH specially
             elseif (in_array($key, ['CONTENT_TYPE', 'CONTENT_LENGTH'])) {
-                $headerName = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', $key))));
+                $headerName           = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', $key))));
                 $headers[$headerName] = $value;
             }
         }
@@ -587,7 +609,7 @@ class Csrf
             return 0;
         }
 
-        $removed = 0;
+        $removed     = 0;
         $currentTime = time();
 
         foreach ($_SESSION[self::SESSION_KEY] as $token => $timestamp) {
@@ -629,6 +651,7 @@ class Csrf
     public static function getTokenField()
     {
         $token = self::getToken();
+
         return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '">';
     }
 
@@ -641,6 +664,7 @@ class Csrf
     public static function getTokenMeta()
     {
         $token = self::getToken();
+
         return '<meta name="csrf-token" content="' . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '">';
     }
 
@@ -648,7 +672,8 @@ class Csrf
      * Validates request and sends JSON error response if validation fails.
      * This is a convenience method for AJAX endpoints.
      *
-     * @param bool $removeAfterValidation Whether to remove the token after successful validation
+     * @param   bool  $removeAfterValidation  Whether to remove the token after successful validation
+     *
      * @return void Exits with JSON error if validation fails
      */
     public static function validateOrDie($removeAfterValidation = false)
@@ -657,7 +682,7 @@ class Csrf
             http_response_code(403);
             header('Content-Type: application/json');
             echo json_encode([
-                'error' => 'CSRF validation failed',
+                'error'   => 'CSRF validation failed',
                 'message' => 'Invalid or expired security token. Please refresh the page and try again.'
             ]);
             exit;
@@ -674,10 +699,10 @@ class Csrf
     {
         self::init();
 
-        $tokens = $_SESSION[self::SESSION_KEY] ?? [];
+        $tokens      = $_SESSION[self::SESSION_KEY] ?? [];
         $currentTime = time();
-        $expired = 0;
-        $valid = 0;
+        $expired     = 0;
+        $valid       = 0;
 
         foreach ($tokens as $timestamp) {
             if ($currentTime - $timestamp > self::TOKEN_EXPIRATION) {
@@ -688,10 +713,10 @@ class Csrf
         }
 
         return [
-            'total' => count($tokens),
-            'valid' => $valid,
-            'expired' => $expired,
-            'max_tokens' => self::MAX_TOKENS,
+            'total'              => count($tokens),
+            'valid'              => $valid,
+            'expired'            => $expired,
+            'max_tokens'         => self::MAX_TOKENS,
             'expiration_seconds' => self::TOKEN_EXPIRATION
         ];
     }

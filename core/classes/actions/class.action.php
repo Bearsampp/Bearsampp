@@ -83,7 +83,7 @@ class Action
     public function process()
     {
         if ($this->exists()) {
-            $action = UtilInput::cleanArgv(1);
+            $action      = UtilInput::cleanArgv(1);
             $actionClass = 'Action' . ucfirst($action);
 
             $args = array();
@@ -120,8 +120,9 @@ class Action
      * checks if the class exists, and then initializes the action class with the
      * provided arguments.
      *
-     * @param string $actionName The name of the action to call.
-     * @param mixed $actionArgs Optional arguments for the action.
+     * @param   string  $actionName  The name of the action to call.
+     * @param   mixed   $actionArgs  Optional arguments for the action.
+     *
      * @return void
      */
     public function call($actionName, $actionArgs = null)

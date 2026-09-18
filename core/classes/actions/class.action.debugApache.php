@@ -29,7 +29,8 @@ class ActionDebugApache extends ActionDebugBase
     /**
      * Get the Apache binary instance
      *
-     * @param object $bearsamppBins The bins object containing all service binaries
+     * @param   object  $bearsamppBins  The bins object containing all service binaries
+     *
      * @return BinApache The Apache binary instance
      */
     protected function getBinInstance($bearsamppBins)
@@ -45,33 +46,33 @@ class ActionDebugApache extends ActionDebugBase
     protected function getCommandMapping()
     {
         return [
-            BinApache::CMD_VERSION_NUMBER => [
-                'lang' => Lang::DEBUG_APACHE_VERSION_NUMBER,
+            BinApache::CMD_VERSION_NUMBER    => [
+                'lang'   => Lang::DEBUG_APACHE_VERSION_NUMBER,
                 'editor' => false
             ],
-            BinApache::CMD_COMPILE_SETTINGS => [
-                'lang' => Lang::DEBUG_APACHE_COMPILE_SETTINGS,
+            BinApache::CMD_COMPILE_SETTINGS  => [
+                'lang'   => Lang::DEBUG_APACHE_COMPILE_SETTINGS,
                 'editor' => false
             ],
-            BinApache::CMD_COMPILED_MODULES => [
-                'lang' => Lang::DEBUG_APACHE_COMPILED_MODULES,
+            BinApache::CMD_COMPILED_MODULES  => [
+                'lang'   => Lang::DEBUG_APACHE_COMPILED_MODULES,
                 'editor' => false
             ],
             BinApache::CMD_CONFIG_DIRECTIVES => [
-                'lang' => Lang::DEBUG_APACHE_CONFIG_DIRECTIVES,
+                'lang'   => Lang::DEBUG_APACHE_CONFIG_DIRECTIVES,
                 'editor' => true
             ],
-            BinApache::CMD_VHOSTS_SETTINGS => [
-                'lang' => Lang::DEBUG_APACHE_VHOSTS_SETTINGS,
+            BinApache::CMD_VHOSTS_SETTINGS   => [
+                'lang'   => Lang::DEBUG_APACHE_VHOSTS_SETTINGS,
                 'editor' => true
             ],
-            BinApache::CMD_LOADED_MODULES => [
-                'lang' => Lang::DEBUG_APACHE_LOADED_MODULES,
+            BinApache::CMD_LOADED_MODULES    => [
+                'lang'   => Lang::DEBUG_APACHE_LOADED_MODULES,
                 'editor' => true
             ],
-            BinApache::CMD_SYNTAX_CHECK => [
-                'lang' => Lang::DEBUG_APACHE_SYNTAX_CHECK,
-                'editor' => false,
+            BinApache::CMD_SYNTAX_CHECK      => [
+                'lang'        => Lang::DEBUG_APACHE_SYNTAX_CHECK,
+                'editor'      => false,
                 'syntaxCheck' => true
             ]
         ];

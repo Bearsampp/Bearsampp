@@ -13,17 +13,17 @@
  */
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (document.querySelector('a[name=apache]') || document.getElementById('apache')) {
-    createStatusFetcher('apache', [
-      'checkport',
-      { data: 'versions', selector: 'version-list' },
-      'modulescount',
-      'aliasescount',
-      'vhostscount',
-      'moduleslist',
-      'aliaseslist',
-      'wwwdirectory',
-      'vhostslist'
-    ]);
-  }
+	if (document.querySelector('a[name=apache]') || document.getElementById('apache')) {
+		createStatusFetcher('apache', [
+			'checkport',
+			{data: 'versions', selector: 'version-list'},
+			'modulescount',
+			'aliasescount',
+			'vhostscount',
+			'moduleslist',
+			'aliaseslist',
+			'wwwdirectory',
+			'vhostslist'
+		]);
+	}
 });

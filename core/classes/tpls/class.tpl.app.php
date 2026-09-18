@@ -36,9 +36,9 @@ class TplApp
      * This method generates the main sections of the application, including configuration,
      * services, messages, startup actions, and menu settings.
      *
+     * @return string The generated sections as a concatenated string.
      * @global object $bearsamppCore Provides access to core functionalities and configurations.
      *
-     * @return string The generated sections as a concatenated string.
      */
     public static function process()
     {
@@ -72,8 +72,8 @@ class TplApp
     /**
      * Generates a section name based on the provided name and arguments.
      *
-     * @param string $name The base name of the section.
-     * @param array $args Optional arguments to include in the section name.
+     * @param   string  $name  The base name of the section.
+     * @param   array   $args  Optional arguments to include in the section name.
      *
      * @return string The generated section name.
      */
@@ -85,16 +85,17 @@ class TplApp
     /**
      * Generates the content of a section based on the provided name, class, and arguments.
      *
-     * @param string $name The base name of the section.
-     * @param string $class The class name containing the method to generate the section content.
-     * @param array $args Optional arguments to pass to the method.
+     * @param   string  $name   The base name of the section.
+     * @param   string  $class  The class name containing the method to generate the section content.
+     * @param   array   $args   Optional arguments to pass to the method.
      *
      * @return string The generated section content.
      */
     public static function getSectionContent($name, $class, $args = array())
     {
         $baseMethod = 'get' . ucfirst($name);
-        $args = $args == null ? array() : $args;
+        $args       = $args == null ? array() : $args;
+
         return '[' . self::getSectionName($name, $args) . ']' . PHP_EOL .
             call_user_func_array($class . '::' . $baseMethod, $args);
     }
@@ -102,15 +103,15 @@ class TplApp
     /**
      * Generates an action string to run a specific action.
      *
-     * @param string $action The action to run.
-     * @param array $args Optional arguments for the action.
-     * @param array $item Optional item details for the action.
-     * @param bool $waitUntilTerminated Whether to wait until the action is terminated.
-     *
-     * @global object $bearsamppRoot Provides access to the root directory of the application.
-     * @global object $bearsamppCore Provides access to core functionalities and configurations.
+     * @param   string  $action               The action to run.
+     * @param   array   $args                 Optional arguments for the action.
+     * @param   array   $item                 Optional item details for the action.
+     * @param   bool    $waitUntilTerminated  Whether to wait until the action is terminated.
      *
      * @return string The generated action string.
+     * @global object   $bearsamppCore        Provides access to core functionalities and configurations.
+     *
+     * @global object   $bearsamppRoot        Provides access to the root directory of the application.
      */
     public static function getActionRun($action, $args = array(), $item = array(), $waitUntilTerminated = true)
     {
@@ -141,26 +142,26 @@ class TplApp
     /**
      * Generates a multi-action string for a specific action.
      *
-     * @param string $action The action to run.
-     * @param array $args Optional arguments for the action.
-     * @param array $item Optional item details for the action.
-     * @param bool $disabled Whether the action is disabled.
-     * @param string $class The class name containing the method to generate the section content.
+     * @param   string  $action    The action to run.
+     * @param   array   $args      Optional arguments for the action.
+     * @param   array   $item      Optional item details for the action.
+     * @param   bool    $disabled  Whether the action is disabled.
+     * @param   string  $class     The class name containing the method to generate the section content.
      *
      * @return array An array containing the call string and the section content.
      */
     public static function getActionMulti($action, $args = array(), $item = array(), $disabled = false, $class = false)
     {
-        $action = 'action' . ucfirst($action);
-        $args = $args == null ? array() : $args;
+        $action      = 'action' . ucfirst($action);
+        $args        = $args == null ? array() : $args;
         $sectionName = self::getSectionName($action, $args);
 
         $call = 'Action: multi; Actions: ' . $sectionName;
 
         if (!empty($item)) {
             $call = 'Type: item; ' . $call .
-            '; Caption: "' . $item[self::ITEM_CAPTION] . '"' .
-            (!empty($item[self::ITEM_GLYPH]) ? '; Glyph: "' . $item[self::ITEM_GLYPH] . '"' : '');
+                '; Caption: "' . $item[self::ITEM_CAPTION] . '"' .
+                (!empty($item[self::ITEM_GLYPH]) ? '; Glyph: "' . $item[self::ITEM_GLYPH] . '"' : '');
         } else {
             $call .= '; Flags: waituntilterminated';
         }
@@ -181,9 +182,9 @@ class TplApp
     /**
      * Generates a menu with the specified caption, menu name, and class.
      *
-     * @param string $caption The caption for the menu.
-     * @param string $menu The name of the menu.
-     * @param string $class The class name containing the method to generate the menu content.
+     * @param   string  $caption  The caption for the menu.
+     * @param   string  $menu     The name of the menu.
+     * @param   string  $class    The class name containing the method to generate the menu content.
      *
      * @return array An array containing the call string and the menu content.
      */
@@ -202,10 +203,10 @@ class TplApp
     /**
      * Generates a menu with the specified caption, menu name, class, and enabled state.
      *
-     * @param string $caption The caption for the menu.
-     * @param string $menu The name of the menu.
-     * @param string $class The class name containing the method to generate the menu content.
-     * @param bool $enabled Whether the menu is enabled.
+     * @param   string  $caption  The caption for the menu.
+     * @param   string  $menu     The name of the menu.
+     * @param   string  $class    The class name containing the method to generate the menu content.
+     * @param   bool    $enabled  Whether the menu is enabled.
      *
      * @return array An array containing the call string and the menu content.
      */
@@ -224,9 +225,9 @@ class TplApp
     /**
      * Generates the services section.
      *
+     * @return string The generated services section.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @return string The generated services section.
      */
     private static function getSectionServices()
     {
@@ -257,20 +258,20 @@ class TplApp
     /**
      * Generates the right menu section.
      *
+     * @return string The generated right menu section.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return string The generated right menu section.
      */
     private static function getSectionMenuRight()
     {
         global $bearsamppLang;
 
-        $tplReload = TplAppReload::process();
-        $tplBrowser = TplAppBrowser::process();
-        $tplLang = TplAppLang::process();
-        $tplLogsVerbose = TplAppLogsVerbose::process();
+        $tplReload        = TplAppReload::process();
+        $tplBrowser       = TplAppBrowser::process();
+        $tplLang          = TplAppLang::process();
+        $tplLogsVerbose   = TplAppLogsVerbose::process();
         $tplLaunchStartup = TplAppLaunchStartup::process();
-        $tplExit = TplAppExit::process();
+        $tplExit          = TplAppExit::process();
 
         return
             // Items
@@ -312,35 +313,35 @@ class TplApp
     /**
      * Generates the left menu section.
      *
-     * @global object $bearsamppRoot Provides access to the root directory of the application.
+     * @return string The generated left menu section.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return string The generated left menu section.
+     * @global object $bearsamppRoot Provides access to the root directory of the application.
      */
     private static function getSectionMenuLeft()
     {
         global $bearsamppRoot, $bearsamppBins, $bearsamppLang;
 
-        $tplApache = TplAppApache::process();
-        $tplMailpit = TplAppMailpit::process();
-        $tplMariadb = TplAppMariadb::process();
-        $tplMemcached = TplAppMemcached::process();
-        $tplMysql = TplAppMysql::process();
-        $tplNodejs = TplAppNodejs::process();
-        $tplPhp = TplAppPhp::process();
+        $tplApache     = TplAppApache::process();
+        $tplMailpit    = TplAppMailpit::process();
+        $tplMariadb    = TplAppMariadb::process();
+        $tplMemcached  = TplAppMemcached::process();
+        $tplMysql      = TplAppMysql::process();
+        $tplNodejs     = TplAppNodejs::process();
+        $tplPhp        = TplAppPhp::process();
         $tplPostgresql = TplAppPostgresql::process();
-        $tplXlight = TplAppXlight::process();
+        $tplXlight     = TplAppXlight::process();
 
-        $tplApps = TplAppApps::process();
-        $tplLogs = TplAppLogs::process();
+        $tplApps  = TplAppApps::process();
+        $tplLogs  = TplAppLogs::process();
         $tplTools = TplAppTools::process();
 
         $tplServices = TplAppServices::process();
 
         $tplOnline = TplAppOnline::process();
 
-        $httpUrl = 'http://localhost' . ($bearsamppBins->getApache()->getPort() != 80 ? ':' . $bearsamppBins->getApache()->getPort() : '');
+        $httpUrl  = 'http://localhost' . ($bearsamppBins->getApache()->getPort() != 80 ? ':' . $bearsamppBins->getApache()->getPort() : '');
         $httpsUrl = 'https://localhost' . ($bearsamppBins->getApache()->getSslPort() != 443 ? ':' . $bearsamppBins->getApache()->getSslPort() : '');
 
         return

@@ -25,9 +25,9 @@ class TplAppApps
      *
      * This method generates the "Apps" menu by calling the `getMenu` method from the `TplApp` class.
      *
+     * @return array An array containing the call string and the menu content.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return array An array containing the call string and the menu content.
      */
     public static function process()
     {
@@ -42,9 +42,9 @@ class TplAppApps
      * This method generates the content of the "Apps" menu by adding links to various applications
      * such as phpMyAdmin and phpPgAdmin.
      *
+     * @return string The generated menu content as a concatenated string.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return string The generated menu content as a concatenated string.
      */
     public static function getMenuApps()
     {

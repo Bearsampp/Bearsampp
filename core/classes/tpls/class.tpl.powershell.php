@@ -58,28 +58,64 @@ class TplPowerShell
         $fontName = 'CaskaydiaMono NF'; // Default Nerd Font
 
         // Collect all console window titles that need font configuration
-        $titles = [];
+        $titles   = [];
         $titles[] = $bearsamppTools->getPowerShell()->getTabTitleDefault();
         $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePowershell();
         $titles[] = 'Console';
         $titles[] = 'Bearsampp Powershell Console'; // Fallback casing
 
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePear(); } catch (Exception $e) {}
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleMysql(); } catch (Exception $e) {}
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleMariadb(); } catch (Exception $e) {}
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePostgresql(); } catch (Exception $e) {}
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleGit(); } catch (Exception $e) {}
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleNodejs(); } catch (Exception $e) {}
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleComposer(); } catch (Exception $e) {}
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePython(); } catch (Exception $e) {}
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleRuby(); } catch (Exception $e) {}
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePerl(); } catch (Exception $e) {}
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleGhostscript(); } catch (Exception $e) {}
-        try { $titles[] = $bearsamppTools->getPowerShell()->getTabTitleNgrok(); } catch (Exception $e) {}
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePear();
+        } catch (Exception $e) {
+        }
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitleMysql();
+        } catch (Exception $e) {
+        }
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitleMariadb();
+        } catch (Exception $e) {
+        }
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePostgresql();
+        } catch (Exception $e) {
+        }
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitleGit();
+        } catch (Exception $e) {
+        }
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitleNodejs();
+        } catch (Exception $e) {
+        }
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitleComposer();
+        } catch (Exception $e) {
+        }
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePython();
+        } catch (Exception $e) {
+        }
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitleRuby();
+        } catch (Exception $e) {
+        }
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitlePerl();
+        } catch (Exception $e) {
+        }
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitleGhostscript();
+        } catch (Exception $e) {
+        }
+        try {
+            $titles[] = $bearsamppTools->getPowerShell()->getTabTitleNgrok();
+        } catch (Exception $e) {
+        }
 
         // Also include generic/short titles
         $shortTitles = ["Composer", "Ghostscript", "ngrok", "PEAR", "Perl", "Ruby", "Git", "Python", "MariaDB", "MySQL", "PostgreSQL", "Node.js"];
-        $allTitles = array_unique(array_merge($titles, $shortTitles));
+        $allTitles   = array_unique(array_merge($titles, $shortTitles));
 
         // Build a single .reg file with all HKCU Console font settings.
         // This replaces ~140 individual exec("reg add ...") calls, each of which
@@ -94,7 +130,9 @@ class TplPowerShell
 
         // Per-title settings
         foreach ($allTitles as $title) {
-            if (empty($title)) continue;
+            if (empty($title)) {
+                continue;
+            }
             $regContent .= "\r\n[HKEY_CURRENT_USER\\Console\\" . $title . "]\r\n";
             $regContent .= '"FaceName"="' . $fontName . '"' . "\r\n";
             $regContent .= '"FontFamily"=dword:00000036' . "\r\n";
@@ -119,10 +157,10 @@ class TplPowerShell
             return false;
         }
 
-        $cmd = 'reg import "' . $tmpReg . '"';
+        $cmd      = 'reg import "' . $tmpReg . '"';
         $exitCode = 1;
         try {
-            $wsh = new COM('WScript.Shell');
+            $wsh      = new COM('WScript.Shell');
             $exitCode = $wsh->Run($cmd, 0, true);
         } catch (Throwable $e) {
             $output = [];
@@ -174,7 +212,7 @@ class TplPowerShell
      * @return string The formatted string for the command tab section.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Root  $bearsamppRoot The root object of the application.
+     * @global Root  $bearsamppRoot  The root object of the application.
      */
     private static function getTabCmdSection()
     {
@@ -197,7 +235,7 @@ class TplPowerShell
      * @return string The formatted string for the PowerShell tab section.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Root  $bearsamppRoot The root object of the application.
+     * @global Root  $bearsamppRoot  The root object of the application.
      */
     private static function getTabPowerShellSection()
     {
@@ -225,7 +263,7 @@ class TplPowerShell
      * @return string The formatted string for the PEAR tab section.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Bins  $bearsamppBins The bins object of the application.
+     * @global Bins  $bearsamppBins  The bins object of the application.
      */
     private static function getTabPearSection()
     {
@@ -253,15 +291,17 @@ class TplPowerShell
      * @return string The formatted string for the MySQL tab section.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Bins  $bearsamppBins The bins object of the application.
+     * @global Bins  $bearsamppBins  The bins object of the application.
      */
     private static function getTabMysqlSection()
     {
         global $bearsamppBins, $bearsamppTools;
 
-        $shell = $bearsamppTools->getPowerShell()->getShell('&quot;' . $bearsamppBins->getMysql()->getCliExe() . '&quot; -u' .
+        $shell = $bearsamppTools->getPowerShell()->getShell(
+            '&quot;' . $bearsamppBins->getMysql()->getCliExe() . '&quot; -u' .
             $bearsamppBins->getMysql()->getRootUser() .
-            ($bearsamppBins->getMysql()->getRootPwd() ? ' -p' : ''));
+            ($bearsamppBins->getMysql()->getRootPwd() ? ' -p' : '')
+        );
         if (!file_exists($bearsamppBins->getMysql()->getCliExe())) {
             $shell = $bearsamppTools->getPowerShell()->getShell('echo ' . $bearsamppBins->getMysql()->getCliExe() . ' not found');
         }
@@ -283,15 +323,17 @@ class TplPowerShell
      * @return string The formatted string for the MariaDB tab section.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Bins  $bearsamppBins The bins object of the application.
+     * @global Bins  $bearsamppBins  The bins object of the application.
      */
     private static function getTabMariadbSection()
     {
         global $bearsamppBins, $bearsamppTools;
 
-        $shell = $bearsamppTools->getPowerShell()->getShell('&quot;' . $bearsamppBins->getMariadb()->getCliExe() . '&quot; -u' .
+        $shell = $bearsamppTools->getPowerShell()->getShell(
+            '&quot;' . $bearsamppBins->getMariadb()->getCliExe() . '&quot; -u' .
             $bearsamppBins->getMariadb()->getRootUser() .
-            ($bearsamppBins->getMariadb()->getRootPwd() ? ' -p' : ''));
+            ($bearsamppBins->getMariadb()->getRootPwd() ? ' -p' : '')
+        );
         if (!file_exists($bearsamppBins->getMariadb()->getCliExe())) {
             $shell = $bearsamppTools->getPowerShell()->getShell('echo ' . $bearsamppBins->getMariadb()->getCliExe() . ' not found');
         }
@@ -313,17 +355,19 @@ class TplPowerShell
      * @return string The formatted string for the PostgreSQL tab section.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Bins  $bearsamppBins The bins object of the application.
+     * @global Bins  $bearsamppBins  The bins object of the application.
      */
     private static function getTabPostgresqlSection()
     {
         global $bearsamppBins, $bearsamppTools;
 
-        $shell = $bearsamppTools->getPowerShell()->getShell('&quot;' . $bearsamppBins->getPostgresql()->getCliExe() . '&quot;' .
+        $shell = $bearsamppTools->getPowerShell()->getShell(
+            '&quot;' . $bearsamppBins->getPostgresql()->getCliExe() . '&quot;' .
             ' -h ' . APP_LOCALHOST .
             ' -p ' . $bearsamppBins->getPostgresql()->getPort() .
             ' -U ' . $bearsamppBins->getPostgresql()->getRootUser() .
-            ' -d postgres');
+            ' -d postgres'
+        );
         if (!file_exists($bearsamppBins->getPostgresql()->getCliExe())) {
             $shell = $bearsamppTools->getPowerShell()->getShell('echo ' . $bearsamppBins->getPostgresql()->getCliExe() . ' not found');
         }
@@ -345,7 +389,7 @@ class TplPowerShell
      * @return string The formatted string for the Git tab section.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Root  $bearsamppRoot The root object of the application.
+     * @global Root  $bearsamppRoot  The root object of the application.
      */
     private static function getTabGitSection()
     {
@@ -371,10 +415,10 @@ class TplPowerShell
      * It retrieves the Node.js launch path and sets the WWW path.
      *
      * @return string The formatted string for the Node.js tab section.
-     * @global Bins  $bearsamppBins The bins object of the application.
+     * @global Bins  $bearsamppBins  The bins object of the application.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Root  $bearsamppRoot The root object of the application.
+     * @global Root  $bearsamppRoot  The root object of the application.
      */
     private static function getTabNodejsSection()
     {
@@ -402,7 +446,7 @@ class TplPowerShell
      * @return string The formatted string for the Composer tab section.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Root  $bearsamppRoot The root object of the application.
+     * @global Root  $bearsamppRoot  The root object of the application.
      */
     private static function getTabComposerSection()
     {
@@ -430,7 +474,7 @@ class TplPowerShell
      * @return string The formatted string for the Python tab section.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Root  $bearsamppRoot The root object of the application.
+     * @global Root  $bearsamppRoot  The root object of the application.
      */
     private static function getTabPythonSection()
     {
@@ -458,7 +502,7 @@ class TplPowerShell
      * @return string The formatted string for the Ruby tab section.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Root  $bearsamppRoot The root object of the application.
+     * @global Root  $bearsamppRoot  The root object of the application.
      */
     private static function getTabRubySection()
     {
@@ -470,8 +514,8 @@ class TplPowerShell
         } else {
             // Use irb (Interactive Ruby) for an interactive shell
             $rubyDir = dirname($bearsamppTools->getRuby()->getExe());
-            $irbExe = $rubyDir . '/irb.bat';
-            
+            $irbExe  = $rubyDir . '/irb.bat';
+
             // Check if irb.bat exists, otherwise try irb.cmd or just use ruby with -i flag
             if (file_exists($irbExe)) {
                 $shell = $bearsamppTools->getPowerShell()->getShell('&quot;' . $irbExe . '&quot;');
@@ -502,7 +546,7 @@ class TplPowerShell
      * @return string The formatted string for the Perl tab section.
      * @global Tools $bearsamppTools The tools object of the application.
      *
-     * @global Root  $bearsamppRoot The root object of the application.
+     * @global Root  $bearsamppRoot  The root object of the application.
      */
     private static function getTabPerlSection()
     {
@@ -532,7 +576,7 @@ class TplPowerShell
      *
      * @return string The structure for the Ghostscript tab section.
      * @global Tools $bearsamppTools The tools object of the application.
-     * @global Root  $bearsamppRoot The root object of the application.
+     * @global Root  $bearsamppRoot  The root object of the application.
      */
     private static function getTabGhostscriptSection()
     {
@@ -562,7 +606,7 @@ class TplPowerShell
      *
      * @return string The structure for the Ngrok tab section.
      * @global Tools $bearsamppTools The tools object of the application.
-     * @global Root  $bearsamppRoot The root object of the application.
+     * @global Root  $bearsamppRoot  The root object of the application.
      */
     private static function getTabNgrokSection()
     {
@@ -591,12 +635,13 @@ class TplPowerShell
      * custom icons in tab titles. This was a feature of ConsoleZ which is no longer used.
      * To use icons, consider using a terminal emulator like ConEmu, Cmder, or Windows Terminal.
      *
-     * @param string $title The title of the tab.
-     * @param string|null $icon The icon for the tab (currently unused).
-     * @param string $shell The shell command to be executed in the tab.
-     * @param string $initDir The initial directory for the tab.
+     * @param   string       $title         The title of the tab.
+     * @param   string|null  $icon          The icon for the tab (currently unused).
+     * @param   string       $shell         The shell command to be executed in the tab.
+     * @param   string       $initDir       The initial directory for the tab.
+     *
      * @return string The structure for the tab.
-     * @global Core  $bearsamppCore The core object of the application.
+     * @global Core          $bearsamppCore The core object of the application.
      */
     private static function getTab($title, $icon, $shell, $initDir)
     {

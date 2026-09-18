@@ -25,9 +25,9 @@ class TplAppLogsVerbose
      * This method creates a menu for selecting the logs verbosity level. It uses the global language
      * object to retrieve the localized string for the logs verbosity menu.
      *
+     * @return array The generated menu for selecting the logs verbosity level.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return array The generated menu for selecting the logs verbosity level.
      */
     public static function process()
     {
@@ -43,16 +43,16 @@ class TplAppLogsVerbose
      * when a verbosity level is selected. It uses the global language object to retrieve the localized
      * strings for each verbosity level and the global configuration object to get the current verbosity level.
      *
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @return string The generated menu items and actions for switching logs verbosity levels.
      * @global object $bearsamppConfig Provides access to the application's configuration settings.
      *
-     * @return string The generated menu items and actions for switching logs verbosity levels.
+     * @global object $bearsamppLang   Provides language support for retrieving language-specific values.
      */
     public static function getMenuLogsVerbose()
     {
         global $bearsamppLang, $bearsamppConfig;
 
-        $items = '';
+        $items   = '';
         $actions = '';
 
         $verboses = array(
@@ -64,16 +64,18 @@ class TplAppLogsVerbose
 
         foreach ($verboses as $verbose => $caption) {
             $tplSwitchLogsVerbose = TplApp::getActionMulti(
-                Action::SWITCH_LOGS_VERBOSE, array($verbose),
+                Action::SWITCH_LOGS_VERBOSE,
+                array($verbose),
                 array($caption, $verbose == $bearsamppConfig->getLogsVerbose() ? TplAestan::GLYPH_CHECK : ''),
-                false, get_called_class()
+                false,
+                get_called_class()
             );
 
             // Item
             $items .= $tplSwitchLogsVerbose[TplApp::SECTION_CALL] . PHP_EOL;
 
             // Action
-            $actions .= PHP_EOL . $tplSwitchLogsVerbose[TplApp::SECTION_CONTENT] .  PHP_EOL;
+            $actions .= PHP_EOL . $tplSwitchLogsVerbose[TplApp::SECTION_CONTENT] . PHP_EOL;
         }
 
         return $items . $actions;
@@ -85,7 +87,7 @@ class TplAppLogsVerbose
      * This method creates the action string for switching the logs verbosity level. It includes commands
      * to reload the application after changing the verbosity level.
      *
-     * @param int $verbose The verbosity level to switch to.
+     * @param   int  $verbose  The verbosity level to switch to.
      *
      * @return string The generated action string for switching the logs verbosity level.
      */

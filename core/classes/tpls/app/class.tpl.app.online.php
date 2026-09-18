@@ -27,7 +27,7 @@ class TplAppOnline
      * objects to retrieve the current status and localized strings.
      *
      * @global object $bearsamppConfig Provides access to the application's configuration settings.
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @global object $bearsamppLang   Provides language support for retrieving language-specific values.
      *
      * @return array The generated menu item and actions for switching the online/offline status.
      */
@@ -36,9 +36,11 @@ class TplAppOnline
         global $bearsamppConfig, $bearsamppLang;
 
         return TplApp::getActionMulti(
-            self::ACTION, array($bearsamppConfig->isOnline() ? Config::DISABLED : Config::ENABLED),
+            self::ACTION,
+            array($bearsamppConfig->isOnline() ? Config::DISABLED : Config::ENABLED),
             array($bearsamppConfig->isOnline() ? $bearsamppLang->getValue(Lang::MENU_PUT_OFFLINE) : $bearsamppLang->getValue(Lang::MENU_PUT_ONLINE)),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
     }
 
@@ -49,7 +51,7 @@ class TplAppOnline
      * commands to restart relevant services and reload the application. The action string is used to define
      * what happens when the status switch action is triggered.
      *
-     * @param int $status The status to switch to (enabled or disabled).
+     * @param   int  $status  The status to switch to (enabled or disabled).
      *
      * @return string The generated action string for switching the online/offline status.
      */

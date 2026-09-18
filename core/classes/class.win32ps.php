@@ -33,7 +33,8 @@ class Win32Ps
     /**
      * Calls a specified function if it exists.
      *
-     * @param string $function The name of the function to call.
+     * @param   string  $function  The name of the function to call.
+     *
      * @return mixed The result of the function call, or false if the function does not exist.
      */
     private static function callWin32Ps($function)
@@ -71,6 +72,7 @@ class Win32Ps
     public static function getCurrentPid()
     {
         $procInfo = self::getStatProc();
+
         return isset($procInfo[self::PROCESS_ID]) ? intval($procInfo[self::PROCESS_ID]) : 0;
     }
 
@@ -91,6 +93,7 @@ class Win32Ps
                     $filtered[] = $proc;
                 }
             }
+
             return $filtered;
         }
 
@@ -108,7 +111,7 @@ class Win32Ps
 
         if ($statProc !== false) {
             return array(
-                self::PROCESS_ID => $statProc['pid'],
+                self::PROCESS_ID      => $statProc['pid'],
                 self::EXECUTABLE_PATH => $statProc['exe']
             );
         }
@@ -119,7 +122,8 @@ class Win32Ps
     /**
      * Checks if a process with the specified PID exists.
      *
-     * @param int $pid The process ID to check.
+     * @param   int  $pid  The process ID to check.
+     *
      * @return bool True if the process exists, false otherwise.
      */
     public static function exists($pid)
@@ -130,7 +134,8 @@ class Win32Ps
     /**
      * Finds a process by its PID.
      *
-     * @param int $pid The process ID to find.
+     * @param   int  $pid  The process ID to find.
+     *
      * @return array|false An array of process information, or false if not found.
      */
     public static function findByPid($pid)
@@ -152,7 +157,8 @@ class Win32Ps
     /**
      * Finds a process by its executable path.
      *
-     * @param string $path The path to the executable.
+     * @param   string  $path  The path to the executable.
+     *
      * @return array|false An array of process information, or false if not found.
      */
     public static function findByPath($path)
@@ -176,7 +182,7 @@ class Win32Ps
     /**
      * Terminates a process by its PID.
      *
-     * @param int $pid The process ID to terminate.
+     * @param   int  $pid  The process ID to terminate.
      */
     public static function kill($pid)
     {
@@ -189,7 +195,8 @@ class Win32Ps
     /**
      * Terminates all Bearsampp-related processes except the current one.
      *
-     * @param bool $refreshProcs Whether to refresh the list of processes before terminating.
+     * @param   bool  $refreshProcs  Whether to refresh the list of processes before terminating.
+     *
      * @return array An array of terminated processes.
      */
     public static function killBins($refreshProcs = false)
@@ -204,7 +211,7 @@ class Win32Ps
 
         if ($procs !== false && $procs !== null) {
             foreach ($procs as $proc) {
-                $unixExePath = Path::formatUnixPath($proc[self::EXECUTABLE_PATH]);
+                $unixExePath     = Path::formatUnixPath($proc[self::EXECUTABLE_PATH]);
                 $unixCommandPath = Path::formatUnixPath($proc[self::COMMAND_LINE]);
 
                 // Not kill current PID (PHP)

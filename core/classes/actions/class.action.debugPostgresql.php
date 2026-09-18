@@ -28,7 +28,8 @@ class ActionDebugPostgresql extends ActionDebugBase
     /**
      * Get the PostgreSQL binary instance
      *
-     * @param object $bearsamppBins The bins object containing all service binaries
+     * @param   object  $bearsamppBins  The bins object containing all service binaries
+     *
      * @return BinPostgresql The PostgreSQL binary instance
      */
     protected function getBinInstance($bearsamppBins)
@@ -45,7 +46,7 @@ class ActionDebugPostgresql extends ActionDebugBase
     {
         return [
             BinPostgresql::CMD_VERSION => [
-                'lang' => Lang::DEBUG_POSTGRESQL_VERSION,
+                'lang'   => Lang::DEBUG_POSTGRESQL_VERSION,
                 'editor' => false
             ]
         ];

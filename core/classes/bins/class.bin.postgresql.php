@@ -140,8 +140,8 @@ class BinPostgresql extends Module
      */
     public function __construct($id, $type)
     {
-        Log::initClass( $this );
-        $this->reload( $id, $type );
+        Log::initClass($this);
+        $this->reload($id, $type);
     }
 
     /**
@@ -153,17 +153,17 @@ class BinPostgresql extends Module
     public function reload($id = null, $type = null)
     {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
-        Log::reloadClass( $this );
+        Log::reloadClass($this);
 
-        $this->name    = $bearsamppLang->getValue( Lang::POSTGRESQL );
-        $this->version = $bearsamppConfig->getRaw( self::ROOT_CFG_VERSION );
-        parent::reload( $id, $type );
+        $this->name    = $bearsamppLang->getValue(Lang::POSTGRESQL);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
+        parent::reload($id, $type);
 
-        $this->enable   = $this->enable && $bearsamppConfig->getRaw( self::ROOT_CFG_ENABLE );
-        $this->service  = new Win32Service( self::SERVICE_NAME );
+        $this->enable   = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
+        $this->service  = new Win32Service(self::SERVICE_NAME);
         $this->errorLog = Path::getLogsPath() . '/postgresql.log';
 
-        if ( $this->bearsamppConfRaw !== false ) {
+        if ($this->bearsamppConfRaw !== false) {
             $this->ctlExe     = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CTL_EXE];
             $this->cliExe     = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CLI_EXE];
             $this->dumpExe    = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_DUMP_EXE];
@@ -173,82 +173,82 @@ class BinPostgresql extends Module
             $this->altConf    = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_ALT_CONF];
             $this->altHbaConf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_ALT_HBA_CONF];
             $this->port       = $this->bearsamppConfRaw[self::LOCAL_CFG_PORT];
-            $this->rootUser   = isset( $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER] ) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER] : 'postgres';
-            $this->rootPwd    = isset( $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD] ) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD] : '';
+            $this->rootUser   = isset($this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER]) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER] : 'postgres';
+            $this->rootPwd    = isset($this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD]) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD] : '';
         }
 
-        if ( !$this->enable ) {
-            Log::info( $this->name . ' is not enabled!' );
-
-            return;
-        }
-        if ( !is_dir( $this->currentPath ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->currentPath ) );
+        if (!$this->enable) {
+            Log::info($this->name . ' is not enabled!');
 
             return;
         }
-        if ( !is_dir( $this->symlinkPath ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->symlinkPath ) );
+        if (!is_dir($this->currentPath)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
 
             return;
         }
-        if ( !is_file( $this->bearsamppConf ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->bearsamppConf ) );
+        if (!is_dir($this->symlinkPath)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
 
             return;
         }
-        if ( !file_exists( $this->conf ) ) {
+        if (!is_file($this->bearsamppConf)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
+
+            return;
+        }
+        if (!file_exists($this->conf)) {
             $this->conf = $this->altConf;
         }
-        if ( !file_exists( $this->hbaConf ) ) {
+        if (!file_exists($this->hbaConf)) {
             $this->hbaConf = $this->altHbaConf;
         }
 
-        if ( !is_file( $this->ctlExe ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->ctlExe ) );
+        if (!is_file($this->ctlExe)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->ctlExe));
 
             return;
         }
-        if ( !is_file( $this->cliExe ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->cliExe ) );
+        if (!is_file($this->cliExe)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cliExe));
 
             return;
         }
-        if ( !is_file( $this->dumpExe ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->dumpExe ) );
+        if (!is_file($this->dumpExe)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->dumpExe));
 
             return;
         }
-        if ( !is_file( $this->dumpAllExe ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->dumpAllExe ) );
+        if (!is_file($this->dumpAllExe)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->dumpAllExe));
 
             return;
         }
-        if ( !is_file( $this->conf ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->conf ) );
+        if (!is_file($this->conf)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
 
             return;
         }
-        if ( !is_file( $this->hbaConf ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->hbaConf ) );
+        if (!is_file($this->hbaConf)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->hbaConf));
 
             return;
         }
-        if ( !is_numeric( $this->port ) || $this->port <= 0 ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_PORT, $this->port ) );
+        if (!is_numeric($this->port) || $this->port <= 0) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_PORT, $this->port));
 
             return;
         }
-        if ( empty( $this->rootUser ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_ROOT_USER, $this->rootUser ) );
+        if (empty($this->rootUser)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_ROOT_USER, $this->rootUser));
 
             return;
         }
 
-        $this->service->setDisplayName( APP_TITLE . ' ' . $this->getName() );
-        $this->service->setBinPath( $this->ctlExe );
-        $this->service->setStartType( Win32Service::SERVICE_DEMAND_START );
-        $this->service->setErrorControl( Win32Service::SERVER_ERROR_NORMAL );
+        $this->service->setDisplayName(APP_TITLE . ' ' . $this->getName());
+        $this->service->setBinPath($this->ctlExe);
+        $this->service->setStartType(Win32Service::SERVICE_DEMAND_START);
+        $this->service->setErrorControl(Win32Service::SERVER_ERROR_NORMAL);
     }
 
     /**
@@ -258,12 +258,12 @@ class BinPostgresql extends Module
      */
     protected function replaceAll($params)
     {
-        $content = file_get_contents( $this->bearsamppConf );
+        $content = file_get_contents($this->bearsamppConf);
 
-        foreach ( $params as $key => $value ) {
-            $content                      = preg_replace( '|' . $key . ' = .*|', $key . ' = ' . '"' . $value . '"', $content );
+        foreach ($params as $key => $value) {
+            $content                      = preg_replace('|' . $key . ' = .*|', $key . ' = ' . '"' . $value . '"', $content);
             $this->bearsamppConfRaw[$key] = $value;
-            switch ( $key ) {
+            switch ($key) {
                 case self::LOCAL_CFG_PORT:
                     $this->port = $value;
                     break;
@@ -276,9 +276,9 @@ class BinPostgresql extends Module
             }
         }
 
-        file_put_contents( $this->bearsamppConf, $content );
+        file_put_contents($this->bearsamppConf, $content);
 
-        self::invalidateConfigCacheForPath( $this->bearsamppConf );
+        self::invalidateConfigCacheForPath($this->bearsamppConf);
     }
 
     /**
@@ -294,29 +294,29 @@ class BinPostgresql extends Module
     {
         global $bearsamppWinbinder;
 
-        if ( !Util::isValidPort( $port ) ) {
-            Log::error( $this->getName() . ' port not valid: ' . $port );
+        if (!Util::isValidPort($port)) {
+            Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
         }
 
-        $port = intval( $port );
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+        $port = intval($port);
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
-        $isPortInUse = ServiceHelper::isPortInUse( $port );
-        if ( !$checkUsed || $isPortInUse === false ) {
+        $isPortInUse = ServiceHelper::isPortInUse($port);
+        if (!$checkUsed || $isPortInUse === false) {
             // bearsampp.conf
-            $this->setPort( $port );
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $this->setPort($port);
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             // conf
             $this->update();
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             return true;
         }
 
-        Log::debug( $this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse );
+        Log::debug($this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse);
 
         return $isPortInUse;
     }
@@ -324,8 +324,9 @@ class BinPostgresql extends Module
     /**
      * Checks if the specified port is being used by PostgreSQL.
      *
-     * @param int $port The port number to check.
-     * @param bool $showWindow Whether to show a message box with the result.
+     * @param   int   $port        The port number to check.
+     * @param   bool  $showWindow  Whether to show a message box with the result.
+     *
      * @return bool True if the port is used by PostgreSQL, false otherwise.
      */
     public function checkPort($port, $showWindow = false)
@@ -335,20 +336,22 @@ class BinPostgresql extends Module
 
         if (!Util::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
+
             return false;
         }
 
         $dbLink = @pg_connect('host=' . APP_LOCALHOST . " port=$port user={$this->rootUser} password={$this->rootPwd}");
         if (!$dbLink) {
             $lastError = error_get_last();
-            $errorMsg = $lastError ? $lastError['message'] : 'Unknown error';
+            $errorMsg  = $lastError ? $lastError['message'] : 'Unknown error';
             Log::debug($this->getName() . ' connection failed: ' . $errorMsg);
+
             return $this->handleNonPostgresUsage($port, $showWindow, $boxTitle);
         }
 
         // Verify active PostgreSQL connection
         $connectionStatus = pg_connection_status($dbLink);
-        $isPostgres = $connectionStatus === PGSQL_CONNECTION_OK;
+        $isPostgres       = $connectionStatus === PGSQL_CONNECTION_OK;
         pg_close($dbLink);
 
         if ($isPostgres) {
@@ -359,6 +362,7 @@ class BinPostgresql extends Module
                     $boxTitle
                 );
             }
+
             return true;
         }
 
@@ -380,6 +384,7 @@ class BinPostgresql extends Module
                     $boxTitle
                 );
             }
+
             return false;
         }
 
@@ -390,8 +395,10 @@ class BinPostgresql extends Module
                 $boxTitle
             );
         }
+
         return false;
     }
+
     /**
      * Changes the root password for PostgreSQL.
      *
@@ -406,38 +413,38 @@ class BinPostgresql extends Module
         global $bearsamppWinbinder;
         $error = null;
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        $dbLink = pg_connect( 'host=' . APP_LOCALHOST . ' port=' . $this->port . ' user=' . $this->rootUser . ' password=' . $currentPwd );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+        $dbLink = pg_connect('host=' . APP_LOCALHOST . ' port=' . $this->port . ' user=' . $this->rootUser . ' password=' . $currentPwd);
 
-        if ( !$dbLink ) {
+        if (!$dbLink) {
             $error = error_get_last()['message'];
         }
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        $pgr = pg_query_params( $dbLink, 'SELECT quote_ident($1)', array(pg_escape_string( $this->rootUser )) );
-        list( $quoted_user ) = pg_fetch_array( $pgr );
-        $password = pg_escape_string( $newPwd );
-        $result   = pg_query( $dbLink, "ALTER USER $quoted_user WITH PASSWORD '$password'" );
-        if ( empty( $error ) && !$result ) {
-            $error = pg_last_error( $dbLink );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+        $pgr = pg_query_params($dbLink, 'SELECT quote_ident($1)', array(pg_escape_string($this->rootUser)));
+        list($quoted_user) = pg_fetch_array($pgr);
+        $password = pg_escape_string($newPwd);
+        $result   = pg_query($dbLink, "ALTER USER $quoted_user WITH PASSWORD '$password'");
+        if (empty($error) && !$result) {
+            $error = pg_last_error($dbLink);
         }
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( $dbLink ) {
-            pg_close( $dbLink );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+        if ($dbLink) {
+            pg_close($dbLink);
         }
 
-        if ( !empty( $error ) ) {
+        if (!empty($error)) {
             return $error;
         }
 
         // bearsampp.conf
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        $this->setRootPwd( $newPwd );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+        $this->setRootPwd($newPwd);
 
         // conf
         $this->update();
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
         return true;
     }
@@ -456,18 +463,18 @@ class BinPostgresql extends Module
         $currentPwd = $currentPwd == null ? $this->rootPwd : $currentPwd;
         $error      = null;
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        $dbLink = pg_connect( 'host=' . APP_LOCALHOST . ' port=' . $this->port . ' user=' . $this->rootUser . ' password=' . $currentPwd );
-        if ( !$dbLink ) {
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+        $dbLink = pg_connect('host=' . APP_LOCALHOST . ' port=' . $this->port . ' user=' . $this->rootUser . ' password=' . $currentPwd);
+        if (!$dbLink) {
             $error = error_get_last()['message'];
         }
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( $dbLink ) {
-            pg_close( $dbLink );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+        if ($dbLink) {
+            pg_close($dbLink);
         }
 
-        if ( !empty( $error ) ) {
+        if (!empty($error)) {
             return $error;
         }
 
@@ -484,9 +491,9 @@ class BinPostgresql extends Module
      */
     public function switchVersion($version, $showWindow = false)
     {
-        Log::debug( 'Switch ' . $this->name . ' version to ' . $version );
+        Log::debug('Switch ' . $this->name . ' version to ' . $version);
 
-        return $this->updateConfig( $version, 0, $showWindow );
+        return $this->updateConfig($version, 0, $showWindow);
     }
 
     /**
@@ -502,28 +509,28 @@ class BinPostgresql extends Module
     {
         global $bearsamppLang, $bearsamppApps, $bearsamppWinbinder;
 
-        if ( !$this->enable ) {
+        if (!$this->enable) {
             return true;
         }
 
         $version = $version == null ? $this->version : $version;
-        Log::debug( ($sub > 0 ? str_repeat( ' ', 2 * $sub ) : '') . 'Update ' . $this->name . ' ' . $version . ' config' );
+        Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
 
-        $boxTitle = sprintf( $bearsamppLang->getValue( Lang::SWITCH_VERSION_TITLE ), $this->getName(), $version );
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
-        $currentPath   = str_replace( 'postgresql' . $this->getVersion(), 'postgresql' . $version, Path::getModuleCurrentPath($this) );
-        $conf          = str_replace( 'postgresql' . $this->getVersion(), 'postgresql' . $version, $this->getConf() );
-        $bearsamppConf = str_replace( 'postgresql' . $this->getVersion(), 'postgresql' . $version, $this->bearsamppConf );
+        $currentPath   = str_replace('postgresql' . $this->getVersion(), 'postgresql' . $version, Path::getModuleCurrentPath($this));
+        $conf          = str_replace('postgresql' . $this->getVersion(), 'postgresql' . $version, $this->getConf());
+        $bearsamppConf = str_replace('postgresql' . $this->getVersion(), 'postgresql' . $version, $this->bearsamppConf);
 
-        if ( $this->version != $version ) {
-            $this->initData( $currentPath );
+        if ($this->version != $version) {
+            $this->initData($currentPath);
         }
 
-        if ( !file_exists( $conf ) || !file_exists( $bearsamppConf ) ) {
-            Log::error( 'bearsampp config files not found for ' . $this->getName() . ' ' . $version );
-            if ( $showWindow ) {
+        if (!file_exists($conf) || !file_exists($bearsamppConf)) {
+            Log::error('bearsampp config files not found for ' . $this->getName() . ' ' . $version);
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR ), $this->getName() . ' ' . $version ),
+                    sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_NOT_FOUND_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
@@ -531,12 +538,12 @@ class BinPostgresql extends Module
             return false;
         }
 
-        $bearsamppConfRaw = parse_ini_file( $bearsamppConf );
-        if ( $bearsamppConfRaw === false || !isset( $bearsamppConfRaw[self::ROOT_CFG_VERSION] ) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version ) {
-            Log::error( 'bearsampp config file malformed for ' . $this->getName() . ' ' . $version );
-            if ( $showWindow ) {
+        $bearsamppConfRaw = parse_ini_file($bearsamppConf);
+        if ($bearsamppConfRaw === false || !isset($bearsamppConfRaw[self::ROOT_CFG_VERSION]) || $bearsamppConfRaw[self::ROOT_CFG_VERSION] != $version) {
+            Log::error('bearsampp config file malformed for ' . $this->getName() . ' ' . $version);
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::BEARSAMPP_CONF_MALFORMED_ERROR ), $this->getName() . ' ' . $version ),
+                    sprintf($bearsamppLang->getValue(Lang::BEARSAMPP_CONF_MALFORMED_ERROR), $this->getName() . ' ' . $version),
                     $boxTitle
                 );
             }
@@ -545,15 +552,15 @@ class BinPostgresql extends Module
         }
 
         // bearsampp.conf
-        $this->setVersion( $version );
+        $this->setVersion($version);
 
         // conf
-        Util::replaceInFile( $this->getConf(), array(
+        Util::replaceInFile($this->getConf(), array(
             '/^port(.*?)=(.*?)(\d+)/' => 'port = ' . $this->port
-        ) );
+        ));
 
         // phppgadmin
-        $bearsamppApps->getPhppgadmin()->update( $sub + 1 );
+        $bearsamppApps->getPhppgadmin()->update($sub + 1);
 
         return true;
     }
@@ -567,33 +574,34 @@ class BinPostgresql extends Module
     {
         $path = $path != null ? $path : Path::getModuleCurrentPath($this);
 
-        if ( file_exists( $path . '/data' ) ) {
+        if (file_exists($path . '/data')) {
             // Even if it exists, ensure placeholders are replaced in the whole folder
-            $filesToScan = Util::getFilesToScan( array(
+            $filesToScan = Util::getFilesToScan(array(
                 array(
                     'path'      => $path,
-                    'includes'  => array( '.conf', '.bat', '.ber' ),
+                    'includes'  => array('.conf', '.bat', '.ber'),
                     'recursive' => true
                 )
-            ) );
-            if ( !empty( $filesToScan ) ) {
-                Path::changePath( $filesToScan );
+            ));
+            if (!empty($filesToScan)) {
+                Path::changePath($filesToScan);
             }
+
             return;
         }
 
-        Batch::initializePostgresql( $path );
+        Batch::initializePostgresql($path);
 
         // Replace placeholders in the newly created data directory and the whole version folder
-        $filesToScan = Util::getFilesToScan( array(
+        $filesToScan = Util::getFilesToScan(array(
             array(
                 'path'      => $path,
-                'includes'  => array( '.conf', '.bat', '.ber' ),
+                'includes'  => array('.conf', '.bat', '.ber'),
                 'recursive' => true
             )
-        ) );
-        if ( !empty( $filesToScan ) ) {
-            Path::changePath( $filesToScan );
+        ));
+        if (!empty($filesToScan)) {
+            Path::changePath($filesToScan);
         }
     }
 
@@ -602,12 +610,12 @@ class BinPostgresql extends Module
      */
     public function rebuildConf()
     {
-        Util::replaceInFile( $this->conf, array(
+        Util::replaceInFile($this->conf, array(
             '/^port(.*?)=(.*?)(\d+)/' => 'port = ' . $this->port
-        ) );
-        Util::replaceInFile( $this->altConf, array(
+        ));
+        Util::replaceInFile($this->altConf, array(
             '/^port(.*?)=(.*?)(\d+)/' => 'port = ' . $this->port
-        ) );
+        ));
     }
 
     /**
@@ -622,10 +630,10 @@ class BinPostgresql extends Module
         $result = null;
 
         $bin = $this->getCliExe();
-        if ( file_exists( $bin ) ) {
-            $tmpResult = Batch::exec( 'postgresqlGetCmdLineOutput', '"' . $bin . '" ' . $cmd );
-            if ( $tmpResult !== false && is_array( $tmpResult ) ) {
-                $result = trim( str_replace( $bin, '', implode( PHP_EOL, $tmpResult ) ) );
+        if (file_exists($bin)) {
+            $tmpResult = Batch::exec('postgresqlGetCmdLineOutput', '"' . $bin . '" ' . $cmd);
+            if ($tmpResult !== false && is_array($tmpResult)) {
+                $result = trim(str_replace($bin, '', implode(PHP_EOL, $tmpResult)));
             }
         }
 
@@ -641,7 +649,7 @@ class BinPostgresql extends Module
     {
         global $bearsamppConfig;
         $this->version = $version;
-        $bearsamppConfig->replace( self::ROOT_CFG_VERSION, $version );
+        $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
         $this->reload();
     }
 
@@ -665,27 +673,26 @@ class BinPostgresql extends Module
     {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
-        if ( $enabled == Config::ENABLED && !is_dir( $this->currentPath ) ) {
-            Log::debug( $this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath );
-            if ( $showWindow ) {
+        if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
+            Log::debug($this->getName() . ' cannot be enabled because bundle ' . $this->getVersion() . ' does not exist in ' . $this->currentPath);
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::ENABLE_BUNDLE_NOT_EXIST ), $this->getName(), $this->getVersion(), $this->currentPath ),
-                    sprintf( $bearsamppLang->getValue( Lang::ENABLE_TITLE ), $this->getName() )
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_BUNDLE_NOT_EXIST), $this->getName(), $this->getVersion(), $this->currentPath),
+                    sprintf($bearsamppLang->getValue(Lang::ENABLE_TITLE), $this->getName())
                 );
             }
             $enabled = Config::DISABLED;
         }
 
-        Log::info( $this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled') );
+        Log::info($this->getName() . ' switched to ' . ($enabled == Config::ENABLED ? 'enabled' : 'disabled'));
         $this->enable = $enabled == Config::ENABLED;
-        $bearsamppConfig->replace( self::ROOT_CFG_ENABLE, $enabled );
+        $bearsamppConfig->replace(self::ROOT_CFG_ENABLE, $enabled);
 
         $this->reload();
-        if ( $this->enable ) {
-            ServiceHelper::installService( $this, $this->port, null, $showWindow );
-        }
-        else {
-            ServiceHelper::removeService( $this->service, $this->name );
+        if ($this->enable) {
+            ServiceHelper::installService($this, $this->port, null, $showWindow);
+        } else {
+            ServiceHelper::removeService($this->service, $this->name);
         }
     }
 
@@ -776,7 +783,7 @@ class BinPostgresql extends Module
      */
     public function setPort($port)
     {
-        $this->replace( self::LOCAL_CFG_PORT, $port );
+        $this->replace(self::LOCAL_CFG_PORT, $port);
     }
 
     /**
@@ -796,7 +803,7 @@ class BinPostgresql extends Module
      */
     public function setRootUser($rootUser)
     {
-        $this->replace( self::LOCAL_CFG_ROOT_USER, $rootUser );
+        $this->replace(self::LOCAL_CFG_ROOT_USER, $rootUser);
     }
 
     /**
@@ -816,6 +823,6 @@ class BinPostgresql extends Module
      */
     public function setRootPwd($rootPwd)
     {
-        $this->replace( self::LOCAL_CFG_ROOT_PWD, $rootPwd );
+        $this->replace(self::LOCAL_CFG_ROOT_PWD, $rootPwd);
     }
 }

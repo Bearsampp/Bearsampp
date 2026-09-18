@@ -40,7 +40,7 @@ class Homepage
     {
         Log::initClass($this);
 
-        $page = UtilInput::cleanGetVar('p');
+        $page       = UtilInput::cleanGetVar('p');
         $this->page = !empty($page) && in_array($page, $this->pageList) ? $page : self::PAGE_INDEX;
 
         // Ensure JS files are always up to date with the current URL/protocol
@@ -60,7 +60,8 @@ class Homepage
     /**
      * Constructs the page query string based on the provided query.
      *
-     * @param string $query The query string to construct.
+     * @param   string  $query  The query string to construct.
+     *
      * @return string The constructed page query string.
      */
     public function getPageQuery($query)
@@ -79,12 +80,14 @@ class Homepage
     /**
      * Constructs the full URL for the given page query.
      *
-     * @param string $query The query string to construct the URL for.
+     * @param   string  $query  The query string to construct the URL for.
+     *
      * @return string The constructed page URL.
      */
     public function getPageUrl($query)
     {
         global $bearsamppRoot;
+
         return Path::getLocalUrl($this->getPageQuery($query));
     }
 

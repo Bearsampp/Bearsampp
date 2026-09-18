@@ -24,7 +24,7 @@ class ActionRefreshRepos
      *
      * This constructor initializes the action to refresh repositories based on the provided arguments.
      *
-     * @param array $args An array of arguments where the first argument can be 'git' to trigger the git repository refresh.
+     * @param   array  $args  An array of arguments where the first argument can be 'git' to trigger the git repository refresh.
      */
     public function __construct($args)
     {

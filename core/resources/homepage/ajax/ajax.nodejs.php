@@ -15,13 +15,13 @@ global $bearsamppBins, $bearsamppLang;
  * Then, it loops through the Node.js version list, adding versions to the 'versions' key.
  * Finally, it encodes the result array into a JSON format and echoes it.
  *
- * @global object $bearsamppBins  Provides access to various binaries including Node.js.
- * @global object $bearsamppLang  Provides access to language strings for localization.
- *
  * @return void
+ * @global object $bearsamppLang Provides access to language strings for localization.
+ *
+ * @global object $bearsamppBins Provides access to various binaries including Node.js.
  */
 $result = array(
-    'status' => '',
+    'status'   => '',
     'versions' => ''
 );
 

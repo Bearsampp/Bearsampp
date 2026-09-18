@@ -17,7 +17,7 @@ class ActionRestart
      * ActionRestart constructor.
      * Displays a message box with restart information.
      *
-     * @param array $args Command line arguments passed to the action.
+     * @param   array  $args  Command line arguments passed to the action.
      */
     public function __construct($args)
     {
@@ -25,7 +25,8 @@ class ActionRestart
 
         $bearsamppWinbinder->messageBoxInfo(
             sprintf($bearsamppLang->getValue(Lang::RESTART_TEXT), APP_TITLE),
-            $bearsamppLang->getValue(Lang::RESTART_TITLE));
+            $bearsamppLang->getValue(Lang::RESTART_TITLE)
+        );
     }
 }
 

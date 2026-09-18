@@ -25,9 +25,9 @@ class TplAppLang
      * This method generates the language menu for the application, including the available
      * languages and the actions to be taken when a language is selected.
      *
+     * @return array The generated language menu and actions.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return array The generated language menu and actions.
      */
     public static function process()
     {
@@ -43,28 +43,30 @@ class TplAppLang
      * when a language menu item is selected. It uses the global language object to retrieve the list
      * of available languages and the current language.
      *
+     * @return string The generated language menu items and actions.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return string The generated language menu items and actions.
      */
     public static function getMenuLang()
     {
         global $bearsamppLang;
-        $items = '';
+        $items   = '';
         $actions = '';
 
         foreach ($bearsamppLang->getList() as $lang) {
             $tplSwitchLang = TplApp::getActionMulti(
-                Action::SWITCH_LANG, array($lang),
+                Action::SWITCH_LANG,
+                array($lang),
                 array(ucfirst($lang), $lang == $bearsamppLang->getCurrent() ? TplAestan::GLYPH_CHECK : ''),
-                false, get_called_class()
+                false,
+                get_called_class()
             );
 
             // Item
             $items .= $tplSwitchLang[TplApp::SECTION_CALL] . PHP_EOL;
 
             // Action
-            $actions .= PHP_EOL . $tplSwitchLang[TplApp::SECTION_CONTENT] .  PHP_EOL;
+            $actions .= PHP_EOL . $tplSwitchLang[TplApp::SECTION_CONTENT] . PHP_EOL;
         }
 
         return $items . $actions;
@@ -77,7 +79,7 @@ class TplAppLang
      * commands to reload the application after the language switch. The action string is used to
      * define what happens when the switch language action is triggered.
      *
-     * @param string $lang The language code to switch to.
+     * @param   string  $lang  The language code to switch to.
      *
      * @return string The generated action string for switching the language.
      */

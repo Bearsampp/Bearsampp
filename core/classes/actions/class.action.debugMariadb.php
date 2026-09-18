@@ -29,7 +29,8 @@ class ActionDebugMariadb extends ActionDebugBase
     /**
      * Get the MariaDB binary instance
      *
-     * @param object $bearsamppBins The bins object containing all service binaries
+     * @param   object  $bearsamppBins  The bins object containing all service binaries
+     *
      * @return BinMariadb The MariaDB binary instance
      */
     protected function getBinInstance($bearsamppBins)
@@ -45,17 +46,17 @@ class ActionDebugMariadb extends ActionDebugBase
     protected function getCommandMapping()
     {
         return [
-            BinMariadb::CMD_VERSION => [
-                'lang' => Lang::DEBUG_MARIADB_VERSION,
+            BinMariadb::CMD_VERSION      => [
+                'lang'   => Lang::DEBUG_MARIADB_VERSION,
                 'editor' => false
             ],
-            BinMariadb::CMD_VARIABLES => [
-                'lang' => Lang::DEBUG_MARIADB_VARIABLES,
+            BinMariadb::CMD_VARIABLES    => [
+                'lang'   => Lang::DEBUG_MARIADB_VARIABLES,
                 'editor' => true
             ],
             BinMariadb::CMD_SYNTAX_CHECK => [
-                'lang' => Lang::DEBUG_MARIADB_SYNTAX_CHECK,
-                'editor' => false,
+                'lang'        => Lang::DEBUG_MARIADB_SYNTAX_CHECK,
+                'editor'      => false,
                 'syntaxCheck' => true
             ]
         ];

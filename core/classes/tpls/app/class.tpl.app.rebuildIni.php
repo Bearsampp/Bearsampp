@@ -23,9 +23,9 @@ class TplAppRebuildIni
      * It uses the global `$bearsamppLang` object to retrieve the localized string
      * for the menu item and the glyph icon for the trashcan.
      *
+     * @return string The generated action string to rebuild the INI configuration.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return string The generated action string to rebuild the INI configuration.
      */
     public static function process()
     {

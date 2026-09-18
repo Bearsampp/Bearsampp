@@ -14,14 +14,14 @@ global $bearsamppBins, $bearsamppLang;
  * It checks if the MariaDB service is enabled, checks the port, and retrieves the list of versions.
  * The output is encoded in JSON format and includes the port status and versions information.
  *
- * @global object $bearsamppBins  Provides access to various binaries including MariaDB.
- * @global object $bearsamppLang  Provides access to language-specific strings.
+ * @global object $bearsamppBins Provides access to various binaries including MariaDB.
+ * @global object $bearsamppLang Provides access to language-specific strings.
  */
 
 // Initialize result array to store port status and versions information
 $result = array(
     'checkport' => '',
-    'versions' => '',
+    'versions'  => '',
 );
 
 // Check port
@@ -29,7 +29,7 @@ $port = $bearsamppBins->getMariadb()->getPort();
 
 $textServiceStarted = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
 $textServiceStopped = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
-$textDisabled = $bearsamppLang->getValue(Lang::DISABLED);
+$textDisabled       = $bearsamppLang->getValue(Lang::DISABLED);
 
 /**
  * Check if the MariaDB service is enabled and update the port status accordingly.

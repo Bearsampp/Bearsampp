@@ -21,7 +21,7 @@ class ActionSwitchPhpParam
     /**
      * Constructor for ActionSwitchPhpParam.
      *
-     * @param array $args An array containing the PHP setting name and the desired state ('on' or 'off').
+     * @param   array  $args  An array containing the PHP setting name and the desired state ('on' or 'off').
      */
     public function __construct($args)
     {
@@ -35,13 +35,14 @@ class ActionSwitchPhpParam
                     sprintf($bearsamppLang->getValue(Lang::SWITCH_PHP_SETTING_NOT_FOUND), $args[0], $bearsamppBins->getPhp()->getVersion()),
                     $bearsamppLang->getValue(Lang::SWITCH_PHP_SETTING_TITLE)
                 );
+
                 return;
             }
 
             // Retrieve the current settings values
             $settingsValues = $bearsamppBins->getPhp()->getSettingsValues();
             if (isset($settingsValues[$args[0]])) {
-                $onContent = $args[0] . ' = ' . $settingsValues[$args[0]][0];
+                $onContent  = $args[0] . ' = ' . $settingsValues[$args[0]][0];
                 $offContent = $args[0] . ' = ' . $settingsValues[$args[0]][1];
 
                 // Read the current PHP configuration file content

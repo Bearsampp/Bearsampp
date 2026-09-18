@@ -24,30 +24,36 @@ class TplAppServices
     /**
      * Generates the main services menu with options to start, stop, and restart all services.
      *
+     * @return array An array containing the generated menu items and actions for services.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return array An array containing the generated menu items and actions for services.
      */
     public static function process()
     {
         global $bearsamppLang;
 
         $tplStart = TplApp::getActionMulti(
-            self::ACTION_START, null,
+            self::ACTION_START,
+            null,
             array($bearsamppLang->getValue(Lang::MENU_START_SERVICES), TplAestan::GLYPH_SERVICES_START),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
 
         $tplStop = TplApp::getActionMulti(
-            self::ACTION_STOP, null,
+            self::ACTION_STOP,
+            null,
             array($bearsamppLang->getValue(Lang::MENU_STOP_SERVICES), TplAestan::GLYPH_SERVICES_STOP),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
 
         $tplRestart = TplApp::getActionMulti(
-            self::ACTION_RESTART, null,
+            self::ACTION_RESTART,
+            null,
             array($bearsamppLang->getValue(Lang::MENU_RESTART_SERVICES), TplAestan::GLYPH_SERVICES_RESTART),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
 
         // Items

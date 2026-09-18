@@ -15,17 +15,18 @@ class TplAppReload
     /**
      * Generates multi-action menu item for reload functionality
      *
-     * @global Lang $bearsamppLang Bearsampp language configuration instance
      * @return array Array structure for TplApp::getActionMulti containing:
      *               - Action identifier
      *               - Action parameters
      *               - Menu item configuration (label + glyph)
      *               - Disabled state
      *               - Calling class name
+     * @global Lang $bearsamppLang Bearsampp language configuration instance
      */
     public static function process(): array
     {
         global $bearsamppLang;
+
         return TplApp::getActionMulti(
             self::ACTION,
             null,
@@ -55,7 +56,8 @@ class TplAppReload
     /**
      * Executes reload sequence and returns action string
      *
-     * @param mixed|null $args Arguments to pass to the reload action
+     * @param   mixed|null  $args  Arguments to pass to the reload action
+     *
      * @return string Generated reload action sequence, or an empty string if the reload fails
      *
      * @log TRACE: Logs method entry and generated action content
@@ -69,10 +71,11 @@ class TplAppReload
             new ActionReload($args);
             $actionContent = self::getActionReload();
             Log::trace('Generated reload actions: ' . $actionContent);
-            return $actionContent;
 
+            return $actionContent;
         } catch (Exception $e) {
             Log::error('Reload failed: ' . $e->getMessage());
+
             return '';
         }
     }

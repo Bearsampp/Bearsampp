@@ -43,7 +43,7 @@ class ActionChangeBrowser
      *
      * Initializes the window and its components, sets up event handlers, and starts the main loop.
      *
-     * @param array $args Arguments passed to the constructor.
+     * @param   array  $args  Arguments passed to the constructor.
      */
     public function __construct($args)
     {
@@ -54,27 +54,27 @@ class ActionChangeBrowser
 
         $this->wbLabelExp = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::CHANGE_BROWSER_EXP_LABEL), 15, 15, 470, 50);
 
-        $currentBrowser = $bearsamppConfig->getBrowser();
+        $currentBrowser        = $bearsamppConfig->getBrowser();
         $this->wbRadioButton[] = $bearsamppWinbinder->createRadioButton($this->wbWindow, $currentBrowser, true, 15, 40, 470, 20, true);
 
-        $yPos = 70;
+        $yPos              = 70;
         $installedBrowsers = Win32Native::getInstalledBrowsers();
         foreach ($installedBrowsers as $installedBrowser) {
             if ($installedBrowser != $currentBrowser) {
                 $this->wbRadioButton[] = $bearsamppWinbinder->createRadioButton($this->wbWindow, $installedBrowser, false, 15, $yPos, 470, 20);
-                $yPos += 30;
+                $yPos                  += 30;
             }
         }
 
         $this->wbRadioButtonOther = $bearsamppWinbinder->createRadioButton($this->wbWindow, $bearsamppLang->getValue(Lang::CHANGE_BROWSER_OTHER_LABEL), false, 15, $yPos, 470, 15);
 
         $this->wbInputBrowse = $bearsamppWinbinder->createInputText($this->wbWindow, null, 30, $yPos + 30, 190, null, 20, WBC_READONLY);
-        $this->wbBtnBrowse = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_BROWSE), 225, $yPos + 25, 110);
+        $this->wbBtnBrowse   = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_BROWSE), 225, $yPos + 25, 110);
         $bearsamppWinbinder->setEnabled($this->wbBtnBrowse[WinBinder::CTRL_OBJ], false);
 
         $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE_SAVE, 15, 287, 275);
-        $this->wbBtnSave = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_SAVE), 300, 282);
-        $this->wbBtnCancel = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_CANCEL), 387, 282);
+        $this->wbBtnSave     = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_SAVE), 300, 282);
+        $this->wbBtnCancel   = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_CANCEL), 387, 282);
         $bearsamppWinbinder->setEnabled($this->wbBtnSave[WinBinder::CTRL_OBJ], empty($currentBrowser) ? false : true);
 
         $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
@@ -88,11 +88,11 @@ class ActionChangeBrowser
      * Handles the logic for various controls in the window, such as enabling/disabling buttons,
      * opening file dialogs, and saving the selected browser.
      *
-     * @param resource $window The window resource.
-     * @param int $id The ID of the control that triggered the event.
-     * @param resource $ctrl The control resource.
-     * @param mixed $param1 Additional parameter 1.
-     * @param mixed $param2 Additional parameter 2.
+     * @param   resource  $window  The window resource.
+     * @param   int       $id      The ID of the control that triggered the event.
+     * @param   resource  $ctrl    The control resource.
+     * @param   mixed     $param1  Additional parameter 1.
+     * @param   mixed     $param2  Additional parameter 2.
      */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
@@ -121,12 +121,14 @@ class ActionChangeBrowser
 
         switch ($id) {
             case $this->wbBtnBrowse[WinBinder::CTRL_ID]:
-                $browserPath = trim($bearsamppWinbinder->sysDlgOpen(
-                    $window,
-                    $bearsamppLang->getValue(Lang::ALIAS_DEST_PATH),
-                    array(array($bearsamppLang->getValue(Lang::EXECUTABLE), '*.exe')),
-                    $browserPath
-                ));
+                $browserPath = trim(
+                    $bearsamppWinbinder->sysDlgOpen(
+                        $window,
+                        $bearsamppLang->getValue(Lang::ALIAS_DEST_PATH),
+                        array(array($bearsamppLang->getValue(Lang::EXECUTABLE), '*.exe')),
+                        $browserPath
+                    )
+                );
                 if ($browserPath && is_file($browserPath)) {
                     $bearsamppWinbinder->setText($this->wbInputBrowse[WinBinder::CTRL_OBJ], $browserPath);
                 }

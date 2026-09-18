@@ -43,7 +43,7 @@ class Core
      */
     public function __construct()
     {
-        if ( extension_loaded( 'winbinder' ) ) {
+        if (extension_loaded('winbinder')) {
             require_once Path::getLibsPath() . '/winbinder/winbinder.php';
         }
     }
@@ -58,13 +58,13 @@ class Core
         global $bearsamppLang;
 
         $filePath = Path::getResourcesPath() . '/' . self::APP_VERSION;
-        if ( !is_file( $filePath ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), APP_TITLE, $filePath ) );
+        if (!is_file($filePath)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), APP_TITLE, $filePath));
 
             return null;
         }
 
-        return trim( file_get_contents( $filePath ) );
+        return trim(file_get_contents($filePath));
     }
 
     /**
@@ -74,7 +74,7 @@ class Core
      */
     public function getLastPathContent()
     {
-        return @file_get_contents( Path::getLastPath() );
+        return @file_get_contents(Path::getLastPath());
     }
 
     /**
@@ -88,6 +88,7 @@ class Core
         if (file_exists($file)) {
             return trim(file_get_contents($file));
         }
+
         return false;
     }
 
@@ -100,7 +101,7 @@ class Core
      */
     public function getExec($aetrayPath = false)
     {
-        return Path::getTmpPath( $aetrayPath ) . '/' . self::EXEC;
+        return Path::getTmpPath($aetrayPath) . '/' . self::EXEC;
     }
 
     /**
@@ -110,7 +111,7 @@ class Core
      */
     public function setExec($action)
     {
-        file_put_contents( $this->getExec(), $action );
+        file_put_contents($this->getExec(), $action);
     }
 
     /**
@@ -122,7 +123,7 @@ class Core
      */
     public function getLoadingPid($aetrayPath = false)
     {
-        return Path::getResourcesPath( $aetrayPath ) . '/' . self::LOADING_PID;
+        return Path::getResourcesPath($aetrayPath) . '/' . self::LOADING_PID;
     }
 
     /**
@@ -132,7 +133,7 @@ class Core
      */
     public function addLoadingPid($pid)
     {
-        file_put_contents( $this->getLoadingPid(), $pid . PHP_EOL, FILE_APPEND );
+        file_put_contents($this->getLoadingPid(), $pid . PHP_EOL, FILE_APPEND);
     }
 
     /**
@@ -158,12 +159,12 @@ class Core
      *                                            - int $currentFile: The current file number being extracted.
      *                                            - int $totalFiles: The total number of files to be extracted.
      *
-     * @global  object         $bearsamppRoot     Global object to get core paths.
-     *
      * @return array|false An array containing the result of the extraction on success or failure:
      *                     - On success: ['success' => true, 'numFiles' => int]
      *                     - On failure: ['error' => string, 'numFiles' => int]
      *                     - Returns false if the 7-Zip executable is not found.
+     * @global  object         $bearsamppRoot     Global object to get core paths.
+     *
      */
     public function unzipFile($filePath, $destination, $progressCallback = null)
     {
@@ -171,8 +172,8 @@ class Core
 
         $sevenZipPath = Path::getLibsPath() . '/7zip/7za.exe';
 
-        if ( !file_exists( $sevenZipPath ) ) {
-            Log::error( '7za.exe not found at: ' . $sevenZipPath );
+        if (!file_exists($sevenZipPath)) {
+            Log::error('7za.exe not found at: ' . $sevenZipPath);
 
             return false;
         }
@@ -192,12 +193,13 @@ class Core
         // any listing/parse failure aborts the operation rather than proceeding unverified.
         if (!self::isSafeDestinationFileList($sevenZipPath, $filePath)) {
             Log::error('Archive path-traversal scan failed or rejected for: ' . $filePath);
+
             return false;
         }
 
         $testOutput = CommandRunner::exec($sevenZipPath, ['t', $filePath, '-y', '-bsp1']);
         preg_match('/Files: (\d+)/', $testOutput !== false ? $testOutput : '', $matches);
-        $numFiles = isset($matches[1]) ? (int) $matches[1] : 0;
+        $numFiles = isset($matches[1]) ? (int)$matches[1] : 0;
         Log::trace('Number of files to be extracted: ' . $numFiles);
 
         if ($progressCallback) {
@@ -226,6 +228,7 @@ class Core
 
         if ($returnVar === false) {
             Log::error('Failed to open process for: ' . $sevenZipPath);
+
             return ['error' => 'Failed to open process', 'numFiles' => $numFiles];
         }
 
@@ -239,10 +242,12 @@ class Core
 
         if ($returnVar === 0) {
             Log::debug('Successfully unzipped file to: ' . $destination);
+
             return ['success' => true, 'numFiles' => $numFiles];
         }
 
         Log::error('Failed to unzip file. Command return value: ' . $returnVar);
+
         return ['error' => 'Failed to unzip file', 'numFiles' => $numFiles];
     }
 
@@ -259,6 +264,7 @@ class Core
      *
      * @param   string  $sevenZipPath  Path to the 7za executable.
      * @param   string  $filePath      Path to the archive file.
+     *
      * @return  bool                   True only if the listing succeeded and every entry
      *                                 path is safe; false otherwise.
      */
@@ -267,11 +273,12 @@ class Core
         $listingOutput = CommandRunner::exec($sevenZipPath, ['l', '-slt', $filePath]);
         if (!is_string($listingOutput) || $listingOutput === '') {
             Log::error('Path-traversal scan: unable to list archive: ' . $filePath);
+
             return false;
         }
 
         $blockSeparatorRegex = '/^\-{10,}\s*$/m';
-        $blocks = preg_split($blockSeparatorRegex, $listingOutput);
+        $blocks              = preg_split($blockSeparatorRegex, $listingOutput);
 
         // $blocks[0] is the header preamble (banner + archive metadata), not an entry.
         // Every subsequent block is one archive entry.
@@ -280,6 +287,7 @@ class Core
         if (empty($blocks)) {
             // No entries listed at all - cannot validate, fail closed.
             Log::error('Path-traversal scan: no entries found in archive: ' . $filePath);
+
             return false;
         }
 
@@ -292,12 +300,14 @@ class Core
             if (!preg_match('/^Path\s*=\s*(.*)$/m', $block, $match)) {
                 // A block without a parseable Path is unexpected - fail closed.
                 Log::error('Path-traversal scan: could not parse an entry path in ' . $filePath);
+
                 return false;
             }
 
             $entryPath = trim($match[1]);
             if (self::isUnsafeArchiveEntryPath($entryPath)) {
                 Log::error('Archive contains an unsafe entry path ("' . $entryPath . '"): ' . $filePath);
+
                 return false;
             }
         }
@@ -313,6 +323,7 @@ class Core
      * beginning with `/` or `\`).
      *
      * @param   string  $entryPath  The entry path extracted from the archive listing.
+     *
      * @return  bool                True if the path is unsafe, false if safe.
      */
     private static function isUnsafeArchiveEntryPath($entryPath)

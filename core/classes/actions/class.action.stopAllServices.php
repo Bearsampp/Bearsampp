@@ -80,7 +80,7 @@ class ActionStopAllServices
         // Falls back to sequential if parallel times out
         ServiceHelper::stopAllServicesParallel(
             $bearsamppBins,
-            function($current, $total, $serviceName) use ($bearsamppLang) {
+            function ($current, $total, $serviceName) use ($bearsamppLang) {
                 $this->splash->incrProgressBar();
                 $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::LOADING_STOP_SERVICE), $serviceName));
             }

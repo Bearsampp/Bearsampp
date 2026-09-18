@@ -29,7 +29,8 @@ abstract class ActionDebugBase
     /**
      * Get the binary instance for this service
      *
-     * @param object $bearsamppBins The bins object containing all service binaries
+     * @param   object  $bearsamppBins  The bins object containing all service binaries
+     *
      * @return object The specific binary instance (e.g., BinMysql, BinApache)
      * @since 2026.2.16
      */
@@ -61,7 +62,7 @@ abstract class ActionDebugBase
     /**
      * Constructor for debug actions.
      *
-     * @param array $args An array of arguments where the first element is the command to execute.
+     * @param   array  $args  An array of arguments where the first element is the command to execute.
      *
      * This constructor handles the common debugging workflow:
      * 1. Validates arguments
@@ -77,20 +78,20 @@ abstract class ActionDebugBase
         global $bearsamppLang, $bearsamppBins, $bearsamppTools, $bearsamppWinbinder;
 
         if (isset($args[0]) && !empty($args[0])) {
-            $editor = false;
+            $editor      = false;
             $msgBoxError = false;
 
             // Build base caption
             $serviceLangConstant = $this->getServiceLangConstant();
-            $caption = $bearsamppLang->getValue(Lang::DEBUG) . ' ' .
-                       $bearsamppLang->getValue(constant('Lang::' . $serviceLangConstant)) . ' - ';
+            $caption             = $bearsamppLang->getValue(Lang::DEBUG) . ' ' .
+                $bearsamppLang->getValue(constant('Lang::' . $serviceLangConstant)) . ' - ';
 
             // Get command mapping and determine caption suffix and editor flag
             $commandMapping = $this->getCommandMapping();
-            $command = $args[0];
+            $command        = $args[0];
 
             if (isset($commandMapping[$command])) {
-                $config = $commandMapping[$command];
+                $config  = $commandMapping[$command];
                 $caption .= $bearsamppLang->getValue($config['lang']);
                 if (isset($config['editor']) && $config['editor']) {
                     $editor = true;
@@ -99,13 +100,13 @@ abstract class ActionDebugBase
             $caption .= ' (' . $command . ')';
 
             // Execute the command and get output
-            $bin = $this->getBinInstance($bearsamppBins);
+            $bin         = $this->getBinInstance($bearsamppBins);
             $debugOutput = $bin->getCmdLineOutput($command);
 
             // Handle syntax check results (if applicable)
             if ($this->isSyntaxCheckCommand($command)) {
                 if ($this->hasContentKey()) {
-                    $msgBoxError = !$debugOutput['syntaxOk'];
+                    $msgBoxError            = !$debugOutput['syntaxOk'];
                     $debugOutput['content'] = $debugOutput['syntaxOk'] ? 'Syntax OK !' : $debugOutput['content'];
                 }
             }
@@ -129,7 +130,8 @@ abstract class ActionDebugBase
     /**
      * Check if the given command is a syntax check command
      *
-     * @param string $command The command to check
+     * @param   string  $command  The command to check
+     *
      * @return bool True if it's a syntax check command
      * @since 2026.2.16
      */
@@ -139,6 +141,7 @@ abstract class ActionDebugBase
         if (isset($commandMapping[$command])) {
             return isset($commandMapping[$command]['syntaxCheck']) && $commandMapping[$command]['syntaxCheck'];
         }
+
         return false;
     }
 }

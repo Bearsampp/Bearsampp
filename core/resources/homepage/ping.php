@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Simple liveness check for the Bearsampp homepage.
  *

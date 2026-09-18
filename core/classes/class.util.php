@@ -37,8 +37,8 @@ class Util
     /**
      * Clears multiple directories by delegating each one to clearFolder.
      *
-     * @param   array   $paths    The paths of the directories to clear.
-     * @param   array   $exclude  An array of filenames to exclude from deletion.
+     * @param   array  $paths    The paths of the directories to clear.
+     * @param   array  $exclude  An array of filenames to exclude from deletion.
      *
      * @return array Returns an associative array keyed by path, containing the clearFolder result for each directory.
      */
@@ -109,11 +109,12 @@ class Util
     public static function deleteFolder($path)
     {
         if (is_dir($path)) {
-            $path = rtrim($path, '/\\') . '/';
+            $path  = rtrim($path, '/\\') . '/';
             $files = glob($path . '*', GLOB_MARK);
 
             if ($files === false) {
                 Log::error("deleteFolder(): Failed to glob path: " . $path);
+
                 return;
             }
 
@@ -218,6 +219,7 @@ class Util
             if (function_exists('posix_geteuid')) {
                 return posix_geteuid() === 0;
             }
+
             // If we can't determine on non-Windows, assume true to avoid blocking
             return true;
         }
@@ -260,9 +262,10 @@ class Util
         // Method 3: Try to write to a system directory
         // This is a fallback method that checks if we can write to Windows directory
         $testFile = getenv('SystemRoot') . '\\Temp\\bearsampp_admin_test_' . uniqid() . '.tmp';
-        $result = @file_put_contents($testFile, 'test');
+        $result   = @file_put_contents($testFile, 'test');
         if ($result !== false) {
             @unlink($testFile);
+
             return true;
         }
 
@@ -304,7 +307,7 @@ class Util
                 foreach ($replaceList as $regex => $replace) {
                     if (preg_match($regex, $line, $matches)) {
                         $currentReplace = $replace;
-                        $countParams = preg_match_all('/{{(\d+)}}/', $currentReplace, $paramsMatches);
+                        $countParams    = preg_match_all('/{{(\d+)}}/', $currentReplace, $paramsMatches);
                         if ($countParams > 0 && $countParams <= count($matches)) {
                             foreach ($paramsMatches[1] as $paramsMatch) {
                                 $currentReplace = str_replace('{{' . $paramsMatch . '}}', $matches[$paramsMatch], $currentReplace);
@@ -314,7 +317,7 @@ class Util
                         Log::trace('## line_num: ' . trim($nb));
                         Log::trace('## old: ' . trim($line));
                         Log::trace('## new: ' . trim($currentReplace));
-                        
+
                         // Preserve original line ending if present in $line
                         $ending = (preg_match("/\r\n$/", $line)) ? "\r\n" : (preg_match("/\n$/", $line) ? "\n" : "");
                         fwrite($fp, rtrim($currentReplace) . $ending);
@@ -381,7 +384,6 @@ class Util
     }
 
 
-
     /**
      * Checks if the application is set to launch at startup.
      *
@@ -390,6 +392,7 @@ class Util
     public static function isLaunchStartup()
     {
         $lnk = Path::getStartupLnkPath();
+
         return $lnk ? file_exists($lnk) : false;
     }
 
@@ -407,10 +410,10 @@ class Util
             return false;
         }
 
-        $targetPath = Path::getExeFilePath();
-        $workingDir = Path::getRootPath();
+        $targetPath  = Path::getExeFilePath();
+        $workingDir  = Path::getRootPath();
         $description = APP_TITLE . ' ' . $bearsamppCore->getAppVersion();
-        $iconPath = Path::getIconsPath() . '/app.ico';
+        $iconPath    = Path::getIconsPath() . '/app.ico';
 
         return Win32Native::createShortcut($shortcutPath, $targetPath, $workingDir, $description, $iconPath);
     }
@@ -491,8 +494,8 @@ class Util
     /**
      * Converts data between UTF-8 and Windows-1252 encodings.
      *
-     * @param   string  $data      The data to convert.
-     * @param   string  $direction The conversion direction: 'to_cp1252' or 'to_utf8'. Defaults to 'to_cp1252'.
+     * @param   string  $data       The data to convert.
+     * @param   string  $direction  The conversion direction: 'to_cp1252' or 'to_utf8'. Defaults to 'to_cp1252'.
      *
      * @return string The converted data.
      */
@@ -575,7 +578,7 @@ class Util
      * Updates the loading screen text (if loading screen is active)
      * This allows dynamic updates to show which service is being processed
      *
-     * @param string $text The text to display on the loading screen
+     * @param   string  $text  The text to display on the loading screen
      *
      * @return void
      */
@@ -623,6 +626,7 @@ class Util
             if ($cachedResult !== false) {
                 Cache::recordHit();
                 Log::debug('File scan cache HIT (saved expensive scan operation)');
+
                 return $cachedResult;
             }
         }
@@ -631,13 +635,13 @@ class Util
         Log::debug('File scan cache MISS (performing full scan)');
 
         // Perform the actual scan
-        $startTime = self::getMicrotime();
+        $startTime   = self::getMicrotime();
         $result      = array();
         $pathsToScan = !empty($path) ? $path : self::getPathsToScan();
 
         foreach ($pathsToScan as $pathToScan) {
             $pathStartTime = self::getMicrotime();
-            $findFiles = self::findFiles($pathToScan['path'], $pathToScan['includes'], $pathToScan['recursive']);
+            $findFiles     = self::findFiles($pathToScan['path'], $pathToScan['includes'], $pathToScan['recursive']);
             foreach ($findFiles as $findFile) {
                 $result[] = $findFile;
             }
@@ -654,7 +658,6 @@ class Util
 
         return $result;
     }
-
 
 
     /**
@@ -768,7 +771,7 @@ class Util
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => Path::getModuleRootPath($bearsamppBins->getPostgresql()) . '/' . $folder,
-                'includes'  => array( '.conf', '.bat', '.ber'),
+                'includes'  => array('.conf', '.bat', '.ber'),
                 'recursive' => true
             );
         }
@@ -930,8 +933,8 @@ class Util
      * Falls back to manual conversion when a specific unit is requested
      * or when the native function is unavailable.
      *
-     * @param  int     $size  The file size in bytes.
-     * @param  string  $unit  Optional forced unit ('GB', 'MB', 'KB', or '').
+     * @param   int     $size  The file size in bytes.
+     * @param   string  $unit  Optional forced unit ('GB', 'MB', 'KB', or '').
      *
      * @return string  The formatted file size.
      */

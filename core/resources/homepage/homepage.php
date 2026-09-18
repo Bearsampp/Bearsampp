@@ -35,7 +35,9 @@ header('X-Frame-Options: SAMEORIGIN');
 header('X-Content-Type-Options: nosniff');
 header('X-XSS-Protection: 1; mode=block');
 header('Referrer-Policy: strict-origin-when-cross-origin');
-header("Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.github.com https://bearsampp.com https://* http://*; img-src 'self' data: https:; font-src 'self' data:;");
+header(
+	"Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.github.com https://bearsampp.com https://* http://*; img-src 'self' data: https:; font-src 'self' data:;"
+);
 
 /**
  * Declare global variables to access various parts of the application such as language settings,
@@ -60,7 +62,7 @@ $quickPick = new QuickPick();
 /**
  * Retrieve and store the localized string for the 'Download More' label.
  */
-$downloadTitle = $bearsamppLang->getValue( Lang::DOWNLOAD_MORE );
+$downloadTitle = $bearsamppLang->getValue(Lang::DOWNLOAD_MORE);
 
 /**
  * HTML snippet for a loading spinner image.
@@ -73,175 +75,191 @@ $getLoader = '<span class = "loader float-end"><img src = "' . $imagesPath . 'lo
  */
 ?>
 <!DOCTYPE html>
-<html lang = "<?php echo htmlspecialchars($bearsamppLang->getValue( Lang::LOCALE ), ENT_QUOTES, 'UTF-8') ?>">
+<html lang = "<?php
+echo htmlspecialchars($bearsamppLang->getValue(Lang::LOCALE), ENT_QUOTES, 'UTF-8') ?>">
 
 <head>
-    <meta charset = "utf-8">
-    <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
-    <meta name = "description" content = "Localhost Dashboard">
-    <meta name = "author" content = "Bearsampp">
-    <?php echo Csrf::getTokenMeta(); ?>
-
-    <?php
-    /**
-     * Arrays of CSS and JS files to be included in the page.
-     */
-    $cssFiles = [
-        "/css/app.css",
-        "/libs/bootstrap/css/bootstrap.min.css",
-        "/libs/fontawesome/css/all.min.css",
-    ];
-    $jsFiles  = [
-
-        "/libs/bootstrap/js/bootstrap.bundle.min.js",
-        "/libs/fontawesome/js/all.min.js",
-        "/js/csrf.js",
-        "/js/_commons.js",
-        "/js/latestversion.js",
-        "/js/summary.js",
-        "/js/apache.js",
-        '/js/mailpit.js',
-        "/js/mariadb.js",
-        "/js/memcached.js",
-        "/js/mysql.js",
-        "/js/nodejs.js",
-        "/js/php.js",
-        "/js/postgresql.js",
-        "/js/xlight.js",
-        "/js/quickpick.js",
-	    "/js/loading-cursor.js"
-    ];
-
-    /**
-     * Loop through CSS files and include them in the page.
-     */
-    foreach ( $cssFiles as $file ) {
-        echo '<link href="' . $resourcesPath . '/' . ltrim($file, '/') . '" rel="stylesheet">' . PHP_EOL;
-    }
-    ?>
-
-    <link href = "<?php echo $iconsPath . 'favicon.ico'; ?>" rel = "icon" />
-    <title><?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?></title>
-
-    <script>
-        var AJAX_URL = "<?php echo Path::getWebResourcesUrl(); ?>/ajax.php";
-        
-        // Protocol-relative URL handling for HTTPS and custom vhosts
-        if (AJAX_URL.startsWith('http://localhost') || AJAX_URL.startsWith('https://localhost')) {
-            var pathParts = AJAX_URL.split('/');
-            var ajaxIndex = pathParts.findIndex(function(p) { return p.endsWith('.php'); });
-            if (ajaxIndex > 0) {
-                AJAX_URL = "/" + pathParts.slice(ajaxIndex - 1).join("/");
-            }
-        }
-    </script>
-
-    <!-- Inline script to set loading cursor immediately -->
-    <script>
-        // Set loading cursor immediately
-        document.documentElement.classList.add('loading-cursor');
-
-        // Create and show loading overlay
-        window.addEventListener('DOMContentLoaded', function() {
-            // Remove loading cursor when page is fully loaded
-            window.addEventListener('load', function() {
-                document.documentElement.classList.remove('loading-cursor');
-
-                // If there's an overlay, remove it
-                const existingOverlay = document.querySelector('.loading-overlay');
-                if (existingOverlay) {
-                    existingOverlay.parentNode.removeChild(existingOverlay);
-                }
-            });
-        });
-    </script>
+	<meta charset = "utf-8">
+	<meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+	<meta name = "description" content = "Localhost Dashboard">
+	<meta name = "author" content = "Bearsampp">
+	<?php
+	echo Csrf::getTokenMeta(); ?>
+	
+	<?php
+	/**
+	 * Arrays of CSS and JS files to be included in the page.
+	 */
+	$cssFiles = [
+		"/css/app.css",
+		"/libs/bootstrap/css/bootstrap.min.css",
+		"/libs/fontawesome/css/all.min.css",
+	];
+	$jsFiles  = [
+		
+		"/libs/bootstrap/js/bootstrap.bundle.min.js",
+		"/libs/fontawesome/js/all.min.js",
+		"/js/csrf.js",
+		"/js/_commons.js",
+		"/js/latestversion.js",
+		"/js/summary.js",
+		"/js/apache.js",
+		'/js/mailpit.js',
+		"/js/mariadb.js",
+		"/js/memcached.js",
+		"/js/mysql.js",
+		"/js/nodejs.js",
+		"/js/php.js",
+		"/js/postgresql.js",
+		"/js/xlight.js",
+		"/js/quickpick.js",
+		"/js/loading-cursor.js"
+	];
+	
+	/**
+	 * Loop through CSS files and include them in the page.
+	 */
+	foreach ($cssFiles as $file) {
+		echo '<link href="' . $resourcesPath . '/' . ltrim($file, '/') . '" rel="stylesheet">' . PHP_EOL;
+	}
+	?>
+	
+	<link href = "<?php
+	echo $iconsPath . 'favicon.ico'; ?>" rel = "icon" />
+	<title><?php
+		echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?></title>
+	
+	<script>
+		var AJAX_URL = "<?php echo Path::getWebResourcesUrl(); ?>/ajax.php";
+		
+		// Protocol-relative URL handling for HTTPS and custom vhosts
+		if (AJAX_URL.startsWith('http://localhost') || AJAX_URL.startsWith('https://localhost')) {
+			var pathParts = AJAX_URL.split('/');
+			var ajaxIndex = pathParts.findIndex(function (p) {
+				return p.endsWith('.php');
+			});
+			if (ajaxIndex > 0) {
+				AJAX_URL = "/" + pathParts.slice(ajaxIndex - 1).join("/");
+			}
+		}
+	</script>
+	
+	<!-- Inline script to set loading cursor immediately -->
+	<script>
+		// Set loading cursor immediately
+		document.documentElement.classList.add('loading-cursor');
+		
+		// Create and show loading overlay
+		window.addEventListener('DOMContentLoaded', function () {
+			// Remove loading cursor when page is fully loaded
+			window.addEventListener('load', function () {
+				document.documentElement.classList.remove('loading-cursor');
+				
+				// If there's an overlay, remove it
+				const existingOverlay = document.querySelector('.loading-overlay');
+				if (existingOverlay) {
+					existingOverlay.parentNode.removeChild(existingOverlay);
+				}
+			});
+		});
+	</script>
 </head>
 
 <body>
 <nav class = "navbar navbar-expand-md navbar-light bg-dark fixed-top" role = "navigation">
-    <div class = "container-fluid d-flex justify-content-between align-items-center">
-        <div class = "d-inline-block">
-            <a class = "navbar-brand" href = "<?php echo HttpClient::getWebsiteUrl(); ?>" aria-label = 'Home'>
-                <img class = "p-1" alt = "<?php echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?>"
-                     src = "<?php echo $imagesPath . 'header-logo.png'; ?>">
-            </a>
-            <button class = "navbar-toggler" type = "button" data-bs-toggle = "collapse" data-bs-target = "#navbarSupportedContent" aria-controls = "navbarSupportedContent"
-                    aria-expanded = "false" aria-label = "Toggle navigation">
-                <span class = "navbar-toggler-icon"></span>
-            </button>
-        </div>
-
-        <div class = "d-flex align-items-center quickpick-menu-wrapper">
-        <div class = "collapse navbar-collapse icons" id = "navbarSupportedContent">
-            <div class = "d-flex flex-row flex-nowrap align-items-center mb-0 quickpick-menu">
-                <!-- Enhanced Mode Toggle and QuickPick Container -->
-                <div class = "quickpick-controls">
-                    <?php
-                    try {
-                        echo $quickPick->loadQuickpick($imagesPath);
-                    } catch (Exception $e) {
-                        // Log the error but continue with the page
-                        error_log('Error loading QuickPick: ' . $e->getMessage());
-                        echo '<div id="quickPickError" class="text-center">
+	<div class = "container-fluid d-flex justify-content-between align-items-center">
+		<div class = "d-inline-block">
+			<a class = "navbar-brand" href = "<?php
+			echo HttpClient::getWebsiteUrl(); ?>" aria-label = 'Home'>
+				<img class = "p-1" alt = "<?php
+				echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?>"
+				     src = "<?php
+				     echo $imagesPath . 'header-logo.png'; ?>">
+			</a>
+			<button class = "navbar-toggler" type = "button" data-bs-toggle = "collapse" data-bs-target = "#navbarSupportedContent" aria-controls = "navbarSupportedContent"
+			        aria-expanded = "false" aria-label = "Toggle navigation">
+				<span class = "navbar-toggler-icon"></span>
+			</button>
+		</div>
+		
+		<div class = "d-flex align-items-center quickpick-menu-wrapper">
+			<div class = "collapse navbar-collapse icons" id = "navbarSupportedContent">
+				<div class = "d-flex flex-row flex-nowrap align-items-center mb-0 quickpick-menu">
+					<!-- Enhanced Mode Toggle and QuickPick Container -->
+					<div class = "quickpick-controls">
+						<?php
+						try {
+							echo $quickPick->loadQuickpick($imagesPath);
+						} catch (Exception $e) {
+							// Log the error but continue with the page
+							error_log('Error loading QuickPick: ' . $e->getMessage());
+							echo '<div id="quickPickError" class="text-center">
                             <span>QuickPick unavailable</span>
                         </div>';
-                    }
-                    ?>
-                </div>
-                <!-- Social media icons wrapper -->
-                <div class = "social-icons-wrapper d-none d-lg-flex align-items-center">
-                    <a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php echo $bearsamppLang->getValue( Lang::DISCORD ); ?>" target = "_blank"
-                       href = "https://discord.gg/UEczsEkG4A" aria-label = "Discord">
-                        <i class = 'fa-brands fa-discord'></i>
-                    </a>
-                    <a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php echo $bearsamppLang->getValue( Lang::FACEBOOK ); ?>" target = "_blank"
-                       href = "https://www.facebook.com/groups/bearsampp" aria-label = "Facebook">
-                        <i class = "fa-brands fa-facebook"></i>
-                    </a>
-                    <a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php echo $bearsamppLang->getValue( Lang::GITHUB ); ?>" target = "_blank"
-                       href = "<?php echo HttpClient::getGithubUrl(); ?>" aria-label = "GitHub">
-                        <i class = "fa-brands fa-github"></i>
-                    </a>
-                    <a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php echo $bearsamppLang->getValue( Lang::DONATE ); ?>" target = "_blank"
-                       href = "<?php echo HttpClient::getWebsiteUrl( 'donate' ); ?>"><img class = "donate" src = "<?php echo $imagesPath . 'donate.png'; ?>" alt = 'Donation Icon' />
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
+						}
+						?>
+					</div>
+					<!-- Social media icons wrapper -->
+					<div class = "social-icons-wrapper d-none d-lg-flex align-items-center">
+						<a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php
+						echo $bearsamppLang->getValue(Lang::DISCORD); ?>" target = "_blank"
+						   href = "https://discord.gg/UEczsEkG4A" aria-label = "Discord">
+							<i class = 'fa-brands fa-discord'></i>
+						</a>
+						<a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php
+						echo $bearsamppLang->getValue(Lang::FACEBOOK); ?>" target = "_blank"
+						   href = "https://www.facebook.com/groups/bearsampp" aria-label = "Facebook">
+							<i class = "fa-brands fa-facebook"></i>
+						</a>
+						<a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php
+						echo $bearsamppLang->getValue(Lang::GITHUB); ?>" target = "_blank"
+						   href = "<?php
+						   echo HttpClient::getGithubUrl(); ?>" aria-label = "GitHub">
+							<i class = "fa-brands fa-github"></i>
+						</a>
+						<a data-bs-toggle = "tooltip" data-bs-placement = "top" data-bs-title = "<?php
+						echo $bearsamppLang->getValue(Lang::DONATE); ?>" target = "_blank"
+						   href = "<?php
+						   echo HttpClient::getWebsiteUrl('donate'); ?>"><img class = "donate" src = "<?php
+							echo $imagesPath . 'donate.png'; ?>" alt = 'Donation Icon' />
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </nav>
 
 <div id = "page-wrapper">
-    <?php
-    try {
-        include __DIR__ . '/tpls/hp.latestversion.html';
-    } catch (Exception $e) {
-        error_log('Error including latest version template: ' . $e->getMessage());
-        echo '<div class="alert alert-warning">Latest version information unavailable</div>';
-    }
-
-    try {
-        $page = preg_replace('/[^a-z0-9_-]/i', '', (string) $bearsamppHomepage->getPage());
-        $pagePath = __DIR__ . '/tpls/hp.' . $page . '.html';
-        if (!is_file($pagePath)) {
-            $pagePath = __DIR__ . '/tpls/' . $page . '.html';
-        }
-        if (is_file($pagePath)) {
-            include $pagePath;
-        } else {
-            include __DIR__ . '/tpls/hp.index.html';
-        }
-    } catch (Exception $e) {
-        error_log('Error including page template: ' . $e->getMessage());
-        echo '<div class="alert alert-warning">Page content unavailable</div>';
-    }
-    ?>
+	<?php
+	try {
+		include __DIR__ . '/tpls/hp.latestversion.html';
+	} catch (Exception $e) {
+		error_log('Error including latest version template: ' . $e->getMessage());
+		echo '<div class="alert alert-warning">Latest version information unavailable</div>';
+	}
+	
+	try {
+		$page     = preg_replace('/[^a-z0-9_-]/i', '', (string)$bearsamppHomepage->getPage());
+		$pagePath = __DIR__ . '/tpls/hp.' . $page . '.html';
+		if (!is_file($pagePath)) {
+			$pagePath = __DIR__ . '/tpls/' . $page . '.html';
+		}
+		if (is_file($pagePath)) {
+			include $pagePath;
+		} else {
+			include __DIR__ . '/tpls/hp.index.html';
+		}
+	} catch (Exception $e) {
+		error_log('Error including page template: ' . $e->getMessage());
+		echo '<div class="alert alert-warning">Page content unavailable</div>';
+	}
+	?>
 </div>
 
 <?php
-foreach ( $jsFiles as $file ) {
-    echo '<script src="' . $resourcesPath . '/' . ltrim($file, '/') . '"></script>' . PHP_EOL;
+foreach ($jsFiles as $file) {
+	echo '<script src="' . $resourcesPath . '/' . ltrim($file, '/') . '"></script>' . PHP_EOL;
 }
 ?>
 </body>

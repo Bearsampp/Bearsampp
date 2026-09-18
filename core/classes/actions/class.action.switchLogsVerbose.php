@@ -17,7 +17,7 @@ class ActionSwitchLogsVerbose
     /**
      * ActionSwitchLogsVerbose constructor.
      *
-     * @param array $args An array of arguments where the first element should be the verbosity level (0-3).
+     * @param   array  $args  An array of arguments where the first element should be the verbosity level (0-3).
      */
     public function __construct($args)
     {

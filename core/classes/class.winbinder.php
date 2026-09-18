@@ -128,11 +128,13 @@ class WinBinder
         $parent = $parent === null ? 0 : $parent;
 
         // Fix for PHP 8.4: Ensure style and params are proper types
-        $style = $style === null ? 0 : $style;
+        $style  = $style === null ? 0 : $style;
         $params = $params === null ? 0 : $params;
 
         // Log window creation attempt for debugging
-        $this->writeLog('Creating window: class=' . $wclass . ', caption=' . $caption . ', pos=(' . $xPos . ',' . $yPos . '), size=(' . $width . 'x' . $height . '), style=' . $style . ', params=' . $params);
+        $this->writeLog(
+            'Creating window: class=' . $wclass . ', caption=' . $caption . ', pos=(' . $xPos . ',' . $yPos . '), size=(' . $width . 'x' . $height . '), style=' . $style . ', params=' . $params
+        );
 
         $caption = empty($caption) ? $this->defaultTitle : $this->defaultTitle . ' - ' . $caption;
         $window  = $this->callWinBinder('wb_create_window', array($parent, $wclass, $caption, $xPos, $yPos, $width, $height, $style, $params));
@@ -173,7 +175,7 @@ class WinBinder
             if ($removeErrorHandler) {
                 // Suppress all errors for this call
                 $oldErrorLevel = error_reporting(0);
-                $result = @call_user_func_array($function, $params);
+                $result        = @call_user_func_array($function, $params);
                 error_reporting($oldErrorLevel);
             } else {
                 $result = call_user_func_array($function, $params);
@@ -245,6 +247,7 @@ class WinBinder
      * Destroys a window with proper cleanup and handling.
      *
      * @param   mixed  $window  The window object to destroy.
+     *
      * @return  bool True if the window was successfully destroyed.
      */
     public function destroyWindow($window): bool
@@ -256,7 +259,7 @@ class WinBinder
 
         // Get window title before destruction for fallback
         $windowTitle = $this->getText($window);
-        $currentPid = Win32Ps::getCurrentPid();
+        $currentPid  = Win32Ps::getCurrentPid();
 
         // Attempt standard destruction
         $this->callWinBinder('wb_destroy_window', array($window));
@@ -314,6 +317,7 @@ class WinBinder
      * Checks if a window handle is still valid.
      *
      * @param   mixed  $window  The window object to check.
+     *
      * @return  bool True if the window is valid.
      */
     private function windowIsValid($window): bool
@@ -324,6 +328,7 @@ class WinBinder
 
         // Try to get window text - if window is invalid, this will fail
         $text = $this->callWinBinder('wb_get_text', array($window), true);
+
         return ($text !== false);
     }
 
@@ -340,12 +345,12 @@ class WinBinder
     /**
      * Executes a system command.
      *
-     * @param   string           $cmd     The command to execute.
-     * @param   string|array     $params  The parameters to pass to the command. Can be a pre-formed string
+     * @param   string        $cmd       The command to execute.
+     * @param   string|array  $params    The parameters to pass to the command. Can be a pre-formed string
      *                                   (for backwards compatibility) or array of individual arguments
      *                                   (recommended for automatic quoting).
-     * @param   bool             $silent  Whether to execute the command silently.
-     * @param   bool             $wait    Whether to wait for the process to exit.
+     * @param   bool          $silent    Whether to execute the command silently.
+     * @param   bool          $wait      Whether to wait for the process to exit.
      *
      * @return mixed The result of the command execution.
      */
@@ -364,11 +369,12 @@ class WinBinder
             // Use WScript.Shell via COM for true silent execution (zero window flashing)
             // This is more reliable than powershell.exe -WindowStyle Hidden which can still flash
             try {
-                $wsh = new COM('WScript.Shell');
+                $wsh     = new COM('WScript.Shell');
                 $fullCmd = '"' . $cmd . '"' . (empty($params) ? '' : ' ' . $params);
                 // 0 = Hidden, $wait = wait for process to exit
                 $exitCode = $wsh->Run($fullCmd, 0, $wait);
                 $this->writeLog('exec (silent via COM): ' . $fullCmd . ' [ExitCode: ' . $exitCode . ']');
+
                 return $exitCode === 0;
             } catch (Throwable $e) {
                 $this->writeLog('exec (silent via COM) failed: ' . $e->getMessage() . '. Falling back to PowerShell.');
@@ -382,8 +388,8 @@ class WinBinder
                     $psCmd .= ' -Wait';
                 }
                 $encodedCmd = base64_encode(mb_convert_encoding($psCmd, 'UTF-16LE', 'UTF-8'));
-                $cmd = 'powershell.exe';
-                $params = '-WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand ' . $encodedCmd;
+                $cmd        = 'powershell.exe';
+                $params     = '-WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand ' . $encodedCmd;
             }
         }
 
@@ -415,6 +421,7 @@ class WinBinder
         if (preg_match('/[\s"&|<>^()]/', $arg)) {
             // Escape any internal quotes by doubling them (Windows convention for cmd.exe/WScript.Shell)
             $escaped = str_replace('"', '""', $arg);
+
             return '"' . $escaped . '"';
         }
 
@@ -805,7 +812,7 @@ class WinBinder
         $this->countCtrls++;
 
         // Fix for PHP 8.4: Ensure style and params are proper types
-        $style = $style === null ? 0 : $style;
+        $style  = $style === null ? 0 : $style;
         $params = $params === null ? 0 : $params;
 
         return array(

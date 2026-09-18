@@ -25,7 +25,7 @@ class ActionEnable
     {
         global $bearsamppBins;
 
-        if ( isset( $args[0] ) && !empty( $args[0] ) && isset( $args[1] ) ) {
+        if (isset($args[0]) && !empty($args[0]) && isset($args[1])) {
             Util::startLoading();
             $bin = $bearsamppBins->getBinByName($args[0]);
             if ($bin !== null) {

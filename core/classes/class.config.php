@@ -59,7 +59,8 @@ class Config
     /**
      * Retrieves the raw configuration value for the specified key.
      *
-     * @param string $key The configuration key.
+     * @param   string  $key  The configuration key.
+     *
      * @return mixed The configuration value.
      */
     public function getRaw($key)
@@ -70,8 +71,8 @@ class Config
     /**
      * Replaces a single configuration value with the specified key and value.
      *
-     * @param string $key The configuration key.
-     * @param mixed $value The new configuration value.
+     * @param   string  $key    The configuration key.
+     * @param   mixed   $value  The new configuration value.
      */
     public function replace($key, $value)
     {
@@ -81,7 +82,8 @@ class Config
     /**
      * Replaces multiple configuration values with the specified key-value pairs.
      *
-     * @param array $params An associative array of key-value pairs to replace.
+     * @param   array  $params  An associative array of key-value pairs to replace.
+     *
      * @throws RuntimeException If the configuration key or value is invalid.
      */
     public function replaceAll($params)

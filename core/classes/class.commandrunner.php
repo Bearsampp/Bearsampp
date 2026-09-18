@@ -29,7 +29,7 @@ class CommandRunner
     /**
      * Writes a log entry to the batch log file.
      *
-     * @param string $log The message to log.
+     * @param   string  $log  The message to log.
      */
     private static function writeLog(string $log): void
     {
@@ -43,16 +43,17 @@ class CommandRunner
      * Each argument is individually escaped with escapeshellarg(). The console
      * window is hidden on Windows via bypass_shell + CREATE_NO_WINDOW semantics.
      *
-     * @param string $executable Path to the executable (will be escapeshellarg'd).
-     * @param array  $args       Arguments, each will be escapeshellarg'd.
-     * @param string $stderr     Populated with any stderr output on return.
+     * @param   string  $executable  Path to the executable (will be escapeshellarg'd).
+     * @param   array   $args        Arguments, each will be escapeshellarg'd.
+     * @param   string  $stderr      Populated with any stderr output on return.
+     *
      * @return string|false stdout output on success, false if the process could not start.
      */
     public static function exec(string $executable, array $args = [], string &$stderr = ''): string|false
     {
         $cmd = escapeshellarg($executable);
         foreach ($args as $arg) {
-            $cmd .= ' ' . escapeshellarg((string) $arg);
+            $cmd .= ' ' . escapeshellarg((string)$arg);
         }
 
         self::writeLog('CommandRunner::exec: ' . $cmd);
@@ -67,6 +68,7 @@ class CommandRunner
 
         if (!is_resource($process)) {
             self::writeLog('CommandRunner::exec: failed to start process: ' . $cmd);
+
             return false;
         }
 
@@ -90,8 +92,9 @@ class CommandRunner
      * Convenience wrapper around exec() for callers that need both streams merged
      * (e.g. sc.exe which may send status messages to either stream).
      *
-     * @param string $executable Path to the executable (will be escapeshellarg'd).
-     * @param array  $args       Arguments, each will be escapeshellarg'd.
+     * @param   string  $executable  Path to the executable (will be escapeshellarg'd).
+     * @param   array   $args        Arguments, each will be escapeshellarg'd.
+     *
      * @return string|false Combined output, or false if the process could not start.
      */
     public static function execCombined(string $executable, array $args = []): string|false
@@ -118,16 +121,17 @@ class CommandRunner
      * split on carriage-return (\r) to match Windows progress-reporting conventions.
      * Any data remaining in the buffer after EOF is flushed as a final line.
      *
-     * @param string   $executable   Path to the executable (will be escapeshellarg'd).
-     * @param array    $args         Arguments, each will be escapeshellarg'd.
-     * @param callable $lineCallback Invoked with each trimmed output line as a string.
+     * @param   string    $executable    Path to the executable (will be escapeshellarg'd).
+     * @param   array     $args          Arguments, each will be escapeshellarg'd.
+     * @param   callable  $lineCallback  Invoked with each trimmed output line as a string.
+     *
      * @return int|false Process exit code on success, false if the process could not start.
      */
     public static function stream(string $executable, array $args, callable $lineCallback): int|false
     {
         $cmd = escapeshellarg($executable);
         foreach ($args as $arg) {
-            $cmd .= ' ' . escapeshellarg((string) $arg);
+            $cmd .= ' ' . escapeshellarg((string)$arg);
         }
 
         self::writeLog('CommandRunner::stream: ' . $cmd);
@@ -135,6 +139,7 @@ class CommandRunner
         $process = popen($cmd, 'rb');
         if (!$process) {
             self::writeLog('CommandRunner::stream: failed to start process: ' . $cmd);
+
             return false;
         }
 
@@ -163,7 +168,7 @@ class CommandRunner
      * The caller is responsible for ensuring $command is properly constructed;
      * use escapeshellarg() on any dynamic values before passing them in.
      *
-     * @param string $command Fully-formed command string to run in the background.
+     * @param   string  $command  Fully-formed command string to run in the background.
      */
     public static function background(string $command): void
     {
@@ -179,12 +184,14 @@ class CommandRunner
      * dynamic arguments, use exec() or stream() instead so that escaping is enforced
      * at the boundary.
      *
-     * @param string $command Fully-formed command string. Must not contain unescaped user input.
+     * @param   string  $command  Fully-formed command string. Must not contain unescaped user input.
+     *
      * @return string|null Command output, or null if the command could not be run.
      */
     public static function shellExec(string $command): ?string
     {
         self::writeLog('CommandRunner::shellExec: ' . $command);
+
         return shell_exec($command);
     }
 }

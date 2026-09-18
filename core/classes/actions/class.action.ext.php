@@ -36,7 +36,7 @@ class ActionExt
     /**
      * Constructor for the ActionExt class.
      *
-     * @param array $args The command line arguments passed to the action.
+     * @param   array  $args  The command line arguments passed to the action.
      */
     public function __construct($args)
     {
@@ -48,6 +48,7 @@ class ActionExt
             }
             $this->setStatus(self::STATUS_ERROR);
             $this->sendLogs();
+
             return;
         }
 
@@ -69,6 +70,7 @@ class ActionExt
             }
             $this->setStatus(self::STATUS_ERROR);
             $this->sendLogs();
+
             return;
         }
 
@@ -94,7 +96,7 @@ class ActionExt
     /**
      * Adds a log entry to the logs.
      *
-     * @param string $data The log entry to add.
+     * @param   string  $data  The log entry to add.
      */
     private function addLog($data)
     {
@@ -104,7 +106,7 @@ class ActionExt
     /**
      * Sets the status of the action.
      *
-     * @param int $status The status code to set.
+     * @param   int  $status  The status code to set.
      */
     private function setStatus($status)
     {
@@ -117,7 +119,7 @@ class ActionExt
     private function sendLogs()
     {
         echo json_encode(array(
-            'status' => $this->status,
+            'status'   => $this->status,
             'response' => $this->logs
         ));
     }
@@ -125,7 +127,7 @@ class ActionExt
     /**
      * Starts the application.
      *
-     * @param array $args The command line arguments passed to the action.
+     * @param   array  $args  The command line arguments passed to the action.
      */
     private function procStart($args)
     {
@@ -143,7 +145,7 @@ class ActionExt
     /**
      * Stops the application and removes services.
      *
-     * @param array $args The command line arguments passed to the action.
+     * @param   array  $args  The command line arguments passed to the action.
      */
     private function procStop($args)
     {
@@ -171,7 +173,7 @@ class ActionExt
     /**
      * Reloads the application by stopping and starting services.
      *
-     * @param array $args The command line arguments passed to the action.
+     * @param   array  $args  The command line arguments passed to the action.
      */
     private function procReload($args)
     {
@@ -182,6 +184,7 @@ class ActionExt
             $bearsamppWinbinder->exec(Path::getExeFilePath(), null, false);
             $this->addLog('Start ' . APP_TITLE);
             $this->setStatus(self::STATUS_WARNING);
+
             return;
         }
 
@@ -212,7 +215,7 @@ class ActionExt
     /**
      * Refreshes the application by calling the reload action.
      *
-     * @param array $args The command line arguments passed to the action.
+     * @param   array  $args  The command line arguments passed to the action.
      */
     private function procRefresh($args)
     {
@@ -221,6 +224,7 @@ class ActionExt
         if (!Util::isLaunched()) {
             $this->addLog(APP_TITLE . ' is not started.');
             $this->setStatus(self::STATUS_ERROR);
+
             return;
         }
 

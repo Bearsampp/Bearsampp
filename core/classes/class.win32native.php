@@ -41,6 +41,7 @@ class Win32Native
         if (self::$wmiCimv2 === null) {
             self::$wmiCimv2 = new COM("winmgmts://./root/cimv2");
         }
+
         return self::$wmiCimv2;
     }
 
@@ -54,6 +55,7 @@ class Win32Native
         if (self::$wmiStdRegProv === null) {
             self::$wmiStdRegProv = new COM("winmgmts://./root/default:StdRegProv");
         }
+
         return self::$wmiStdRegProv;
     }
 
@@ -67,6 +69,7 @@ class Win32Native
         if (self::$wscriptShell === null) {
             self::$wscriptShell = new COM("WScript.Shell");
         }
+
         return self::$wscriptShell;
     }
 
@@ -87,7 +90,8 @@ class Win32Native
      * Gets a list of running processes using COM/WMI.
      * Replaces VBS WMI process query with direct PHP COM access.
      *
-     * @param array $properties Optional array of properties to retrieve (e.g., ['Name', 'ProcessID', 'ExecutablePath'])
+     * @param   array  $properties  Optional array of properties to retrieve (e.g., ['Name', 'ProcessID', 'ExecutablePath'])
+     *
      * @return array Array of processes with requested information
      */
     public static function getProcessList($properties = [])
@@ -106,7 +110,7 @@ class Win32Native
             }
 
             $selectClause = implode(', ', $properties);
-            $query = "SELECT {$selectClause} FROM Win32_Process";
+            $query        = "SELECT {$selectClause} FROM Win32_Process";
 
             // Execute query
             $processes = $wmi->ExecQuery($query);
@@ -118,7 +122,7 @@ class Win32Native
                 foreach ($properties as $prop) {
                     // Handle property access
                     try {
-                        $value = $proc->$prop;
+                        $value          = $proc->$prop;
                         $process[$prop] = $value ?? '';
                     } catch (Exception $e) {
                         $process[$prop] = '';
@@ -131,10 +135,10 @@ class Win32Native
             Log::debug('getProcessList: Found ' . count($result) . ' processes in ' . $duration . 'ms (COM/WMI)');
 
             return $result;
-
         } catch (Exception $e) {
             self::resetConnections();
             Log::error('getProcessList: COM exception: ' . $e->getMessage());
+
             return [];
         }
     }
@@ -143,7 +147,8 @@ class Win32Native
      * Kills a process by PID using COM/WMI.
      * Replaces VBS WMI process termination with direct PHP COM access.
      *
-     * @param int $pid The process ID to kill
+     * @param   int  $pid  The process ID to kill
+     *
      * @return bool True on success, false on failure
      */
     public static function killProcess($pid)
@@ -151,6 +156,7 @@ class Win32Native
         // Validate PID
         if (!is_numeric($pid) || $pid <= 0) {
             Log::error('killProcess: Invalid PID: ' . $pid);
+
             return false;
         }
 
@@ -163,15 +169,15 @@ class Win32Native
             $wmi = self::getWmiCimv2();
 
             // Query for specific process
-            $query = "SELECT * FROM Win32_Process WHERE ProcessID = {$pid}";
+            $query     = "SELECT * FROM Win32_Process WHERE ProcessID = {$pid}";
             $processes = $wmi->ExecQuery($query);
 
             // Terminate the process
-            $found = false;
+            $found           = false;
             $terminateResult = null;
             foreach ($processes as $proc) {
                 $terminateResult = $proc->Terminate();
-                $found = true;
+                $found           = true;
                 break;
             }
 
@@ -179,12 +185,14 @@ class Win32Native
 
             if (!$found) {
                 Log::debug('killProcess: Process ' . $pid . ' not found');
+
                 return false;
             }
 
             // Check if Terminate() returned success (0 = success)
             if ($terminateResult !== 0) {
                 Log::error('killProcess: Terminate() failed with status code: ' . $terminateResult);
+
                 return false;
             }
 
@@ -192,15 +200,17 @@ class Win32Native
             usleep(100000); // Wait 100ms for termination to take effect
             if (self::processExists($pid)) {
                 Log::error('killProcess: Process ' . $pid . ' still exists after termination attempt');
+
                 return false;
             }
 
             Log::debug('killProcess: Successfully killed process ' . $pid . ' in ' . $duration . 'ms (COM/WMI)');
-            return true;
 
+            return true;
         } catch (Exception $e) {
             self::resetConnections();
             Log::error('killProcess: COM exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -208,7 +218,8 @@ class Win32Native
     /**
      * Checks if a process with the given PID exists.
      *
-     * @param int $pid The process ID to check
+     * @param   int  $pid  The process ID to check
+     *
      * @return bool True if process exists, false otherwise
      */
     public static function processExists($pid)
@@ -218,8 +229,8 @@ class Win32Native
         }
 
         try {
-            $wmi = self::getWmiCimv2();
-            $query = "SELECT ProcessID FROM Win32_Process WHERE ProcessID = {$pid}";
+            $wmi       = self::getWmiCimv2();
+            $query     = "SELECT ProcessID FROM Win32_Process WHERE ProcessID = {$pid}";
             $processes = $wmi->ExecQuery($query);
 
             foreach ($processes as $proc) {
@@ -227,9 +238,9 @@ class Win32Native
             }
 
             return false;
-
         } catch (Exception $e) {
             self::resetConnections();
+
             return false;
         }
     }
@@ -237,8 +248,9 @@ class Win32Native
     /**
      * Gets information about a specific process by PID.
      *
-     * @param int $pid The process ID
-     * @param array $properties Properties to retrieve
+     * @param   int    $pid         The process ID
+     * @param   array  $properties  Properties to retrieve
+     *
      * @return array|false Process information or false if not found
      */
     public static function getProcessInfo($pid, $properties = [])
@@ -252,29 +264,30 @@ class Win32Native
         }
 
         try {
-            $wmi = self::getWmiCimv2();
+            $wmi          = self::getWmiCimv2();
             $selectClause = implode(', ', $properties);
-            $query = "SELECT {$selectClause} FROM Win32_Process WHERE ProcessID = {$pid}";
-            $processes = $wmi->ExecQuery($query);
+            $query        = "SELECT {$selectClause} FROM Win32_Process WHERE ProcessID = {$pid}";
+            $processes    = $wmi->ExecQuery($query);
 
             foreach ($processes as $proc) {
                 $result = [];
                 foreach ($properties as $prop) {
                     try {
-                        $value = $proc->$prop;
+                        $value         = $proc->$prop;
                         $result[$prop] = $value ?? '';
                     } catch (Exception $e) {
                         $result[$prop] = '';
                     }
                 }
+
                 return $result;
             }
 
             return false;
-
         } catch (Exception $e) {
             self::resetConnections();
             Log::error('getProcessInfo: COM exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -282,8 +295,9 @@ class Win32Native
     /**
      * Finds processes by name.
      *
-     * @param string $name Process name (e.g., 'notepad.exe')
-     * @param array $properties Properties to retrieve
+     * @param   string  $name        Process name (e.g., 'notepad.exe')
+     * @param   array   $properties  Properties to retrieve
+     *
      * @return array Array of matching processes
      */
     public static function findProcessesByName($name, $properties = [])
@@ -297,14 +311,14 @@ class Win32Native
         }
 
         try {
-            $wmi = self::getWmiCimv2();
+            $wmi          = self::getWmiCimv2();
             $selectClause = implode(', ', $properties);
 
             // Sanitize the name parameter to prevent WQL injection
             // Escape single quotes by doubling them (WQL standard)
             $safeName = str_replace("'", "''", $name);
 
-            $query = "SELECT {$selectClause} FROM Win32_Process WHERE Name = '{$safeName}'";
+            $query     = "SELECT {$selectClause} FROM Win32_Process WHERE Name = '{$safeName}'";
             $processes = $wmi->ExecQuery($query);
 
             $result = [];
@@ -312,7 +326,7 @@ class Win32Native
                 $process = [];
                 foreach ($properties as $prop) {
                     try {
-                        $value = $proc->$prop;
+                        $value          = $proc->$prop;
                         $process[$prop] = $value ?? '';
                     } catch (Exception $e) {
                         $process[$prop] = '';
@@ -322,10 +336,10 @@ class Win32Native
             }
 
             return $result;
-
         } catch (Exception $e) {
             self::resetConnections();
             Log::error('findProcessesByName: COM exception: ' . $e->getMessage());
+
             return [];
         }
     }
@@ -347,20 +361,21 @@ class Win32Native
     /**
      * Maps registry hive abbreviations to full names for WScript.Shell.
      *
-     * @param string $hive The registry hive (HKLM, HKCU, HKCR, HKU)
+     * @param   string  $hive  The registry hive (HKLM, HKCU, HKCR, HKU)
+     *
      * @return string The full hive name
      */
     private static function mapRegistryHive($hive)
     {
         $hiveMap = [
-            'HKLM' => 'HKLM',
-            'HKCU' => 'HKCU',
-            'HKCR' => 'HKCR',
-            'HKU' => 'HKU',
+            'HKLM'               => 'HKLM',
+            'HKCU'               => 'HKCU',
+            'HKCR'               => 'HKCR',
+            'HKU'                => 'HKU',
             'HKEY_LOCAL_MACHINE' => 'HKLM',
-            'HKEY_CURRENT_USER' => 'HKCU',
-            'HKEY_CLASSES_ROOT' => 'HKCR',
-            'HKEY_USERS' => 'HKU',
+            'HKEY_CURRENT_USER'  => 'HKCU',
+            'HKEY_CLASSES_ROOT'  => 'HKCR',
+            'HKEY_USERS'         => 'HKU',
         ];
 
         return isset($hiveMap[$hive]) ? $hiveMap[$hive] : $hive;
@@ -373,14 +388,15 @@ class Win32Native
      * Uses StdRegProv for key existence checks (more reliable than WScript.Shell::RegRead).
      * Uses WScript.Shell::RegRead for value existence checks.
      *
-     * @param string $hive The registry hive (HKLM, HKCU, etc.)
-     * @param string $key The registry key path
-     * @param string|null $value The value name (null to check key existence only)
+     * @param   string       $hive   The registry hive (HKLM, HKCU, etc.)
+     * @param   string       $key    The registry key path
+     * @param   string|null  $value  The value name (null to check key existence only)
+     *
      * @return bool True if exists, false otherwise
      */
     public static function registryExists($hive, $key, $value = null)
     {
-        $hive = self::mapRegistryHive($hive);
+        $hive    = self::mapRegistryHive($hive);
         $regPath = $hive . '\\' . $key;
 
         Log::debug('registryExists: Checking ' . $regPath . ($value !== null ? '\\' . $value : ' (key)') . ' (COM)');
@@ -400,31 +416,32 @@ class Win32Native
                         'HKLM' => 0x80000002,  // HKEY_LOCAL_MACHINE
                         'HKU'  => 0x80000003,  // HKEY_USERS
                     ];
-                    
+
                     $hConst = $hiveConstMap[$hive] ?? 0x80000002;  // Default to HKLM
 
                     // EnumKey checks if parent key's subkeys contain the requested key
                     // For root-level checks, pass empty parent
                     $pathParts = explode('\\', $key);
-                    
+
                     if (count($pathParts) === 1) {
                         // Top-level key: parent is root
                         $parentKey = '';
-                        $keyName = $pathParts[0];
+                        $keyName   = $pathParts[0];
                     } else {
                         // Nested key: split parent from key name
-                        $keyName = array_pop($pathParts);
+                        $keyName   = array_pop($pathParts);
                         $parentKey = implode('\\', $pathParts);
                     }
-                    
+
                     $subKeys = null;
-                    $rc = $wmi->EnumKey($hConst, $parentKey, $subKeys);
-                    
+                    $rc      = $wmi->EnumKey($hConst, $parentKey, $subKeys);
+
                     if ($rc !== 0 || !is_array($subKeys)) {
                         Log::debug('registryExists: Key not found (EnumKey failed)');
+
                         return false;
                     }
-                    
+
                     // Check if our key name is in the list of subkeys
                     $exists = false;
                     foreach ($subKeys as $subKey) {
@@ -433,38 +450,42 @@ class Win32Native
                             break;
                         }
                     }
-                    
+
                     if ($exists) {
                         Log::debug('registryExists: Key found');
+
                         return true;
                     } else {
                         Log::debug('registryExists: Key not found');
+
                         return false;
                     }
-
                 } catch (Exception $e) {
                     self::$wmiStdRegProv = null;
                     Log::error('registryExists: StdRegProv exception during key check: ' . $e->getMessage());
+
                     return false;
                 }
             } else {
                 // Check if a specific value exists within the key
                 // Use WScript.Shell::RegRead for value existence
                 try {
-                    $shell = self::getWscriptShell();
+                    $shell     = self::getWscriptShell();
                     $valuePath = $regPath . '\\' . $value;
                     $shell->RegRead($valuePath);
                     Log::debug('registryExists: Value found');
+
                     return true;
                 } catch (Exception $e) {
                     Log::debug('registryExists: Value not found');
+
                     return false;
                 }
             }
-
         } catch (Exception $e) {
             self::resetConnections();
             Log::error('registryExists: COM exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -473,14 +494,15 @@ class Win32Native
      * Gets a value from the Windows registry using COM.
      * Replaces VBS/reg.exe with direct COM access.
      *
-     * @param string $hive The registry hive (HKLM, HKCU, etc.)
-     * @param string $key The registry key path
-     * @param string $value The value name (empty string for default value)
+     * @param   string  $hive   The registry hive (HKLM, HKCU, etc.)
+     * @param   string  $key    The registry key path
+     * @param   string  $value  The value name (empty string for default value)
+     *
      * @return mixed|null The registry value data, or null if not found
      */
     public static function registryGetValue($hive, $key, $value = '')
     {
-        $hive = self::mapRegistryHive($hive);
+        $hive    = self::mapRegistryHive($hive);
         $regPath = $hive . '\\' . $key;
 
         if ($value !== '') {
@@ -495,7 +517,7 @@ class Win32Native
         $startTime = microtime(true);
 
         try {
-            $shell = self::getWscriptShell();
+            $shell  = self::getWscriptShell();
             $result = $shell->RegRead($regPath);
 
             $duration = round((microtime(true) - $startTime) * 1000, 2);
@@ -507,10 +529,11 @@ class Win32Native
             }
 
             Log::debug('registryGetValue: Found value in ' . $duration . 'ms (COM)');
-            return $result;
 
+            return $result;
         } catch (Exception $e) {
             Log::debug('registryGetValue: Value not found');
+
             return null;
         }
     }
@@ -519,22 +542,24 @@ class Win32Native
      * Sets a value in the Windows registry using COM.
      * Replaces VBS/reg.exe with direct COM access.
      *
-     * @param string $hive The registry hive (HKLM, HKCU, etc.)
-     * @param string $key The registry key path
-     * @param string $value The value name
-     * @param mixed $data The data to write
-     * @param string $type The registry type (REG_SZ, REG_EXPAND_SZ, REG_DWORD, REG_BINARY)
+     * @param   string  $hive   The registry hive (HKLM, HKCU, etc.)
+     * @param   string  $key    The registry key path
+     * @param   string  $value  The value name
+     * @param   mixed   $data   The data to write
+     * @param   string  $type   The registry type (REG_SZ, REG_EXPAND_SZ, REG_DWORD, REG_BINARY)
+     *
      * @return bool True on success, false on failure
      */
     public static function registrySetValue($hive, $key, $value, $data, $type = 'REG_SZ')
     {
-        $hive = self::mapRegistryHive($hive);
+        $hive    = self::mapRegistryHive($hive);
         $regPath = $hive . '\\' . $key . '\\' . $value;
 
         // Validate type
         $validTypes = ['REG_SZ', 'REG_EXPAND_SZ', 'REG_DWORD', 'REG_BINARY'];
         if (!in_array($type, $validTypes)) {
             Log::error('registrySetValue: Invalid type: ' . $type);
+
             return false;
         }
 
@@ -557,10 +582,10 @@ class Win32Native
             Log::debug('registrySetValue: Successfully wrote value in ' . $duration . 'ms (COM)');
 
             return true;
-
         } catch (Exception $e) {
             self::resetConnections();
             Log::error('registrySetValue: COM exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -569,14 +594,15 @@ class Win32Native
      * Deletes a value from the Windows registry using COM.
      * Replaces VBS/reg.exe with direct COM access.
      *
-     * @param string $hive The registry hive (HKLM, HKCU, etc.)
-     * @param string $key The registry key path
-     * @param string $value The value name to delete
+     * @param   string  $hive   The registry hive (HKLM, HKCU, etc.)
+     * @param   string  $key    The registry key path
+     * @param   string  $value  The value name to delete
+     *
      * @return bool True on success, false on failure
      */
     public static function registryDeleteValue($hive, $key, $value)
     {
-        $hive = self::mapRegistryHive($hive);
+        $hive    = self::mapRegistryHive($hive);
         $regPath = $hive . '\\' . $key . '\\' . $value;
 
         Log::debug('registryDeleteValue: Deleting ' . $regPath . ' (COM)');
@@ -593,18 +619,19 @@ class Win32Native
             Log::debug('registryDeleteValue: Successfully deleted value in ' . $duration . 'ms (COM)');
 
             return true;
-
         } catch (Exception $e) {
             // If the value doesn't exist, that's OK
             $errorMsg = $e->getMessage();
             if (strpos($errorMsg, 'Unable to remove') !== false ||
                 strpos($errorMsg, 'Invalid root') !== false) {
                 Log::debug('registryDeleteValue: Value does not exist (already deleted)');
+
                 return true;
             }
 
             self::resetConnections();
             Log::error('registryDeleteValue: COM exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -613,13 +640,14 @@ class Win32Native
      * Deletes a registry key and all its subkeys using COM.
      * Additional helper method for key deletion.
      *
-     * @param string $hive The registry hive (HKLM, HKCU, etc.)
-     * @param string $key The registry key path to delete
+     * @param   string  $hive  The registry hive (HKLM, HKCU, etc.)
+     * @param   string  $key   The registry key path to delete
+     *
      * @return bool True on success, false on failure
      */
     public static function registryDeleteKey($hive, $key)
     {
-        $hive = self::mapRegistryHive($hive);
+        $hive    = self::mapRegistryHive($hive);
         $regPath = $hive . '\\' . $key . '\\';
 
         Log::debug('registryDeleteKey: Deleting ' . $regPath . ' (COM)');
@@ -631,19 +659,21 @@ class Win32Native
             $shell->RegDelete($regPath);
 
             Log::debug('registryDeleteKey: Successfully deleted key (COM)');
-            return true;
 
+            return true;
         } catch (Exception $e) {
             // If the key doesn't exist, that's OK
             $errorMsg = $e->getMessage();
             if (strpos($errorMsg, 'Unable to remove') !== false ||
                 strpos($errorMsg, 'Invalid root') !== false) {
                 Log::debug('registryDeleteKey: Key does not exist (already deleted)');
+
                 return true;
             }
 
             self::resetConnections();
             Log::error('registryDeleteKey: COM exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -656,7 +686,8 @@ class Win32Native
      * Gets a Windows special folder path using COM.
      * Replaces VBS with direct COM access.
      *
-     * @param string $folderName The special folder name (Desktop, Startup, etc.)
+     * @param   string  $folderName  The special folder name (Desktop, Startup, etc.)
+     *
      * @return string|false The folder path, or false on failure
      */
     public static function getSpecialFolderPath($folderName)
@@ -677,15 +708,17 @@ class Win32Native
                 // Convert to Unix-style path
                 $path = str_replace('\\', '/', $path);
                 Log::debug('getSpecialFolderPath: Found ' . $folderName . ' in ' . $duration . 'ms (COM)');
+
                 return $path;
             } else {
                 Log::debug('getSpecialFolderPath: ' . $folderName . ' not found');
+
                 return false;
             }
-
         } catch (Exception $e) {
             self::resetConnections();
             Log::error('getSpecialFolderPath: COM exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -694,11 +727,12 @@ class Win32Native
      * Creates a Windows shortcut using COM.
      * Replaces VBS with direct COM access.
      *
-     * @param string $shortcutPath Full path where to save the shortcut (.lnk file)
-     * @param string $targetPath Path to the target executable
-     * @param string $workingDir Working directory for the shortcut
-     * @param string $description Shortcut description
-     * @param string $iconPath Path to icon file
+     * @param   string  $shortcutPath  Full path where to save the shortcut (.lnk file)
+     * @param   string  $targetPath    Path to the target executable
+     * @param   string  $workingDir    Working directory for the shortcut
+     * @param   string  $description   Shortcut description
+     * @param   string  $iconPath      Path to icon file
+     *
      * @return bool True on success, false on failure
      */
     public static function createShortcut($shortcutPath, $targetPath, $workingDir = '', $description = '', $iconPath = '')
@@ -735,10 +769,10 @@ class Win32Native
             Log::debug('createShortcut: Successfully created shortcut in ' . $duration . 'ms (COM)');
 
             return true;
-
         } catch (Exception $e) {
             self::resetConnections();
             Log::error('createShortcut: COM exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -751,7 +785,8 @@ class Win32Native
      * Counts files and folders recursively using native PHP.
      * Replaces VBS with native PHP (faster than COM FileSystemObject).
      *
-     * @param string $path The path to count files and folders in
+     * @param   string  $path  The path to count files and folders in
+     *
      * @return int|false The count of files and folders, or false on failure
      */
     public static function countFilesFolders($path)
@@ -763,6 +798,7 @@ class Win32Native
         try {
             if (!is_dir($path)) {
                 Log::error('countFilesFolders: Path is not a directory: ' . $path);
+
                 return false;
             }
 
@@ -788,9 +824,9 @@ class Win32Native
             Log::debug('countFilesFolders: Counted ' . $count . ' items in ' . $duration . 'ms (Native PHP)');
 
             return $count;
-
         } catch (Exception $e) {
             Log::error('countFilesFolders: Exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -799,7 +835,8 @@ class Win32Native
      * Manual recursive file/folder counting (fallback method).
      * Helper method for countFilesFolders.
      *
-     * @param string $path The path to count
+     * @param   string  $path  The path to count
+     *
      * @return int The count of files and folders
      */
     private static function countFilesFoldersManual($path)
@@ -837,7 +874,8 @@ class Win32Native
      * Counts files and folders recursively using COM FileSystemObject.
      * Alternative COM-based implementation (slower than native PHP).
      *
-     * @param string $path The path to count files and folders in
+     * @param   string  $path  The path to count files and folders in
+     *
      * @return int|false The count of files and folders, or false on failure
      */
     public static function countFilesFoldersCOM($path)
@@ -851,6 +889,7 @@ class Win32Native
 
             if (!$fso->FolderExists($path)) {
                 Log::error('countFilesFoldersCOM: Path does not exist: ' . $path);
+
                 return false;
             }
 
@@ -860,9 +899,9 @@ class Win32Native
             Log::debug('countFilesFoldersCOM: Counted ' . $count . ' items in ' . $duration . 'ms (COM/FSO)');
 
             return $count;
-
         } catch (Exception $e) {
             Log::error('countFilesFoldersCOM: COM exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -871,8 +910,9 @@ class Win32Native
      * Recursive helper for COM-based file/folder counting.
      * Helper method for countFilesFoldersCOM.
      *
-     * @param COM $fso FileSystemObject instance
-     * @param string $path The path to count
+     * @param   COM     $fso   FileSystemObject instance
+     * @param   string  $path  The path to count
+     *
      * @return int The count of files and folders
      */
     private static function countFolderItemsCOM($fso, $path)
@@ -889,7 +929,6 @@ class Win32Native
             }
 
             return $count;
-
         } catch (Exception $e) {
             // Silently handle errors (permission denied, etc.)
             return 0;
@@ -904,8 +943,9 @@ class Win32Native
      * Gets information about a Windows service using COM/WMI.
      * Replaces VBS with direct COM/WMI access.
      *
-     * @param string $serviceName The name of the service
-     * @param array $properties Optional array of properties to retrieve
+     * @param   string  $serviceName  The name of the service
+     * @param   array   $properties   Optional array of properties to retrieve
+     *
      * @return array|false Service information array, or false on failure
      */
     public static function getServiceInfo($serviceName, $properties = [])
@@ -935,9 +975,9 @@ class Win32Native
             }
 
             // Build WQL query
-            $selectClause = implode(', ', $properties);
+            $selectClause    = implode(', ', $properties);
             $safeServiceName = str_replace("'", "''", $serviceName);
-            $query = "SELECT {$selectClause} FROM Win32_Service WHERE Name = '{$safeServiceName}'";
+            $query           = "SELECT {$selectClause} FROM Win32_Service WHERE Name = '{$safeServiceName}'";
 
             // Execute query
             $services = $wmi->ExecQuery($query);
@@ -947,7 +987,7 @@ class Win32Native
                 $result = [];
                 foreach ($properties as $prop) {
                     try {
-                        $value = $service->$prop;
+                        $value         = $service->$prop;
                         $result[$prop] = $value ?? '';
                     } catch (Exception $e) {
                         $result[$prop] = '';
@@ -962,11 +1002,12 @@ class Win32Native
 
             // Service not found
             Log::debug('getServiceInfo: Service not found');
-            return false;
 
+            return false;
         } catch (Exception $e) {
             self::resetConnections();
             Log::error('getServiceInfo: COM exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -975,7 +1016,8 @@ class Win32Native
      * Lists all Windows services using COM/WMI.
      * Additional helper method.
      *
-     * @param array $properties Optional array of properties to retrieve
+     * @param   array  $properties  Optional array of properties to retrieve
+     *
      * @return array Array of service information
      */
     public static function listServices($properties = [])
@@ -995,7 +1037,7 @@ class Win32Native
 
             // Build WQL query
             $selectClause = implode(', ', $properties);
-            $query = "SELECT {$selectClause} FROM Win32_Service";
+            $query        = "SELECT {$selectClause} FROM Win32_Service";
 
             // Execute query
             $services = $wmi->ExecQuery($query);
@@ -1006,7 +1048,7 @@ class Win32Native
                 $serviceInfo = [];
                 foreach ($properties as $prop) {
                     try {
-                        $value = $service->$prop;
+                        $value              = $service->$prop;
                         $serviceInfo[$prop] = $value ?? '';
                     } catch (Exception $e) {
                         $serviceInfo[$prop] = '';
@@ -1019,10 +1061,10 @@ class Win32Native
             Log::debug('listServices: Found ' . count($result) . ' services in ' . $duration . 'ms (COM/WMI)');
 
             return $result;
-
         } catch (Exception $e) {
             self::resetConnections();
             Log::error('listServices: COM exception: ' . $e->getMessage());
+
             return [];
         }
     }
@@ -1031,7 +1073,8 @@ class Win32Native
      * Checks if a Windows service exists.
      * Additional helper method.
      *
-     * @param string $serviceName The name of the service
+     * @param   string  $serviceName  The name of the service
+     *
      * @return bool True if service exists, false otherwise
      */
     public static function serviceExists($serviceName)
@@ -1041,7 +1084,7 @@ class Win32Native
             // Sanitize the serviceName parameter to prevent WQL injection
             // Escape single quotes by doubling them (WQL standard)
             $safeServiceName = str_replace("'", "''", $serviceName);
-            $query = "SELECT Name FROM Win32_Service WHERE Name = '{$safeServiceName}'";
+            $query           = "SELECT Name FROM Win32_Service WHERE Name = '{$safeServiceName}'";
 
             // Execute query
             $services = $wmi->ExecQuery($query);
@@ -1051,9 +1094,9 @@ class Win32Native
             }
 
             return false;
-
         } catch (Exception $e) {
             self::resetConnections();
+
             return false;
         }
     }
@@ -1062,7 +1105,8 @@ class Win32Native
      * Gets the state of a Windows service.
      * Additional helper method.
      *
-     * @param string $serviceName The name of the service
+     * @param   string  $serviceName  The name of the service
+     *
      * @return string|false The service state (Running, Stopped, etc.), or false if not found
      */
     public static function getServiceState($serviceName)
@@ -1072,7 +1116,7 @@ class Win32Native
             // Sanitize the serviceName parameter to prevent WQL injection
             // Escape single quotes by doubling them (WQL standard)
             $safeServiceName = str_replace("'", "''", $serviceName);
-            $query = "SELECT State FROM Win32_Service WHERE Name = '{$safeServiceName}'";
+            $query           = "SELECT State FROM Win32_Service WHERE Name = '{$safeServiceName}'";
 
             // Execute query
             $services = $wmi->ExecQuery($query);
@@ -1082,9 +1126,9 @@ class Win32Native
             }
 
             return false;
-
         } catch (Exception $e) {
             self::resetConnections();
+
             return false;
         }
     }
@@ -1110,6 +1154,7 @@ class Win32Native
 
         if ($browserPath === null) {
             Log::debug('getDefaultBrowser: No default browser found');
+
             return false;
         }
 
@@ -1126,6 +1171,7 @@ class Win32Native
         }
 
         Log::debug('getDefaultBrowser: Found browser in ' . $duration . 'ms (COM)');
+
         return $path;
     }
 
@@ -1140,7 +1186,7 @@ class Win32Native
         Log::debug('getInstalledBrowsers: Enumerating installed browsers (Hybrid - No VBS)');
 
         $startTime = microtime(true);
-        $browsers = [];
+        $browsers  = [];
 
         // Known browser registry names (covers 99% of browsers)
         $knownBrowsers = [
@@ -1190,7 +1236,7 @@ class Win32Native
 
         // Check each known browser in each registry path
         foreach ($registryPaths as $regPath) {
-            $hive = $regPath['hive'];
+            $hive     = $regPath['hive'];
             $basePath = $regPath['key'];
 
             foreach ($knownBrowsers as $browserName) {
@@ -1229,7 +1275,8 @@ class Win32Native
      * Extracts the executable path from a browser command string.
      * Helper method for browser detection.
      *
-     * @param string $commandPath The command path string from registry
+     * @param   string  $commandPath  The command path string from registry
+     *
      * @return string|false The extracted executable path, or false on failure
      */
     private static function extractBrowserExecutablePath($commandPath)
@@ -1258,7 +1305,7 @@ class Win32Native
 
         // Method 4: Fallback - take everything before first space
         $parts = explode(' ', trim($commandPath));
-        $path = str_replace('"', '', $parts[0]);
+        $path  = str_replace('"', '', $parts[0]);
 
         // Validate it looks like a path
         if (stripos($path, '.exe') !== false) {

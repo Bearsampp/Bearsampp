@@ -14,6 +14,6 @@
 // Xlight status fetcher
 // Maps 'versions' data key to 'version-list' selector
 createStatusFetcher('xlight', [
-  'checkport',
-  { data: 'versions', selector: 'version-list' }
+	'checkport',
+	{data: 'versions', selector: 'version-list'}
 ]);

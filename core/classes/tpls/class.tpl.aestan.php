@@ -110,7 +110,8 @@ class TplAestan
     /**
      * Retrieves the glyph flag for a given language.
      *
-     * @param string $lang The language code.
+     * @param   string  $lang  The language code.
+     *
      * @return void
      */
     public static function getGlyphFlah($lang)
@@ -130,12 +131,13 @@ class TplAestan
     /**
      * Returns a string representing a PowerShell item.
      *
-     * @param string $caption The caption for the item.
-     * @param int $glyph The glyph index.
-     * @param string|null $id The ID for the item (not used with PowerShell).
-     * @param string|null $title The title for the tab.
-     * @param string|null $initDir The initial directory for the item.
-     * @param string|null $command The command to execute.
+     * @param   string       $caption  The caption for the item.
+     * @param   int          $glyph    The glyph index.
+     * @param   string|null  $id       The ID for the item (not used with PowerShell).
+     * @param   string|null  $title    The title for the tab.
+     * @param   string|null  $initDir  The initial directory for the item.
+     * @param   string|null  $command  The command to execute.
+     *
      * @return string The PowerShell item string.
      */
     public static function getItemPowerShell($caption, $glyph, $id = null, $title = null, $initDir = null, $command = null)
@@ -148,7 +150,7 @@ class TplAestan
 
         // Launch pwsh.exe directly — no powershell.bat wrapper, no cmd.exe, no flashing window.
         // Registry font settings are pre-written during reload by TplPowerShell::process().
-        $pwsh = $bearsamppTools->getPowerShell()->getExe();
+        $pwsh        = $bearsamppTools->getPowerShell()->getExe();
         $profilePath = Path::formatWindowsPath($bearsamppTools->getPowerShell()->getConf());
 
         // Build the inline PowerShell -Command string.
@@ -156,8 +158,8 @@ class TplAestan
         // $Host and [Console] are PowerShell syntax; no shell variable expansion occurs here
         // because Aestan calls CreateProcess directly (no cmd.exe intermediary).
         $psCommand = '[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;' .
-                     '[Console]::InputEncoding=[System.Text.Encoding]::UTF8;' .
-                     '$Host.UI.RawUI.WindowTitle=\'' . $title . '\';';
+            '[Console]::InputEncoding=[System.Text.Encoding]::UTF8;' .
+            '$Host.UI.RawUI.WindowTitle=\'' . $title . '\';';
 
         if ($command !== null) {
             $psCommand .= $command . ';';
@@ -179,10 +181,11 @@ class TplAestan
     /**
      * Returns a string representing a link item.
      *
-     * @param string $caption The caption for the item.
-     * @param string $link The URL for the link.
-     * @param bool $local Whether the link is local.
-     * @param int $glyph The glyph index.
+     * @param   string  $caption  The caption for the item.
+     * @param   string  $link     The URL for the link.
+     * @param   bool    $local    Whether the link is local.
+     * @param   int     $glyph    The glyph index.
+     *
      * @return string The link item string.
      */
     public static function getItemLink($caption, $link, $local = false, $glyph = self::GLYPH_WEB_PAGE)
@@ -204,8 +207,9 @@ class TplAestan
     /**
      * Returns a string representing a Notepad item.
      *
-     * @param string $caption The caption for the item.
-     * @param string $path The path to the file.
+     * @param   string  $caption  The caption for the item.
+     * @param   string  $path     The path to the file.
+     *
      * @return string The Notepad item string.
      */
     public static function getItemNotepad($caption, $path)
@@ -223,10 +227,11 @@ class TplAestan
     /**
      * Returns a string representing an executable item.
      *
-     * @param string $caption The caption for the item.
-     * @param string $exe The path to the executable.
-     * @param int $glyph The glyph index.
-     * @param string|null $params The parameters for the executable.
+     * @param   string       $caption  The caption for the item.
+     * @param   string       $exe      The path to the executable.
+     * @param   int          $glyph    The glyph index.
+     * @param   string|null  $params   The parameters for the executable.
+     *
      * @return string The executable item string.
      */
     public static function getItemExe($caption, $exe, $glyph, $params = null)
@@ -242,8 +247,9 @@ class TplAestan
     /**
      * Returns a string representing an explorer item.
      *
-     * @param string $caption The caption for the item.
-     * @param string $path The path to explore.
+     * @param   string  $caption  The caption for the item.
+     * @param   string  $path     The path to explore.
+     *
      * @return string The explorer item string.
      */
     public static function getItemExplore($caption, $path)
@@ -258,9 +264,10 @@ class TplAestan
     /**
      * Returns a string representing a service action.
      *
-     * @param string|null $service The service name.
-     * @param string $action The action to perform.
-     * @param bool $item Whether to return as an item.
+     * @param   string|null  $service  The service name.
+     * @param   string       $action   The action to perform.
+     * @param   bool         $item     Whether to return as an item.
+     *
      * @return string The service action string.
      */
     private static function getActionService($service, $action, $item = false)
@@ -296,7 +303,8 @@ class TplAestan
     /**
      * Returns a string representing a service start action.
      *
-     * @param string $service The service name.
+     * @param   string  $service  The service name.
+     *
      * @return string The service start action string.
      */
     public static function getActionServiceStart($service)
@@ -307,7 +315,8 @@ class TplAestan
     /**
      * Returns a string representing a service start item.
      *
-     * @param string $service The service name.
+     * @param   string  $service  The service name.
+     *
      * @return string The service start item string.
      */
     public static function getItemActionServiceStart($service)
@@ -318,7 +327,8 @@ class TplAestan
     /**
      * Returns a string representing a service stop action.
      *
-     * @param string $service The service name.
+     * @param   string  $service  The service name.
+     *
      * @return string The service stop action string.
      */
     public static function getActionServiceStop($service)
@@ -329,7 +339,8 @@ class TplAestan
     /**
      * Returns a string representing a service stop item.
      *
-     * @param string $service The service name.
+     * @param   string  $service  The service name.
+     *
      * @return string The service stop item string.
      */
     public static function getItemActionServiceStop($service)
@@ -340,7 +351,8 @@ class TplAestan
     /**
      * Returns a string representing a service restart action.
      *
-     * @param string $service The service name.
+     * @param   string  $service  The service name.
+     *
      * @return string The service restart action string.
      */
     public static function getActionServiceRestart($service)
@@ -351,7 +363,8 @@ class TplAestan
     /**
      * Returns a string representing a service restart item.
      *
-     * @param string $service The service name.
+     * @param   string  $service  The service name.
+     *
      * @return string The service restart item string.
      */
     public static function getItemActionServiceRestart($service)
@@ -402,6 +415,7 @@ class TplAestan
     public static function getSectionConfig()
     {
         global $bearsamppCore;
+
         return '[Config]' . PHP_EOL .
             'ImageList=' . self::IMG_GLYPH_SPRITES . PHP_EOL .
             'ServiceCheckInterval=1' . PHP_EOL .
@@ -435,7 +449,8 @@ class TplAestan
     /**
      * Returns a string representing the left menu settings section.
      *
-     * @param string $caption The caption for the left menu.
+     * @param   string  $caption  The caption for the left menu.
+     *
      * @return string The left menu settings section string.
      */
     public static function getSectionMenuLeftSettings($caption)

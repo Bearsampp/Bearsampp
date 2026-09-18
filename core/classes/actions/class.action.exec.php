@@ -34,7 +34,7 @@ class ActionExec
      * If the action is 'quit', it calls `Batch::exitApp()`. If the action is 'restart', it calls
      * `Batch::restartApp()`. After executing the action, it deletes the action file.
      *
-     * @param array $args Arguments passed to the constructor (not used in the current implementation).
+     * @param   array  $args  Arguments passed to the constructor (not used in the current implementation).
      */
     public function __construct($args)
     {

@@ -47,7 +47,7 @@ class Symlinks
     /**
      * Constructs a Symlinks object and initializes paths to current directories.
      *
-     * @param Root $root The root object associated with the Bearsampp environment.
+     * @param   Root  $root  The root object associated with the Bearsampp environment.
      */
     public function __construct($root)
     {
@@ -69,7 +69,8 @@ class Symlinks
      * Skip symlink creation during module reload
      * Useful for performance optimization during service checking phase
      *
-     * @param bool $skip True to skip symlink creation
+     * @param   bool  $skip  True to skip symlink creation
+     *
      * @return void
      */
     public static function setSkipSymlinkCreation(bool $skip): void
@@ -91,11 +92,11 @@ class Symlinks
      * Creates a symbolic link from the current path to the symlink path for a module.
      * If the symlink already exists and points to the correct target, no action is taken.
      *
-     * @param Module $module The module instance.
+     * @param   Module  $module  The module instance.
      */
     public static function createModuleSymlink($module)
     {
-        $src = Path::formatWindowsPath($module->currentPath);
+        $src  = Path::formatWindowsPath($module->currentPath);
         $dest = Path::formatWindowsPath($module->symlinkPath);
 
         if (is_link($dest)) {
@@ -106,11 +107,13 @@ class Symlinks
         } elseif (file_exists($dest)) {
             if (is_dir($dest)) {
                 Log::error('Cannot create symlink: a real directory exists at the destination: ' . $dest);
+
                 return;
             }
             Log::warning('Removing file at symlink location: ' . $dest);
             if (!@unlink($dest)) {
                 Log::error('Failed to remove file at symlink location: ' . $dest);
+
                 return;
             }
         }
@@ -122,7 +125,8 @@ class Symlinks
      * Validates that a path is within allowed symlink directories.
      * Prevents deletion of paths outside the Bearsampp managed directories.
      *
-     * @param string $path The path to validate
+     * @param   string  $path  The path to validate
+     *
      * @return bool True if path is within allowed directories, false otherwise
      */
     private static function isPathWithinAllowedBase($path)
@@ -133,6 +137,7 @@ class Symlinks
         $normalizedPath = realpath($path);
         if ($normalizedPath === false) {
             Log::error('Failed to resolve path: ' . $path);
+
             return false;
         }
 
@@ -155,6 +160,7 @@ class Symlinks
         }
 
         Log::error('Path is outside allowed symlink directories: ' . $path);
+
         return false;
     }
 
@@ -162,7 +168,8 @@ class Symlinks
      * Checks if a path is a symlink (not following the link).
      * Uses lstat to avoid following symlinks.
      *
-     * @param string $path The path to check
+     * @param   string  $path  The path to check
+     *
      * @return bool True if path is a symlink, false otherwise
      */
     private static function isSymlink($path)
@@ -174,7 +181,8 @@ class Symlinks
      * Safely removes a symlink or directory.
      * CRITICAL: Use with caution as it may perform recursive deletion if the path is a directory.
      *
-     * @param string $path The path to remove
+     * @param   string  $path  The path to remove
+     *
      * @return bool True on success, false on failure
      */
     public static function safeRemoveSymlink($path)
@@ -182,12 +190,14 @@ class Symlinks
         // Validate path is within allowed directories
         if (!self::isPathWithinAllowedBase($path)) {
             Log::error('Symlink removal blocked - path not in allowed directories: ' . $path);
+
             return false;
         }
 
         // Check if path exists
         if (!file_exists($path) && !self::isSymlink($path)) {
             Log::trace('Symlink or directory already deleted or missing: ' . $path);
+
             return false;
         }
 
@@ -196,6 +206,7 @@ class Symlinks
             // Attempt to remove as a symlink/junction first (non-recursive)
             if (@rmdir($path)) {
                 Log::debug('Safely removed directory symlink/junction: ' . $path);
+
                 return true;
             }
 
@@ -203,11 +214,13 @@ class Symlinks
             // We MUST NOT recursively delete it to avoid data loss.
             if (!self::isSymlink($path)) {
                 Log::error('Symlink removal blocked - path is a real directory with content: ' . $path);
+
                 return false;
             } else {
                 // If it's a link but rmdir failed, try unlink (e.g. file symlink)
                 if (@unlink($path)) {
                     Log::debug('Safely removed symlink via unlink: ' . $path);
+
                     return true;
                 }
             }
@@ -217,17 +230,20 @@ class Symlinks
         if (self::isSymlink($path)) {
             if (@unlink($path) || @rmdir($path)) {
                 Log::debug('Safely removed symlink: ' . $path);
+
                 return true;
             }
         }
 
         if (self::isSymlink($path)) {
             Log::error('Failed to remove symlink: ' . $path);
+
             return false;
         }
 
         // Regular files should not be deleted here
         Log::warning('Path is a regular file, not a symlink - refusing deletion: ' . $path);
+
         return false;
     }
 
@@ -255,31 +271,32 @@ class Symlinks
         $toolsPath = Path::getToolsPath();
 
         $array = [
-            self::APACHE_SYMLINK => $binPath . '/apache/current',
-            self::BRUNO_SYMLINK => $toolsPath . '/bruno/current',
-            self::COMPOSER_SYMLINK => $toolsPath . '/composer/current',
+            self::APACHE_SYMLINK      => $binPath . '/apache/current',
+            self::BRUNO_SYMLINK       => $toolsPath . '/bruno/current',
+            self::COMPOSER_SYMLINK    => $toolsPath . '/composer/current',
             self::GHOSTSCRIPT_SYMLINK => $toolsPath . '/ghostscript/current',
-            self::GIT_SYMLINK => $toolsPath . '/git/current',
-            self::MAILPIT_SYMLINK => $binPath . '/mailpit/current',
-            self::MARIADB_SYMLINK => $binPath . '/mariadb/current',
-            self::MEMCACHED_SYMLINK => $binPath . '/memcached/current',
-            self::MYSQL_SYMLINK => $binPath . '/mysql/current',
-            self::NGROK_SYMLINK => $toolsPath . '/ngrok/current',
-            self::NODEJS_SYMLINK => $binPath . '/nodejs/current',
-            self::PERL_SYMLINK => $toolsPath . '/perl/current',
-            self::PHP_SYMLINK => $binPath . '/php/current',
-            self::PHPMYADMIN_SYMLINK => $appsPath . '/phpmyadmin/current',
-            self::PHPPGADMIN_SYMLINK => $appsPath . '/phppgadmin/current',
-            self::POSTGRESQL_SYMLINK => $binPath . '/postgresql/current',
-            self::POWERSHELL_SYMLINK => $toolsPath . '/powershell/current',
-            self::PYTHON_SYMLINK => $toolsPath . '/python/current',
-            self::RUBY_SYMLINK => $toolsPath . '/ruby/current',
-            self::XLIGHT_SYMLINK => $binPath . '/xlight/current',
+            self::GIT_SYMLINK         => $toolsPath . '/git/current',
+            self::MAILPIT_SYMLINK     => $binPath . '/mailpit/current',
+            self::MARIADB_SYMLINK     => $binPath . '/mariadb/current',
+            self::MEMCACHED_SYMLINK   => $binPath . '/memcached/current',
+            self::MYSQL_SYMLINK       => $binPath . '/mysql/current',
+            self::NGROK_SYMLINK       => $toolsPath . '/ngrok/current',
+            self::NODEJS_SYMLINK      => $binPath . '/nodejs/current',
+            self::PERL_SYMLINK        => $toolsPath . '/perl/current',
+            self::PHP_SYMLINK         => $binPath . '/php/current',
+            self::PHPMYADMIN_SYMLINK  => $appsPath . '/phpmyadmin/current',
+            self::PHPPGADMIN_SYMLINK  => $appsPath . '/phppgadmin/current',
+            self::POSTGRESQL_SYMLINK  => $binPath . '/postgresql/current',
+            self::POWERSHELL_SYMLINK  => $toolsPath . '/powershell/current',
+            self::PYTHON_SYMLINK      => $toolsPath . '/python/current',
+            self::RUBY_SYMLINK        => $toolsPath . '/ruby/current',
+            self::XLIGHT_SYMLINK      => $binPath . '/xlight/current',
         ];
 
         // Fix for PHP 8.2: Add null checks before accessing array elements
         if (!is_array($array) || empty($array)) {
             Log::error('Current symlinks array is not initialized or empty.');
+
             return;
         }
 

@@ -26,7 +26,8 @@ class Path
     /**
      * Retrieves the root path for a module.
      *
-     * @param Module $module The module instance.
+     * @param   Module  $module  The module instance.
+     *
      * @return string The module root path.
      */
     public static function getModuleRootPath($module)
@@ -37,7 +38,8 @@ class Path
     /**
      * Retrieves the current path for a module.
      *
-     * @param Module $module The module instance.
+     * @param   Module  $module  The module instance.
+     *
      * @return string The module current path.
      */
     public static function getModuleCurrentPath($module)
@@ -48,7 +50,8 @@ class Path
     /**
      * Retrieves the symlink path for a module.
      *
-     * @param Module $module The module instance.
+     * @param   Module  $module  The module instance.
+     *
      * @return string The module symlink path.
      */
     public static function getModuleSymlinkPath($module)
@@ -58,18 +61,21 @@ class Path
 
     /**
      * Cache for path formatting operations to avoid redundant string replacements.
+     *
      * @var array
      */
     private static $pathFormatCache = [];
 
     /**
      * The root path of the application.
+     *
      * @var string
      */
     private static $rootPath;
 
     /**
      * The path to the core directory.
+     *
      * @var string
      */
     private static $corePath;
@@ -77,8 +83,9 @@ class Path
     /**
      * Initializes the Path class with root and core paths.
      *
-     * @param string $rootPath The root path of the application.
-     * @param string $corePath The path to the core directory.
+     * @param   string  $rootPath  The root path of the application.
+     * @param   string  $corePath  The path to the core directory.
+     *
      * @return void
      */
     public static function init($rootPath, $corePath)
@@ -89,12 +96,14 @@ class Path
 
     /**
      * Maximum size for path format cache to prevent memory issues.
+     *
      * @var int
      */
     private static $pathFormatCacheMaxSize = 500;
 
     /**
      * Statistics for monitoring path format cache effectiveness.
+     *
      * @var array
      */
     private static $pathFormatStats = [
@@ -124,6 +133,7 @@ class Path
         $cacheKey = 'w_' . $path;
         if (isset(self::$pathFormatCache[$cacheKey])) {
             self::$pathFormatStats['windows_hits']++;
+
             return self::$pathFormatCache[$cacheKey];
         }
 
@@ -134,8 +144,8 @@ class Path
         if (count(self::$pathFormatCache) < self::$pathFormatCacheMaxSize) {
             self::$pathFormatCache[$cacheKey] = $result;
         } else {
-            $removeCount = (int)(self::$pathFormatCacheMaxSize * 0.1);
-            self::$pathFormatCache = array_slice(self::$pathFormatCache, $removeCount, null, true);
+            $removeCount                      = (int)(self::$pathFormatCacheMaxSize * 0.1);
+            self::$pathFormatCache            = array_slice(self::$pathFormatCache, $removeCount, null, true);
             self::$pathFormatCache[$cacheKey] = $result;
         }
 
@@ -162,6 +172,7 @@ class Path
         $cacheKey = 'u_' . $path;
         if (isset(self::$pathFormatCache[$cacheKey])) {
             self::$pathFormatStats['unix_hits']++;
+
             return self::$pathFormatCache[$cacheKey];
         }
 
@@ -172,8 +183,8 @@ class Path
         if (count(self::$pathFormatCache) < self::$pathFormatCacheMaxSize) {
             self::$pathFormatCache[$cacheKey] = $result;
         } else {
-            $removeCount = (int)(self::$pathFormatCacheMaxSize * 0.1);
-            self::$pathFormatCache = array_slice(self::$pathFormatCache, $removeCount, null, true);
+            $removeCount                      = (int)(self::$pathFormatCacheMaxSize * 0.1);
+            self::$pathFormatCache            = array_slice(self::$pathFormatCache, $removeCount, null, true);
             self::$pathFormatCache[$cacheKey] = $result;
         }
 
@@ -194,8 +205,9 @@ class Path
     /**
      * Replaces old path references with new path references in the specified files.
      *
-     * @param array $filesToScan Array of file paths to scan and modify.
-     * @param string|null $rootPath The new root path to replace the old one. If null, uses a default root path.
+     * @param   array        $filesToScan  Array of file paths to scan and modify.
+     * @param   string|null  $rootPath     The new root path to replace the old one. If null, uses a default root path.
+     *
      * @return array Returns an array with the count of occurrences changed and the count of files changed.
      */
     public static function changePath($filesToScan, $rootPath = null)
@@ -289,21 +301,24 @@ class Path
     /**
      * Formats a path for AeTrayMenu.
      *
-     * @param string $path The path to format.
+     * @param   string  $path  The path to format.
+     *
      * @return string The formatted path.
      */
     public static function aetrayPath($path)
     {
         $rootPath = self::getRootPath();
-        $path = str_replace($rootPath, '', $path);
-        $path = ltrim(self::formatUnixPath($path), '/');
+        $path     = str_replace($rootPath, '', $path);
+        $path     = ltrim(self::formatUnixPath($path), '/');
+
         return '%AeTrayMenuPath%' . $path;
     }
 
     /**
      * Retrieves the root path of the application.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The root path.
      */
     public static function getRootPath($aetrayPath = false)
@@ -314,7 +329,8 @@ class Path
     /**
      * Retrieves the path to the ajax directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the ajax directory.
      */
     public static function getAjaxPath($aetrayPath = false)
@@ -325,7 +341,8 @@ class Path
     /**
      * Gets the path to the alias directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The alias path.
      */
     public static function getAliasPath($aetrayPath = false)
@@ -336,7 +353,8 @@ class Path
     /**
      * Gets the path to the apps directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The apps path.
      */
     public static function getAppsPath($aetrayPath = false)
@@ -347,7 +365,8 @@ class Path
     /**
      * Gets the path to the batch log file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The batch log file path.
      */
     public static function getBatchLogFilePath($aetrayPath = false)
@@ -358,7 +377,8 @@ class Path
     /**
      * Gets the path to the bin directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The bin path.
      */
     public static function getBinPath($aetrayPath = false)
@@ -369,7 +389,8 @@ class Path
     /**
      * Gets the path to the configuration file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The configuration file path.
      */
     public static function getConfigFilePath($aetrayPath = false)
@@ -380,7 +401,8 @@ class Path
     /**
      * Retrieves the core path of the application.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The core path.
      */
     public static function getCorePath($aetrayPath = false)
@@ -401,16 +423,17 @@ class Path
     /**
      * Constructs a local URL with the specified request.
      *
-     * @param string|null $request The specific request to append to the URL.
+     * @param   string|null  $request  The specific request to append to the URL.
+     *
      * @return string The constructed local URL.
      */
     public static function getLocalUrl($request = null)
     {
         global $bearsamppBins;
         $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
-        $scheme = $isHttps ? 'https://' : 'http://';
-        $host = (isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : 'localhost';
-        
+        $scheme  = $isHttps ? 'https://' : 'http://';
+        $host    = (isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : 'localhost';
+
         $port = 80;
         if (isset($bearsamppBins) && $bearsamppBins->getApache() !== null) {
             $port = $isHttps ? $bearsamppBins->getApache()->getSslPort() : $bearsamppBins->getApache()->getPort();
@@ -433,7 +456,8 @@ class Path
     /**
      * Gets the path to the error log file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The error log file path.
      */
     public static function getErrorLogFilePath($aetrayPath = false)
@@ -444,7 +468,8 @@ class Path
     /**
      * Gets the path to the executable file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The executable file path.
      */
     public static function getExeFilePath($aetrayPath = false)
@@ -455,7 +480,8 @@ class Path
     /**
      * Gets the path to the homepage file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The homepage file path.
      */
     public static function getHomepageFilePath($aetrayPath = false)
@@ -466,7 +492,8 @@ class Path
     /**
      * Gets the path to the homepage log file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The homepage log file path.
      */
     public static function getHomepageLogFilePath($aetrayPath = false)
@@ -477,7 +504,8 @@ class Path
     /**
      * Retrieves the path to the homepage.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the homepage.
      */
     public static function getHomepagePath($aetrayPath = false)
@@ -488,7 +516,8 @@ class Path
     /**
      * Retrieves the path to the HostsEditor directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the HostsEditor directory.
      */
     public static function getHostsEditorPath($aetrayPath = false)
@@ -499,7 +528,8 @@ class Path
     /**
      * Retrieves the path to the HostsEditor executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the HostsEditor executable.
      */
     public static function getHostsEditorExe($aetrayPath = false)
@@ -510,7 +540,8 @@ class Path
     /**
      * Retrieves the path to the icons.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the icons.
      */
     public static function getIconsPath($aetrayPath = false)
@@ -521,7 +552,8 @@ class Path
     /**
      * Retrieves the path to the images.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the images.
      */
     public static function getImagesPath($aetrayPath = false)
@@ -532,7 +564,8 @@ class Path
     /**
      * Gets the path to the INI file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The INI file path.
      */
     public static function getIniFilePath($aetrayPath = false)
@@ -543,7 +576,8 @@ class Path
     /**
      * Retrieves the path to the root file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the root file.
      */
     public static function getisRootFilePath($aetrayPath = false)
@@ -554,7 +588,8 @@ class Path
     /**
      * Retrieves the path to the language files.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the language files.
      */
     public static function getLangsPath($aetrayPath = false)
@@ -565,7 +600,8 @@ class Path
     /**
      * Retrieves the path to the last path file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the last path file.
      */
     public static function getLastPath($aetrayPath = false)
@@ -576,7 +612,8 @@ class Path
     /**
      * Retrieves the path to the libraries.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the libraries.
      */
     public static function getLibsPath($aetrayPath = false)
@@ -587,7 +624,8 @@ class Path
     /**
      * Retrieves the path to the LN directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the LN directory.
      */
     public static function getLnPath($aetrayPath = false)
@@ -598,7 +636,8 @@ class Path
     /**
      * Retrieves the path to the LN executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the LN executable.
      */
     public static function getLnExe($aetrayPath = false)
@@ -609,7 +648,8 @@ class Path
     /**
      * Gets the path to the log file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The log file path.
      */
     public static function getLogFilePath($aetrayPath = false)
@@ -620,7 +660,8 @@ class Path
     /**
      * Gets the path to the logs directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The logs path.
      */
     public static function getLogsPath($aetrayPath = false)
@@ -631,7 +672,8 @@ class Path
     /**
      * Retrieves the path to the NSSM directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the NSSM directory.
      */
     public static function getNssmPath($aetrayPath = false)
@@ -642,7 +684,8 @@ class Path
     /**
      * Retrieves the path to the NSSM executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the NSSM executable.
      */
     public static function getNssmExe($aetrayPath = false)
@@ -720,7 +763,8 @@ class Path
     /**
      * Gets the path to the NSSM log file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The NSSM log file path.
      */
     public static function getNssmLogFilePath($aetrayPath = false)
@@ -731,7 +775,8 @@ class Path
     /**
      * Retrieves the path to the OpenSSL configuration file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the OpenSSL configuration file.
      */
     public static function getOpenSslConf($aetrayPath = false)
@@ -742,7 +787,8 @@ class Path
     /**
      * Retrieves the path to the OpenSSL executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the OpenSSL executable.
      */
     public static function getOpenSslExe($aetrayPath = false)
@@ -753,7 +799,8 @@ class Path
     /**
      * Retrieves the path to the OpenSSL directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the OpenSSL directory.
      */
     public static function getOpenSslPath($aetrayPath = false)
@@ -764,7 +811,8 @@ class Path
     /**
      * Retrieves the path to the PHP directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the PHP directory.
      */
     public static function getPhpPath($aetrayPath = false)
@@ -776,7 +824,8 @@ class Path
     /**
      * Retrieves the path to the PEAR directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the PEAR directory.
      */
     public static function getPearPath($aetrayPath = false)
@@ -787,7 +836,8 @@ class Path
     /**
      * Retrieves the path to the PHP executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the PHP executable.
      */
     public static function getPhpExe($aetrayPath = false)
@@ -812,7 +862,8 @@ class Path
     /**
      * Retrieves the path to the PWGen directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the PWGen directory.
      */
     public static function getPwgenPath($aetrayPath = false)
@@ -823,7 +874,8 @@ class Path
     /**
      * Retrieves the path to the PWGen executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the PWGen executable.
      */
     public static function getPwgenExe($aetrayPath = false)
@@ -834,7 +886,8 @@ class Path
     /**
      * Gets the path to the registry log file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The registry log file path.
      */
     public static function getRegistryLogFilePath($aetrayPath = false)
@@ -850,13 +903,15 @@ class Path
     public static function getStartupLnkPath()
     {
         $startupPath = Win32Native::getSpecialFolderPath('Startup');
+
         return $startupPath ? $startupPath . '/' . APP_TITLE . '.lnk' : false;
     }
 
     /**
      * Retrieves the path to the resources.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the resources.
      */
     public static function getResourcesPath($aetrayPath = false)
@@ -867,7 +922,8 @@ class Path
     /**
      * Retrieves the path to a specific script.
      *
-     * @param string $type The type of script.
+     * @param   string  $type  The type of script.
+     *
      * @return string The path to the script.
      */
     public static function getScript($type)
@@ -878,7 +934,8 @@ class Path
     /**
      * Retrieves the path to the scripts.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the scripts.
      */
     public static function getScriptsPath($aetrayPath = false)
@@ -889,7 +946,8 @@ class Path
     /**
      * Gets the path to the services log file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The services log file path.
      */
     public static function getServicesLogFilePath($aetrayPath = false)
@@ -900,7 +958,8 @@ class Path
     /**
      * Retrieves the path to the SetEnv directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the SetEnv directory.
      */
     public static function getSetEnvPath($aetrayPath = false)
@@ -911,7 +970,8 @@ class Path
     /**
      * Retrieves the path to the SetEnv executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the SetEnv executable.
      */
     public static function getSetEnvExe($aetrayPath = false)
@@ -922,7 +982,8 @@ class Path
     /**
      * Gets the path to the SSL configuration file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The SSL configuration file path.
      */
     public static function getSslConfPath($aetrayPath = false)
@@ -933,7 +994,8 @@ class Path
     /**
      * Gets the path to the SSL directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The SSL path.
      */
     public static function getSslPath($aetrayPath = false)
@@ -944,7 +1006,8 @@ class Path
     /**
      * Gets the path to the startup log file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The startup log file path.
      */
     public static function getStartupLogFilePath($aetrayPath = false)
@@ -955,7 +1018,8 @@ class Path
     /**
      * Retrieves the path to the temporary directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The path to the temporary directory.
      */
     public static function getTmpPath($aetrayPath = false)
@@ -966,7 +1030,8 @@ class Path
     /**
      * Gets the path to the tools directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The tools path.
      */
     public static function getToolsPath($aetrayPath = false)
@@ -977,7 +1042,8 @@ class Path
     /**
      * Gets the path to the mkcert directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The mkcert path.
      */
     public static function getMkcertPath($aetrayPath = false)
@@ -988,7 +1054,8 @@ class Path
     /**
      * Gets the path to the mkcert executable.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The mkcert executable path.
      */
     public static function getMkcertExe($aetrayPath = false)
@@ -1009,7 +1076,8 @@ class Path
     /**
      * Gets the path to the virtual hosts directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The virtual hosts path.
      */
     public static function getVhostsPath($aetrayPath = false)
@@ -1057,9 +1125,9 @@ class Path
         global $bearsamppBins;
         $request = self::getWebResourcesPath();
         $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
-        $scheme = $isHttps ? 'https://' : 'http://';
-        $host = (isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : 'localhost';
-        
+        $scheme  = $isHttps ? 'https://' : 'http://';
+        $host    = (isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : 'localhost';
+
         $port = 80;
         if (isset($bearsamppBins) && $bearsamppBins->getApache() !== null) {
             $port = $isHttps ? $bearsamppBins->getApache()->getSslPort() : $bearsamppBins->getApache()->getPort();
@@ -1082,7 +1150,8 @@ class Path
     /**
      * Gets the path to the Winbinder log file.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The Winbinder log file path.
      */
     public static function getWinbinderLogFilePath($aetrayPath = false)
@@ -1093,7 +1162,8 @@ class Path
     /**
      * Gets the path to the WWW directory.
      *
-     * @param bool $aetrayPath Whether to format the path for AeTrayMenu.
+     * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.
+     *
      * @return string The WWW path.
      */
     public static function getWwwPath($aetrayPath = false)

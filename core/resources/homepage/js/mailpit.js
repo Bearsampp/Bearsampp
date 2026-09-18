@@ -14,6 +14,6 @@
 // Mailpit status fetcher
 // Maps 'versions' data key to 'version-list' selector
 createStatusFetcher('mailpit', [
-  'checkport',
-  { data: 'versions', selector: 'version-list' }
+	'checkport',
+	{data: 'versions', selector: 'version-list'}
 ]);

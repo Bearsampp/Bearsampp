@@ -47,13 +47,13 @@ class LangProc
         $this->raw = null;
 
         $this->current = $bearsamppConfig->getLang();
-        $langPath = Path::getLangsPath() . '/' . $this->current . '.lang';
+        $langPath      = Path::getLangsPath() . '/' . $this->current . '.lang';
 
         if (file_exists($langPath)) {
             $this->raw = parse_ini_file($langPath);
         } else {
             $this->current = $bearsamppConfig->getDefaultLang();
-            $this->raw = parse_ini_file(Path::getLangsPath() . '/' . $this->current . '.lang');
+            $this->raw     = parse_ini_file(Path::getLangsPath() . '/' . $this->current . '.lang');
         }
     }
 
@@ -91,6 +91,7 @@ class LangProc
         }
 
         closedir($handle);
+
         return $result;
     }
 
@@ -100,7 +101,8 @@ class LangProc
      * This method returns the value associated with the specified key in the current language.
      * If the key is not found, it logs an error and returns the key itself.
      *
-     * @param string $key The language key to retrieve the value for.
+     * @param   string  $key  The language key to retrieve the value for.
+     *
      * @return string The value associated with the key, or the key itself if not found.
      */
     public function getValue($key)
@@ -112,12 +114,13 @@ class LangProc
             $content .= 'ERROR: Lang var missing ' . $key;
             $content .= ' for ' . $this->current . ' language.' . PHP_EOL;
             file_put_contents(Path::getErrorLogFilePath(), $content, FILE_APPEND);
+
             return $key;
         }
 
         // Special chars not handled by Aestan Tray Menu
         $replace = array("ő", "Ő", "ű", "Ű");
-        $with = array("o", "O", "u", "U");
+        $with    = array("o", "O", "u", "U");
 
         return str_replace($replace, $with, $this->raw[$key]);
     }

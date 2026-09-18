@@ -299,6 +299,7 @@ class BinMysql extends Module
 
         if (!Util::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
+
             return false;
         }
 
@@ -313,6 +314,7 @@ class BinMysql extends Module
                     $boxTitle
                 );
             }
+
             return false;
         }
         fclose($fp);
@@ -334,12 +336,12 @@ class BinMysql extends Module
                 $options = [
                     \PDO::ATTR_TIMEOUT => $timeout,
                     \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                    $initCommandAttr => "SET SESSION sql_mode=''"
+                    $initCommandAttr   => "SET SESSION sql_mode=''"
                 ];
 
-                $dsn = 'mysql:host=' . APP_LOCALHOST . ';port=' . $port;
+                $dsn              = 'mysql:host=' . APP_LOCALHOST . ';port=' . $port;
                 $cachedConnection = new \PDO($dsn, $this->rootUser, $this->rootPwd, $options);
-                $lastPort = $port;
+                $lastPort         = $port;
             } catch (\PDOException $e) {
                 Log::debug($this->getName() . ' port ' . $port . ' connection failed: ' . $e->getMessage());
                 if ($showWindow) {
@@ -348,6 +350,7 @@ class BinMysql extends Module
                         $boxTitle
                     );
                 }
+
                 return false;
             }
         }
@@ -355,7 +358,7 @@ class BinMysql extends Module
         try {
             // Single optimized query to get both version and type
             $stmt = $cachedConnection->query("SELECT @@version, @@version_comment");
-            $row = $stmt->fetch(\PDO::FETCH_NUM);
+            $row  = $stmt->fetch(\PDO::FETCH_NUM);
 
             if (!$row) {
                 return false;
@@ -373,6 +376,7 @@ class BinMysql extends Module
                         $boxTitle
                     );
                 }
+
                 return false;
             }
 
@@ -386,8 +390,8 @@ class BinMysql extends Module
 
             $totalTime = round(microtime(true) - $startTime, 2);
             Log::trace("MySQL port check completed in {$totalTime}s");
-            return true;
 
+            return true;
         } catch (\PDOException $e) {
             Log::debug($this->getName() . ' port ' . $port . ' validation error: ' . $e->getMessage());
             if ($showWindow) {
@@ -396,6 +400,7 @@ class BinMysql extends Module
                     $boxTitle
                 );
             }
+
             return false;
         }
     }
@@ -511,6 +516,7 @@ class BinMysql extends Module
             $bearsamppWinbinder->incrProgressBar($wbProgressBar);
             $totalTime = round(microtime(true) - $startTime, 2);
             Log::trace("MySQL password check completed from cache in {$totalTime}s");
+
             return $passwordCache[$cacheKey]['result'];
         }
 
@@ -526,7 +532,7 @@ class BinMysql extends Module
             $options = [
                 \PDO::ATTR_TIMEOUT => $timeout,
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                $initCommandAttr => "SET SESSION sql_mode=''"
+                $initCommandAttr   => "SET SESSION sql_mode=''"
             ];
 
             $dsn    = 'mysql:host=' . APP_LOCALHOST . ';port=' . $this->port;
@@ -539,16 +545,15 @@ class BinMysql extends Module
             // Cache successful result
             $passwordCache[$cacheKey] = [
                 'result' => true,
-                'time' => time()
+                'time'   => time()
             ];
-
         } catch (\PDOException $e) {
             $error = $e->getMessage();
 
             // Cache failed result for shorter time
             $passwordCache[$cacheKey] = [
                 'result' => $error,
-                'time' => time() - 25 // Cache for only 5 seconds
+                'time'   => time() - 25 // Cache for only 5 seconds
             ];
         }
 
@@ -557,11 +562,13 @@ class BinMysql extends Module
         if (!empty($error)) {
             $totalTime = round(microtime(true) - $startTime, 2);
             Log::trace("MySQL password check failed in {$totalTime}s: " . $error);
+
             return $error;
         }
 
         $totalTime = round(microtime(true) - $startTime, 2);
         Log::trace("MySQL password check completed in {$totalTime}s");
+
         return true;
     }
 

@@ -33,8 +33,8 @@ try {
     $stats   = Root::getCacheStats();
 
     $response = [
-        'success'    => true,
-        'deleted'    => $deleted,
+        'success'      => true,
+        'deleted'      => $deleted,
         'filesCount'   => $stats['filesCount'],
         'totalSize'    => $stats['totalSize'],
         'oldestEntry'  => $stats['oldestEntry'],

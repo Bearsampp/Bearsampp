@@ -20,7 +20,7 @@ class ActionManualRestart
     /**
      * ActionManualRestart constructor.
      *
-     * @param array $args Arguments passed to the constructor.
+     * @param   array  $args  Arguments passed to the constructor.
      *
      * This constructor initializes the manual restart process by performing the following steps:
      * 1. Starts the loading process.

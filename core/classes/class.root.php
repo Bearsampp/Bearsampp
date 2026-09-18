@@ -25,11 +25,11 @@ class Root
     /**
      * Constructs a Root object with the specified root path.
      *
-     * @param string $rootPath The root path of the application.
+     * @param   string  $rootPath  The root path of the application.
      */
     public function __construct($rootPath)
     {
-        $this->path = str_replace('\\', '/', rtrim($rootPath, '/\\'));
+        $this->path   = str_replace('\\', '/', rtrim($rootPath, '/\\'));
         $this->isRoot = $_SERVER['PHP_SELF'] == 'root.php';
         Path::init(dirname($this->path), $this->path);
     }
@@ -124,9 +124,10 @@ class Root
     public function getProcs()
     {
         if (!$this->procsLoaded && $this->isRoot()) {
-            $this->procs = Win32Ps::getListProcs();
+            $this->procs       = Win32Ps::getListProcs();
             $this->procsLoaded = true;
         }
+
         return $this->procs;
     }
 
@@ -135,8 +136,9 @@ class Root
      * Safe to call for modules that may be loading in background.
      * Supports both fiber-based and deferred loading mechanisms.
      *
-     * @param string $module The module name (use ModuleLoader constants)
-     * @param int $timeout Maximum wait time in milliseconds
+     * @param   string  $module   The module name (use ModuleLoader constants)
+     * @param   int     $timeout  Maximum wait time in milliseconds
+     *
      * @return bool True if module loaded successfully
      */
     public static function ensureModuleLoaded($module, $timeout = 5000)
@@ -282,7 +284,7 @@ class Root
      */
     public static function loadToolsAsync()
     {
-        ModuleLoader::loadAsync(ModuleLoader::TOOLS, function() {
+        ModuleLoader::loadAsync(ModuleLoader::TOOLS, function () {
             global $bearsamppTools;
             $bearsamppTools = new Tools();
         });
@@ -294,7 +296,7 @@ class Root
      */
     public static function loadAppsAsync()
     {
-        ModuleLoader::loadAsync(ModuleLoader::APPS, function() {
+        ModuleLoader::loadAsync(ModuleLoader::APPS, function () {
             global $bearsamppApps;
             $bearsamppApps = new Apps();
         });
@@ -306,7 +308,7 @@ class Root
      */
     public static function loadRegistryAsync()
     {
-        ModuleLoader::loadAsync(ModuleLoader::REGISTRY, function() {
+        ModuleLoader::loadAsync(ModuleLoader::REGISTRY, function () {
             global $bearsamppRegistry;
             $bearsamppRegistry = new Registry();
         });
@@ -318,7 +320,7 @@ class Root
      */
     public static function loadHomepageAsync()
     {
-        ModuleLoader::loadAsync(ModuleLoader::HOMEPAGE, function() {
+        ModuleLoader::loadAsync(ModuleLoader::HOMEPAGE, function () {
             global $bearsamppHomepage;
             $bearsamppHomepage = new Homepage();
         });
@@ -330,7 +332,7 @@ class Root
      */
     public static function loadToolsFiber()
     {
-        FiberModuleLoader::loadInFiber(ModuleLoader::TOOLS, function() {
+        FiberModuleLoader::loadInFiber(ModuleLoader::TOOLS, function () {
             global $bearsamppTools;
             $bearsamppTools = new Tools();
         });
@@ -342,7 +344,7 @@ class Root
      */
     public static function loadAppsFiber()
     {
-        FiberModuleLoader::loadInFiber(ModuleLoader::APPS, function() {
+        FiberModuleLoader::loadInFiber(ModuleLoader::APPS, function () {
             global $bearsamppApps;
             $bearsamppApps = new Apps();
         });
@@ -354,7 +356,7 @@ class Root
      */
     public static function loadRegistryFiber()
     {
-        FiberModuleLoader::loadInFiber(ModuleLoader::REGISTRY, function() {
+        FiberModuleLoader::loadInFiber(ModuleLoader::REGISTRY, function () {
             global $bearsamppRegistry;
             $bearsamppRegistry = new Registry();
         });
@@ -366,7 +368,7 @@ class Root
      */
     public static function loadHomepageFiber()
     {
-        FiberModuleLoader::loadInFiber(ModuleLoader::HOMEPAGE, function() {
+        FiberModuleLoader::loadInFiber(ModuleLoader::HOMEPAGE, function () {
             global $bearsamppHomepage;
             $bearsamppHomepage = new Homepage();
         });
@@ -375,10 +377,10 @@ class Root
     /**
      * Handles errors and logs them to the error log file.
      *
-     * @param int $errno The level of the error raised.
-     * @param string $errstr The error message.
-     * @param string $errfile The filename that the error was raised in.
-     * @param int $errline The line number the error was raised at.
+     * @param   int     $errno    The level of the error raised.
+     * @param   string  $errstr   The error message.
+     * @param   string  $errfile  The filename that the error was raised in.
+     * @param   int     $errline  The line number the error was raised at.
      */
     public function errorHandler($errno, $errstr, $errfile, $errline)
     {
@@ -411,7 +413,7 @@ class Root
 
         $content = '[' . date('Y-m-d H:i:s', time()) . '] ';
         $content .= $errNames[$errno] . ' ';
-        $content .= $errstr . ' in ' .  $errfile;
+        $content .= $errstr . ' in ' . $errfile;
         $content .= ' on line ' . $errline . PHP_EOL;
         $content .= self::debugStringBacktrace() . PHP_EOL;
 
@@ -433,17 +435,19 @@ class Root
         $trace = preg_replace('/^#0\s+Root::debugStringBacktrace[^\n]*\n/', '', $trace, 1);
         $trace = preg_replace('/^#1\s+isRoot->errorHandler[^\n]*\n/', '', $trace, 1);
         $trace = preg_replace_callback('/^#(\d+)/m', 'debugStringPregReplace', $trace);
+
         return $trace;
     }
 }
 
-    /**
-     * Adjusts the trace number in debug backtrace.
-     *
-     * @param array $match The matches from the regular expression.
-     * @return string The adjusted trace number.
-     */
-    function debugStringPregReplace($match)
-    {
-        return '  #' . ($match[1] - 1);
-    }
+/**
+ * Adjusts the trace number in debug backtrace.
+ *
+ * @param   array  $match  The matches from the regular expression.
+ *
+ * @return string The adjusted trace number.
+ */
+function debugStringPregReplace($match)
+{
+    return '  #' . ($match[1] - 1);
+}

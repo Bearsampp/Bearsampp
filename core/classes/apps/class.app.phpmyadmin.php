@@ -34,10 +34,11 @@ class AppPhpmyadmin extends Module
     /**
      * Constructor for the AppPhpmyadmin class.
      *
-     * @param string $id The ID of the module.
-     * @param string $type The type of the module.
+     * @param   string  $id    The ID of the module.
+     * @param   string  $type  The type of the module.
      */
-    public function __construct($id, $type) {
+    public function __construct($id, $type)
+    {
         Log::initClass($this);
         $this->reload($id, $type);
     }
@@ -45,15 +46,16 @@ class AppPhpmyadmin extends Module
     /**
      * Reloads the module configuration based on the provided ID and type.
      *
-     * @param string|null $id The ID of the module. If null, the current ID is used.
-     * @param string|null $type The type of the module. If null, the current type is used.
+     * @param   string|null  $id    The ID of the module. If null, the current ID is used.
+     * @param   string|null  $type  The type of the module. If null, the current type is used.
      */
-    public function reload($id = null, $type = null) {
+    public function reload($id = null, $type = null)
+    {
         global $bearsamppConfig, $bearsamppLang;
         Log::reloadClass($this);
 
         // This makes name and version the values in bearsampp.conf
-        $this->name = $bearsamppLang->getValue(Lang::PHPMYADMIN);
+        $this->name    = $bearsamppLang->getValue(Lang::PHPMYADMIN);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
@@ -63,6 +65,7 @@ class AppPhpmyadmin extends Module
 
         if (!$this->enable) {
             Log::info($this->name . ' is not enabled!');
+
             return;
         }
         if (!is_dir($this->currentPath)) {
@@ -70,6 +73,7 @@ class AppPhpmyadmin extends Module
         }
         if (!is_dir($this->symlinkPath)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+
             return;
         }
         if (!is_file($this->bearsamppConf)) {
@@ -83,12 +87,14 @@ class AppPhpmyadmin extends Module
     /**
      * Updates the configuration of the phpMyAdmin module.
      *
-     * @param string|null $version The version to update to. If null, the current version is used.
-     * @param int $sub The sub-level for logging indentation.
-     * @param bool $showWindow Whether to show a window during the update process.
+     * @param   string|null  $version     The version to update to. If null, the current version is used.
+     * @param   int          $sub         The sub-level for logging indentation.
+     * @param   bool         $showWindow  Whether to show a window during the update process.
+     *
      * @return bool True if the update was successful, false otherwise.
      */
-    protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
+    protected function updateConfig($version = null, $sub = 0, $showWindow = false)
+    {
         global $bearsamppRoot, $bearsamppBins;
 
         if (!$this->enable) {
@@ -102,7 +108,7 @@ class AppPhpmyadmin extends Module
         if (is_file($alias)) {
             Util::replaceInFile($alias, array(
                 '/^Alias\s\/phpmyadmin\s.*/' => 'Alias /phpmyadmin "' . Path::getModuleSymlinkPath($this) . '/"',
-                '/^<Directory\s.*/' => '<Directory "' . Path::getModuleSymlinkPath($this) . '/">',
+                '/^<Directory\s.*/'          => '<Directory "' . Path::getModuleSymlinkPath($this) . '/">',
             ));
         } else {
             Log::error($this->getName() . ' alias not found : ' . $alias);
@@ -111,15 +117,15 @@ class AppPhpmyadmin extends Module
         if ($bearsamppBins->getMysql()->isEnable()) {
             Util::replaceInFile($this->getConf(), array(
                 '/^\$mysqlPort\s=\s(\d+)/' => '$mysqlPort = ' . $bearsamppBins->getMysql()->getPort() . ';',
-                '/^\$mysqlRootUser\s=\s/' => '$mysqlRootUser = \'' . $bearsamppBins->getMysql()->getRootUser() . '\';',
-                '/^\$mysqlRootPwd\s=\s/' => '$mysqlRootPwd = \'' . $bearsamppBins->getMysql()->getRootPwd() . '\';'
+                '/^\$mysqlRootUser\s=\s/'  => '$mysqlRootUser = \'' . $bearsamppBins->getMysql()->getRootUser() . '\';',
+                '/^\$mysqlRootPwd\s=\s/'   => '$mysqlRootPwd = \'' . $bearsamppBins->getMysql()->getRootPwd() . '\';'
             ));
         }
         if ($bearsamppBins->getMariadb()->isEnable()) {
             Util::replaceInFile($this->getConf(), array(
                 '/^\$mariadbPort\s=\s(\d+)/' => '$mariadbPort = ' . $bearsamppBins->getMariadb()->getPort() . ';',
-                '/^\$mariadbRootUser\s=\s/' => '$mariadbRootUser = \'' . $bearsamppBins->getMariadb()->getRootUser() . '\';',
-                '/^\$mariadbRootPwd\s=\s/' => '$mariadbRootPwd = \'' . $bearsamppBins->getMariadb()->getRootPwd() . '\';'
+                '/^\$mariadbRootUser\s=\s/'  => '$mariadbRootUser = \'' . $bearsamppBins->getMariadb()->getRootUser() . '\';',
+                '/^\$mariadbRootPwd\s=\s/'   => '$mariadbRootPwd = \'' . $bearsamppBins->getMariadb()->getRootPwd() . '\';'
             ));
         }
 
@@ -129,9 +135,10 @@ class AppPhpmyadmin extends Module
     /**
      * Sets the version of the phpMyAdmin module.
      *
-     * @param string $version The version to set.
+     * @param   string  $version  The version to set.
      */
-    public function setVersion($version) {
+    public function setVersion($version)
+    {
         global $bearsamppConfig;
         $this->version = $version;
         $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
@@ -143,7 +150,8 @@ class AppPhpmyadmin extends Module
      *
      * @return string The path to the configuration file.
      */
-    public function getConf() {
+    public function getConf()
+    {
         return $this->conf;
     }
 }

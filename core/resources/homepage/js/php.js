@@ -15,9 +15,9 @@
 // PHP status fetcher with multiple fields
 // Maps 'versions' data key to 'version-list' selector
 createStatusFetcher('php', [
-  'status',
-  { data: 'versions', selector: 'version-list' },
-  'extscount',
-  'pearversion',
-  'extslist'
+	'status',
+	{data: 'versions', selector: 'version-list'},
+	'extscount',
+	'pearversion',
+	'extslist'
 ]);

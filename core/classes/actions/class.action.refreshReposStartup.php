@@ -19,8 +19,8 @@ class ActionRefreshReposStartup
      *
      * This constructor initializes the action to set the scan startup for repositories based on the provided arguments.
      *
-     * @param array $args An array of arguments where the first argument should be 'git' to trigger the git repository scan startup setting,
-     *                    and the second argument is the value to set for the scan startup.
+     * @param   array  $args  An array of arguments where the first argument should be 'git' to trigger the git repository scan startup setting,
+     *                        and the second argument is the value to set for the scan startup.
      */
     public function __construct($args)
     {

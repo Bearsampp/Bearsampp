@@ -6,6 +6,7 @@
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
+
 /**
  * AJAX request dispatcher for the Bearsampp homepage.
  *
@@ -34,7 +35,7 @@
  * State-changing endpoints (quickpick, toggleenhancedquickpick,
  * applymoduleconfig) are excluded and always log normally.
  */
-$ajaxProcRaw = isset($_POST['proc']) ? $_POST['proc'] : '';
+$ajaxProcRaw       = isset($_POST['proc']) ? $_POST['proc'] : '';
 $ajaxReadOnlyProcs = array(
     'summary',
     'latestversion',
@@ -66,10 +67,11 @@ if (in_array($ajaxProcRaw, $ajaxReadOnlyProcs, true)) {
             if (!class_exists('Path')) {
                 // Bootstrap failed before Path was available -> keep the entries.
                 Log::commitSilentBuffer();
+
                 return;
             }
             $fingerprintFile = Path::getTmpPath() . '/homepage-ajax-state-' . md5($ajaxProcRaw) . '.md5';
-            $stored = @file_get_contents($fingerprintFile);
+            $stored          = @file_get_contents($fingerprintFile);
 
             if ($stored !== false && trim($stored) === $fingerprint) {
                 // Homepage state unchanged -> discard this poll's log entries.
@@ -100,22 +102,22 @@ include_once __DIR__ . '/../../root.php';
  * @var array $procMap A mapping of process names to their file paths.
  */
 $procMap = [
-    'summary' => __DIR__ . '/ajax/ajax.summary.php',
-    'latestversion' => __DIR__ . '/ajax/ajax.latestversion.php',
-    'apache' => __DIR__ . '/ajax/ajax.apache.php',
-    'mailpit' => __DIR__ . '/ajax/ajax.mailpit.php',
-    'memcached' => __DIR__ . '/ajax/ajax.memcached.php',
-    'mariadb' => __DIR__ . '/ajax/ajax.mariadb.php',
-    'mysql' => __DIR__ . '/ajax/ajax.mysql.php',
-    'nodejs' => __DIR__ . '/ajax/ajax.nodejs.php',
-    'php' => __DIR__ . '/ajax/ajax.php.php',
-    'postgresql' => __DIR__ . '/ajax/ajax.postgresql.php',
-    'xlight' => __DIR__ . '/ajax/ajax.xlight.php',
-    'quickpick' => __DIR__ . '/ajax/ajax.quickpick.php',
+    'summary'                 => __DIR__ . '/ajax/ajax.summary.php',
+    'latestversion'           => __DIR__ . '/ajax/ajax.latestversion.php',
+    'apache'                  => __DIR__ . '/ajax/ajax.apache.php',
+    'mailpit'                 => __DIR__ . '/ajax/ajax.mailpit.php',
+    'memcached'               => __DIR__ . '/ajax/ajax.memcached.php',
+    'mariadb'                 => __DIR__ . '/ajax/ajax.mariadb.php',
+    'mysql'                   => __DIR__ . '/ajax/ajax.mysql.php',
+    'nodejs'                  => __DIR__ . '/ajax/ajax.nodejs.php',
+    'php'                     => __DIR__ . '/ajax/ajax.php.php',
+    'postgresql'              => __DIR__ . '/ajax/ajax.postgresql.php',
+    'xlight'                  => __DIR__ . '/ajax/ajax.xlight.php',
+    'quickpick'               => __DIR__ . '/ajax/ajax.quickpick.php',
     'toggleenhancedquickpick' => __DIR__ . '/ajax/ajax.toggle.enhancedquickpick.php',
-    'applymoduleconfig' => __DIR__ . '/ajax/ajax.apply.moduleconfig.php',
-    'reloadstatus' => __DIR__ . '/ajax/ajax.reload.status.php',
-    'clearcache' => __DIR__ . '/ajax/ajax.clearcache.php'
+    'applymoduleconfig'       => __DIR__ . '/ajax/ajax.apply.moduleconfig.php',
+    'reloadstatus'            => __DIR__ . '/ajax/ajax.reload.status.php',
+    'clearcache'              => __DIR__ . '/ajax/ajax.clearcache.php'
 ];
 
 /**
@@ -162,7 +164,7 @@ if (in_array($proc, $csrfProtectedEndpoints, true)) {
         header('Content-Type: application/json');
         header('Cache-Control: no-store');
         echo json_encode([
-            'error' => 'CSRF validation failed',
+            'error'   => 'CSRF validation failed',
             'message' => 'Invalid or expired security token. Please refresh the page and try again.'
         ]);
         exit;

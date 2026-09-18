@@ -17,1069 +17,1122 @@
  */
 class QuickPick
 {
-    /**
-     * @var array $modules
-     *
-     * An associative array where the key is the module name and the value is an array containing the module type.
-     * The module type can be one of the following:
-     * - 'application'
-     * - 'binary'
-     * - 'tool'
-     */
-    public $modules = [
-        'Apache'      => ['type' => 'binary'],
-        'Bruno'       => ['type' => 'tools'],
-        'Composer'    => ['type' => 'tools'],
-        'Ghostscript' => ['type' => 'tools'],
-        'Git'         => ['type' => 'tools'],
-        'Mailpit'     => ['type' => 'binary'],
-        'MariaDB'     => ['type' => 'binary'],
-        'Memcached'   => ['type' => 'binary'],
-        'MySQL'       => ['type' => 'binary'],
-        'Ngrok'       => ['type' => 'tools'],
-        'NodeJS'      => ['type' => 'binary'],
-        'Perl'        => ['type' => 'tools'],
-        'PHP'         => ['type' => 'binary'],
-        'PhpMyAdmin'  => ['type' => 'application'],
-        'PhpPgAdmin'  => ['type' => 'application'],
-        'PostgreSQL'  => ['type' => 'binary'],
-        'PowerShell'  => ['type' => 'tools'],
-        'Python'      => ['type' => 'tools'],
-        'Ruby'        => ['type' => 'tools'],
-        'Xlight'      => ['type' => 'binary']
-    ];
-
-    /**
-     * @var array $versions
-     *
-     * An associative array where the key is the module name and the value is an array containing the module versions.
-     */
-    private $versions = [];
-
-    /**
-     * @var string $jsonFilePath
-     *
-     * The file path to the local quickpick-releases.json file.
-     */
-    private $jsonFilePath;
-
-    /**
-     * @var array $allowedArchiveExtensions
-     *
-     * Whitelist of archive extensions that may be downloaded and extracted.
-     */
-    private static $allowedArchiveExtensions = ['7z', 'zip'];
-
-    /**
-     * Constructor to initialize the jsonFilePath.
-     */
-    public function __construct()
-    {
-        global $bearsamppCore;
-        $this->jsonFilePath = Path::getResourcesPath() . '/quickpick-releases.json';
-    }
-
-    /**
-     * Format version label with PR indicator if it's a prerelease
-     *
-     * @param string $version The version to format
-     * @param bool $isPrerelease Whether this version is a prerelease
-     * @return string Formatted version string
-     */
-    private function formatVersionLabel($version, $isPrerelease = false) {
-        global $bearsamppConfig;
-        $includePr = $bearsamppConfig->getIncludePr();
-
-        if ($isPrerelease && $includePr == 1) {
-            return '<span class="text-danger">' . htmlspecialchars($version) . ' PR</span>';
-        }
-
-        return htmlspecialchars($version);
-    }
-
-    /**
-     * Normalizes a module name to find the correct module key from the modules array.
-     * Handles case-insensitive matching for all module types.
-     *
-     * @param string $moduleName The module name to normalize (may include 'module-' prefix)
-     * @return string|null The correctly capitalized module key, or null if not found
-     */
-    public function normalizeModuleName(string $moduleName): ?string
-    {
-        // Remove 'module-' prefix if present
-        $moduleName = str_replace('module-', '', $moduleName);
-
-        // Find the correct module key by searching through the modules array
-        // This handles proper capitalization for all module types
-        foreach ($this->modules as $key => $moduleInfo) {
-            if (strtolower($key) === strtolower($moduleName)) {
-                return $key;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Retrieves the list of available modules.
-     *
-     * @return array An array of module names.
-     */
-    public function getModules(): array
-    {
-        return array_keys( $this->modules );
-    }
-
-    /**
-     * Loads the QuickPick interface with the available modules and their versions.
-     *
-     * @param   string  $imagesPath  The path to the images directory.
-     *
-     * @return string The HTML content of the QuickPick interface.
-     *
-     * @throws Exception
-     */
-    public function loadQuickpick(string $imagesPath): string
-    {
-        global $bearsamppConfig;
-
-        // Validate EnhancedQuickPick parameter
-        $validation = $bearsamppConfig->validateEnhancedQuickPick();
-        if (!$validation['valid']) {
-            return $this->getErrorModal($validation['error']);
-        }
-
-        $this->checkQuickpickJson();
-
-        $modules  = $this->getModules();
-        $versions = $this->getVersions();
-
-        return $this->getQuickpickMenu( $modules, $versions, $imagesPath );
-    }
-
-    /**
-     * Checks if the local `quickpick-releases.json` file is up-to-date with the remote version.
-     *
-     * Compares the creation time of the local JSON file with the remote file's last modified time.
-     * If the remote file is newer or the local file does not exist, it fetches the latest JSON data by calling
-     * the `rebuildQuickpickJson` method.
-     *
-     * @return array|false Returns the JSON data if the remote file is newer or the local file does not exist,
-     *                     otherwise returns false.
-     * @throws Exception
-     */
-    public function checkQuickpickJson()
-    {
-        global $bearsamppConfig;
-
-        // Determine local file creation time or rebuild if missing
-        $localFileCreationTime = $this->getLocalFileCreationTime();
-
-        // Attempt to retrieve remote file headers. GitHub-hosted content is reached
-        // through the GitHub proxy (verified TLS context); otherwise fetch directly.
-        $headers = false;
-        if (HttpClient::isGithubHost(QUICKPICK_JSON_URL)) {
-            // Rebuild a get_headers($url, 1)-compatible structure from the proxy
-            // response (status line at index 0 plus every forwarded header) so the
-            // downstream validation/comparison behaves identically to the direct
-            // fetch path. Only a successful (2xx) response is trusted; error pages
-            // carry headers but must not drive update decisions. Proxy header keys
-            // are lowercase, so lookups below are case-insensitive.
-            $result = HttpClient::proxyFetch(QUICKPICK_JSON_URL, 'HEAD', true);
-            if ($result !== false && $result['status'] >= 200 && $result['status'] < 300) {
-                $headers = array('HTTP/1.1 ' . $result['status']);
-                foreach ($result['headers'] as $name => $value) {
-                    $headers[$name] = $value;
-                }
-            }
-        } else {
-            $headers = get_headers(QUICKPICK_JSON_URL, 1, HttpClient::getSslStreamContext(true, QUICKPICK_JSON_URL));
-        }
-        if (!$this->isValidHeaderResponse($headers)) {
-            // If headers or Date/Last-Modified are invalid, assume no update needed
-            return false;
-        }
-
-        // Optionally log headers for verbose output
-        $this->logHeaders($headers);
-
-        // Compare the creation times (remote vs. local). Last-Modified reflects the
-        // actual file modification time; Date is only a fallback for servers (or
-        // proxies) that do not forward Last-Modified.
-        $remoteModTime = $this->getHeaderValue($headers, 'Last-Modified')
-            ?? $this->getHeaderValue($headers, 'Date')
-            ?? '';
-        $remoteFileCreationTime = strtotime($remoteModTime);
-		if ($remoteFileCreationTime > $localFileCreationTime) { return $this->rebuildQuickpickJson(); }
-
-        // Return false if local file is already up-to-date
-        return false;
-    }
-
-    /**
-     * Returns the local file's creation time, or triggers and returns 0 if file does not exist.
-     *
-     * @return int Local file's creation time or 0 if the file doesn't exist.
-     */
-    private function getLocalFileCreationTime()
-    {
-        if (!file_exists($this->jsonFilePath)) {
-            // If local file is missing, rebuild it immediately
-            $this->rebuildQuickpickJson();
-            return 0;
-        }
-        return filectime($this->jsonFilePath);
-    }
-
-    /**
-     * Determines whether the header response is valid and includes a 'Date' or
-     * 'Last-Modified' key.
-     *
-     * Both direct (get_headers) and GitHub-proxy HEAD responses are accepted, so
-     * update checks keep working even if the proxy forwards Last-Modified but not
-     * Date (or vice versa). Header name matching is case-insensitive.
-     *
-     * @param mixed $headers Headers retrieved from get_headers() or the GitHub proxy.
-     * @return bool True if headers are valid and contain 'Date' or 'Last-Modified',
-     *              false otherwise.
-     */
-    private function isValidHeaderResponse($headers): bool
-    {
-        // If headers retrieval failed or neither Date nor Last-Modified is set, return false
-        if ($headers === false ||
-            ($this->getHeaderValue($headers, 'Date') === null &&
-             $this->getHeaderValue($headers, 'Last-Modified') === null)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Retrieves a header value case-insensitively.
-     *
-     * HTTP header names are case-insensitive. get_headers() may return keys in
-     * any case, while the GitHub proxy normalizes them to lowercase, so lookups
-     * must not rely on exact key casing.
-     *
-     * @param mixed  $headers The header map (or false on failure).
-     * @param string $name    The header name to look up.
-     * @return string|null The header value, or null if absent.
-     */
-    private function getHeaderValue($headers, string $name): ?string
-    {
-        if (!is_array($headers)) {
-            return null;
-        }
-        foreach ($headers as $key => $value) {
-            if (is_string($key) && strcasecmp($key, $name) === 0) {
-                if (is_array($value)) {
-                    $value = reset($value);
-                }
-                return is_string($value) ? $value : null;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Logs the headers in debug mode if logsVerbose is set to 2.
-     *
-     * @param array $headers The headers returned by get_headers().
-     */
-    private function logHeaders(array $headers): void
-    {
-        global $bearsamppConfig;
-
-        if ($bearsamppConfig->getLogsVerbose() === 2) {
-            Log::debug('Headers: ' . print_r($headers, true));
-        }
-    }
-
-    /**
-     * Retrieves the QuickPick JSON data from the local file.
-     *
-     * @return array The decoded JSON data, or an error message if the file cannot be fetched or decoded.
-     */
-    public function getQuickpickJson(): array
-    {
-        $content = @file_get_contents( $this->jsonFilePath );
-        if ( $content === false ) {
-            Log::error( 'Error fetching content from JSON file: ' . $this->jsonFilePath );
-
-            return ['error' => 'Error fetching JSON file'];
-        }
-
-        $data = json_decode( $content, true );
-        if ( json_last_error() !== JSON_ERROR_NONE ) {
-            Log::error( 'Error decoding JSON content: ' . json_last_error_msg() );
-
-            return ['error' => 'Error decoding JSON content'];
-        }
-
-        return $data;
-    }
-
-    /**
-     * Rebuilds the local quickpick-releases.json file by fetching the latest data from the remote URL.
-     *
-     * @return array An array containing the status and message of the rebuild process.
-     * @throws Exception If the JSON content cannot be fetched or saved.
-     */
-    public function rebuildQuickpickJson(): array
-    {
-        Log::debug( 'Fetching JSON file: ' . $this->jsonFilePath );
-
-        // Fetch the JSON content from the URL via cURL (verified TLS + bundled GitHub token)
-        $jsonContent = HttpClient::getApiJson( QUICKPICK_JSON_URL );
-
-        if ( $jsonContent === '' ) {
-            // Handle error if the file could not be fetched
-            throw new Exception( 'Failed to fetch JSON content from the URL.' );
-        }
-
-        // Save the JSON content to the specified path
-        $result = file_put_contents( $this->jsonFilePath, $jsonContent );
-
-        if ( $result === false ) {
-            // Handle error if the file could not be saved
-            throw new Exception( 'Failed to save JSON content to the specified path.' );
-        }
-
-        // Return success message
-        return ['success' => 'JSON content fetched and saved successfully'];
-    }
-
-    /**
-     * Retrieves the list of available versions for all modules.
-     *
-     * This method fetches the QuickPick JSON data and returns an array of versions or If no versions are found, an error
-     * message is logged and returned.
-     *
-     * @return array An array of version strings for the specified module, or an error message if no versions are found.
-     */
-    public function getVersions(): array
-    {
-        Log::debug( 'Versions called' );
-
-        $versions = [];
-
-        $jsonData = $this->getQuickpickJson();
-
-        foreach ( $jsonData as $entry ) {
-            if ( is_array( $entry ) ) {
-                if ( isset( $entry['module'] ) && is_string( $entry['module'] ) ) {
-                    if ( isset( $entry['versions'] ) && is_array( $entry['versions'] ) ) {
-                        $moduleVersions = array_column( $entry['versions'], null, 'version' );
-                        uasort( $moduleVersions, function( $a, $b ) {
-                            return version_compare( $b['version'], $a['version'] );
-                        } );
-                        $versions[$entry['module']] = $moduleVersions;
-                    }
-                }
-            }
-            else {
-                Log::error( 'Invalid entry format in JSON data' );
-            }
-        }
-
-        if ( empty( $versions ) ) {
-            Log::error( 'No versions found' );
-
-            return ['error' => 'No versions found'];
-        }
-
-        Log::debug( 'Found versions' );
-
-        $this->versions = $versions;
-
-        return $versions;
-    }
-
-    /**
-     * Fetches the URL of a specified module version from the local quickpick-releases.json file.
-     *
-     * This method reads the quickpick-releases.json file to find the URL associated with the given module
-     * and version. It logs the process and returns the URL if found, or an error message if not.
-     *
-     * @param   string  $module   The name of the module.
-     * @param   string  $version  The version of the module.
-     *
-     * @return string|array The URL of the specified module version or an error message if the version is not found.
-     */
-    public function getModuleUrl(string $module, string $version)
-    {
-        $this->getVersions();
-        Log::debug( 'getModuleUrl called for module: ' . $module . ' version: ' . $version );
-        $moduleKey = 'module-' . strtolower( $module );
-        if ( !isset( $this->versions[$moduleKey][$version]['url'] ) ) {
-            Log::error( 'Version not found: ' . $version );
-            return ['error' => 'Version not found'];
-        }
-        $url = trim( $this->versions[$moduleKey][$version]['url'] );
-        if ( $url <> '' ) {
-            Log::debug( 'Found URL for version: ' . $version . ' URL: ' . $url );
-
-            return $url;
-        }
-        else {
-            Log::error( 'Version not found: ' . $version );
-
-            return ['error' => 'Version not found'];
-        }
-    }
-
-    /**
-     * Validates the format of a given username key by checking it against an external API.
-     *
-     * This method performs several checks to ensure the validity of the username key:
-     * 1. Logs the method call.
-     * 2. Ensures the global configuration is available.
-     * 3. Retrieves the username key from the global configuration.
-     * 4. Ensures the username key is not empty.
-     * 5. Constructs the API URL using the username key.
-     * 6. Fetches the API response.
-     * 7. Decodes the JSON response.
-     * 8. Validates the response data.
-     *
-     * @return bool True if the username key is valid, false otherwise.
-     */
-    public function checkDownloadId(): bool
-    {
-        global $bearsamppConfig;
-
-        Log::debug( 'checkDownloadId method called.' );
-
-        // Ensure the global config is available
-        if ( !isset( $bearsamppConfig ) ) {
-            Log::error( 'Global configuration is not set.' );
-
-            return false;
-        }
-
-        $DownloadId = $bearsamppConfig->getDownloadId();
-
-        // Ensure the license key is not empty
-        if ( empty( $DownloadId ) ) {
-            Log::error( 'License key is empty.' );
-
-            return false;
-        }
-
-        $url = QUICKPICK_API_URL . QUICKPICK_API_KEY . '&download_id=' . $DownloadId;
-        // Never log the raw URL: it embeds both the API key and the per-user download ID.
-        Log::debug( 'Validating download ID via QuickPick API.' );
-
-        // Attempt to fetch the API response (verified TLS context)
-        // Note: If this fails, PHP will generate a warning which will be logged by the error handler
-        // This is expected behavior when the API server is unavailable
-        $response = file_get_contents( $url, false, HttpClient::getSslStreamContext() );
-
-        // Check if the response is false
-        if ( $response === false ) {
-            Log::error( 'Failed to validate QuickPick license - API server unavailable' );
-            return false;
-        }
-
-        Log::debug( 'API response: ' . $response );
-
-        $data = json_decode( $response, true );
-
-        // Check if the JSON decoding was successful
-        if ( json_last_error() !== JSON_ERROR_NONE ) {
-            Log::error( 'Error decoding JSON response: ' . json_last_error_msg() );
-
-            return false;
-        }
-
-        // Validate the response data
-        if ( isset( $data['success'] ) && $data['success'] === true && isset( $data['data'] ) && is_array( $data['data'] ) && count( $data['data'] ) > 0 ) {
-            Log::debug( 'License key valid: ' . $DownloadId );
-
-            return true;
-        }
-
-        Log::error( 'Invalid license key: ' . $DownloadId );
-
-        return false;
-    }
-
-    /**
-     * Installs a specified module by fetching its URL and unzipping its contents.
-     *
-     * This method retrieves the URL of the specified module and version from the QuickPick JSON data.
-     * If the URL is found, it fetches and unzips the module. If the URL is not found, it logs an error
-     * and returns an error message.
-     *
-     * @param   string  $module   The name of the module to install.
-     * @param   string  $version  The version of the module to install.
-     *
-     * @return array An array containing the status and message of the installation process.
-     *               If successful, it returns the response from the fetchAndUnzipModule method.
-     *               If unsuccessful, it returns an error message indicating the issue.
-     */
-    public function installModule(string $module, string $version): array
-    {
-        // Find the module URL and module name from the data
-        $moduleUrl = $this->getModuleUrl( $module, $version );
-
-        if ( is_array( $moduleUrl ) && isset( $moduleUrl['error'] ) ) {
-            Log::error( 'Module URL not found for module: ' . $module . ' version: ' . $version );
-
-            return ['error' => 'Module URL not found'];
-        }
-
-        if ( empty( $moduleUrl ) ) {
-            Log::error( 'Module URL not found for module: ' . $module . ' version: ' . $version );
-
-            return ['error' => 'Module URL not found'];
-        }
-
-        $state = HttpClient::checkInternetState();
-        if ( $state ) {
-            $response = $this->fetchAndUnzipModule( $moduleUrl, $module );
-            Log::debug( 'Response is: ' . print_r( $response, true ) );
-
-            // Check if enhanced mode is enabled
-            global $bearsamppConfig;
-            $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
-
-            Log::debug('Enhanced mode: ' . ($enhancedMode ? 'enabled' : 'disabled'));
-
-            // If installation was successful and enhanced mode is enabled, update config
-            if (isset($response['success']) && $enhancedMode == 1) {
-                // Step 1: Update config FIRST (so reload can pick up the new version)
-                Log::debug('Enhanced mode enabled - Updating config for module: ' . $module . ' version: ' . $version);
-                $configUpdated = $this->updateModuleConfig($module, $version);
-
-                if ($configUpdated) {
-                    // Step 2: Launch the reload action to apply the new version automatically.
-                    // QuickPick runs in the AJAX/web context, where the winbinder GUI used by
-                    // the reload action is unavailable, so we spawn it as a detached process
-                    // (the same "php-win.exe root.php reload" command the tray menu runs). The
-                    // reload restarts the database services so clients such as phpMyAdmin pick
-                    // up the new version without the user having to reload manually.
-                    Log::debug('Config updated successfully, launching reload to apply changes...');
-
-                    // Send progress update to user - flush output
-                    if (ob_get_level() > 0) {
-                        ob_flush();
-                    }
-                    echo json_encode(['phase' => 'updating', 'message' => 'Applying version changes...']) . PHP_EOL;
-                    flush();
-
-                    // Clear caches before the reload runs so it reads fresh values from disk
-                    Log::debug('Clearing caches before reload...');
-                    CacheManager::clearAll();
-
-                    // Build and launch the reload command detached from this request.
-                    // Leading "" is the (empty) window title required by cmd.exe "start".
-                    $reloadCmd = '"" "' . Path::getPhpExe() . '" "'
-                        . Path::getCorePath() . '/' . Core::isRoot_FILE . '" '
-                        . Action::RELOAD;
-                    Log::debug('Launching reload command: ' . $reloadCmd);
-                    CommandRunner::background($reloadCmd);
-
-                    $response['reload_triggered'] = true;
-                } else {
-                    Log::error('Config update failed for module: ' . $module);
-                    $response['reload_triggered'] = false;
-                }
-            } else if (isset($response['success']) && $enhancedMode == 0) {
-                Log::debug('Enhanced mode disabled - skipping config update');
-                
-                // Even if not updating config, clear cache to be safe as new files were added
-                Log::debug('Clearing caches after module installation (Standard mode)...');
-                CacheManager::clearAll();
-            }
-
-            return $response;
-        }
-        else {
-            Log::error( 'No internet connection available.' );
-
-            return ['error' => 'No internet connection'];
-        }
-    }
-
-    /**
-     * Fetches the module URL and stores it in /tmp, then unzips the file based on its extension.
-     *
-     * @param   string  $moduleUrl  The URL of the module to fetch.
-     * @param   string  $module     The name of the module.
-     *
-     * @return array An array containing the status and message.
-     */
-    public function fetchAndUnzipModule(string $moduleUrl, string $module): array
-{
-    Log::debug("$module is: " . $module);
-
-    global $bearsamppRoot, $bearsamppCore;
-    $tmpDir = Path::getTmpPath();
-    Log::debug('Temporary Directory: ' . $tmpDir);
-
-    $fileName = basename($moduleUrl);
-    Log::debug('File Name: ' . $fileName);
-
-    $tmpFilePath = $tmpDir . '/' . $fileName;
-    Log::debug('File Path: ' . $tmpFilePath);
-
-    // Strictly validate the archive extension BEFORE downloading, so we never fetch
-    // or unpack anything other than an allowed 7z/zip archive regardless of the URL.
-    if (!self::isAllowedArchive($fileName)) {
-        Log::error('Unsupported archive type rejected before download: ' . $fileName);
-        return ['error' => 'Unsupported archive type'];
-    }
-
-    $moduleName = str_replace('module-', '', $module);
-    Log::debug('Module Name: ' . $moduleName);
-
-    // Find the correct module key by searching through the modules array
-    // This handles proper capitalization for all module types
-    $moduleKey = null;
-    foreach ($this->modules as $key => $moduleInfo) {
-        if (strtolower($key) === strtolower($moduleName)) {
-            $moduleKey = $key;
-            break;
-        }
-    }
-
-    if (!$moduleKey) {
-        Log::error("Module not found in modules array: $moduleName");
-        return ['error' => 'Module configuration not found'];
-    }
-
-    $moduleType = $this->modules[$moduleKey]['type'];
-    Log::debug('Module Type: ' . $moduleType);
-
-    // Get module type
-    $destination = $this->getModuleDestinationPath($moduleType, $moduleName);
-    Log::debug('Destination: ' . $destination);
-
-    // Retrieve the file path from the URL via HttpClient's streaming download,
-    // passing the module URL and temporary file path, with the use Progress Bar parameter set to true.
-    $result = HttpClient::downloadFile($moduleUrl, $tmpFilePath, true);
-
-    // Check if $result indicates an error (downloadFile returns ['error' => ...] on failure)
-    if (!is_array($result) || isset($result['error'])) {
-        Log::error('Failed to retrieve file from URL: ' . $moduleUrl);
-        @unlink($tmpFilePath);
-        return ['error' => 'Failed to retrieve file from URL'];
-    }
-
-    // Verify the downloaded archive against the SHA-256 sidecar published with the release.
-    // This guards against a tampered JSON, a bypassed/disabled TLS check, or a corrupted
-    // download, ensuring we never extract/modify an unverified archive.
-    if (!self::verifyModuleChecksum($moduleUrl, $tmpFilePath)) {
-        Log::error('SHA-256 checksum verification failed for module: ' . $module . ' (URL: ' . $moduleUrl . ')');
-        @unlink($tmpFilePath);
-        return ['error' => 'Checksum verification failed. Download aborted. File: ' . basename($moduleUrl)];
-    }
-
-    // Determine the file extension and call the appropriate unzipping function.
-    // Enforce the strict whitelist on the actual downloaded file as a second layer
-    // of defense, even though it was pre-validated before download.
-    if (!self::isAllowedArchive($tmpFilePath)) {
-        Log::error('Unsupported archive extension after download: ' . $tmpFilePath);
-        @unlink($tmpFilePath);
-        return ['error' => 'Unsupported archive extension'];
-    }
-
-    $fileExtension = strtolower(pathinfo($tmpFilePath, PATHINFO_EXTENSION));
-    Log::debug('File extension: ' . $fileExtension);
-
-    if ($fileExtension === '7z' || $fileExtension === 'zip') {
-        echo json_encode(['phase' => 'extracting']) . PHP_EOL;
-        if (ob_get_length()) {
-            ob_flush();
-        }
-        flush();
-
-        $unzipResult = $bearsamppCore->unzipFile($tmpFilePath, $destination, function ($currentPercentage) {
-            $progressStr = is_numeric($currentPercentage) ? "$currentPercentage%" : $currentPercentage;
-            echo json_encode(['progress' => $progressStr]) . PHP_EOL;
-            if (ob_get_length()) {
-                ob_flush();
-            }
-            flush();
-        });
-
-        if ($unzipResult === false) {
-            return ['error' => 'Failed to unzip file. File: ' . $tmpFilePath . ' could not be unzipped', 'Destination: ' . $destination];
-        }
-    } else {
-        Log::error('Unsupported file extension: ' . $fileExtension);
-        return ['error' => 'Unsupported file extension'];
-    }
-
-    return ['success' => 'Module installed successfully'];
-}
-
-    /**
-     * Verifies the SHA-256 checksum of a downloaded module archive.
-     *
-     * The expected hash is read from the `.sha256` sidecar published alongside the
-     * release asset (e.g. `<archive>.7z.sha256`), fetched over a verified TLS context.
-     * The archive is only considered valid if its computed hash matches exactly.
-     *
-     * @param   string      $moduleUrl     The URL the archive was downloaded from.
-     * @param   string      $tmpFilePath   The local path of the downloaded archive.
-     * @return  bool                       True if the hash matches, false otherwise.
-     */
-    private static function verifyModuleChecksum(string $moduleUrl, string $tmpFilePath): bool
-    {
-        if (!is_file($tmpFilePath)) {
-            Log::error('Checksum verify: downloaded file not found: ' . $tmpFilePath);
-            return false;
-        }
-
-        $expectedHash = self::fetchChecksumFromSidecar($moduleUrl);
-        if ($expectedHash === null) {
-            Log::error('Checksum verify: could not retrieve SHA-256 sidecar for: ' . $moduleUrl);
-            return false;
-        }
-
-        $actualHash = @hash_file('sha256', $tmpFilePath);
-        if ($actualHash === false) {
-            Log::error('Checksum verify: failed to hash local file: ' . $tmpFilePath);
-            return false;
-        }
-
-        if (!hash_equals($expectedHash, strtolower($actualHash))) {
-            Log::error(
-                'Checksum verify: mismatch for ' . basename($moduleUrl) .
-                ' (expected ' . $expectedHash . ', got ' . $actualHash . ')'
-            );
-            return false;
-        }
-
-        Log::debug('Checksum verify: OK for ' . basename($moduleUrl));
-        return true;
-    }
-
-    /**
-     * Fetches and parses the expected SHA-256 digest from the asset sidecar file.
-     *
-     * The sidecar URL is the module download URL with '.sha256' appended, and its
-     * contents follow the standard "<hex-hash> <filename>" format. Only a full
-     * 64-char lowercase hex digest is accepted.
-     *
-     * @param   string      $moduleUrl  The module download URL.
-     * @return  string|null             The expected SHA-256 hex digest, or null on failure.
-     */
-    private static function fetchChecksumFromSidecar(string $moduleUrl): ?string
-    {
-        $sidecarUrl = $moduleUrl . '.sha256';
-
-        // GitHub-hosted sidecars are fetched through the GitHub proxy; everything
-        // else uses the verified TLS stream context.
-        if (HttpClient::isGithubHost($sidecarUrl)) {
-            Log::trace('verifyModuleChecksum() fetching sidecar via GitHub proxy: ' . $sidecarUrl);
-            $result  = HttpClient::proxyFetch($sidecarUrl, 'GET', true);
-            $content = ($result === false) ? false : $result['body'];
-        } else {
-            $content = @file_get_contents($sidecarUrl, false, HttpClient::getSslStreamContext(true, $sidecarUrl));
-        }
-
-        if ($content === false) {
-            Log::error('Checksum verify: sidecar fetch failed for: ' . $sidecarUrl);
-            return null;
-        }
-
-        if (preg_match('/\b([0-9a-f]{64})\b/i', $content, $match) !== 1) {
-            Log::error('Checksum verify: unexpected sidecar content for: ' . $sidecarUrl);
-            return null;
-        }
-
-        return strtolower($match[1]);
-    }
-
-    /**
-     * Checks whether a file path/name has an allowed archive extension.
-     *
-     * Only lowercase '.7z' and '.zip' are accepted. This is used both before
-     * download (from the URL filename) and after download (from the actual file)
-     * to strictly reject anything else.
-     *
-     * @param   string  $fileName  File name or path to validate.
-     * @return  bool               True if the extension is allowed.
-     */
-    private static function isAllowedArchive(string $fileName): bool
-    {
-        if ($fileName === '' || $fileName === false) {
-            return false;
-        }
-
-        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        return in_array($extension, self::$allowedArchiveExtensions, true);
-    }
-
-    /**
-     * Get the destination path for a given module type and name.
-     *
-     * This method constructs the destination path based on the type of module
-     * (application, binary, or tools) and the module name. It utilizes the
-     * `bearsamppRoot` global object to retrieve the base paths for each module type.
-     *
-     * @param   string  $moduleType  The type of the module ('application', 'binary', or 'tools').
-     * @param   string  $moduleName  The name of the module.
-     *
-     * @return string The constructed destination path for the module.
-     */
-    public function getModuleDestinationPath(string $moduleType, string $moduleName)
-    {
-        global $bearsamppRoot;
-        if ( $moduleType === 'application' ) {
-            $destination = Path::getAppsPath() . '/' . strtolower( $moduleName ) . '/';
-        }
-        elseif ( $moduleType === 'binary' ) {
-            $destination = Path::getBinPath() . '/' . strtolower( $moduleName ) . '/';
-        }
-        elseif ( $moduleType === 'tools' ) {
-            $destination = Path::getToolsPath() . '/' . strtolower( $moduleName ) . '/';
-        }
-        else {
-            $destination = '';
-        }
-
-        return $destination;
-    }
-
-    /**
-     * Regenerates the bearsampp.ini menu file without VBS checks (AJAX-safe version).
-     * This is a simplified version of TplApp::process() that avoids VBS errors in web context.
-     *
-     * @return string The generated INI content
-     */
-    private function regenerateMenuSafe(): string
-    {
-        Log::debug('Regenerating menu (AJAX-safe mode)...');
-
-        // Suppress errors temporarily during menu generation
-        $oldErrorReporting = error_reporting();
-        error_reporting($oldErrorReporting & ~E_WARNING);
-
-        try {
-            // Generate the menu content
-            $menuContent = TplApp::process();
-
-            // Restore error reporting
-            error_reporting($oldErrorReporting);
-
-            Log::debug('Menu regenerated successfully');
-            return $menuContent;
-
-        } catch (Exception $e) {
-            // Restore error reporting
-            error_reporting($oldErrorReporting);
-
-            Log::warning('Error during menu regeneration: ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
-     * Updates the bearsampp.conf configuration file with the new module version.
-     * This method handles all module types: binaries, apps, and tools.
-     *
-     * @param   string  $module   The name of the module (e.g., 'Apache', 'PhpMyAdmin', 'Git').
-     * @param   string  $version  The version to set in the configuration.
-     *
-     * @return bool True if the configuration was updated successfully, false otherwise.
-     */
-    private function updateModuleConfig(string $module, string $version): bool
-    {
-        try {
-            $bearsamppConfig = new Config();
-
-            // Remove 'module-' prefix if present and normalize the module name
-            $moduleName = str_replace('module-', '', $module);
-
-            // Find the correct module key by searching through the modules array
-            // This handles proper capitalization for all module types
-            $moduleKey = null;
-            foreach ($this->modules as $key => $moduleInfo) {
-                if (strtolower($key) === strtolower($moduleName)) {
-                    $moduleKey = $key;
-                    break;
-                }
-            }
-
-            if (!$moduleKey) {
-                Log::error("Module not found in modules array: $moduleName");
-                return false;
-            }
-
-            $moduleType = $this->modules[$moduleKey]['type'];
-
-            // Reject malformed version strings before they reach the config
-            // file (they later drive generated shell commands). This guards
-            // against a compromised or tampered releases feed.
-            if (preg_match('/^[0-9][0-9a-zA-Z.\-+]*$/', $version) !== 1) {
-                Log::error("Invalid version format for module: $module");
-                return false;
-            }
-
-            // Map module names to their config section names
-            // For all types, use the lowercase name for the config key
-            $configSection = strtolower($moduleKey);
-
-            Log::debug("Updating config for module: $module (key: $moduleKey, type: $moduleType) to version: $version");
-            Log::debug("Config section: $configSection");
-
-            // Update the configuration file
-            // The Config class expects a flat key like "nodejsVersion" not a section
-            $configKey = $configSection . 'Version';
-            $bearsamppConfig->replace($configKey, $version);
-
-            Log::info("Successfully updated $configSection version to $version in bearsampp.conf");
-
-            return true;
-
-        } catch (Exception $e) {
-            Log::error("Failed to update module config: " . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Generates an error modal for configuration validation failures.
-     *
-     * @param   string  $errorMessage  The error message to display.
-     *
-     * @return string The HTML content of the error modal.
-     */
-    public function getErrorModal(string $errorMessage): string
-    {
-        ob_start();
-        ?>
-        <div id="configErrorContainer" class="text-center mt-3 pe-3">
-            <div class="alert alert-danger d-inline-block" role="alert" style="max-width: 500px;">
-                <h4 class="alert-heading">
-                    <i class="fas fa-exclamation-circle"></i> Configuration Error
-                </h4>
-                <hr>
-                <p class="mb-0">
-                    <?php echo htmlspecialchars($errorMessage); ?>
-                </p>
-                <hr>
-                <small class="text-muted">
-                    Please add the missing parameter to the <code>bearsampp.conf</code> file in the Bearsampp root directory.
-                </small>
-            </div>
-        </div>
-        <?php
-        return ob_get_clean();
-    }
-
-    /**
-     * Generates the HTML content for the QuickPick menu.
-     *
-     * This method creates the HTML structure for the QuickPick interface, including a dropdown
-     * for selecting modules and their respective versions. It checks if the license key is valid
-     * before displaying the modules. If the license key is invalid, it displays a subscription prompt.
-     * If there is no internet connection, it displays a message indicating the lack of internet.
-     *
-     * @param   array   $modules     An array of available modules.
-     * @param   array   $versions    An associative array where the key is the module name and the value is an array containing the module versions.
-     * @param   string  $imagesPath  The path to the images directory.
-     *
-     * @return string The HTML content of the QuickPick menu.
-     */
-    public function getQuickpickMenu(array $modules, array $versions, string $imagesPath): string
-    {
-        global $bearsamppConfig;
-        $includePr = $bearsamppConfig->getIncludePr();
-        $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
-
-        ob_start();
-        if ( HttpClient::checkInternetState() ) {
-
-            // Check if the license key is valid
-            if ( $this->checkDownloadId() ): ?>
-                <div class = "enhanced-mode-toggle">
-                    <label class = "form-check-label me-2" for = "enhancedQuickPickSwitch">
-                        Enhanced Mode
-                    </label>
-                    <div class = "form-check form-switch mb-0">
-                        <input class = "form-check-input" type = "checkbox" role = "switch" id = "enhancedQuickPickSwitch"
-                               <?php echo $enhancedMode == 1 ? 'checked' : ''; ?>
-                               data-bs-toggle = "tooltip" data-bs-placement = "bottom"
-                               title = "Toggle between enhanced (auto-config update) and standard QuickPick mode">
-                    </div>
-                </div>
-                <div id = 'quickPickContainer'>
-                    <div class = 'quickpick'>
-
-                        <div class = "custom-select">
-                            <button class = "select-button" role = "combobox"
-                                    aria-label = "select button"
-                                    aria-haspopup = "listbox"
-                                    aria-expanded = "false"
-                                    aria-controls = "select-dropdown">
-                                <span class = "selected-value">Select a module and version</span>
-                                <span class = "arrow"></span>
-                            </button>
-                            <ul class = "select-dropdown" role = "listbox" id = "select-dropdown">
-
-                                <?php
-                                foreach ( $modules as $module ): ?>
-                                    <?php if ( is_string( $module ) ): ?>
-                                        <li role = "option" class = "moduleheader">
-                                            <?php echo htmlspecialchars( $module ); ?>
-                                        </li>
-
-                                        <?php
-                                        foreach ( $versions['module-' . strtolower( $module )] as $version_array ):
-                                            // Skip prerelease versions if includePr is not enabled
-                                            if (isset($version_array['prerelease']) && $version_array['prerelease'] === true && $includePr != 1) {
-                                                continue;
-                                            }
-                                        ?>
-                                            <li role = "option" class = "moduleoption"
-                                                id = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>-li"
-                                                data-module = "<?php echo htmlspecialchars( $module ); ?>"
-                                                data-value = "<?php echo htmlspecialchars( $version_array['version'] ); ?>">
-                                                <input type = "radio"
-                                                       id = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>"
-                                                       name = "module" data-module = "<?php echo htmlspecialchars( $module ); ?>"
-                                                       data-value = "<?php echo htmlspecialchars( $version_array['version'] ); ?>">
-                                                <label
-                                                    for = "<?php echo htmlspecialchars( $module ); ?>-version-<?php echo htmlspecialchars( $version_array['version'] ); ?>"><?php echo $this->formatVersionLabel( $version_array['version'], isset($version_array['prerelease']) && $version_array['prerelease'] === true ); ?></label>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class = "progress " id = "progress" tabindex = "-1" style = "width:260px;display:none"
-                         aria-labelledby = "progressbar" aria-hidden = "true">
-                        <div class = "progress-bar progress-bar-striped progress-bar-animated" id = "progress-bar" role = "progressbar" aria-valuenow = "0" aria-valuemin = "0"
-                             aria-valuemax = "100" data-module = "Module"
-                             data-version = "0.0.0">0%
-                        </div>
-                        <div id = "download-module" style = "display: none">ModuleName</div>
-                        <div id = "download-version" style = "display: none">Version</div>
-                    </div>
-                </div>
-            <?php else: ?>
-                <div id = "subscribeContainer" class = "text-center">
-                    <a href = "<?php echo HttpClient::getWebsiteUrl( 'subscribe' ); ?>" class = "btn btn-dark d-inline-flex align-items-center">
-                        <img src = "<?php echo $imagesPath . 'subscribe.svg'; ?>" alt = "Subscribe Icon" class = "me-2">
-                        Subscribe to QuickPick now
-                    </a>
-                </div>
-            <?php endif;
-        }
-        else {
-            ?>
-            <div id = "InternetState" class = "text-center">
-                <img src = "<?php echo $imagesPath . 'no-wifi-icon.svg'; ?>" alt = "No Wifi Icon" class = "me-2">
-                <span>No internet present</span>
-            </div>
-            <?php
-        }
-
-        return ob_get_clean();
-    }
+	/**
+	 * @var array $modules
+	 *
+	 * An associative array where the key is the module name and the value is an array containing the module type.
+	 * The module type can be one of the following:
+	 * - 'application'
+	 * - 'binary'
+	 * - 'tool'
+	 */
+	public $modules = [
+		'Apache'      => ['type' => 'binary'],
+		'Bruno'       => ['type' => 'tools'],
+		'Composer'    => ['type' => 'tools'],
+		'Ghostscript' => ['type' => 'tools'],
+		'Git'         => ['type' => 'tools'],
+		'Mailpit'     => ['type' => 'binary'],
+		'MariaDB'     => ['type' => 'binary'],
+		'Memcached'   => ['type' => 'binary'],
+		'MySQL'       => ['type' => 'binary'],
+		'Ngrok'       => ['type' => 'tools'],
+		'NodeJS'      => ['type' => 'binary'],
+		'Perl'        => ['type' => 'tools'],
+		'PHP'         => ['type' => 'binary'],
+		'PhpMyAdmin'  => ['type' => 'application'],
+		'PhpPgAdmin'  => ['type' => 'application'],
+		'PostgreSQL'  => ['type' => 'binary'],
+		'PowerShell'  => ['type' => 'tools'],
+		'Python'      => ['type' => 'tools'],
+		'Ruby'        => ['type' => 'tools'],
+		'Xlight'      => ['type' => 'binary']
+	];
+	
+	/**
+	 * @var array $versions
+	 *
+	 * An associative array where the key is the module name and the value is an array containing the module versions.
+	 */
+	private $versions = [];
+	
+	/**
+	 * @var string $jsonFilePath
+	 *
+	 * The file path to the local quickpick-releases.json file.
+	 */
+	private $jsonFilePath;
+	
+	/**
+	 * @var array $allowedArchiveExtensions
+	 *
+	 * Whitelist of archive extensions that may be downloaded and extracted.
+	 */
+	private static $allowedArchiveExtensions = ['7z', 'zip'];
+	
+	/**
+	 * Constructor to initialize the jsonFilePath.
+	 */
+	public function __construct()
+	{
+		global $bearsamppCore;
+		$this->jsonFilePath = Path::getResourcesPath() . '/quickpick-releases.json';
+	}
+	
+	/**
+	 * Format version label with PR indicator if it's a prerelease
+	 *
+	 * @param   string  $version       The version to format
+	 * @param   bool    $isPrerelease  Whether this version is a prerelease
+	 *
+	 * @return string Formatted version string
+	 */
+	private function formatVersionLabel($version, $isPrerelease = false)
+	{
+		global $bearsamppConfig;
+		$includePr = $bearsamppConfig->getIncludePr();
+		
+		if ($isPrerelease && $includePr == 1) {
+			return '<span class="text-danger">' . htmlspecialchars($version) . ' PR</span>';
+		}
+		
+		return htmlspecialchars($version);
+	}
+	
+	/**
+	 * Normalizes a module name to find the correct module key from the modules array.
+	 * Handles case-insensitive matching for all module types.
+	 *
+	 * @param   string  $moduleName  The module name to normalize (may include 'module-' prefix)
+	 *
+	 * @return string|null The correctly capitalized module key, or null if not found
+	 */
+	public function normalizeModuleName(string $moduleName): ?string
+	{
+		// Remove 'module-' prefix if present
+		$moduleName = str_replace('module-', '', $moduleName);
+		
+		// Find the correct module key by searching through the modules array
+		// This handles proper capitalization for all module types
+		foreach ($this->modules as $key => $moduleInfo) {
+			if (strtolower($key) === strtolower($moduleName)) {
+				return $key;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Retrieves the list of available modules.
+	 *
+	 * @return array An array of module names.
+	 */
+	public function getModules(): array
+	{
+		return array_keys($this->modules);
+	}
+	
+	/**
+	 * Loads the QuickPick interface with the available modules and their versions.
+	 *
+	 * @param   string  $imagesPath  The path to the images directory.
+	 *
+	 * @return string The HTML content of the QuickPick interface.
+	 *
+	 * @throws Exception
+	 */
+	public function loadQuickpick(string $imagesPath): string
+	{
+		global $bearsamppConfig;
+		
+		// Validate EnhancedQuickPick parameter
+		$validation = $bearsamppConfig->validateEnhancedQuickPick();
+		if (!$validation['valid']) {
+			return $this->getErrorModal($validation['error']);
+		}
+		
+		$this->checkQuickpickJson();
+		
+		$modules  = $this->getModules();
+		$versions = $this->getVersions();
+		
+		return $this->getQuickpickMenu($modules, $versions, $imagesPath);
+	}
+	
+	/**
+	 * Checks if the local `quickpick-releases.json` file is up-to-date with the remote version.
+	 *
+	 * Compares the creation time of the local JSON file with the remote file's last modified time.
+	 * If the remote file is newer or the local file does not exist, it fetches the latest JSON data by calling
+	 * the `rebuildQuickpickJson` method.
+	 *
+	 * @return array|false Returns the JSON data if the remote file is newer or the local file does not exist,
+	 *                     otherwise returns false.
+	 * @throws Exception
+	 */
+	public function checkQuickpickJson()
+	{
+		global $bearsamppConfig;
+		
+		// Determine local file creation time or rebuild if missing
+		$localFileCreationTime = $this->getLocalFileCreationTime();
+		
+		// Attempt to retrieve remote file headers. GitHub-hosted content is reached
+		// through the GitHub proxy (verified TLS context); otherwise fetch directly.
+		$headers = false;
+		if (HttpClient::isGithubHost(QUICKPICK_JSON_URL)) {
+			// Rebuild a get_headers($url, 1)-compatible structure from the proxy
+			// response (status line at index 0 plus every forwarded header) so the
+			// downstream validation/comparison behaves identically to the direct
+			// fetch path. Only a successful (2xx) response is trusted; error pages
+			// carry headers but must not drive update decisions. Proxy header keys
+			// are lowercase, so lookups below are case-insensitive.
+			$result = HttpClient::proxyFetch(QUICKPICK_JSON_URL, 'HEAD', true);
+			if ($result !== false && $result['status'] >= 200 && $result['status'] < 300) {
+				$headers = array('HTTP/1.1 ' . $result['status']);
+				foreach ($result['headers'] as $name => $value) {
+					$headers[$name] = $value;
+				}
+			}
+		} else {
+			$headers = get_headers(QUICKPICK_JSON_URL, 1, HttpClient::getSslStreamContext(true, QUICKPICK_JSON_URL));
+		}
+		if (!$this->isValidHeaderResponse($headers)) {
+			// If headers or Date/Last-Modified are invalid, assume no update needed
+			return false;
+		}
+		
+		// Optionally log headers for verbose output
+		$this->logHeaders($headers);
+		
+		// Compare the creation times (remote vs. local). Last-Modified reflects the
+		// actual file modification time; Date is only a fallback for servers (or
+		// proxies) that do not forward Last-Modified.
+		$remoteModTime          = $this->getHeaderValue($headers, 'Last-Modified')
+			?? $this->getHeaderValue($headers, 'Date')
+			?? '';
+		$remoteFileCreationTime = strtotime($remoteModTime);
+		if ($remoteFileCreationTime > $localFileCreationTime) {
+			return $this->rebuildQuickpickJson();
+		}
+		
+		// Return false if local file is already up-to-date
+		return false;
+	}
+	
+	/**
+	 * Returns the local file's creation time, or triggers and returns 0 if file does not exist.
+	 *
+	 * @return int Local file's creation time or 0 if the file doesn't exist.
+	 */
+	private function getLocalFileCreationTime()
+	{
+		if (!file_exists($this->jsonFilePath)) {
+			// If local file is missing, rebuild it immediately
+			$this->rebuildQuickpickJson();
+			
+			return 0;
+		}
+		
+		return filectime($this->jsonFilePath);
+	}
+	
+	/**
+	 * Determines whether the header response is valid and includes a 'Date' or
+	 * 'Last-Modified' key.
+	 *
+	 * Both direct (get_headers) and GitHub-proxy HEAD responses are accepted, so
+	 * update checks keep working even if the proxy forwards Last-Modified but not
+	 * Date (or vice versa). Header name matching is case-insensitive.
+	 *
+	 * @param   mixed  $headers  Headers retrieved from get_headers() or the GitHub proxy.
+	 *
+	 * @return bool True if headers are valid and contain 'Date' or 'Last-Modified',
+	 *              false otherwise.
+	 */
+	private function isValidHeaderResponse($headers): bool
+	{
+		// If headers retrieval failed or neither Date nor Last-Modified is set, return false
+		if ($headers === false ||
+			($this->getHeaderValue($headers, 'Date') === null &&
+				$this->getHeaderValue($headers, 'Last-Modified') === null)) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Retrieves a header value case-insensitively.
+	 *
+	 * HTTP header names are case-insensitive. get_headers() may return keys in
+	 * any case, while the GitHub proxy normalizes them to lowercase, so lookups
+	 * must not rely on exact key casing.
+	 *
+	 * @param   mixed   $headers  The header map (or false on failure).
+	 * @param   string  $name     The header name to look up.
+	 *
+	 * @return string|null The header value, or null if absent.
+	 */
+	private function getHeaderValue($headers, string $name): ?string
+	{
+		if (!is_array($headers)) {
+			return null;
+		}
+		foreach ($headers as $key => $value) {
+			if (is_string($key) && strcasecmp($key, $name) === 0) {
+				if (is_array($value)) {
+					$value = reset($value);
+				}
+				
+				return is_string($value) ? $value : null;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Logs the headers in debug mode if logsVerbose is set to 2.
+	 *
+	 * @param   array  $headers  The headers returned by get_headers().
+	 */
+	private function logHeaders(array $headers): void
+	{
+		global $bearsamppConfig;
+		
+		if ($bearsamppConfig->getLogsVerbose() === 2) {
+			Log::debug('Headers: ' . print_r($headers, true));
+		}
+	}
+	
+	/**
+	 * Retrieves the QuickPick JSON data from the local file.
+	 *
+	 * @return array The decoded JSON data, or an error message if the file cannot be fetched or decoded.
+	 */
+	public function getQuickpickJson(): array
+	{
+		$content = @file_get_contents($this->jsonFilePath);
+		if ($content === false) {
+			Log::error('Error fetching content from JSON file: ' . $this->jsonFilePath);
+			
+			return ['error' => 'Error fetching JSON file'];
+		}
+		
+		$data = json_decode($content, true);
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			Log::error('Error decoding JSON content: ' . json_last_error_msg());
+			
+			return ['error' => 'Error decoding JSON content'];
+		}
+		
+		return $data;
+	}
+	
+	/**
+	 * Rebuilds the local quickpick-releases.json file by fetching the latest data from the remote URL.
+	 *
+	 * @return array An array containing the status and message of the rebuild process.
+	 * @throws Exception If the JSON content cannot be fetched or saved.
+	 */
+	public function rebuildQuickpickJson(): array
+	{
+		Log::debug('Fetching JSON file: ' . $this->jsonFilePath);
+		
+		// Fetch the JSON content from the URL via cURL (verified TLS + bundled GitHub token)
+		$jsonContent = HttpClient::getApiJson(QUICKPICK_JSON_URL);
+		
+		if ($jsonContent === '') {
+			// Handle error if the file could not be fetched
+			throw new Exception('Failed to fetch JSON content from the URL.');
+		}
+		
+		// Save the JSON content to the specified path
+		$result = file_put_contents($this->jsonFilePath, $jsonContent);
+		
+		if ($result === false) {
+			// Handle error if the file could not be saved
+			throw new Exception('Failed to save JSON content to the specified path.');
+		}
+		
+		// Return success message
+		return ['success' => 'JSON content fetched and saved successfully'];
+	}
+	
+	/**
+	 * Retrieves the list of available versions for all modules.
+	 *
+	 * This method fetches the QuickPick JSON data and returns an array of versions or If no versions are found, an error
+	 * message is logged and returned.
+	 *
+	 * @return array An array of version strings for the specified module, or an error message if no versions are found.
+	 */
+	public function getVersions(): array
+	{
+		Log::debug('Versions called');
+		
+		$versions = [];
+		
+		$jsonData = $this->getQuickpickJson();
+		
+		foreach ($jsonData as $entry) {
+			if (is_array($entry)) {
+				if (isset($entry['module']) && is_string($entry['module'])) {
+					if (isset($entry['versions']) && is_array($entry['versions'])) {
+						$moduleVersions = array_column($entry['versions'], null, 'version');
+						uasort($moduleVersions, function ($a, $b) {
+							return version_compare($b['version'], $a['version']);
+						});
+						$versions[$entry['module']] = $moduleVersions;
+					}
+				}
+			} else {
+				Log::error('Invalid entry format in JSON data');
+			}
+		}
+		
+		if (empty($versions)) {
+			Log::error('No versions found');
+			
+			return ['error' => 'No versions found'];
+		}
+		
+		Log::debug('Found versions');
+		
+		$this->versions = $versions;
+		
+		return $versions;
+	}
+	
+	/**
+	 * Fetches the URL of a specified module version from the local quickpick-releases.json file.
+	 *
+	 * This method reads the quickpick-releases.json file to find the URL associated with the given module
+	 * and version. It logs the process and returns the URL if found, or an error message if not.
+	 *
+	 * @param   string  $module   The name of the module.
+	 * @param   string  $version  The version of the module.
+	 *
+	 * @return string|array The URL of the specified module version or an error message if the version is not found.
+	 */
+	public function getModuleUrl(string $module, string $version)
+	{
+		$this->getVersions();
+		Log::debug('getModuleUrl called for module: ' . $module . ' version: ' . $version);
+		$moduleKey = 'module-' . strtolower($module);
+		if (!isset($this->versions[$moduleKey][$version]['url'])) {
+			Log::error('Version not found: ' . $version);
+			
+			return ['error' => 'Version not found'];
+		}
+		$url = trim($this->versions[$moduleKey][$version]['url']);
+		if ($url <> '') {
+			Log::debug('Found URL for version: ' . $version . ' URL: ' . $url);
+			
+			return $url;
+		} else {
+			Log::error('Version not found: ' . $version);
+			
+			return ['error' => 'Version not found'];
+		}
+	}
+	
+	/**
+	 * Validates the format of a given username key by checking it against an external API.
+	 *
+	 * This method performs several checks to ensure the validity of the username key:
+	 * 1. Logs the method call.
+	 * 2. Ensures the global configuration is available.
+	 * 3. Retrieves the username key from the global configuration.
+	 * 4. Ensures the username key is not empty.
+	 * 5. Constructs the API URL using the username key.
+	 * 6. Fetches the API response.
+	 * 7. Decodes the JSON response.
+	 * 8. Validates the response data.
+	 *
+	 * @return bool True if the username key is valid, false otherwise.
+	 */
+	public function checkDownloadId(): bool
+	{
+		global $bearsamppConfig;
+		
+		Log::debug('checkDownloadId method called.');
+		
+		// Ensure the global config is available
+		if (!isset($bearsamppConfig)) {
+			Log::error('Global configuration is not set.');
+			
+			return false;
+		}
+		
+		$DownloadId = $bearsamppConfig->getDownloadId();
+		
+		// Ensure the license key is not empty
+		if (empty($DownloadId)) {
+			Log::error('License key is empty.');
+			
+			return false;
+		}
+		
+		$url = QUICKPICK_API_URL . QUICKPICK_API_KEY . '&download_id=' . $DownloadId;
+		// Never log the raw URL: it embeds both the API key and the per-user download ID.
+		Log::debug('Validating download ID via QuickPick API.');
+		
+		// Attempt to fetch the API response (verified TLS context)
+		// Note: If this fails, PHP will generate a warning which will be logged by the error handler
+		// This is expected behavior when the API server is unavailable
+		$response = file_get_contents($url, false, HttpClient::getSslStreamContext());
+		
+		// Check if the response is false
+		if ($response === false) {
+			Log::error('Failed to validate QuickPick license - API server unavailable');
+			
+			return false;
+		}
+		
+		Log::debug('API response: ' . $response);
+		
+		$data = json_decode($response, true);
+		
+		// Check if the JSON decoding was successful
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			Log::error('Error decoding JSON response: ' . json_last_error_msg());
+			
+			return false;
+		}
+		
+		// Validate the response data
+		if (isset($data['success']) && $data['success'] === true && isset($data['data']) && is_array($data['data']) && count($data['data']) > 0) {
+			Log::debug('License key valid: ' . $DownloadId);
+			
+			return true;
+		}
+		
+		Log::error('Invalid license key: ' . $DownloadId);
+		
+		return false;
+	}
+	
+	/**
+	 * Installs a specified module by fetching its URL and unzipping its contents.
+	 *
+	 * This method retrieves the URL of the specified module and version from the QuickPick JSON data.
+	 * If the URL is found, it fetches and unzips the module. If the URL is not found, it logs an error
+	 * and returns an error message.
+	 *
+	 * @param   string  $module   The name of the module to install.
+	 * @param   string  $version  The version of the module to install.
+	 *
+	 * @return array An array containing the status and message of the installation process.
+	 *               If successful, it returns the response from the fetchAndUnzipModule method.
+	 *               If unsuccessful, it returns an error message indicating the issue.
+	 */
+	public function installModule(string $module, string $version): array
+	{
+		// Find the module URL and module name from the data
+		$moduleUrl = $this->getModuleUrl($module, $version);
+		
+		if (is_array($moduleUrl) && isset($moduleUrl['error'])) {
+			Log::error('Module URL not found for module: ' . $module . ' version: ' . $version);
+			
+			return ['error' => 'Module URL not found'];
+		}
+		
+		if (empty($moduleUrl)) {
+			Log::error('Module URL not found for module: ' . $module . ' version: ' . $version);
+			
+			return ['error' => 'Module URL not found'];
+		}
+		
+		$state = HttpClient::checkInternetState();
+		if ($state) {
+			$response = $this->fetchAndUnzipModule($moduleUrl, $module);
+			Log::debug('Response is: ' . print_r($response, true));
+			
+			// Check if enhanced mode is enabled
+			global $bearsamppConfig;
+			$enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
+			
+			Log::debug('Enhanced mode: ' . ($enhancedMode ? 'enabled' : 'disabled'));
+			
+			// If installation was successful and enhanced mode is enabled, update config
+			if (isset($response['success']) && $enhancedMode == 1) {
+				// Step 1: Update config FIRST (so reload can pick up the new version)
+				Log::debug('Enhanced mode enabled - Updating config for module: ' . $module . ' version: ' . $version);
+				$configUpdated = $this->updateModuleConfig($module, $version);
+				
+				if ($configUpdated) {
+					// Step 2: Launch the reload action to apply the new version automatically.
+					// QuickPick runs in the AJAX/web context, where the winbinder GUI used by
+					// the reload action is unavailable, so we spawn it as a detached process
+					// (the same "php-win.exe root.php reload" command the tray menu runs). The
+					// reload restarts the database services so clients such as phpMyAdmin pick
+					// up the new version without the user having to reload manually.
+					Log::debug('Config updated successfully, launching reload to apply changes...');
+					
+					// Send progress update to user - flush output
+					if (ob_get_level() > 0) {
+						ob_flush();
+					}
+					echo json_encode(['phase' => 'updating', 'message' => 'Applying version changes...']) . PHP_EOL;
+					flush();
+					
+					// Clear caches before the reload runs so it reads fresh values from disk
+					Log::debug('Clearing caches before reload...');
+					CacheManager::clearAll();
+					
+					// Build and launch the reload command detached from this request.
+					// Leading "" is the (empty) window title required by cmd.exe "start".
+					$reloadCmd = '"" "' . Path::getPhpExe() . '" "'
+						. Path::getCorePath() . '/' . Core::isRoot_FILE . '" '
+						. Action::RELOAD;
+					Log::debug('Launching reload command: ' . $reloadCmd);
+					CommandRunner::background($reloadCmd);
+					
+					$response['reload_triggered'] = true;
+				} else {
+					Log::error('Config update failed for module: ' . $module);
+					$response['reload_triggered'] = false;
+				}
+			} else {
+				if (isset($response['success']) && $enhancedMode == 0) {
+					Log::debug('Enhanced mode disabled - skipping config update');
+					
+					// Even if not updating config, clear cache to be safe as new files were added
+					Log::debug('Clearing caches after module installation (Standard mode)...');
+					CacheManager::clearAll();
+				}
+			}
+			
+			return $response;
+		} else {
+			Log::error('No internet connection available.');
+			
+			return ['error' => 'No internet connection'];
+		}
+	}
+	
+	/**
+	 * Fetches the module URL and stores it in /tmp, then unzips the file based on its extension.
+	 *
+	 * @param   string  $moduleUrl  The URL of the module to fetch.
+	 * @param   string  $module     The name of the module.
+	 *
+	 * @return array An array containing the status and message.
+	 */
+	public function fetchAndUnzipModule(string $moduleUrl, string $module): array
+	{
+		Log::debug("$module is: " . $module);
+		
+		global $bearsamppRoot, $bearsamppCore;
+		$tmpDir = Path::getTmpPath();
+		Log::debug('Temporary Directory: ' . $tmpDir);
+		
+		$fileName = basename($moduleUrl);
+		Log::debug('File Name: ' . $fileName);
+		
+		$tmpFilePath = $tmpDir . '/' . $fileName;
+		Log::debug('File Path: ' . $tmpFilePath);
+		
+		// Strictly validate the archive extension BEFORE downloading, so we never fetch
+		// or unpack anything other than an allowed 7z/zip archive regardless of the URL.
+		if (!self::isAllowedArchive($fileName)) {
+			Log::error('Unsupported archive type rejected before download: ' . $fileName);
+			
+			return ['error' => 'Unsupported archive type'];
+		}
+		
+		$moduleName = str_replace('module-', '', $module);
+		Log::debug('Module Name: ' . $moduleName);
+		
+		// Find the correct module key by searching through the modules array
+		// This handles proper capitalization for all module types
+		$moduleKey = null;
+		foreach ($this->modules as $key => $moduleInfo) {
+			if (strtolower($key) === strtolower($moduleName)) {
+				$moduleKey = $key;
+				break;
+			}
+		}
+		
+		if (!$moduleKey) {
+			Log::error("Module not found in modules array: $moduleName");
+			
+			return ['error' => 'Module configuration not found'];
+		}
+		
+		$moduleType = $this->modules[$moduleKey]['type'];
+		Log::debug('Module Type: ' . $moduleType);
+		
+		// Get module type
+		$destination = $this->getModuleDestinationPath($moduleType, $moduleName);
+		Log::debug('Destination: ' . $destination);
+		
+		// Retrieve the file path from the URL via HttpClient's streaming download,
+		// passing the module URL and temporary file path, with the use Progress Bar parameter set to true.
+		$result = HttpClient::downloadFile($moduleUrl, $tmpFilePath, true);
+		
+		// Check if $result indicates an error (downloadFile returns ['error' => ...] on failure)
+		if (!is_array($result) || isset($result['error'])) {
+			Log::error('Failed to retrieve file from URL: ' . $moduleUrl);
+			@unlink($tmpFilePath);
+			
+			return ['error' => 'Failed to retrieve file from URL'];
+		}
+		
+		// Verify the downloaded archive against the SHA-256 sidecar published with the release.
+		// This guards against a tampered JSON, a bypassed/disabled TLS check, or a corrupted
+		// download, ensuring we never extract/modify an unverified archive.
+		if (!self::verifyModuleChecksum($moduleUrl, $tmpFilePath)) {
+			Log::error('SHA-256 checksum verification failed for module: ' . $module . ' (URL: ' . $moduleUrl . ')');
+			@unlink($tmpFilePath);
+			
+			return ['error' => 'Checksum verification failed. Download aborted. File: ' . basename($moduleUrl)];
+		}
+		
+		// Determine the file extension and call the appropriate unzipping function.
+		// Enforce the strict whitelist on the actual downloaded file as a second layer
+		// of defense, even though it was pre-validated before download.
+		if (!self::isAllowedArchive($tmpFilePath)) {
+			Log::error('Unsupported archive extension after download: ' . $tmpFilePath);
+			@unlink($tmpFilePath);
+			
+			return ['error' => 'Unsupported archive extension'];
+		}
+		
+		$fileExtension = strtolower(pathinfo($tmpFilePath, PATHINFO_EXTENSION));
+		Log::debug('File extension: ' . $fileExtension);
+		
+		if ($fileExtension === '7z' || $fileExtension === 'zip') {
+			echo json_encode(['phase' => 'extracting']) . PHP_EOL;
+			if (ob_get_length()) {
+				ob_flush();
+			}
+			flush();
+			
+			$unzipResult = $bearsamppCore->unzipFile($tmpFilePath, $destination, function ($currentPercentage) {
+				$progressStr = is_numeric($currentPercentage) ? "$currentPercentage%" : $currentPercentage;
+				echo json_encode(['progress' => $progressStr]) . PHP_EOL;
+				if (ob_get_length()) {
+					ob_flush();
+				}
+				flush();
+			});
+			
+			if ($unzipResult === false) {
+				return ['error' => 'Failed to unzip file. File: ' . $tmpFilePath . ' could not be unzipped', 'Destination: ' . $destination];
+			}
+		} else {
+			Log::error('Unsupported file extension: ' . $fileExtension);
+			
+			return ['error' => 'Unsupported file extension'];
+		}
+		
+		return ['success' => 'Module installed successfully'];
+	}
+	
+	/**
+	 * Verifies the SHA-256 checksum of a downloaded module archive.
+	 *
+	 * The expected hash is read from the `.sha256` sidecar published alongside the
+	 * release asset (e.g. `<archive>.7z.sha256`), fetched over a verified TLS context.
+	 * The archive is only considered valid if its computed hash matches exactly.
+	 *
+	 * @param   string  $moduleUrl    The URL the archive was downloaded from.
+	 * @param   string  $tmpFilePath  The local path of the downloaded archive.
+	 *
+	 * @return  bool                       True if the hash matches, false otherwise.
+	 */
+	private static function verifyModuleChecksum(string $moduleUrl, string $tmpFilePath): bool
+	{
+		if (!is_file($tmpFilePath)) {
+			Log::error('Checksum verify: downloaded file not found: ' . $tmpFilePath);
+			
+			return false;
+		}
+		
+		$expectedHash = self::fetchChecksumFromSidecar($moduleUrl);
+		if ($expectedHash === null) {
+			Log::error('Checksum verify: could not retrieve SHA-256 sidecar for: ' . $moduleUrl);
+			
+			return false;
+		}
+		
+		$actualHash = @hash_file('sha256', $tmpFilePath);
+		if ($actualHash === false) {
+			Log::error('Checksum verify: failed to hash local file: ' . $tmpFilePath);
+			
+			return false;
+		}
+		
+		if (!hash_equals($expectedHash, strtolower($actualHash))) {
+			Log::error(
+				'Checksum verify: mismatch for ' . basename($moduleUrl) .
+				' (expected ' . $expectedHash . ', got ' . $actualHash . ')'
+			);
+			
+			return false;
+		}
+		
+		Log::debug('Checksum verify: OK for ' . basename($moduleUrl));
+		
+		return true;
+	}
+	
+	/**
+	 * Fetches and parses the expected SHA-256 digest from the asset sidecar file.
+	 *
+	 * The sidecar URL is the module download URL with '.sha256' appended, and its
+	 * contents follow the standard "<hex-hash> <filename>" format. Only a full
+	 * 64-char lowercase hex digest is accepted.
+	 *
+	 * @param   string  $moduleUrl  The module download URL.
+	 *
+	 * @return  string|null             The expected SHA-256 hex digest, or null on failure.
+	 */
+	private static function fetchChecksumFromSidecar(string $moduleUrl): ?string
+	{
+		$sidecarUrl = $moduleUrl . '.sha256';
+		
+		// GitHub-hosted sidecars are fetched through the GitHub proxy; everything
+		// else uses the verified TLS stream context.
+		if (HttpClient::isGithubHost($sidecarUrl)) {
+			Log::trace('verifyModuleChecksum() fetching sidecar via GitHub proxy: ' . $sidecarUrl);
+			$result  = HttpClient::proxyFetch($sidecarUrl, 'GET', true);
+			$content = ($result === false) ? false : $result['body'];
+		} else {
+			$content = @file_get_contents($sidecarUrl, false, HttpClient::getSslStreamContext(true, $sidecarUrl));
+		}
+		
+		if ($content === false) {
+			Log::error('Checksum verify: sidecar fetch failed for: ' . $sidecarUrl);
+			
+			return null;
+		}
+		
+		if (preg_match('/\b([0-9a-f]{64})\b/i', $content, $match) !== 1) {
+			Log::error('Checksum verify: unexpected sidecar content for: ' . $sidecarUrl);
+			
+			return null;
+		}
+		
+		return strtolower($match[1]);
+	}
+	
+	/**
+	 * Checks whether a file path/name has an allowed archive extension.
+	 *
+	 * Only lowercase '.7z' and '.zip' are accepted. This is used both before
+	 * download (from the URL filename) and after download (from the actual file)
+	 * to strictly reject anything else.
+	 *
+	 * @param   string  $fileName  File name or path to validate.
+	 *
+	 * @return  bool               True if the extension is allowed.
+	 */
+	private static function isAllowedArchive(string $fileName): bool
+	{
+		if ($fileName === '' || $fileName === false) {
+			return false;
+		}
+		
+		$extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+		
+		return in_array($extension, self::$allowedArchiveExtensions, true);
+	}
+	
+	/**
+	 * Get the destination path for a given module type and name.
+	 *
+	 * This method constructs the destination path based on the type of module
+	 * (application, binary, or tools) and the module name. It utilizes the
+	 * `bearsamppRoot` global object to retrieve the base paths for each module type.
+	 *
+	 * @param   string  $moduleType  The type of the module ('application', 'binary', or 'tools').
+	 * @param   string  $moduleName  The name of the module.
+	 *
+	 * @return string The constructed destination path for the module.
+	 */
+	public function getModuleDestinationPath(string $moduleType, string $moduleName)
+	{
+		global $bearsamppRoot;
+		if ($moduleType === 'application') {
+			$destination = Path::getAppsPath() . '/' . strtolower($moduleName) . '/';
+		} elseif ($moduleType === 'binary') {
+			$destination = Path::getBinPath() . '/' . strtolower($moduleName) . '/';
+		} elseif ($moduleType === 'tools') {
+			$destination = Path::getToolsPath() . '/' . strtolower($moduleName) . '/';
+		} else {
+			$destination = '';
+		}
+		
+		return $destination;
+	}
+	
+	/**
+	 * Regenerates the bearsampp.ini menu file without VBS checks (AJAX-safe version).
+	 * This is a simplified version of TplApp::process() that avoids VBS errors in web context.
+	 *
+	 * @return string The generated INI content
+	 */
+	private function regenerateMenuSafe(): string
+	{
+		Log::debug('Regenerating menu (AJAX-safe mode)...');
+		
+		// Suppress errors temporarily during menu generation
+		$oldErrorReporting = error_reporting();
+		error_reporting($oldErrorReporting & ~E_WARNING);
+		
+		try {
+			// Generate the menu content
+			$menuContent = TplApp::process();
+			
+			// Restore error reporting
+			error_reporting($oldErrorReporting);
+			
+			Log::debug('Menu regenerated successfully');
+			
+			return $menuContent;
+		} catch (Exception $e) {
+			// Restore error reporting
+			error_reporting($oldErrorReporting);
+			
+			Log::warning('Error during menu regeneration: ' . $e->getMessage());
+			throw $e;
+		}
+	}
+	
+	/**
+	 * Updates the bearsampp.conf configuration file with the new module version.
+	 * This method handles all module types: binaries, apps, and tools.
+	 *
+	 * @param   string  $module   The name of the module (e.g., 'Apache', 'PhpMyAdmin', 'Git').
+	 * @param   string  $version  The version to set in the configuration.
+	 *
+	 * @return bool True if the configuration was updated successfully, false otherwise.
+	 */
+	private function updateModuleConfig(string $module, string $version): bool
+	{
+		try {
+			$bearsamppConfig = new Config();
+			
+			// Remove 'module-' prefix if present and normalize the module name
+			$moduleName = str_replace('module-', '', $module);
+			
+			// Find the correct module key by searching through the modules array
+			// This handles proper capitalization for all module types
+			$moduleKey = null;
+			foreach ($this->modules as $key => $moduleInfo) {
+				if (strtolower($key) === strtolower($moduleName)) {
+					$moduleKey = $key;
+					break;
+				}
+			}
+			
+			if (!$moduleKey) {
+				Log::error("Module not found in modules array: $moduleName");
+				
+				return false;
+			}
+			
+			$moduleType = $this->modules[$moduleKey]['type'];
+			
+			// Reject malformed version strings before they reach the config
+			// file (they later drive generated shell commands). This guards
+			// against a compromised or tampered releases feed.
+			if (preg_match('/^[0-9][0-9a-zA-Z.\-+]*$/', $version) !== 1) {
+				Log::error("Invalid version format for module: $module");
+				
+				return false;
+			}
+			
+			// Map module names to their config section names
+			// For all types, use the lowercase name for the config key
+			$configSection = strtolower($moduleKey);
+			
+			Log::debug("Updating config for module: $module (key: $moduleKey, type: $moduleType) to version: $version");
+			Log::debug("Config section: $configSection");
+			
+			// Update the configuration file
+			// The Config class expects a flat key like "nodejsVersion" not a section
+			$configKey = $configSection . 'Version';
+			$bearsamppConfig->replace($configKey, $version);
+			
+			Log::info("Successfully updated $configSection version to $version in bearsampp.conf");
+			
+			return true;
+		} catch (Exception $e) {
+			Log::error("Failed to update module config: " . $e->getMessage());
+			
+			return false;
+		}
+	}
+	
+	/**
+	 * Generates an error modal for configuration validation failures.
+	 *
+	 * @param   string  $errorMessage  The error message to display.
+	 *
+	 * @return string The HTML content of the error modal.
+	 */
+	public function getErrorModal(string $errorMessage): string
+	{
+		ob_start();
+		?>
+		<div id = "configErrorContainer" class = "text-center mt-3 pe-3">
+			<div class = "alert alert-danger d-inline-block" role = "alert" style = "max-width: 500px;">
+				<h4 class = "alert-heading">
+					<i class = "fas fa-exclamation-circle"></i> Configuration Error
+				</h4>
+				<hr>
+				<p class = "mb-0">
+					<?php
+					echo htmlspecialchars($errorMessage); ?>
+				</p>
+				<hr>
+				<small class = "text-muted">
+					Please add the missing parameter to the <code>bearsampp.conf</code> file in the Bearsampp root directory.
+				</small>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+	
+	/**
+	 * Generates the HTML content for the QuickPick menu.
+	 *
+	 * This method creates the HTML structure for the QuickPick interface, including a dropdown
+	 * for selecting modules and their respective versions. It checks if the license key is valid
+	 * before displaying the modules. If the license key is invalid, it displays a subscription prompt.
+	 * If there is no internet connection, it displays a message indicating the lack of internet.
+	 *
+	 * @param   array   $modules     An array of available modules.
+	 * @param   array   $versions    An associative array where the key is the module name and the value is an array containing the module versions.
+	 * @param   string  $imagesPath  The path to the images directory.
+	 *
+	 * @return string The HTML content of the QuickPick menu.
+	 */
+	public function getQuickpickMenu(array $modules, array $versions, string $imagesPath): string
+	{
+		global $bearsamppConfig;
+		$includePr    = $bearsamppConfig->getIncludePr();
+		$enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
+		
+		ob_start();
+		if (HttpClient::checkInternetState()) {
+			// Check if the license key is valid
+			if ($this->checkDownloadId()): ?>
+				<div class = "enhanced-mode-toggle">
+					<label class = "form-check-label me-2" for = "enhancedQuickPickSwitch">
+						Enhanced Mode
+					</label>
+					<div class = "form-check form-switch mb-0">
+						<input class = "form-check-input" type = "checkbox" role = "switch" id = "enhancedQuickPickSwitch"
+							<?php
+							echo $enhancedMode == 1 ? 'checked' : ''; ?>
+							   data-bs-toggle = "tooltip" data-bs-placement = "bottom"
+							   title = "Toggle between enhanced (auto-config update) and standard QuickPick mode">
+					</div>
+				</div>
+				<div id = 'quickPickContainer'>
+					<div class = 'quickpick'>
+						
+						<div class = "custom-select">
+							<button class = "select-button" role = "combobox"
+							        aria-label = "select button"
+							        aria-haspopup = "listbox"
+							        aria-expanded = "false"
+							        aria-controls = "select-dropdown">
+								<span class = "selected-value">Select a module and version</span>
+								<span class = "arrow"></span>
+							</button>
+							<ul class = "select-dropdown" role = "listbox" id = "select-dropdown">
+								
+								<?php
+								foreach ($modules as $module): ?>
+									<?php
+									if (is_string($module)): ?>
+										<li role = "option" class = "moduleheader">
+											<?php
+											echo htmlspecialchars($module); ?>
+										</li>
+										
+										<?php
+										foreach ($versions['module-' . strtolower($module)] as $version_array):
+											// Skip prerelease versions if includePr is not enabled
+											if (isset($version_array['prerelease']) && $version_array['prerelease'] === true && $includePr != 1) {
+												continue;
+											}
+											?>
+											<li role = "option" class = "moduleoption"
+											    id = "<?php
+											    echo htmlspecialchars($module); ?>-version-<?php
+											    echo htmlspecialchars($version_array['version']); ?>-li"
+											    data-module = "<?php
+											    echo htmlspecialchars($module); ?>"
+											    data-value = "<?php
+											    echo htmlspecialchars($version_array['version']); ?>">
+												<input type = "radio"
+												       id = "<?php
+												       echo htmlspecialchars($module); ?>-version-<?php
+												       echo htmlspecialchars($version_array['version']); ?>"
+												       name = "module" data-module = "<?php
+												echo htmlspecialchars($module); ?>"
+												       data-value = "<?php
+												       echo htmlspecialchars($version_array['version']); ?>">
+												<label
+													for = "<?php
+													echo htmlspecialchars($module); ?>-version-<?php
+													echo htmlspecialchars($version_array['version']); ?>"><?php
+													echo $this->formatVersionLabel(
+														$version_array['version'],
+														isset($version_array['prerelease']) && $version_array['prerelease'] === true
+													); ?></label>
+											</li>
+										<?php
+										endforeach; ?>
+									<?php
+									endif; ?>
+								<?php
+								endforeach; ?>
+							</ul>
+						</div>
+					</div>
+					<div class = "progress " id = "progress" tabindex = "-1" style = "width:260px;display:none"
+					     aria-labelledby = "progressbar" aria-hidden = "true">
+						<div class = "progress-bar progress-bar-striped progress-bar-animated" id = "progress-bar" role = "progressbar" aria-valuenow = "0" aria-valuemin = "0"
+						     aria-valuemax = "100" data-module = "Module"
+						     data-version = "0.0.0">0%
+						</div>
+						<div id = "download-module" style = "display: none">ModuleName</div>
+						<div id = "download-version" style = "display: none">Version</div>
+					</div>
+				</div>
+			<?php
+			else: ?>
+				<div id = "subscribeContainer" class = "text-center">
+					<a href = "<?php
+					echo HttpClient::getWebsiteUrl('subscribe'); ?>" class = "btn btn-dark d-inline-flex align-items-center">
+						<img src = "<?php
+						echo $imagesPath . 'subscribe.svg'; ?>" alt = "Subscribe Icon" class = "me-2">
+						Subscribe to QuickPick now
+					</a>
+				</div>
+			<?php
+			endif;
+		} else {
+			?>
+			<div id = "InternetState" class = "text-center">
+				<img src = "<?php
+				echo $imagesPath . 'no-wifi-icon.svg'; ?>" alt = "No Wifi Icon" class = "me-2">
+				<span>No internet present</span>
+			</div>
+			<?php
+		}
+		
+		return ob_get_clean();
+	}
 }

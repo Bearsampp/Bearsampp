@@ -48,7 +48,7 @@ class ActionChangePort
     {
         global $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
 
-        if ( isset( $args[0] ) && !empty( $args[0] ) ) {
+        if (isset($args[0]) && !empty($args[0])) {
             $bin = $bearsamppBins->getBinByName($args[0]);
             if ($bin !== null) {
                 $this->bin = $bin;
@@ -57,28 +57,37 @@ class ActionChangePort
                     ? $bin->getSmtpPort()
                     : $bin->getPort();
             } else {
-                $this->bin         = $bearsamppBins->getApache();
+                $this->bin = $bearsamppBins->getApache();
                 $this->currentPort = $bearsamppBins->getApache()->getPort();
             }
             $this->cntProcessActions = 3;
 
             $bearsamppWinbinder->reset();
-            $this->wbWindow = $bearsamppWinbinder->createAppWindow( sprintf( $bearsamppLang->getValue( Lang::CHANGE_PORT_TITLE ), $args[0] ), 380, 170, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP );
+            $this->wbWindow = $bearsamppWinbinder->createAppWindow(
+                sprintf($bearsamppLang->getValue(Lang::CHANGE_PORT_TITLE), $args[0]),
+                380,
+                170,
+                WBC_NOTIFY,
+                WBC_KEYDOWN | WBC_KEYUP
+            );
 
             $this->wbLabelCurrent = $bearsamppWinbinder->createLabel(
                 $this->wbWindow,
-                sprintf( $bearsamppLang->getValue( Lang::CHANGE_PORT_CURRENT_LABEL ), $args[0], $this->currentPort ), 15, 15, 350
+                sprintf($bearsamppLang->getValue(Lang::CHANGE_PORT_CURRENT_LABEL), $args[0], $this->currentPort),
+                15,
+                15,
+                350
             );
 
-            $this->wbLabelPort = $bearsamppWinbinder->createLabel( $this->wbWindow, $bearsamppLang->getValue( Lang::CHANGE_PORT_NEW_LABEL ) . ' :', 15, 45, 85, null, WBC_RIGHT );
-            $this->wbInputPort = $bearsamppWinbinder->createInputText( $this->wbWindow, $this->currentPort, 105, 43, 50, null, 5, WBC_NUMBER );
+            $this->wbLabelPort = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::CHANGE_PORT_NEW_LABEL) . ' :', 15, 45, 85, null, WBC_RIGHT);
+            $this->wbInputPort = $bearsamppWinbinder->createInputText($this->wbWindow, $this->currentPort, 105, 43, 50, null, 5, WBC_NUMBER);
 
-            $this->wbProgressBar = $bearsamppWinbinder->createProgressBar( $this->wbWindow, $this->cntProcessActions + 1, 15, 107, 170 );
-            $this->wbBtnFinish   = $bearsamppWinbinder->createButton( $this->wbWindow, $bearsamppLang->getValue( Lang::BUTTON_FINISH ), 190, 102 );
-            $this->wbBtnCancel   = $bearsamppWinbinder->createButton( $this->wbWindow, $bearsamppLang->getValue( Lang::BUTTON_CANCEL ), 277, 102 );
+            $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, $this->cntProcessActions + 1, 15, 107, 170);
+            $this->wbBtnFinish   = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_FINISH), 190, 102);
+            $this->wbBtnCancel   = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_CANCEL), 277, 102);
 
-            $bearsamppWinbinder->setHandler( $this->wbWindow, $this, 'processWindow' );
-            $bearsamppWinbinder->setFocus( $this->wbInputPort[WinBinder::CTRL_OBJ] );
+            $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
+            $bearsamppWinbinder->setFocus($this->wbInputPort[WinBinder::CTRL_OBJ]);
             $bearsamppWinbinder->mainLoop();
             $bearsamppWinbinder->reset();
         }
@@ -96,22 +105,22 @@ class ActionChangePort
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppLang, $bearsamppWinbinder;
-        $boxTitle = sprintf( $bearsamppLang->getValue( Lang::CHANGE_PORT_TITLE ), $this->bin );
-        $port     = $bearsamppWinbinder->getText( $this->wbInputPort[WinBinder::CTRL_OBJ] );
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHANGE_PORT_TITLE), $this->bin);
+        $port     = $bearsamppWinbinder->getText($this->wbInputPort[WinBinder::CTRL_OBJ]);
 
-        switch ( $id ) {
+        switch ($id) {
             case $this->wbInputPort[WinBinder::CTRL_ID]:
-                $bearsamppWinbinder->setEnabled( $this->wbBtnFinish[WinBinder::CTRL_OBJ], empty( $port ) ? false : true );
+                $bearsamppWinbinder->setEnabled($this->wbBtnFinish[WinBinder::CTRL_OBJ], empty($port) ? false : true);
                 break;
             case $this->wbBtnFinish[WinBinder::CTRL_ID]:
-                $bearsamppWinbinder->incrProgressBar( $this->wbProgressBar );
-                if ( $port == $this->currentPort ) {
-                    $bearsamppWinbinder->messageBoxWarning( $bearsamppLang->getValue( Lang::CHANGE_PORT_SAME_ERROR ), $boxTitle );
-                    $bearsamppWinbinder->resetProgressBar( $this->wbProgressBar );
+                $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
+                if ($port == $this->currentPort) {
+                    $bearsamppWinbinder->messageBoxWarning($bearsamppLang->getValue(Lang::CHANGE_PORT_SAME_ERROR), $boxTitle);
+                    $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                     break;
                 }
-                $changePort = $this->bin->changePort( $port, true, $this->wbProgressBar );
-                if ( $changePort === true ) {
+                $changePort = $this->bin->changePort($port, true, $this->wbProgressBar);
+                if ($changePort === true) {
                     Util::updateLoadingText('Restarting ' . $this->bin->getName() . '...');
                     $this->bin->getService()->restart();
 
@@ -122,22 +131,21 @@ class ActionChangePort
                     }
 
                     $bearsamppWinbinder->messageBoxInfo(
-                        sprintf( $bearsamppLang->getValue( Lang::PORT_CHANGED ), $this->bin, $port ),
+                        sprintf($bearsamppLang->getValue(Lang::PORT_CHANGED), $this->bin, $port),
                         $boxTitle
                     );
-                    $bearsamppWinbinder->destroyWindow( $window );
-                }
-                else {
+                    $bearsamppWinbinder->destroyWindow($window);
+                } else {
                     $bearsamppWinbinder->messageBoxError(
-                        sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED_BY ), $port, $changePort ),
+                        sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port, $changePort),
                         $boxTitle
                     );
-                    $bearsamppWinbinder->resetProgressBar( $this->wbProgressBar );
+                    $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
                 }
                 break;
             case IDCLOSE:
             case $this->wbBtnCancel[WinBinder::CTRL_ID]:
-                $bearsamppWinbinder->destroyWindow( $window );
+                $bearsamppWinbinder->destroyWindow($window);
                 break;
         }
     }

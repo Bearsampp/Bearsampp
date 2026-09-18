@@ -30,9 +30,9 @@ class ActionCheckPort
         global $bearsamppBins;
 
         // Check if the required arguments are provided and not empty
-        if ( isset( $args[0] ) && !empty( $args[0] ) && isset( $args[1] ) && !empty( $args[1] ) ) {
+        if (isset($args[0]) && !empty($args[0]) && isset($args[1]) && !empty($args[1])) {
             // Determine if SSL is to be used
-            $ssl = isset( $args[2] ) && !empty( $args[2] );
+            $ssl = isset($args[2]) && !empty($args[2]);
 
             $bin = $bearsamppBins->getBinByName($args[0]);
             if ($bin !== null) {

@@ -43,13 +43,13 @@ class ActionGenSslCertificate
      *
      * Initializes the WinBinder window and its controls, sets up event handlers, and starts the main loop.
      *
-     * @param array $args Command line arguments passed to the script.
+     * @param   array  $args  Command line arguments passed to the script.
      */
     public function __construct($args)
     {
         global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
 
-        $initServerName = 'test.local';
+        $initServerName   = 'test.local';
         $initDocumentRoot = Path::formatWindowsPath(Path::getSslPath());
 
         $bearsamppWinbinder->reset();
@@ -60,11 +60,11 @@ class ActionGenSslCertificate
 
         $this->wbLabelDest = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::TARGET) . ' :', 15, 45, 85, null, WBC_RIGHT);
         $this->wbInputDest = $bearsamppWinbinder->createInputText($this->wbWindow, $initDocumentRoot, 105, 43, 190, null, null, WBC_READONLY);
-        $this->wbBtnDest = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_BROWSE), 300, 43, 110);
+        $this->wbBtnDest   = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_BROWSE), 300, 43, 110);
 
         $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, self::GAUGE_SAVE + 1, 15, 97, 275);
-        $this->wbBtnSave = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_SAVE), 300, 92);
-        $this->wbBtnCancel = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_CANCEL), 387, 92);
+        $this->wbBtnSave     = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_SAVE), 300, 92);
+        $this->wbBtnCancel   = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_CANCEL), 387, 92);
 
         $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
         $bearsamppWinbinder->mainLoop();
@@ -77,17 +77,17 @@ class ActionGenSslCertificate
      * Handles button clicks and other window events, such as browsing for a directory,
      * saving the SSL certificate, and closing the window.
      *
-     * @param resource $window The window resource.
-     * @param int $id The control ID that triggered the event.
-     * @param resource $ctrl The control resource that triggered the event.
-     * @param mixed $param1 Additional parameter 1.
-     * @param mixed $param2 Additional parameter 2.
+     * @param   resource  $window  The window resource.
+     * @param   int       $id      The control ID that triggered the event.
+     * @param   resource  $ctrl    The control resource that triggered the event.
+     * @param   mixed     $param1  Additional parameter 1.
+     * @param   mixed     $param2  Additional parameter 2.
      */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppLang, $bearsamppOpenSsl, $bearsamppWinbinder;
 
-        $name = $bearsamppWinbinder->getText($this->wbInputName[WinBinder::CTRL_OBJ]);
+        $name   = $bearsamppWinbinder->getText($this->wbInputName[WinBinder::CTRL_OBJ]);
         $target = $bearsamppWinbinder->getText($this->wbInputDest[WinBinder::CTRL_OBJ]);
 
         switch ($id) {
@@ -105,8 +105,9 @@ class ActionGenSslCertificate
                 if ($bearsamppOpenSsl->createCrt($name, $target)) {
                     $bearsamppWinbinder->incrProgressBar($this->wbProgressBar);
                     $bearsamppWinbinder->messageBoxInfo(
-                            sprintf($bearsamppLang->getValue(Lang::GENSSL_CREATED), $name),
-                            $bearsamppLang->getValue(Lang::GENSSL_TITLE));
+                        sprintf($bearsamppLang->getValue(Lang::GENSSL_CREATED), $name),
+                        $bearsamppLang->getValue(Lang::GENSSL_TITLE)
+                    );
                     $bearsamppWinbinder->destroyWindow($window);
                 } else {
                     $bearsamppWinbinder->messageBoxError($bearsamppLang->getValue(Lang::GENSSL_CREATED_ERROR), $bearsamppLang->getValue(Lang::GENSSL_TITLE));

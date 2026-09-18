@@ -34,10 +34,10 @@ class TplAppMysql
      *
      * This method generates the MySQL menu and determines if MySQL is enabled.
      *
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @return array The generated MySQL menu.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @return array The generated MySQL menu.
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      */
     public static function process()
     {
@@ -52,11 +52,11 @@ class TplAppMysql
      * This method creates menu items and actions for MySQL, including download links, enabling/disabling,
      * version switching, service management, debugging, and configuration file access.
      *
-     * @global object $bearsamppBins Provides access to system binaries and their configurations.
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @return string The generated MySQL menu items and actions.
+     * @global object $bearsamppLang  Provides language support for retrieving language-specific values.
      * @global object $bearsamppTools Provides access to various tools used in the application.
      *
-     * @return string The generated MySQL menu items and actions.
+     * @global object $bearsamppBins  Provides access to system binaries and their configurations.
      */
     public static function getMenuMysql()
     {
@@ -66,48 +66,51 @@ class TplAppMysql
         $isEnabled = $bearsamppBins->getMysql()->isEnable();
 
         // Download
-        $resultItems .= TplAestan::getItemLink( $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
-            HttpClient::getWebsiteUrl('module/mysql', '#releases'),
-            false,
-            TplAestan::GLYPH_BROWSER
-        ) . PHP_EOL;
+        $resultItems .= TplAestan::getItemLink(
+                $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
+                HttpClient::getWebsiteUrl('module/mysql', '#releases'),
+                false,
+                TplAestan::GLYPH_BROWSER
+            ) . PHP_EOL;
 
         // Enable
-        $tplEnable = TplApp::getActionMulti(
-            self::ACTION_ENABLE, array($isEnabled ? Config::DISABLED : Config::ENABLED),
+        $tplEnable     = TplApp::getActionMulti(
+            self::ACTION_ENABLE,
+            array($isEnabled ? Config::DISABLED : Config::ENABLED),
             array($bearsamppLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
-        $resultItems .= $tplEnable[TplApp::SECTION_CALL] . PHP_EOL;
+        $resultItems   .= $tplEnable[TplApp::SECTION_CALL] . PHP_EOL;
         $resultActions .= $tplEnable[TplApp::SECTION_CONTENT] . PHP_EOL;
 
         if ($isEnabled) {
             $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
             // Versions
-            $tplVersions = TplApp::getMenu($bearsamppLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
-            $resultItems .= $tplVersions[TplApp::SECTION_CALL] . PHP_EOL;
+            $tplVersions   = TplApp::getMenu($bearsamppLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
+            $resultItems   .= $tplVersions[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplVersions[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Service
-            $tplService = TplApp::getMenu($bearsamppLang->getValue(Lang::SERVICE), self::MENU_SERVICE, get_called_class());
-            $resultItems .= $tplService[TplApp::SECTION_CALL] . PHP_EOL;
+            $tplService    = TplApp::getMenu($bearsamppLang->getValue(Lang::SERVICE), self::MENU_SERVICE, get_called_class());
+            $resultItems   .= $tplService[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplService[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Debug
-            $tplDebug = TplApp::getMenu($bearsamppLang->getValue(Lang::DEBUG), self::MENU_DEBUG, get_called_class());
-            $resultItems .= $tplDebug[TplApp::SECTION_CALL] . PHP_EOL;
+            $tplDebug      = TplApp::getMenu($bearsamppLang->getValue(Lang::DEBUG), self::MENU_DEBUG, get_called_class());
+            $resultItems   .= $tplDebug[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplDebug[TplApp::SECTION_CONTENT];
 
             // Console
             $resultItems .= TplAestan::getItemPowerShell(
-                $bearsamppLang->getValue(Lang::CONSOLE),
-                TplAestan::GLYPH_POWERSHELL,
-                null,
-                $bearsamppTools->getPowerShell()->getTabTitleMysql(),
-                Path::getModuleSymlinkPath($bearsamppBins->getMysql()),
-                null
-            ) . PHP_EOL;
+                    $bearsamppLang->getValue(Lang::CONSOLE),
+                    TplAestan::GLYPH_POWERSHELL,
+                    null,
+                    $bearsamppTools->getPowerShell()->getTabTitleMysql(),
+                    Path::getModuleSymlinkPath($bearsamppBins->getMysql()),
+                    null
+                ) . PHP_EOL;
 
             // Conf
             $resultItems .= TplAestan::getItemNotepad(basename($bearsamppBins->getMysql()->getConf()), $bearsamppBins->getMysql()->getConf()) . PHP_EOL;
@@ -124,21 +127,23 @@ class TplAppMysql
      *
      * This method creates menu items and actions for switching between different MySQL versions.
      *
+     * @return string The generated MySQL versions menu items and actions.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @return string The generated MySQL versions menu items and actions.
      */
     public static function getMenuMysqlVersions()
     {
         global $bearsamppBins;
-        $items = '';
+        $items   = '';
         $actions = '';
 
         foreach ($bearsamppBins->getMysql()->getVersionList() as $version) {
             $tplSwitchMysqlVersion = TplApp::getActionMulti(
-                self::ACTION_SWITCH_VERSION, array($version),
+                self::ACTION_SWITCH_VERSION,
+                array($version),
                 array($version, $version == $bearsamppBins->getMysql()->getVersion() ? TplAestan::GLYPH_CHECK : ''),
-                false, get_called_class()
+                false,
+                get_called_class()
             );
 
             // Item
@@ -156,10 +161,11 @@ class TplAppMysql
      *
      * This method creates the action string for enabling or disabling MySQL.
      *
+     * @param   int   $enable        The enable/disable flag (1 for enable, 0 for disable).
+     *
+     * @return string The generated action string for enabling/disabling MySQL.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @param int $enable The enable/disable flag (1 for enable, 0 for disable).
-     * @return string The generated action string for enabling/disabling MySQL.
      */
     public static function getActionEnableMysql($enable)
     {
@@ -174,10 +180,11 @@ class TplAppMysql
      *
      * This method creates the action string for switching to a different MySQL version.
      *
-     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     * @param   string  $version       The version to switch to.
      *
-     * @param string $version The version to switch to.
      * @return string The generated action string for switching MySQL version.
+     * @global object   $bearsamppBins Provides access to system binaries and their configurations.
+     *
      */
     public static function getActionSwitchMysqlVersion($version)
     {
@@ -193,19 +200,21 @@ class TplAppMysql
      * This method creates menu items and actions for managing MySQL services, including starting, stopping,
      * restarting, changing ports, and managing root passwords.
      *
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @return string The generated MySQL service menu items and actions.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @return string The generated MySQL service menu items and actions.
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      */
     public static function getMenuMysqlService()
     {
         global $bearsamppLang, $bearsamppBins;
 
         $tplChangePort = TplApp::getActionMulti(
-            self::ACTION_CHANGE_PORT, null,
+            self::ACTION_CHANGE_PORT,
+            null,
             array($bearsamppLang->getValue(Lang::MENU_CHANGE_PORT), TplAestan::GLYPH_NETWORK),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
 
         $isInstalled = $bearsamppBins->getMysql()->getService()->isInstalled();
@@ -215,7 +224,8 @@ class TplAppMysql
             TplAestan::getItemActionServiceRestart($bearsamppBins->getMysql()->getService()->getName()) . PHP_EOL .
             TplAestan::getItemSeparator() . PHP_EOL .
             TplApp::getActionRun(
-                Action::CHECK_PORT, array($bearsamppBins->getMysql()->getName(), $bearsamppBins->getMysql()->getPort()),
+                Action::CHECK_PORT,
+                array($bearsamppBins->getMysql()->getName(), $bearsamppBins->getMysql()->getPort()),
                 array(sprintf($bearsamppLang->getValue(Lang::MENU_CHECK_PORT), $bearsamppBins->getMysql()->getPort()), TplAestan::GLYPH_LIGHT)
             ) . PHP_EOL .
             $tplChangePort[TplApp::SECTION_CALL] . PHP_EOL;
@@ -223,9 +233,11 @@ class TplAppMysql
         $tplChangeRootPwd = null;
         if ($isInstalled) {
             $tplChangeRootPwd = TplApp::getActionMulti(
-                self::ACTION_CHANGE_ROOT_PWD, null,
+                self::ACTION_CHANGE_ROOT_PWD,
+                null,
                 array($bearsamppLang->getValue(Lang::MENU_CHANGE_ROOT_PWD), TplAestan::GLYPH_PASSWORD),
-                !$isInstalled, get_called_class()
+                !$isInstalled,
+                get_called_class()
             );
 
             $result .= $tplChangeRootPwd[TplApp::SECTION_CALL] . PHP_EOL;
@@ -233,22 +245,26 @@ class TplAppMysql
 
         if (!$isInstalled) {
             $tplInstallService = TplApp::getActionMulti(
-                self::ACTION_INSTALL_SERVICE, null,
+                self::ACTION_INSTALL_SERVICE,
+                null,
                 array($bearsamppLang->getValue(Lang::MENU_INSTALL_SERVICE), TplAestan::GLYPH_SERVICE_INSTALL),
-                $isInstalled, get_called_class()
+                $isInstalled,
+                get_called_class()
             );
 
             $result .= $tplInstallService[TplApp::SECTION_CALL] . PHP_EOL . PHP_EOL .
-            $tplInstallService[TplApp::SECTION_CONTENT] . PHP_EOL;
+                $tplInstallService[TplApp::SECTION_CONTENT] . PHP_EOL;
         } else {
             $tplRemoveService = TplApp::getActionMulti(
-                self::ACTION_REMOVE_SERVICE, null,
+                self::ACTION_REMOVE_SERVICE,
+                null,
                 array($bearsamppLang->getValue(Lang::MENU_REMOVE_SERVICE), TplAestan::GLYPH_SERVICE_REMOVE),
-                !$isInstalled, get_called_class()
+                !$isInstalled,
+                get_called_class()
             );
 
             $result .= $tplRemoveService[TplApp::SECTION_CALL] . PHP_EOL . PHP_EOL .
-            $tplRemoveService[TplApp::SECTION_CONTENT] . PHP_EOL;
+                $tplRemoveService[TplApp::SECTION_CONTENT] . PHP_EOL;
         }
 
         $result .= $tplChangePort[TplApp::SECTION_CONTENT] . PHP_EOL .
@@ -263,26 +279,29 @@ class TplAppMysql
      * This method creates menu items and actions for debugging MySQL, including checking version,
      * variables, and syntax.
      *
+     * @return string The generated MySQL debug menu items and actions.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return string The generated MySQL debug menu items and actions.
      */
     public static function getMenuMysqlDebug()
     {
         global $bearsamppLang;
 
         return TplApp::getActionRun(
-            Action::DEBUG_MYSQL, array(BinMysql::CMD_VERSION),
-            array($bearsamppLang->getValue(Lang::DEBUG_MYSQL_VERSION), TplAestan::GLYPH_DEBUG)
-        ) . PHP_EOL .
-        TplApp::getActionRun(
-            Action::DEBUG_MYSQL, array(BinMysql::CMD_VARIABLES),
-            array($bearsamppLang->getValue(Lang::DEBUG_MYSQL_VARIABLES), TplAestan::GLYPH_DEBUG)
-        ) . PHP_EOL .
-        TplApp::getActionRun(
-            Action::DEBUG_MYSQL, array(BinMysql::CMD_SYNTAX_CHECK),
-            array($bearsamppLang->getValue(Lang::DEBUG_MYSQL_SYNTAX_CHECK), TplAestan::GLYPH_DEBUG)
-        ) . PHP_EOL;
+                Action::DEBUG_MYSQL,
+                array(BinMysql::CMD_VERSION),
+                array($bearsamppLang->getValue(Lang::DEBUG_MYSQL_VERSION), TplAestan::GLYPH_DEBUG)
+            ) . PHP_EOL .
+            TplApp::getActionRun(
+                Action::DEBUG_MYSQL,
+                array(BinMysql::CMD_VARIABLES),
+                array($bearsamppLang->getValue(Lang::DEBUG_MYSQL_VARIABLES), TplAestan::GLYPH_DEBUG)
+            ) . PHP_EOL .
+            TplApp::getActionRun(
+                Action::DEBUG_MYSQL,
+                array(BinMysql::CMD_SYNTAX_CHECK),
+                array($bearsamppLang->getValue(Lang::DEBUG_MYSQL_SYNTAX_CHECK), TplAestan::GLYPH_DEBUG)
+            ) . PHP_EOL;
     }
 
     /**
@@ -290,9 +309,9 @@ class TplAppMysql
      *
      * This method creates the action string for changing the MySQL port.
      *
+     * @return string The generated action string for changing MySQL port.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @return string The generated action string for changing MySQL port.
      */
     public static function getActionChangeMysqlPort()
     {
@@ -307,9 +326,9 @@ class TplAppMysql
      *
      * This method creates the action string for changing the MySQL root password.
      *
+     * @return string The generated action string for changing MySQL root password.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @return string The generated action string for changing MySQL root password.
      */
     public static function getActionChangeMysqlRootPwd()
     {

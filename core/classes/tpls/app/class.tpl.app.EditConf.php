@@ -21,18 +21,18 @@ class TplAppEditConf
      * This method generates a Notepad item string that allows the user to edit the `bearsampp.conf` file.
      * It utilizes global variables to access language settings and the root path of the application.
      *
-     * @global LangProc $bearsamppLang The language processor for retrieving localized strings.
-     * @global Root $bearsamppRoot The root object for accessing application paths.
      * @return string The Notepad item string for editing the configuration file.
+     * @global Root     $bearsamppRoot The root object for accessing application paths.
+     * @global LangProc $bearsamppLang The language processor for retrieving localized strings.
      */
     public static function process()
     {
         global $bearsamppLang, $bearsamppRoot;
 
         return TplAestan::getItemNotepad(
-            sprintf($bearsamppLang->getValue(Lang::MENU_EDIT_CONF), "bearsampp.conf"),
-            Path::getConfigFilePath()
-        ) . PHP_EOL;
+                sprintf($bearsamppLang->getValue(Lang::MENU_EDIT_CONF), "bearsampp.conf"),
+                Path::getConfigFilePath()
+            ) . PHP_EOL;
     }
 }
 

@@ -45,10 +45,11 @@ class ToolRuby extends Module
     /**
      * Constructor for the ToolRuby class.
      *
-     * @param string $id The ID of the module.
-     * @param string $type The type of the module.
+     * @param   string  $id    The ID of the module.
+     * @param   string  $type  The type of the module.
      */
-    public function __construct($id, $type) {
+    public function __construct($id, $type)
+    {
         Log::initClass($this);
         $this->reload($id, $type);
     }
@@ -56,24 +57,26 @@ class ToolRuby extends Module
     /**
      * Reloads the Ruby tool configuration based on the provided ID and type.
      *
-     * @param string|null $id The ID of the module. If null, the current ID is used.
-     * @param string|null $type The type of the module. If null, the current type is used.
+     * @param   string|null  $id    The ID of the module. If null, the current ID is used.
+     * @param   string|null  $type  The type of the module. If null, the current type is used.
      */
-    public function reload($id = null, $type = null) {
+    public function reload($id = null, $type = null)
+    {
         global $bearsamppConfig, $bearsamppLang;
         Log::reloadClass($this);
 
-        $this->name = $bearsamppLang->getValue(Lang::RUBY);
+        $this->name    = $bearsamppLang->getValue(Lang::RUBY);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
         if ($this->bearsamppConfRaw !== false) {
-            $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
+            $this->exe        = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->consoleExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONSOLE_EXE];
         }
 
         if (!$this->enable) {
             Log::info($this->name . ' is not enabled!');
+
             return;
         }
         if (!is_dir($this->currentPath)) {
@@ -81,6 +84,7 @@ class ToolRuby extends Module
         }
         if (!is_dir($this->symlinkPath)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+
             return;
         }
         if (!is_file($this->bearsamppConf)) {
@@ -97,9 +101,10 @@ class ToolRuby extends Module
     /**
      * Sets the version of the Ruby tool and reloads the configuration.
      *
-     * @param string $version The version to set.
+     * @param   string  $version  The version to set.
      */
-    public function setVersion($version) {
+    public function setVersion($version)
+    {
         global $bearsamppConfig;
         $this->version = $version;
         $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
@@ -111,7 +116,8 @@ class ToolRuby extends Module
      *
      * @return string The path to the Ruby executable.
      */
-    public function getExe() {
+    public function getExe()
+    {
         return $this->exe;
     }
 
@@ -120,7 +126,8 @@ class ToolRuby extends Module
      *
      * @return string The path to the Ruby console executable.
      */
-    public function getConsoleExe() {
+    public function getConsoleExe()
+    {
         return $this->consoleExe;
     }
 }

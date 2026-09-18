@@ -38,8 +38,9 @@ class ModuleLoader
     /**
      * Load a module synchronously (blocking)
      *
-     * @param string $module Module name
-     * @param callable $loader Callback that loads the module
+     * @param   string    $module  Module name
+     * @param   callable  $loader  Callback that loads the module
+     *
      * @return void
      */
     public static function loadSync($module, callable $loader)
@@ -55,8 +56,9 @@ class ModuleLoader
     /**
      * Queue a module for background loading (non-blocking)
      *
-     * @param string $module Module name
-     * @param callable $loader Callback that loads the module
+     * @param   string    $module  Module name
+     * @param   callable  $loader  Callback that loads the module
+     *
      * @return void
      */
     public static function loadAsync($module, callable $loader)
@@ -82,8 +84,9 @@ class ModuleLoader
      * PHP has no true async in-process execution here, so the loader callback is
      * invoked directly and the module is marked as loaded.
      *
-     * @param string $module Module name
-     * @param callable $loader Loader callback
+     * @param   string    $module  Module name
+     * @param   callable  $loader  Loader callback
+     *
      * @return bool Always true, as loading always completes within this call.
      */
     private static function loadInBackground($module, callable $loader)
@@ -93,6 +96,7 @@ class ModuleLoader
         // But for Windows/CLI safety, we'll just defer the actual initialization
         call_user_func($loader);
         unset(self::$loading[$module]);
+
         return true;
     }
 
@@ -100,18 +104,20 @@ class ModuleLoader
      * Wait for a module to finish loading (blocking)
      * Used when code needs a module that may be loading asynchronously
      *
-     * @param string $module Module name
-     * @param int $timeout Maximum wait time in milliseconds
+     * @param   string  $module   Module name
+     * @param   int     $timeout  Maximum wait time in milliseconds
+     *
      * @return bool True if module loaded, false if timeout
      */
     public static function waitForModule($module, $timeout = 5000)
     {
         $startTime = microtime(true);
-        $maxWait = $timeout / 1000; // Convert to seconds
+        $maxWait   = $timeout / 1000; // Convert to seconds
 
         while (isset(self::$loading[$module])) {
             if ((microtime(true) - $startTime) > $maxWait) {
                 Log::error('Timeout waiting for module: ' . $module);
+
                 return false;
             }
             usleep(10000); // Sleep 10ms before checking again
@@ -123,7 +129,8 @@ class ModuleLoader
     /**
      * Mark a module as loaded
      *
-     * @param string $module Module name
+     * @param   string  $module  Module name
+     *
      * @return void
      */
     public static function markLoaded($module)
@@ -135,7 +142,8 @@ class ModuleLoader
     /**
      * Check if a module is loaded
      *
-     * @param string $module Module name
+     * @param   string  $module  Module name
+     *
      * @return bool True if loaded, false otherwise
      */
     public static function isLoaded($module)
@@ -146,7 +154,8 @@ class ModuleLoader
     /**
      * Check if a module is currently loading
      *
-     * @param string $module Module name
+     * @param   string  $module  Module name
+     *
      * @return bool True if loading, false otherwise
      */
     public static function isLoading($module)

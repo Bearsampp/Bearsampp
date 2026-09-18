@@ -26,12 +26,12 @@ try {
 
     if (file_exists($reloadStatusFile)) {
         $statusContent = file_get_contents($reloadStatusFile);
-        $status = json_decode($statusContent, true);
+        $status        = json_decode($statusContent, true);
 
         if ($status !== null) {
             $response = array(
                 'completed' => true,
-                'status' => $status
+                'status'    => $status
             );
 
             Log::debug('Reload status retrieved: ' . json_encode($status));
@@ -40,24 +40,24 @@ try {
             Log::warning('Reload status file has invalid JSON: ' . json_last_error_msg());
             $response = array(
                 'completed' => false,
-                'message' => 'Status file being updated'
+                'message'   => 'Status file being updated'
             );
         } else {
             $response = array(
                 'completed' => false,
-                'message' => 'Reload in progress'
+                'message'   => 'Reload in progress'
             );
         }
     } else {
         $response = array(
             'completed' => false,
-            'message' => 'Reload in progress'
+            'message'   => 'Reload in progress'
         );
     }
 } catch (Exception $e) {
     Log::error('Error checking reload status: ' . $e->getMessage());
     $response = array(
-        'error' => 'Failed to check reload status: ' . $e->getMessage(),
+        'error'     => 'Failed to check reload status: ' . $e->getMessage(),
         'completed' => false
     );
 }

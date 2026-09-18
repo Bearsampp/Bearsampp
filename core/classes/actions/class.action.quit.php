@@ -1,4 +1,4 @@
-	<?php
+<?php
 /*
  *
  *  * Copyright (c) 2022-2025 Bearsampp
@@ -42,15 +42,15 @@ class ActionQuit
         // Start splash screen
         $this->splash = new Splash();
         $this->splash->init(
-            $bearsamppLang->getValue( Lang::QUIT ),
-            self::GAUGE_PROCESSES * count( $bearsamppBins->getServices() ) + self::GAUGE_OTHERS,
-            sprintf( $bearsamppLang->getValue( Lang::EXIT_LEAVING_TEXT ), APP_TITLE . ' ' . $bearsamppCore->getAppVersion() )
+            $bearsamppLang->getValue(Lang::QUIT),
+            self::GAUGE_PROCESSES * count($bearsamppBins->getServices()) + self::GAUGE_OTHERS,
+            sprintf($bearsamppLang->getValue(Lang::EXIT_LEAVING_TEXT), APP_TITLE . ' ' . $bearsamppCore->getAppVersion())
         );
 
         Log::debug('Splash screen initialized');
 
         // Set handler for the splash screen window
-        $bearsamppWinbinder->setHandler( $this->splash->getWbWindow(), $this, 'processWindow', 2000 );
+        $bearsamppWinbinder->setHandler($this->splash->getWbWindow(), $this, 'processWindow', 2000);
         Log::debug('Window handler set, starting main loop');
 
         $bearsamppWinbinder->mainLoop();
@@ -92,6 +92,7 @@ class ActionQuit
      *
      * @param   string  $sName    The service name constant
      * @param   object  $service  The service object
+     *
      * @return  string  The formatted display name
      */
     private function getServiceDisplayName($sName, $service)
@@ -102,27 +103,22 @@ class ActionQuit
 
         if ($sName == BinApache::SERVICE_NAME) {
             $name = $bearsamppBins->getApache()->getName() . ' ' . $bearsamppBins->getApache()->getVersion();
-        }
-        elseif ($sName == BinMysql::SERVICE_NAME) {
+        } elseif ($sName == BinMysql::SERVICE_NAME) {
             $name = $bearsamppBins->getMysql()->getName() . ' ' . $bearsamppBins->getMysql()->getVersion();
-        }
-        elseif ($sName == BinMailpit::SERVICE_NAME) {
+        } elseif ($sName == BinMailpit::SERVICE_NAME) {
             $name = $bearsamppBins->getMailpit()->getName() . ' ' . $bearsamppBins->getMailpit()->getVersion();
-        }
-        elseif ($sName == BinMariadb::SERVICE_NAME) {
+        } elseif ($sName == BinMariadb::SERVICE_NAME) {
             $name = $bearsamppBins->getMariadb()->getName() . ' ' . $bearsamppBins->getMariadb()->getVersion();
-        }
-        elseif ($sName == BinPostgresql::SERVICE_NAME) {
+        } elseif ($sName == BinPostgresql::SERVICE_NAME) {
             $name = $bearsamppBins->getPostgresql()->getName() . ' ' . $bearsamppBins->getPostgresql()->getVersion();
-        }
-        elseif ($sName == BinMemcached::SERVICE_NAME) {
+        } elseif ($sName == BinMemcached::SERVICE_NAME) {
             $name = $bearsamppBins->getMemcached()->getName() . ' ' . $bearsamppBins->getMemcached()->getVersion();
-        }
-        elseif ($sName == BinXlight::SERVICE_NAME) {
+        } elseif ($sName == BinXlight::SERVICE_NAME) {
             $name = $bearsamppBins->getXlight()->getName() . ' ' . $bearsamppBins->getXlight()->getVersion();
         }
 
         $name .= ' (' . $service->getName() . ')';
+
         return $name;
     }
 
@@ -158,7 +154,7 @@ class ActionQuit
                 continue;
             }
 
-            $service = $allServices[$sName];
+            $service     = $allServices[$sName];
             $displayName = $this->getServiceDisplayName($sName, $service);
 
             Log::info('Stopping service: ' . $displayName);
@@ -228,10 +224,11 @@ class ActionQuit
     /**
      * Terminates PHP processes with timeout handling.
      *
-     * @param   int     $excludePid  Process ID to exclude
-     * @param   mixed   $window      Window handle or null
-     * @param   mixed   $splash      Splash screen or null
-     * @param   int     $timeout     Maximum time to wait for termination (seconds)
+     * @param   int    $excludePid  Process ID to exclude
+     * @param   mixed  $window      Window handle or null
+     * @param   mixed  $splash      Splash screen or null
+     * @param   int    $timeout     Maximum time to wait for termination (seconds)
+     *
      * @return  void
      */
     public static function terminatePhpProcesses($excludePid, $window = null, $splash = null, $timeout = 10)
@@ -239,7 +236,7 @@ class ActionQuit
         global $bearsamppWinbinder, $bearsamppCore;
 
         $currentPid = Win32Ps::getCurrentPid();
-        $startTime = microtime(true);
+        $startTime  = microtime(true);
 
         Log::trace('Starting PHP process termination (excluding PID: ' . $excludePid . ')');
 
@@ -312,6 +309,7 @@ class ActionQuit
      * Verify that all services are actually stopped and clean up any that are still running.
      *
      * @param   array  $services  Array of service objects
+     *
      * @return  array  Verification results with status for each service
      */
     private function verifyServicesStoppedAndCleanup($services)
@@ -319,9 +317,9 @@ class ActionQuit
         Log::info('Verifying all services are stopped...');
 
         $results = [
-            'all_stopped' => true,
-            'services' => [],
-            'still_running' => [],
+            'all_stopped'         => true,
+            'services'            => [],
+            'still_running'       => [],
             'verification_failed' => []
         ];
 
@@ -331,18 +329,18 @@ class ActionQuit
             try {
                 // Check if service is still installed/running
                 $isInstalled = $service->isInstalled();
-                $isRunning = $isInstalled ? $service->isRunning() : false;
+                $isRunning   = $isInstalled ? $service->isRunning() : false;
 
                 $results['services'][$sName] = [
-                    'name' => $displayName,
+                    'name'      => $displayName,
                     'installed' => $isInstalled,
-                    'running' => $isRunning
+                    'running'   => $isRunning
                 ];
 
                 if ($isRunning) {
                     Log::warning('Service still running after shutdown: ' . $displayName);
                     $results['still_running'][] = $displayName;
-                    $results['all_stopped'] = false;
+                    $results['all_stopped']     = false;
 
                     // Attempt to force stop
                     Log::info('Attempting to force stop: ' . $displayName);
@@ -360,11 +358,10 @@ class ActionQuit
                 } else {
                     Log::debug('Service verified stopped and removed: ' . $displayName);
                 }
-
             } catch (\Exception $e) {
                 Log::error('Failed to verify service status for ' . $displayName . ': ' . $e->getMessage());
                 $results['verification_failed'][] = $displayName;
-                $results['all_stopped'] = false;
+                $results['all_stopped']           = false;
             }
         }
 
@@ -389,7 +386,7 @@ class ActionQuit
         Log::info('Verifying symlinks are removed...');
 
         $results = [
-            'success' => true,
+            'success'   => true,
             'remaining' => []
         ];
 
@@ -410,7 +407,7 @@ class ActionQuit
             if (file_exists($path) || is_link($path)) {
                 Log::warning('Symlink still exists: ' . $path);
                 $results['remaining'][] = basename($path);
-                $results['success'] = false;
+                $results['success']     = false;
 
                 // Attempt to remove it using robust method
                 try {
@@ -451,9 +448,9 @@ class ActionQuit
         Log::info('Cleaning up temporary files...');
 
         $results = [
-            'success' => true,
-            'cleaned' => 0,
-            'failed' => [],
+            'success'    => true,
+            'cleaned'    => 0,
+            'failed'     => [],
             'size_freed' => 0
         ];
 
@@ -461,6 +458,7 @@ class ActionQuit
 
         if (!is_dir($tmpPath)) {
             Log::debug('Temp directory does not exist: ' . $tmpPath);
+
             return $results;
         }
 
@@ -469,6 +467,7 @@ class ActionQuit
 
             if ($files === false) {
                 Log::warning('Failed to list temporary files');
+
                 return $results;
             }
 
@@ -489,7 +488,7 @@ class ActionQuit
                             Log::debug('Removed temp symlink: ' . $basename);
                         } else {
                             $results['failed'][] = $basename;
-                            $results['success'] = false;
+                            $results['success']  = false;
                             Log::warning('Failed to remove temp symlink: ' . $basename);
                         }
                     } elseif (is_file($file)) {
@@ -499,7 +498,7 @@ class ActionQuit
                             Log::debug('Removed temp file: ' . $basename);
                         } else {
                             $results['failed'][] = $basename;
-                            $results['success'] = false;
+                            $results['success']  = false;
                             Log::warning('Failed to remove temp file: ' . $basename);
                         }
                     } elseif (is_dir($file)) {
@@ -509,13 +508,13 @@ class ActionQuit
                             Log::debug('Removed temp directory: ' . $basename);
                         } else {
                             $results['failed'][] = $basename;
-                            $results['success'] = false;
+                            $results['success']  = false;
                             Log::warning('Failed to remove temp directory: ' . $basename);
                         }
                     }
                 } catch (\Exception $e) {
                     $results['failed'][] = $basename;
-                    $results['success'] = false;
+                    $results['success']  = false;
                     Log::error('Error removing temp file ' . $basename . ': ' . $e->getMessage());
                 }
             }
@@ -526,7 +525,6 @@ class ActionQuit
             if (!empty($results['failed'])) {
                 Log::warning('Failed to clean up ' . count($results['failed']) . ' files');
             }
-
         } catch (\Exception $e) {
             Log::error('Error during temp file cleanup: ' . $e->getMessage());
             $results['success'] = false;
@@ -547,18 +545,18 @@ class ActionQuit
         Log::info('Checking for orphaned processes...');
 
         $orphaned = [
-            'found' => false,
+            'found'     => false,
             'processes' => []
         ];
 
         try {
-            $procs = Win32Ps::getListProcs();
+            $procs         = Win32Ps::getListProcs();
             $bearsamppPath = strtolower(Path::formatUnixPath(Path::getRootPath()));
-            $currentPid = Win32Ps::getCurrentPid();
+            $currentPid    = Win32Ps::getCurrentPid();
 
             foreach ($procs as $proc) {
                 $exePath = strtolower(Path::formatUnixPath($proc[Win32Ps::EXECUTABLE_PATH]));
-                $pid = $proc[Win32Ps::PROCESS_ID];
+                $pid     = $proc[Win32Ps::PROCESS_ID];
 
                 // Skip current process
                 if ($pid == $currentPid) {
@@ -581,9 +579,9 @@ class ActionQuit
                     }
 
                     // These are orphaned Bearsampp processes
-                    $orphaned['found'] = true;
+                    $orphaned['found']       = true;
                     $orphaned['processes'][] = [
-                        'pid' => $pid,
+                        'pid'  => $pid,
                         'name' => $processName,
                         'path' => $exePath
                     ];
@@ -605,7 +603,6 @@ class ActionQuit
             } else {
                 Log::warning('Found ' . count($orphaned['processes']) . ' orphaned process(es)');
             }
-
         } catch (\Exception $e) {
             Log::error('Error checking for orphaned processes: ' . $e->getMessage());
         }
@@ -620,15 +617,16 @@ class ActionQuit
      * @param   array  $symlinkVerification  Symlink verification results
      * @param   array  $tempCleanup          Temp file cleanup results
      * @param   array  $orphanedProcesses    Orphaned process check results
+     *
      * @return  array  Comprehensive cleanup report
      */
     private function generateCleanupReport($serviceVerification, $symlinkVerification, $tempCleanup, $orphanedProcesses)
     {
         $report = [
-            'success' => true,
+            'success'  => true,
             'warnings' => [],
-            'errors' => [],
-            'summary' => []
+            'errors'   => [],
+            'summary'  => []
         ];
 
         // Service verification
@@ -653,7 +651,7 @@ class ActionQuit
 
         // Temp file cleanup
         if ($tempCleanup['cleaned'] > 0) {
-            $sizeMB = round($tempCleanup['size_freed'] / 1024 / 1024, 2);
+            $sizeMB              = round($tempCleanup['size_freed'] / 1024 / 1024, 2);
             $report['summary'][] = 'Temp files cleaned: ' . $tempCleanup['cleaned'] . ' (' . $sizeMB . ' MB)';
         }
 
@@ -677,6 +675,7 @@ class ActionQuit
      * This is a lightweight version that only does essential checks.
      *
      * @param   array  $services  Array of service objects
+     *
      * @return  void
      */
     private function performQuickCleanupVerification($services)
@@ -684,7 +683,7 @@ class ActionQuit
         Log::info('Performing quick cleanup verification...');
 
         $startTime = microtime(true);
-        $maxTime = 2; // Maximum 2 seconds for verification
+        $maxTime   = 2; // Maximum 2 seconds for verification
 
         try {
             // Quick temp file cleanup (non-blocking)
@@ -693,6 +692,7 @@ class ActionQuit
             // Check if we're running out of time
             if (microtime(true) - $startTime > $maxTime) {
                 Log::debug('Cleanup verification timeout reached, skipping remaining checks');
+
                 return;
             }
 
@@ -711,7 +711,6 @@ class ActionQuit
 
             $duration = round(microtime(true) - $startTime, 2);
             Log::info('Quick cleanup verification completed in ' . $duration . ' seconds');
-
         } catch (\Exception $e) {
             Log::warning('Quick cleanup verification failed: ' . $e->getMessage());
         }

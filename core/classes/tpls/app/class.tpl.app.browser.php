@@ -25,18 +25,20 @@ class TplAppBrowser
      * when the change browser menu item is selected. It uses the global language object to retrieve the localized
      * string for the change browser action.
      *
+     * @return array The generated menu item and actions for changing the browser.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return array The generated menu item and actions for changing the browser.
      */
     public static function process()
     {
         global $bearsamppLang;
 
         return TplApp::getActionMulti(
-            self::ACTION, null,
+            self::ACTION,
+            null,
             array($bearsamppLang->getValue(Lang::CHANGE_BROWSER_TITLE), TplAestan::GLYPH_BROWSER),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
     }
 

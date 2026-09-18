@@ -66,7 +66,8 @@ abstract class ActionDialogBase
      * Create form fields specific to the dialog
      * This method should create all input fields, labels, and buttons
      *
-     * @param object $bearsamppWinbinder The WinBinder instance
+     * @param   object  $bearsamppWinbinder  The WinBinder instance
+     *
      * @return void
      */
     abstract protected function createFormFields($bearsamppWinbinder);
@@ -74,7 +75,8 @@ abstract class ActionDialogBase
     /**
      * Get the current form values
      *
-     * @param object $bearsamppWinbinder The WinBinder instance
+     * @param   object  $bearsamppWinbinder  The WinBinder instance
+     *
      * @return array Associative array of form values
      */
     abstract protected function getFormValues($bearsamppWinbinder);
@@ -82,7 +84,8 @@ abstract class ActionDialogBase
     /**
      * Validate the form input
      *
-     * @param array $values The form values
+     * @param   array  $values  The form values
+     *
      * @return array ['valid' => bool, 'error' => string|null]
      */
     abstract protected function validateInput($values);
@@ -90,7 +93,8 @@ abstract class ActionDialogBase
     /**
      * Check if the item already exists (for add/edit operations)
      *
-     * @param array $values The form values
+     * @param   array  $values  The form values
+     *
      * @return bool True if exists, false otherwise
      */
     abstract protected function itemExists($values);
@@ -98,7 +102,8 @@ abstract class ActionDialogBase
     /**
      * Save the item (create or update)
      *
-     * @param array $values The form values
+     * @param   array  $values  The form values
+     *
      * @return bool True on success, false on failure
      */
     abstract protected function saveItem($values);
@@ -113,7 +118,8 @@ abstract class ActionDialogBase
     /**
      * Get success message after save
      *
-     * @param array $values The form values
+     * @param   array  $values  The form values
+     *
      * @return string The success message
      */
     abstract protected function getSaveSuccessMessage($values);
@@ -180,7 +186,8 @@ abstract class ActionDialogBase
     /**
      * Initialize the dialog window
      *
-     * @param array $args Command line arguments
+     * @param   array  $args  Command line arguments
+     *
      * @return bool True if initialization successful, false otherwise
      */
     protected function initializeDialog($args)
@@ -192,7 +199,7 @@ abstract class ActionDialogBase
     /**
      * Constructor for dialog actions
      *
-     * @param array $args Command line arguments
+     * @param   array  $args  Command line arguments
      */
     public function __construct($args)
     {
@@ -227,7 +234,8 @@ abstract class ActionDialogBase
     /**
      * Create standard buttons (Save, Delete, Cancel)
      *
-     * @param object $bearsamppWinbinder The WinBinder instance
+     * @param   object  $bearsamppWinbinder  The WinBinder instance
+     *
      * @return void
      */
     protected function createButtons($bearsamppWinbinder)
@@ -244,7 +252,7 @@ abstract class ActionDialogBase
 
         if ($this->isEditMode()) {
             // Edit mode: Save, Delete, Cancel
-            $this->wbBtnSave = $bearsamppWinbinder->createButton(
+            $this->wbBtnSave   = $bearsamppWinbinder->createButton(
                 $this->wbWindow,
                 $bearsamppLang->getValue(Lang::BUTTON_SAVE),
                 215,
@@ -264,7 +272,7 @@ abstract class ActionDialogBase
             );
         } else {
             // Add mode: Save, Cancel
-            $this->wbBtnSave = $bearsamppWinbinder->createButton(
+            $this->wbBtnSave   = $bearsamppWinbinder->createButton(
                 $this->wbWindow,
                 $bearsamppLang->getValue(Lang::BUTTON_SAVE),
                 300,
@@ -282,11 +290,12 @@ abstract class ActionDialogBase
     /**
      * Process window events
      *
-     * @param resource $window The window resource
-     * @param int $id The control ID
-     * @param resource $ctrl The control resource
-     * @param mixed $param1 Additional parameter 1
-     * @param mixed $param2 Additional parameter 2
+     * @param   resource  $window  The window resource
+     * @param   int       $id      The control ID
+     * @param   resource  $ctrl    The control resource
+     * @param   mixed     $param1  Additional parameter 1
+     * @param   mixed     $param2  Additional parameter 2
+     *
      * @return void
      */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
@@ -296,18 +305,21 @@ abstract class ActionDialogBase
         // Handle save button
         if ($id == $this->wbBtnSave[WinBinder::CTRL_ID]) {
             $this->handleSave($window);
+
             return;
         }
 
         // Handle delete button (if in edit mode)
         if ($this->isEditMode() && $id == $this->wbBtnDelete[WinBinder::CTRL_ID]) {
             $this->handleDelete($window);
+
             return;
         }
 
         // Handle cancel button or window close
         if ($id == IDCLOSE || $id == $this->wbBtnCancel[WinBinder::CTRL_ID]) {
             $bearsamppWinbinder->destroyWindow($window);
+
             return;
         }
 
@@ -318,11 +330,12 @@ abstract class ActionDialogBase
     /**
      * Handle custom events (can be overridden by child classes)
      *
-     * @param resource $window The window resource
-     * @param int $id The control ID
-     * @param resource $ctrl The control resource
-     * @param mixed $param1 Additional parameter 1
-     * @param mixed $param2 Additional parameter 2
+     * @param   resource  $window  The window resource
+     * @param   int       $id      The control ID
+     * @param   resource  $ctrl    The control resource
+     * @param   mixed     $param1  Additional parameter 1
+     * @param   mixed     $param2  Additional parameter 2
+     *
      * @return void
      */
     protected function handleCustomEvent($window, $id, $ctrl, $param1, $param2)
@@ -334,7 +347,8 @@ abstract class ActionDialogBase
     /**
      * Handle save operation
      *
-     * @param resource $window The window resource
+     * @param   resource  $window  The window resource
+     *
      * @return void
      */
     protected function handleSave($window)
@@ -355,12 +369,14 @@ abstract class ActionDialogBase
                 $this->getDialogTitle()
             );
             $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
+
             return;
         }
 
         // Check if item already exists (for add or rename operations)
         if ($this->itemExists($values)) {
             $bearsamppWinbinder->resetProgressBar($this->wbProgressBar);
+
             return;
         }
 
@@ -390,7 +406,8 @@ abstract class ActionDialogBase
     /**
      * Handle delete operation
      *
-     * @param resource $window The window resource
+     * @param   resource  $window  The window resource
+     *
      * @return void
      */
     protected function handleDelete($window)

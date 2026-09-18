@@ -29,9 +29,9 @@ class TplAppGit
      * This method generates the main Git menu item, which includes options for managing
      * Git repositories and actions related to Git functionalities.
      *
+     * @return array The generated Git menu item and actions.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return array The generated Git menu item and actions.
      */
     public static function process()
     {
@@ -46,28 +46,32 @@ class TplAppGit
      * This method creates the Git menu with options for opening Git console, Git GUI,
      * refreshing repositories, and setting up repository scanning at startup.
      *
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @return string The generated Git menu content.
      * @global object $bearsamppTools Provides access to various tools and utilities.
      *
-     * @return string The generated Git menu content.
+     * @global object $bearsamppLang  Provides language support for retrieving language-specific values.
      */
     public static function getMenuGit()
     {
         global $bearsamppLang, $bearsamppTools, $bearsamppRoot;
 
-        $tplRepos = TplApp::getMenu($bearsamppLang->getValue(Lang::REPOS), self::MENU_REPOS, get_called_class());
-        $emptyRepos = count(explode(PHP_EOL, $tplRepos[TplApp::SECTION_CONTENT])) == 2;
+        $tplRepos      = TplApp::getMenu($bearsamppLang->getValue(Lang::REPOS), self::MENU_REPOS, get_called_class());
+        $emptyRepos    = count(explode(PHP_EOL, $tplRepos[TplApp::SECTION_CONTENT])) == 2;
         $isScanStartup = $bearsamppTools->getGit()->isScanStartup();
 
-        $tplRefreshRepos = TplApp::getActionMulti(
-            self::ACTION_REFRESH_REPOS, null,
+        $tplRefreshRepos        = TplApp::getActionMulti(
+            self::ACTION_REFRESH_REPOS,
+            null,
             array($bearsamppLang->getValue(Lang::MENU_REFRESH_REPOS), TplAestan::GLYPH_RELOAD),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
         $tplRefreshReposStartup = TplApp::getActionMulti(
-            self::ACTION_REFRESH_REPOS_STARTUP, array($isScanStartup ? Config::DISABLED : Config::ENABLED),
+            self::ACTION_REFRESH_REPOS_STARTUP,
+            array($isScanStartup ? Config::DISABLED : Config::ENABLED),
             array($bearsamppLang->getValue(Lang::MENU_SCAN_REPOS_STARTUP), $isScanStartup ? TplAestan::GLYPH_CHECK : ''),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
 
         /* get path for git gui */
@@ -82,10 +86,10 @@ class TplAppGit
                 null
             ) . PHP_EOL .
             TplAestan::getItemExe(
-                    $bearsamppLang->getValue(Lang::GITGUI),
-                    $gitgui . '/git-gui',
-                    TplAestan::GLYPH_GIT
-                ) . PHP_EOL .
+                $bearsamppLang->getValue(Lang::GITGUI),
+                $gitgui . '/git-gui',
+                TplAestan::GLYPH_GIT
+            ) . PHP_EOL .
             TplAestan::getItemSeparator() . PHP_EOL .
 
             // Items
@@ -105,9 +109,9 @@ class TplAppGit
      * This method creates the menu for listing and managing Git repositories found
      * by the application.
      *
+     * @return string The generated Git repositories menu content.
      * @global object $bearsamppTools Provides access to various tools and utilities.
      *
-     * @return string The generated Git repositories menu content.
      */
     public static function getMenuGitRepos()
     {
@@ -116,13 +120,13 @@ class TplAppGit
 
         foreach ($bearsamppTools->getGit()->findRepos() as $repo) {
             $result .= TplAestan::getItemPowerShell(
-                basename($repo),
-                TplAestan::GLYPH_GIT,
-                null,
-                $bearsamppTools->getPowerShell()->getTabTitleGit($repo),
-                $repo,
-                null
-            ) . PHP_EOL;
+                    basename($repo),
+                    TplAestan::GLYPH_GIT,
+                    null,
+                    $bearsamppTools->getPowerShell()->getTabTitleGit($repo),
+                    $repo,
+                    null
+                ) . PHP_EOL;
         }
 
         return $result;
@@ -148,7 +152,7 @@ class TplAppGit
      * This method creates the action string for setting up repository scanning at startup.
      * It includes commands to reload the application after setting the startup action.
      *
-     * @param int $scanStartup The flag indicating whether to enable or disable scanning at startup.
+     * @param   int  $scanStartup  The flag indicating whether to enable or disable scanning at startup.
      *
      * @return string The generated action string for refreshing Git repositories at startup.
      */

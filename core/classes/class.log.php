@@ -28,11 +28,11 @@
  */
 class Log
 {
-    const ERROR   = 'ERROR';
+    const ERROR = 'ERROR';
     const WARNING = 'WARNING';
-    const INFO    = 'INFO';
-    const DEBUG   = 'DEBUG';
-    const TRACE   = 'TRACE';
+    const INFO = 'INFO';
+    const DEBUG = 'DEBUG';
+    const TRACE = 'TRACE';
 
     /** @var int Maximum size (bytes) of a single async queue content entry. */
     const MAX_QUEUE_CONTENT_LENGTH = 1048576; // 1 MB
@@ -170,6 +170,7 @@ class Log
         // Safety check: if globals aren't initialised, fall back to error_log
         if (!isset($bearsamppRoot) || !isset($bearsamppCore) || !isset($bearsamppConfig)) {
             error_log('[' . $type . '] ' . $data);
+
             return;
         }
 
@@ -226,10 +227,10 @@ class Log
             // 2. TRACE/DEBUG level logs (for real-time visibility during debugging)
             // 3. When buffer reaches the configured size limit
             $debugVerbosity = $bearsamppConfig->getLogsVerbose();
-            $isDebugMode = ($debugVerbosity === Config::VERBOSE_TRACE || $debugVerbosity === Config::VERBOSE_DEBUG);
-            $shouldFlush = $type === self::ERROR ||
-                          $isDebugMode ||
-                          count(self::$logBuffer) >= self::$logBufferSize;
+            $isDebugMode    = ($debugVerbosity === Config::VERBOSE_TRACE || $debugVerbosity === Config::VERBOSE_DEBUG);
+            $shouldFlush    = $type === self::ERROR ||
+                $isDebugMode ||
+                count(self::$logBuffer) >= self::$logBufferSize;
 
             if ($shouldFlush) {
                 self::flush();
@@ -259,7 +260,8 @@ class Log
                 error_log('[' . date('Y-m-d H:i:s', $log['time']) . '] [' . $log['type'] . '] ' . $log['data']);
             }
             self::$logStats['flushed'] += count(self::$logBuffer);
-            self::$logBuffer = [];
+            self::$logBuffer           = [];
+
             return;
         }
 
@@ -286,8 +288,8 @@ class Log
             $content = '';
             foreach ($logs as $log) {
                 $content .= '[' . date('Y-m-d H:i:s', $log['time']) . '] # ' .
-                            APP_TITLE . ' ' . $bearsamppCore->getAppVersion() . ' # ' .
-                            $log['type'] . ': ' . $log['data'] . PHP_EOL;
+                    APP_TITLE . ' ' . $bearsamppCore->getAppVersion() . ' # ' .
+                    $log['type'] . ': ' . $log['data'] . PHP_EOL;
             }
 
             // Use sync writes if TRACE is enabled or async is disabled
@@ -317,15 +319,16 @@ class Log
         }
 
         self::$logStats['flushed'] += count(self::$logBuffer);
-        self::$logBuffer = [];
+        self::$logBuffer           = [];
     }
 
     /**
      * Queue a log entry for asynchronous writing.
      * Returns immediately without blocking on I/O.
      *
-     * @param string $file Target log file path
-     * @param string $content Log content to write
+     * @param   string  $file     Target log file path
+     * @param   string  $content  Log content to write
+     *
      * @return bool True if queued successfully
      */
     private static function queueAsyncWrite($file, $content)
@@ -345,14 +348,14 @@ class Log
 
             // Queue entry contains the target file and content
             $queueEntry = [
-                'file' => $file,
-                'content' => $content,
+                'file'      => $file,
+                'content'   => $content,
                 'timestamp' => time(),
             ];
 
             // Write queue entry (this is a small, fast operation)
             $serialized = serialize($queueEntry);
-            $written = @file_put_contents($queueFile, $serialized, LOCK_EX);
+            $written    = @file_put_contents($queueFile, $serialized, LOCK_EX);
 
             return ($written !== false);
         } catch (Exception $e) {
@@ -369,13 +372,14 @@ class Log
      * file appends, we only accept paths that resolve inside the Bearsampp logs
      * directory and contain no path-traversal ('..') segments.
      *
-     * @param   string      $file  Raw target path from a queue entry.
+     * @param   string  $file  Raw target path from a queue entry.
+     *
      * @return  string|null        Normalized safe path, or null if rejected.
      */
     private static function sanitizeQueueTarget($file)
     {
         $file = (string)$file;
-        if ($file === '' ) {
+        if ($file === '') {
             return null;
         }
 
@@ -384,7 +388,7 @@ class Log
             return null;
         }
 
-        $logsPath = Path::getLogsPath();
+        $logsPath           = Path::getLogsPath();
         $logsPathNormalized = str_replace('\\', '/', rtrim($logsPath, '/\\')) . '/';
 
         // Only allow appends into the application logs directory.
@@ -498,7 +502,6 @@ class Log
 
                     // Remove the processed queue file
                     @unlink($queueFile);
-
                 } catch (Exception $e) {
                     // Skip bad entries
                     @unlink($queueFile);
@@ -518,7 +521,6 @@ class Log
 
             // Clean up any stale queue files
             self::cleanupStaleAsyncQueue(3600);
-
         } catch (Exception $e) {
             // Silently fail
         }
@@ -530,7 +532,8 @@ class Log
      * Clean up stale queue files that weren't processed.
      * Prevents queue directory from filling up with old entries.
      *
-     * @param int $maxAge Maximum age in seconds
+     * @param   int  $maxAge  Maximum age in seconds
+     *
      * @return int Number of files removed
      */
     private static function cleanupStaleAsyncQueue($maxAge)
@@ -540,7 +543,7 @@ class Log
         }
 
         $removed = 0;
-        $now = time();
+        $now     = time();
 
         try {
             $queueFiles = @glob(self::$asyncQueueDir . '/*.queue');
@@ -575,9 +578,9 @@ class Log
      */
     public static function reset()
     {
-        self::$logBuffer         = [];
+        self::$logBuffer          = [];
         self::$shutdownRegistered = false;
-        self::$logStats          = [
+        self::$logStats           = [
             'buffered' => 0,
             'flushed'  => 0,
             'writes'   => 0,
@@ -588,7 +591,8 @@ class Log
     /**
      * Enable or disable async logging.
      *
-     * @param bool $enabled
+     * @param   bool  $enabled
+     *
      * @return void
      */
     public static function setAsyncEnabled($enabled)
@@ -628,6 +632,7 @@ class Log
         }
 
         $files = @glob(self::$asyncQueueDir . '/*.queue');
+
         return is_array($files) ? count($files) : 0;
     }
 
@@ -645,6 +650,7 @@ class Log
      * Sets the log buffer size.
      *
      * @param   int  $size  New buffer size (1â€“1000).
+     *
      * @return void
      */
     public static function setBufferSize($size)
@@ -781,6 +787,7 @@ class Log
 
         if (isset(self::$initClassCounts[$className])) {
             self::$initClassCounts[$className]++;
+
             return;
         }
 
@@ -801,6 +808,7 @@ class Log
 
         if (isset(self::$reloadClassCounts[$className])) {
             self::$reloadClassCounts[$className]++;
+
             return;
         }
 
@@ -844,7 +852,7 @@ class Log
     public static function rollbackSilentBuffer()
     {
         self::$silentMode = false;
-        self::$logBuffer = [];
+        self::$logBuffer  = [];
     }
 
     /**

@@ -42,7 +42,7 @@ class Batch
     /**
      * Writes a log entry to the batch log file.
      *
-     * @param string $log The log message to write.
+     * @param   string  $log  The log message to write.
      */
     private static function writeLog($log)
     {
@@ -53,7 +53,8 @@ class Batch
     /**
      * Finds the executable name by its process ID (PID).
      *
-     * @param int $pid The process ID to search for.
+     * @param   int  $pid  The process ID to search for.
+     *
      * @return string|false The executable name if found, false otherwise.
      */
     public static function findExeByPid($pid)
@@ -62,6 +63,7 @@ class Batch
         $sanitizedPid = UtilInput::sanitizePID($pid);
         if ($sanitizedPid === false) {
             self::writeLog('Invalid PID provided to findExeByPid: ' . var_export($pid, true));
+
             return false;
         }
 
@@ -79,7 +81,8 @@ class Batch
     /**
      * Gets the process using a specific port.
      *
-     * @param int $port The port number to check.
+     * @param   int  $port  The port number to check.
+     *
      * @return string|int|null The executable name and PID if found, the PID if executable not found, or null if no process is using the port.
      */
     public static function getProcessUsingPort($port)
@@ -88,6 +91,7 @@ class Batch
         $sanitizedPort = UtilInput::sanitizePort($port);
         if ($sanitizedPort === false) {
             self::writeLog('Invalid port provided to getProcessUsingPort: ' . var_export($port, true));
+
             return null;
         }
 
@@ -104,6 +108,7 @@ class Batch
                     if ($exe !== false) {
                         return $exe . ' (' . $pid . ')';
                     }
+
                     return $pid;
                 }
             }
@@ -115,7 +120,7 @@ class Batch
     /**
      * Exits the application, optionally restarting it.
      *
-     * @param bool $restart Whether to restart the application after exiting.
+     * @param   bool  $restart  Whether to restart the application after exiting.
      */
     public static function exitApp($restart = false)
     {
@@ -180,12 +185,13 @@ class Batch
     /**
      * Initializes MySQL using a specified path.
      *
-     * @param string $path The path to the MySQL initialization script.
+     * @param   string  $path  The path to the MySQL initialization script.
      */
     public static function initializeMysql($path)
     {
         if (!file_exists($path . '/init.bat')) {
             Log::warning($path . '/init.bat does not exist');
+
             return;
         }
         self::exec('initializeMysql', 'CMD /C "' . $path . '/init.bat"', 60);
@@ -228,18 +234,20 @@ class Batch
         $cmd = '"' . Path::formatWindowsPath($bearsamppBins->getPostgresql()->getCtlExe()) . '" unregister -N "' . BinPostgresql::SERVICE_NAME . '"';
         $cmd .= ' -l "' . Path::formatWindowsPath($bearsamppBins->getPostgresql()->getErrorLog()) . '" -w';
         self::exec('uninstallPostgresqlService', $cmd, true, false);
+
         return !$bearsamppBins->getPostgresql()->getService()->isInstalled();
     }
 
     /**
      * Initializes PostgreSQL using a specified path.
      *
-     * @param string $path The path to the PostgreSQL initialization script.
+     * @param   string  $path  The path to the PostgreSQL initialization script.
      */
     public static function initializePostgresql($path)
     {
         if (!file_exists($path . '/init.bat')) {
             Log::warning($path . '/init.bat does not exist');
+
             return;
         }
         self::exec('initializePostgresql', 'CMD /C "' . $path . '/init.bat"', 15);
@@ -248,12 +256,13 @@ class Batch
     /**
      * Initializes MariaDB using a specified path.
      *
-     * @param string $path The path to the MariaDB initialization script.
+     * @param   string  $path  The path to the MariaDB initialization script.
      */
     public static function initializeMariadb($path)
     {
         if (!file_exists($path . '/init.bat')) {
             Log::warning($path . '/init.bat does not exist');
+
             return;
         }
         self::exec('initializeMariadb', 'CMD /C "' . $path . '/init.bat"', 60);
@@ -262,13 +271,13 @@ class Batch
     /**
      * Creates a symbolic link.
      *
-     * @param string $src The source path.
-     * @param string $dest The destination path.
+     * @param   string  $src   The source path.
+     * @param   string  $dest  The destination path.
      */
     public static function createSymlink($src, $dest)
     {
         global $bearsamppCore;
-        $src = Path::formatWindowsPath($src);
+        $src  = Path::formatWindowsPath($src);
         $dest = Path::formatWindowsPath($dest);
         self::exec('createSymlink', '"' . Path::getLnExe() . '" --absolute --symbolic --traditional --1023safe "' . $src . '" ' . '"' . $dest . '"', true, false);
     }
@@ -276,18 +285,20 @@ class Batch
     /**
      * Removes a symbolic link.
      *
-     * @param string $link The path to the symbolic link.
+     * @param   string  $link  The path to the symbolic link.
+     *
      * @return bool True if the symlink was removed successfully, false otherwise.
      */
     public static function removeSymlink($link)
     {
         if (!file_exists($link)) {
             self::writeLog('-> removeSymlink: Link does not exist: ' . $link);
+
             return true; // If the link doesn't exist, nothing to do
         }
 
         // Check if it's a directory symlink
-        $isDirectory = is_dir($link);
+        $isDirectory   = is_dir($link);
         $formattedLink = Path::formatWindowsPath($link);
 
         try {
@@ -303,13 +314,16 @@ class Batch
             // Check if removal was successful
             if (file_exists($link)) {
                 self::writeLog('-> removeSymlink: Failed to remove symlink: ' . $link);
+
                 return false;
             }
 
             self::writeLog('-> removeSymlink: Successfully removed symlink: ' . $link);
+
             return true;
         } catch (Exception $e) {
             self::writeLog('-> removeSymlink: Exception: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -329,14 +343,15 @@ class Batch
                 }
             }
         }
+
         return '';
     }
 
     /**
      * Sets the display name of a service.
      *
-     * @param string $serviceName The name of the service.
-     * @param string $displayName The display name to set.
+     * @param   string  $serviceName  The name of the service.
+     * @param   string  $displayName  The display name to set.
      */
     public static function setServiceDisplayName($serviceName, $displayName)
     {
@@ -344,6 +359,7 @@ class Batch
         $sanitizedName = UtilInput::sanitizeServiceName($serviceName);
         if ($sanitizedName === false) {
             self::writeLog('Invalid service name provided to setServiceDisplayName: ' . $serviceName);
+
             return;
         }
 
@@ -358,8 +374,8 @@ class Batch
     /**
      * Sets the description of a service.
      *
-     * @param string $serviceName The name of the service.
-     * @param string $desc The description to set.
+     * @param   string  $serviceName  The name of the service.
+     * @param   string  $desc         The description to set.
      */
     public static function setServiceDescription($serviceName, $desc)
     {
@@ -367,6 +383,7 @@ class Batch
         $sanitizedName = UtilInput::sanitizeServiceName($serviceName);
         if ($sanitizedName === false) {
             self::writeLog('Invalid service name provided to setServiceDescription: ' . $serviceName);
+
             return;
         }
 
@@ -381,8 +398,8 @@ class Batch
     /**
      * Sets the start type of a service.
      *
-     * @param string $serviceName The name of the service.
-     * @param string $startType The start type to set (e.g., "auto", "demand").
+     * @param   string  $serviceName  The name of the service.
+     * @param   string  $startType    The start type to set (e.g., "auto", "demand").
      */
     public static function setServiceStartType($serviceName, $startType)
     {
@@ -390,6 +407,7 @@ class Batch
         $sanitizedName = UtilInput::sanitizeServiceName($serviceName);
         if ($sanitizedName === false) {
             self::writeLog('Invalid service name provided to setServiceStartType: ' . $serviceName);
+
             return;
         }
 
@@ -397,6 +415,7 @@ class Batch
         $allowedStartTypes = ['auto', 'demand', 'disabled', 'delayed-auto'];
         if (!in_array(strtolower($startType), $allowedStartTypes, true)) {
             self::writeLog('Invalid start type provided: ' . $startType);
+
             return;
         }
 
@@ -407,9 +426,10 @@ class Batch
     /**
      * Executes a standalone batch script.
      *
-     * @param string $basename The base name for the script and result files.
-     * @param string $content The content of the batch script.
-     * @param bool $silent Whether to execute the script silently.
+     * @param   string  $basename  The base name for the script and result files.
+     * @param   string  $content   The content of the batch script.
+     * @param   bool    $silent    Whether to execute the script silently.
+     *
      * @return array|false The result of the execution, or false on failure.
      */
     public static function execStandalone($basename, $content, $silent = true)
@@ -420,13 +440,14 @@ class Batch
     /**
      * Executes a batch script.
      *
-     * @param string $basename The base name for the script and result files.
-     * @param string $content The content of the batch script.
-     * @param int|bool $timeout The timeout for the script execution in seconds, or true for default timeout, or false for no timeout.
-     * @param bool $catchOutput Whether to capture the output of the script.
-     * @param bool $standalone Whether the script is standalone.
-     * @param bool $silent Whether to execute the script silently.
-     * @param bool $rebuild Whether to rebuild the result array.
+     * @param   string    $basename     The base name for the script and result files.
+     * @param   string    $content      The content of the batch script.
+     * @param   int|bool  $timeout      The timeout for the script execution in seconds, or true for default timeout, or false for no timeout.
+     * @param   bool      $catchOutput  Whether to capture the output of the script.
+     * @param   bool      $standalone   Whether the script is standalone.
+     * @param   bool      $silent       Whether to execute the script silently.
+     * @param   bool      $rebuild      Whether to rebuild the result array.
+     *
      * @return array|false The result of the execution, or false on failure.
      */
     public static function exec($basename, $content, $timeout = true, $catchOutput = true, $standalone = false, $silent = true, $rebuild = true)
@@ -436,7 +457,7 @@ class Batch
 
         $resultFile = self::getTmpFile('.tmp', $basename);
         $scriptPath = self::getTmpFile('.bat', $basename);
-        $checkFile = self::getTmpFile('.tmp', $basename);
+        $checkFile  = self::getTmpFile('.tmp', $basename);
 
         // Redirect output
         if ($catchOutput) {
@@ -466,8 +487,8 @@ class Batch
         }
 
         if (!$standalone) {
-            $timeout = is_numeric($timeout) ? $timeout : ($timeout === true ? $bearsamppConfig->getScriptsTimeout() : false);
-            $maxtime = time() + $timeout;
+            $timeout   = is_numeric($timeout) ? $timeout : ($timeout === true ? $bearsamppConfig->getScriptsTimeout() : false);
+            $maxtime   = time() + $timeout;
             $noTimeout = $timeout === false;
             while ($result === false || empty($result)) {
                 $finished = false;
@@ -525,13 +546,15 @@ class Batch
     /**
      * Gets a temporary file path with a specified extension and optional custom name.
      *
-     * @param string $ext The file extension.
-     * @param string|null $customName An optional custom name for the file.
+     * @param   string       $ext         The file extension.
+     * @param   string|null  $customName  An optional custom name for the file.
+     *
      * @return string The temporary file path.
      */
     private static function getTmpFile($ext, $customName = null)
     {
         global $bearsamppCore;
+
         return Path::formatWindowsPath(Path::getTmpPath() . '/' . (!empty($customName) ? $customName . '-' : '') . UtilString::random() . $ext);
     }
 }

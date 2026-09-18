@@ -144,7 +144,7 @@ class ActionRestartAllServices
             }
 
             $service = $allServices[$serviceName];
-            $bin = ServiceHelper::getBinFromServiceName($serviceName, $bearsamppBins);
+            $bin     = ServiceHelper::getBinFromServiceName($serviceName, $bearsamppBins);
 
             if ($bin !== null) {
                 $name = ServiceHelper::getServiceDisplayName($bin, $service);
@@ -167,8 +167,8 @@ class ActionRestartAllServices
                 continue;
             }
 
-            $service = $allServices[$serviceName];
-            $bin = ServiceHelper::getBinFromServiceName($serviceName, $bearsamppBins);
+            $service        = $allServices[$serviceName];
+            $bin            = ServiceHelper::getBinFromServiceName($serviceName, $bearsamppBins);
             $syntaxCheckCmd = ServiceHelper::getSyntaxCheckCmd($serviceName);
 
             if ($bin !== null) {

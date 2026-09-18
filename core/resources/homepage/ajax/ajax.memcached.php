@@ -21,7 +21,7 @@ global $bearsamppBins, $bearsamppLang;
 // Initialize the result array with keys 'checkport' and 'versions'.
 $result = array(
     'checkport' => '',
-    'versions' => '',
+    'versions'  => '',
 );
 
 // Retrieve the Memcached port number.
@@ -30,7 +30,7 @@ $port = $bearsamppBins->getMemcached()->getPort();
 // Retrieve localized text strings for service status.
 $textServiceStarted = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
 $textServiceStopped = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
-$textDisabled = $bearsamppLang->getValue(Lang::DISABLED);
+$textDisabled       = $bearsamppLang->getValue(Lang::DISABLED);
 
 /**
  * Check if the Memcached service is enabled and update the 'checkport' status accordingly.

@@ -25,19 +25,22 @@ class TplAppLaunchStartup
      * when the launch startup menu item is selected. It checks the current launch startup status and toggles it.
      * It uses the global language object to retrieve the localized string for the launch startup action.
      *
+     * @return array The generated menu item and actions for launching the application at startup.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return array The generated menu item and actions for launching the application at startup.
      */
     public static function process()
     {
         global $bearsamppLang;
 
         $isLaunchStartup = Util::isLaunchStartup();
+
         return TplApp::getActionMulti(
-            self::ACTION, array($isLaunchStartup ? Config::DISABLED : Config::ENABLED),
+            self::ACTION,
+            array($isLaunchStartup ? Config::DISABLED : Config::ENABLED),
             array($bearsamppLang->getValue(Lang::MENU_LAUNCH_STARTUP), $isLaunchStartup ? TplAestan::GLYPH_CHECK : ''),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
     }
 
@@ -48,7 +51,7 @@ class TplAppLaunchStartup
      * the application configuration. The action string is used to define what happens when the launch startup action
      * is triggered.
      *
-     * @param int $launchStartup The status to set for launch startup (enabled or disabled).
+     * @param   int  $launchStartup  The status to set for launch startup (enabled or disabled).
      *
      * @return string The generated action string for launching the application at startup.
      */

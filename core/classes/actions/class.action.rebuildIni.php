@@ -24,7 +24,8 @@ class ActionRebuildini
      * Upon instantiation, it deletes the existing bearsampp.ini file and creates a new one with
      * the specified configuration content.
      *
-     * @param array $args Arguments that might be used for further extension of constructor functionality.
+     * @param   array  $args  Arguments that might be used for further extension of constructor functionality.
+     *
      * @throws Exception If the bearsampp.ini file cannot be written.
      */
     public function __construct($args)

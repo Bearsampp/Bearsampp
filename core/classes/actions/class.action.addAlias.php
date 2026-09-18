@@ -34,6 +34,7 @@ class ActionAddAlias extends ActionDialogBase
     protected function getWindowTitle()
     {
         global $bearsamppLang;
+
         return $bearsamppLang->getValue(Lang::ADD_ALIAS_TITLE);
     }
 
@@ -45,6 +46,7 @@ class ActionAddAlias extends ActionDialogBase
     protected function getDialogTitle()
     {
         global $bearsamppLang;
+
         return $bearsamppLang->getValue(Lang::ADD_ALIAS_TITLE);
     }
 
@@ -62,55 +64,78 @@ class ActionAddAlias extends ActionDialogBase
     /**
      * Create the form fields for the add alias dialog.
      *
-     * @param object $bearsamppWinbinder The WinBinder instance.
+     * @param   object  $bearsamppWinbinder  The WinBinder instance.
+     *
      * @return void
      */
     protected function createFormFields($bearsamppWinbinder)
     {
         global $bearsamppLang, $bearsamppBins;
 
-        $initName = 'test';
-        $initDest = 'C:\\';
+        $initName      = 'test';
+        $initDest      = 'C:\\';
         $apachePortUri = $bearsamppBins->getApache()->getPort() != 80 ? ':' . $bearsamppBins->getApache()->getPort() : '';
 
         $this->wbLabelName = $bearsamppWinbinder->createLabel(
             $this->wbWindow,
             $bearsamppLang->getValue(Lang::ALIAS_NAME_LABEL) . ' :',
-            15, 15, 85, null, WBC_RIGHT
+            15,
+            15,
+            85,
+            null,
+            WBC_RIGHT
         );
         $this->wbInputName = $bearsamppWinbinder->createInputText(
             $this->wbWindow,
             $initName,
-            105, 13, 150, null
+            105,
+            13,
+            150,
+            null
         );
 
         $this->wbLabelDest = $bearsamppWinbinder->createLabel(
             $this->wbWindow,
             $bearsamppLang->getValue(Lang::ALIAS_DEST_LABEL) . ' :',
-            15, 45, 85, null, WBC_RIGHT
+            15,
+            45,
+            85,
+            null,
+            WBC_RIGHT
         );
         $this->wbInputDest = $bearsamppWinbinder->createInputText(
             $this->wbWindow,
             $initDest,
-            105, 43, 190, null, null, WBC_READONLY
+            105,
+            43,
+            190,
+            null,
+            null,
+            WBC_READONLY
         );
-        $this->wbBtnDest = $bearsamppWinbinder->createButton(
+        $this->wbBtnDest   = $bearsamppWinbinder->createButton(
             $this->wbWindow,
             $bearsamppLang->getValue(Lang::BUTTON_BROWSE),
-            300, 43, 110
+            300,
+            43,
+            110
         );
 
         $this->wbLabelExp = $bearsamppWinbinder->createLabel(
             $this->wbWindow,
             sprintf($bearsamppLang->getValue(Lang::ALIAS_EXP_LABEL), $apachePortUri, $initName, $initDest),
-            15, 80, 470, 50
+            15,
+            80,
+            470,
+            50
         );
     }
 
     /**
      * Get the current form values from the input controls.
      *
-     * @param object $bearsamppWinbinder The WinBinder instance.
+     * @param   object  $bearsamppWinbinder  The WinBinder instance.
+     *
      * @return array Associative array with 'name' and 'dest' keys.
      */
     protected function getFormValues($bearsamppWinbinder)
@@ -124,7 +149,8 @@ class ActionAddAlias extends ActionDialogBase
     /**
      * Validate the form input.
      *
-     * @param array $values The form values.
+     * @param   array  $values  The form values.
+     *
      * @return array ['valid' => bool, 'error' => string|null]
      */
     protected function validateInput($values)
@@ -144,7 +170,8 @@ class ActionAddAlias extends ActionDialogBase
     /**
      * Check if an alias configuration file already exists.
      *
-     * @param array $values The form values.
+     * @param   array  $values  The form values.
+     *
      * @return bool True if the alias already exists, false otherwise.
      */
     protected function itemExists($values)
@@ -156,6 +183,7 @@ class ActionAddAlias extends ActionDialogBase
                 sprintf($bearsamppLang->getValue(Lang::ALIAS_ALREADY_EXISTS), $values['name']),
                 $this->getDialogTitle()
             );
+
             return true;
         }
 
@@ -165,7 +193,8 @@ class ActionAddAlias extends ActionDialogBase
     /**
      * Save the alias configuration file.
      *
-     * @param array $values The form values.
+     * @param   array  $values  The form values.
+     *
      * @return bool True on success, false on failure.
      */
     protected function saveItem($values)
@@ -173,9 +202,9 @@ class ActionAddAlias extends ActionDialogBase
         global $bearsamppRoot, $bearsamppBins;
 
         return file_put_contents(
-            Path::getAliasPath() . '/' . $values['name'] . '.conf',
-            $bearsamppBins->getApache()->getAliasContent($values['name'], $values['dest'])
-        ) !== false;
+                Path::getAliasPath() . '/' . $values['name'] . '.conf',
+                $bearsamppBins->getApache()->getAliasContent($values['name'], $values['dest'])
+            ) !== false;
     }
 
     /**
@@ -192,7 +221,8 @@ class ActionAddAlias extends ActionDialogBase
     /**
      * Get the success message after saving.
      *
-     * @param array $values The form values.
+     * @param   array  $values  The form values.
+     *
      * @return string The localized success message.
      */
     protected function getSaveSuccessMessage($values)
@@ -200,6 +230,7 @@ class ActionAddAlias extends ActionDialogBase
         global $bearsamppLang, $bearsamppBins;
 
         $apachePortUri = $bearsamppBins->getApache()->getPort() != 80 ? ':' . $bearsamppBins->getApache()->getPort() : '';
+
         return sprintf(
             $bearsamppLang->getValue(Lang::ALIAS_CREATED),
             $values['name'],
@@ -217,6 +248,7 @@ class ActionAddAlias extends ActionDialogBase
     protected function getSaveErrorMessage()
     {
         global $bearsamppLang;
+
         return $bearsamppLang->getValue(Lang::ALIAS_CREATED_ERROR);
     }
 
@@ -267,11 +299,12 @@ class ActionAddAlias extends ActionDialogBase
     /**
      * Handle custom window events (name input change and browse button).
      *
-     * @param resource $window The window resource.
-     * @param int      $id     The control ID.
-     * @param resource $ctrl   The control resource.
-     * @param mixed    $param1 Additional parameter 1.
-     * @param mixed    $param2 Additional parameter 2.
+     * @param   resource  $window  The window resource.
+     * @param   int       $id      The control ID.
+     * @param   resource  $ctrl    The control resource.
+     * @param   mixed     $param1  Additional parameter 1.
+     * @param   mixed     $param2  Additional parameter 2.
+     *
      * @return void
      */
     protected function handleCustomEvent($window, $id, $ctrl, $param1, $param2)
@@ -279,8 +312,8 @@ class ActionAddAlias extends ActionDialogBase
         global $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
 
         $apachePortUri = $bearsamppBins->getApache()->getPort() != 80 ? ':' . $bearsamppBins->getApache()->getPort() : '';
-        $aliasName = $bearsamppWinbinder->getText($this->wbInputName[WinBinder::CTRL_OBJ]);
-        $aliasDest = $bearsamppWinbinder->getText($this->wbInputDest[WinBinder::CTRL_OBJ]);
+        $aliasName     = $bearsamppWinbinder->getText($this->wbInputName[WinBinder::CTRL_OBJ]);
+        $aliasDest     = $bearsamppWinbinder->getText($this->wbInputDest[WinBinder::CTRL_OBJ]);
 
         // Handle name input change
         if ($id == $this->wbInputName[WinBinder::CTRL_ID]) {

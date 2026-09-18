@@ -77,25 +77,31 @@ class ActionChangeDbRootPwd
      * ActionChangeDbRootPwd constructor.
      * Initializes the window and controls for changing the database root password.
      *
-     * @param array $args The arguments passed to the constructor, typically containing the database type.
+     * @param   array  $args  The arguments passed to the constructor, typically containing the database type.
      */
     public function __construct($args)
     {
         global $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;
 
         if (isset($args[0]) && !empty($args[0])) {
-            $this->bin = $bearsamppBins->getMysql();
+            $this->bin               = $bearsamppBins->getMysql();
             $this->cntProcessActions = 11;
             if ($args[0] == $bearsamppBins->getMariadb()->getName()) {
-                $this->bin = $bearsamppBins->getMariadb();
+                $this->bin               = $bearsamppBins->getMariadb();
                 $this->cntProcessActions = 11;
             } elseif ($args[0] == $bearsamppBins->getPostgresql()->getName()) {
-                $this->bin = $bearsamppBins->getPostgresql();
+                $this->bin               = $bearsamppBins->getPostgresql();
                 $this->cntProcessActions = 10;
             }
 
             $bearsamppWinbinder->reset();
-            $this->wbWindow = $bearsamppWinbinder->createAppWindow(sprintf($bearsamppLang->getValue(Lang::CHANGE_DB_ROOT_PWD_TITLE), $args[0]), 400, 290, WBC_NOTIFY, WBC_KEYDOWN | WBC_KEYUP);
+            $this->wbWindow = $bearsamppWinbinder->createAppWindow(
+                sprintf($bearsamppLang->getValue(Lang::CHANGE_DB_ROOT_PWD_TITLE), $args[0]),
+                400,
+                290,
+                WBC_NOTIFY,
+                WBC_KEYDOWN | WBC_KEYUP
+            );
 
             $this->wbLabelCurrentPwd = $bearsamppWinbinder->createLabel($this->wbWindow, $bearsamppLang->getValue(Lang::CHANGE_DB_ROOT_PWD_CURRENTPWD_LABEL), 15, 15, 280);
             $this->wbInputCurrentPwd = $bearsamppWinbinder->createInputText($this->wbWindow, null, 15, 40, 200, null, null, WBC_MASKED);
@@ -107,8 +113,8 @@ class ActionChangeDbRootPwd
             $this->wbInputNewPwd2 = $bearsamppWinbinder->createInputText($this->wbWindow, null, 15, 170, 200, null, null, WBC_MASKED);
 
             $this->wbProgressBar = $bearsamppWinbinder->createProgressBar($this->wbWindow, $this->cntProcessActions + 1, 15, 227, 190);
-            $this->wbBtnFinish = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_FINISH), 210, 222);
-            $this->wbBtnCancel = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_CANCEL), 297, 222);
+            $this->wbBtnFinish   = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_FINISH), 210, 222);
+            $this->wbBtnCancel   = $bearsamppWinbinder->createButton($this->wbWindow, $bearsamppLang->getValue(Lang::BUTTON_CANCEL), 297, 222);
 
             $bearsamppWinbinder->setHandler($this->wbWindow, $this, 'processWindow');
             $bearsamppWinbinder->setFocus($this->wbInputCurrentPwd[WinBinder::CTRL_OBJ]);
@@ -120,19 +126,19 @@ class ActionChangeDbRootPwd
     /**
      * Processes the window events and handles the password change logic.
      *
-     * @param object $window The window object.
-     * @param int $id The control ID that triggered the event.
-     * @param object $ctrl The control object that triggered the event.
-     * @param mixed $param1 Additional parameter 1.
-     * @param mixed $param2 Additional parameter 2.
+     * @param   object  $window  The window object.
+     * @param   int     $id      The control ID that triggered the event.
+     * @param   object  $ctrl    The control object that triggered the event.
+     * @param   mixed   $param1  Additional parameter 1.
+     * @param   mixed   $param2  Additional parameter 2.
      */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppLang, $bearsamppWinbinder;
-        $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHANGE_DB_ROOT_PWD_TITLE), $this->bin);
+        $boxTitle   = sprintf($bearsamppLang->getValue(Lang::CHANGE_DB_ROOT_PWD_TITLE), $this->bin);
         $currentPwd = $bearsamppWinbinder->getText($this->wbInputCurrentPwd[WinBinder::CTRL_OBJ]);
-        $newPwd1 = $bearsamppWinbinder->getText($this->wbInputNewPwd1[WinBinder::CTRL_OBJ]);
-        $newPwd2 = $bearsamppWinbinder->getText($this->wbInputNewPwd2[WinBinder::CTRL_OBJ]);
+        $newPwd1    = $bearsamppWinbinder->getText($this->wbInputNewPwd1[WinBinder::CTRL_OBJ]);
+        $newPwd2    = $bearsamppWinbinder->getText($this->wbInputNewPwd2[WinBinder::CTRL_OBJ]);
 
         switch ($id) {
             case $this->wbBtnFinish[WinBinder::CTRL_ID]:
@@ -170,7 +176,8 @@ class ActionChangeDbRootPwd
 
                 $bearsamppWinbinder->messageBoxInfo(
                     $bearsamppLang->getValue(Lang::CHANGE_DB_ROOT_PWD_TEXT),
-                    $boxTitle);
+                    $boxTitle
+                );
                 $bearsamppWinbinder->destroyWindow($window);
                 break;
             case IDCLOSE:

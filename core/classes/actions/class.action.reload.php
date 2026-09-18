@@ -19,13 +19,13 @@ class ActionReload
     /**
      * Constructs an ActionReload object and performs various refresh operations.
      *
-     * @param array $args The arguments passed to the constructor.
+     * @param   array   $args              The arguments passed to the constructor.
      *
-     * @global Root $bearsamppRoot The root object of the Bearsampp application.
-     * @global Core $bearsamppCore The core object of the Bearsampp application.
-     * @global Config $bearsamppConfig The configuration object of the Bearsampp application.
-     * @global Bins $bearsamppBins The bins object containing various binaries used by the Bearsampp application.
-     * @global Apps $bearsamppApps The apps object containing various applications used by the Bearsampp application.
+     * @global Root     $bearsamppRoot     The root object of the Bearsampp application.
+     * @global Core     $bearsamppCore     The core object of the Bearsampp application.
+     * @global Config   $bearsamppConfig   The configuration object of the Bearsampp application.
+     * @global Bins     $bearsamppBins     The bins object containing various binaries used by the Bearsampp application.
+     * @global Apps     $bearsamppApps     The apps object containing various applications used by the Bearsampp application.
      * @global Homepage $bearsamppHomepage The homepage object for managing homepage-related settings and content.
      */
     public function __construct($args)
@@ -55,7 +55,7 @@ class ActionReload
 
         $runningServices = array();
         $stoppedServices = array();
-        $services = $bearsamppBins->getServices();
+        $services        = $bearsamppBins->getServices();
         foreach ($dbServiceNames as $serviceName) {
             if (isset($services[$serviceName]) && $services[$serviceName] != null && $services[$serviceName]->isRunning()) {
                 $runningServices[] = $serviceName;
@@ -161,11 +161,11 @@ class ActionReload
 
             // Write reload status file for UI to poll and display results
             $reloadStatusFile = Path::getLogsPath() . '/reload-status.json';
-            $reloadStatus = array(
-                'timestamp' => time(),
+            $reloadStatus     = array(
+                'timestamp'       => time(),
                 'stoppedServices' => $stoppedServices,
-                'failedServices' => $failedServices,
-                'success' => empty($failedServices)
+                'failedServices'  => $failedServices,
+                'success'         => empty($failedServices)
             );
 
             // Atomic write: write to temp file, then rename to final path to prevent partial reads

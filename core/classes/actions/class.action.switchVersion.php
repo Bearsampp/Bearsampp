@@ -133,7 +133,7 @@ class ActionSwitchVersion
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
                         'path'      => Path::getModuleRootPath($bearsamppBins->getPostgresql()) . '/' . $folder,
-                        'includes'  => array( '.conf', '.bat'),
+                        'includes'  => array('.conf', '.bat'),
                         'recursive' => true
                     );
                 }
@@ -155,7 +155,7 @@ class ActionSwitchVersion
                         'recursive' => false
                     );
                 }
-            }  elseif ($args[0] == $bearsamppBins->getMemcached()->getName()) {
+            } elseif ($args[0] == $bearsamppBins->getMemcached()->getName()) {
                 $this->bin            = $bearsamppBins->getMemcached();
                 $this->currentVersion = $bearsamppBins->getMemcached()->getVersion();
                 $this->service        = $bearsamppBins->getMemcached()->getService();
@@ -298,29 +298,35 @@ class ActionSwitchVersion
         // Store current registry value for comparison
         global $bearsamppRegistry;
         $currentRegValue = $bearsamppRegistry->getAppBinsRegKey(false);
-        $regEntry = Registry::APP_BINS_REG_ENTRY;
+        $regEntry        = Registry::APP_BINS_REG_ENTRY;
 
-        Log::trace(sprintf(
-            'Starting registry adjustment for key: %s | Current value: %s',
-            $regEntry,
-            $currentRegValue
-        ));
+        Log::trace(
+            sprintf(
+                'Starting registry adjustment for key: %s | Current value: %s',
+                $regEntry,
+                $currentRegValue
+            )
+        );
 
         // Perform the registry update
         $newRegValue = $bearsamppRegistry->setAppBinsRegKey($currentRegValue);
 
-        $this->bearsamppSplash->setTextLoading(sprintf(
-            $bearsamppLang->getValue(Lang::SWITCH_VERSION_REGISTRY),
-            $regEntry
-        ));
+        $this->bearsamppSplash->setTextLoading(
+            sprintf(
+                $bearsamppLang->getValue(Lang::SWITCH_VERSION_REGISTRY),
+                $regEntry
+            )
+        );
 
         $this->bearsamppSplash->incrProgressBar(2);
-        Log::trace(sprintf(
-            'Registry update completed | Key: %s | New value: %s | Previous value: %s',
-            $regEntry,
-            $newRegValue,
-            $currentRegValue
-        ));
+        Log::trace(
+            sprintf(
+                'Registry update completed | Key: %s | New value: %s | Previous value: %s',
+                $regEntry,
+                $newRegValue,
+                $currentRegValue
+            )
+        );
 
         $this->bearsamppSplash->setTextLoading($bearsamppLang->getValue(Lang::SWITCH_VERSION_RESET_SERVICES));
 
@@ -355,8 +361,8 @@ class ActionSwitchVersion
     private function updateConfigVersion(): void
     {
         $bearsamppConfig = new Config();
-        $configSection = '';
-        $version = $this->version; // Ensure version is available in scope
+        $configSection   = '';
+        $version         = $this->version; // Ensure version is available in scope
 
         // Determine the correct configuration section based on binary type
         if ($this->bin->getName() == $GLOBALS['bearsamppBins']->getApache()->getName()) {

@@ -23,9 +23,9 @@ class TplAppPython
     /**
      * Generates the main Python menu with options to access Python tools.
      *
+     * @return string The generated menu items and actions for Python.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return string The generated menu items and actions for Python.
      */
     public static function process()
     {
@@ -37,10 +37,10 @@ class TplAppPython
     /**
      * Generates the Python menu with options for accessing the Python console, IDLE, and other tools.
      *
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @return string The generated menu items and actions for Python tools.
      * @global object $bearsamppTools Provides access to various tools and their configurations.
      *
-     * @return string The generated menu items and actions for Python tools.
+     * @global object $bearsamppLang  Provides language support for retrieving language-specific values.
      */
     public static function getMenuPython()
     {
@@ -48,20 +48,20 @@ class TplAppPython
 
         // Generate menu item for Python console
         $resultItems = TplAestan::getItemPowerShell(
-            $bearsamppLang->getValue(Lang::PYTHON_CONSOLE),
-            TplAestan::GLYPH_PYTHON,
-            null,
-            $bearsamppTools->getPowerShell()->getTabTitlePython(),
-            Path::getModuleSymlinkPath($bearsamppTools->getPython()),
-            null
-        ) . PHP_EOL;
+                $bearsamppLang->getValue(Lang::PYTHON_CONSOLE),
+                TplAestan::GLYPH_PYTHON,
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitlePython(),
+                Path::getModuleSymlinkPath($bearsamppTools->getPython()),
+                null
+            ) . PHP_EOL;
 
         // Generate menu item for Python IDLE
         $resultItems .= TplAestan::getItemExe(
-            $bearsamppLang->getValue(Lang::PYTHON) . ' IDLE',
-            $bearsamppTools->getPython()->getIdleExe(),
-            TplAestan::GLYPH_PYTHON
-        ) . PHP_EOL;
+                $bearsamppLang->getValue(Lang::PYTHON) . ' IDLE',
+                $bearsamppTools->getPython()->getIdleExe(),
+                TplAestan::GLYPH_PYTHON
+            ) . PHP_EOL;
 
         return $resultItems;
     }

@@ -17,26 +17,26 @@ global $bearsamppRoot, $bearsamppBins, $bearsamppLang;
 
 // Initialize result array
 $result = array(
-    'checkport' => '',
-    'versions' => '',
+    'checkport'    => '',
+    'versions'     => '',
     'modulescount' => '',
     'aliasescount' => '',
-    'vhostscount' => '',
-    'moduleslist' => '',
-    'aliaseslist' => '',
+    'vhostscount'  => '',
+    'moduleslist'  => '',
+    'aliaseslist'  => '',
     'wwwdirectory' => '',
-    'vhostslist' => '',
+    'vhostslist'   => '',
 );
 
 /**
  * Check the status of Apache ports and update the result array.
  */
-$port = $bearsamppBins->getApache()->getPort();
+$port    = $bearsamppBins->getApache()->getPort();
 $sslPort = $bearsamppBins->getApache()->getSslPort();
 
 $textServiceStarted = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
 $textServiceStopped = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
-$textDisabled = $bearsamppLang->getValue(Lang::DISABLED);
+$textDisabled       = $bearsamppLang->getValue(Lang::DISABLED);
 
 if ($bearsamppBins->getApache()->isEnable()) {
     if ($bearsamppBins->getApache()->checkPort($sslPort, true)) {
@@ -58,7 +58,7 @@ if ($bearsamppBins->getApache()->isEnable()) {
  */
 foreach ($bearsamppBins->getApache()->getVersionList() as $version) {
     $versionBadge = '<span class="m-1 badge text-bg-%s">%s</span>';
-    $isCurrent = $version === $bearsamppBins->getApache()->getVersion();
+    $isCurrent    = $version === $bearsamppBins->getApache()->getVersion();
 
     $result['versions'] .= sprintf(
         $versionBadge,
@@ -70,8 +70,8 @@ foreach ($bearsamppBins->getApache()->getVersionList() as $version) {
 /**
  * Count and format the number of Apache modules.
  */
-$modules = count($bearsamppBins->getApache()->getModules());
-$modulesLoaded = count($bearsamppBins->getApache()->getModulesLoaded());
+$modules                = count($bearsamppBins->getApache()->getModules());
+$modulesLoaded          = count($bearsamppBins->getApache()->getModulesLoaded());
 $result['modulescount'] .= '<span class="m-1 float-end badge text-bg-primary">' . $modulesLoaded . ' / ' . $modules . '</span>';
 
 /**
@@ -99,14 +99,18 @@ foreach ($bearsamppBins->getApache()->getModulesFromConf() as $moduleName => $mo
  * Retrieve and format the list of Apache aliases.
  */
 foreach ($bearsamppBins->getApache()->getAlias() as $alias) {
-    $result['aliaseslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="' . Path::getLocalUrl($alias) . '"><i class="fa-solid fa-link"></i> ' . $alias . '</a></div>';
+    $result['aliaseslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="' . Path::getLocalUrl(
+            $alias
+        ) . '"><i class="fa-solid fa-link"></i> ' . $alias . '</a></div>';
 }
 
 /**
  * Retrieve and format the list of Apache www directories.
  */
 foreach ($bearsamppBins->getApache()->getWwwDirectories() as $wwwDirectory) {
-    $result['wwwdirectory'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="' . Path::getLocalUrl($wwwDirectory) . '"><i class="fa-solid fa-link"></i> ' . $wwwDirectory . '</a></div>';
+    $result['wwwdirectory'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="' . Path::getLocalUrl(
+            $wwwDirectory
+        ) . '"><i class="fa-solid fa-link"></i> ' . $wwwDirectory . '</a></div>';
 }
 
 /**

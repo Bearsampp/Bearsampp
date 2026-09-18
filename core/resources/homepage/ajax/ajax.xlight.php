@@ -6,6 +6,7 @@
  * Website: https://bearsampp.com
  * Github: https://github.com/Bearsampp
  */
+
 global $bearsamppBins, $bearsamppLang;
 
 /**
@@ -17,7 +18,7 @@ global $bearsamppBins, $bearsamppLang;
 // Initialize result array
 $result = array(
     'checkport' => '',
-    'versions' => '',
+    'versions'  => '',
 );
 
 // Check SMTP port
@@ -25,7 +26,7 @@ $port = $bearsamppBins->getXlight()->getPort();
 
 $textServiceStarted = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
 $textServiceStopped = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
-$textDisabled = $bearsamppLang->getValue(Lang::DISABLED);
+$textDisabled       = $bearsamppLang->getValue(Lang::DISABLED);
 
 /**
  * Check if the Xlight service is running on the specified port.

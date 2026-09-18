@@ -53,22 +53,24 @@ abstract class Module
      * Constructor for the Module class.
      * Initializes the module with default values.
      */
-    protected function __construct() {
+    protected function __construct()
+    {
         // Initialization logic can be added here if needed
     }
 
     /**
      * Reloads the module configuration based on the provided ID and type.
      *
-     * @param string|null $id The ID of the module. If null, the current ID is used.
-     * @param string|null $type The type of the module. If null, the current type is used.
+     * @param   string|null  $id    The ID of the module. If null, the current ID is used.
+     * @param   string|null  $type  The type of the module. If null, the current type is used.
      */
-    protected function reload($id = null, $type = null) {
+    protected function reload($id = null, $type = null)
+    {
         global $bearsamppRoot;
 
-        $this->id = empty($id) ? $this->id : $id;
+        $this->id   = empty($id) ? $this->id : $id;
         $this->type = empty($type) ? $this->type : $type;
-        $mainPath = 'N/A';
+        $mainPath   = 'N/A';
 
         switch ($this->type) {
             case Apps::TYPE:
@@ -82,10 +84,10 @@ abstract class Module
                 break;
         }
 
-        $this->rootPath = $mainPath . '/' . $this->id;
-        $this->currentPath = $this->rootPath . '/' . $this->id . $this->version;
-        $this->symlinkPath = $this->rootPath . '/current';
-        $this->enable = is_dir($this->currentPath);
+        $this->rootPath      = $mainPath . '/' . $this->id;
+        $this->currentPath   = $this->rootPath . '/' . $this->id . $this->version;
+        $this->symlinkPath   = $this->rootPath . '/current';
+        $this->enable        = is_dir($this->currentPath);
         $this->bearsamppConf = $this->currentPath . '/bearsampp.conf';
 
         $cacheKey = md5($this->bearsamppConf);
@@ -93,12 +95,14 @@ abstract class Module
             // CacheManager handles both disk cache and parsing
             $data = CacheManager::load(
                 $this->bearsamppConf,
-                function($path) { return @parse_ini_file($path) ?: []; },
+                function ($path) {
+                    return @parse_ini_file($path) ?: [];
+                },
                 $cacheKey
             );
 
             if (!empty($data)) {
-                $this->bearsamppConfRaw = $data;
+                $this->bearsamppConfRaw       = $data;
                 self::$configCache[$cacheKey] = $this->bearsamppConfRaw;
             } else {
                 $this->bearsamppConfRaw = [];
@@ -117,20 +121,23 @@ abstract class Module
     /**
      * Replaces a specific key-value pair in the configuration file.
      *
-     * @param string $key The key to replace.
-     * @param string $value The new value for the key.
+     * @param   string  $key    The key to replace.
+     * @param   string  $value  The new value for the key.
      */
-    protected function replace($key, $value) {
+    protected function replace($key, $value)
+    {
         $this->replaceAll(array($key => $value));
     }
 
     /**
      * Replaces multiple key-value pairs in the configuration file.
      *
-     * @param array $params An associative array of key-value pairs to replace.
+     * @param   array  $params  An associative array of key-value pairs to replace.
+     *
      * @throws RuntimeException If the configuration key or value is invalid.
      */
-    protected function replaceAll($params) {
+    protected function replaceAll($params)
+    {
         $content = file_get_contents($this->bearsamppConf);
 
         foreach ($params as $key => $value) {
@@ -145,7 +152,7 @@ abstract class Module
                 throw new RuntimeException('Invalid configuration value for key: ' . $key);
             }
 
-            $content = preg_replace('|' . preg_quote($key, '|') . ' = .*|', $key . ' = ' . '"' . $value . '"', $content);
+            $content                      = preg_replace('|' . preg_quote($key, '|') . ' = .*|', $key . ' = ' . '"' . $value . '"', $content);
             $this->bearsamppConfRaw[$key] = $value;
         }
 
@@ -159,9 +166,10 @@ abstract class Module
      * Invalidates the configuration cache for a given source path.
      * Clears both in-memory cache and disk cache via CacheManager.
      *
-     * @param string $sourcePath The path to the configuration file to invalidate cache for.
+     * @param   string  $sourcePath  The path to the configuration file to invalidate cache for.
      */
-    public static function invalidateConfigCacheForPath($sourcePath) {
+    public static function invalidateConfigCacheForPath($sourcePath)
+    {
         $cacheKey = md5($sourcePath);
         unset(self::$configCache[$cacheKey]);
         CacheManager::invalidate($sourcePath);
@@ -170,28 +178,31 @@ abstract class Module
     /**
      * Clears all in-memory configuration caches.
      */
-    public static function clearMemoryCache() {
+    public static function clearMemoryCache()
+    {
         self::$configCache = array();
     }
 
     /**
      * Updates the module configuration.
      *
-     * @param int $sub The sub-level for logging indentation.
-     * @param bool $showWindow Whether to show a window during the update process.
+     * @param   int   $sub         The sub-level for logging indentation.
+     * @param   bool  $showWindow  Whether to show a window during the update process.
      */
-    public function update($sub = 0, $showWindow = false) {
+    public function update($sub = 0, $showWindow = false)
+    {
         $this->updateConfig(null, $sub, $showWindow);
     }
 
     /**
      * Updates the module configuration with a specific version.
      *
-     * @param string|null $version The version to update to. If null, the current version is used.
-     * @param int $sub The sub-level for logging indentation.
-     * @param bool $showWindow Whether to show a window during the update process.
+     * @param   string|null  $version     The version to update to. If null, the current version is used.
+     * @param   int          $sub         The sub-level for logging indentation.
+     * @param   bool         $showWindow  Whether to show a window during the update process.
      */
-    protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
+    protected function updateConfig($version = null, $sub = 0, $showWindow = false)
+    {
         $version = $version == null ? $this->version : $version;
         Log::debug(($sub > 0 ? str_repeat(' ', 2 * $sub) : '') . 'Update ' . $this->name . ' ' . $version . ' config');
     }
@@ -201,7 +212,8 @@ abstract class Module
      *
      * @return string The name of the module.
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getName();
     }
 
@@ -210,7 +222,8 @@ abstract class Module
      *
      * @return string The type of the module.
      */
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
@@ -219,7 +232,8 @@ abstract class Module
      *
      * @return string The ID of the module.
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -228,7 +242,8 @@ abstract class Module
      *
      * @return string The name of the module.
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
@@ -237,7 +252,8 @@ abstract class Module
      *
      * @return string The version of the module.
      */
-    public function getVersion() {
+    public function getVersion()
+    {
         return $this->version;
     }
 
@@ -246,14 +262,15 @@ abstract class Module
      *
      * @return array The list of available versions.
      */
-    public function getVersionList() {
+    public function getVersionList()
+    {
         return Util::getVersionList($this->rootPath);
     }
 
     /**
      * Sets the version of the module.
      *
-     * @param string $version The version to set.
+     * @param   string  $version  The version to set.
      */
     abstract public function setVersion($version);
 
@@ -262,7 +279,8 @@ abstract class Module
      *
      * @return string The release information.
      */
-    public function getRelease() {
+    public function getRelease()
+    {
         return $this->release;
     }
 
@@ -272,7 +290,8 @@ abstract class Module
      *
      * @return bool True if the module is enabled, false otherwise.
      */
-    public function isEnable() {
+    public function isEnable()
+    {
         return $this->enable;
     }
 

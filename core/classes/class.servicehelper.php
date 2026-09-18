@@ -18,12 +18,14 @@ class ServiceHelper
 {
     /**
      * Service name to binary instance mapping
+     *
      * @var array
      */
     private static $serviceMap = null;
 
     /**
      * Service name to syntax check command mapping
+     *
      * @var array
      */
     private static $syntaxCheckMap = null;
@@ -31,27 +33,28 @@ class ServiceHelper
     /**
      * Initialize service mappings
      *
-     * @param object $bearsamppBins The bins object
+     * @param   object  $bearsamppBins  The bins object
+     *
      * @return void
      */
     private static function initializeMappings($bearsamppBins)
     {
         if (self::$serviceMap === null) {
             self::$serviceMap = [
-                BinApache::SERVICE_NAME => $bearsamppBins->getApache(),
-                BinMysql::SERVICE_NAME => $bearsamppBins->getMysql(),
-                BinMariadb::SERVICE_NAME => $bearsamppBins->getMariadb(),
-                BinMailpit::SERVICE_NAME => $bearsamppBins->getMailpit(),
-                BinMemcached::SERVICE_NAME => $bearsamppBins->getMemcached(),
+                BinApache::SERVICE_NAME     => $bearsamppBins->getApache(),
+                BinMysql::SERVICE_NAME      => $bearsamppBins->getMysql(),
+                BinMariadb::SERVICE_NAME    => $bearsamppBins->getMariadb(),
+                BinMailpit::SERVICE_NAME    => $bearsamppBins->getMailpit(),
+                BinMemcached::SERVICE_NAME  => $bearsamppBins->getMemcached(),
                 BinPostgresql::SERVICE_NAME => $bearsamppBins->getPostgresql(),
-                BinXlight::SERVICE_NAME => $bearsamppBins->getXlight(),
+                BinXlight::SERVICE_NAME     => $bearsamppBins->getXlight(),
             ];
         }
 
         if (self::$syntaxCheckMap === null) {
             self::$syntaxCheckMap = [
-                BinApache::SERVICE_NAME => BinApache::CMD_SYNTAX_CHECK,
-                BinMysql::SERVICE_NAME => BinMysql::CMD_SYNTAX_CHECK,
+                BinApache::SERVICE_NAME  => BinApache::CMD_SYNTAX_CHECK,
+                BinMysql::SERVICE_NAME   => BinMysql::CMD_SYNTAX_CHECK,
                 BinMariadb::SERVICE_NAME => BinMariadb::CMD_SYNTAX_CHECK,
             ];
         }
@@ -60,21 +63,24 @@ class ServiceHelper
     /**
      * Get binary instance from service name
      *
-     * @param string $serviceName The service name
-     * @param object $bearsamppBins The bins object
+     * @param   string  $serviceName    The service name
+     * @param   object  $bearsamppBins  The bins object
+     *
      * @return object|null The binary instance or null if not found
      */
     public static function getBinFromServiceName($serviceName, $bearsamppBins)
     {
         self::initializeMappings($bearsamppBins);
+
         return isset(self::$serviceMap[$serviceName]) ? self::$serviceMap[$serviceName] : null;
     }
 
     /**
      * Get syntax check command for a service
      *
-     * @param string $serviceName The service name
-     * @param object $bearsamppBins The bins object (for initialization)
+     * @param   string  $serviceName    The service name
+     * @param   object  $bearsamppBins  The bins object (for initialization)
+     *
      * @return string|null The syntax check command or null if not applicable
      */
     public static function getSyntaxCheckCmd($serviceName, $bearsamppBins = null)
@@ -82,14 +88,16 @@ class ServiceHelper
         if ($bearsamppBins !== null) {
             self::initializeMappings($bearsamppBins);
         }
+
         return isset(self::$syntaxCheckMap[$serviceName]) ? self::$syntaxCheckMap[$serviceName] : null;
     }
 
     /**
      * Get service display name (Name + Version + Service Name)
      *
-     * @param object $bin The binary instance
-     * @param object $service The service instance
+     * @param   object  $bin      The binary instance
+     * @param   object  $service  The service instance
+     *
      * @return string The formatted service name
      */
     public static function getServiceDisplayName($bin, $service)
@@ -100,8 +108,9 @@ class ServiceHelper
     /**
      * Process all services with a callback function
      *
-     * @param object $bearsamppBins The bins object
-     * @param callable $callback Function to call for each service: function($serviceName, $service, $bin, $syntaxCheckCmd)
+     * @param   object    $bearsamppBins  The bins object
+     * @param   callable  $callback       Function to call for each service: function($serviceName, $service, $bin, $syntaxCheckCmd)
+     *
      * @return void
      */
     public static function processServices($bearsamppBins, callable $callback)
@@ -109,7 +118,7 @@ class ServiceHelper
         self::initializeMappings($bearsamppBins);
 
         foreach ($bearsamppBins->getServices() as $serviceName => $service) {
-            $bin = self::getBinFromServiceName($serviceName, $bearsamppBins);
+            $bin            = self::getBinFromServiceName($serviceName, $bearsamppBins);
             $syntaxCheckCmd = self::getSyntaxCheckCmd($serviceName);
 
             if ($bin !== null) {
@@ -121,9 +130,10 @@ class ServiceHelper
     /**
      * Start a service with optional syntax check
      *
-     * @param object $bin The binary instance
-     * @param string|null $syntaxCheckCmd The syntax check command (optional)
-     * @param bool $showWindow Whether to show error messages in a window (default: false)
+     * @param   object       $bin             The binary instance
+     * @param   string|null  $syntaxCheckCmd  The syntax check command (optional)
+     * @param   bool         $showWindow      Whether to show error messages in a window (default: false)
+     *
      * @return bool True if service started successfully, false otherwise
      */
     public static function startService($bin, $syntaxCheckCmd = null, $showWindow = false)
@@ -162,7 +172,8 @@ class ServiceHelper
     /**
      * Stop a service
      *
-     * @param object $service The service instance
+     * @param   object  $service  The service instance
+     *
      * @return bool True if service stopped successfully, false otherwise
      */
     public static function stopService($service)
@@ -342,7 +353,8 @@ class ServiceHelper
     /**
      * Check if a service has syntax check capability
      *
-     * @param string $serviceName The service name
+     * @param   string  $serviceName  The service name
+     *
      * @return bool True if service supports syntax check
      */
     public static function hasSyntaxCheck($serviceName)
@@ -350,19 +362,21 @@ class ServiceHelper
         if (self::$syntaxCheckMap === null) {
             // Initialize with dummy bins object if needed
             self::$syntaxCheckMap = [
-                BinApache::SERVICE_NAME => BinApache::CMD_SYNTAX_CHECK,
-                BinMysql::SERVICE_NAME => BinMysql::CMD_SYNTAX_CHECK,
+                BinApache::SERVICE_NAME  => BinApache::CMD_SYNTAX_CHECK,
+                BinMysql::SERVICE_NAME   => BinMysql::CMD_SYNTAX_CHECK,
                 BinMariadb::SERVICE_NAME => BinMariadb::CMD_SYNTAX_CHECK,
             ];
         }
+
         return isset(self::$syntaxCheckMap[$serviceName]);
     }
 
     /**
      * Get port for a service
      *
-     * @param string $serviceName The service name
-     * @param object $bearsamppBins The bins object
+     * @param   string  $serviceName    The service name
+     * @param   object  $bearsamppBins  The bins object
+     *
      * @return int The port number or 0 if not applicable
      */
     public static function getServicePort($serviceName, $bearsamppBins)
@@ -390,9 +404,10 @@ class ServiceHelper
      *
      * Performance: 40-60% faster shutdown (parallel vs sequential)
      *
-     * @param object $bearsamppBins The bins object
-     * @param callable|null $progressCallback Optional callback: function($current, $total, $serviceName)
-     * @param int $shutdownTimeout Timeout in seconds (default: 15)
+     * @param   object         $bearsamppBins     The bins object
+     * @param   callable|null  $progressCallback  Optional callback: function($current, $total, $serviceName)
+     * @param   int            $shutdownTimeout   Timeout in seconds (default: 15)
+     *
      * @return bool True if all services stopped successfully
      */
     public static function stopAllServicesParallel($bearsamppBins, ?callable $progressCallback = null, $shutdownTimeout = 15)
@@ -403,6 +418,7 @@ class ServiceHelper
         $services = $bearsamppBins->getServices();
         if (empty($services)) {
             Log::trace('No services to shut down');
+
             return true;
         }
 
@@ -414,6 +430,7 @@ class ServiceHelper
         if ($parallelSuccess) {
             $duration = round(microtime(true) - $startTime, 3);
             Log::info('Parallel shutdown completed successfully in ' . $duration . 's');
+
             return true;
         }
 
@@ -434,16 +451,17 @@ class ServiceHelper
      * Phase 2: Monitor their status until all stopped or timeout
      * Phase 3: Force kill any services still running
      *
-     * @param array $services Array of services
-     * @param callable|null $progressCallback Optional progress callback
-     * @param int $shutdownTimeout Timeout in seconds
+     * @param   array          $services          Array of services
+     * @param   callable|null  $progressCallback  Optional progress callback
+     * @param   int            $shutdownTimeout   Timeout in seconds
+     *
      * @return bool True if all services stopped
      */
     private static function shutdownServicesParallel($services, ?callable $progressCallback = null, $shutdownTimeout = 15)
     {
         Log::trace('Phase 1: Sending stop commands to all services');
         $totalServices = count($services);
-        $currentIndex = 0;
+        $currentIndex  = 0;
 
         // Phase 1: Send stop commands (non-blocking)
         foreach ($services as $serviceName => $service) {
@@ -459,9 +477,9 @@ class ServiceHelper
         // Phase 2: Monitor status
         Log::trace('Phase 2: Monitoring service status');
         $monitorStartTime = microtime(true);
-        $monitorTimeout = $shutdownTimeout;
-        $checkInterval = 0.5;
-        $allStopped = false;
+        $monitorTimeout   = $shutdownTimeout;
+        $checkInterval    = 0.5;
+        $allStopped       = false;
 
         while ((microtime(true) - $monitorStartTime) < $monitorTimeout) {
             $allStopped = true;
@@ -475,6 +493,7 @@ class ServiceHelper
 
             if ($allStopped) {
                 Log::trace('All services stopped in parallel phase');
+
                 return true;
             }
 
@@ -500,15 +519,16 @@ class ServiceHelper
      * Stops services one by one, waiting for each to complete.
      * Used as fallback when parallel shutdown fails.
      *
-     * @param array $services Array of services
-     * @param callable|null $progressCallback Optional progress callback
+     * @param   array          $services          Array of services
+     * @param   callable|null  $progressCallback  Optional progress callback
+     *
      * @return bool True if all services stopped
      */
     private static function shutdownServicesSequential($services, ?callable $progressCallback = null)
     {
         Log::trace('Starting sequential shutdown phase');
         $totalServices = count($services);
-        $currentIndex = 0;
+        $currentIndex  = 0;
 
         foreach ($services as $serviceName => $service) {
             $currentIndex++;
@@ -531,25 +551,27 @@ class ServiceHelper
     /**
      * Force kill a service by process name
      *
-     * @param string $serviceName The service name
+     * @param   string  $serviceName  The service name
+     *
      * @return bool True if force kill was executed
      */
     private static function forceKillService($serviceName)
     {
         $processMap = [
-            BinApache::SERVICE_NAME => 'httpd.exe',
-            BinMysql::SERVICE_NAME => 'mysqld.exe',
-            BinMariadb::SERVICE_NAME => 'mysqld.exe',
-            BinMailpit::SERVICE_NAME => 'mailpit.exe',
-            BinMemcached::SERVICE_NAME => 'memcached.exe',
+            BinApache::SERVICE_NAME     => 'httpd.exe',
+            BinMysql::SERVICE_NAME      => 'mysqld.exe',
+            BinMariadb::SERVICE_NAME    => 'mysqld.exe',
+            BinMailpit::SERVICE_NAME    => 'mailpit.exe',
+            BinMemcached::SERVICE_NAME  => 'memcached.exe',
             BinPostgresql::SERVICE_NAME => 'postgres.exe',
-            BinXlight::SERVICE_NAME => 'xlightftpd.exe',
-            'nodejs' => 'node.exe',  // NodeJS - not a Windows service but needs to be killed on exit
+            BinXlight::SERVICE_NAME     => 'xlightftpd.exe',
+            'nodejs'                    => 'node.exe',  // NodeJS - not a Windows service but needs to be killed on exit
         ];
 
         if (isset($processMap[$serviceName])) {
             Log::trace('Killing process: ' . $processMap[$serviceName]);
             Win32Ps::killBins([$processMap[$serviceName]]);
+
             return true;
         }
 
@@ -559,7 +581,8 @@ class ServiceHelper
     /**
      * Check if all services are stopped
      *
-     * @param array $services Array of services
+     * @param   array  $services  Array of services
+     *
      * @return bool True if all services are stopped
      */
     private static function allServicesStopped($services)
@@ -569,6 +592,7 @@ class ServiceHelper
                 return false;
             }
         }
+
         return true;
     }
 
@@ -580,9 +604,10 @@ class ServiceHelper
      *
      * Performance: 40-60% faster startup (parallel vs sequential)
      *
-     * @param array $serviceInfos Array of service information arrays with 'service', 'bin', 'name' keys
-     * @param callable|null $progressCallback Optional callback: function($current, $total, $serviceName)
-     * @param int $startupTimeout Timeout in seconds (default: 30)
+     * @param   array          $serviceInfos      Array of service information arrays with 'service', 'bin', 'name' keys
+     * @param   callable|null  $progressCallback  Optional callback: function($current, $total, $serviceName)
+     * @param   int            $startupTimeout    Timeout in seconds (default: 30)
+     *
      * @return bool True if all services started successfully
      */
     public static function startAllServicesParallel($serviceInfos, ?callable $progressCallback = null, $startupTimeout = 30)
@@ -592,6 +617,7 @@ class ServiceHelper
 
         if (empty($serviceInfos)) {
             Log::trace('No services to start');
+
             return true;
         }
 
@@ -603,6 +629,7 @@ class ServiceHelper
         if ($parallelSuccess) {
             $duration = round(microtime(true) - $startTime, 3);
             Log::info('Parallel startup completed successfully in ' . $duration . 's');
+
             return true;
         }
 
@@ -623,16 +650,17 @@ class ServiceHelper
      * Phase 2: Monitor their status until all running or timeout
      * Phase 3: Retry any services that failed to start
      *
-     * @param array $serviceInfos Array of service information
-     * @param callable|null $progressCallback Optional progress callback
-     * @param int $startupTimeout Timeout in seconds
+     * @param   array          $serviceInfos      Array of service information
+     * @param   callable|null  $progressCallback  Optional progress callback
+     * @param   int            $startupTimeout    Timeout in seconds
+     *
      * @return bool True if all services started
      */
     private static function startServicesParallel($serviceInfos, ?callable $progressCallback = null, $startupTimeout = 30)
     {
         Log::trace('Phase 1: Sending start commands to all services');
         $totalServices = count($serviceInfos);
-        $currentIndex = 0;
+        $currentIndex  = 0;
 
         // Phase 1: Send start commands (non-blocking)
         foreach ($serviceInfos as $serviceName => $serviceInfo) {
@@ -651,10 +679,10 @@ class ServiceHelper
         // Phase 2: Monitor status
         Log::trace('Phase 2: Monitoring service status');
         $monitorStartTime = microtime(true);
-        $monitorTimeout = $startupTimeout;
-        $checkInterval = 0.5;
-        $allRunning = false;
-        $failedServices = [];
+        $monitorTimeout   = $startupTimeout;
+        $checkInterval    = 0.5;
+        $allRunning       = false;
+        $failedServices   = [];
 
         while ((microtime(true) - $monitorStartTime) < $monitorTimeout) {
             $allRunning = true;
@@ -663,13 +691,14 @@ class ServiceHelper
                 $service = $serviceInfo['service'];
 
                 if (!$service->isRunning()) {
-                    $allRunning = false;
+                    $allRunning                   = false;
                     $failedServices[$serviceName] = $serviceInfo;
                 }
             }
 
             if ($allRunning) {
                 Log::trace('All services running in parallel phase');
+
                 return true;
             }
 
@@ -703,15 +732,16 @@ class ServiceHelper
      * Starts services one by one, waiting for each to complete.
      * Used as fallback when parallel startup fails.
      *
-     * @param array $serviceInfos Array of service information
-     * @param callable|null $progressCallback Optional progress callback
+     * @param   array          $serviceInfos      Array of service information
+     * @param   callable|null  $progressCallback  Optional progress callback
+     *
      * @return bool True if all services started
      */
     private static function startServicesSequential($serviceInfos, ?callable $progressCallback = null)
     {
         Log::trace('Starting sequential startup phase');
         $totalServices = count($serviceInfos);
-        $currentIndex = 0;
+        $currentIndex  = 0;
 
         foreach ($serviceInfos as $serviceName => $serviceInfo) {
             $currentIndex++;
@@ -741,7 +771,8 @@ class ServiceHelper
     /**
      * Check if all services are running
      *
-     * @param array $serviceInfos Array of service information
+     * @param   array  $serviceInfos  Array of service information
+     *
      * @return bool True if all services are running
      */
     private static function allServicesRunning($serviceInfos)
@@ -752,6 +783,7 @@ class ServiceHelper
                 return false;
             }
         }
+
         return true;
     }
 }

@@ -38,7 +38,7 @@ class ActionLoading
      *
      * Initializes the loading action, creates the progress bar window, and starts the main loop.
      *
-     * @param array $args The arguments passed to the constructor.
+     * @param   array  $args  The arguments passed to the constructor.
      */
     public function __construct($args)
     {
@@ -68,11 +68,11 @@ class ActionLoading
 
         // Screen information
         Log::trace('Getting screen information');
-        $screenArea = explode(' ', $bearsamppWinbinder->getSystemInfo(WinBinder::SYSINFO_WORKAREA));
-        $screenWidth = intval($screenArea[2]);
+        $screenArea   = explode(' ', $bearsamppWinbinder->getSystemInfo(WinBinder::SYSINFO_WORKAREA));
+        $screenWidth  = intval($screenArea[2]);
         $screenHeight = intval($screenArea[3]);
-        $xPos = $screenWidth - self::WINDOW_WIDTH;
-        $yPos = $screenHeight - self::WINDOW_HEIGHT - 5;
+        $xPos         = $screenWidth - self::WINDOW_WIDTH;
+        $yPos         = $screenHeight - self::WINDOW_HEIGHT - 5;
         Log::trace('Screen dimensions: ' . $screenWidth . 'x' . $screenHeight . ', Window position: (' . $xPos . ',' . $yPos . ')');
 
         // Create the window and progress bar
@@ -84,6 +84,7 @@ class ActionLoading
             Log::error('CRITICAL: Failed to create loading window - window handle is: ' . var_export($this->wbWindow, true));
             Log::error('WinBinder extension loaded: ' . (extension_loaded('winbinder') ? 'YES' : 'NO'));
             Log::error('wb_create_window function exists: ' . (function_exists('wb_create_window') ? 'YES' : 'NO'));
+
             return;
         }
 
@@ -118,7 +119,7 @@ class ActionLoading
     /**
      * Increments the progress bar by a specified number of steps.
      *
-     * @param int $nb The number of steps to increment the progress bar by. Default is 1.
+     * @param   int  $nb  The number of steps to increment the progress bar by. Default is 1.
      */
     public function incrProgressBar($nb = 1)
     {
@@ -136,11 +137,11 @@ class ActionLoading
     /**
      * Processes the loading action, including handling window events and updating the progress bar.
      *
-     * @param mixed $window The window object.
-     * @param int $id The ID of the event.
-     * @param mixed $ctrl The control object.
-     * @param mixed $param1 The first parameter of the event.
-     * @param mixed $param2 The second parameter of the event.
+     * @param   mixed  $window  The window object.
+     * @param   int    $id      The ID of the event.
+     * @param   mixed  $ctrl    The control object.
+     * @param   mixed  $param1  The first parameter of the event.
+     * @param   mixed  $param2  The second parameter of the event.
      */
     public function processLoading($window, $id, $ctrl, $param1, $param2)
     {
@@ -154,10 +155,10 @@ class ActionLoading
 
         // Set a maximum number of iterations to prevent infinite loops
         $maxIterations = 10;
-        $iterations = 0;
+        $iterations    = 0;
 
         // Set a timeout for the entire loading process
-        $startTime = microtime(true); // Use microtime for more precise timing
+        $startTime      = microtime(true); // Use microtime for more precise timing
         $maxLoadingTime = 15; // 15 seconds maximum
 
         while ($iterations < $maxIterations && (microtime(true) - $startTime) < $maxLoadingTime) {
@@ -202,7 +203,7 @@ class ActionLoading
     /**
      * Updates the loading text on the window
      *
-     * @param string $text The text to display
+     * @param   string  $text  The text to display
      */
     private function updateLoadingText($text)
     {
@@ -264,7 +265,7 @@ class ActionLoading
             $this->updateLoadingText('Checking ' . $serviceName . '...');
 
             try {
-                $state = Win32Native::getServiceState($serviceName);
+                $state          = Win32Native::getServiceState($serviceName);
                 $serviceRunning = ($state === 'Running');
                 Log::trace('Service ' . $sName . ' status check: ' . ($serviceRunning ? 'running' : 'not running') . ' (state: ' . var_export($state, true) . ')');
             } catch (\Throwable $e) {
@@ -280,6 +281,7 @@ class ActionLoading
         }
 
         Log::trace('All services started check result: ' . ($allStarted ? 'true' : 'false'));
+
         return $allStarted;
     }
 }

@@ -28,29 +28,33 @@ class Cache
 {
     /**
      * Cache for file scan results
+     *
      * @var array|null
      */
     private static $fileScanCache = null;
 
     /**
      * Cache validity duration in seconds (default: 1 hour)
+     *
      * @var int
      */
     private static $fileScanCacheDuration = 3600;
 
     /**
      * Statistics for monitoring file scan cache effectiveness
+     *
      * @var array
      */
     private static $fileScanStats = [
-        'hits' => 0,
-        'misses' => 0,
+        'hits'          => 0,
+        'misses'        => 0,
         'invalidations' => 0
     ];
 
     /**
      * Secret key for cache file integrity verification
      * Generated once per session to prevent cache tampering
+     *
      * @var string|null
      */
     private static $cacheIntegrityKey = null;
@@ -101,6 +105,7 @@ class Cache
             if (!self::verifyCacheIntegrity($fileContents, $cacheKey)) {
                 Log::warning('File scan cache integrity check failed for key: ' . $cacheKey . '. Possible tampering detected.');
                 @unlink($cacheFile);
+
                 return false;
             }
 
@@ -109,8 +114,8 @@ class Cache
 
             if (is_array($cacheData)
                 && isset($cacheData['timestamp']) && is_int($cacheData['timestamp'])
-                && isset($cacheData['data'])      && is_array($cacheData['data'])
-                && isset($cacheData['hmac'])      && is_string($cacheData['hmac'])
+                && isset($cacheData['data']) && is_array($cacheData['data'])
+                && isset($cacheData['hmac']) && is_string($cacheData['hmac'])
             ) {
                 // Check if file cache is still valid
                 if (time() - $cacheData['timestamp'] < self::$fileScanCacheDuration) {
@@ -153,8 +158,8 @@ class Cache
 
         $cacheData = [
             'timestamp' => time(),
-            'data' => $data,
-            'hmac' => $hmac
+            'data'      => $data,
+            'hmac'      => $hmac
         ];
 
         // Store in memory cache
@@ -192,6 +197,7 @@ class Cache
                     $key = @file_get_contents($keyFile);
                     if ($key !== false && strlen($key) === 64) {
                         self::$cacheIntegrityKey = $key;
+
                         return self::$cacheIntegrityKey;
                     }
                 }
@@ -232,6 +238,7 @@ class Cache
         // Bind the HMAC to the cache key so a valid payload for key A cannot
         // be replayed under key B.
         $message = json_encode($data) . $cacheKey;
+
         return hash_hmac('sha256', $message, $key);
     }
 
@@ -277,7 +284,7 @@ class Cache
 
         // Clear file caches
         if (isset($bearsamppRoot)) {
-            $tmpPath = Path::getTmpPath();
+            $tmpPath    = Path::getTmpPath();
             $cacheFiles = glob($tmpPath . '/filescan_cache_*.dat');
 
             if ($cacheFiles !== false) {
@@ -290,8 +297,8 @@ class Cache
 
         // Reset stats
         self::$fileScanStats = [
-            'hits' => 0,
-            'misses' => 0,
+            'hits'          => 0,
+            'misses'        => 0,
             'invalidations' => 0
         ];
     }

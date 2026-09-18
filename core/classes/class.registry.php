@@ -63,7 +63,7 @@ class Registry
     /**
      * Writes a log entry.
      *
-     * @param string $log The log message to write.
+     * @param   string  $log  The log message to write.
      */
     private function writeLog($log)
     {
@@ -75,9 +75,10 @@ class Registry
      * Checks if a registry key or entry exists.
      * Now uses Win32Native COM methods instead of VBScript.
      *
-     * @param string $key The root key (e.g., HKEY_LOCAL_MACHINE).
-     * @param string $subkey The subkey path.
-     * @param string|null $entry The entry name (optional).
+     * @param   string       $key     The root key (e.g., HKEY_LOCAL_MACHINE).
+     * @param   string       $subkey  The subkey path.
+     * @param   string|null  $entry   The entry name (optional).
+     *
      * @return bool True if the key or entry exists, false otherwise.
      */
     public function exists($key, $subkey, $entry = null)
@@ -96,9 +97,10 @@ class Registry
      * Retrieves the value of a registry entry.
      * Now uses Win32Native COM methods instead of VBScript.
      *
-     * @param string $key The root key (e.g., HKEY_LOCAL_MACHINE).
-     * @param string $subkey The subkey path.
-     * @param string|null $entry The entry name (optional).
+     * @param   string       $key     The root key (e.g., HKEY_LOCAL_MACHINE).
+     * @param   string       $subkey  The subkey path.
+     * @param   string|null  $entry   The entry name (optional).
+     *
      * @return mixed The value of the registry entry, or false on error.
      */
     public function getValue($key, $subkey, $entry = null)
@@ -116,6 +118,7 @@ class Registry
 
         if ($result === null) {
             $this->latestError = $bearsamppLang->getValue(Lang::ERROR) . ' Registry value not found';
+
             return false;
         }
 
@@ -125,10 +128,11 @@ class Registry
     /**
      * Sets a string value in the registry.
      *
-     * @param string $key The root key (e.g., HKEY_LOCAL_MACHINE).
-     * @param string $subkey The subkey path.
-     * @param string $entry The entry name.
-     * @param string $value The value to set.
+     * @param   string  $key     The root key (e.g., HKEY_LOCAL_MACHINE).
+     * @param   string  $subkey  The subkey path.
+     * @param   string  $entry   The entry name.
+     * @param   string  $value   The value to set.
+     *
      * @return bool True if the value was set successfully, false otherwise.
      */
     public function setStringValue($key, $subkey, $entry, $value)
@@ -139,10 +143,11 @@ class Registry
     /**
      * Sets an expanded string value in the registry.
      *
-     * @param string $key The root key (e.g., HKEY_LOCAL_MACHINE).
-     * @param string $subkey The subkey path.
-     * @param string $entry The entry name.
-     * @param string $value The value to set.
+     * @param   string  $key     The root key (e.g., HKEY_LOCAL_MACHINE).
+     * @param   string  $subkey  The subkey path.
+     * @param   string  $entry   The entry name.
+     * @param   string  $value   The value to set.
+     *
      * @return bool True if the value was set successfully, false otherwise.
      */
     public function setExpandStringValue($key, $subkey, $entry, $value)
@@ -153,14 +158,16 @@ class Registry
     /**
      * Deletes a registry entry.
      *
-     * @param string $key The root key (e.g., HKEY_LOCAL_MACHINE).
-     * @param string $subkey The subkey path.
-     * @param string $entry The entry name.
+     * @param   string  $key     The root key (e.g., HKEY_LOCAL_MACHINE).
+     * @param   string  $subkey  The subkey path.
+     * @param   string  $entry   The entry name.
+     *
      * @return bool True if the entry was deleted successfully, false otherwise.
      */
     public function deleteValue($key, $subkey, $entry)
     {
         $this->writeLog('delete');
+
         return $this->setValue($key, $subkey, $entry, null, 'DeleteValue');
     }
 
@@ -168,11 +175,12 @@ class Registry
      * Sets a value in the registry.
      * Now uses Win32Native COM methods instead of VBScript.
      *
-     * @param string $key The root key (e.g., HKEY_LOCAL_MACHINE).
-     * @param string $subkey The subkey path.
-     * @param string $entry The entry name.
-     * @param string|null $value The value to set (optional).
-     * @param string $type The type of value to set (e.g., SetStringValue).
+     * @param   string       $key     The root key (e.g., HKEY_LOCAL_MACHINE).
+     * @param   string       $subkey  The subkey path.
+     * @param   string       $entry   The entry name.
+     * @param   string|null  $value   The value to set (optional).
+     * @param   string       $type    The type of value to set (e.g., SetStringValue).
+     *
      * @return bool True if the value was set successfully, false otherwise.
      */
     private function setValue($key, $subkey, $entry, $value, $type)
@@ -213,6 +221,7 @@ class Registry
 
         if (!$result) {
             $this->latestError = $bearsamppLang->getValue(Lang::ERROR) . ' Registry operation failed';
+
             return false;
         }
 
@@ -221,6 +230,7 @@ class Registry
             $verifyValue = Win32Native::registryGetValue($key, $subkey, $entry);
             if ($verifyValue != $value) {
                 $this->latestError = sprintf($bearsamppLang->getValue(Lang::REGISTRY_SET_ERROR_TEXT), $value);
+
                 return false;
             }
         }

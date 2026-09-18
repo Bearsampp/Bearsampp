@@ -14,6 +14,6 @@
 // MySQL status fetcher with custom validation for mysqli_sql_exception
 // Maps 'versions' data key to 'version-list' selector
 createStatusFetcher('mysql', [
-  'checkport',
-  { data: 'versions', selector: 'version-list' }
+	'checkport',
+	{data: 'versions', selector: 'version-list'}
 ]);

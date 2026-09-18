@@ -26,9 +26,9 @@ class TplAppTools
     /**
      * Generates the main Tools menu with options to access various tools.
      *
+     * @return array The generated menu items and actions for Tools.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return array The generated menu items and actions for Tools.
      */
     public static function process()
     {
@@ -40,11 +40,11 @@ class TplAppTools
     /**
      * Generates the Tools menu with options for accessing various tools like Git, Python, Composer, etc.
      *
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
-     * @global object $bearsamppCore Provides access to core functionalities and configurations.
+     * @return string The generated menu items and actions for Tools.
+     * @global object $bearsamppCore  Provides access to core functionalities and configurations.
      * @global object $bearsamppTools Provides access to various tools and their configurations.
      *
-     * @return string The generated menu items and actions for Tools.
+     * @global object $bearsamppLang  Provides language support for retrieving language-specific values.
      */
     public static function getMenuTools()
     {
@@ -52,13 +52,13 @@ class TplAppTools
         $resultItems = $resultActions = '';
 
         // Git
-        $tplGit = TplAppGit::process();
-        $resultItems .= $tplGit[TplApp::SECTION_CALL] . PHP_EOL;
+        $tplGit        = TplAppGit::process();
+        $resultItems   .= $tplGit[TplApp::SECTION_CALL] . PHP_EOL;
         $resultActions .= $tplGit[TplApp::SECTION_CONTENT] . PHP_EOL;
 
         // Python
-        $tplPython = TplAppPython::process();
-        $resultItems .= $tplPython[TplApp::SECTION_CALL] . PHP_EOL;
+        $tplPython     = TplAppPython::process();
+        $resultItems   .= $tplPython[TplApp::SECTION_CALL] . PHP_EOL;
         $resultActions .= $tplPython[TplApp::SECTION_CONTENT] . PHP_EOL;
 
         // Bruno postman IDE
@@ -70,82 +70,82 @@ class TplAppTools
 
         // Composer
         $resultItems .= TplAestan::getItemPowerShell(
-            $bearsamppLang->getValue(Lang::COMPOSER),
-            TplAestan::GLYPH_COMPOSER,
-            null,
-            $bearsamppTools->getPowerShell()->getTabTitleComposer(),
-            Path::getWwwPath(),
-            null
-        ) . PHP_EOL;
+                $bearsamppLang->getValue(Lang::COMPOSER),
+                TplAestan::GLYPH_COMPOSER,
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitleComposer(),
+                Path::getWwwPath(),
+                null
+            ) . PHP_EOL;
 
         // Ghostscript
         $resultItems .= TplAestan::getItemPowerShell(
-            $bearsamppLang->getValue(Lang::GHOSTSCRIPT),
-            TplAestan::GLYPH_GHOSTSCRIPT,
-            null,
-            $bearsamppTools->getPowerShell()->getTabTitleGhostscript(),
-            Path::getWwwPath(),
-            null
-        ) . PHP_EOL;
+                $bearsamppLang->getValue(Lang::GHOSTSCRIPT),
+                TplAestan::GLYPH_GHOSTSCRIPT,
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitleGhostscript(),
+                Path::getWwwPath(),
+                null
+            ) . PHP_EOL;
 
         // Ngrok
         $resultItems .= TplAestan::getItemPowerShell(
-            $bearsamppLang->getValue(Lang::NGROK),
-            TplAestan::GLYPH_NGROK,
-            null,
-            $bearsamppTools->getPowerShell()->getTabTitleNgrok(),
-            Path::getWwwPath(),
-            null
-        ) . PHP_EOL;
+                $bearsamppLang->getValue(Lang::NGROK),
+                TplAestan::GLYPH_NGROK,
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitleNgrok(),
+                Path::getWwwPath(),
+                null
+            ) . PHP_EOL;
 
         // Pear
         $resultItems .= TplAestan::getItemPowerShell(
-            $bearsamppLang->getValue(Lang::PEAR),
-            TplAestan::GLYPH_PEAR,
-            null,
-            $bearsamppTools->getPowerShell()->getTabTitlePear(),
-            Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/pear',
-            null
-        ) . PHP_EOL;
+                $bearsamppLang->getValue(Lang::PEAR),
+                TplAestan::GLYPH_PEAR,
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitlePear(),
+                Path::getModuleSymlinkPath($bearsamppBins->getPhp()) . '/pear',
+                null
+            ) . PHP_EOL;
 
         // Perl
         $resultItems .= TplAestan::getItemPowerShell(
-            $bearsamppLang->getValue(Lang::PERL),
-            TplAestan::GLYPH_PERL,
-            null,
-            $bearsamppTools->getPowerShell()->getTabTitlePerl(),
-            Path::getWwwPath(),
-            null
-        ) . PHP_EOL;
+                $bearsamppLang->getValue(Lang::PERL),
+                TplAestan::GLYPH_PERL,
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitlePerl(),
+                Path::getWwwPath(),
+                null
+            ) . PHP_EOL;
 
         // Ruby
         $resultItems .= TplAestan::getItemPowerShell(
-            $bearsamppLang->getValue(Lang::RUBY),
-            TplAestan::GLYPH_RUBY,
-            null,
-            $bearsamppTools->getPowerShell()->getTabTitleRuby(),
-            Path::getWwwPath(),
-            null
-        ) . PHP_EOL;
+                $bearsamppLang->getValue(Lang::RUBY),
+                TplAestan::GLYPH_RUBY,
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitleRuby(),
+                Path::getWwwPath(),
+                null
+            ) . PHP_EOL;
 
         // Line Separator
         $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
         // Console
         $resultItems .= TplAestan::getItemPowerShell(
-            $bearsamppLang->getValue(Lang::CONSOLE),
-            TplAestan::GLYPH_POWERSHELL,
-            null,
-            $bearsamppTools->getPowerShell()->getTabTitleDefault(),
-            Path::getRootPath()
-        ) . PHP_EOL;
+                $bearsamppLang->getValue(Lang::CONSOLE),
+                TplAestan::GLYPH_POWERSHELL,
+                null,
+                $bearsamppTools->getPowerShell()->getTabTitleDefault(),
+                Path::getRootPath()
+            ) . PHP_EOL;
 
         // HostsEditor
         $resultItems .= TplAestan::getItemExe(
-            $bearsamppLang->getValue(Lang::HOSTSEDITOR),
-            Path::getHostsEditorExe(),
-            TplAestan::GLYPH_HOSTSEDITOR
-        ) . PHP_EOL;
+                $bearsamppLang->getValue(Lang::HOSTSEDITOR),
+                Path::getHostsEditorExe(),
+                TplAestan::GLYPH_HOSTSEDITOR
+            ) . PHP_EOL;
 
         // Pwgen password manager
         $resultItems .= TplAestan::getItemExe(
@@ -159,30 +159,36 @@ class TplAppTools
 
         // Generate rootCA certificate
         $tplMakeRootCa = TplApp::getActionMulti(
-            self::ACTION_MAKE_ROOT_CA, null,
+            self::ACTION_MAKE_ROOT_CA,
+            null,
             array($bearsamppLang->getValue(Lang::MENU_GEN_ROOT_CA), TplAestan::GLYPH_SSL_CERTIFICATE),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
-        $resultItems .= $tplMakeRootCa[TplApp::SECTION_CALL] . PHP_EOL;
+        $resultItems   .= $tplMakeRootCa[TplApp::SECTION_CALL] . PHP_EOL;
         $resultActions .= $tplMakeRootCa[TplApp::SECTION_CONTENT] . PHP_EOL;
 
         // Generate SSL Certificate
         $tplGenSslCertificate = TplApp::getActionMulti(
-            self::ACTION_GEN_SSL_CERTIFICATE, null,
+            self::ACTION_GEN_SSL_CERTIFICATE,
+            null,
             array($bearsamppLang->getValue(Lang::MENU_GEN_SSL_CERTIFICATE), TplAestan::GLYPH_SSL_CERTIFICATE),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
-        $resultItems .= $tplGenSslCertificate[TplApp::SECTION_CALL] . PHP_EOL;
-        $resultActions .= $tplGenSslCertificate[TplApp::SECTION_CONTENT] . PHP_EOL;
+        $resultItems          .= $tplGenSslCertificate[TplApp::SECTION_CALL] . PHP_EOL;
+        $resultActions        .= $tplGenSslCertificate[TplApp::SECTION_CONTENT] . PHP_EOL;
 
         // Delete SSL Certificate
         $tplDelSslCertificate = TplApp::getActionMulti(
-            self::ACTION_DEL_SSL_CERTIFICATE, null,
+            self::ACTION_DEL_SSL_CERTIFICATE,
+            null,
             array($bearsamppLang->getValue(Lang::DELSSL_TITLE), TplAestan::GLYPH_TRASHCAN),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
-        $resultItems .= $tplDelSslCertificate[TplApp::SECTION_CALL] . PHP_EOL;
-        $resultActions .= $tplDelSslCertificate[TplApp::SECTION_CONTENT];
+        $resultItems          .= $tplDelSslCertificate[TplApp::SECTION_CALL] . PHP_EOL;
+        $resultActions        .= $tplDelSslCertificate[TplApp::SECTION_CONTENT];
 
         return $resultItems . PHP_EOL . $resultActions;
     }

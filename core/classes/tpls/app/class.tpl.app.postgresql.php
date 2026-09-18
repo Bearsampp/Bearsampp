@@ -31,10 +31,10 @@ class TplAppPostgresql
     /**
      * Generates the main PostgreSQL menu with options to enable/disable PostgreSQL and access submenus.
      *
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @return array The generated menu items and actions for PostgreSQL.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @return array The generated menu items and actions for PostgreSQL.
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      */
     public static function process()
     {
@@ -46,11 +46,11 @@ class TplAppPostgresql
     /**
      * Generates the PostgreSQL menu with options for versions, service, debug, and console access.
      *
-     * @global object $bearsamppBins Provides access to system binaries and their configurations.
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @return string The generated menu items and actions for PostgreSQL.
+     * @global object $bearsamppLang  Provides language support for retrieving language-specific values.
      * @global object $bearsamppTools Provides access to various tools and utilities.
      *
-     * @return string The generated menu items and actions for PostgreSQL.
+     * @global object $bearsamppBins  Provides access to system binaries and their configurations.
      */
     public static function getMenuPostgresql()
     {
@@ -61,45 +61,50 @@ class TplAppPostgresql
 
         // Download
         $resultItems .= TplAestan::getItemLink(
-            $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
-            HttpClient::getWebsiteUrl('module/postgresql', '#releases'),
-            false,
-            TplAestan::GLYPH_BROWSER
-        ) . PHP_EOL;
+                $bearsamppLang->getValue(Lang::DOWNLOAD_MORE),
+                HttpClient::getWebsiteUrl('module/postgresql', '#releases'),
+                false,
+                TplAestan::GLYPH_BROWSER
+            ) . PHP_EOL;
 
         // Enable
-        $tplEnable = TplApp::getActionMulti(
-            self::ACTION_ENABLE, array($isEnabled ? Config::DISABLED : Config::ENABLED),
+        $tplEnable     = TplApp::getActionMulti(
+            self::ACTION_ENABLE,
+            array($isEnabled ? Config::DISABLED : Config::ENABLED),
             array($bearsamppLang->getValue(Lang::MENU_ENABLE), $isEnabled ? TplAestan::GLYPH_CHECK : ''),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
-        $resultItems .= $tplEnable[TplApp::SECTION_CALL] . PHP_EOL;
+        $resultItems   .= $tplEnable[TplApp::SECTION_CALL] . PHP_EOL;
         $resultActions .= $tplEnable[TplApp::SECTION_CONTENT] . PHP_EOL;
 
         if ($isEnabled) {
             $resultItems .= TplAestan::getItemSeparator() . PHP_EOL;
 
             // Versions
-            $tplVersions = TplApp::getMenu($bearsamppLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
-            $resultItems .= $tplVersions[TplApp::SECTION_CALL] . PHP_EOL;
+            $tplVersions   = TplApp::getMenu($bearsamppLang->getValue(Lang::VERSIONS), self::MENU_VERSIONS, get_called_class());
+            $resultItems   .= $tplVersions[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplVersions[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Service
-            $tplService = TplApp::getMenu($bearsamppLang->getValue(Lang::SERVICE), self::MENU_SERVICE, get_called_class());
-            $resultItems .= $tplService[TplApp::SECTION_CALL] . PHP_EOL;
+            $tplService    = TplApp::getMenu($bearsamppLang->getValue(Lang::SERVICE), self::MENU_SERVICE, get_called_class());
+            $resultItems   .= $tplService[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplService[TplApp::SECTION_CONTENT] . PHP_EOL;
 
             // Debug
-            $tplDebug = TplApp::getMenu($bearsamppLang->getValue(Lang::DEBUG), self::MENU_DEBUG, get_called_class());
-            $resultItems .= $tplDebug[TplApp::SECTION_CALL] . PHP_EOL;
+            $tplDebug      = TplApp::getMenu($bearsamppLang->getValue(Lang::DEBUG), self::MENU_DEBUG, get_called_class());
+            $resultItems   .= $tplDebug[TplApp::SECTION_CALL] . PHP_EOL;
             $resultActions .= $tplDebug[TplApp::SECTION_CONTENT];
 
             // Console
             $resultItems .= TplAestan::getItemPowerShell(
-                $bearsamppLang->getValue(Lang::CONSOLE),
-                TplAestan::GLYPH_POWERSHELL,
-                null, $bearsamppTools->getPowerShell()->getTabTitlePostgresql(), Path::getModuleSymlinkPath($bearsamppBins->getPostgresql()), null
-            ) . PHP_EOL;
+                    $bearsamppLang->getValue(Lang::CONSOLE),
+                    TplAestan::GLYPH_POWERSHELL,
+                    null,
+                    $bearsamppTools->getPowerShell()->getTabTitlePostgresql(),
+                    Path::getModuleSymlinkPath($bearsamppBins->getPostgresql()),
+                    null
+                ) . PHP_EOL;
 
             // Conf
             $resultItems .= TplAestan::getItemNotepad(basename($bearsamppBins->getPostgresql()->getConf()), $bearsamppBins->getPostgresql()->getConf()) . PHP_EOL;
@@ -114,21 +119,23 @@ class TplAppPostgresql
     /**
      * Generates the PostgreSQL versions menu with options to switch between different versions.
      *
+     * @return string The generated menu items and actions for PostgreSQL versions.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @return string The generated menu items and actions for PostgreSQL versions.
      */
     public static function getMenuPostgresqlVersions()
     {
         global $bearsamppBins;
-        $items = '';
+        $items   = '';
         $actions = '';
 
         foreach ($bearsamppBins->getPostgresql()->getVersionList() as $version) {
             $tplSwitchPostgresqlVersion = TplApp::getActionMulti(
-                self::ACTION_SWITCH_VERSION, array($version),
+                self::ACTION_SWITCH_VERSION,
+                array($version),
                 array($version, $version == $bearsamppBins->getPostgresql()->getVersion() ? TplAestan::GLYPH_CHECK : ''),
-                false, get_called_class()
+                false,
+                get_called_class()
             );
 
             // Item
@@ -144,10 +151,11 @@ class TplAppPostgresql
     /**
      * Generates the action to enable or disable PostgreSQL.
      *
+     * @param   int   $enable        The flag to enable (1) or disable (0) PostgreSQL.
+     *
+     * @return string The generated action to enable or disable PostgreSQL.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @param int $enable The flag to enable (1) or disable (0) PostgreSQL.
-     * @return string The generated action to enable or disable PostgreSQL.
      */
     public static function getActionEnablePostgresql($enable)
     {
@@ -160,10 +168,11 @@ class TplAppPostgresql
     /**
      * Generates the action to switch the PostgreSQL version.
      *
-     * @global object $bearsamppBins Provides access to system binaries and their configurations.
+     * @param   string  $version       The version to switch to.
      *
-     * @param string $version The version to switch to.
      * @return string The generated action to switch the PostgreSQL version.
+     * @global object   $bearsamppBins Provides access to system binaries and their configurations.
+     *
      */
     public static function getActionSwitchPostgresqlVersion($version)
     {
@@ -176,19 +185,21 @@ class TplAppPostgresql
     /**
      * Generates the PostgreSQL service menu with options to start, stop, restart, and manage the service.
      *
-     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
+     * @return string The generated menu items and actions for PostgreSQL service.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @return string The generated menu items and actions for PostgreSQL service.
+     * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      */
     public static function getMenuPostgresqlService()
     {
         global $bearsamppLang, $bearsamppBins;
 
         $tplChangePort = TplApp::getActionMulti(
-            self::ACTION_CHANGE_PORT, null,
+            self::ACTION_CHANGE_PORT,
+            null,
             array($bearsamppLang->getValue(Lang::MENU_CHANGE_PORT), TplAestan::GLYPH_NETWORK),
-            false, get_called_class()
+            false,
+            get_called_class()
         );
 
         $isInstalled = $bearsamppBins->getPostgresql()->getService()->isInstalled();
@@ -198,7 +209,8 @@ class TplAppPostgresql
             TplAestan::getItemActionServiceRestart($bearsamppBins->getPostgresql()->getService()->getName()) . PHP_EOL .
             TplAestan::getItemSeparator() . PHP_EOL .
             TplApp::getActionRun(
-                Action::CHECK_PORT, array($bearsamppBins->getPostgresql()->getName(), $bearsamppBins->getPostgresql()->getPort()),
+                Action::CHECK_PORT,
+                array($bearsamppBins->getPostgresql()->getName(), $bearsamppBins->getPostgresql()->getPort()),
                 array(sprintf($bearsamppLang->getValue(Lang::MENU_CHECK_PORT), $bearsamppBins->getPostgresql()->getPort()), TplAestan::GLYPH_LIGHT)
             ) . PHP_EOL .
             $tplChangePort[TplApp::SECTION_CALL] . PHP_EOL;
@@ -206,9 +218,11 @@ class TplAppPostgresql
         $tplChangeRootPwd = null;
         if ($isInstalled) {
             $tplChangeRootPwd = TplApp::getActionMulti(
-                self::ACTION_CHANGE_ROOT_PWD, null,
+                self::ACTION_CHANGE_ROOT_PWD,
+                null,
                 array($bearsamppLang->getValue(Lang::MENU_CHANGE_ROOT_PWD), TplAestan::GLYPH_PASSWORD),
-                !$isInstalled, get_called_class()
+                !$isInstalled,
+                get_called_class()
             );
 
             $result .= $tplChangeRootPwd[TplApp::SECTION_CALL] . PHP_EOL;
@@ -216,22 +230,26 @@ class TplAppPostgresql
 
         if (!$isInstalled) {
             $tplInstallService = TplApp::getActionMulti(
-                self::ACTION_INSTALL_SERVICE, null,
+                self::ACTION_INSTALL_SERVICE,
+                null,
                 array($bearsamppLang->getValue(Lang::MENU_INSTALL_SERVICE), TplAestan::GLYPH_SERVICE_INSTALL),
-                $isInstalled, get_called_class()
+                $isInstalled,
+                get_called_class()
             );
 
             $result .= $tplInstallService[TplApp::SECTION_CALL] . PHP_EOL . PHP_EOL .
-            $tplInstallService[TplApp::SECTION_CONTENT] . PHP_EOL;
+                $tplInstallService[TplApp::SECTION_CONTENT] . PHP_EOL;
         } else {
             $tplRemoveService = TplApp::getActionMulti(
-                self::ACTION_REMOVE_SERVICE, null,
+                self::ACTION_REMOVE_SERVICE,
+                null,
                 array($bearsamppLang->getValue(Lang::MENU_REMOVE_SERVICE), TplAestan::GLYPH_SERVICE_REMOVE),
-                !$isInstalled, get_called_class()
+                !$isInstalled,
+                get_called_class()
             );
 
             $result .= $tplRemoveService[TplApp::SECTION_CALL] . PHP_EOL . PHP_EOL .
-            $tplRemoveService[TplApp::SECTION_CONTENT] . PHP_EOL;
+                $tplRemoveService[TplApp::SECTION_CONTENT] . PHP_EOL;
         }
 
         $result .= $tplChangePort[TplApp::SECTION_CONTENT] . PHP_EOL .
@@ -243,26 +261,27 @@ class TplAppPostgresql
     /**
      * Generates the PostgreSQL debug menu with options to run various debug commands.
      *
+     * @return string The generated menu items and actions for PostgreSQL debug.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return string The generated menu items and actions for PostgreSQL debug.
      */
     public static function getMenuPostgresqlDebug()
     {
         global $bearsamppLang;
 
         return TplApp::getActionRun(
-            Action::DEBUG_POSTGRESQL, array(BinPostgresql::CMD_VERSION),
-            array($bearsamppLang->getValue(Lang::DEBUG_POSTGRESQL_VERSION), TplAestan::GLYPH_DEBUG)
-        ) . PHP_EOL;
+                Action::DEBUG_POSTGRESQL,
+                array(BinPostgresql::CMD_VERSION),
+                array($bearsamppLang->getValue(Lang::DEBUG_POSTGRESQL_VERSION), TplAestan::GLYPH_DEBUG)
+            ) . PHP_EOL;
     }
 
     /**
      * Generates the action to change the PostgreSQL port.
      *
+     * @return string The generated action to change the PostgreSQL port.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @return string The generated action to change the PostgreSQL port.
      */
     public static function getActionChangePostgresqlPort()
     {
@@ -275,9 +294,9 @@ class TplAppPostgresql
     /**
      * Generates the action to change the PostgreSQL root password.
      *
+     * @return string The generated action to change the PostgreSQL root password.
      * @global object $bearsamppBins Provides access to system binaries and their configurations.
      *
-     * @return string The generated action to change the PostgreSQL root password.
      */
     public static function getActionChangePostgresqlRootPwd()
     {

@@ -28,7 +28,7 @@ $response = array();
 // Check if this is a POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $moduleName = isset($_POST['moduleName']) ? $_POST['moduleName'] : null;
-    $version = isset($_POST['version']) ? $_POST['version'] : null;
+    $version    = isset($_POST['version']) ? $_POST['version'] : null;
 
     if ($moduleName && $version) {
         // Validate both inputs before they reach the config file. Config::replace()
@@ -55,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'success' => true,
                     'message' => "Configuration updated successfully!\n\n✓ Set $moduleName" . "Version = \"$version\"\n\nNow right-click the Bearsampp tray icon and select 'Reload' to activate the new version."
                 ];
-
             } catch (Exception $e) {
                 $response = ['error' => 'Failed to update configuration: ' . $e->getMessage()];
                 error_log('Exception in apply module config: ' . $e->getMessage());

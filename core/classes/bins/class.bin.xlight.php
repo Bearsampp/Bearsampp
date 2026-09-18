@@ -72,10 +72,11 @@ class BinXlight extends Module
     /**
      * Constructs a BinXlight object and initializes the module.
      *
-     * @param string $id The ID of the module.
-     * @param string $type The type of the module.
+     * @param   string  $id    The ID of the module.
+     * @param   string  $type  The type of the module.
      */
-    public function __construct($id, $type) {
+    public function __construct($id, $type)
+    {
         Log::initClass($this);
         $this->reload($id, $type);
     }
@@ -83,53 +84,61 @@ class BinXlight extends Module
     /**
      * Reloads the module configuration based on the provided ID and type.
      *
-     * @param string|null $id The ID of the module. If null, the current ID is used.
-     * @param string|null $type The type of the module. If null, the current type is used.
+     * @param   string|null  $id    The ID of the module. If null, the current ID is used.
+     * @param   string|null  $type  The type of the module. If null, the current type is used.
      */
-    public function reload($id = null, $type = null) {
+    public function reload($id = null, $type = null)
+    {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
         Log::reloadClass($this);
 
-        $this->name = $bearsamppLang->getValue(Lang::XLIGHT);
+        $this->name    = $bearsamppLang->getValue(Lang::XLIGHT);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
-        $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
+        $this->enable  = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
         $this->service = new Win32Service(self::SERVICE_NAME);
-        $this->log = Path::getLogsPath() . '/xlight.log';
+        $this->log     = Path::getLogsPath() . '/xlight.log';
 
         if ($this->bearsamppConfRaw !== false) {
-            $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
+            $this->exe     = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->SslPort = intval($this->bearsamppConfRaw[self::LOCAL_CFG_SSL_PORT]);
-            $this->port = intval($this->bearsamppConfRaw[self::LOCAL_CFG_PORT]);
+            $this->port    = intval($this->bearsamppConfRaw[self::LOCAL_CFG_PORT]);
         }
 
         if (!$this->enable) {
             Log::info($this->name . ' is not enabled!');
+
             return;
         }
         if (!is_dir($this->currentPath)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+
             return;
         }
         if (!is_dir($this->symlinkPath)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+
             return;
         }
         if (!is_file($this->bearsamppConf)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
+
             return;
         }
         if (!is_file($this->exe)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
+
             return;
         }
         if (empty($this->SslPort)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_SSL_PORT, $this->SslPort));
+
             return;
         }
         if (empty($this->port)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_PORT, $this->port));
+
             return;
         }
 
@@ -147,13 +156,14 @@ class BinXlight extends Module
     /**
      * Replaces multiple key-value pairs in the configuration file.
      *
-     * @param array $params An associative array of key-value pairs to replace.
+     * @param   array  $params  An associative array of key-value pairs to replace.
      */
-    protected function replaceAll($params) {
+    protected function replaceAll($params)
+    {
         $content = file_get_contents($this->bearsamppConf);
 
         foreach ($params as $key => $value) {
-            $content = preg_replace('|' . $key . ' = .*|', $key . ' = ' . '"' . $value.'"', $content);
+            $content                      = preg_replace('|' . $key . ' = .*|', $key . ' = ' . '"' . $value . '"', $content);
             $this->bearsamppConfRaw[$key] = $value;
             switch ($key) {
                 case self::LOCAL_CFG_SSL_PORT:
@@ -175,7 +185,8 @@ class BinXlight extends Module
      *
      * @return bool True if the configuration was successfully rebuilt, false otherwise.
      */
-    public function rebuildConf() {
+    public function rebuildConf()
+    {
         global $bearsamppRegistry;
 
         $exists = $bearsamppRegistry->exists(
@@ -198,16 +209,19 @@ class BinXlight extends Module
     /**
      * Changes the port used by the Xlight FTP server.
      *
-     * @param int $port The new port number.
-     * @param bool $checkUsed Whether to check if the port is already in use.
-     * @param mixed|null $wbProgressBar The progress bar object for UI updates (optional).
+     * @param   int         $port           The new port number.
+     * @param   bool        $checkUsed      Whether to check if the port is already in use.
+     * @param   mixed|null  $wbProgressBar  The progress bar object for UI updates (optional).
+     *
      * @return bool|int True if the port was successfully changed, false if invalid, or the process using the port.
      */
-    public function changePort($port, $checkUsed = false, $wbProgressBar = null) {
+    public function changePort($port, $checkUsed = false, $wbProgressBar = null)
+    {
         global $bearsamppWinbinder;
 
         if (!Util::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
+
             return false;
         }
 
@@ -228,22 +242,26 @@ class BinXlight extends Module
         }
 
         Log::debug($this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse);
+
         return $isPortInUse;
     }
 
     /**
      * Checks if a port is used by the Xlight FTP server.
      *
-     * @param int $port The port number to check.
-     * @param bool $showWindow Whether to show a message box with the result.
+     * @param   int   $port        The port number to check.
+     * @param   bool  $showWindow  Whether to show a message box with the result.
+     *
      * @return bool True if the port is used by Xlight, false otherwise.
      */
-    public function checkPort($port, $showWindow = false) {
+    public function checkPort($port, $showWindow = false)
+    {
         global $bearsamppLang, $bearsamppWinbinder;
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
         if (!Util::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
+
             return false;
         }
 
@@ -257,6 +275,7 @@ class BinXlight extends Module
                         $boxTitle
                     );
                 }
+
                 return true;
             }
             Log::debug($this->getName() . ' port ' . $port . ' is used by another application');
@@ -282,24 +301,29 @@ class BinXlight extends Module
     /**
      * Switches the version of the Xlight FTP server.
      *
-     * @param string $version The version to switch to.
-     * @param bool $showWindow Whether to show a message box with the result.
+     * @param   string  $version     The version to switch to.
+     * @param   bool    $showWindow  Whether to show a message box with the result.
+     *
      * @return bool True if the version was successfully switched, false otherwise.
      */
-    public function switchVersion($version, $showWindow = false) {
+    public function switchVersion($version, $showWindow = false)
+    {
         Log::debug('Switch ' . $this->name . ' version to ' . $version);
+
         return $this->updateConfig($version, 0, $showWindow);
     }
 
     /**
      * Updates the configuration of the Xlight FTP server.
      *
-     * @param string|null $version The version to update to. If null, the current version is used.
-     * @param int $sub The sub-level for logging indentation.
-     * @param bool $showWindow Whether to show a message box with the result.
+     * @param   string|null  $version     The version to update to. If null, the current version is used.
+     * @param   int          $sub         The sub-level for logging indentation.
+     * @param   bool         $showWindow  Whether to show a message box with the result.
+     *
      * @return bool True if the configuration was successfully updated, false otherwise.
      */
-    protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
+    protected function updateConfig($version = null, $sub = 0, $showWindow = false)
+    {
         global $bearsamppLang, $bearsamppWinbinder;
 
         if (!$this->enable) {
@@ -320,6 +344,7 @@ class BinXlight extends Module
                     $boxTitle
                 );
             }
+
             return false;
         }
 
@@ -332,6 +357,7 @@ class BinXlight extends Module
                     $boxTitle
                 );
             }
+
             return false;
         }
 
@@ -344,9 +370,10 @@ class BinXlight extends Module
     /**
      * Sets the version of the Xlight FTP server.
      *
-     * @param string $version The version to set.
+     * @param   string  $version  The version to set.
      */
-    public function setVersion($version) {
+    public function setVersion($version)
+    {
         global $bearsamppConfig;
         $this->version = $version;
         $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
@@ -358,17 +385,19 @@ class BinXlight extends Module
      *
      * @return Win32Service The service object.
      */
-    public function getService() {
+    public function getService()
+    {
         return $this->service;
     }
 
     /**
      * Enables or disables the Xlight FTP server.
      *
-     * @param bool $enabled Whether to enable or disable the server.
-     * @param bool $showWindow Whether to show a message box with the result.
+     * @param   bool  $enabled     Whether to enable or disable the server.
+     * @param   bool  $showWindow  Whether to show a message box with the result.
      */
-    public function setEnable($enabled, $showWindow = false) {
+    public function setEnable($enabled, $showWindow = false)
+    {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
         if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
@@ -399,7 +428,8 @@ class BinXlight extends Module
      *
      * @return string The log file path.
      */
-    public function getLog() {
+    public function getLog()
+    {
         return $this->log;
     }
 
@@ -408,7 +438,8 @@ class BinXlight extends Module
      *
      * @return string The executable file path.
      */
-    public function getExe() {
+    public function getExe()
+    {
         return $this->exe;
     }
 
@@ -417,16 +448,18 @@ class BinXlight extends Module
      *
      * @return int The SSL port number.
      */
-    public function getUiPort() {
+    public function getUiPort()
+    {
         return $this->SslPort;
     }
 
     /**
      * Sets the SSL port for the Xlight FTP server.
      *
-     * @param int $SslPort The SSL port number.
+     * @param   int  $SslPort  The SSL port number.
      */
-    public function setSslPort($SslPort) {
+    public function setSslPort($SslPort)
+    {
         $this->replace(self::LOCAL_CFG_SSL_PORT, $SslPort);
     }
 
@@ -435,16 +468,18 @@ class BinXlight extends Module
      *
      * @return int The port number.
      */
-    public function getPort() {
+    public function getPort()
+    {
         return $this->port;
     }
 
     /**
      * Sets the port for the Xlight FTP server.
      *
-     * @param int $port The port number.
+     * @param   int  $port  The port number.
      */
-    public function setPort($port) {
+    public function setPort($port)
+    {
         $this->replace(self::LOCAL_CFG_PORT, $port);
     }
 }

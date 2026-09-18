@@ -22,8 +22,8 @@ class ActionLaunchStartup
      * launch at startup feature. It starts the loading process, updates the launch startup configuration based on
      * the provided argument, and modifies the system's startup settings accordingly.
      *
-     * @param array $args An array of arguments where the first element should be either Config::ENABLED or Config::DISABLED
-     *                    to indicate the desired launch startup setting.
+     * @param   array  $args  An array of arguments where the first element should be either Config::ENABLED or Config::DISABLED
+     *                        to indicate the desired launch startup setting.
      */
     public function __construct($args)
     {

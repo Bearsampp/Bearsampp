@@ -101,10 +101,11 @@ class BinNodejs extends Module
     /**
      * Constructs a BinNodejs object and initializes the module with the given ID and type.
      *
-     * @param string $id The ID of the module.
-     * @param string $type The type of the module.
+     * @param   string  $id    The ID of the module.
+     * @param   string  $type  The type of the module.
      */
-    public function __construct($id, $type) {
+    public function __construct($id, $type)
+    {
         Log::initClass($this);
         $this->reload($id, $type);
     }
@@ -112,41 +113,46 @@ class BinNodejs extends Module
     /**
      * Reloads the module configuration based on the provided ID and type.
      *
-     * @param string|null $id The ID of the module. If null, the current ID is used.
-     * @param string|null $type The type of the module. If null, the current type is used.
+     * @param   string|null  $id    The ID of the module. If null, the current ID is used.
+     * @param   string|null  $type  The type of the module. If null, the current type is used.
      */
-    public function reload($id = null, $type = null) {
+    public function reload($id = null, $type = null)
+    {
         global $bearsamppConfig, $bearsamppLang;
         Log::reloadClass($this);
 
-        $this->name = $bearsamppLang->getValue(Lang::NODEJS);
+        $this->name    = $bearsamppLang->getValue(Lang::NODEJS);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
         $this->enable = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
 
         if ($this->bearsamppConfRaw !== false) {
-            $this->exe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
-            $this->conf = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
-            $this->vars = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_VARS];
-            $this->npm = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_NPM];
+            $this->exe    = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
+            $this->conf   = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
+            $this->vars   = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_VARS];
+            $this->npm    = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_NPM];
             $this->launch = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_LAUNCH];
         }
 
         if (!$this->enable) {
             Log::info($this->name . ' is not enabled!');
+
             return;
         }
         if (!is_dir($this->currentPath)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
+
             return;
         }
         if (!is_dir($this->symlinkPath)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+
             return;
         }
         if (!is_file($this->bearsamppConf)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
+
             return;
         }
         if (!is_file($this->exe)) {
@@ -169,24 +175,29 @@ class BinNodejs extends Module
     /**
      * Switches the Node.js version to the specified version.
      *
-     * @param string $version The version to switch to.
-     * @param bool $showWindow Whether to show a window during the switch process.
+     * @param   string  $version     The version to switch to.
+     * @param   bool    $showWindow  Whether to show a window during the switch process.
+     *
      * @return bool True if the switch was successful, false otherwise.
      */
-    public function switchVersion($version, $showWindow = false) {
+    public function switchVersion($version, $showWindow = false)
+    {
         Log::debug('Switch ' . $this->name . ' version to ' . $version);
+
         return $this->updateConfig($version, 0, $showWindow);
     }
 
     /**
      * Updates the module configuration with a specific version.
      *
-     * @param string|null $version The version to update to. If null, the current version is used.
-     * @param int $sub The sub-level for logging indentation.
-     * @param bool $showWindow Whether to show a window during the update process.
+     * @param   string|null  $version     The version to update to. If null, the current version is used.
+     * @param   int          $sub         The sub-level for logging indentation.
+     * @param   bool         $showWindow  Whether to show a window during the update process.
+     *
      * @return bool True if the update was successful, false otherwise.
      */
-    protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
+    protected function updateConfig($version = null, $sub = 0, $showWindow = false)
+    {
         global $bearsamppLang, $bearsamppWinbinder;
 
         if (!$this->enable) {
@@ -198,7 +209,7 @@ class BinNodejs extends Module
 
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
-        $conf = str_replace('nodejs' . $this->getVersion(), 'nodejs' . $version, $this->getConf());
+        $conf          = str_replace('nodejs' . $this->getVersion(), 'nodejs' . $version, $this->getConf());
         $bearsamppConf = str_replace('nodejs' . $this->getVersion(), 'nodejs' . $version, $this->bearsamppConf);
 
         if (!file_exists($conf) || !file_exists($bearsamppConf)) {
@@ -209,6 +220,7 @@ class BinNodejs extends Module
                     $boxTitle
                 );
             }
+
             return false;
         }
 
@@ -221,6 +233,7 @@ class BinNodejs extends Module
                     $boxTitle
                 );
             }
+
             return false;
         }
 
@@ -233,9 +246,10 @@ class BinNodejs extends Module
     /**
      * Sets the version of the module.
      *
-     * @param string $version The version to set.
+     * @param   string  $version  The version to set.
      */
-    public function setVersion($version) {
+    public function setVersion($version)
+    {
         global $bearsamppConfig;
         $this->version = $version;
         $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
@@ -245,10 +259,11 @@ class BinNodejs extends Module
     /**
      * Enables or disables the module.
      *
-     * @param int $enabled The enable status (1 for enabled, 0 for disabled).
-     * @param bool $showWindow Whether to show a window during the enable/disable process.
+     * @param   int   $enabled     The enable status (1 for enabled, 0 for disabled).
+     * @param   bool  $showWindow  Whether to show a window during the enable/disable process.
      */
-    public function setEnable($enabled, $showWindow = false) {
+    public function setEnable($enabled, $showWindow = false)
+    {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
         if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
@@ -272,7 +287,8 @@ class BinNodejs extends Module
      *
      * @return string The executable path.
      */
-    public function getExe() {
+    public function getExe()
+    {
         return $this->exe;
     }
 
@@ -281,7 +297,8 @@ class BinNodejs extends Module
      *
      * @return string The configuration file path.
      */
-    public function getConf() {
+    public function getConf()
+    {
         return $this->conf;
     }
 
@@ -290,7 +307,8 @@ class BinNodejs extends Module
      *
      * @return string The variables file path.
      */
-    public function getVars() {
+    public function getVars()
+    {
         return $this->vars;
     }
 
@@ -299,7 +317,8 @@ class BinNodejs extends Module
      *
      * @return string The npm executable path.
      */
-    public function getNpm() {
+    public function getNpm()
+    {
         return $this->npm;
     }
 
@@ -308,7 +327,8 @@ class BinNodejs extends Module
      *
      * @return string The launch script path.
      */
-    public function getLaunch() {
+    public function getLaunch()
+    {
         return $this->launch;
     }
 }

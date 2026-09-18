@@ -18,9 +18,10 @@
  *
  * @returns {string|null} The CSRF token or null if not found
  */
-function getCsrfToken() {
-    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-    return csrfMeta ? csrfMeta.getAttribute('content') : null;
+function getCsrfToken()
+{
+	const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+	return csrfMeta ? csrfMeta.getAttribute('content') : null;
 }
 
 /**
@@ -29,12 +30,13 @@ function getCsrfToken() {
  * @param {URLSearchParams} params - The URLSearchParams object to add the token to
  * @returns {URLSearchParams} The params object with token added
  */
-function addCsrfToken(params) {
-    const token = getCsrfToken();
-    if (token) {
-        params.append('csrf_token', token);
-    }
-    return params;
+function addCsrfToken(params)
+{
+	const token = getCsrfToken();
+	if (token) {
+		params.append('csrf_token', token);
+	}
+	return params;
 }
 
 /**
@@ -43,12 +45,13 @@ function addCsrfToken(params) {
  * @param {FormData} formData - The FormData object to add the token to
  * @returns {FormData} The formData object with token added
  */
-function addCsrfTokenToFormData(formData) {
-    const token = getCsrfToken();
-    if (token) {
-        formData.append('csrf_token', token);
-    }
-    return formData;
+function addCsrfTokenToFormData(formData)
+{
+	const token = getCsrfToken();
+	if (token) {
+		formData.append('csrf_token', token);
+	}
+	return formData;
 }
 
 /**
@@ -57,13 +60,14 @@ function addCsrfTokenToFormData(formData) {
  * @param {Object} options - Base fetch options
  * @returns {Object} Options with CSRF token header added
  */
-function addCsrfHeader(options = {}) {
-    const token = getCsrfToken();
-    if (token) {
-        options.headers = options.headers || {};
-        options.headers['X-CSRF-Token'] = token;
-    }
-    return options;
+function addCsrfHeader(options = {})
+{
+	const token = getCsrfToken();
+	if (token) {
+		options.headers = options.headers || {};
+		options.headers['X-CSRF-Token'] = token;
+	}
+	return options;
 }
 
 /**
@@ -73,21 +77,24 @@ function addCsrfHeader(options = {}) {
  * @param {Object} options - Fetch options
  * @returns {Promise} The fetch promise
  */
-async function fetchWithCsrf(url, options = {}) {
-    // If body is URLSearchParams, add token to it
-    if (options.body instanceof URLSearchParams) {
-        addCsrfToken(options.body);
-    }
-    // If body is FormData, add token to it
-    else if (options.body instanceof FormData) {
-        addCsrfTokenToFormData(options.body);
-    }
-    // Otherwise add as header
-    else {
-        addCsrfHeader(options);
-    }
-
-    return fetch(url, options);
+async function fetchWithCsrf(url, options = {})
+{
+	// If body is URLSearchParams, add token to it
+	if (options.body instanceof URLSearchParams) {
+		addCsrfToken(options.body);
+	}
+	// If body is FormData, add token to it
+	else {
+		if (options.body instanceof FormData) {
+			addCsrfTokenToFormData(options.body);
+		}
+		// Otherwise add as header
+		else {
+			addCsrfHeader(options);
+		}
+	}
+	
+	return fetch(url, options);
 }
 
 // Make functions available globally

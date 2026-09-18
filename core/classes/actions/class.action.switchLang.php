@@ -17,7 +17,7 @@ class ActionSwitchLang
     /**
      * ActionSwitchLang constructor.
      *
-     * @param array $args An array of arguments where the first element is expected to be the new language code.
+     * @param   array  $args  An array of arguments where the first element is expected to be the new language code.
      */
     public function __construct($args)
     {

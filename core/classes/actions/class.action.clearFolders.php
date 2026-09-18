@@ -23,7 +23,7 @@ class ActionClearFolders
      * Upon instantiation, it clears specified temporary folders in both the root and core temporary paths.
      * It excludes certain files and folders from being deleted to prevent essential data loss.
      *
-     * @param array $args Arguments that might be used for further extension of constructor functionality.
+     * @param   array  $args  Arguments that might be used for further extension of constructor functionality.
      */
     public function __construct($args)
     {
@@ -36,13 +36,27 @@ class ActionClearFolders
          * certain essential items such as 'cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache',
          * 'pip', 'opcache' and '.gitignore'. This ensures that important data and configurations are not lost.
          *
-         * @param string Path::getTmpPath() The root temporary path to be cleared.
-         * @param array $exclusions List of folders and files to be excluded from deletion.
+         * @param   string Path::getTmpPath() The root temporary path to be cleared.
+         * @param   array  $exclusions  List of folders and files to be excluded from deletion.
          */
         Util::clearFolder(Path::getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore'));
 
         // Clear logs
-        Util::clearFolder(Path::getLogsPath(), array('mariadb.log', 'mailpit.err.log', 'mailpit.out.log', 'memcached.err.log', 'memcached.out.log', 'mysql.log', 'postgresql.log', 'xlight.error.log', 'xlight.log', '.gitignore') );
+        Util::clearFolder(
+            Path::getLogsPath(),
+            array(
+                'mariadb.log',
+                'mailpit.err.log',
+                'mailpit.out.log',
+                'memcached.err.log',
+                'memcached.out.log',
+                'mysql.log',
+                'postgresql.log',
+                'xlight.error.log',
+                'xlight.log',
+                '.gitignore'
+            )
+        );
 
         /**
          * Clears the core temporary path.
@@ -51,8 +65,8 @@ class ActionClearFolders
          * the '.gitignore' file. This ensures that the core temporary path is cleaned without
          * removing the '.gitignore' file which might be necessary for version control.
          *
-         * @param string Path::getTmpPath() The core temporary path to be cleared.
-         * @param array $exclusions List of folders and files to be excluded from deletion.
+         * @param   string Path::getTmpPath() The core temporary path to be cleared.
+         * @param   array  $exclusions  List of folders and files to be excluded from deletion.
          */
         Util::clearFolder(Path::getTmpPath(), array('.gitignore'));
 

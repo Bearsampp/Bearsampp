@@ -19,7 +19,7 @@ global $bearsamppBins, $bearsamppLang;
 // Initialize result array
 $result = array(
     'checkport' => '',
-    'versions' => '',
+    'versions'  => '',
 );
 
 // Check port
@@ -27,7 +27,7 @@ $port = $bearsamppBins->getMysql()->getPort();
 
 $textServiceStarted = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STARTED);
 $textServiceStopped = $bearsamppLang->getValue(Lang::HOMEPAGE_SERVICE_STOPPED);
-$textDisabled = $bearsamppLang->getValue(Lang::DISABLED);
+$textDisabled       = $bearsamppLang->getValue(Lang::DISABLED);
 
 /**
  * Check if MySQL service is enabled and its port status.

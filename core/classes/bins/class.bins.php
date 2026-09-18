@@ -103,6 +103,7 @@ class Bins
         if ($this->mailpit == null) {
             $this->mailpit = new BinMailpit('mailpit', self::TYPE);
         }
+
         return $this->mailpit;
     }
 
@@ -117,6 +118,7 @@ class Bins
         if ($this->memcached == null) {
             $this->memcached = new BinMemcached('memcached', self::TYPE);
         }
+
         return $this->memcached;
     }
 
@@ -131,6 +133,7 @@ class Bins
         if ($this->apache == null) {
             $this->apache = new BinApache('apache', self::TYPE);
         }
+
         return $this->apache;
     }
 
@@ -145,6 +148,7 @@ class Bins
         if ($this->php == null) {
             $this->php = new BinPhp('php', self::TYPE);
         }
+
         return $this->php;
     }
 
@@ -159,6 +163,7 @@ class Bins
         if ($this->mysql == null) {
             $this->mysql = new BinMysql('mysql', self::TYPE);
         }
+
         return $this->mysql;
     }
 
@@ -173,6 +178,7 @@ class Bins
         if ($this->mariadb == null) {
             $this->mariadb = new BinMariadb('mariadb', self::TYPE);
         }
+
         return $this->mariadb;
     }
 
@@ -187,6 +193,7 @@ class Bins
         if ($this->postgresql == null) {
             $this->postgresql = new BinPostgresql('postgresql', self::TYPE);
         }
+
         return $this->postgresql;
     }
 
@@ -201,6 +208,7 @@ class Bins
         if ($this->nodejs == null) {
             $this->nodejs = new BinNodejs('nodejs', self::TYPE);
         }
+
         return $this->nodejs;
     }
 
@@ -215,6 +223,7 @@ class Bins
         if ($this->xlight == null) {
             $this->xlight = new BinXlight('xlight', self::TYPE);
         }
+
         return $this->xlight;
     }
 
@@ -225,7 +234,8 @@ class Bins
      * provided string. Returns null if no bin matches, so callers can handle
      * unrecognised names without branching on each individual service.
      *
-     * @param string $name The display name to look up (as returned by getName()).
+     * @param   string  $name  The display name to look up (as returned by getName()).
+     *
      * @return object|null The matching bin object, or null if not found.
      */
     public function getBinByName(string $name): ?object
@@ -235,6 +245,7 @@ class Bins
                 return $bin;
             }
         }
+
         return null;
     }
 

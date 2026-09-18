@@ -24,7 +24,7 @@ class CacheManager
 
     /** @var array Cache statistics (hits, misses, writes). */
     private static $stats = [
-        'hits' => 0,
+        'hits'   => 0,
         'misses' => 0,
         'writes' => 0
     ];
@@ -35,7 +35,8 @@ class CacheManager
      * Initialize cache system
      * Must be called after Root path is available
      *
-     * @param string $cacheDir Path to cache directory
+     * @param   string  $cacheDir  Path to cache directory
+     *
      * @return void
      */
     public static function init(string $cacheDir): void
@@ -58,9 +59,10 @@ class CacheManager
      * Load data from cache or parse and save
      * Safe pattern: tries cache first, falls back to parser
      *
-     * @param string $sourcePath Path to config file
-     * @param callable $parser Function that parses the file
-     * @param string|null $cacheKey Optional custom cache key (defaults to file hash)
+     * @param   string       $sourcePath  Path to config file
+     * @param   callable     $parser      Function that parses the file
+     * @param   string|null  $cacheKey    Optional custom cache key (defaults to file hash)
+     *
      * @return mixed Parsed configuration data
      */
     public static function load(
@@ -83,6 +85,7 @@ class CacheManager
             $cached = @json_decode(file_get_contents($cacheFile), true);
             if (is_array($cached)) {
                 self::$stats['hits']++;
+
                 return $cached;
             }
         }
@@ -101,8 +104,9 @@ class CacheManager
     /**
      * Check if cache exists and is still valid
      *
-     * @param string $sourcePath Path to source file
-     * @param string $cacheFile Path to cache file
+     * @param   string  $sourcePath  Path to source file
+     * @param   string  $cacheFile   Path to cache file
+     *
      * @return bool True if cache is valid
      */
     private static function isCacheValid(
@@ -121,8 +125,9 @@ class CacheManager
      * Write data to cache file
      * Uses JSON format for portability and debuggability
      *
-     * @param string $cacheFile Path to cache file
-     * @param array $data Data to cache
+     * @param   string  $cacheFile  Path to cache file
+     * @param   array   $data       Data to cache
+     *
      * @return bool Success status
      */
     private static function writeCache(string $cacheFile, array $data): bool
@@ -131,22 +136,25 @@ class CacheManager
             return false;
         }
 
-        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $json    = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         $written = @file_put_contents($cacheFile, $json);
 
         if ($written !== false) {
             self::$stats['writes']++;
+
             return true;
         }
 
         Log::warning('Failed to write cache: ' . $cacheFile);
+
         return false;
     }
 
     /**
      * Get cache file path for a given key
      *
-     * @param string $cacheKey Cache key
+     * @param   string  $cacheKey  Cache key
+     *
      * @return string Full path to cache file
      */
     private static function getCacheFile(string $cacheKey): string
@@ -158,7 +166,8 @@ class CacheManager
      * Invalidate cache for a specific source file
      * Called when configuration is modified
      *
-     * @param string $sourcePath Path to source file
+     * @param   string  $sourcePath  Path to source file
+     *
      * @return void
      */
     public static function invalidate(string $sourcePath): void
@@ -167,7 +176,7 @@ class CacheManager
             return;
         }
 
-        $cacheKey = md5($sourcePath);
+        $cacheKey  = md5($sourcePath);
         $cacheFile = self::getCacheFile($cacheKey);
 
         if (file_exists($cacheFile)) {
@@ -198,7 +207,7 @@ class CacheManager
             $cache->clear();
         }
 
-        $files = @glob(self::$cacheDir . '/*.cache');
+        $files   = @glob(self::$cacheDir . '/*.cache');
         $deleted = 0;
 
         if (is_array($files)) {
@@ -220,10 +229,10 @@ class CacheManager
      */
     public static function getStats(): array
     {
-        $files = @glob(self::$cacheDir . '/*.cache');
-        $totalSize = 0;
-        $oldestEntry = null;
-        $newestEntry = null;
+        $files        = @glob(self::$cacheDir . '/*.cache');
+        $totalSize    = 0;
+        $oldestEntry  = null;
+        $newestEntry  = null;
         $largestEntry = 0;
 
         if (is_array($files)) {
@@ -248,17 +257,17 @@ class CacheManager
         }
 
         return [
-            'enabled' => self::$enabled,
-            'cacheDir' => self::$cacheDir,
-            'filesCount' => count($files ?? []),
-            'totalSize' => $totalSize,
-            'oldestEntry' => $oldestEntry,
-            'newestEntry' => $newestEntry,
+            'enabled'      => self::$enabled,
+            'cacheDir'     => self::$cacheDir,
+            'filesCount'   => count($files ?? []),
+            'totalSize'    => $totalSize,
+            'oldestEntry'  => $oldestEntry,
+            'newestEntry'  => $newestEntry,
             'largestEntry' => $largestEntry,
-            'cacheHits' => self::$stats['hits'],
-            'cacheMisses' => self::$stats['misses'],
-            'cachewrites' => self::$stats['writes'],
-            'hitRate' => (self::$stats['hits'] + self::$stats['misses']) > 0
+            'cacheHits'    => self::$stats['hits'],
+            'cacheMisses'  => self::$stats['misses'],
+            'cachewrites'  => self::$stats['writes'],
+            'hitRate'      => (self::$stats['hits'] + self::$stats['misses']) > 0
                 ? round((self::$stats['hits'] / (self::$stats['hits'] + self::$stats['misses'])) * 100, 2)
                 : 0
         ];
@@ -268,7 +277,8 @@ class CacheManager
      * Enable or disable caching
      * Useful for testing or troubleshooting
      *
-     * @param bool $enable Enable caching
+     * @param   bool  $enable  Enable caching
+     *
      * @return void
      */
     public static function setEnabled(bool $enable): void

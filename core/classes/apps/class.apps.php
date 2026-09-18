@@ -88,6 +88,7 @@ class Apps
         if ($this->phpmyadmin == null) {
             $this->phpmyadmin = new AppPhpmyadmin('phpmyadmin', self::TYPE);
         }
+
         return $this->phpmyadmin;
     }
 
@@ -103,6 +104,7 @@ class Apps
         if ($this->phppgadmin == null) {
             $this->phppgadmin = new AppPhppgadmin('phppgadmin', self::TYPE);
         }
+
         return $this->phppgadmin;
     }
 }

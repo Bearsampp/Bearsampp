@@ -117,8 +117,8 @@ class BinMariadb extends Module
      */
     public function __construct($id, $type)
     {
-        Log::initClass( $this );
-        $this->reload( $id, $type );
+        Log::initClass($this);
+        $this->reload($id, $type);
     }
 
     /**
@@ -130,82 +130,82 @@ class BinMariadb extends Module
     public function reload($id = null, $type = null)
     {
         global $bearsamppRoot, $bearsamppConfig, $bearsamppLang;
-        Log::reloadClass( $this );
+        Log::reloadClass($this);
 
-        $this->name    = $bearsamppLang->getValue( Lang::MARIADB );
-        $this->version = $bearsamppConfig->getRaw( self::ROOT_CFG_VERSION );
-        parent::reload( $id, $type );
+        $this->name    = $bearsamppLang->getValue(Lang::MARIADB);
+        $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
+        parent::reload($id, $type);
 
-        $this->enable   = $this->enable && $bearsamppConfig->getRaw( self::ROOT_CFG_ENABLE );
-        $this->service  = new Win32Service( self::SERVICE_NAME );
+        $this->enable   = $this->enable && $bearsamppConfig->getRaw(self::ROOT_CFG_ENABLE);
+        $this->service  = new Win32Service(self::SERVICE_NAME);
         $this->errorLog = Path::getLogsPath() . '/mariadb.log';
 
-        if ( $this->bearsamppConfRaw !== false ) {
+        if ($this->bearsamppConfRaw !== false) {
             $this->exe      = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->conf     = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
             $this->port     = $this->bearsamppConfRaw[self::LOCAL_CFG_PORT];
-            $this->rootUser = isset( $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER] ) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER] : 'root';
-            $this->rootPwd  = isset( $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD] ) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD] : '';
+            $this->rootUser = isset($this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER]) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_USER] : 'root';
+            $this->rootPwd  = isset($this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD]) ? $this->bearsamppConfRaw[self::LOCAL_CFG_ROOT_PWD] : '';
             $this->cliExe   = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CLI_EXE];
             $this->admin    = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_ADMIN];
         }
 
-        if ( !$this->enable ) {
-            Log::info( $this->name . ' is not enabled!' );
+        if (!$this->enable) {
+            Log::info($this->name . ' is not enabled!');
 
             return;
         }
-        if ( !is_dir( $this->currentPath ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->currentPath ) );
+        if (!is_dir($this->currentPath)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->currentPath));
 
             return;
         }
-        if ( !is_dir( $this->symlinkPath ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_FILE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->symlinkPath ) );
+        if (!is_dir($this->symlinkPath)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
 
             return;
         }
-        if ( !is_file( $this->bearsamppConf ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->bearsamppConf ) );
+        if (!is_file($this->bearsamppConf)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->bearsamppConf));
 
             return;
         }
-        if ( !is_file( $this->exe ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->exe ) );
+        if (!is_file($this->exe)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->exe));
 
             return;
         }
-        if ( !is_file( $this->conf ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_CONF_NOT_FOUND ), $this->name . ' ' . $this->version, $this->conf ) );
+        if (!is_file($this->conf)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_CONF_NOT_FOUND), $this->name . ' ' . $this->version, $this->conf));
 
             return;
         }
-        if ( !is_numeric( $this->port ) || $this->port <= 0 ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_PORT, $this->port ) );
+        if (!is_numeric($this->port) || $this->port <= 0) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_PORT, $this->port));
 
             return;
         }
-        if ( empty( $this->rootUser ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_INVALID_PARAMETER ), self::LOCAL_CFG_ROOT_USER, $this->rootUser ) );
+        if (empty($this->rootUser)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_INVALID_PARAMETER), self::LOCAL_CFG_ROOT_USER, $this->rootUser));
 
             return;
         }
-        if ( !is_file( $this->cliExe ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->cliExe ) );
+        if (!is_file($this->cliExe)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->cliExe));
 
             return;
         }
-        if ( !is_file( $this->admin ) ) {
-            Log::error( sprintf( $bearsamppLang->getValue( Lang::ERROR_EXE_NOT_FOUND ), $this->name . ' ' . $this->version, $this->admin ) );
+        if (!is_file($this->admin)) {
+            Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_EXE_NOT_FOUND), $this->name . ' ' . $this->version, $this->admin));
 
             return;
         }
 
-        $this->service->setDisplayName( APP_TITLE . ' ' . $this->getName() );
-        $this->service->setBinPath( $this->exe );
-        $this->service->setParams( '--defaults-file="' . Path::formatWindowsPath($this->conf) . '" ' . self::SERVICE_NAME );
-        $this->service->setStartType( Win32Service::SERVICE_DEMAND_START );
-        $this->service->setErrorControl( Win32Service::SERVER_ERROR_NORMAL );
+        $this->service->setDisplayName(APP_TITLE . ' ' . $this->getName());
+        $this->service->setBinPath($this->exe);
+        $this->service->setParams('--defaults-file="' . Path::formatWindowsPath($this->conf) . '" ' . self::SERVICE_NAME);
+        $this->service->setStartType(Win32Service::SERVICE_DEMAND_START);
+        $this->service->setErrorControl(Win32Service::SERVER_ERROR_NORMAL);
     }
 
     /**
@@ -215,12 +215,12 @@ class BinMariadb extends Module
      */
     protected function replaceAll($params)
     {
-        $content = file_get_contents( $this->bearsamppConf );
+        $content = file_get_contents($this->bearsamppConf);
 
-        foreach ( $params as $key => $value ) {
-            $content                      = preg_replace( '|' . $key . ' = .*|', $key . ' = ' . '"' . $value . '"', $content );
+        foreach ($params as $key => $value) {
+            $content                      = preg_replace('|' . $key . ' = .*|', $key . ' = ' . '"' . $value . '"', $content);
             $this->bearsamppConfRaw[$key] = $value;
-            switch ( $key ) {
+            switch ($key) {
                 case self::LOCAL_CFG_PORT:
                     $this->port = $value;
                     break;
@@ -233,9 +233,9 @@ class BinMariadb extends Module
             }
         }
 
-        file_put_contents( $this->bearsamppConf, $content );
+        file_put_contents($this->bearsamppConf, $content);
 
-        self::invalidateConfigCacheForPath( $this->bearsamppConf );
+        self::invalidateConfigCacheForPath($this->bearsamppConf);
     }
 
     /**
@@ -251,29 +251,29 @@ class BinMariadb extends Module
     {
         global $bearsamppWinbinder;
 
-        if ( !Util::isValidPort( $port ) ) {
-            Log::error( $this->getName() . ' port not valid: ' . $port );
+        if (!Util::isValidPort($port)) {
+            Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
         }
 
-        $port = intval( $port );
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+        $port = intval($port);
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
-        $isPortInUse = ServiceHelper::isPortInUse( $port );
-        if ( !$checkUsed || $isPortInUse === false ) {
+        $isPortInUse = ServiceHelper::isPortInUse($port);
+        if (!$checkUsed || $isPortInUse === false) {
             // bearsampp.conf
-            $this->setPort( $port );
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $this->setPort($port);
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             // conf
             $this->update();
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             return true;
         }
 
-        Log::debug( $this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse );
+        Log::debug($this->getName() . ' port in used: ' . $port . ' - ' . $isPortInUse);
 
         return $isPortInUse;
     }
@@ -289,54 +289,53 @@ class BinMariadb extends Module
     public function checkPort($port, $showWindow = false)
     {
         global $bearsamppLang, $bearsamppWinbinder;
-        $boxTitle = sprintf( $bearsamppLang->getValue( Lang::CHECK_PORT_TITLE ), $this->getName(), $port );
+        $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
-        if ( !Util::isValidPort( $port ) ) {
-            Log::error( $this->getName() . ' port not valid: ' . $port );
+        if (!Util::isValidPort($port)) {
+            Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
         }
 
-        $fp = @fsockopen( APP_LOCALHOST, $port, $errno, $errstr, 5 );
-        if ( $fp ) {
+        $fp = @fsockopen(APP_LOCALHOST, $port, $errno, $errstr, 5);
+        if ($fp) {
             // Reset mysqli to non-exception mode so connect/query failures
             // return false instead of throwing an uncaught mysqli_sql_exception
             // that would freeze the WinBinder GUI thread.
-            mysqli_report( MYSQLI_REPORT_OFF );
+            mysqli_report(MYSQLI_REPORT_OFF);
 
-            $dbLink    = mysqli_connect( APP_LOCALHOST . ':' . $port, $this->rootUser, $this->rootPwd );
+            $dbLink    = mysqli_connect(APP_LOCALHOST . ':' . $port, $this->rootUser, $this->rootPwd);
             $isMariadb = false;
             $version   = false;
 
-            if ( $dbLink ) {
-                $result = mysqli_query( $dbLink, 'SHOW VARIABLES' );
-                if ( $result ) {
-                    while ( false !== ($row = mysqli_fetch_array( $result, MYSQLI_NUM )) ) {
-                        if ( $row[0] == 'version' ) {
-                            $version = explode( '-', $row[1] );
-                            $version = count( $version ) > 1 ? $version[0] : $row[1];
+            if ($dbLink) {
+                $result = mysqli_query($dbLink, 'SHOW VARIABLES');
+                if ($result) {
+                    while (false !== ($row = mysqli_fetch_array($result, MYSQLI_NUM))) {
+                        if ($row[0] == 'version') {
+                            $version = explode('-', $row[1]);
+                            $version = count($version) > 1 ? $version[0] : $row[1];
                         }
-                        if ( $row[0] == 'version_comment' && UtilString::startWith( strtolower( $row[1] ), 'mariadb' ) ) {
+                        if ($row[0] == 'version_comment' && UtilString::startWith(strtolower($row[1]), 'mariadb')) {
                             $isMariadb = true;
                         }
-                        if ( $isMariadb && $version !== false ) {
+                        if ($isMariadb && $version !== false) {
                             break;
                         }
                     }
-                    if ( !$isMariadb ) {
-                        Log::debug( $this->getName() . ' port used by another DBMS: ' . $port );
-                        if ( $showWindow ) {
+                    if (!$isMariadb) {
+                        Log::debug($this->getName() . ' port used by another DBMS: ' . $port);
+                        if ($showWindow) {
                             $bearsamppWinbinder->messageBoxWarning(
-                                sprintf( $bearsamppLang->getValue( Lang::PORT_USED_BY_ANOTHER_DBMS ), $port ),
+                                sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY_ANOTHER_DBMS), $port),
                                 $boxTitle
                             );
                         }
-                    }
-                    else {
-                        Log::debug( $this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $version );
-                        if ( $showWindow ) {
+                    } else {
+                        Log::debug($this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . $version);
+                        if ($showWindow) {
                             $bearsamppWinbinder->messageBoxInfo(
-                                sprintf( $bearsamppLang->getValue( Lang::PORT_USED_BY ), $port, $this->getName() . ' ' . $version ),
+                                sprintf($bearsamppLang->getValue(Lang::PORT_USED_BY), $port, $this->getName() . ' ' . $version),
                                 $boxTitle
                             );
                         }
@@ -344,23 +343,21 @@ class BinMariadb extends Module
                         return true;
                     }
                 }
-                mysqli_close( $dbLink );
-            }
-            else {
-                Log::debug( $this->getName() . ' port ' . $port . ' is used by another application' );
-                if ( $showWindow ) {
+                mysqli_close($dbLink);
+            } else {
+                Log::debug($this->getName() . ' port ' . $port . ' is used by another application');
+                if ($showWindow) {
                     $bearsamppWinbinder->messageBoxWarning(
-                        sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED_BY ), $port ),
+                        sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED_BY), $port),
                         $boxTitle
                     );
                 }
             }
-        }
-        else {
-            Log::debug( $this->getName() . ' port ' . $port . ' is not used' );
-            if ( $showWindow ) {
+        } else {
+            Log::debug($this->getName() . ' port ' . $port . ' is not used');
+            if ($showWindow) {
                 $bearsamppWinbinder->messageBoxError(
-                    sprintf( $bearsamppLang->getValue( Lang::PORT_NOT_USED ), $port ),
+                    sprintf($bearsamppLang->getValue(Lang::PORT_NOT_USED), $port),
                     $boxTitle
                 );
             }
@@ -382,34 +379,34 @@ class BinMariadb extends Module
     {
         global $bearsamppWinbinder;
 
-        $error = null;
+        $error  = null;
         $dbLink = false;
 
         try {
             // Connect
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             // Since PHP 8.1 mysqli defaults to exception mode (MYSQLI_REPORT_STRICT),
             // so a failed auth throws mysqli_sql_exception instead of returning false.
             // Reset to OFF so calls return false and mysqli_connect_error() is set,
             // keeping the documented bool|string contract and avoiding an uncaught
             // exception that would freeze the WinBinder GUI thread.
-            mysqli_report( MYSQLI_REPORT_OFF );
+            mysqli_report(MYSQLI_REPORT_OFF);
 
             $dbLink = mysqli_init();
-            mysqli_options( $dbLink, MYSQLI_OPT_CONNECT_TIMEOUT, 5 );
-            if ( !mysqli_real_connect( $dbLink, APP_LOCALHOST, $this->rootUser, $currentPwd, null, $this->port ) ) {
-                throw new \RuntimeException( mysqli_connect_error() );
+            mysqli_options($dbLink, MYSQLI_OPT_CONNECT_TIMEOUT, 5);
+            if (!mysqli_real_connect($dbLink, APP_LOCALHOST, $this->rootUser, $currentPwd, null, $this->port)) {
+                throw new \RuntimeException(mysqli_connect_error());
             }
 
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
             // Bound metadata-lock/table-lock waits so a password change can
             // never freeze the UI: any lock contention times out in seconds
             // instead of waiting for the server's default (often very large)
             // lock_wait_timeout.
-            mysqli_query( $dbLink, 'SET SESSION lock_wait_timeout = 5' );
-            mysqli_query( $dbLink, 'SET SESSION innodb_lock_wait_timeout = 5' );
+            mysqli_query($dbLink, 'SET SESSION lock_wait_timeout = 5');
+            mysqli_query($dbLink, 'SET SESSION innodb_lock_wait_timeout = 5');
 
             // ALTER USER works reliably across MariaDB 10.3+ and avoids
             // known SET PASSWORD bugs (MDEV-16774, MDEV-17136) and
@@ -417,42 +414,41 @@ class BinMariadb extends Module
             // The user and host are given explicitly (not CURRENT_USER()).
             // The password is escaped so an empty (blank) password is
             // allowed: IDENTIFIED BY '' sets a blank password.
-            $escapedUser = mysqli_real_escape_string( $dbLink, $this->rootUser );
-            $escapedPwd  = mysqli_real_escape_string( $dbLink, $newPwd );
+            $escapedUser = mysqli_real_escape_string($dbLink, $this->rootUser);
+            $escapedPwd  = mysqli_real_escape_string($dbLink, $newPwd);
             $sql         = "ALTER USER '" . $escapedUser . "'@'localhost' IDENTIFIED BY '" . $escapedPwd . "'";
 
-            if ( mysqli_query( $dbLink, $sql ) === false ) {
-                throw new \RuntimeException( mysqli_error( $dbLink ) );
+            if (mysqli_query($dbLink, $sql) === false) {
+                throw new \RuntimeException(mysqli_error($dbLink));
             }
 
             // Preserve the existing progress-step count.
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
-            mysqli_close( $dbLink );
+            mysqli_close($dbLink);
             $dbLink = false;
 
-            $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        }
-        catch ( \Throwable $e ) {
+            $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+        } catch (\Throwable $e) {
             $error = $e->getMessage();
 
-            if ( $dbLink ) {
-                @mysqli_close( $dbLink );
+            if ($dbLink) {
+                @mysqli_close($dbLink);
             }
         }
 
-        if ( !empty( $error ) ) {
+        if (!empty($error)) {
             return $error;
         }
 
         // bearsampp.conf
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        $this->setRootPwd( $newPwd );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+        $this->setRootPwd($newPwd);
 
         // conf
         $this->update();
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
         return true;
     }
@@ -471,25 +467,25 @@ class BinMariadb extends Module
         $currentPwd = $currentPwd == null ? $this->rootPwd : $currentPwd;
         $error      = null;
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
 
         // Reset mysqli to non-exception mode so a bad password returns false
         // (with mysqli_connect_error() set) instead of throwing an uncaught
         // mysqli_sql_exception that would freeze the WinBinder GUI thread.
-        mysqli_report( MYSQLI_REPORT_OFF );
+        mysqli_report(MYSQLI_REPORT_OFF);
 
         $dbLink = mysqli_init();
-        mysqli_options( $dbLink, MYSQLI_OPT_CONNECT_TIMEOUT, 5 );
-        if ( !mysqli_real_connect( $dbLink, APP_LOCALHOST, $this->rootUser, $currentPwd, null, $this->port ) ) {
+        mysqli_options($dbLink, MYSQLI_OPT_CONNECT_TIMEOUT, 5);
+        if (!mysqli_real_connect($dbLink, APP_LOCALHOST, $this->rootUser, $currentPwd, null, $this->port)) {
             $error = mysqli_connect_error();
         }
 
-        $bearsamppWinbinder->incrProgressBar( $wbProgressBar );
-        if ( $dbLink ) {
-            mysqli_close( $dbLink );
+        $bearsamppWinbinder->incrProgressBar($wbProgressBar);
+        if ($dbLink) {
+            mysqli_close($dbLink);
         }
 
-        if ( !empty( $error ) ) {
+        if (!empty($error)) {
             return $error;
         }
 
@@ -506,9 +502,9 @@ class BinMariadb extends Module
      */
     public function switchVersion($version, $showWindow = false)
     {
-        Log::debug( 'Switch ' . $this->name . ' version to ' . $version );
+        Log::debug('Switch ' . $this->name . ' version to ' . $version);
 
-        return $this->updateConfig( $version, 0, $showWindow );
+        return $this->updateConfig($version, 0, $showWindow);
     }
 
     /**
@@ -520,7 +516,8 @@ class BinMariadb extends Module
      *
      * @return bool True if the configuration was updated successfully, false otherwise.
      */
-    protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
+    protected function updateConfig($version = null, $sub = 0, $showWindow = false)
+    {
         global $bearsamppLang, $bearsamppApps, $bearsamppWinbinder;
 
         if (!$this->enable) {
@@ -532,7 +529,7 @@ class BinMariadb extends Module
 
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::SWITCH_VERSION_TITLE), $this->getName(), $version);
 
-        $conf = str_replace('mariadb' . $this->getVersion(), 'mariadb' . $version, $this->getConf());
+        $conf          = str_replace('mariadb' . $this->getVersion(), 'mariadb' . $version, $this->getConf());
         $bearsamppConf = str_replace('mariadb' . $this->getVersion(), 'mariadb' . $version, $this->bearsamppConf);
 
         if (!file_exists($conf) || !file_exists($bearsamppConf)) {
@@ -543,6 +540,7 @@ class BinMariadb extends Module
                     $boxTitle
                 );
             }
+
             return false;
         }
 
@@ -555,6 +553,7 @@ class BinMariadb extends Module
                     $boxTitle
                 );
             }
+
             return false;
         }
 
@@ -575,20 +574,22 @@ class BinMariadb extends Module
     /**
      * Retrieves the command line output for a given command.
      *
-     * @param string $cmd The command to execute.
+     * @param   string  $cmd  The command to execute.
+     *
      * @return array An associative array containing:
      *               - 'syntaxOk' (bool): Whether the command executed without syntax errors.
      *               - 'content' (string|null): The output content of the command.
      */
-    public function getCmdLineOutput($cmd) {
+    public function getCmdLineOutput($cmd)
+    {
         $result = array(
             'syntaxOk' => false,
             'content'  => null,
         );
 
-        $bin = $this->getExe();
+        $bin         = $this->getExe();
         $removeLines = 0;
-        $outputFrom = '';
+        $outputFrom  = '';
         if ($cmd == self::CMD_SYNTAX_CHECK) {
             $outputFrom = '2';
         } elseif ($cmd == self::CMD_VARIABLES) {
@@ -617,9 +618,10 @@ class BinMariadb extends Module
     /**
      * Sets the version of the module.
      *
-     * @param string $version The version to set.
+     * @param   string  $version  The version to set.
      */
-    public function setVersion($version) {
+    public function setVersion($version)
+    {
         global $bearsamppConfig;
         $this->version = $version;
         $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
@@ -631,17 +633,19 @@ class BinMariadb extends Module
      *
      * @return Win32Service The service object.
      */
-    public function getService() {
+    public function getService()
+    {
         return $this->service;
     }
 
     /**
      * Enables or disables the module.
      *
-     * @param bool $enabled Whether to enable or disable the module.
-     * @param bool $showWindow Whether to show a window with the result.
+     * @param   bool  $enabled     Whether to enable or disable the module.
+     * @param   bool  $showWindow  Whether to show a window with the result.
      */
-    public function setEnable($enabled, $showWindow = false) {
+    public function setEnable($enabled, $showWindow = false)
+    {
         global $bearsamppConfig, $bearsamppLang, $bearsamppWinbinder;
 
         if ($enabled == Config::ENABLED && !is_dir($this->currentPath)) {
@@ -672,7 +676,8 @@ class BinMariadb extends Module
      *
      * @return string The error log path.
      */
-    public function getErrorLog() {
+    public function getErrorLog()
+    {
         return $this->errorLog;
     }
 
@@ -681,7 +686,8 @@ class BinMariadb extends Module
      *
      * @return string The executable path.
      */
-    public function getExe() {
+    public function getExe()
+    {
         return $this->exe;
     }
 
@@ -690,7 +696,8 @@ class BinMariadb extends Module
      *
      * @return string The configuration file path.
      */
-    public function getConf() {
+    public function getConf()
+    {
         return $this->conf;
     }
 
@@ -699,16 +706,18 @@ class BinMariadb extends Module
      *
      * @return int The port number.
      */
-    public function getPort() {
+    public function getPort()
+    {
         return $this->port;
     }
 
     /**
      * Sets the port number for the module.
      *
-     * @param int $port The port number to set.
+     * @param   int  $port  The port number to set.
      */
-    public function setPort($port) {
+    public function setPort($port)
+    {
         $this->replace(self::LOCAL_CFG_PORT, $port);
     }
 
@@ -717,16 +726,18 @@ class BinMariadb extends Module
      *
      * @return string The root user.
      */
-    public function getRootUser() {
+    public function getRootUser()
+    {
         return $this->rootUser;
     }
 
     /**
      * Sets the root user for the module.
      *
-     * @param string $rootUser The root user to set.
+     * @param   string  $rootUser  The root user to set.
      */
-    public function setRootUser($rootUser) {
+    public function setRootUser($rootUser)
+    {
         $this->replace(self::LOCAL_CFG_ROOT_USER, $rootUser);
     }
 
@@ -735,16 +746,18 @@ class BinMariadb extends Module
      *
      * @return string The root password.
      */
-    public function getRootPwd() {
+    public function getRootPwd()
+    {
         return $this->rootPwd;
     }
 
     /**
      * Sets the root password for the module.
      *
-     * @param string $rootPwd The root password to set.
+     * @param   string  $rootPwd  The root password to set.
      */
-    public function setRootPwd($rootPwd) {
+    public function setRootPwd($rootPwd)
+    {
         $this->replace(self::LOCAL_CFG_ROOT_PWD, $rootPwd);
     }
 
@@ -788,69 +801,69 @@ class BinMariadb extends Module
      */
     public function initData($path = null, $version = null)
     {
-        Log::trace( 'Starting MariaDB data initialization' );
-        $startTime = microtime( true );
+        Log::trace('Starting MariaDB data initialization');
+        $startTime = microtime(true);
 
         $path    = $path != null ? $path : Path::getModuleCurrentPath($this);
         $version = $version != null ? $version : $this->getVersion();
         $dataDir = $path . '/data';
 
-        if ( is_dir( $dataDir . '/mysql' ) ) {
-            Log::trace( 'MariaDB data directory already initialized' );
+        if (is_dir($dataDir . '/mysql')) {
+            Log::trace('MariaDB data directory already initialized');
 
             return true;
         }
 
-        if ( !is_dir( $dataDir ) ) {
-            @mkdir( $dataDir, 0777, true );
-            Log::trace( 'Created MariaDB data directory' );
+        if (!is_dir($dataDir)) {
+            @mkdir($dataDir, 0777, true);
+            Log::trace('Created MariaDB data directory');
         }
 
         // Check for init.bat first
-        if ( file_exists( $path . '/init.bat' ) ) {
-            Log::trace( 'Initializing MariaDB via init.bat' );
+        if (file_exists($path . '/init.bat')) {
+            Log::trace('Initializing MariaDB via init.bat');
             try {
-                Batch::initializeMariadb( $path );
-            } catch ( \Throwable $e ) {
-                Log::trace( 'Error during MariaDB initialization via Batch: ' . $e->getMessage() );
+                Batch::initializeMariadb($path);
+            } catch (\Throwable $e) {
+                Log::trace('Error during MariaDB initialization via Batch: ' . $e->getMessage());
 
                 return false;
             }
         } else {
             // Use mariadb-install-db.exe
-            Log::trace( 'Initializing MariaDB via mariadb-install-db.exe' );
+            Log::trace('Initializing MariaDB via mariadb-install-db.exe');
             $installDbExe = $path . '/bin/mariadb-install-db.exe';
-            if ( !file_exists( $installDbExe ) ) {
+            if (!file_exists($installDbExe)) {
                 $installDbExe = $path . '/bin/mysql_install_db.exe';
             }
 
-            if ( file_exists( $installDbExe ) ) {
-                $cmd = '"' . Path::formatWindowsPath( $installDbExe ) . '"';
-                $cmd .= ' --datadir="' . Path::formatWindowsPath( $dataDir ) . '"';
+            if (file_exists($installDbExe)) {
+                $cmd = '"' . Path::formatWindowsPath($installDbExe) . '"';
+                $cmd .= ' --datadir="' . Path::formatWindowsPath($dataDir) . '"';
 
                 try {
-                    Batch::exec( 'initializeMariadb', $cmd, 60 );
-                } catch ( \Throwable $e ) {
-                    Log::trace( 'Error during MariaDB initialization via mariadb-install-db: ' . $e->getMessage() );
+                    Batch::exec('initializeMariadb', $cmd, 60);
+                } catch (\Throwable $e) {
+                    Log::trace('Error during MariaDB initialization via mariadb-install-db: ' . $e->getMessage());
 
                     return false;
                 }
             } else {
-                Log::error( 'MariaDB initialization failed: No init.bat or mariadb-install-db.exe found' );
+                Log::error('MariaDB initialization failed: No init.bat or mariadb-install-db.exe found');
 
                 return false;
             }
         }
 
         // Verify initialization
-        if ( !is_dir( $dataDir . '/mysql' ) ) {
-            Log::trace( 'MariaDB initialization appears to have failed: mysql directory still missing' );
+        if (!is_dir($dataDir . '/mysql')) {
+            Log::trace('MariaDB initialization appears to have failed: mysql directory still missing');
 
             return false;
         }
 
-        $totalTime = round( microtime( true ) - $startTime, 2 );
-        Log::trace( "MariaDB initialization completed in {$totalTime}s" );
+        $totalTime = round(microtime(true) - $startTime, 2);
+        Log::trace("MariaDB initialization completed in {$totalTime}s");
 
         return true;
     }

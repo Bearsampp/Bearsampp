@@ -24,9 +24,9 @@ class TplAppLogs
      * This method generates the logs menu by retrieving the localized string for logs
      * and calling the getMenu method from the TplApp class.
      *
+     * @return array The generated logs menu as a string.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return array The generated logs menu as a string.
      */
     public static function process()
     {
@@ -41,9 +41,9 @@ class TplAppLogs
      * This method retrieves the list of log files from the logs directory, sorts them,
      * and generates menu items for each log file using the getItemNotepad method from the TplAestan class.
      *
+     * @return string The generated logs menu content as a string.
      * @global object $bearsamppRoot Provides access to the root directory of the application.
      *
-     * @return string The generated logs menu content as a string.
      */
     public static function getMenuLogs()
     {
@@ -73,6 +73,7 @@ class TplAppLogs
         foreach ($files as $file) {
             $result .= TplAestan::getItemNotepad(basename($file), Path::getLogsPath() . '/' . $file) . PHP_EOL;
         }
+
         return $result;
     }
 }

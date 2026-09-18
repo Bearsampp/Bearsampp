@@ -25,9 +25,9 @@ class TplAppExit
      *
      * This method generates a multi-action string for the exit action, including the caption and glyph.
      *
+     * @return array An array containing the call string and the section content for the exit action.
      * @global object $bearsamppLang Provides language support for retrieving language-specific values.
      *
-     * @return array An array containing the call string and the section content for the exit action.
      */
     public static function process()
     {

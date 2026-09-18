@@ -34,6 +34,7 @@ class ActionAddVhost extends ActionDialogBase
     protected function getWindowTitle()
     {
         global $bearsamppLang;
+
         return $bearsamppLang->getValue(Lang::ADD_VHOST_TITLE);
     }
 
@@ -45,6 +46,7 @@ class ActionAddVhost extends ActionDialogBase
     protected function getDialogTitle()
     {
         global $bearsamppLang;
+
         return $bearsamppLang->getValue(Lang::ADD_VHOST_TITLE);
     }
 
@@ -62,60 +64,83 @@ class ActionAddVhost extends ActionDialogBase
     /**
      * Create the form fields for the add vhost dialog.
      *
-     * @param object $bearsamppWinbinder The WinBinder instance.
+     * @param   object  $bearsamppWinbinder  The WinBinder instance.
+     *
      * @return void
      */
     protected function createFormFields($bearsamppWinbinder)
     {
         global $bearsamppRoot, $bearsamppLang;
 
-        $initServerName = 'test.local';
+        $initServerName   = 'test.local';
         $initDocumentRoot = Path::formatWindowsPath(Path::getWwwPath()) . '\\' . $initServerName;
 
         $this->wbLabelServerName = $bearsamppWinbinder->createLabel(
             $this->wbWindow,
             $bearsamppLang->getValue(Lang::VHOST_SERVER_NAME_LABEL) . ' :',
-            15, 15, 85, null, WBC_RIGHT
+            15,
+            15,
+            85,
+            null,
+            WBC_RIGHT
         );
         $this->wbInputServerName = $bearsamppWinbinder->createInputText(
             $this->wbWindow,
             $initServerName,
-            105, 13, 150, null
+            105,
+            13,
+            150,
+            null
         );
 
         $this->wbLabelDocRoot = $bearsamppWinbinder->createLabel(
             $this->wbWindow,
             $bearsamppLang->getValue(Lang::VHOST_DOCUMENT_ROOT_LABEL) . ' :',
-            15, 45, 85, null, WBC_RIGHT
+            15,
+            45,
+            85,
+            null,
+            WBC_RIGHT
         );
         $this->wbInputDocRoot = $bearsamppWinbinder->createInputText(
             $this->wbWindow,
             $initDocumentRoot,
-            105, 43, 190, null, null, WBC_READONLY
+            105,
+            43,
+            190,
+            null,
+            null,
+            WBC_READONLY
         );
-        $this->wbBtnDocRoot = $bearsamppWinbinder->createButton(
+        $this->wbBtnDocRoot   = $bearsamppWinbinder->createButton(
             $this->wbWindow,
             $bearsamppLang->getValue(Lang::BUTTON_BROWSE),
-            300, 43, 110
+            300,
+            43,
+            110
         );
 
         $this->wbLabelExp = $bearsamppWinbinder->createLabel(
             $this->wbWindow,
             sprintf($bearsamppLang->getValue(Lang::VHOST_EXP_LABEL), $initServerName, $initDocumentRoot),
-            15, 80, 470, 50
+            15,
+            80,
+            470,
+            50
         );
     }
 
     /**
      * Get the current form values from the input controls.
      *
-     * @param object $bearsamppWinbinder The WinBinder instance.
+     * @param   object  $bearsamppWinbinder  The WinBinder instance.
+     *
      * @return array Associative array with 'serverName' and 'documentRoot' keys.
      */
     protected function getFormValues($bearsamppWinbinder)
     {
         return [
-            'serverName' => $bearsamppWinbinder->getText($this->wbInputServerName[WinBinder::CTRL_OBJ]),
+            'serverName'   => $bearsamppWinbinder->getText($this->wbInputServerName[WinBinder::CTRL_OBJ]),
             'documentRoot' => $bearsamppWinbinder->getText($this->wbInputDocRoot[WinBinder::CTRL_OBJ])
         ];
     }
@@ -123,7 +148,8 @@ class ActionAddVhost extends ActionDialogBase
     /**
      * Validate the form input.
      *
-     * @param array $values The form values.
+     * @param   array  $values  The form values.
+     *
      * @return array ['valid' => bool, 'error' => string|null]
      */
     protected function validateInput($values)
@@ -143,7 +169,8 @@ class ActionAddVhost extends ActionDialogBase
     /**
      * Check if a vhost configuration file already exists.
      *
-     * @param array $values The form values.
+     * @param   array  $values  The form values.
+     *
      * @return bool True if the vhost already exists, false otherwise.
      */
     protected function itemExists($values)
@@ -155,6 +182,7 @@ class ActionAddVhost extends ActionDialogBase
                 sprintf($bearsamppLang->getValue(Lang::VHOST_ALREADY_EXISTS), $values['serverName']),
                 $this->getDialogTitle()
             );
+
             return true;
         }
 
@@ -164,7 +192,8 @@ class ActionAddVhost extends ActionDialogBase
     /**
      * Save the vhost configuration file and create an SSL certificate.
      *
-     * @param array $values The form values.
+     * @param   array  $values  The form values.
+     *
      * @return bool True on success, false on failure.
      */
     protected function saveItem($values)
@@ -178,9 +207,9 @@ class ActionAddVhost extends ActionDialogBase
 
         // Create vhost configuration file
         return file_put_contents(
-            Path::getVhostsPath() . '/' . $values['serverName'] . '.conf',
-            $bearsamppBins->getApache()->getVhostContent($values['serverName'], $values['documentRoot'])
-        ) !== false;
+                Path::getVhostsPath() . '/' . $values['serverName'] . '.conf',
+                $bearsamppBins->getApache()->getVhostContent($values['serverName'], $values['documentRoot'])
+            ) !== false;
     }
 
     /**
@@ -197,12 +226,14 @@ class ActionAddVhost extends ActionDialogBase
     /**
      * Get the success message after saving.
      *
-     * @param array $values The form values.
+     * @param   array  $values  The form values.
+     *
      * @return string The localized success message.
      */
     protected function getSaveSuccessMessage($values)
     {
         global $bearsamppLang;
+
         return sprintf(
             $bearsamppLang->getValue(Lang::VHOST_CREATED),
             $values['serverName'],
@@ -219,6 +250,7 @@ class ActionAddVhost extends ActionDialogBase
     protected function getSaveErrorMessage()
     {
         global $bearsamppLang;
+
         return $bearsamppLang->getValue(Lang::VHOST_CREATED_ERROR);
     }
 
@@ -269,18 +301,19 @@ class ActionAddVhost extends ActionDialogBase
     /**
      * Handle custom window events (server name input change and browse button).
      *
-     * @param resource $window The window resource.
-     * @param int      $id     The control ID.
-     * @param resource $ctrl   The control resource.
-     * @param mixed    $param1 Additional parameter 1.
-     * @param mixed    $param2 Additional parameter 2.
+     * @param   resource  $window  The window resource.
+     * @param   int       $id      The control ID.
+     * @param   resource  $ctrl    The control resource.
+     * @param   mixed     $param1  Additional parameter 1.
+     * @param   mixed     $param2  Additional parameter 2.
+     *
      * @return void
      */
     protected function handleCustomEvent($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppLang, $bearsamppWinbinder;
 
-        $serverName = $bearsamppWinbinder->getText($this->wbInputServerName[WinBinder::CTRL_OBJ]);
+        $serverName   = $bearsamppWinbinder->getText($this->wbInputServerName[WinBinder::CTRL_OBJ]);
         $documentRoot = $bearsamppWinbinder->getText($this->wbInputDocRoot[WinBinder::CTRL_OBJ]);
 
         // Handle server name input change

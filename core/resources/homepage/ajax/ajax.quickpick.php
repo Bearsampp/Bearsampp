@@ -19,49 +19,49 @@
  * @link       https://bearsampp.com
  */
 
-        // Set headers for JSON streaming
-        header('Content-Type: application/json');
-        header('X-Content-Type-Options: nosniff');
-        header('Cache-Control: no-cache');
-        header('Connection: keep-alive');
+// Set headers for JSON streaming
+header('Content-Type: application/json');
+header('X-Content-Type-Options: nosniff');
+header('Cache-Control: no-cache');
+header('Connection: keep-alive');
 
 // Initialize response array
 $response = array();
 
 // Check if this is a POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $module  = isset($_POST['module']) ? $_POST['module'] : null;
-    $version = isset($_POST['version']) ? $_POST['version'] : null;
+    $module   = isset($_POST['module']) ? $_POST['module'] : null;
+    $version  = isset($_POST['version']) ? $_POST['version'] : null;
     $filesize = isset($_POST['filesize']) ? $_POST['filesize'] : null;
 
     if ($module && $version) {
         // Only load the QuickPick class when needed
         include_once __DIR__ . '/../../../classes/actions/class.action.quickPick.php';
-        
+
         // Ensure any output buffering is cleared and we're ready for streaming
         while (ob_get_level() > 0) {
             ob_end_flush();
         }
-        
+
         try {
             global $bearsamppConfig;
             $QuickPick = new QuickPick();
             Log::debug('QuickPick initialized for module: ' . $module . ', version: ' . $version);
-            
+
             // Check if enhanced mode is enabled
             $enhancedMode = $bearsamppConfig->getEnhancedQuickPick();
             Log::debug('Enhanced QuickPick mode: ' . ($enhancedMode ? 'enabled' : 'disabled'));
-            
+
             // Install the module
             $response = $QuickPick->installModule($module, $version);
-            
+
             if (!isset($response['error'])) {
                 // Determine module type for appropriate messaging
                 // Use the helper method to normalize the module name consistently
-                $moduleKey = $QuickPick->normalizeModuleName($module);
+                $moduleKey  = $QuickPick->normalizeModuleName($module);
                 $moduleName = strtolower($moduleKey ?? $module);
                 $moduleType = ($moduleKey && isset($QuickPick->modules[$moduleKey])) ? $QuickPick->modules[$moduleKey]['type'] : 'binary';
-                
+
                 // Build success message based on mode and module type
                 if ($enhancedMode == 1) {
                     // Enhanced mode: config auto-updated, just need to reload
@@ -75,19 +75,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $successMessage .= "\n\nNext steps:";
                     $successMessage .= "\n1. Click 'Apply Config' below to update bearsampp.conf";
                     $successMessage .= "\n2. Right-click the Bearsampp tray icon and select 'Reload'";
-                    
+
                     // Include module info for the apply button
-                    $response['moduleType'] = $moduleType;
-                    $response['moduleName'] = $moduleName;
+                    $response['moduleType']      = $moduleType;
+                    $response['moduleName']      = $moduleName;
                     $response['showApplyButton'] = true;
                 }
-                
+
                 $response['message'] = $successMessage;
                 $response['success'] = true;
             } else {
                 error_log('Error in QuickPick installation: ' . json_encode($response));
             }
-            
+
             Log::debug('Response: ' . json_encode($response));
         } catch (Exception $e) {
             $response = ['error' => 'Exception: ' . $e->getMessage()];

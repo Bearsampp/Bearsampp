@@ -76,7 +76,7 @@ class ActionStartAllServices
         $this->processed = true;
 
         // Start all services using ServiceHelper
-        ServiceHelper::processServices($bearsamppBins, function($serviceName, $service, $bin, $syntaxCheckCmd) use ($bearsamppLang) {
+        ServiceHelper::processServices($bearsamppBins, function ($serviceName, $service, $bin, $syntaxCheckCmd) use ($bearsamppLang) {
             $name = ServiceHelper::getServiceDisplayName($bin, $service);
 
             $this->splash->incrProgressBar();

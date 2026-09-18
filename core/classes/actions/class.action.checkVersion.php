@@ -45,7 +45,7 @@ class ActionCheckVersion
     /**
      * Constructor for the ActionCheckVersion class.
      *
-     * @param array $args Command line arguments passed to the script.
+     * @param   array  $args  Command line arguments passed to the script.
      */
     public function __construct($args)
     {
@@ -69,7 +69,7 @@ class ActionCheckVersion
             Log::trace('ActionCheckVersion: GitHub version data: ' . var_export($githubVersionData, true));
 
             if ($githubVersionData != null && isset($githubVersionData['version'], $githubVersionData['html_url'])) {
-                $githubLatestVersion = $githubVersionData['version'];
+                $githubLatestVersion          = $githubVersionData['version'];
                 $this->githubLatestVersionUrl = $githubVersionData['html_url']; // URL of the latest version
                 Log::debug('ActionCheckVersion: GitHub latest version: ' . $githubLatestVersion);
                 if (version_compare($this->currentVersion, $githubLatestVersion, '<')) {
@@ -110,10 +110,10 @@ class ActionCheckVersion
     /**
      * Displays a window with the latest version information.
      *
-     * @param Lang $lang Language processor instance.
-     * @param WinBinder $winbinder WinBinder instance for creating windows and controls.
-     * @param Core $core Core instance for accessing application resources.
-     * @param string $githubLatestVersion The latest version available on GitHub.
+     * @param   Lang       $lang                 Language processor instance.
+     * @param   WinBinder  $winbinder            WinBinder instance for creating windows and controls.
+     * @param   Core       $core                 Core instance for accessing application resources.
+     * @param   string     $githubLatestVersion  The latest version available on GitHub.
      */
     private function showVersionUpdateWindow($lang, $winbinder, $core, $githubLatestVersion)
     {
@@ -138,8 +138,8 @@ class ActionCheckVersion
     /**
      * Displays a message box indicating that the current version is the latest.
      *
-     * @param Lang $lang Language processor instance.
-     * @param WinBinder $winbinder WinBinder instance for creating windows and controls.
+     * @param   Lang       $lang       Language processor instance.
+     * @param   WinBinder  $winbinder  WinBinder instance for creating windows and controls.
      */
     private function showVersionOkMessageBox($lang, $winbinder)
     {
@@ -156,11 +156,11 @@ class ActionCheckVersion
     /**
      * Processes window events and handles user interactions.
      *
-     * @param resource $window The window resource.
-     * @param int $id The control ID that triggered the event.
-     * @param resource $ctrl The control resource.
-     * @param mixed $param1 Additional parameter 1.
-     * @param mixed $param2 Additional parameter 2.
+     * @param   resource  $window  The window resource.
+     * @param   int       $id      The control ID that triggered the event.
+     * @param   resource  $ctrl    The control resource.
+     * @param   mixed     $param1  Additional parameter 1.
+     * @param   mixed     $param2  Additional parameter 2.
      */
     public function processWindow($window, $id, $ctrl, $param1, $param2)
     {

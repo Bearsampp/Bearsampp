@@ -33,10 +33,11 @@ class AppPhppgadmin extends Module
     /**
      * Constructor for the AppPhppgadmin class.
      *
-     * @param string $id The ID of the module.
-     * @param string $type The type of the module.
+     * @param   string  $id    The ID of the module.
+     * @param   string  $type  The type of the module.
      */
-    public function __construct($id, $type) {
+    public function __construct($id, $type)
+    {
         Log::initClass($this);
         $this->reload($id, $type);
     }
@@ -44,14 +45,15 @@ class AppPhppgadmin extends Module
     /**
      * Reloads the module configuration based on the provided ID and type.
      *
-     * @param string|null $id The ID of the module. If null, the current ID is used.
-     * @param string|null $type The type of the module. If null, the current type is used.
+     * @param   string|null  $id    The ID of the module. If null, the current ID is used.
+     * @param   string|null  $type  The type of the module. If null, the current type is used.
      */
-    public function reload($id = null, $type = null) {
+    public function reload($id = null, $type = null)
+    {
         global $bearsamppConfig, $bearsamppLang;
         Log::reloadClass($this);
 
-        $this->name = $bearsamppLang->getValue(Lang::PHPPGADMIN);
+        $this->name    = $bearsamppLang->getValue(Lang::PHPPGADMIN);
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
@@ -61,6 +63,7 @@ class AppPhppgadmin extends Module
 
         if (!$this->enable) {
             Log::info($this->name . ' is not enabled!');
+
             return;
         }
         if (!is_dir($this->currentPath)) {
@@ -68,6 +71,7 @@ class AppPhppgadmin extends Module
         }
         if (!is_dir($this->symlinkPath)) {
             Log::error(sprintf($bearsamppLang->getValue(Lang::ERROR_FILE_NOT_FOUND), $this->name . ' ' . $this->version, $this->symlinkPath));
+
             return;
         }
         if (!is_file($this->bearsamppConf)) {
@@ -81,12 +85,14 @@ class AppPhppgadmin extends Module
     /**
      * Updates the module configuration with a specific version.
      *
-     * @param string|null $version The version to update to. If null, the current version is used.
-     * @param int $sub The sub-level for logging indentation.
-     * @param bool $showWindow Whether to show a window during the update process.
+     * @param   string|null  $version     The version to update to. If null, the current version is used.
+     * @param   int          $sub         The sub-level for logging indentation.
+     * @param   bool         $showWindow  Whether to show a window during the update process.
+     *
      * @return bool True if the update was successful, false otherwise.
      */
-    protected function updateConfig($version = null, $sub = 0, $showWindow = false) {
+    protected function updateConfig($version = null, $sub = 0, $showWindow = false)
+    {
         global $bearsamppRoot, $bearsamppBins;
 
         if (!$this->enable) {
@@ -100,7 +106,7 @@ class AppPhppgadmin extends Module
         if (is_file($alias)) {
             Util::replaceInFile($alias, array(
                 '/^Alias\s\/phppgadmin\s.*/' => 'Alias /phppgadmin "' . Path::getModuleSymlinkPath($this) . '/"',
-                '/^<Directory\s.*/' => '<Directory "' . Path::getModuleSymlinkPath($this) . '/">',
+                '/^<Directory\s.*/'          => '<Directory "' . Path::getModuleSymlinkPath($this) . '/">',
             ));
         } else {
             Log::error($this->getName() . ' alias not found : ' . $alias);
@@ -108,10 +114,10 @@ class AppPhppgadmin extends Module
 
         if ($bearsamppBins->getPostgresql()->isEnable()) {
             Util::replaceInFile($this->getConf(), array(
-                '/^\$postgresqlPort\s=\s(\d+)/' => '$postgresqlPort = ' . $bearsamppBins->getPostgresql()->getPort() . ';',
-                '/^\$postgresqlRootUser\s=\s/' => '$postgresqlRootUser = \'' . $bearsamppBins->getPostgresql()->getRootUser() . '\';',
-                '/^\$postgresqlRootPwd\s=\s/' => '$postgresqlRootPwd = \'' . $bearsamppBins->getPostgresql()->getRootPwd() . '\';',
-                '/^\$postgresqlDumpExe\s=\s/' => '$postgresqlDumpExe = \'' . $bearsamppBins->getPostgresql()->getDumpExe() . '\';',
+                '/^\$postgresqlPort\s=\s(\d+)/'  => '$postgresqlPort = ' . $bearsamppBins->getPostgresql()->getPort() . ';',
+                '/^\$postgresqlRootUser\s=\s/'   => '$postgresqlRootUser = \'' . $bearsamppBins->getPostgresql()->getRootUser() . '\';',
+                '/^\$postgresqlRootPwd\s=\s/'    => '$postgresqlRootPwd = \'' . $bearsamppBins->getPostgresql()->getRootPwd() . '\';',
+                '/^\$postgresqlDumpExe\s=\s/'    => '$postgresqlDumpExe = \'' . $bearsamppBins->getPostgresql()->getDumpExe() . '\';',
                 '/^\$postgresqlDumpAllExe\s=\s/' => '$postgresqlDumpAllExe = \'' . $bearsamppBins->getPostgresql()->getDumpAllExe() . '\';',
             ));
         }
@@ -122,9 +128,10 @@ class AppPhppgadmin extends Module
     /**
      * Sets the version of the module.
      *
-     * @param string $version The version to set.
+     * @param   string  $version  The version to set.
      */
-    public function setVersion($version) {
+    public function setVersion($version)
+    {
         global $bearsamppConfig;
         $this->version = $version;
         $bearsamppConfig->replace(self::ROOT_CFG_VERSION, $version);
@@ -136,7 +143,8 @@ class AppPhppgadmin extends Module
      *
      * @return string The path to the configuration file.
      */
-    public function getConf() {
+    public function getConf()
+    {
         return $this->conf;
     }
 }
