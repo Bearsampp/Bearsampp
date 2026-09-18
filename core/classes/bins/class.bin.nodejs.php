@@ -47,19 +47,55 @@
  */
 class BinNodejs extends Module
 {
+    /**
+     * Configuration key for enabling the Node.js module.
+     */
     const ROOT_CFG_ENABLE = 'nodejsEnable';
+    /**
+     * Configuration key for the Node.js version.
+     */
     const ROOT_CFG_VERSION = 'nodejsVersion';
 
+    /**
+     * Configuration key for the Node.js executable.
+     */
     const LOCAL_CFG_EXE = 'nodejsExe';
+    /**
+     * Configuration key for the Node.js variables file.
+     */
     const LOCAL_CFG_VARS = 'nodejsVars';
+    /**
+     * Configuration key for the npm executable.
+     */
     const LOCAL_CFG_NPM = 'nodejsNpm';
+    /**
+     * Configuration key for the Node.js launch script.
+     */
     const LOCAL_CFG_LAUNCH = 'nodejsLaunch';
+    /**
+     * Configuration key for the Node.js configuration file.
+     */
     const LOCAL_CFG_CONF = 'nodejsConf';
 
+    /**
+     * @var string Path to the Node.js executable.
+     */
     private $exe;
+    /**
+     * @var string Path to the Node.js configuration file.
+     */
     private $conf;
+    /**
+     * @var string Path to the Node.js variables file.
+     */
     private $vars;
+    /**
+     * @var string Path to the npm executable.
+     */
     private $npm;
+    /**
+     * @var string Path to the Node.js launch script.
+     */
     private $launch;
 
     /**

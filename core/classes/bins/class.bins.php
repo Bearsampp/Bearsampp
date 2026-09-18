@@ -15,16 +15,28 @@
  */
 class Bins
 {
+    /**
+     * The type identifier for bin modules.
+     */
     const TYPE = 'bins';
 
+    /** @var BinApache|null Apache bin module instance. */
     private $apache;
+    /** @var BinMailpit|null Mailpit bin module instance. */
     private $mailpit;
+    /** @var BinMariadb|null MariaDB bin module instance. */
     private $mariadb;
+    /** @var BinMemcached|null Memcached bin module instance. */
     private $memcached;
+    /** @var BinMysql|null MySQL bin module instance. */
     private $mysql;
+    /** @var BinNodejs|null Node.js bin module instance. */
     private $nodejs;
+    /** @var BinPhp|null PHP bin module instance. */
     private $php;
+    /** @var BinPostgresql|null PostgreSQL bin module instance. */
     private $postgresql;
+    /** @var BinXlight|null Xlight bin module instance. */
     private $xlight;
 
     /**

@@ -14,16 +14,34 @@
  */
 class ActionSwitchVersion
 {
+    /** @var Splash The splash screen instance used to display the version switch progress. */
     private $bearsamppSplash;
+
+    /** @var string The target version to switch to. */
     private $version;
+
+    /** @var mixed The binary module object whose version is being switched. */
     private $bin;
+
+    /** @var string The currently selected version of the binary. */
     private $currentVersion;
+
+    /** @var mixed The Windows service instance to stop and restart, or null when none applies. */
     private $service;
+
+    /** @var bool Whether the service port must be updated after the version switch. */
     private $changePort;
+
+    /** @var string The title used for the splash screen and message boxes. */
     private $boxTitle;
+
+    /** @var array The folders and files to scan for path placeholders. */
     private $pathsToScan = [];
 
+    /** @var int Number of progress bar steps consumed per service. */
     const GAUGE_SERVICES = 1;
+
+    /** @var int Number of progress bar steps consumed by the other operations. */
     const GAUGE_OTHERS = 7;
 
     // Configuration sections

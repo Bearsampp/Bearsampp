@@ -35,12 +35,12 @@ class Util
 {
 
     /**
-     * Recursively deletes files from a specified directory while excluding certain files.
+     * Clears multiple directories by delegating each one to clearFolder.
      *
-     * @param   string  $path     The path to the directory to clear.
+     * @param   array   $paths    The paths of the directories to clear.
      * @param   array   $exclude  An array of filenames to exclude from deletion.
      *
-     * @return array Returns an array with the status of the operation and the number of files deleted.
+     * @return array Returns an associative array keyed by path, containing the clearFolder result for each directory.
      */
     public static function clearFolders($paths, $exclude = array())
     {
@@ -103,6 +103,8 @@ class Util
      * Recursively deletes a directory and all its contents.
      *
      * @param   string  $path  The path of the directory to delete.
+     *
+     * @return void
      */
     public static function deleteFolder($path)
     {
@@ -274,6 +276,8 @@ class Util
      * @param   string  $path   The file path where the constant is defined.
      * @param   string  $var    The name of the constant.
      * @param   mixed   $value  The new value for the constant.
+     *
+     * @return void
      */
     public static function replaceDefine($path, $var, $value)
     {
@@ -287,6 +291,8 @@ class Util
      *
      * @param   string  $path         The path to the file where replacements are to be made.
      * @param   array   $replaceList  An associative array where keys are regex patterns and values are replacement strings.
+     *
+     * @return void
      */
     public static function replaceInFile($path, $replaceList)
     {
@@ -525,6 +531,8 @@ class Util
 
     /**
      * Initiates a loading process using external components.
+     *
+     * @return void
      */
     public static function startLoading()
     {
@@ -545,6 +553,8 @@ class Util
 
     /**
      * Stops a previously started loading process and cleans up related resources.
+     *
+     * @return void
      */
     public static function stopLoading()
     {
@@ -566,6 +576,8 @@ class Util
      * This allows dynamic updates to show which service is being processed
      *
      * @param string $text The text to display on the loading screen
+     *
+     * @return void
      */
     public static function updateLoadingText($text)
     {
@@ -577,6 +589,8 @@ class Util
 
     /**
      * Clears the loading status file
+     *
+     * @return void
      */
     public static function clearLoadingText()
     {

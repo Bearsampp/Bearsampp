@@ -13,31 +13,58 @@
  */
 class ActionEditAlias extends ActionDialogBase
 {
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the label control of the alias name field. */
     private $wbLabelName;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the text input control of the alias name. */
     private $wbInputName;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the label control of the alias destination field. */
     private $wbLabelDest;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the read-only text input of the alias destination path. */
     private $wbInputDest;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the browse button selecting the destination directory. */
     private $wbBtnDest;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the label displaying the generated Apache alias directive. */
     private $wbLabelExp;
 
+    /**
+     * Get the dialog window title.
+     *
+     * @return string The localized window title with the alias name.
+     */
     protected function getWindowTitle()
     {
         global $bearsamppLang;
         return sprintf($bearsamppLang->getValue(Lang::EDIT_ALIAS_TITLE), $this->initValue);
     }
 
+    /**
+     * Get the dialog title for message boxes.
+     *
+     * @return string The localized dialog title.
+     */
     protected function getDialogTitle()
     {
         global $bearsamppLang;
         return $bearsamppLang->getValue(Lang::ADD_ALIAS_TITLE);
     }
 
+    /**
+     * Get the delete dialog title.
+     *
+     * @return string The localized delete dialog title.
+     */
     protected function getDeleteDialogTitle()
     {
         global $bearsamppLang;
         return $bearsamppLang->getValue(Lang::DELETE_ALIAS_TITLE);
     }
 
+    /**
+     * Initialize the dialog by loading the existing alias configuration.
+     *
+     * @param array $args Command line arguments where $args[0] is the alias name.
+     * @return bool True if initialization successful, false otherwise.
+     */
     protected function initializeDialog($args)
     {
         global $bearsamppRoot;
@@ -60,6 +87,12 @@ class ActionEditAlias extends ActionDialogBase
         return true;
     }
 
+    /**
+     * Create the form fields for the edit alias dialog.
+     *
+     * @param object $bearsamppWinbinder The WinBinder instance.
+     * @return void
+     */
     protected function createFormFields($bearsamppWinbinder)
     {
         global $bearsamppRoot, $bearsamppLang, $bearsamppBins;
@@ -105,6 +138,12 @@ class ActionEditAlias extends ActionDialogBase
         );
     }
 
+    /**
+     * Get the current form values from the input controls.
+     *
+     * @param object $bearsamppWinbinder The WinBinder instance.
+     * @return array Associative array with 'name' and 'dest' keys.
+     */
     protected function getFormValues($bearsamppWinbinder)
     {
         return [
@@ -113,6 +152,12 @@ class ActionEditAlias extends ActionDialogBase
         ];
     }
 
+    /**
+     * Validate the form input.
+     *
+     * @param array $values The form values.
+     * @return array ['valid' => bool, 'error' => string|null]
+     */
     protected function validateInput($values)
     {
         global $bearsamppLang;
@@ -127,6 +172,12 @@ class ActionEditAlias extends ActionDialogBase
         return ['valid' => true];
     }
 
+    /**
+     * Check if a different alias with the same name already exists.
+     *
+     * @param array $values The form values.
+     * @return bool True if a conflicting alias exists, false otherwise.
+     */
     protected function itemExists($values)
     {
         global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
@@ -143,6 +194,12 @@ class ActionEditAlias extends ActionDialogBase
         return false;
     }
 
+    /**
+     * Save the alias configuration file.
+     *
+     * @param array $values The form values.
+     * @return bool True on success, false on failure.
+     */
     protected function saveItem($values)
     {
         global $bearsamppRoot, $bearsamppBins;
@@ -153,6 +210,11 @@ class ActionEditAlias extends ActionDialogBase
         ) !== false;
     }
 
+    /**
+     * Delete the alias configuration file.
+     *
+     * @return bool True on success, false on failure.
+     */
     protected function deleteItem()
     {
         global $bearsamppRoot;
@@ -160,6 +222,12 @@ class ActionEditAlias extends ActionDialogBase
         return @unlink(Path::getAliasPath() . '/' . $this->initValue . '.conf');
     }
 
+    /**
+     * Get the success message after saving.
+     *
+     * @param array $values The form values.
+     * @return string The localized success message.
+     */
     protected function getSaveSuccessMessage($values)
     {
         global $bearsamppLang, $bearsamppBins;
@@ -174,24 +242,44 @@ class ActionEditAlias extends ActionDialogBase
         );
     }
 
+    /**
+     * Get the error message after save failure.
+     *
+     * @return string The localized error message.
+     */
     protected function getSaveErrorMessage()
     {
         global $bearsamppLang;
         return $bearsamppLang->getValue(Lang::ALIAS_CREATED_ERROR);
     }
 
+    /**
+     * Get the delete confirmation message.
+     *
+     * @return string The localized confirmation message with the alias name.
+     */
     protected function getDeleteConfirmMessage()
     {
         global $bearsamppLang;
         return sprintf($bearsamppLang->getValue(Lang::DELETE_ALIAS), $this->initValue);
     }
 
+    /**
+     * Get the success message after delete.
+     *
+     * @return string The localized success message with the alias name.
+     */
     protected function getDeleteSuccessMessage()
     {
         global $bearsamppLang;
         return sprintf($bearsamppLang->getValue(Lang::ALIAS_REMOVED), $this->initValue);
     }
 
+    /**
+     * Get the error message after delete failure.
+     *
+     * @return string The localized error message with the file path.
+     */
     protected function getDeleteErrorMessage()
     {
         global $bearsamppRoot, $bearsamppLang;
@@ -201,12 +289,27 @@ class ActionEditAlias extends ActionDialogBase
         );
     }
 
+    /**
+     * Restart the Apache service after saving or deleting.
+     *
+     * @return void
+     */
     protected function restartService()
     {
         global $bearsamppBins;
         $bearsamppBins->getApache()->getService()->restart();
     }
 
+    /**
+     * Handle custom window events (name input change and browse button).
+     *
+     * @param resource $window The window resource.
+     * @param int      $id     The control ID.
+     * @param resource $ctrl   The control resource.
+     * @param mixed    $param1 Additional parameter 1.
+     * @param mixed    $param2 Additional parameter 2.
+     * @return void
+     */
     protected function handleCustomEvent($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppLang, $bearsamppBins, $bearsamppWinbinder;

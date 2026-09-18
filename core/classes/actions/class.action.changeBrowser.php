@@ -16,16 +16,26 @@
  */
 class ActionChangeBrowser
 {
+    /** @var resource The main application window. */
     private $wbWindow;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the explanation label control. */
     private $wbLabelExp;
+    /** @var array<int, array{0: int, 1: mixed}> WinBinder control wrappers (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the radio button controls of the installed browsers. */
     private $wbRadioButton;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the "Other" radio button control for custom browser selection. */
     private $wbRadioButtonOther;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the text input of the custom browser executable path. */
     private $wbInputBrowse;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the browse button control selecting a custom browser. */
     private $wbBtnBrowse;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the progress bar control. */
     private $wbProgressBar;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the save button control. */
     private $wbBtnSave;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the cancel button control. */
     private $wbBtnCancel;
 
+    /** @var int Progress bar gauge value for the save operation. */
     const GAUGE_SAVE = 2;
 
     /**

@@ -19,11 +19,16 @@ class Splash
     const WINDOW_WIDTH = 460;
     const WINDOW_HEIGHT = 90;
 
+    /** @var mixed The splash screen window handle. */
     private $wbWindow;
+    /** @var mixed The handle of the splash screen logo image. */
     private $wbImage;
+    /** @var mixed The handle of the loading text control. */
     private $wbTextLoading;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the progress bar control. */
     private $wbProgressBar;
 
+    /** @var mixed The current splash screen image, set to null when none is shown. */
     private $currentImg;
 
     /**

@@ -7,6 +7,12 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class TplAppEditConf
+ *
+ * This class provides a method to generate a menu item for editing the Bearsampp
+ * configuration file within the Bearsampp application.
+ */
 class TplAppEditConf
 {
     /**

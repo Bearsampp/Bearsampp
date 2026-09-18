@@ -15,21 +15,57 @@
  */
 class BinMemcached extends Module
 {
+    /**
+     * The name of the Windows service.
+     */
     const SERVICE_NAME = 'bearsamppmemcached';
+    /**
+     * The command line parameters passed to the Memcached service.
+     */
     const SERVICE_PARAMS = '-m %d -p %d -U 0 -vv';
 
+    /**
+     * Configuration key for the Memcached enable flag in the root configuration.
+     */
     const ROOT_CFG_ENABLE = 'memcachedEnable';
+    /**
+     * Configuration key for the Memcached version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'memcachedVersion';
 
+    /**
+     * Configuration key for the Memcached executable in the local configuration.
+     */
     const LOCAL_CFG_EXE = 'memcachedExe';
+    /**
+     * Configuration key for the Memcached memory allocation in the local configuration.
+     */
     const LOCAL_CFG_MEMORY = 'memcachedMemory';
+    /**
+     * Configuration key for the Memcached port in the local configuration.
+     */
     const LOCAL_CFG_PORT = 'memcachedPort';
 
+    /**
+     * @var Win32Service The Windows service instance.
+     */
     private $service;
+    /**
+     * @var string The path to the Memcached log file.
+     */
     private $log;
 
+    /**
+     * @var string The path to the Memcached executable.
+     */
     private $exe;
+    /**
+     * @var int The memory allocation in MB.
+     */
     private $memory;
+    /**
+     * @var int The port number.
+     */
     private $port;
 
     /**

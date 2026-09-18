@@ -15,33 +15,102 @@
  */
 class BinMysql extends Module
 {
+    /**
+     * The name of the Windows service.
+     */
     const SERVICE_NAME = 'bearsamppmysql';
 
+    /**
+     * Configuration key for the MySQL enable flag in the root configuration.
+     */
     const ROOT_CFG_ENABLE = 'mysqlEnable';
+    /**
+     * Configuration key for the MySQL version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'mysqlVersion';
 
+    /**
+     * Configuration key for the MySQL executable in the local configuration.
+     */
     const LOCAL_CFG_EXE = 'mysqlExe';
+    /**
+     * Configuration key for the MySQL CLI executable in the local configuration.
+     */
     const LOCAL_CFG_CLI_EXE = 'mysqlCliExe';
+    /**
+     * Configuration key for the MySQL admin executable in the local configuration.
+     */
     const LOCAL_CFG_ADMIN = 'mysqlAdmin';
+    /**
+     * Configuration key for the MySQL configuration file in the local configuration.
+     */
     const LOCAL_CFG_CONF = 'mysqlConf';
+    /**
+     * Configuration key for the MySQL port in the local configuration.
+     */
     const LOCAL_CFG_PORT = 'mysqlPort';
+    /**
+     * Configuration key for the MySQL root user in the local configuration.
+     */
     const LOCAL_CFG_ROOT_USER = 'mysqlRootUser';
+    /**
+     * Configuration key for the MySQL root password in the local configuration.
+     */
     const LOCAL_CFG_ROOT_PWD = 'mysqlRootPwd';
 
+    /**
+     * Command line option to display the MySQL version.
+     */
     const CMD_VERSION = '--version';
+    /**
+     * Command line option to display MySQL server variables.
+     */
     const CMD_VARIABLES = 'variables';
+    /**
+     * Command line option to perform a syntax check on the configuration.
+     */
     const CMD_SYNTAX_CHECK = '--help --verbose 1>NUL';
 
+    /**
+     * @var Win32Service The Windows service instance.
+     */
     private $service;
+    /**
+     * @var string The path to the MySQL error log file.
+     */
     private $errorLog;
 
+    /**
+     * @var string The path to the MySQL executable.
+     */
     private $exe;
+    /**
+     * @var string The path to the MySQL configuration file.
+     */
     private $conf;
+    /**
+     * @var string The port number of the MySQL server.
+     */
     private $port;
+    /**
+     * @var string The root user name of the MySQL server.
+     */
     private $rootUser;
+    /**
+     * @var string The root password of the MySQL server.
+     */
     private $rootPwd;
+    /**
+     * @var string The path to the MySQL CLI executable.
+     */
     private $cliExe;
+    /**
+     * @var string The path to the MySQL admin executable.
+     */
     private $admin;
+    /**
+     * @var string The path to the MySQL data directory.
+     */
     private $dataDir;
 
     /**

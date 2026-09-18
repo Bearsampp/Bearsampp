@@ -16,21 +16,57 @@
  */
 class BinXlight extends Module
 {
+    /**
+     * The name of the Windows service.
+     */
     const SERVICE_NAME = 'bearsamppxlight';
+    /**
+     * The command line parameters passed to the Xlight service.
+     */
     const SERVICE_PARAMS = ' -startall';
 
+    /**
+     * Configuration key for the Xlight enable flag in the root configuration.
+     */
     const ROOT_CFG_ENABLE = 'xlightEnable';
+    /**
+     * Configuration key for the Xlight version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'xlightVersion';
 
+    /**
+     * Configuration key for the Xlight executable in the local configuration.
+     */
     const LOCAL_CFG_EXE = 'xlightExe';
+    /**
+     * Configuration key for the Xlight SSL port in the local configuration.
+     */
     const LOCAL_CFG_SSL_PORT = 'xlightSslPort';
+    /**
+     * Configuration key for the Xlight port in the local configuration.
+     */
     const LOCAL_CFG_PORT = 'xlightPort';
 
+    /**
+     * @var Win32Service The Windows service instance.
+     */
     private $service;
+    /**
+     * @var string The path to the Xlight log file.
+     */
     private $log;
 
+    /**
+     * @var string The path to the Xlight executable.
+     */
     private $exe;
+    /**
+     * @var int The FTP port number.
+     */
     private $port;
+    /**
+     * @var int The SSL port number.
+     */
     private $SslPort;
 
     /**

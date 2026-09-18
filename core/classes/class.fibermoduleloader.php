@@ -16,7 +16,10 @@
  */
 class FiberModuleLoader
 {
+    /** @var array<string, FiberModule> Active fibers keyed by module name. */
     private static $fibers = [];
+
+    /** @var bool Whether Fibers are available and the loader is enabled. */
     private static $enabled = false;
 
     /**
@@ -172,17 +175,37 @@ class FiberModuleLoader
 }
 
 /**
- * Internal: Single fiber module wrapper
- * Manages lifecycle of a single module's fiber
+ * Class FiberModule
+ *
+ * Internal single-fiber module wrapper.
+ * Manages the lifecycle of one module's fiber.
  */
 class FiberModule
 {
+    /** @var Fiber The underlying PHP Fiber instance. */
     private $fiber;
+
+    /** @var string The module name this fiber loads. */
     private $moduleName;
+
+    /** @var bool Whether the loader callback has finished (success or error). */
     private $initialized = false;
+
+    /** @var mixed The loader callback's return value, or null if not yet set. */
     private $result = null;
+
+    /** @var int Maximum wait time in milliseconds. */
     private $timeout;
 
+    /**
+     * FiberModule constructor.
+     *
+     * Creates and starts the fiber that runs the loader callback.
+     *
+     * @param string $moduleName The module name this fiber loads.
+     * @param callable $loader The callback that loads the module.
+     * @param int $timeout Maximum wait time in milliseconds.
+     */
     public function __construct(string $moduleName, callable $loader, int $timeout = 5000)
     {
         $this->moduleName = $moduleName;

@@ -7,6 +7,14 @@
  * Github: https://github.com/Bearsampp
  */
 /**
+ * AJAX request dispatcher for the Bearsampp homepage.
+ *
+ * Receives a 'proc' POST parameter, maps it to a whitelisted handler file and
+ * includes the matching AJAX handler. Read-only polling handlers run through a
+ * silent logging buffer, while state-changing handlers are restricted to POST
+ * requests and protected by CSRF validation.
+ */
+/**
  * Silent logging gate for read-only homepage polls.
  *
  * Read-only polls (e.g. summary, service status, latest version) are the main

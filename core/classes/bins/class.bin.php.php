@@ -16,12 +16,30 @@
  */
 class BinPhp extends Module
 {
+    /**
+     * Configuration key for the PHP enable flag in the root configuration.
+     */
     const ROOT_CFG_ENABLE = 'phpEnable';
+    /**
+     * Configuration key for the PHP version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'phpVersion';
 
+    /**
+     * Configuration key for the PHP CLI executable in the local configuration.
+     */
     const LOCAL_CFG_CLI_EXE = 'phpCliExe';
+    /**
+     * Configuration key for the PHP silent CLI executable in the local configuration.
+     */
     const LOCAL_CFG_CLI_SILENT_EXE = 'phpCliSilentExe';
+    /**
+     * Configuration key for the PHP configuration file in the local configuration.
+     */
     const LOCAL_CFG_CONF = 'phpConf';
+    /**
+     * Configuration key for the PHP PEAR executable in the local configuration.
+     */
     const LOCAL_CFG_PEAR_EXE = 'phpPearExe';
 
     const INI_SHORT_OPEN_TAG = 'short_open_tag';
@@ -88,12 +106,30 @@ class BinPhp extends Module
     const INI_XDEBUG_PROFILER_ENABLE = 'xdebug.profiler_enable';
     const INI_XDEBUG_PROFILER_ENABLE_TRIGGER = 'xdebug.profiler_enable_trigger';
 
+    /**
+     * @var string The path to the Apache configuration file for PHP.
+     */
     private $apacheConf;
+    /**
+     * @var string The path to the PHP error log file.
+     */
     private $errorLog;
 
+    /**
+     * @var string The path to the PHP CLI executable.
+     */
     private $cliExe;
+    /**
+     * @var string The path to the PHP silent CLI executable.
+     */
     private $cliSilentExe;
+    /**
+     * @var string The path to the PHP configuration file.
+     */
     private $conf;
+    /**
+     * @var string The path to the PHP PEAR executable.
+     */
     private $pearExe;
 
     /**

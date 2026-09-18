@@ -17,12 +17,27 @@
  */
 class ToolPython extends Module
 {
+    /**
+     * Configuration key for the Python version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'pythonVersion';
 
+    /**
+     * Configuration key for the Python executable in the local configuration.
+     */
     const LOCAL_CFG_EXE = 'pythonExe';
+    /**
+     * Configuration key for the Python IDLE executable in the local configuration.
+     */
     const LOCAL_CFG_IDLE_EXE = 'pythonIdleExe';
 
+    /**
+     * @var string The path to the Python executable.
+     */
     private $exe;
+    /**
+     * @var string The path to the Python IDLE executable.
+     */
     private $idleExe;
 
     /**

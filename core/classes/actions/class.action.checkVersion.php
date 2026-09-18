@@ -19,17 +19,27 @@
  */
 class ActionCheckVersion
 {
+    /** @var string Argument value indicating a manual menu check that should display an OK message. */
     const DISPLAY_OK = 'displayOk';
 
+    /** @var resource The main application window. */
     private $wbWindow;
+    /** @var resource The version info dialog image handle drawn on the window. */
     private $wbImage;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the changelog hyperlink control. */
     private $wbLinkChangelog;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the download hyperlink control. */
     private $wbLinkFull;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the OK button control. */
     private $wbBtnOk;
 
+    /** @var string The current installed application version. */
     private $currentVersion;
+    /** @var string The latest version available on GitHub. */
     private $latestVersion;
+    /** @var string The URL of the latest version release on GitHub. */
     private $githubLatestVersionUrl;
+    /** @var bool Whether the loading indicator was started by this instance. */
     private $didStartLoading = false;
 
     /**

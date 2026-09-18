@@ -55,9 +55,13 @@ class WinBinder
     // Constants for system information types
     const SYSINFO_SCREENAREA = 'screenarea';
     const SYSINFO_WORKAREA = 'workarea';
+    /** @var array Callback configurations registered per window object. */
     public $callback;
+    /** @var array Current progress bar values keyed by control object. */
     public $gauge;
+    /** @var string The default window title, used when no caption is provided. */
     private $defaultTitle;
+    /** @var int Control ID counter used to generate unique control and timer IDs. */
     private $countCtrls;
 
     /**
@@ -76,6 +80,8 @@ class WinBinder
 
     /**
      * Resets the control counter and callback array.
+     *
+     * @return void
      */
     public function reset(): void
     {
@@ -239,7 +245,7 @@ class WinBinder
      * Destroys a window with proper cleanup and handling.
      *
      * @param   mixed  $window  The window object to destroy.
-     * @return  boolean True if window was successfully destroyed
+     * @return  bool True if the window was successfully destroyed.
      */
     public function destroyWindow($window): bool
     {
@@ -308,7 +314,7 @@ class WinBinder
      * Checks if a window handle is still valid.
      *
      * @param   mixed  $window  The window object to check.
-     * @return  boolean True if window is valid
+     * @return  bool True if the window is valid.
      */
     private function windowIsValid($window): bool
     {
@@ -419,6 +425,8 @@ class WinBinder
      * Writes a log message to the WinBinder log file.
      *
      * @param   string  $log  The log message to write.
+     *
+     * @return void
      */
     private static function writeLog($log): void
     {

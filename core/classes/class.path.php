@@ -845,7 +845,7 @@ class Path
     /**
      * Retrieves the path for the startup link file.
      *
-     * @return string The full path to the startup link file.
+     * @return string|false The full path to the startup link file, or false if the startup folder path could not be resolved.
      */
     public static function getStartupLnkPath()
     {

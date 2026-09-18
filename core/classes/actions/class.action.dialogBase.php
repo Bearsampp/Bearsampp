@@ -16,15 +16,23 @@
  */
 abstract class ActionDialogBase
 {
+    /** @var resource The main dialog window. */
     protected $wbWindow;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the progress bar control. */
     protected $wbProgressBar;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the save button control. */
     protected $wbBtnSave;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the cancel button control. */
     protected $wbBtnCancel;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the delete button control (edit mode only). */
     protected $wbBtnDelete;
 
+    /** @var string Initial value for edit operations. */
     protected $initValue; // Initial value for edit operations
 
+    /** @var int Progress bar gauge value for the save operation. */
     const GAUGE_SAVE = 2;
+    /** @var int Progress bar gauge value for the delete operation. */
     const GAUGE_DELETE = 2;
 
     /**

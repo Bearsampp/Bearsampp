@@ -14,12 +14,19 @@
  */
 class ActionAbout
 {
+    /** @var int Progress bar gauge value for the save operation. */
     const GAUGE_SAVE = 2;
+    /** @var resource The main application window. */
     private $wbWindow;
+    /** @var resource The about dialog image handle drawn on the window. */
     private $wbImage;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the homepage hyperlink control. */
     private $wbLinkHomepage;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the donate hyperlink control. */
     private $wbLinkDonate;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the GitHub hyperlink control. */
     private $wbLinkGithub;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the OK button control. */
     private $wbBtnOk;
 
     /**

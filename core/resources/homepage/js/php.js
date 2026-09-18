@@ -6,6 +6,12 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * @fileoverview PHP service status display for the Bearsampp homepage.
+ * Sets up a StatusFetcher to keep the PHP status, version list, extension count,
+ * PEAR version and extension list up to date.
+ */
+
 // PHP status fetcher with multiple fields
 // Maps 'versions' data key to 'version-list' selector
 createStatusFetcher('php', [

@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Manages reload action templates and execution for Bearsampp menu system
+ * Class TplAppReload
+ *
+ * Manages reload action templates and execution for the Bearsampp menu system.
  */
 class TplAppReload
 {
@@ -53,9 +55,8 @@ class TplAppReload
     /**
      * Executes reload sequence and returns action string
      *
-     * @param mixed|null $args Arguments to pass to reload action
-     * @return string Generated INI action sequence
-     * @throws Exception If reload operation fails
+     * @param mixed|null $args Arguments to pass to the reload action
+     * @return string Generated reload action sequence, or an empty string if the reload fails
      *
      * @log TRACE: Logs method entry and generated action content
      * @log ERROR: Captures and logs any exceptions during reload

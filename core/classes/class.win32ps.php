@@ -23,6 +23,9 @@ class Win32Ps
     const CAPTION = 'Caption';
     const COMMAND_LINE = 'CommandLine';
 
+    /**
+     * Constructs a Win32Ps instance.
+     */
     public function __construct()
     {
     }

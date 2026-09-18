@@ -13,20 +13,40 @@
  */
 abstract class Module
 {
+    /** @var array In-memory parsed configuration cache keyed by md5 of the conf path. */
     private static $configCache = array();
 
+    /** @var string The module type (app, bin or tool). */
     private $type;
+
+    /** @var string The module ID (the folder name of the module). */
     private $id;
 
+    /** @var string The module name. */
     protected $name;
+
+    /** @var string The module version. */
     protected $version;
+
+    /** @var string The module release, defaults to 'N/A'. */
     protected $release = 'N/A';
 
+    /** @var string The root path containing the module's versions. */
     public $rootPath;
+
+    /** @var string The path to the current (selected) version. */
     public $currentPath;
+
+    /** @var string The path to the 'current' symlink. */
     public $symlinkPath;
+
+    /** @var bool Whether the module is enabled (its current version exists). */
     protected $enable;
+
+    /** @var string The path to the module's bearsampp.conf file. */
     protected $bearsamppConf;
+
+    /** @var array The parsed contents of bearsampp.conf. */
     protected $bearsamppConfRaw;
 
     /**
@@ -108,6 +128,7 @@ abstract class Module
      * Replaces multiple key-value pairs in the configuration file.
      *
      * @param array $params An associative array of key-value pairs to replace.
+     * @throws RuntimeException If the configuration key or value is invalid.
      */
     protected function replaceAll($params) {
         $content = file_get_contents($this->bearsamppConf);

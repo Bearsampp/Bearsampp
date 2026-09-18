@@ -7,6 +7,13 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class TplAppPhp
+ *
+ * This class provides methods to generate menu items and actions for managing PHP
+ * within the Bearsampp application. It includes functionalities for enabling/disabling
+ * PHP, switching versions, and managing PHP settings and extensions.
+ */
 class TplAppPhp
 {
     const MENU = 'php';

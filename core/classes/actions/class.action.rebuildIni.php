@@ -9,6 +9,8 @@
  */
 
 /**
+ * Class ActionRebuildini
+ *
  * Handles the action of rebuilding the bearsampp.ini file within the application.
  *
  * This class is responsible for deleting the existing bearsampp.ini file and creating a new one

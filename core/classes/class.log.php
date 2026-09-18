@@ -763,6 +763,8 @@ class Log
      * @var array<string, int>
      */
     private static $initClassCounts = array();
+
+    /** @var array<string, int> Tracks how many times each class has been reloaded. */
     private static $reloadClassCounts = array();
 
     /**

@@ -7,11 +7,25 @@
  *
  */
 
+/**
+ * @fileoverview Loading cursor and overlay management for the Bearsampp homepage.
+ * Adds a loading cursor class to the document immediately on script load, exposes
+ * helper functions to show/hide a loading overlay, hooks localhost link clicks and
+ * XMLHttpRequest calls to display the loading state, and removes it on page load
+ * and unload.
+ */
+
 // Set loading cursor immediately - don't wait for DOMContentLoaded
 (function() {
     // Set cursor immediately on script load
     document.documentElement.classList.add('loading-cursor');
     
+    /**
+     * Adds the loading cursor class to the document and body and appends a loading
+     * overlay element to the body.
+     *
+     * @returns {Element|null} The created overlay element, or null if the body does not exist.
+     */
     // Function to show loading cursor and overlay
     window.showLoadingState = function() {
         document.documentElement.classList.add('loading-cursor');
@@ -28,6 +42,13 @@
         return null;
     };
 
+    /**
+     * Removes the loading cursor class from the document and body and removes an
+     * existing loading overlay element.
+     *
+     * @param {Element|null} overlay - The overlay element to remove, if any.
+     * @returns {void}
+     */
     // Function to hide loading cursor and overlay
     window.hideLoadingState = function(overlay) {
         document.documentElement.classList.remove('loading-cursor');
@@ -51,6 +72,14 @@
         }
     });
 
+    /**
+     * Wraps fetch to show the loading state while an AJAX request is in flight,
+     * hiding the overlay when the request settles.
+     *
+     * @param {string} url - The URL to fetch.
+     * @param {Object} [options={}] - Fetch options passed to the underlying fetch call.
+     * @returns {Promise<Response>} A promise resolving to the fetch Response.
+     */
     // Function for AJAX requests with loading state
     window.fetchWithLoading = function(url, options = {}) {
         const overlay = showLoadingState();
@@ -115,6 +144,12 @@
             return originalXhrSend.apply(this, arguments);
         };
 
+        /**
+         * Decrements the active request counter and hides the loading overlay
+         * once all tracked requests have completed.
+         *
+         * @returns {void}
+         */
         function decrementRequests() {
             if (activeRequests > 0) {
                 activeRequests--;

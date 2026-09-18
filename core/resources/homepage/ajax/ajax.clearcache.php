@@ -6,6 +6,13 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * AJAX handler that clears the Bearsampp cache from the homepage.
+ *
+ * When caching is enabled, uses CacheManager::clearAll() to wipe the cache and
+ * returns the number of deleted files together with post-clear cache
+ * statistics. Responds with a JSON object and exits.
+ */
 header('Content-Type: application/json');
 header('Cache-Control: no-store');
 

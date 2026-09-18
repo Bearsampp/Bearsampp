@@ -46,6 +46,10 @@ class TplPowerShell
      *
      * PowerShell 7+ uses profile scripts and Oh My Posh for configuration,
      * not XML like ConsoleZ. This method is maintained for compatibility.
+     * It writes the console font settings for the PowerShell window titles
+     * to the Windows registry and imports them.
+     *
+     * @return bool True on success, false on failure.
      */
     public static function process()
     {

@@ -9,9 +9,12 @@
  */
 
 /**
- * This script sets up the homepage for the Bearsampp application, including loading necessary resources,
- * setting up the navigation bar, and including dynamic content based on the application's state.
- * It utilizes global variables to access application settings and paths.
+ * Entry point of the Bearsampp homepage (localhost dashboard).
+ *
+ * Initialises the application environment via root.php, sets up CSRF
+ * protection and security headers, loads the navigation bar and QuickPick
+ * control, and renders the requested page template based on the application's
+ * state. It utilises global variables to access application settings and paths.
  */
 
 /**

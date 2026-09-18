@@ -6,6 +6,11 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * @fileoverview MySQL service status display for the Bearsampp homepage.
+ * Sets up a StatusFetcher to keep the MySQL check port and version list up to date.
+ */
+
 // MySQL status fetcher with custom validation for mysqli_sql_exception
 // Maps 'versions' data key to 'version-list' selector
 createStatusFetcher('mysql', [

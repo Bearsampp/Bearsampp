@@ -6,6 +6,11 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * @fileoverview NodeJS service status display for the Bearsampp homepage.
+ * Sets up a StatusFetcher to keep the NodeJS status and version list up to date.
+ */
+
 // NodeJS status fetcher (uses 'status' field instead of 'checkport')
 // Maps 'versions' data key to 'version-list' selector
 createStatusFetcher('nodejs', [

@@ -7,6 +7,13 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class TplAppXlight
+ *
+ * This class provides methods to generate menu items and actions for managing Xlight
+ * within the Bearsampp application. It includes functionalities for enabling/disabling
+ * Xlight, switching versions, changing ports, and managing the Xlight service.
+ */
 class TplAppXlight
 {
     const MENU = 'xlight';

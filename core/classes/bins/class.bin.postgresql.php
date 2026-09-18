@@ -15,37 +15,121 @@
  */
 class BinPostgresql extends Module
 {
+    /**
+     * The name of the Windows service.
+     */
     const SERVICE_NAME = 'bearsampppostgresql';
 
+    /**
+     * Configuration key for the PostgreSQL enable flag in the root configuration.
+     */
     const ROOT_CFG_ENABLE = 'postgresqlEnable';
+    /**
+     * Configuration key for the PostgreSQL version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'postgresqlVersion';
 
+    /**
+     * Configuration key for the PostgreSQL control executable in the local configuration.
+     */
     const LOCAL_CFG_CTL_EXE = 'postgresqlCtlExe';
+    /**
+     * Configuration key for the PostgreSQL CLI executable in the local configuration.
+     */
     const LOCAL_CFG_CLI_EXE = 'postgresqlCliExe';
+    /**
+     * Configuration key for the PostgreSQL dump executable in the local configuration.
+     */
     const LOCAL_CFG_DUMP_EXE = 'postgresqlDumpExe';
+    /**
+     * Configuration key for the PostgreSQL dump-all executable in the local configuration.
+     */
     const LOCAL_CFG_DUMP_ALL_EXE = 'postgresqlDumpAllExe';
+    /**
+     * Configuration key for the PostgreSQL configuration file in the local configuration.
+     */
     const LOCAL_CFG_CONF = 'postgresqlConf';
+    /**
+     * Configuration key for the PostgreSQL HBA configuration file in the local configuration.
+     */
     const LOCAL_CFG_HBA_CONF = 'postgresqlUserConf';
+    /**
+     * Configuration key for the PostgreSQL alternate configuration file in the local configuration.
+     */
     const LOCAL_CFG_ALT_CONF = 'postgresqlAltConf';
+    /**
+     * Configuration key for the PostgreSQL alternate HBA configuration file in the local configuration.
+     */
     const LOCAL_CFG_ALT_HBA_CONF = 'postgresqlAltUserConf';
+    /**
+     * Configuration key for the PostgreSQL port in the local configuration.
+     */
     const LOCAL_CFG_PORT = 'postgresqlPort';
+    /**
+     * Configuration key for the PostgreSQL root user in the local configuration.
+     */
     const LOCAL_CFG_ROOT_USER = 'postgresqlRootUser';
+    /**
+     * Configuration key for the PostgreSQL root password in the local configuration.
+     */
     const LOCAL_CFG_ROOT_PWD = 'postgresqlRootPwd';
 
+    /**
+     * Command line option to display the PostgreSQL version.
+     */
     const CMD_VERSION = '--version';
 
+    /**
+     * @var Win32Service The Windows service instance.
+     */
     private $service;
+    /**
+     * @var string The path to the PostgreSQL error log file.
+     */
     private $errorLog;
+    /**
+     * @var string The path to the PostgreSQL control executable.
+     */
     private $ctlExe;
+    /**
+     * @var string The path to the PostgreSQL CLI executable.
+     */
     private $cliExe;
+    /**
+     * @var string The path to the PostgreSQL dump executable.
+     */
     private $dumpExe;
+    /**
+     * @var string The path to the PostgreSQL dump-all executable.
+     */
     private $dumpAllExe;
+    /**
+     * @var string The path to the PostgreSQL configuration file.
+     */
     private $conf;
+    /**
+     * @var string The path to the PostgreSQL HBA configuration file.
+     */
     private $hbaConf;
+    /**
+     * @var string The path to the PostgreSQL alternate configuration file.
+     */
     private $altConf;
+    /**
+     * @var string The path to the PostgreSQL alternate HBA configuration file.
+     */
     private $altHbaConf;
+    /**
+     * @var string The port number of the PostgreSQL server.
+     */
     private $port;
+    /**
+     * @var string The root user name of the PostgreSQL server.
+     */
     private $rootUser;
+    /**
+     * @var string The root password of the PostgreSQL server.
+     */
     private $rootPwd;
 
     /**
@@ -238,10 +322,11 @@ class BinPostgresql extends Module
     }
 
     /**
-     * Checks if the specified port is being used by PostgreSQL
-     * @param int $port The port number to check
-     * @param bool $showWindow Whether to show a message box with the result
-     * @return bool True if port is used by PostgreSQL, false otherwise
+     * Checks if the specified port is being used by PostgreSQL.
+     *
+     * @param int $port The port number to check.
+     * @param bool $showWindow Whether to show a message box with the result.
+     * @return bool True if the port is used by PostgreSQL, false otherwise.
      */
     public function checkPort($port, $showWindow = false)
     {

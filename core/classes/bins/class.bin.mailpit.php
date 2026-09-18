@@ -16,25 +16,73 @@
  */
 class BinMailpit extends Module
 {
+    /**
+     * The name of the Windows service.
+     */
     const SERVICE_NAME = 'bearsamppmailpit';
+    /**
+     * The command line parameters passed to the Mailpit service.
+     */
     const SERVICE_PARAMS = ' --listen "%s:%d" --smtp "%s:%d" --webroot "%s"';
 
+    /**
+     * Configuration key for the Mailpit enable flag in the root configuration.
+     */
     const ROOT_CFG_ENABLE = 'mailpitEnable';
+    /**
+     * Configuration key for the Mailpit version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'mailpitVersion';
 
+    /**
+     * Configuration key for the Mailpit executable in the local configuration.
+     */
     const LOCAL_CFG_EXE = 'mailpitExe';
+    /**
+     * Configuration key for the Mailpit web root in the local configuration.
+     */
     const LOCAL_CFG_WEB_ROOT = 'mailpitWebRoot';
+    /**
+     * Configuration key for the Mailpit UI port in the local configuration.
+     */
     const LOCAL_CFG_UI_PORT = 'mailpitUiPort';
+    /**
+     * Configuration key for the Mailpit SMTP port in the local configuration.
+     */
     const LOCAL_CFG_SMTP_PORT = 'mailpitSmtpPort';
+    /**
+     * Configuration key for the Mailpit listen address in the local configuration.
+     */
     const LOCAL_CFG_LISTEN = 'mailpitListen';
 
+    /**
+     * @var Win32Service The Windows service instance.
+     */
     private $service;
+    /**
+     * @var string The path to the Mailpit log file.
+     */
     private $log;
 
+    /**
+     * @var string The path to the Mailpit executable.
+     */
     private $exe;
+    /**
+     * @var string The web root directory for the Mailpit interface.
+     */
     private $webRoot;
+    /**
+     * @var int The UI port number.
+     */
     private $uiPort;
+    /**
+     * @var int The SMTP port number.
+     */
     private $smtpPort;
+    /**
+     * @var string The listen address of the Mailpit service.
+     */
     private $listen;
 
     /**

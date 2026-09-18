@@ -6,6 +6,12 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * @fileoverview Apache service status display for the Bearsampp homepage.
+ * Sets up a StatusFetcher for the Apache module to keep the check port,
+ * installed versions, module/alias/vhost counts and lists up to date.
+ */
+
 document.addEventListener("DOMContentLoaded", function () {
   if (document.querySelector('a[name=apache]') || document.getElementById('apache')) {
     createStatusFetcher('apache', [

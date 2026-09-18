@@ -40,6 +40,7 @@ class Config
     const VERBOSE_DEBUG = 2;
     const VERBOSE_TRACE = 3;
 
+    /** @var array The raw configuration values parsed from the INI file. */
     private $raw;
 
     /**
@@ -81,6 +82,7 @@ class Config
      * Replaces multiple configuration values with the specified key-value pairs.
      *
      * @param array $params An associative array of key-value pairs to replace.
+     * @throws RuntimeException If the configuration key or value is invalid.
      */
     public function replaceAll($params)
     {

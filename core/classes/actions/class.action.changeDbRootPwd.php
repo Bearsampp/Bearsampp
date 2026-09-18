@@ -24,52 +24,52 @@ class ActionChangeDbRootPwd
     private $cntProcessActions;
 
     /**
-     * @var object The main window object created by WinBinder.
+     * @var resource The main application window created by WinBinder.
      */
     private $wbWindow;
 
     /**
-     * @var object The label for the current password input field.
+     * @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the label of the current password input field.
      */
     private $wbLabelCurrentPwd;
 
     /**
-     * @var object The input field for the current password.
+     * @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the input field of the current password.
      */
     private $wbInputCurrentPwd;
 
     /**
-     * @var object The label for the new password input field.
+     * @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the label of the new password input field.
      */
     private $wbLabelNewPwd1;
 
     /**
-     * @var object The input field for the new password.
+     * @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the input field of the new password.
      */
     private $wbInputNewPwd1;
 
     /**
-     * @var object The label for the confirmation of the new password input field.
+     * @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the label of the confirmation of the new password input field.
      */
     private $wbLabelNewPwd2;
 
     /**
-     * @var object The input field for the confirmation of the new password.
+     * @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the input field of the confirmation of the new password.
      */
     private $wbInputNewPwd2;
 
     /**
-     * @var object The progress bar to show the progress of the password change process.
+     * @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the progress bar showing the progress of the password change process.
      */
     private $wbProgressBar;
 
     /**
-     * @var object The finish button to submit the password change.
+     * @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the finish button to submit the password change.
      */
     private $wbBtnFinish;
 
     /**
-     * @var object The cancel button to abort the password change process.
+     * @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the cancel button to abort the password change process.
      */
     private $wbBtnCancel;
 

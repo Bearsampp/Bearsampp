@@ -233,7 +233,7 @@ class Registry
      *
      * @param   bool  $fromRegistry  Determines whether to retrieve the key from the registry or generate it.
      *
-     * @return string Returns the application binaries registry key.
+     * @return string|false Returns the application binaries registry key, or false on error.
      */
     public function getAppBinsRegKey($fromRegistry = true)
     {

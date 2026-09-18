@@ -15,32 +15,98 @@
  */
 class BinMariadb extends Module
 {
+    /**
+     * The name of the Windows service.
+     */
     const SERVICE_NAME = 'bearsamppmariadb';
 
+    /**
+     * Configuration key for the MariaDB enable flag in the root configuration.
+     */
     const ROOT_CFG_ENABLE = 'mariadbEnable';
+    /**
+     * Configuration key for the MariaDB version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'mariadbVersion';
 
+    /**
+     * Configuration key for the MariaDB executable in the local configuration.
+     */
     const LOCAL_CFG_EXE = 'mariadbExe';
+    /**
+     * Configuration key for the MariaDB CLI executable in the local configuration.
+     */
     const LOCAL_CFG_CLI_EXE = 'mariadbCliExe';
+    /**
+     * Configuration key for the MariaDB admin executable in the local configuration.
+     */
     const LOCAL_CFG_ADMIN = 'mariadbAdmin';
+    /**
+     * Configuration key for the MariaDB configuration file in the local configuration.
+     */
     const LOCAL_CFG_CONF = 'mariadbConf';
+    /**
+     * Configuration key for the MariaDB port in the local configuration.
+     */
     const LOCAL_CFG_PORT = 'mariadbPort';
+    /**
+     * Configuration key for the MariaDB root user in the local configuration.
+     */
     const LOCAL_CFG_ROOT_USER = 'mariadbRootUser';
+    /**
+     * Configuration key for the MariaDB root password in the local configuration.
+     */
     const LOCAL_CFG_ROOT_PWD = 'mariadbRootPwd';
 
+    /**
+     * Command line option to display the MariaDB version.
+     */
     const CMD_VERSION = '--version';
+    /**
+     * Command line option to display MariaDB server variables.
+     */
     const CMD_VARIABLES = 'variables';
+    /**
+     * Command line option to perform a syntax check on the configuration.
+     */
     const CMD_SYNTAX_CHECK = '--help --verbose 1>NUL';
 
+    /**
+     * @var Win32Service The Windows service instance.
+     */
     private $service;
+    /**
+     * @var string The path to the MariaDB error log file.
+     */
     private $errorLog;
 
+    /**
+     * @var string The path to the MariaDB executable.
+     */
     private $exe;
+    /**
+     * @var string The path to the MariaDB configuration file.
+     */
     private $conf;
+    /**
+     * @var string The port number of the MariaDB server.
+     */
     private $port;
+    /**
+     * @var string The root user name of the MariaDB server.
+     */
     private $rootUser;
+    /**
+     * @var string The root password of the MariaDB server.
+     */
     private $rootPwd;
+    /**
+     * @var string The path to the MariaDB CLI executable.
+     */
     private $cliExe;
+    /**
+     * @var string The path to the MariaDB admin executable.
+     */
     private $admin;
 
     /**

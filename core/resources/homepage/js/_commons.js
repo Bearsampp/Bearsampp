@@ -8,9 +8,25 @@
  */
 
 /**
+ * @fileoverview Shared utilities for fetching and displaying service status
+ * on the Bearsampp homepage dashboard. Provides the StatusFetcher class
+ * and the createStatusFetcher factory function used by all service modules.
+ */
+
+/**
  * StatusFetcher - Unified utility for fetching and displaying service status
  */
 class StatusFetcher {
+  /**
+   * Creates a StatusFetcher instance.
+   *
+   * @param {string} serviceName - The service identifier used for DOM selectors and AJAX proc parameter.
+   * @param {Array<string|Object>} fields - List of data fields to fetch; strings are shorthand for { data, selector }.
+   * @param {Object} [options={}] - Configuration options for the fetcher.
+   * @param {number} [options.interval=2000] - Polling interval in milliseconds; 0 disables automatic polling.
+   * @param {string} [options.proc=serviceName] - The proc value sent in the AJAX request body.
+   * @param {Function} [options.customUpdater] - Custom callback to handle response data instead of the default DOM updater.
+   */
   constructor(serviceName, fields = ['checkport', 'versions'], options = {}) {
     this.serviceName = serviceName;
     this.fields = this.normalizeFields(fields);
@@ -21,6 +37,12 @@ class StatusFetcher {
     this.timer = null;
   }
 
+  /**
+   * Normalizes a fields array by converting string entries to { data, selector } objects.
+   *
+   * @param {Array<string|Object>} fields - The fields configuration array.
+   * @returns {Array<Object>} Normalized array where each entry has `data` and `selector` properties.
+   */
   normalizeFields(fields) {
     return fields.map(field => {
       if (typeof field === 'string') {
@@ -30,6 +52,11 @@ class StatusFetcher {
     });
   }
 
+  /**
+   * Fetches status immediately and starts the polling interval if configured.
+   *
+   * @returns {void}
+   */
   init() {
     this.fetchStatus();
     if (this.options.interval > 0) {
@@ -37,6 +64,11 @@ class StatusFetcher {
     }
   }
 
+  /**
+   * Sends an AJAX POST request to retrieve the service status and updates the DOM.
+   *
+   * @returns {Promise<void>}
+   */
   async fetchStatus() {
     const senddata = new URLSearchParams();
     senddata.append('proc', this.options.proc);
@@ -68,6 +100,12 @@ class StatusFetcher {
     }
   }
 
+  /**
+   * Displays an error state in the service status DOM elements by styling loaders red
+   * or inserting an error icon when no loader is present.
+   *
+   * @returns {void}
+   */
   showErrorFeedback() {
     const selector = `.summary-${this.serviceName}`;
     const element = document.querySelector(selector) || document.getElementById(this.serviceName);
@@ -95,6 +133,13 @@ class StatusFetcher {
     }
   }
 
+  /**
+   * Updates DOM elements with the fetched service data, replacing loader icons
+   * or updating status-content containers for each configured field.
+   *
+   * @param {Object} data - The response data object from the AJAX call.
+   * @returns {void}
+   */
   updateDOM(data) {
     if (!data) return;
     this.fields.forEach(field => {
@@ -146,6 +191,11 @@ class StatusFetcher {
     });
   }
 
+  /**
+   * Initializes the fetcher once the DOM is ready, or immediately if already loaded.
+   *
+   * @returns {void}
+   */
   initOnReady() {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.init());
@@ -155,6 +205,14 @@ class StatusFetcher {
   }
 }
 
+/**
+ * Factory function that creates a StatusFetcher and starts it on DOM ready.
+ *
+ * @param {string} serviceName - The service identifier for DOM selectors and AJAX proc parameter.
+ * @param {Array<string|Object>} fields - List of data fields to fetch and display.
+ * @param {Object} [options={}] - Configuration options passed to the StatusFetcher constructor.
+ * @returns {StatusFetcher} The created and initialized StatusFetcher instance.
+ */
 function createStatusFetcher(serviceName, fields, options = {}) {
   const fetcher = new StatusFetcher(serviceName, fields, options);
   fetcher.initOnReady();

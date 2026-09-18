@@ -15,8 +15,13 @@
  */
 class ModuleLoader
 {
+    /** @var array Map of module names that have finished loading. */
     private static $modules = array();
+
+    /** @var array Map of module names currently loading. */
     private static $loading = array();
+
+    /** @var int Maximum wait time for modules in milliseconds. */
     private static $maxWaitTime = 5000; // 5 seconds max wait
 
     const CORE = 'core';
@@ -72,11 +77,14 @@ class ModuleLoader
     }
 
     /**
-     * Attempt to load module in background process
+     * Attempts to load a module in the background.
+     *
+     * PHP has no true async in-process execution here, so the loader callback is
+     * invoked directly and the module is marked as loaded.
      *
      * @param string $module Module name
      * @param callable $loader Loader callback
-     * @return int|false Process ID if successful, false otherwise
+     * @return bool Always true, as loading always completes within this call.
      */
     private static function loadInBackground($module, callable $loader)
     {

@@ -15,21 +15,57 @@
  */
 class ToolGit extends Module
 {
+    /**
+     * Configuration key for the Git version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'gitVersion';
 
+    /**
+     * Configuration key for the Git executable in the local configuration.
+     */
     const LOCAL_CFG_EXE = 'gitExe';
+    /**
+     * Configuration key for the Git Bash executable in the local configuration.
+     */
     const LOCAL_CFG_BASH = 'gitBash';
+    /**
+     * Configuration key for the Git scan-at-startup flag in the local configuration.
+     */
     const LOCAL_CFG_SCAN_STARTUP = 'gitScanStartup';
 
+    /**
+     * The file name of the repositories list.
+     */
     const REPOS_FILE = 'repos.dat';
+    /**
+     * The file name of the repositories cache.
+     */
     const REPOS_CACHE_FILE = 'reposCache.dat';
 
+    /**
+     * @var string The path to the repositories file.
+     */
     private $reposFile;
+    /**
+     * @var string The path to the repositories cache file.
+     */
     private $reposCacheFile;
+    /**
+     * @var array The list of Git repositories.
+     */
     private $repos;
 
+    /**
+     * @var string The path to the Git executable.
+     */
     private $exe;
+    /**
+     * @var string The path to the Git Bash executable.
+     */
     private $bash;
+    /**
+     * @var bool Whether to scan for repositories at startup.
+     */
     private $scanStartup;
 
     /**

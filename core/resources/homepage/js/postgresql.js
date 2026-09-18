@@ -6,6 +6,11 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * @fileoverview PostgreSQL service status display for the Bearsampp homepage.
+ * Sets up a StatusFetcher to keep the PostgreSQL check port and version list up to date.
+ */
+
 // PostgreSQL status fetcher
 // Maps 'versions' data key to 'version-list' selector
 createStatusFetcher('postgresql', [

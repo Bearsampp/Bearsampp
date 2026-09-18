@@ -16,8 +16,13 @@
  */
 class CacheManager
 {
+    /** @var string|null Path to the cache directory, or null before init(). */
     private static $cacheDir;
+
+    /** @var bool Whether caching is enabled. */
     private static $enabled = true;
+
+    /** @var array Cache statistics (hits, misses, writes). */
     private static $stats = [
         'hits' => 0,
         'misses' => 0,
@@ -154,7 +159,7 @@ class CacheManager
      * Called when configuration is modified
      *
      * @param string $sourcePath Path to source file
-     * @return bool Success status
+     * @return void
      */
     public static function invalidate(string $sourcePath): void
     {

@@ -20,6 +20,7 @@ class Homepage
     const PAGE_PHPINFO = 'phpinfo';
     const PAGE_CACHE_STATS = 'cachestats';
 
+    /** @var string The current page name. */
     private $page;
 
     /**

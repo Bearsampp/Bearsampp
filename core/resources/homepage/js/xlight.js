@@ -6,6 +6,11 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * @fileoverview Xlight service status display for the Bearsampp homepage.
+ * Sets up a StatusFetcher to keep the Xlight check port and version list up to date.
+ */
+
 // Xlight status fetcher
 // Maps 'versions' data key to 'version-list' selector
 createStatusFetcher('xlight', [

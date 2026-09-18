@@ -13,19 +13,29 @@
  */
 class ActionChangePort
 {
+    /** @var object The binary object for the target service. */
     private $bin;
+    /** @var int The current port number of the service. */
     private $currentPort;
+    /** @var int The count of process actions required for the progress bar. */
     private $cntProcessActions;
 
+    /** @var resource The main application window. */
     private $wbWindow;
 
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the label displaying the current port information. */
     private $wbLabelCurrent;
 
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the label of the new port input field. */
     private $wbLabelPort;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the numeric input field of the new port number. */
     private $wbInputPort;
 
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the progress bar control. */
     private $wbProgressBar;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the finish button control. */
     private $wbBtnFinish;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the cancel button control. */
     private $wbBtnCancel;
 
     /**

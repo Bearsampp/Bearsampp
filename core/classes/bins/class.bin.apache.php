@@ -16,40 +16,127 @@
  */
 class BinApache extends Module
 {
+    /**
+     * The name of the Windows service.
+     */
     const SERVICE_NAME = 'bearsamppapache';
+    /**
+     * The command line parameters passed to the Apache service.
+     */
     const SERVICE_PARAMS = '-k runservice';
 
+    /**
+     * Configuration key for the Apache enable flag in the root configuration.
+     */
     const ROOT_CFG_ENABLE = 'apacheEnable';
+    /**
+     * Configuration key for the Apache version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'apacheVersion';
 
+    /**
+     * Configuration key for the Apache executable in the local configuration.
+     */
     const LOCAL_CFG_EXE = 'apacheExe';
+    /**
+     * Configuration key for the Apache configuration file in the local configuration.
+     */
     const LOCAL_CFG_CONF = 'apacheConf';
+    /**
+     * Configuration key for the Apache port in the local configuration.
+     */
     const LOCAL_CFG_PORT = 'apachePort';
+    /**
+     * Configuration key for the Apache SSL port in the local configuration.
+     */
     const LOCAL_CFG_SSL_PORT = 'apacheSslPort';
+    /**
+     * Configuration key for the Apache OpenSSL executable in the local configuration.
+     */
     const LOCAL_CFG_OPENSSL_EXE = 'apacheOpensslExe';
 
+    /**
+     * Command line option to display the Apache version number.
+     */
     const CMD_VERSION_NUMBER = '-v';
+    /**
+     * Command line option to display Apache compile settings.
+     */
     const CMD_COMPILE_SETTINGS = '-V';
+    /**
+     * Command line option to display compiled Apache modules.
+     */
     const CMD_COMPILED_MODULES = '-l';
+    /**
+     * Command line option to display Apache configuration directives.
+     */
     const CMD_CONFIG_DIRECTIVES = '-L';
+    /**
+     * Command line option to display Apache virtual host settings.
+     */
     const CMD_VHOSTS_SETTINGS = '-S';
+    /**
+     * Command line option to display loaded Apache modules.
+     */
     const CMD_LOADED_MODULES = '-M';
+    /**
+     * Command line option to perform a syntax check on the Apache configuration.
+     */
     const CMD_SYNTAX_CHECK = '-t';
 
+    /**
+     * The start tag marker for the switchOnline section in the configuration file.
+     */
     const TAG_START_SWITCHONLINE = '# START switchOnline tag - Do not replace!';
+    /**
+     * The end tag marker for the switchOnline section in the configuration file.
+     */
     const TAG_END_SWITCHONLINE = '# END switchOnline tag - Do not replace!';
 
+    /**
+     * @var Win32Service The Windows service instance.
+     */
     private $service;
+    /**
+     * @var string The path to the Apache modules directory.
+     */
     private $modulesPath;
+    /**
+     * @var string The path to the Apache SSL configuration file.
+     */
     private $sslConf;
+    /**
+     * @var string The path to the Apache access log file.
+     */
     private $accessLog;
+    /**
+     * @var string The path to the Apache rewrite log file.
+     */
     private $rewriteLog;
+    /**
+     * @var string The path to the Apache error log file.
+     */
     private $errorLog;
 
+    /**
+     * @var string The path to the Apache executable.
+     */
     private $exe;
+    /**
+     * @var string The path to the Apache configuration file.
+     */
     private $conf;
+    /**
+     * @var int The HTTP port number.
+     */
     private $port;
+    /**
+     * @var int The HTTPS port number.
+     */
     private $sslPort;
+    /**
+     * @var string The path to the OpenSSL executable.
+     */
     private $opensslExe;
 
     /**

@@ -7,6 +7,13 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class TplService
+ *
+ * This class provides methods to generate action strings and menu items for managing
+ * Windows services within the Bearsampp application. It includes functionalities for
+ * creating, starting, stopping, restarting, installing, and removing services.
+ */
 class TplService
 {
     /**

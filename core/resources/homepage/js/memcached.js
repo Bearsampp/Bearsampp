@@ -6,6 +6,11 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * @fileoverview Memcached service status display for the Bearsampp homepage.
+ * Sets up a StatusFetcher to keep the Memcached check port and version list up to date.
+ */
+
 // Memcached status fetcher
 // Maps 'versions' data key to 'version-list' selector
 createStatusFetcher('memcached', [

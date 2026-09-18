@@ -15,18 +15,51 @@
  */
 class ToolPowerShell extends Module
 {
+    /**
+     * Configuration key for the PowerShell version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'powershellVersion';
 
+    /**
+     * Configuration key for the PowerShell executable in the local configuration.
+     */
     const LOCAL_CFG_EXE = 'powershellExe';
+    /**
+     * Configuration key for the PowerShell configuration file in the local configuration.
+     */
     const LOCAL_CFG_CONF = 'powershellConf';
+    /**
+     * Configuration key for the PowerShell launch executable in the local configuration.
+     */
     const LOCAL_CFG_LAUNCH_EXE = 'powershellLaunchExe';
+    /**
+     * Configuration key for the PowerShell window rows in the local configuration.
+     */
     const LOCAL_CFG_ROWS = 'powershellRows';
+    /**
+     * Configuration key for the PowerShell window columns in the local configuration.
+     */
     const LOCAL_CFG_COLS = 'powershellCols';
 
+    /**
+     * @var string The path to the PowerShell executable.
+     */
     private $exe;
+    /**
+     * @var string The path to the PowerShell launch executable.
+     */
     private $launchExe;
+    /**
+     * @var string The path to the PowerShell configuration file.
+     */
     private $conf;
+    /**
+     * @var int The number of rows for the PowerShell window.
+     */
     private $rows;
+    /**
+     * @var int The number of columns for the PowerShell window.
+     */
     private $cols;
 
     /**

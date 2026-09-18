@@ -6,6 +6,11 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * @fileoverview MariaDB service status display for the Bearsampp homepage.
+ * Sets up a StatusFetcher to keep the MariaDB check port and version list up to date.
+ */
+
 // MariaDB status fetcher
 // Maps 'versions' data key to 'version-list' selector
 createStatusFetcher('mariadb', [

@@ -8,6 +8,14 @@
  */
 
 /**
+ * @fileoverview QuickPick module installer for the Bearsampp homepage.
+ * Implements the custom select dropdown that lists available modules and
+ * versions, sends AJAX requests to download and install a selected module,
+ * and displays progress and completion dialogs (including reload, apply
+ * config and info modals).
+ */
+
+/**
  * Initializes event listeners and handles the UI interactions for the custom select dropdown.
  * This function is executed when the DOM content is fully loaded.
  */
@@ -428,6 +436,9 @@ function showReloadingDialog(moduleName, version) {
  * Checks the reload status endpoint and refreshes when complete or on timeout.
  *
  * @param {Element} modalContainer - The modal container element to remove after reload
+ * @param {string} moduleName - The name of the module being reloaded
+ * @param {string} version - The version being reloaded
+ * @returns {Promise<void>} A promise that resolves when polling completes or gives up
  */
 async function pollReloadCompletion(modalContainer, moduleName, version) {
     const maxWaitTime = 60000; // Maximum 60 seconds wait

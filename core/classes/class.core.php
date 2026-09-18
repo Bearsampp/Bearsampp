@@ -145,7 +145,7 @@ class Core
         return 'core object';
     }
 
-/**
+    /**
      * Unzips a file to the specified directory and provides progress updates.
      *
      * This method uses the 7-Zip command-line tool to extract the contents of a zip file.

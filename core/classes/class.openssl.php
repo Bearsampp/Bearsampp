@@ -8,23 +8,45 @@
  *
  */
 
+/**
+ * Class OpenSsl
+ *
+ * Provides SSL certificate management for the Bearsampp environment.
+ * Generates, removes, and rebuilds SSL certificates using mkcert and
+ * configures browser trust for the Bearsampp Root CA.
+ */
 class OpenSsl
 {
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the certificate name input control in the generation dialog. */
     private $wbGenSslInputName;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the destination path input control in the generation dialog. */
     private $wbGenSslInputDest;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the destination path browse button in the generation dialog. */
     private $wbGenSslBtnDest;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the progress bar in the generation dialog. */
     private $wbGenSslProgressBar;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the save button in the generation dialog. */
     private $wbGenSslBtnSave;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the cancel button in the generation dialog. */
     private $wbGenSslBtnCancel;
 
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the certificate list input control in the deletion dialog. */
     private $wbDelSslListCerts;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the destination path input control in the deletion dialog. */
     private $wbDelSslInputDest;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the destination path browse button in the deletion dialog. */
     private $wbDelSslBtnDest;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the progress bar in the deletion dialog. */
     private $wbDelSslProgressBar;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the delete button in the deletion dialog. */
     private $wbDelSslBtnDelete;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the cancel button in the deletion dialog. */
     private $wbDelSslBtnCancel;
+    /** @var string The name assigned to the Bearsampp Root CA. */
     private $rootCaName = 'BearsamppRootCA';
+    /** @var bool Whether the Root CA trust prompt has already been shown during this run. */
     private $trustPromptShownThisRun = false;
+    /** @var string Marker filename created when the user declines to trust the Root CA. */
     private $firefoxTrustDeclinedFile = 'firefoxTrustDeclined';
 
 
@@ -520,6 +542,12 @@ class OpenSsl
 
     /**
      * Handler for the SSL certificate deletion WinBinder GUI.
+     *
+     * @param mixed $window The window object where the event occurred.
+     * @param int $id The ID of the event.
+     * @param mixed $ctrl The control that triggered the event.
+     * @param mixed $param1 The first parameter of the event.
+     * @param mixed $param2 The second parameter of the event.
      */
     public function delSslCertificateHandler($window, $id, $ctrl, $param1, $param2)
     {
@@ -614,6 +642,12 @@ class OpenSsl
 
     /**
      * Handler for the SSL certificate generation WinBinder GUI.
+     *
+     * @param mixed $window The window object where the event occurred.
+     * @param int $id The ID of the event.
+     * @param mixed $ctrl The control that triggered the event.
+     * @param mixed $param1 The first parameter of the event.
+     * @param mixed $param2 The second parameter of the event.
      */
     public function genSslCertificateHandler($window, $id, $ctrl, $param1, $param2)
     {

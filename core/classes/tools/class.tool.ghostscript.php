@@ -16,11 +16,26 @@
  */
 class ToolGhostscript extends Module
 {
+    /**
+     * Configuration key for the Ghostscript version in the root configuration.
+     */
     const ROOT_CFG_VERSION = 'ghostscriptVersion';
+    /**
+     * Configuration key for the Ghostscript executable in the local configuration.
+     */
     const LOCAL_CFG_EXE = 'ghostscriptExe';
+    /**
+     * Configuration key for the Ghostscript console executable in the local configuration.
+     */
     const LOCAL_CFG_EXE_CONSOLE = 'ghostscriptExeConsole';
 
+    /**
+     * @var string The path to the Ghostscript executable.
+     */
     private $exe;
+    /**
+     * @var string The path to the Ghostscript console executable.
+     */
     private $exeConsole;
 
     /**

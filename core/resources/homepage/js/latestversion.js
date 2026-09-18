@@ -6,6 +6,12 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * @fileoverview Latest version notification display for the Bearsampp homepage.
+ * Fetches the latest version information and shows the download / changelog
+ * links and the notification banner when an update is available.
+ */
+
 createStatusFetcher('latestversion', [], {
   customUpdater: (responseData) => {
     if (responseData.display) {

@@ -7,6 +7,13 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * Class TplAppMariadb
+ *
+ * This class provides methods to generate menu items and actions for managing MariaDB
+ * within the Bearsampp application. It includes functionalities for enabling/disabling
+ * MariaDB, switching versions, changing ports and root passwords, and managing services.
+ */
 class TplAppMariadb
 {
     const MENU = 'mariadb';

@@ -15,15 +15,28 @@
  */
 class ActionStartup
 {
+    /** @var Splash The splash screen instance used to display startup progress. */
     private $splash;
+
+    /** @var bool Whether a restart of the application is required after the startup process. */
     private $restart;
+
+    /** @var float The timestamp of the startup start, as returned by Util::getMicrotime(). */
     private $startTime;
+
+    /** @var string Accumulated error messages shown at the end of the startup. */
     private $error;
 
+    /** @var string The Bearsampp root path. */
     private $rootPath;
+
+    /** @var array The list of files to scan for path placeholders. */
     private $filesToScan;
 
+    /** @var int Number of progress bar steps consumed per service. */
     const GAUGE_SERVICES = 5;
+
+    /** @var int Number of progress bar steps consumed by the other operations. */
     const GAUGE_OTHERS = 19;
 
     /**

@@ -6,6 +6,12 @@
  * Github: https://github.com/Bearsampp
  */
 
+/**
+ * @fileoverview Dashboard summary display for the Bearsampp homepage.
+ * Sets up a StatusFetcher that maps each module's binary status data key
+ * to its corresponding dashboard selector.
+ */
+
 createStatusFetcher('summary', [
   { data: 'binapache', selector: 'binapache' },
   { data: 'binxlight', selector: 'binxlight' },

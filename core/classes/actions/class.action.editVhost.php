@@ -14,38 +14,71 @@
  */
 class ActionEditVhost extends ActionDialogBase
 {
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the label control of the server name field. */
     private $wbLabelServerName;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the text input control of the server name. */
     private $wbInputServerName;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the label control of the document root field. */
     private $wbLabelDocRoot;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the read-only text input of the document root path. */
     private $wbInputDocRoot;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the browse button selecting the document root directory. */
     private $wbBtnDocRoot;
+    /** @var array{0: int, 1: mixed} WinBinder control wrapper (control ID at WinBinder::CTRL_ID, handle at WinBinder::CTRL_OBJ) for the label displaying the generated vhost directive preview. */
     private $wbLabelExp;
 
-    const GAUGE_SAVE = 3; // Override: needs extra step for SSL cert regeneration
+    /** @var int Override: needs extra step for SSL cert regeneration. */
+    const GAUGE_SAVE = 3;
 
+    /**
+     * Get the gauge value for save operation.
+     *
+     * @return int The gauge value.
+     */
     protected function getGaugeSave()
     {
         return self::GAUGE_SAVE;
     }
 
+    /**
+     * Get the dialog window title.
+     *
+     * @return string The localized window title with the server name.
+     */
     protected function getWindowTitle()
     {
         global $bearsamppLang;
         return sprintf($bearsamppLang->getValue(Lang::EDIT_VHOST_TITLE), $this->initValue);
     }
 
+    /**
+     * Get the dialog title for message boxes.
+     *
+     * @return string The localized dialog title with the server name.
+     */
     protected function getDialogTitle()
     {
         global $bearsamppLang;
         return sprintf($bearsamppLang->getValue(Lang::EDIT_VHOST_TITLE), $this->initValue);
     }
 
+    /**
+     * Get the delete dialog title.
+     *
+     * @return string The localized delete dialog title.
+     */
     protected function getDeleteDialogTitle()
     {
         global $bearsamppLang;
         return $bearsamppLang->getValue(Lang::DELETE_VHOST_TITLE);
     }
 
+    /**
+     * Initialize the dialog by loading the existing vhost configuration.
+     *
+     * @param array $args Command line arguments where $args[0] is the server name.
+     * @return bool True if initialization successful, false otherwise.
+     */
     protected function initializeDialog($args)
     {
         global $bearsamppRoot;
@@ -69,6 +102,12 @@ class ActionEditVhost extends ActionDialogBase
         return true;
     }
 
+    /**
+     * Create the form fields for the edit vhost dialog.
+     *
+     * @param object $bearsamppWinbinder The WinBinder instance.
+     * @return void
+     */
     protected function createFormFields($bearsamppWinbinder)
     {
         global $bearsamppRoot, $bearsamppLang;
@@ -113,6 +152,12 @@ class ActionEditVhost extends ActionDialogBase
         );
     }
 
+    /**
+     * Get the current form values from the input controls.
+     *
+     * @param object $bearsamppWinbinder The WinBinder instance.
+     * @return array Associative array with 'serverName' and 'documentRoot' keys.
+     */
     protected function getFormValues($bearsamppWinbinder)
     {
         return [
@@ -121,6 +166,12 @@ class ActionEditVhost extends ActionDialogBase
         ];
     }
 
+    /**
+     * Validate the form input.
+     *
+     * @param array $values The form values.
+     * @return array ['valid' => bool, 'error' => string|null]
+     */
     protected function validateInput($values)
     {
         global $bearsamppLang;
@@ -135,6 +186,12 @@ class ActionEditVhost extends ActionDialogBase
         return ['valid' => true];
     }
 
+    /**
+     * Check if a different vhost with the same server name already exists.
+     *
+     * @param array $values The form values.
+     * @return bool True if a conflicting vhost exists, false otherwise.
+     */
     protected function itemExists($values)
     {
         global $bearsamppRoot, $bearsamppLang, $bearsamppWinbinder;
@@ -151,6 +208,12 @@ class ActionEditVhost extends ActionDialogBase
         return false;
     }
 
+    /**
+     * Save the vhost configuration file, removing old config and certificate first.
+     *
+     * @param array $values The form values.
+     * @return bool True on success, false on failure.
+     */
     protected function saveItem($values)
     {
         global $bearsamppRoot, $bearsamppBins, $bearsamppOpenSsl;
@@ -171,6 +234,11 @@ class ActionEditVhost extends ActionDialogBase
         ) !== false;
     }
 
+    /**
+     * Delete the vhost configuration file and its SSL certificate.
+     *
+     * @return bool True on success, false on failure.
+     */
     protected function deleteItem()
     {
         global $bearsamppRoot, $bearsamppOpenSsl;
@@ -179,6 +247,12 @@ class ActionEditVhost extends ActionDialogBase
                @unlink(Path::getVhostsPath() . '/' . $this->initValue . '.conf');
     }
 
+    /**
+     * Get the success message after saving.
+     *
+     * @param array $values The form values.
+     * @return string The localized success message.
+     */
     protected function getSaveSuccessMessage($values)
     {
         global $bearsamppLang;
@@ -190,24 +264,44 @@ class ActionEditVhost extends ActionDialogBase
         );
     }
 
+    /**
+     * Get the error message after save failure.
+     *
+     * @return string The localized error message.
+     */
     protected function getSaveErrorMessage()
     {
         global $bearsamppLang;
         return $bearsamppLang->getValue(Lang::VHOST_CREATED_ERROR);
     }
 
+    /**
+     * Get the delete confirmation message.
+     *
+     * @return string The localized confirmation message with the server name.
+     */
     protected function getDeleteConfirmMessage()
     {
         global $bearsamppLang;
         return sprintf($bearsamppLang->getValue(Lang::DELETE_VHOST), $this->initValue);
     }
 
+    /**
+     * Get the success message after delete.
+     *
+     * @return string The localized success message with the server name.
+     */
     protected function getDeleteSuccessMessage()
     {
         global $bearsamppLang;
         return sprintf($bearsamppLang->getValue(Lang::VHOST_REMOVED), $this->initValue);
     }
 
+    /**
+     * Get the error message after delete failure.
+     *
+     * @return string The localized error message with the file path.
+     */
     protected function getDeleteErrorMessage()
     {
         global $bearsamppRoot, $bearsamppLang;
@@ -217,12 +311,27 @@ class ActionEditVhost extends ActionDialogBase
         );
     }
 
+    /**
+     * Restart the Apache service after saving or deleting.
+     *
+     * @return void
+     */
     protected function restartService()
     {
         global $bearsamppBins;
         $bearsamppBins->getApache()->getService()->restart();
     }
 
+    /**
+     * Handle custom window events (server name input change and browse button).
+     *
+     * @param resource $window The window resource.
+     * @param int      $id     The control ID.
+     * @param resource $ctrl   The control resource.
+     * @param mixed    $param1 Additional parameter 1.
+     * @param mixed    $param2 Additional parameter 2.
+     * @return void
+     */
     protected function handleCustomEvent($window, $id, $ctrl, $param1, $param2)
     {
         global $bearsamppLang, $bearsamppWinbinder;

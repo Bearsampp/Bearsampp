@@ -33,6 +33,8 @@ class Win32Native
 
     /**
      * Returns the cached WMI cimv2 connection, creating it on first use.
+     *
+     * @return COM The cached WMI cimv2 connection.
      */
     private static function getWmiCimv2(): COM
     {
@@ -44,6 +46,8 @@ class Win32Native
 
     /**
      * Returns the cached WMI StdRegProv connection, creating it on first use.
+     *
+     * @return COM The cached WMI StdRegProv connection.
      */
     private static function getWmiStdRegProv(): COM
     {
@@ -55,6 +59,8 @@ class Win32Native
 
     /**
      * Returns the cached WScript.Shell object, creating it on first use.
+     *
+     * @return COM The cached WScript.Shell object.
      */
     private static function getWscriptShell(): COM
     {
@@ -67,6 +73,8 @@ class Win32Native
     /**
      * Clears all cached COM connections.
      * Call this after a COM operation fails so the next call gets a fresh connection.
+     *
+     * @return void
      */
     public static function resetConnections(): void
     {

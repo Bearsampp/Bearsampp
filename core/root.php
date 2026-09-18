@@ -7,7 +7,13 @@
  */
 
 /**
- * Defines constants used throughout the Bearsampp application.
+ * Bootstrap script for the Bearsampp core engine.
+ *
+ * Defines application-wide constants, performs a fast elevation check when the
+ * script is launched with the "startup" argument, loads the Root class and
+ * registers the application root directory, enables TLS certificate
+ * verification for outbound HTTPS connections, processes the requested action,
+ * and retrieves the global locale setting.
  */
 const APP_AUTHOR_NAME = 'N6REJ';
 const APP_TITLE = 'Bearsampp';
