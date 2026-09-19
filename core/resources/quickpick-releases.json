@@ -1193,6 +1193,11 @@
     "module": "module-mysql",
     "versions": [
       {
+        "version": "26.7.0",
+        "url": "https://github.com/Bearsampp/module-mysql/releases/download/2026.9.19/bearsampp-mysql-26.7.0-2026.9.19.7z",
+        "prerelease": true
+      },
+      {
         "version": "9.7.2",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2026.8.27/bearsampp-mysql-9.7.2-2026.8.27.7z",
         "prerelease": false
