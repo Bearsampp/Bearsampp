@@ -345,16 +345,17 @@ class WinBinder
     /**
      * Executes a system command.
      *
-     * @param   string        $cmd       The command to execute.
-     * @param   string|array  $params    The parameters to pass to the command. Can be a pre-formed string
-     *                                   (for backwards compatibility) or array of individual arguments
-     *                                   (recommended for automatic quoting).
-     * @param   bool          $silent    Whether to execute the command silently.
-     * @param   bool          $wait      Whether to wait for the process to exit.
+     * @param   string        $cmd         The command to execute.
+     * @param   string|array  $params      The parameters to pass to the command. Can be a pre-formed string
+     *                                     (for backwards compatibility) or array of individual arguments
+     *                                     (recommended for automatic quoting).
+     * @param   bool          $silent      Whether to execute the command silently.
+     * @param   bool          $wait        Whether to wait for the process to exit.
+     * @param   bool          $showWindow  Whether to show the application window on native wb_exec (SW_SHOWNORMAL).
      *
      * @return mixed The result of the command execution.
      */
-    public function exec($cmd, $params = null, $silent = false, $wait = true): mixed
+    public function exec($cmd, $params = null, $silent = false, $wait = true, $showWindow = false): mixed
     {
         // Handle array of arguments by quoting each one individually
         if (is_array($params)) {
@@ -394,6 +395,10 @@ class WinBinder
         }
 
         $this->writeLog('exec: ' . $cmd . ' ' . $params);
+
+        if ($showWindow) {
+            return $this->callWinBinder('wb_exec', array($cmd, $params, true));
+        }
 
         return $this->callWinBinder('wb_exec', array($cmd, $params));
     }

@@ -860,6 +860,91 @@ class Path
     }
 
     /**
+     * Resolves an executable name to its full path.
+     *
+     * Bare names from bearsampp.conf (e.g. "notepad++.exe") are resolved using:
+     *   1. The path itself if it already points to an existing file.
+     *   2. The WinBinder file registry (wb_find_file).
+     *   3. The App Paths registry keys (HKCU, then HKLM).
+     *   4. The directories listed in the PATH environment variable (with PATHEXT).
+     *   5. The Windows, System32 and SysWOW64 directories.
+     *
+     * @param   string  $name  The executable name or path to resolve.
+     *
+     * @return string|false The resolved absolute path, or false if it could not be found.
+     */
+    public static function findExecutable($name)
+    {
+        $name = trim($name);
+        if ($name == '') {
+            return false;
+        }
+
+        if (is_file($name)) {
+            return self::formatWindowsPath($name);
+        }
+
+        $baseName      = basename($name);
+        $hasExtension  = pathinfo($baseName, PATHINFO_EXTENSION) != '';
+        $pathExtensions = explode(';', getenv('PATHEXT') !== false ? getenv('PATHEXT') : '.COM;.EXE;.BAT;.CMD');
+        $extensions    = $hasExtension ? array('') : $pathExtensions;
+
+        // WinBinder file registry
+        global $bearsamppWinbinder;
+        if (isset($bearsamppWinbinder)) {
+            $found = $bearsamppWinbinder->findFile($baseName);
+            if ($found !== false && is_file($found)) {
+                return self::formatWindowsPath($found);
+            }
+        }
+
+        // App Paths registry (HKCU first, then HKLM)
+        foreach (array(Registry::HKEY_CURRENT_USER, Registry::HKEY_LOCAL_MACHINE) as $hive) {
+            $appPath = Win32Native::registryGetValue($hive, 'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\\' . $baseName);
+            if (is_string($appPath) && trim($appPath) != '') {
+                // App Paths values may include command line arguments after the executable
+                $cleanPath = trim(str_replace('"', '', $appPath));
+                $appPath   = preg_match('/^.*\.exe\b/i', $cleanPath, $match) ? $match[0] : strtok($cleanPath, " \t");
+                if (is_file($appPath)) {
+                    return self::formatWindowsPath($appPath);
+                }
+            }
+        }
+
+        // Directories listed in the PATH environment variable
+        $envPath = getenv('PATH');
+        if ($envPath !== false) {
+            foreach (explode(';', $envPath) as $dir) {
+                $dir = trim($dir);
+                if ($dir == '') {
+                    continue;
+                }
+                foreach ($extensions as $extension) {
+                    $candidate = $dir . '\\' . $baseName . $extension;
+                    if (is_file($candidate)) {
+                        return self::formatWindowsPath($candidate);
+                    }
+                }
+            }
+        }
+
+        // Windows, System32 and SysWOW64 directories
+        $systemRoot = getenv('SystemRoot');
+        if ($systemRoot !== false) {
+            foreach (array('\\System32\\', '\\SysWOW64\\', '\\') as $subDir) {
+                foreach ($extensions as $extension) {
+                    $candidate = $systemRoot . $subDir . $baseName . $extension;
+                    if (is_file($candidate)) {
+                        return self::formatWindowsPath($candidate);
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Retrieves the path to the PWGen directory.
      *
      * @param   bool  $aetrayPath  Whether to format the path for AeTrayMenu.

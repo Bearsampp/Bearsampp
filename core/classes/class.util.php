@@ -1028,13 +1028,23 @@ class Util
      */
     public static function openFileContent($caption, $content)
     {
-        global $bearsamppCore, $bearsamppConfig;
+        global $bearsamppWinbinder, $bearsamppConfig;
 
+        $caption = preg_replace('/[<>:"\/\\\\|?*\x00-\x1F]|\.$/', '', trim($caption));
         $tmpFile = Path::getTmpPath() . '/' . $caption . '.txt';
         file_put_contents($tmpFile, $content);
 
-        // Open the file with the configured editor from bearsampp.conf
+        // Open the file with the editor configured in bearsampp.conf
         $editor = $bearsamppConfig->getNotepad();
-        $bearsamppCore->getWinbinder()->exec($editor, '"' . $tmpFile . '"');
+        if ($editor == null || trim($editor) == '') {
+            $editor = 'notepad.exe';
+        }
+
+        $editor = Path::findExecutable($editor);
+        if ($editor === false) {
+            $editor = getenv('SystemRoot') . '\System32\notepad.exe';
+        }
+
+        $bearsamppWinbinder->exec($editor, '"' . $tmpFile . '"', false, true, true);
     }
 }
