@@ -2550,7 +2550,7 @@
       {
         "version": "3.14.7",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2026.9.19/bearsampp-python-3.14.7-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.14.4",
@@ -2560,7 +2560,7 @@
       {
         "version": "3.13.15",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2026.9.19/bearsampp-python-3.13.15-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.13.13",
