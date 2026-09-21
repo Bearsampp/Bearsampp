@@ -110,6 +110,7 @@ jobs:
       - name: Apply combined releases file
         run: |
           cp quickpick-releases/quickpick-releases.json core/resources/quickpick-releases.json
+          rm -rf quickpick-releases
           git status
 
       - name: Create Pull Request
@@ -126,6 +127,7 @@ jobs:
 
             Verified by automated workflow.
           commit-message: 'Update quickpick combined releases JSON'
+          add-paths: core/resources/quickpick-releases.json
           delete-branch: true
 
       - name: Enable Pull Request Automerge
