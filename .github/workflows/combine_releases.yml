@@ -91,6 +91,8 @@ jobs:
     # Run only when the combined file actually changed; this job is SKIPPED
     # when there are no new updates
     if: needs.combine-releases.outputs.changes == 'true'
+    outputs:
+      merged: ${{ steps.wait.outputs.merged }}
     permissions:
       pull-requests: write
       contents: write
@@ -191,6 +193,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PAT }}
 
       - name: Wait for Pull Request to be merged
+        id: wait
         if: steps.cpr.outputs.pull-request-number != ''
         run: |
           set +e # Don't exit on error
@@ -201,12 +204,49 @@ jobs:
             PR_MERGED=$(gh pr view "$PR_NUMBER" --json merged --jq .merged)
             if [ "$PR_STATE" = "MERGED" ] || [ "$PR_MERGED" = "true" ]; then
               echo "✓ PR #${PR_NUMBER} merged. Combined release data is now on main."
+              echo "merged=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             echo "Waiting for merge (attempt $i of 90)..."
             sleep 15
           done
           echo "::warning ::PR #${PR_NUMBER} was not merged within the wait window."
+          echo "merged=false" >> "$GITHUB_OUTPUT"
           exit 0
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
+
+  sync-and-trigger-sandbox:
+    runs-on: ubuntu-latest
+    needs: [combine-releases, create-update-pr]
+    # Run only AFTER the update PR has been merged, so the freshly combined
+    # data is guaranteed to be on main before it is synced to the sandbox
+    if: needs.create-update-pr.outputs.merged == 'true'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Verify files exist
+        run: |
+          ls -R core/resources/
+          if [ ! -f core/resources/version.dat ]; then echo "version.dat MISSING"; exit 1; fi
+          if [ ! -f core/resources/quickpick-releases.json ]; then echo "quickpick-releases.json MISSING"; exit 1; fi
+
+      - name: Run GitHub File Sync
+        uses: BetaHuhn/repo-file-sync-action@v1
+        with:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          CONFIG_PATH: .github/sync-sandbox.yml
+          SKIP_PR: true
+
+      - name: Trigger Sandbox Repository Dispatch
+        uses: peter-evans/repository-dispatch@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: Bearsampp/Sandbox
+          event-type: version-updated
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "triggering_workflow": "Quickpick Combine Releases"}'
