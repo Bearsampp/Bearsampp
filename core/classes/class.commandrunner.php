@@ -87,6 +87,53 @@ class CommandRunner
     }
 
     /**
+     * Execute an executable with arguments, redirecting stdout and stderr to files.
+     *
+     * Capturing large output through a pipe with stream_get_contents() can be
+     * extremely slow on Windows, so this variant lets the child process write its
+     * output directly to the given files. The caller reads and cleans up the files.
+     *
+     * @param   string  $executable  Path to the executable (will be escapeshellarg'd).
+     * @param   array   $args        Arguments, each will be escapeshellarg'd.
+     * @param   string  $stdoutFile  File path the child's stdout is redirected to.
+     * @param   string  $stderrFile  File path the child's stderr is redirected to.
+     *
+     * @return int|false Process exit code on success, false if the process could not start.
+     */
+    public static function execToFile(string $executable, array $args, string $stdoutFile, string $stderrFile): int|false
+    {
+        $cmd = escapeshellarg($executable);
+        foreach ($args as $arg) {
+            $cmd .= ' ' . escapeshellarg((string)$arg);
+        }
+
+        self::writeLog('CommandRunner::execToFile: ' . $cmd);
+
+        $process = @proc_open(
+            $cmd,
+            [
+                0 => ['pipe', 'r'],
+                1 => ['file', $stdoutFile, 'w'],
+                2 => ['file', $stderrFile, 'w'],
+            ],
+            $pipes,
+            null,
+            null,
+            ['bypass_shell' => true]
+        );
+
+        if (!is_resource($process)) {
+            self::writeLog('CommandRunner::execToFile: failed to start process: ' . $cmd);
+
+            return false;
+        }
+
+        fclose($pipes[0]);
+
+        return proc_close($process);
+    }
+
+    /**
      * Execute an executable with arguments, combining stdout and stderr.
      *
      * Convenience wrapper around exec() for callers that need both streams merged
