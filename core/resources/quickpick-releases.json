@@ -645,7 +645,7 @@
       {
         "version": "13.0.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.9.19/bearsampp-mariadb-13.0.2-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "13.0.1-RC",
