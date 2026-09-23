@@ -1195,7 +1195,7 @@
       {
         "version": "26.7.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2026.9.19/bearsampp-mysql-26.7.0-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "9.7.2",
@@ -2505,7 +2505,7 @@
       {
         "version": "7.6.6",
         "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.9.19/bearsampp-powershell-7.6.6-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "7.6.5",
