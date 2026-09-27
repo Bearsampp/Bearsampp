@@ -46,6 +46,9 @@
 		<div class = "card">
 			<div class = "card-heading">
 				<h3 class = "card-title bg-dark text-light p-1">
+					<a class = "stack-status btn btn-sm btn-outline-light float-end" style = "position: relative; top: -1px;" href = "
+						<?php echo $bearsamppHomepage->getPageQuery(Homepage::PAGE_STACK_STATUS); ?>" role = "button">
+						<i class = "fa-solid fa-gauge-high"></i> <?php echo $bearsamppLang->getValue(Lang::MENU_STACK_STATUS_VIEW); ?></a>
 					<i class = "fa-regular fa-file-code"></i> <?php echo $bearsamppLang->getValue(Lang::BINS); ?>
 				</h3>
 			</div>

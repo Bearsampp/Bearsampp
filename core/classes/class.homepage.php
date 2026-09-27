@@ -19,6 +19,7 @@ class Homepage
     const PAGE_INDEX = 'index';
     const PAGE_PHPINFO = 'phpinfo';
     const PAGE_CACHE_STATS = 'cachestats';
+    const PAGE_STACK_STATUS = 'stackstatus';
 
     /** @var string The current page name. */
     private $page;
@@ -30,6 +31,7 @@ class Homepage
         self::PAGE_INDEX,
         self::PAGE_PHPINFO,
         self::PAGE_CACHE_STATS,
+        self::PAGE_STACK_STATUS,
     );
 
     /**

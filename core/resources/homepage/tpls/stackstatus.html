@@ -1,0 +1,962 @@
+<?php
+/*
+ *
+ *  * Copyright (c) 2021-2026 Bearsampp
+ *  * License: GNU General Public License version 3 or later; see LICENSE.txt
+ *  * Website: https://bearsampp.com
+ *  * Github: https://github.com/Bearsampp
+ *
+ */
+
+// Stack status page - populated from StatusSnapshot::captureForWeb(), then kept
+// live by the 'stackstatus' AJAX poll.
+//
+// captureForWeb() rather than capture() because this page is served by the user's
+// PHP, which has no COM; the WMI work happens in the internal engine and comes
+// back as JSON. It returns an error inside the array rather than throwing, so the
+// collector is the only place that has to guard against a collection failure.
+$snapshot = StatusSnapshot::captureForWeb($bearsamppBins);
+
+$snapshotError = isset($snapshot['error']) ? $snapshot['error'] : null;
+
+/**
+ * Maps a ServiceStatus lifecycle value onto a Bootstrap badge modifier.
+ *
+ * Kept as a closure so the mapping cannot leak into the rest of the homepage and
+ * so the template can be included more than once without a redeclaration.
+ */
+$statusBadgeClass = function ($status) {
+    switch ($status) {
+        case ServiceStatus::STATUS_RUNNING:
+            return 'text-bg-success';
+        case ServiceStatus::STATUS_STARTING:
+            return 'text-bg-info';
+        case ServiceStatus::STATUS_STOPPING:
+        case ServiceStatus::STATUS_PAUSED:
+        case ServiceStatus::STATUS_PARTIAL_STACK:
+            return 'text-bg-warning';
+        case ServiceStatus::STATUS_ERROR:
+            return 'text-bg-danger';
+        case ServiceStatus::STATUS_AVAILABLE:
+            return 'text-bg-primary';
+        case ServiceStatus::STATUS_NOT_INSTALLED:
+            return 'text-bg-dark';
+        default:
+            return 'text-bg-secondary';
+    }
+};
+
+/**
+ * Bootstrap alert modifier for a lifecycle value. The summary banner is tinted to
+ * match, so a stack that has gone bad does not keep reading as a green all-clear
+ * once JavaScript starts updating it.
+*/
+$statusAlertClass = function ($status) {
+    switch ($status) {
+        case ServiceStatus::STATUS_RUNNING:
+            return 'alert-success';
+        case ServiceStatus::STATUS_STARTING:
+            return 'alert-info';
+        case ServiceStatus::STATUS_STOPPING:
+        case ServiceStatus::STATUS_PAUSED:
+        case ServiceStatus::STATUS_PARTIAL_STACK:
+            return 'alert-warning';
+        case ServiceStatus::STATUS_ERROR:
+            return 'alert-danger';
+        case ServiceStatus::STATUS_AVAILABLE:
+            return 'alert-primary';
+        case ServiceStatus::STATUS_NOT_INSTALLED:
+            return 'alert-dark';
+        default:
+            return 'alert-secondary';
+    }
+};
+
+/**
+ * Turns a lifecycle value into a presentable label ("not_installed" -> "Not
+ * installed"). These are technical state names rather than prose, so they are
+ * not run through the translation table.
+*/
+$statusLabel = function ($status) {
+return ucfirst(str_replace('_', ' ', (string) $status));
+};
+
+/**
+* Formats a byte count the same way Util::humanFileSize() does, including the
+* thousands separator, so that the server rendered cells do not change shape
+* when JavaScript takes over on the first poll.
+*/
+$formatBytes = function ($bytes) {
+$bytes = (int) $bytes;
+
+if ($bytes <= 0) {
+return '0.00B';
+}
+
+$units = array('B', 'KB', 'MB', 'GB', 'TB');
+$power = min((int) floor(log($bytes, 1024)), count($units) - 1);
+
+return number_format($bytes / (1024 ** $power), 2) . $units[$power];
+};
+
+/**
+* Formats a machine wide CPU percentage plus the equivalent core count.
+*
+* Returns null when the collector has no usable delta yet, which happens on the
+* very first poll: CPU needs two samples to produce a rate.
+*/
+$formatCpu = function ($footprint) {
+if ($footprint === null || $footprint['cpuPercent'] === null) {
+return null;
+}
+
+return number_format((float) $footprint['cpuPercent'], 2) . '%';
+};
+
+// captureForWeb() supplies these keys on the success path, but the
+// collector-failure path has no measurements to put in them and reports zeros
+// instead. Every read below therefore carries its own default rather than
+// relying on the key being present: a missing figure has to render as "no
+// reading", not as a PHP warning above the table.
+$entries  = $snapshot['entries'];
+$stack    = $snapshot['resources']['stack'];
+$host     = $snapshot['resources']['host'] ?? array();
+$cores    = (int) ($snapshot['resources']['cores'] ?? 0);
+$disk     = $snapshot['resources']['disk'] ?? array();
+$hostTotal = (int) ($host['totalBytes'] ?? 0);
+$hostFree  = (int) ($host['freeBytes'] ?? 0);
+$hostUsed  = $hostTotal > 0 ? $hostTotal - $hostFree : 0;
+$diskTotal = (int) ($disk['totalBytes'] ?? 0);
+$diskFree  = (int) ($disk['freeBytes'] ?? 0);
+$diskUsed  = (int) ($disk['usedBytes'] ?? 0);
+$diskFreePercent = $diskTotal > 0 ? round(100 * $diskFree / $diskTotal, 1) : 0;
+
+// Widest memory footprint, used to scale the per-service bars.
+$maxWorkingSet = 0;
+foreach ($entries as $entry) {
+if ($entry['footprint'] !== null) {
+$maxWorkingSet = max($maxWorkingSet, (int) $entry['footprint']['workingSetBytes']);
+}
+}
+?>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="<?php echo $bearsamppHomepage->getPageQuery(Homepage::PAGE_INDEX); ?>" class="btn btn-dark"
+           role="button"><i
+            class='fa-solid fa-circle-left'></i>  <?php echo $bearsamppLang->getValue(Lang::HOMEPAGE_BACK_TEXT); ?></a>
+        <div class="form-check form-switch mb-0">
+            <input class="form-check-input" type="checkbox" id="stackAutoRefresh" checked>
+            <label class="form-check-label" for="stackAutoRefresh"><?php echo $bearsamppLang->
+                getValue(Lang::STACK_AUTO_REFRESH); ?></label>
+        </div>
+    </div>
+
+    <?php if ($snapshotError !== null) : ?>
+    <div class="alert alert-danger" role="alert">
+        <i class="fa-solid fa-exclamation-triangle"></i> <?php echo htmlspecialchars($snapshotError); ?>
+    </div>
+    <?php else : ?>
+    <div class="card">
+        <div class="card-heading">
+            <h3 class="card-title bg-dark text-light p-1">
+                <i class="fa-solid fa-gauge-high"></i> <?php echo $bearsamppLang->
+                getValue(Lang::MENU_STACK_STATUS_TITLE); ?>
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="alert <?php echo $statusAlertClass($snapshot['status']); ?> d-flex justify-content-between align-items-center" role="alert" id="stackOverallAlert">
+				<span>
+					<span class="badge" id="stackOverallBadge"><?php echo $statusLabel($snapshot['status']); ?></span>
+                    <span id="stackOverallCount"><?php echo (int) $snapshot['running']; ?> / <?php echo (int) $snapshot['expected']; ?></span>
+				</span>
+                <span class="text-muted" id="stackUpdatedText"><i class="fa-solid fa-clock"></i>
+                    <?php echo $bearsamppLang->getValue(Lang::STACK_UPDATED); ?>: &mdash;</span>
+            </div>
+
+            <div id="stackAlert" class="d-none"></div>
+
+            <div class="table-responsive">
+                <table class="table table-striped align-middle" id="stackTable">
+                    <thead>
+                    <tr>
+                        <th scope="col"><?php echo $bearsamppLang->getValue(Lang::STACK_SERVICE); ?></th>
+                        <th scope="col"><?php echo $bearsamppLang->getValue(Lang::STACK_STATUS); ?></th>
+                        <th scope="col" class="text-end"><?php echo $bearsamppLang->getValue(Lang::STACK_PROCESSES);
+                            ?>
+                        </th>
+                        <th scope="col" class="text-end"><?php echo $bearsamppLang->getValue(Lang::STACK_MEMORY); ?>
+                        </th>
+                        <th scope="col" class="text-end"><?php echo $bearsamppLang->getValue(Lang::STACK_CPU); ?></th>
+                        <th scope="col" class="text-end"><?php echo $bearsamppLang->getValue(Lang::STACK_THREADS); ?>
+                        </th>
+                        <th scope="col" class="text-end"><?php echo $bearsamppLang->getValue(Lang::STACK_HANDLES); ?>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($entries as $index => $entry) : ?>
+                    <tr>
+                        <?php
+						$footprint = $entry['footprint'];
+						$isService = (bool) $entry['isService'];
+						$hasData   = $footprint !== null;
+
+						// Width of this service's share of the widest footprint in the
+						// table.
+						$memBarWidth = ($hasData && $maxWorkingSet > 0)
+							? round(100 * (int) $footprint['workingSetBytes'] / $maxWorkingSet, 1)
+							: 0;
+
+						// Spelled as a byte escape rather than a literal character so
+						// that the file survives being reopened by a tool that guesses
+						// its encoding.
+						$cpuTitle = (!$hasData || $footprint['cpuPercent'] === null)
+							? $bearsamppLang->getValue(Lang::STACK_NO_DATA)
+							: "\xE2\x89\x88" . number_format((float) $footprint['cpuCores'], 2)
+								. ' of ' . (int) $cores . ' logical processors';
+
+						// The row's stable key goes on the header cell, and the cell is
+						// emitted whole by PHP. A row or cell whose opening tag comes
+						// from PHP leaves the table structure unparseable for HTML
+						// tooling, and the key has to survive a poll that reorders or
+						// resizes the list.
+						printf('<th scope="row" data-service="%s">', htmlspecialchars($entry['id']));
+						?>
+                            <?php echo htmlspecialchars($entry['name']); ?>
+                            <?php if (!$isService) : ?>
+                            <span class="text-muted small"> (<?php echo $bearsamppLang->
+                                getValue(Lang::STACK_NOT_A_SERVICE); ?>)</span>
+                            <?php endif; ?>
+                        </th>
+                        <td data-fp="status">
+								<span class="badge <?php echo $statusBadgeClass($entry['status']); ?>"
+                                      title="<?php echo htmlspecialchars($entry['detail']); ?>"
+                                      data-role="badge"><?php echo $statusLabel($entry['status']); ?></span>
+                        </td>
+                        <td class="text-end" data-fp="processes"><?php
+								echo $hasData ? (int) $footprint['processes'] : '&mdash;';
+							?></td>
+                        <?php
+									printf(
+										'<td class="text-end" data-fp="memory" style="--mem: %s%%;">',
+                        $memBarWidth
+                        );
+                        ?>
+                        <div class="d-flex align-items-center justify-content-end gap-2">
+									<span data-role="memtext"><?php
+										echo $hasData ? htmlspecialchars($formatBytes($footprint['workingSetBytes'])) : '&mdash;';
+									?></span>
+                            <div class="progress" style="height: 6px; width: 4rem;">
+                                <div class="progress-bar bg-info" data-role="membar" style="width: var(--mem);"></div>
+                            </div>
+                        </div>
+                        </td>
+                        <?php
+									printf(
+										'<td class="text-end" data-fp="cpu" title="%s">',
+                        htmlspecialchars($cpuTitle)
+                        );
+                        ?><span data-role="cputext"><?php
+									echo $hasData && $formatCpu($footprint) !== null
+										? htmlspecialchars($formatCpu($footprint))
+										: '&mdash;';
+								?></span></td>
+                        <td class="text-end" data-fp="threads"><?php
+								echo $hasData ? (int) $footprint['threads'] : '&mdash;';
+							?></td>
+                        <td class="text-end" data-fp="handles"><?php
+								echo $hasData ? (int) $footprint['handles'] : '&mdash;';
+							?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                    <tfoot>
+                    <tr class="table-light">
+                        <th scope="row"><?php echo $bearsamppLang->getValue(Lang::STACK_TOTAL); ?></th>
+                        <td></td>
+                        <td class="text-end" data-fp="totalProcesses"><?php
+								echo $stack !== null ? (int) $stack['processes'] : '&mdash;';
+							?></td>
+                        <td class="text-end" data-fp="totalMemory"><?php
+								echo $stack !== null ? htmlspecialchars($formatBytes($stack['workingSetBytes'])) : '&mdash;';
+							?></td>
+                        <td class="text-end" data-fp="totalCpu"><span data-role="totalcpu"><?php
+								echo $formatCpu($stack) !== null ? htmlspecialchars($formatCpu($stack)) : '&mdash;';
+							?></span></td>
+                        <td class="text-end" data-fp="totalThreads"><?php
+								echo $stack !== null ? (int) $stack['threads'] : '&mdash;';
+							?></td>
+                        <td class="text-end" data-fp="totalHandles"><?php
+								echo $stack !== null ? (int) $stack['handles'] : '&mdash;';
+							?></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <h5 class="mt-4"><?php echo $bearsamppLang->getValue(Lang::STACK_HOST_MEMORY); ?></h5>
+            <table class="table table-striped">
+                <tbody>
+                <tr>
+                    <th scope="row"><?php echo $bearsamppLang->getValue(Lang::STACK_HOST_MEMORY); ?></th>
+                    <td data-fp="hostMemory"><?php
+                        echo $hostUsed > 0
+                        ? htmlspecialchars($formatBytes($hostUsed) . ' / ' . $formatBytes($hostTotal))
+                        : '&mdash;';
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php echo $bearsamppLang->getValue(Lang::STACK_CORES); ?></th>
+                    <td data-fp="cores"><?php echo (int) $cores > 0 ? (int) $cores : '&mdash;'; ?></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h5 class="mt-4"><?php echo $bearsamppLang->getValue(Lang::DISK_HEADING); ?></h5>
+            <table class="table table-striped">
+                <tbody>
+                <tr>
+                    <th scope="row"><?php echo $bearsamppLang->getValue(Lang::DISK_DRIVE_FREE); ?></th>
+                    <td id="diskDriveFreeText"><?php
+                            echo $diskTotal > 0
+                                ? htmlspecialchars($formatBytes($diskFree) . ' / ' . $formatBytes($diskTotal)
+                                    . ' (' . $diskFreePercent . '%)')
+                                : '&mdash;';
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php echo $bearsamppLang->getValue(Lang::DISK_BIN_TOTAL); ?></th>
+                    <td id="diskBinTotalText">&mdash;</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="diskMeasureBtn">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span id="diskMeasureLabel"><?php echo $bearsamppLang->getValue(Lang::DISK_CALCULATE); ?></span>
+                </button>
+                <span class="text-muted small" id="diskMeasuredText"></span>
+            </div>
+            <p class="text-muted small mb-2">
+                <i class="fa-solid fa-circle-info"></i>
+                <?php echo $bearsamppLang->getValue(Lang::DISK_DISCLAIMER); ?>
+            </p>
+            <div class="table-responsive d-none" id="diskBreakdownWrap">
+                <table class="table table-striped align-middle" id="diskTable">
+                    <thead>
+                    <tr>
+                        <th scope="col"><?php echo $bearsamppLang->getValue(Lang::DISK_PART); ?></th>
+                        <th scope="col" class="text-end"><?php echo $bearsamppLang->getValue(Lang::DISK_SIZE); ?>
+                        </th>
+                        <th scope="col" class="text-end"><?php echo $bearsamppLang->getValue(Lang::DISK_FILES); ?>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="diskTableBody"></tbody>
+                    <tfoot id="diskTotalRow" class="d-none">
+                    <tr>
+                        <th scope="row"><?php echo $bearsamppLang->getValue(Lang::DISK_BIN_TOTAL); ?></th>
+                        <td class="text-end" data-role="totalBytes">&mdash;</td>
+                        <td class="text-end" data-role="totalFiles">&mdash;</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+</div>
+
+<script>
+    (function () {
+        'use strict';
+
+        // Slower than the other homepage polls on purpose: this endpoint queries
+        // the SCM and reads the whole process table, so it costs real work server
+        // side, and the figures are read-at-a-glance rather than watched for
+        // frame-by-frame changes.
+        var REFRESH_MS = 5000;
+        var table = document.getElementById('stackTable');
+
+        if (!table) {
+            return;
+        }
+
+        var alertBox = document.getElementById('stackAlert');
+        var toggle = document.getElementById('stackAutoRefresh');
+        var timer = null;
+
+        function statusBadgeClass(status) {
+            switch (status) {
+                case 'running':
+                    return 'text-bg-success';
+                case 'starting':
+                    return 'text-bg-info';
+                case 'stopping':
+                case 'paused':
+                case 'partial_stack':
+                    return 'text-bg-warning';
+                case 'error':
+                    return 'text-bg-danger';
+                case 'available':
+                    return 'text-bg-primary';
+                case 'not_installed':
+                    return 'text-bg-dark';
+                default:
+                    return 'text-bg-secondary';
+            }
+        }
+
+        function statusAlertClass(status) {
+            switch (status) {
+                case 'running':
+                    return 'alert-success';
+                case 'starting':
+                    return 'alert-info';
+                case 'stopping':
+                case 'paused':
+                case 'partial_stack':
+                    return 'alert-warning';
+                case 'error':
+                    return 'alert-danger';
+                case 'available':
+                    return 'alert-primary';
+                case 'not_installed':
+                    return 'alert-dark';
+                default:
+                    return 'alert-secondary';
+            }
+        }
+
+        function statusLabel(status) {
+            return status.replace(/_/g, ' ').replace(/^./, function (c) {
+                return c.toUpperCase();
+            });
+        }
+
+        // Mirrors Util::humanFileSize() including the thousands separator, so the
+        // numbers do not change shape when the first poll replaces them.
+        function formatBytes(bytes) {
+            bytes = parseInt(bytes, 10);
+
+            if (!isFinite(bytes) || bytes <= 0) {
+                return '0.00B';
+            }
+
+            var units = ['B', 'KB', 'MB', 'GB', 'TB'];
+            var i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+
+            return (bytes / Math.pow(1024, i)).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + units[i];
+        }
+
+        function formatCpu(footprint) {
+            if (!footprint || footprint.cpuPercent === null || footprint.cpuPercent === undefined) {
+                return '\u2014';
+            }
+            return parseFloat(footprint.cpuPercent).toFixed(2) + '%';
+        }
+
+        /**
+         * Writes text into a cell carrying data-fp, searching inside root.
+         *
+         * root matters: the host memory rows live in their own table, outside
+         * #stackTable, so scoping every lookup to the stack table would silently
+         * skip them.
+         */
+        function setText(root, key, value) {
+            var cell = root.querySelector('[data-fp="' + key + '"]');
+
+            if (cell) {
+                cell.textContent = value;
+            }
+        }
+
+        // Rows are keyed by bin id rather than by position in the list. Position
+        // is not stable: a bin can be installed or uninstalled between polls, and
+        // the collection order is not guaranteed to be preserved, so an index would
+        // happily write one service's numbers into another service's row.
+        function rowFor(id) {
+            var headers = table.querySelectorAll('tbody th[data-service]');
+
+            for (var i = 0; i < headers.length; i++) {
+                if (headers[i].getAttribute('data-service') === id) {
+                    return headers[i].closest('tr');
+                }
+            }
+
+            return null;
+        }
+
+        function showError(message) {
+            if (!alertBox) {
+                return;
+            }
+
+            // Built as DOM nodes rather than with innerHTML: the message can
+            // originate from the collector, and a diagnostic string should never
+            // be able to inject markup into the page.
+            var icon = document.createElement('i');
+            icon.className = 'fa-solid fa-exclamation-triangle';
+
+            alertBox.className = 'alert alert-danger';
+            alertBox.textContent = '';
+            alertBox.appendChild(icon);
+            alertBox.appendChild(document.createTextNode(' ' + message));
+        }
+
+        function clearError() {
+            if (alertBox) {
+                alertBox.className = 'd-none';
+                alertBox.innerHTML = '';
+            }
+        }
+
+        function render(data) {
+            if (!data || data.error) {
+                showError(data && data.error ? data.error : 'Unknown error');
+                return;
+            }
+
+            clearError();
+
+            var maxWorkingSet = 0;
+            (data.entries || []).forEach(function (entry) {
+                if (entry.footprint) {
+                    maxWorkingSet = Math.max(maxWorkingSet, entry.footprint.workingSetBytes);
+                }
+            });
+
+            (data.entries || []).forEach(function (entry) {
+                var row = rowFor(entry.id);
+
+                if (!row) {
+                    // A bin appeared or disappeared since the page was rendered. A
+                    // reload is the honest fix: writing into whatever row happens to
+                    // sit at this position would attribute metrics to the wrong bin.
+                    showError('Bin list changed, reloading\u2026');
+                    window.location.reload();
+                    return;
+                }
+
+                var fp = entry.footprint;
+                var badge = row.querySelector('[data-role="badge"]');
+
+                if (badge) {
+                    badge.className = 'badge ' + statusBadgeClass(entry.status);
+                    badge.textContent = statusLabel(entry.status);
+                }
+
+                row.querySelector('[data-fp="processes"]').textContent = fp ? fp.processes : '\u2014';
+
+                var memText = row.querySelector('[data-role="memtext"]');
+                var memBar = row.querySelector('[data-role="membar"]');
+                var cpuText = row.querySelector('[data-role="cputext"]');
+                var cpuCell = row.querySelector('[data-fp="cpu"]');
+
+                if (fp) {
+                    memText.textContent = formatBytes(fp.workingSetBytes);
+                    memBar.style.width = (maxWorkingSet > 0
+                        ? (100 * fp.workingSetBytes / maxWorkingSet)
+                        : 0) + '%';
+                    cpuText.textContent = formatCpu(fp);
+
+                    if (fp.cpuPercent !== null && fp.cpuPercent !== undefined && data.resources) {
+                        cpuCell.title = '\u2248' + parseFloat(fp.cpuCores).toFixed(2) + ' of '
+                            + data.resources.cores + ' logical processors';
+                    } else {
+                        cpuCell.removeAttribute('title');
+                    }
+                } else {
+                    memText.textContent = '\u2014';
+                    memBar.style.width = '0%';
+                    cpuText.textContent = '\u2014';
+                    cpuCell.removeAttribute('title');
+                }
+
+                row.querySelector('[data-fp="threads"]').textContent = fp ? fp.threads : '\u2014';
+                row.querySelector('[data-fp="handles"]').textContent = fp ? fp.handles : '\u2014';
+            });
+
+            var res = data.resources || {};
+            var stack = res.stack || {};
+
+            var overall = document.getElementById('stackOverallBadge');
+            if (overall) {
+                overall.className = 'badge ' + statusBadgeClass(data.status);
+                overall.textContent = statusLabel(data.status);
+            }
+
+            // The running/expected ratio has to be refreshed here, not just on
+            // first render: it is the one number that moves as services are
+            // stopped or disabled, and a server-rendered one goes stale the
+            // moment the page is left open. Looked up by id rather than through
+            // setText(), which searches for a data-fp attribute.
+            var count = document.getElementById('stackOverallCount');
+            if (count) {
+                count.textContent = (data.running !== undefined ? data.running : 0)
+                    + ' / ' + (data.expected !== undefined ? data.expected : 0);
+            }
+
+            // Re-tint the banner with the state it now describes, so it cannot
+            // keep showing a green all-clear over a stopped or failed stack.
+            var banner = document.getElementById('stackOverallAlert');
+            if (banner) {
+                banner.className = 'alert ' + statusAlertClass(data.status)
+                    + ' d-flex justify-content-between align-items-center';
+            }
+
+            setText(table, 'totalProcesses', stack.processes !== undefined ? stack.processes : '\u2014');
+            setText(table, 'totalMemory', formatBytes(stack.workingSetBytes || 0));
+
+            var totalCpu = table.querySelector('[data-role="totalcpu"]');
+            if (totalCpu) {
+                totalCpu.textContent = formatCpu(stack);
+            }
+
+            setText(table, 'totalThreads', stack.threads !== undefined ? stack.threads : '\u2014');
+            setText(table, 'totalHandles', stack.handles !== undefined ? stack.handles : '\u2014');
+
+            var host = res.host || {};
+            var used = (host.totalBytes || 0) - (host.freeBytes || 0);
+            setText(document, 'hostMemory', host.totalBytes
+                ? formatBytes(used) + ' / ' + formatBytes(host.totalBytes)
+                : '\u2014');
+            setText(document, 'cores', res.cores || '\u2014');
+
+            // Free space is the one disk figure that rides along with the ordinary
+            // poll, because it costs about a tenth of a millisecond. The size of the
+            // install itself cannot: measuring it stats roughly 230,000 files and
+            // takes seconds, so it is only fetched when the user asks for it.
+            var disk = res.disk || {};
+            if (disk.totalBytes) {
+                var freeCell = document.getElementById('diskDriveFreeText');
+                if (freeCell) {
+                    freeCell.textContent = formatBytes(disk.freeBytes || 0) + ' / '
+                        + formatBytes(disk.totalBytes) + ' ('
+                        + (100 * (disk.freeBytes || 0) / disk.totalBytes).toFixed(1) + '%)';
+                }
+            }
+
+            var updated = document.getElementById('stackUpdatedText');
+            if (updated && data.generatedAt) {
+                updated.innerHTML = '<i class="fa-solid fa-clock"></i> '
+                    + new Date(data.generatedAt * 1000).toLocaleTimeString();
+            }
+        }
+
+        async function poll() {
+            var body = new URLSearchParams();
+            body.append('proc', 'stackstatus');
+
+            try {
+                var response = await fetchWithCsrf(AJAX_URL, {
+                    method: 'POST',
+                    headers: {'X-Requested-With': 'XMLHttpRequest'},
+                    body: body
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                render(await response.json());
+            } catch (error) {
+                // Aborts and network errors are routine during navigation/reload.
+                if (error.name === 'AbortError' || (
+                    error instanceof TypeError && error.message.indexOf('NetworkError') !== -1
+                )) {
+                    return;
+                }
+                showError(error.message);
+            }
+        }
+
+        // ---- On-demand install size ----
+        //
+        // Kept out of the poll above on purpose. Measuring the install stats every
+        // file in it, about 230,000 of them, which costs roughly 7s against the
+        // ~270ms of a full status snapshot. Folding that into a 5s poll would make
+        // the page spend nearly all of its time walking the disk, and the answer
+        // would barely change between polls anyway. So the drive's free space, which
+        // is free, rides along with the poll, and the breakdown is fetched only when
+        // asked for and then served from the server-side cache.
+        var measureBtn = document.getElementById('diskMeasureBtn');
+        var measureLabel = document.getElementById('diskMeasureLabel');
+        var measuredText = document.getElementById('diskMeasuredText');
+        var binTotalText = document.getElementById('diskBinTotalText');
+        var breakdownWrap = document.getElementById('diskBreakdownWrap');
+        var tableBody = document.getElementById('diskTableBody');
+        var totalRow = document.getElementById('diskTotalRow');
+        var measuring = false;
+
+        var LABELS = {
+            calculate: <?php echo json_encode($bearsamppLang->getValue(Lang::DISK_CALCULATE)); ?>,
+            recalculate: <?php echo json_encode($bearsamppLang->getValue(Lang::DISK_RECALCULATE)); ?>,
+            calculating: <?php echo json_encode($bearsamppLang->getValue(Lang::DISK_CALCULATING)); ?>,
+            never: <?php echo json_encode($bearsamppLang->getValue(Lang::DISK_NEVER_CALCULATED)); ?>,
+            took: <?php echo json_encode($bearsamppLang->getValue(Lang::DISK_CALCULATED_IN)); ?>,
+            rootFiles: <?php echo json_encode($bearsamppLang->getValue(Lang::DISK_ROOT_FILES)); ?>,
+            binTotal: <?php echo json_encode($bearsamppLang->getValue(Lang::DISK_BIN_TOTAL)); ?>,
+            files: <?php echo json_encode($bearsamppLang->getValue(Lang::DISK_FILES)); ?>
+        };
+
+        function groupCount(n) {
+            return Number(n || 0).toLocaleString();
+        }
+
+        // Appends one part row, plus a muted indented row per child. Children are
+        // what make the figure actionable: "bin 10 GB" is only interesting because
+        // of which bin and which version.
+        function appendPartRow(label, part, isChild) {
+            var row = document.createElement('tr');
+            var head = document.createElement('th');
+            head.setAttribute('scope', 'row');
+            head.textContent = label;
+            if (isChild) {
+                head.className = 'ps-4 text-muted small';
+            }
+            row.appendChild(head);
+
+            var size = document.createElement('td');
+            size.className = 'text-end';
+            size.textContent = formatBytes(part.bytes);
+            row.appendChild(size);
+
+            var files = document.createElement('td');
+            files.className = 'text-end';
+            files.textContent = groupCount(part.files);
+            row.appendChild(files);
+
+            tableBody.appendChild(row);
+        }
+
+        function renderDisk(data) {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            // The page asked for a reading without authorising a measurement and
+            // there was no cached one, so there is genuinely nothing to show yet.
+            // The table stays hidden and the summary keeps saying so.
+            if (data.available === false) {
+                return;
+            }
+
+            var parts = data.parts || [];
+            tableBody.textContent = '';
+
+            parts.forEach(function (part) {
+                // The collector flags the group of files sitting directly in the
+                // install root rather than giving it a name to be recognised by, so
+                // that this label follows the user's language instead of matching a
+                // literal string from the collector.
+                var name = part.isRootFiles ? LABELS.rootFiles : part.name;
+                appendPartRow(name, part, false);
+                (part.children || []).forEach(function (child) {
+                    appendPartRow(child.name, child, true);
+                });
+            });
+
+            var total = data.total || {};
+            var totalBytes = total.bytes || 0;
+
+            if (totalRow) {
+                totalRow.querySelector('[data-role="totalBytes"]').textContent = formatBytes(totalBytes);
+                totalRow.querySelector('[data-role="totalFiles"]').textContent = groupCount(total.files);
+                totalRow.classList.remove('d-none');
+            }
+
+            if (binTotalText) {
+                binTotalText.textContent = formatBytes(totalBytes) + ' / '
+                    + groupCount(total.files) + ' ' + LABELS.files;
+            }
+
+            if (breakdownWrap) {
+                breakdownWrap.classList.remove('d-none');
+            }
+
+            if (measuredText) {
+                var when = data.generatedAt
+                    ? new Date(data.generatedAt * 1000).toLocaleTimeString()
+                    : '';
+                var took = data.elapsedMs ? ' (' + data.elapsedMs + ' ms)' : '';
+                measuredText.textContent = (when ? LABELS.took + ' ' + when : '') + took;
+            }
+
+            if (measureLabel) {
+                measureLabel.textContent = LABELS.recalculate;
+            }
+        }
+
+        // Posts a homepage AJAX proc.
+        //
+        // fetchWithCsrf() arrives in csrf.js, which is a separate external script
+        // included after this one, so it does not exist yet while this block is
+        // being parsed. Anything that calls out immediately therefore has to cope
+        // with its absence; the existing 5s poll is unaffected only because
+        // setInterval delays it past the point where csrf.js has run.
+        async function postProc(proc, fields) {
+            var body = new URLSearchParams();
+            body.append('proc', proc);
+            Object.keys(fields || {}).forEach(function (key) {
+                body.append(key, fields[key]);
+            });
+
+            var options = {
+                method: 'POST',
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+                body: body
+            };
+
+            if (typeof fetchWithCsrf === 'function') {
+                return fetchWithCsrf(AJAX_URL, options);
+            }
+
+            // Fallback so a load-order surprise cannot break the button. The token
+            // is read from the same meta tag csrf.js would have used.
+            var meta = document.querySelector('meta[name="csrf-token"]');
+            if (meta) {
+                body.append('csrf_token', meta.getAttribute('content'));
+            }
+
+            return fetch(AJAX_URL, options);
+        }
+
+        // Runs a callback once the deferred scripts have executed.
+        function whenScriptsReady(fn) {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', fn);
+            } else {
+                fn();
+            }
+        }
+
+        async function measureDisk(force, cachedOnly) {
+            if (measuring) {
+                return;
+            }
+
+            measuring = true;
+            if (measureBtn) {
+                measureBtn.disabled = true;
+            }
+            if (measureLabel && !cachedOnly) {
+                measureLabel.textContent = LABELS.calculating;
+            }
+
+            var fields = {};
+            if (force) {
+                fields.refresh = '1';
+            }
+            if (cachedOnly) {
+                fields.cached = '1';
+            }
+
+            try {
+                var response = await postProc('stackdisk', fields);
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                renderDisk(await response.json());
+            } catch (error) {
+                if (measuredText) {
+                    measuredText.textContent = error.message;
+                }
+                if (measureLabel) {
+                    measureLabel.textContent = LABELS.calculate;
+                }
+            } finally {
+                measuring = false;
+                if (measureBtn) {
+                    measureBtn.disabled = false;
+                }
+            }
+        }
+
+        if (measureBtn) {
+            // The first press reads the cache when there is one, so a page reload
+            // shows the previous measurement instantly. Later presses force a fresh
+            // walk, because "Measure again" that returned the cached answer would be
+            // indistinguishable from a button that does nothing.
+            var pressedOnce = false;
+            measureBtn.addEventListener('click', function () {
+                measureDisk(pressedOnce, false);
+                pressedOnce = true;
+            });
+
+            if (binTotalText) {
+                binTotalText.textContent = LABELS.never;
+            }
+
+            // Populate from any existing cache so the figure is already there on
+            // arrival, but never measure on load: a first visit to this page would
+            // otherwise block for the length of a full disk walk, which is the one
+            // thing this design exists to avoid.
+            //
+            // Deferred to DOMContentLoaded because this block is an inline script
+            // that runs while the document is still being parsed, at which point
+            // csrf.js has not executed yet.
+            whenScriptsReady(function () {
+                measureDisk(false, true);
+            });
+        }
+
+        // Polling runs only when the tab is both enabled and visible. A hidden tab
+        // is not being read, and every poll costs a collector process server side,
+        // so there is nothing to gain from continuing to collect in the background.
+        function shouldRun() {
+            return toggle.checked && !document.hidden;
+        }
+
+        function start() {
+            stop();
+            if (shouldRun()) {
+                timer = setInterval(poll, REFRESH_MS);
+            }
+        }
+
+        function stop() {
+            if (timer !== null) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        toggle.addEventListener('change', function () {
+            // Gated on shouldRun() rather than on toggle.checked alone, so that
+            // enabling the toggle in a hidden tab does not immediately collect
+            // behind the user's back.
+            if (shouldRun()) {
+                poll();
+            }
+
+            start();
+        });
+
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                stop();
+
+                return;
+            }
+
+            // Coming back to the tab: collect straight away, so the first numbers
+            // on screen are current instead of up to REFRESH_MS old.
+            if (shouldRun()) {
+                poll();
+            }
+
+            start();
+        });
+
+        start();
+    })();
+</script>
