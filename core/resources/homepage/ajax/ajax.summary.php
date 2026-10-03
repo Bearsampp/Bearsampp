@@ -32,7 +32,7 @@ $result = array(
 $dlMoreTpl = '<a href="' . HttpClient::getWebsiteUrl(
         'module/%s',
         '#releases'
-    ) . '" target="_blank" title="' . $downloadTitle . '"><span class="float-end download-icon-wrapper"><i class="fa-solid fa-cloud-arrow-down"></i></span></a>';
+    ) . '" target="_blank" rel="noopener noreferrer" title="' . UtilInput::sanitizeOutput($downloadTitle) . '"><span class="float-end download-icon-wrapper"><i class="fa-solid fa-cloud-arrow-down"></i></span></a>';
 
 try {
     /**
@@ -54,7 +54,7 @@ try {
         }
     }
     $result['binapache'] = sprintf($dlMoreTpl, 'apache');
-    $result['binapache'] .= '<span class = " float-end badge ' . $apacheLabel . '">' . $bearsamppBins->getApache()->getVersion() . '</span>';
+    $result['binapache'] .= '<span class = " float-end badge ' . $apacheLabel . '">' . UtilInput::sanitizeOutput($bearsamppBins->getApache()->getVersion()) . '</span>';
 } catch (Exception $e) {
     Log::error('Error getting summary for Apache: ' . $e->getMessage());
     $result['binapache'] = '<span class="float-end badge bg-danger">Error</span>';
@@ -75,7 +75,7 @@ try {
         }
     }
     $result['binmailpit'] = sprintf($dlMoreTpl, 'mailpit');
-    $result['binmailpit'] .= '<span class = " float-end badge ' . $mailpitLabel . '">' . $bearsamppBins->getMailpit()->getVersion() . '</span>';
+    $result['binmailpit'] .= '<span class = " float-end badge ' . $mailpitLabel . '">' . UtilInput::sanitizeOutput($bearsamppBins->getMailpit()->getVersion()) . '</span>';
 } catch (Exception $e) {
     Log::error('Error getting summary for Mailpit: ' . $e->getMessage());
     $result['binmailpit'] = '<span class="float-end badge bg-danger">Error</span>';
@@ -96,7 +96,7 @@ try {
         }
     }
     $result['binxlight'] = sprintf($dlMoreTpl, 'xlight');
-    $result['binxlight'] .= '<span class = " float-end badge ' . $xlightLabel . '">' . $bearsamppBins->getXlight()->getVersion() . '</span>';
+    $result['binxlight'] .= '<span class = " float-end badge ' . $xlightLabel . '">' . UtilInput::sanitizeOutput($bearsamppBins->getXlight()->getVersion()) . '</span>';
 } catch (Exception $e) {
     Log::error('Error getting summary for Xlight: ' . $e->getMessage());
     $result['binxlight'] = '<span class="float-end badge bg-danger">Error</span>';
@@ -117,7 +117,7 @@ try {
         }
     }
     $result['binmariadb'] = sprintf($dlMoreTpl, 'mariadb');
-    $result['binmariadb'] .= '<span class = " float-end badge ' . $mariadbLabel . '">' . $bearsamppBins->getMariadb()->getVersion() . '</span>';
+    $result['binmariadb'] .= '<span class = " float-end badge ' . $mariadbLabel . '">' . UtilInput::sanitizeOutput($bearsamppBins->getMariadb()->getVersion()) . '</span>';
 } catch (Exception $e) {
     Log::error('Error getting summary for MariaDB: ' . $e->getMessage());
     $result['binmariadb'] = '<span class="float-end badge bg-danger">Error</span>';
@@ -138,7 +138,7 @@ try {
         }
     }
     $result['binmysql'] = sprintf($dlMoreTpl, 'mysql');
-    $result['binmysql'] .= '<span class = " float-end badge ' . $mysqlLabel . '">' . $bearsamppBins->getMysql()->getVersion() . '</span>';
+    $result['binmysql'] .= '<span class = " float-end badge ' . $mysqlLabel . '">' . UtilInput::sanitizeOutput($bearsamppBins->getMysql()->getVersion()) . '</span>';
 } catch (Exception $e) {
     Log::error('Error getting summary for MySQL: ' . $e->getMessage());
     $result['binmysql'] = '<span class="float-end badge bg-danger">Error</span>';
@@ -159,7 +159,7 @@ try {
         }
     }
     $result['binpostgresql'] = sprintf($dlMoreTpl, 'postgresql');
-    $result['binpostgresql'] .= '<span class = " float-end badge ' . $postgresqlLabel . '">' . $bearsamppBins->getPostgresql()->getVersion() . '</span>';
+    $result['binpostgresql'] .= '<span class = " float-end badge ' . $postgresqlLabel . '">' . UtilInput::sanitizeOutput($bearsamppBins->getPostgresql()->getVersion()) . '</span>';
 } catch (Exception $e) {
     Log::error('Error getting summary for PostgreSQL: ' . $e->getMessage());
     $result['binpostgresql'] = '<span class="float-end badge bg-danger">Error</span>';
@@ -180,7 +180,7 @@ try {
         }
     }
     $result['binmemcached'] = sprintf($dlMoreTpl, 'memcached');
-    $result['binmemcached'] .= '<span class = " float-end badge ' . $memcachedLabel . '">' . $bearsamppBins->getMemcached()->getVersion() . '</span>';
+    $result['binmemcached'] .= '<span class = " float-end badge ' . $memcachedLabel . '">' . UtilInput::sanitizeOutput($bearsamppBins->getMemcached()->getVersion()) . '</span>';
 } catch (Exception $e) {
     Log::error('Error getting summary for Memcached: ' . $e->getMessage());
     $result['binmemcached'] = '<span class="float-end badge bg-danger">Error</span>';
@@ -197,7 +197,7 @@ try {
         $nodejsLabel = 'bg-success';
     }
     $result['binnodejs'] = sprintf($dlMoreTpl, 'nodejs');
-    $result['binnodejs'] .= '<span class = " float-end badge ' . $nodejsLabel . '">' . $bearsamppBins->getNodejs()->getVersion() . '</span>';
+    $result['binnodejs'] .= '<span class = " float-end badge ' . $nodejsLabel . '">' . UtilInput::sanitizeOutput($bearsamppBins->getNodejs()->getVersion()) . '</span>';
 } catch (Exception $e) {
     Log::error('Error getting summary for NodeJS: ' . $e->getMessage());
     $result['binnodejs'] = '<span class="float-end badge bg-danger">Error</span>';
@@ -214,7 +214,7 @@ try {
         $phpLabel = 'bg-success';
     }
     $result['binphp'] = sprintf($dlMoreTpl, 'php');
-    $result['binphp'] .= '<span class = " float-end badge ' . $phpLabel . '">' . $bearsamppBins->getPhp()->getVersion() . '</span>';
+    $result['binphp'] .= '<span class = " float-end badge ' . $phpLabel . '">' . UtilInput::sanitizeOutput($bearsamppBins->getPhp()->getVersion()) . '</span>';
 } catch (Exception $e) {
     Log::error('Error getting summary for PHP: ' . $e->getMessage());
     $result['binphp'] = '<span class="float-end badge bg-danger">Error</span>';

@@ -62,7 +62,7 @@ $cacheNewestText = floor($ageSeconds / 86400) . ' day(s) ago';
 				<span class = "d-flex align-items-center">
                         <span class = "text-muted me-3" id = "cacheAgeText"><i class = "fa-solid fa-clock"></i> <?php echo $bearsamppLang->
 	                        getValue(Lang::CACHE_OLDEST_ENTRY); ?>: <?php echo $cacheAgeText; ?></span>
-                        <button id = "clearCacheBtn" class = "btn btn-outline-danger fs-6" onclick = "clearCache()">
+                        <button id = "clearCacheBtn" class = "btn btn-outline-danger fs-6">
                             <i class = "fa-solid fa-trash-can"></i> Clear cache
                         </button>
                     </span>
@@ -125,7 +125,29 @@ $cacheNewestText = floor($ageSeconds / 86400) . ' day(s) ago';
 	</div>
 </div>
 
-<script>
+<script nonce="<?php echo Csrf::getCspNonce(); ?>">
+	// Bound with addEventListener rather than an inline onclick attribute:
+	// script-src does not allow 'unsafe-inline', and a nonce cannot be attached
+	// to an event handler attribute.
+	document.addEventListener('DOMContentLoaded', function () {
+		var btn = document.getElementById('clearCacheBtn');
+		if (btn) {
+			btn.addEventListener('click', clearCache);
+		}
+	});
+
+	function setAlert(alert, className, iconClass, message)
+	{
+		alert.className = className;
+		alert.textContent = '';
+		var icon = document.createElement('i');
+		icon.className = iconClass;
+		alert.appendChild(icon);
+		// textContent, never innerHTML: the server-supplied error message is
+		// untrusted and must not be parsed as markup.
+		alert.appendChild(document.createTextNode(' ' + message));
+	}
+
 	function clearCache()
 	{
 		var btn = document.getElementById('clearCacheBtn');
@@ -133,7 +155,7 @@ $cacheNewestText = floor($ageSeconds / 86400) . ' day(s) ago';
 		btn.disabled = true;
 		btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Clearing...';
 		alert.className = 'd-none';
-		
+
 		var xhr = new XMLHttpRequest();
 		xhr.open('POST', AJAX_URL, true);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -144,8 +166,7 @@ $cacheNewestText = floor($ageSeconds / 86400) . ' day(s) ago';
 			try {
 				var data = JSON.parse(xhr.responseText);
 				if (data.success) {
-					alert.className = 'alert alert-success';
-					alert.innerHTML = '<i class="fa-solid fa-check-circle"></i> Cache cleared — ' + data.deleted + ' file(s) deleted.';
+					setAlert(alert, 'alert alert-success', 'fa-solid fa-check-circle', 'Cache cleared — ' + data.deleted + ' file(s) deleted.');
 					document.getElementById('statFilesCount').textContent = data.filesCount;
 					document.getElementById('statTotalSize').textContent = formatBytes(data.totalSize);
 					document.getElementById('statLargestEntry').textContent = formatBytes(data.largestEntry);
@@ -154,21 +175,16 @@ $cacheNewestText = floor($ageSeconds / 86400) . ' day(s) ago';
 						data.oldestEntry ? formatAge(data.oldestEntry) : 'just now'
 					);
 				} else {
-					alert.className = 'alert alert-danger';
-					alert.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> Error: ' + (
-						data.error || 'Unknown error'
-					);
+					setAlert(alert, 'alert alert-danger', 'fa-solid fa-exclamation-triangle', 'Error: ' + (data.error || 'Unknown error'));
 				}
 			} catch (e) {
-				alert.className = 'alert alert-danger';
-				alert.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> Unexpected server response.';
+				setAlert(alert, 'alert alert-danger', 'fa-solid fa-exclamation-triangle', 'Unexpected server response.');
 			}
 			btn.disabled = false;
 			btn.innerHTML = '<i class="fa-solid fa-trash-can"></i> Clear cache';
 		};
 		xhr.onerror = function () {
-			alert.className = 'alert alert-danger';
-			alert.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> Network error.';
+			setAlert(alert, 'alert alert-danger', 'fa-solid fa-exclamation-triangle', 'Network error.');
 			btn.disabled = false;
 			btn.innerHTML = '<i class="fa-solid fa-trash-can"></i> Clear cache';
 		};

@@ -195,56 +195,75 @@ class Nssm
         $this->writeLog('-> environment extra: ' . $this->getEnvironmentExtra());
         $this->writeLog('-> start_type: ' . ($this->getStart() != null ? $this->getStart() : self::SERVICE_DEMAND_START));
 
+        // Everything below is written verbatim into a .bat file, so each value
+        // is stripped of CR/LF and cmd metacharacters before interpolation.
+        // Quotes are preserved for AppParameters, which legitimately carries
+        // --defaults-file="..." style arguments built by the bin classes.
+        $name         = UtilInput::sanitizeBatchValue($this->getName());
+        $binPath      = UtilInput::sanitizeQuotedBatchValue($this->getBinPath());
+        $params       = UtilInput::sanitizeBatchValue($this->getParams(), true);
+        $displayName  = UtilInput::sanitizeQuotedBatchValue($this->getDisplayName());
+        $stdout       = UtilInput::sanitizeQuotedBatchValue($this->getStdout());
+        $stderr       = UtilInput::sanitizeQuotedBatchValue($this->getStderr());
+        $envExtra     = UtilInput::sanitizeBatchValue($this->getEnvironmentExtra());
+        $start        = UtilInput::sanitizeQuotedBatchValue($this->getStart() != null ? $this->getStart() : self::SERVICE_DEMAND_START);
+
+        if ($name === '' || $binPath === '') {
+            $this->writeLogError('Refusing to create service: name or binary path is empty after sanitization');
+
+            return false;
+        }
+
         // Install bin
-        $exec = $this->exec('install ' . $this->getName() . ' "' . $this->getBinPath() . '"');
+        $exec = $this->exec('install ' . $name . ' "' . $binPath . '"');
         if ($exec === false) {
             return false;
         }
 
         // Params
-        $exec = $this->exec('set ' . $this->getName() . ' AppParameters "' . $this->getParams() . '"');
+        $exec = $this->exec('set ' . $name . ' AppParameters "' . $params . '"');
         if ($exec === false) {
             return false;
         }
 
         // DisplayName
-        $exec = $this->exec('set ' . $this->getName() . ' DisplayName "' . $this->getDisplayName() . '"');
+        $exec = $this->exec('set ' . $name . ' DisplayName "' . $displayName . '"');
         if ($exec === false) {
             return false;
         }
 
         // Description
-        $exec = $this->exec('set ' . $this->getName() . ' Description "' . $this->getDisplayName() . '"');
+        $exec = $this->exec('set ' . $name . ' Description "' . $displayName . '"');
         if ($exec === false) {
             return false;
         }
 
         // No AppNoConsole to fix nssm problems with Windows 10 Creators update.
-        $exec = $this->exec('set ' . $this->getName() . ' AppNoConsole "1"');
+        $exec = $this->exec('set ' . $name . ' AppNoConsole "1"');
         if ($exec === false) {
             return false;
         }
 
         // Start
-        $exec = $this->exec('set ' . $this->getName() . ' Start "' . ($this->getStart() != null ? $this->getStart() : self::SERVICE_DEMAND_START) . '"');
+        $exec = $this->exec('set ' . $name . ' Start "' . $start . '"');
         if ($exec === false) {
             return false;
         }
 
         // Stdout
-        $exec = $this->exec('set ' . $this->getName() . ' AppStdout "' . $this->getStdout() . '"');
+        $exec = $this->exec('set ' . $name . ' AppStdout "' . $stdout . '"');
         if ($exec === false) {
             return false;
         }
 
         // Stderr
-        $exec = $this->exec('set ' . $this->getName() . ' AppStderr "' . $this->getStderr() . '"');
+        $exec = $this->exec('set ' . $name . ' AppStderr "' . $stderr . '"');
         if ($exec === false) {
             return false;
         }
 
         // Environment Extra
-        $exec = $this->exec('set ' . $this->getName() . ' AppEnvironmentExtra ' . $this->getEnvironmentExtra());
+        $exec = $this->exec('set ' . $name . ' AppEnvironmentExtra ' . $envExtra);
         if ($exec === false) {
             return false;
         }

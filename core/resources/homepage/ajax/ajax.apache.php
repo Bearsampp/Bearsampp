@@ -63,7 +63,7 @@ foreach ($bearsamppBins->getApache()->getVersionList() as $version) {
     $result['versions'] .= sprintf(
         $versionBadge,
         $isCurrent ? 'primary' : 'secondary',
-        $version
+        UtilInput::sanitizeOutput($version)
     );
 }
 
@@ -88,41 +88,39 @@ $result['vhostscount'] .= '<span class="m-1 float-end badge text-bg-primary">' .
  * Retrieve and format the list of Apache modules from the configuration.
  */
 foreach ($bearsamppBins->getApache()->getModulesFromConf() as $moduleName => $moduleStatus) {
-    if ($moduleStatus == ActionSwitchApacheModule::SWITCH_ON) {
-        $result['moduleslist'] .= '<span class="p-1 col col-xs-12"><i class="fa-regular fa-circle-check"></i> <strong>' . $moduleName . '</strong></span>';
-    } else {
-        $result['moduleslist'] .= '<span class="p-1 col col-xs-12"><i class="fa-regular fa-circle"></i> ' . $moduleName . '</span>';
+        if ($moduleStatus == ActionSwitchApacheModule::SWITCH_ON) {
+            $result['moduleslist'] .= '<span class="p-1 col col-xs-12"><i class="fa-regular fa-circle-check"></i> <strong>' . UtilInput::sanitizeOutput($moduleName) . '</strong></span>';
+        } else {
+            $result['moduleslist'] .= '<span class="p-1 col col-xs-12"><i class="fa-regular fa-circle"></i> ' . UtilInput::sanitizeOutput($moduleName) . '</span>';
+        }
     }
-}
 
 /**
  * Retrieve and format the list of Apache aliases.
  */
 foreach ($bearsamppBins->getApache()->getAlias() as $alias) {
-    $result['aliaseslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="' . Path::getLocalUrl(
-            $alias
-        ) . '"><i class="fa-solid fa-link"></i> ' . $alias . '</a></div>';
-}
+        $result['aliaseslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer" href="'
+            . UtilInput::sanitizeUrl(Path::getLocalUrl($alias)) . '"><i class="fa-solid fa-link"></i> ' . UtilInput::sanitizeOutput($alias) . '</a></div>';
+    }
 
 /**
  * Retrieve and format the list of Apache www directories.
  */
 foreach ($bearsamppBins->getApache()->getWwwDirectories() as $wwwDirectory) {
-    $result['wwwdirectory'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="' . Path::getLocalUrl(
-            $wwwDirectory
-        ) . '"><i class="fa-solid fa-link"></i> ' . $wwwDirectory . '</a></div>';
-}
+        $result['wwwdirectory'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer" href="'
+            . UtilInput::sanitizeUrl(Path::getLocalUrl($wwwDirectory)) . '"><i class="fa-solid fa-link"></i> ' . UtilInput::sanitizeOutput($wwwDirectory) . '</a></div>';
+    }
 
 /**
  * Retrieve and format the list of Apache virtual hosts.
  */
 foreach ($bearsamppBins->getApache()->getVhostsUrl() as $vhost => $enabled) {
-    if ($enabled) {
-        $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="//' . $vhost . '"><i class="fa-regular fa-circle-check"></i> ' . $vhost . '</a></div>';
-    } else {
-        $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" href="//' . $vhost . '"><i class="fa-regular fa-circle"></i> ' . $vhost . '</a></div>';
+        if ($enabled) {
+            $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer" href="//' . UtilInput::sanitizeOutput($vhost) . '"><i class="fa-regular fa-circle-check"></i> ' . UtilInput::sanitizeOutput($vhost) . '</a></div>';
+        } else {
+            $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer" href="//' . UtilInput::sanitizeOutput($vhost) . '"><i class="fa-regular fa-circle"></i> ' . UtilInput::sanitizeOutput($vhost) . '</a></div>';
+        }
     }
-}
 
 /**
  * Output the result array as a JSON-encoded string.

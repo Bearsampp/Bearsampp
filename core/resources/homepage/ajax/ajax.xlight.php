@@ -51,9 +51,9 @@ if ($bearsamppBins->getXlight()->checkPort($port)) {
  */
 foreach ($bearsamppBins->getXlight()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getXlight()->getVersion()) {
-        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . $version . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . UtilInput::sanitizeOutput($version) . '</span>';
     } else {
-        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . $bearsamppBins->getXlight()->getVersion() . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . UtilInput::sanitizeOutput($bearsamppBins->getXlight()->getVersion()) . '</span>';
     }
 }
 

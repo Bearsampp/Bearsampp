@@ -52,9 +52,9 @@ if ($bearsamppBins->getMariadb()->isEnable()) {
  */
 foreach ($bearsamppBins->getMariadb()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getMariadb()->getVersion()) {
-        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . $version . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . UtilInput::sanitizeOutput($version) . '</span>';
     } else {
-        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . $bearsamppBins->getMariadb()->getVersion() . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . UtilInput::sanitizeOutput($bearsamppBins->getMariadb()->getVersion()) . '</span>';
     }
 }
 

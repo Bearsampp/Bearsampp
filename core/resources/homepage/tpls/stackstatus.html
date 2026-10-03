@@ -370,7 +370,7 @@ $maxWorkingSet = max($maxWorkingSet, (int) $entry['footprint']['workingSetBytes'
     <?php endif; ?>
 </div>
 
-<script>
+<script nonce="<?php echo Csrf::getCspNonce(); ?>">
     (function () {
         'use strict';
 

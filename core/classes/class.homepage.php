@@ -104,7 +104,8 @@ class Homepage
 
         $result = $bearsamppBins->getApache()->getAliasContent(
             Path::getWebResourcesPath(),
-            Path::getHomepagePath()
+            Path::getHomepagePath(),
+            false
         );
 
         return file_put_contents(Path::getHomepagePath() . '/alias.conf', $result) !== false;

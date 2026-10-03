@@ -53,9 +53,9 @@ if ($bearsamppBins->getPostgresql()->isEnable()) {
  */
 foreach ($bearsamppBins->getPostgresql()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getPostgresql()->getVersion()) {
-        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . $version . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . UtilInput::sanitizeOutput($version) . '</span>';
     } else {
-        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . $bearsamppBins->getPostgresql()->getVersion() . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . UtilInput::sanitizeOutput($bearsamppBins->getPostgresql()->getVersion()) . '</span>';
     }
 }
 
