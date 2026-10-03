@@ -110,7 +110,7 @@ Thanks again for your support, it is much appreciated! :pray:
 We would like to thank the following for supporting our project:
 
 
-| <a href="https://github.n6rej.io">N6REJ<br><img src="https://avatars.githubusercontent.com/u/1850089?v=4" height="100px"/></a> | <a href="https://qodo.ai">Qodo ai<br><img src="https://www.qodo.ai/wp-content/uploads/2025/03/qodo-logo.svg" height="100px" /></a> |
+| <a href="https://github.n6rej.io">N6REJ<br><img src="https://avatars.githubusercontent.com/u/1850089?v=4" height="100px"/></a> | <a href="https://www.jetbrains.com/">Jetbrains<br> <img src="https://github.com/user-attachments/assets/20e6941a-1db6-4b88-a84b-c9df6749e210" height="100px"></a> | <a href="https://qodo.ai">Qodo ai<br><img src="https://www.qodo.ai/wp-content/uploads/2025/03/qodo-logo.svg" height="100px" /></a> |
 |:-------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------:|
 
 |<a href="https://www.am-graphix.com/">AMGraphix<br><img src="https://github.com/Bearsampp/Bearsampp/assets/1850089/189797db-4292-467d-9de0-898cde9338bc" height="100px"/></a> | <a href="https://simplifyyourweb.com/">Olivier Buisard<br><img src="https://user-images.githubusercontent.com/1850089/191779113-6218a5df-d06d-41b5-92f9-86a9563b4d09.png" height="100px" /></a> |
