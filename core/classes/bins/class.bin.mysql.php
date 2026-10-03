@@ -144,7 +144,7 @@ class BinMysql extends Module
         $this->service  = new Win32Service(self::SERVICE_NAME);
         $this->errorLog = Path::getLogsPath() . '/mysql.log';
 
-        if ($this->bearsamppConfRaw !== false) {
+        if (!empty($this->bearsamppConfRaw)) {
             $this->exe      = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->conf     = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
             $this->port     = $this->bearsamppConfRaw[self::LOCAL_CFG_PORT];

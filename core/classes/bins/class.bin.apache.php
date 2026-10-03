@@ -174,7 +174,7 @@ class BinApache extends Module
         $this->rewriteLog  = Path::getLogsPath() . '/apache_rewrite.log';
         $this->errorLog    = Path::getLogsPath() . '/apache_error.log';
 
-        if ($this->bearsamppConfRaw !== false) {
+        if (!empty($this->bearsamppConfRaw)) {
             $this->exe        = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->conf       = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
             $this->port       = $this->bearsamppConfRaw[self::LOCAL_CFG_PORT];

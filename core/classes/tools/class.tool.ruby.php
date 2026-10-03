@@ -69,7 +69,7 @@ class ToolRuby extends Module
         $this->version = $bearsamppConfig->getRaw(self::ROOT_CFG_VERSION);
         parent::reload($id, $type);
 
-        if ($this->bearsamppConfRaw !== false) {
+        if (!empty($this->bearsamppConfRaw)) {
             $this->exe        = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->consoleExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONSOLE_EXE];
         }

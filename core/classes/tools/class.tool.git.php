@@ -98,7 +98,7 @@ class ToolGit extends Module
         $this->reposFile      = $this->symlinkPath . '/' . self::REPOS_FILE;
         $this->reposCacheFile = $this->symlinkPath . '/' . self::REPOS_CACHE_FILE;
 
-        if ($this->bearsamppConfRaw !== false) {
+        if (!empty($this->bearsamppConfRaw)) {
             $this->exe         = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->bash        = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_BASH];
             $this->scanStartup = $this->bearsamppConfRaw[self::LOCAL_CFG_SCAN_STARTUP];

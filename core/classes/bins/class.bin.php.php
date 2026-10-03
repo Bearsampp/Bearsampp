@@ -163,7 +163,7 @@ class BinPhp extends Module
         $this->apacheConf = Path::getModuleCurrentPath($bearsamppBins->getApache()) . '/' . $this->apacheConf; //FIXME: Useful ?
         $this->errorLog   = Path::getLogsPath() . '/php_error.log';
 
-        if ($this->bearsamppConfRaw !== false) {
+        if (!empty($this->bearsamppConfRaw)) {
             $this->cliExe       = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CLI_EXE];
             $this->cliSilentExe = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CLI_SILENT_EXE];
             $this->conf         = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
