@@ -80,7 +80,7 @@
       {
         "version": "4.2.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2026.9.24/bearsampp-bruno-4.2.0-2026.9.24.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "4.1.0",
@@ -575,7 +575,7 @@
       {
         "version": "1.31.2",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2026.9.19/bearsampp-mailpit-1.31.2-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "1.31.1",
