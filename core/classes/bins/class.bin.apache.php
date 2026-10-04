@@ -174,7 +174,7 @@ class BinApache extends Module
         $this->rewriteLog  = Path::getLogsPath() . '/apache_rewrite.log';
         $this->errorLog    = Path::getLogsPath() . '/apache_error.log';
 
-        if ($this->bearsamppConfRaw !== false) {
+        if (!empty($this->bearsamppConfRaw)) {
             $this->exe        = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->conf       = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CONF];
             $this->port       = $this->bearsamppConfRaw[self::LOCAL_CFG_PORT];
@@ -803,16 +803,21 @@ class BinApache extends Module
      *
      * @param   string  $name  The name of the alias.
      * @param   string  $dest  The destination path of the alias.
+     * @param   bool    $allowIndexes  True to enable directory listing (user aliases); false for the
+     *                                 homepage alias, where listing would expose its source tree.
      *
      * @return string The alias content.
      */
-    public function getAliasContent($name, $dest)
+    public function getAliasContent($name, $dest, $allowIndexes = true)
     {
         $dest = Path::formatUnixPath($dest);
 
+        // "FollowSymLinks" is kept because the bin/ tree is reached through symlinks.
+        $options = ($allowIndexes ? 'Indexes ' : '') . 'FollowSymLinks MultiViews';
+
         return 'Alias /' . $name . ' "' . $dest . '"' . PHP_EOL . PHP_EOL .
             '<Directory "' . $dest . '">' . PHP_EOL .
-            '    Options Indexes FollowSymLinks MultiViews' . PHP_EOL .
+            '    Options ' . $options . PHP_EOL .
             '    AllowOverride all' . PHP_EOL .
             $this->getRequiredContent() . PHP_EOL .
             '</Directory>' . PHP_EOL;

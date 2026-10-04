@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   metadata:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -24,7 +24,7 @@ jobs:
   auto-merge:
     timeout-minutes: 5
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     # only run for dependabot PRs
     if: ${{ github.actor == 'dependabot[bot]' }}

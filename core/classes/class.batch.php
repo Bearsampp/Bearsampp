@@ -363,9 +363,9 @@ class Batch
             return;
         }
 
-        // Remove quotes and dangerous characters from display name
-        $sanitizedDisplayName = str_replace('"', '', $displayName);
-        $sanitizedDisplayName = preg_replace('/[<>|&^]/', '', $sanitizedDisplayName);
+        // Neutralize anything that could terminate the argument or add a command
+        // line, then quote the whole value so no spaces split it apart.
+        $sanitizedDisplayName = UtilInput::sanitizeBatchValue($displayName);
 
         $cmd = 'sc config ' . $sanitizedName . ' DisplayName= "' . $sanitizedDisplayName . '"';
         self::exec('setServiceDisplayName', $cmd, true, false);
@@ -387,9 +387,9 @@ class Batch
             return;
         }
 
-        // Remove quotes and dangerous characters from description
-        $sanitizedDesc = str_replace('"', '', $desc);
-        $sanitizedDesc = preg_replace('/[<>|&^]/', '', $sanitizedDesc);
+        // Neutralize anything that could terminate the argument or add a command
+        // line, then quote the whole value so no spaces split it apart.
+        $sanitizedDesc = UtilInput::sanitizeBatchValue($desc);
 
         $cmd = 'sc description ' . $sanitizedName . ' "' . $sanitizedDesc . '"';
         self::exec('setServiceDescription', $cmd, true, false);

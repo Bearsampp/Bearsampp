@@ -81,8 +81,13 @@ Log::debug('Latest version: ' . $githubLatestVersion . ' (' . $githubLatestVersi
  */
 if (version_compare($bearsamppCurrentVersion, $githubLatestVersion, '<')) {
     $result['display']   = true;
-    $result['download']  .= '<a role="button" class="btn btn-success fullversionurl" href="' . $githubLatestVersionUrl . '" target="_blank"><i class="fa-solid fa-cloud-arrow-down"></i> ';
-    $result['download']  .= $bearsamppLang->getValue(Lang::DOWNLOAD) . ' <strong>' . APP_TITLE . ' ' . $githubVersionName . '</strong><br />';
+    // Both values come from the remote GitHub API response, so neither may be
+    // trusted: sanitizeUrl() rejects a non-http(s) scheme such as javascript:
+    // that htmlspecialchars() alone would happily pass through, and
+    // sanitizeOutput() escapes the release name before it reaches the DOM.
+    $downloadUrl = UtilInput::sanitizeUrl($githubLatestVersionUrl);
+    $result['download']  .= '<a role="button" class="btn btn-success fullversionurl" href="' . $downloadUrl . '" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-cloud-arrow-down"></i> ';
+    $result['download']  .= $bearsamppLang->getValue(Lang::DOWNLOAD) . ' <strong>' . UtilInput::sanitizeOutput(APP_TITLE) . ' ' . UtilInput::sanitizeOutput($githubVersionName) . '</strong><br />';
     $result['changelog'] = '';
 }
 

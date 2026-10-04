@@ -295,4 +295,21 @@ abstract class Module
         return $this->enable;
     }
 
+    /**
+     * Checks if the module's binaries are present on disk.
+     *
+     * isEnable() cannot answer this on its own: each bin folds the configured
+     * enable flag into $this->enable after the constructor has already used it
+     * to mean "the versioned directory exists". The two states are operationally
+     * different — a bin that was never downloaded needs installing, whereas one
+     * that is installed but switched off needs nothing at all — so anything
+     * reporting on the state of the stack needs them separately.
+     *
+     * @return bool True if the module's version directory exists, false otherwise.
+     */
+    public function isInstalled()
+    {
+        return is_dir($this->currentPath);
+    }
+
 }

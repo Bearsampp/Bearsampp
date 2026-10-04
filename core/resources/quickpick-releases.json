@@ -78,6 +78,11 @@
     "module": "module-bruno",
     "versions": [
       {
+        "version": "4.2.0",
+        "url": "https://github.com/Bearsampp/module-bruno/releases/download/2026.9.24/bearsampp-bruno-4.2.0-2026.9.24.7z",
+        "prerelease": true
+      },
+      {
         "version": "4.1.0",
         "url": "https://github.com/Bearsampp/module-bruno/releases/download/2026.8.25/bearsampp-bruno-4.1.0-2026.8.25.7z",
         "prerelease": false
@@ -215,7 +220,7 @@
       {
         "version": "2.10.3",
         "url": "https://github.com/Bearsampp/module-composer/releases/download/2026.9.19/bearsampp-composer-2.10.3-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "2.10.2",
@@ -645,7 +650,7 @@
       {
         "version": "13.0.2",
         "url": "https://github.com/Bearsampp/module-mariadb/releases/download/2026.9.19/bearsampp-mariadb-13.0.2-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "13.0.1-RC",
@@ -1195,7 +1200,7 @@
       {
         "version": "26.7.0",
         "url": "https://github.com/Bearsampp/module-mysql/releases/download/2026.9.19/bearsampp-mysql-26.7.0-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "9.7.2",
@@ -1405,7 +1410,7 @@
       {
         "version": "26.9.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.9.19/bearsampp-nodejs-26.9.0-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "26.7.0",
@@ -1435,7 +1440,7 @@
       {
         "version": "24.21.0",
         "url": "https://github.com/Bearsampp/module-nodejs/releases/download/2026.9.19/bearsampp-nodejs-24.21.0-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "24.14.1",
@@ -1658,8 +1663,18 @@
     "module": "module-php",
     "versions": [
       {
+        "version": "8.6.0RC2",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2026.9.24/bearsampp-php-8.6.0RC2-2026.9.24.7z",
+        "prerelease": false
+      },
+      {
         "version": "8.6.0beta3",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.9.13/bearsampp-php-8.6.0beta3-2026.9.13.7z",
+        "prerelease": false
+      },
+      {
+        "version": "8.5.11",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2026.9.24/bearsampp-php-8.5.11-2026.9.13.7z",
         "prerelease": false
       },
       {
@@ -1700,6 +1715,11 @@
       {
         "version": "8.5.0",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.12.7/bearsampp-php-8.5.0-2025.12.07.7z",
+        "prerelease": false
+      },
+      {
+        "version": "8.4.26",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2026.9.24/bearsampp-php-8.4.26-2026.9.13.7z",
         "prerelease": false
       },
       {
@@ -1785,6 +1805,11 @@
       {
         "version": "8.4.1",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.11/bearsampp-php-8.4.1-2025.2.11.7z",
+        "prerelease": false
+      },
+      {
+        "version": "8.3.35",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2026.9.24/bearsampp-php-8.3.35-2026.9.24.7z",
         "prerelease": false
       },
       {
@@ -1885,6 +1910,11 @@
       {
         "version": "8.3.1",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2024.11.30/bearsampp-php-8.3.1-2024.11.30.7z",
+        "prerelease": false
+      },
+      {
+        "version": "8.2.34",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2026.9.24/bearsampp-php-8.2.34-2026.9.13.7z",
         "prerelease": false
       },
       {
@@ -2505,7 +2535,7 @@
       {
         "version": "7.6.6",
         "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.9.19/bearsampp-powershell-7.6.6-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "7.6.5",
@@ -2550,7 +2580,7 @@
       {
         "version": "3.14.7",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2026.9.19/bearsampp-python-3.14.7-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.14.4",
@@ -2560,7 +2590,7 @@
       {
         "version": "3.13.15",
         "url": "https://github.com/Bearsampp/module-python/releases/download/2026.9.19/bearsampp-python-3.13.15-2026.9.19.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "3.13.13",

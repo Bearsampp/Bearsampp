@@ -99,7 +99,7 @@ class BinMemcached extends Module
         $this->service = new Win32Service(self::SERVICE_NAME);
         $this->log     = Path::getLogsPath() . '/memcached.log';
 
-        if ($this->bearsamppConfRaw !== false) {
+        if (!empty($this->bearsamppConfRaw)) {
             $this->exe    = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->memory = intval($this->bearsamppConfRaw[self::LOCAL_CFG_MEMORY]);
             $this->port   = intval($this->bearsamppConfRaw[self::LOCAL_CFG_PORT]);

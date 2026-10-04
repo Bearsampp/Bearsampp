@@ -33,11 +33,13 @@ Csrf::init();
  */
 header('X-Frame-Options: SAMEORIGIN');
 header('X-Content-Type-Options: nosniff');
-header('X-XSS-Protection: 1; mode=block');
+// X-XSS-Protection is deprecated. Its "1; mode=block" mode was itself used to
+// introduce vulnerabilities in some browsers, and modern browsers ignore the
+// header entirely. Set it to 0 so legacy browsers do not apply that filter;
+// the CSP below is the actual control.
+header('X-XSS-Protection: 0');
 header('Referrer-Policy: strict-origin-when-cross-origin');
-header(
-	"Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.github.com https://bearsampp.com https://* http://*; img-src 'self' data: https:; font-src 'self' data:;"
-);
+header('Content-Security-Policy: ' . Csrf::getCspHeader());
 
 /**
  * Declare global variables to access various parts of the application such as language settings,
@@ -129,7 +131,7 @@ echo htmlspecialchars($bearsamppLang->getValue(Lang::LOCALE), ENT_QUOTES, 'UTF-8
 	<title><?php
 		echo APP_TITLE . ' ' . $bearsamppCore->getAppVersion(); ?></title>
 	
-	<script>
+	<script nonce="<?php echo Csrf::getCspNonce(); ?>">
 		var AJAX_URL = "<?php echo Path::getWebResourcesUrl(); ?>/ajax.php";
 		
 		// Protocol-relative URL handling for HTTPS and custom vhosts
@@ -145,7 +147,7 @@ echo htmlspecialchars($bearsamppLang->getValue(Lang::LOCALE), ENT_QUOTES, 'UTF-8
 	</script>
 	
 	<!-- Inline script to set loading cursor immediately -->
-	<script>
+	<script nonce="<?php echo Csrf::getCspNonce(); ?>">
 		// Set loading cursor immediately
 		document.documentElement.classList.add('loading-cursor');
 		

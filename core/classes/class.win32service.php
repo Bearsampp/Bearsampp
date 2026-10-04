@@ -798,6 +798,7 @@ class Win32Service
         return false;
     }
 
+
     /**
      * Retrieves information about the service.
      * Performance optimization: Uses fast sc.exe check first, falls back to VBS if needed.
@@ -816,6 +817,10 @@ class Win32Service
             if ($this->getNssm() instanceof Nssm) {
                 Log::trace("Using NSSM to get service info");
                 $result = $this->getNssm()->infos();
+                if (!is_array($result) && $result !== false) {
+                    Log::trace("NSSM infos() returned invalid type: " . gettype($result) . ", converting to false");
+                    return false;
+                }
                 Log::trace("NSSM info retrieval completed in " . round(microtime(true) - $startTime, 2) . " seconds");
 
                 return $result;
@@ -825,7 +830,7 @@ class Win32Service
             Log::trace("Attempting fast service check using sc.exe");
             $fastResult = $this->fastServiceCheck();
 
-            if ($fastResult !== false) {
+            if ($fastResult !== false && is_array($fastResult) && !empty($fastResult)) {
                 $duration = round(microtime(true) - $startTime, 3);
                 Log::trace("Fast service check succeeded in " . $duration . "s (saved 5-10s)");
                 Log::debug("Performance: Fast service check used for " . $this->getName() . ", saved 5-10 seconds");
@@ -833,8 +838,8 @@ class Win32Service
                 return $fastResult;
             }
 
-            // Fast check returned false - service doesn't exist
-            if ($fastResult === false) {
+            // Fast check returned false or empty - service doesn't exist
+            if ($fastResult === false || empty($fastResult)) {
                 $duration = round(microtime(true) - $startTime, 3);
                 Log::trace("Fast service check determined service doesn't exist in " . $duration . "s");
 
@@ -853,6 +858,17 @@ class Win32Service
 
             // Reset the timeout
             set_time_limit($originalTimeout);
+
+            // Validate result type and content
+            if ($result !== false && !is_array($result)) {
+                Log::trace("VBS getServiceInfo() returned invalid type: " . gettype($result) . ", converting to false");
+                return false;
+            }
+
+            if (is_array($result) && empty($result)) {
+                Log::trace("VBS getServiceInfo() returned empty array, converting to false");
+                return false;
+            }
 
             // Check if we've exceeded our timeout
             if (microtime(true) - $startTime > $timeout) {

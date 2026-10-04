@@ -208,6 +208,34 @@ class OpenSsl
     }
 
     /**
+     * Validates a certificate destination directory before it is interpolated
+     * into a generated .bat script.
+     *
+     * The path is written into the batch as SET "CAROOT=<path>" and into the
+     * mkcert -cert-file/-key-file arguments, so a CR/LF would start a new
+     * command and a quote would terminate the argument. Both are rejected
+     * instead of stripped, because rewriting the path would silently write the
+     * certificate somewhere the user did not choose.
+     *
+     * @param   string  $destPath  The destination directory to validate.
+     *
+     * @return bool True if the path is safe to embed, false otherwise.
+     */
+    private function validateCertificateDir($destPath)
+    {
+        if (!is_string($destPath) || trim($destPath) === '') {
+            return false;
+        }
+
+        // Control characters (CR/LF included), cmd metacharacters and quotes.
+        if (preg_match('/[\x00-\x1F\x7F"<>|&^!%]/', $destPath)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Creates a certificate with the specified name and destination path.
      *
      * @param   string       $name      The name of the certificate.
@@ -230,6 +258,15 @@ class OpenSsl
         }
         if (empty($destPath)) {
             $destPath = $this->ensureSslDirExists();
+        }
+        // destPath reaches the .bat file via CAROOT and the -cert-file/-key-file
+        // arguments, so it must not carry CR/LF or cmd metacharacters. Real
+        // directory names may legitimately contain them, so the value is
+        // rejected rather than silently rewritten to a different path.
+        if (!$this->validateCertificateDir($destPath)) {
+            Log::error('Invalid certificate destination directory: ' . $destPath);
+
+            return false;
         }
         $mkcertExe = Path::getMkcertExe();
 
@@ -807,8 +844,15 @@ class OpenSsl
         }
         $destPath = empty($destPath) ? $this->ensureSslDirExists() : $destPath;
 
-        // Basic validation for name to prevent arbitrary file deletion
-        if (!preg_match('/^[a-zA-Z0-9._-]+$/', $name)) {
+        if (!$this->validateCertificateDir($destPath)) {
+            Log::error('Invalid certificate directory for removal: ' . $destPath);
+
+            return false;
+        }
+
+        // Whitelist the name and reject "." / ".." so the deletion cannot climb
+        // out of the certificate directory.
+        if (!$this->validateCertificateName($name)) {
             Log::error('Invalid certificate name for removal: ' . $name);
 
             return false;

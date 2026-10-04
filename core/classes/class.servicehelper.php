@@ -549,6 +549,43 @@ class ServiceHelper
     }
 
     /**
+     * Returns the executable names a service is expected to run as.
+     *
+     * A service's own PID is frequently not the interesting one. Apache,
+     * Memcached, Mailpit and Xlight are all driven by an NSSM wrapper, so the SCM
+     * reports the wrapper's PID and the real server is a child process.
+     * PostgreSQL is registered against pg_ctl.exe and forks its postgres.exe
+     * backends, so its server processes are grandchildren. Matching one
+     * executable name against the service PID therefore misses most of the real
+     * footprint, which is why this returns a list and why callers pair it with a
+     * process tree walk rather than a PID lookup.
+     *
+     * The names are the shipped binaries, verified against a running stack; the
+     * same list is used for process attribution and for shutdown, so the two can
+     * never drift apart.
+     *
+     * @param   string  $serviceName  The Windows service name
+     *
+     * @return array List of executable names, empty when the service is unknown
+     */
+    public static function getProcessNamesForService($serviceName)
+    {
+        $processMap = [
+            BinApache::SERVICE_NAME     => ['httpd.exe'],
+            BinMysql::SERVICE_NAME      => ['mysqld.exe'],
+            BinMariadb::SERVICE_NAME    => ['mysqld.exe'],
+            BinMailpit::SERVICE_NAME    => ['mailpit.exe'],
+            BinMemcached::SERVICE_NAME  => ['memcached.exe'],
+            BinPostgresql::SERVICE_NAME => ['postgres.exe'],
+            // The shipped binary is xlight.exe; some builds ship xlightftpd.exe.
+            BinXlight::SERVICE_NAME     => ['xlight.exe', 'xlightftpd.exe'],
+            'nodejs'                    => ['node.exe'],  // NodeJS - not a Windows service but needs to be killed on exit
+        ];
+
+        return $processMap[$serviceName] ?? [];
+    }
+
+    /**
      * Force kill a service by process name
      *
      * @param   string  $serviceName  The service name
@@ -557,20 +594,11 @@ class ServiceHelper
      */
     private static function forceKillService($serviceName)
     {
-        $processMap = [
-            BinApache::SERVICE_NAME     => 'httpd.exe',
-            BinMysql::SERVICE_NAME      => 'mysqld.exe',
-            BinMariadb::SERVICE_NAME    => 'mysqld.exe',
-            BinMailpit::SERVICE_NAME    => 'mailpit.exe',
-            BinMemcached::SERVICE_NAME  => 'memcached.exe',
-            BinPostgresql::SERVICE_NAME => 'postgres.exe',
-            BinXlight::SERVICE_NAME     => 'xlightftpd.exe',
-            'nodejs'                    => 'node.exe',  // NodeJS - not a Windows service but needs to be killed on exit
-        ];
+        $processNames = self::getProcessNamesForService($serviceName);
 
-        if (isset($processMap[$serviceName])) {
-            Log::trace('Killing process: ' . $processMap[$serviceName]);
-            Win32Ps::killBins([$processMap[$serviceName]]);
+        if (!empty($processNames)) {
+            Log::trace('Killing process: ' . implode(', ', $processNames));
+            Win32Ps::killBins($processNames);
 
             return true;
         }

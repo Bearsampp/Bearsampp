@@ -163,7 +163,7 @@ class BinPostgresql extends Module
         $this->service  = new Win32Service(self::SERVICE_NAME);
         $this->errorLog = Path::getLogsPath() . '/postgresql.log';
 
-        if ($this->bearsamppConfRaw !== false) {
+        if (!empty($this->bearsamppConfRaw)) {
             $this->ctlExe     = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CTL_EXE];
             $this->cliExe     = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_CLI_EXE];
             $this->dumpExe    = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_DUMP_EXE];

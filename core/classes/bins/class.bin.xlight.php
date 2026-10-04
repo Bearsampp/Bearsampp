@@ -100,7 +100,7 @@ class BinXlight extends Module
         $this->service = new Win32Service(self::SERVICE_NAME);
         $this->log     = Path::getLogsPath() . '/xlight.log';
 
-        if ($this->bearsamppConfRaw !== false) {
+        if (!empty($this->bearsamppConfRaw)) {
             $this->exe     = $this->symlinkPath . '/' . $this->bearsamppConfRaw[self::LOCAL_CFG_EXE];
             $this->SslPort = intval($this->bearsamppConfRaw[self::LOCAL_CFG_SSL_PORT]);
             $this->port    = intval($this->bearsamppConfRaw[self::LOCAL_CFG_PORT]);

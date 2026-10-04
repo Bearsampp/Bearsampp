@@ -690,6 +690,65 @@ class Csrf
     }
 
     /**
+     * Gets the Content-Security-Policy nonce for the current request.
+     *
+     * The nonce lets inline <script> blocks run while keeping 'unsafe-inline'
+     * out of script-src, which is what actually makes CSP an XSS mitigation:
+     * without it an injected <script> tag executes. A new value is minted once
+     * per request and reused by every inline block on the page, because a
+     * browser must see the same nonce in the header and on each tag.
+     *
+     * @return string The base64 nonce value, without the "nonce-" prefix
+     */
+    public static function getCspNonce()
+    {
+        static $nonce = null;
+
+        if ($nonce === null) {
+            $nonce = base64_encode(random_bytes(16));
+        }
+
+        return $nonce;
+    }
+
+    /**
+     * Builds the Content-Security-Policy header value for the dashboard.
+     *
+     * Notes on the policy:
+     *  - script-src has no 'unsafe-inline' and no 'unsafe-eval'. Nothing in
+     *    core/resources/homepage (including the vendored Bootstrap bundle) uses
+     *    eval() or new Function(), and every inline script carries the nonce.
+     *  - style-src still allows 'unsafe-inline': the stack status template emits
+     *    a dynamic CSS custom property (style="--mem: 42%"), and a nonce cannot
+     *    cover a style attribute. Script injection is what CSP must block here;
+     *    style-src is a far weaker vector.
+     *  - connect-src is 'self' only. Every client-side fetch targets AJAX_URL,
+     *    so the previous "https://* http://*" wildcards (which permitted
+     *    exfiltration to any origin) were never needed.
+     *
+     * @return string The header value for header('Content-Security-Policy: ...')
+     */
+    public static function getCspHeader()
+    {
+        $nonce = self::getCspNonce();
+
+        $directives = [
+            "default-src 'self'",
+            "script-src 'self' 'nonce-" . $nonce . "'",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data: https:",
+            "font-src 'self' data:",
+            "connect-src 'self'",
+            "object-src 'none'",
+            "base-uri 'none'",
+            "form-action 'self'",
+            "frame-ancestors 'none'",
+        ];
+
+        return implode('; ', $directives);
+    }
+
+    /**
      * Gets statistics about current CSRF tokens.
      * Useful for debugging and monitoring.
      *

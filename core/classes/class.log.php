@@ -252,6 +252,28 @@ class Log
             return;
         }
 
+        // While silent mode is active the buffer belongs to the caller: it may
+        // still commit or roll it back. Shutdown callbacks run in reverse
+        // registration order, so this flush (registered by init() during
+        // bootstrap) can fire *before* the caller's rollback, which would
+        // otherwise defeat the decision it is about to make. Holding the
+        // non-ERROR entries here keeps that decision with the caller.
+        //
+        // ERROR entries are always written, in silent mode or not, so a real
+        // failure is never lost to a discarded buffer.
+        if (self::$silentMode) {
+            self::$logBuffer = array_values(array_filter(
+                self::$logBuffer,
+                function ($log) {
+                    return $log['type'] === self::ERROR;
+                }
+            ));
+
+            if (empty(self::$logBuffer)) {
+                return;
+            }
+        }
+
         global $bearsamppCore, $bearsamppConfig;
 
         // If the core global is gone (e.g. during an abnormal shutdown), fall back to error_log

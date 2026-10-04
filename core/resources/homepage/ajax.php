@@ -34,6 +34,10 @@
  * No "heartbeat" entries are produced - identical polls write nothing at all.
  * State-changing endpoints (quickpick, toggleenhancedquickpick,
  * applymoduleconfig) are excluded and always log normally.
+ *
+ * A third category (see $ajaxAlwaysSilentProcs below) covers live telemetry,
+ * whose response changes on every call by definition and therefore cannot be
+ * deduplicated by comparison.
  */
 $ajaxProcRaw       = isset($_POST['proc']) ? $_POST['proc'] : '';
 $ajaxReadOnlyProcs = array(
@@ -51,13 +55,42 @@ $ajaxReadOnlyProcs = array(
     'reloadstatus',
 );
 
-if (in_array($ajaxProcRaw, $ajaxReadOnlyProcs, true)) {
+/**
+ * Procs whose buffered log entries are always discarded.
+ *
+ * The fingerprint check above can only suppress a poll whose response is
+ * byte-identical to the previous one. A resource-metrics poll fails that test by
+ * construction: working set and CPU move on every call, so every poll would be
+ * committed as if something meaningful had changed, and the log would grow
+ * without bound at the homepage poll rate.
+ *
+ * These endpoints are pure telemetry, so their DEBUG/INFO entries carry no
+ * information worth keeping. ERROR still writes immediately, which means real
+ * failures are still recorded.
+ */
+$ajaxAlwaysSilentProcs = array(
+    'stackstatus',
+    'stackdisk',
+);
+
+$ajaxIsFingerprintPoll = in_array($ajaxProcRaw, $ajaxReadOnlyProcs, true);
+$ajaxIsAlwaysSilent    = in_array($ajaxProcRaw, $ajaxAlwaysSilentProcs, true);
+
+if ($ajaxIsFingerprintPoll || $ajaxIsAlwaysSilent) {
     require_once __DIR__ . '/../../classes/class.log.php';
     Log::startSilentBuffer();
     ob_start();
 
-    register_shutdown_function(function () use ($ajaxProcRaw) {
+    register_shutdown_function(function () use ($ajaxProcRaw, $ajaxIsAlwaysSilent) {
         try {
+            if ($ajaxIsAlwaysSilent) {
+                // Telemetry by definition differs from the previous response, so
+                // there is nothing to compare and nothing worth keeping.
+                Log::rollbackSilentBuffer();
+
+                return;
+            }
+
             $output = ob_get_contents();
             if ($output === false) {
                 $output = '';
@@ -117,6 +150,8 @@ $procMap = [
     'toggleenhancedquickpick' => __DIR__ . '/ajax/ajax.toggle.enhancedquickpick.php',
     'applymoduleconfig'       => __DIR__ . '/ajax/ajax.apply.moduleconfig.php',
     'reloadstatus'            => __DIR__ . '/ajax/ajax.reload.status.php',
+    'stackstatus'             => __DIR__ . '/ajax/ajax.stackstatus.php',
+    'stackdisk'               => __DIR__ . '/ajax/ajax.stackdisk.php',
     'clearcache'              => __DIR__ . '/ajax/ajax.clearcache.php'
 ];
 
@@ -138,7 +173,8 @@ $csrfProtectedEndpoints = [
     'quickpick',                    // Installs modules
     'toggleenhancedquickpick',      // Changes configuration
     'applymoduleconfig',            // Applies configuration changes
-    'clearcache'                    // Clears cache files
+    'clearcache',                   // Clears cache files
+    'stackdisk'                     // Forces a full disk walk, which costs seconds of I/O
 ];
 
 /**

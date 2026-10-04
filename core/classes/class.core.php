@@ -150,8 +150,9 @@ class Core
      * Unzips a file to the specified directory and provides progress updates.
      *
      * This method uses the 7-Zip command-line tool to extract the contents of a zip file.
-     * It first tests the archive to determine the number of files to be extracted, then
-     * proceeds with the extraction while providing progress updates via a callback function.
+     * It first validates the archive's entry paths (and counts its files) via a structured
+     * listing, then proceeds with the extraction while providing progress updates via a
+     * callback function.
      *
      * @param   string         $filePath          The path to the zip file.
      * @param   string         $destination       The directory to extract the files to.
@@ -179,11 +180,6 @@ class Core
         }
 
         if ($progressCallback) {
-            call_user_func($progressCallback, 'Initializing archive test...');
-        }
-
-        // Test the archive to determine the number of files
-        if ($progressCallback) {
             call_user_func($progressCallback, 'Analyzing archive...');
         }
 
@@ -191,15 +187,16 @@ class Core
         // each individual entry path and validate every one relative to the destination,
         // so extraction can never escape the intended directory. This must fail closed:
         // any listing/parse failure aborts the operation rather than proceeding unverified.
-        if (!self::isSafeDestinationFileList($sevenZipPath, $filePath)) {
+        // The scan also returns the number of archive entries, used as the extraction
+        // file count. A standalone integrity test is not needed: the archive's SHA-256
+        // was already verified against its .sha256 sidecar upstream, and `7za x`
+        // CRC-checks every file as it is extracted.
+        $numFiles = self::isSafeDestinationFileList($sevenZipPath, $filePath);
+        if ($numFiles === false) {
             Log::error('Archive path-traversal scan failed or rejected for: ' . $filePath);
 
             return false;
         }
-
-        $testOutput = CommandRunner::exec($sevenZipPath, ['t', $filePath, '-y', '-bsp1']);
-        preg_match('/Files: (\d+)/', $testOutput !== false ? $testOutput : '', $matches);
-        $numFiles = isset($matches[1]) ? (int)$matches[1] : 0;
         Log::trace('Number of files to be extracted: ' . $numFiles);
 
         if ($progressCallback) {
@@ -253,37 +250,53 @@ class Core
 
     /**
      * Parses `7z l -slt` output and verifies every listed entry path is safe to
-     * extract relative to the destination.
+     * extract relative to the destination, returning the number of valid entries.
      *
-     * The listing uses a header block followed by one block per entry, each block
-     * containing a `Path = <value>` line. We extract each entry path individually and
-     * reject any that is empty, is absolute (drive-letter or rooted path), or contains
-     * a parent-directory (`..`) traversal. This must fail closed: a failure to list the
-     * archive, or any inability to parse a valid entry path, returns false so extraction
-     * is aborted rather than performed on an unverified archive.
+     * The listing is captured to a temp file (avoiding a slow pipe capture) and split
+     * into one block per entry on blank-line separators, each block containing a
+     * `Path = <value>` line. We extract each entry path individually and reject any
+     * that is empty, is absolute (drive-letter or rooted path), or contains a
+     * parent-directory (`..`) traversal. Banner/header blocks (including the header's
+     * reference to the archive itself) are skipped, and directories are validated but
+     * not counted, matching the `Files:` count of `7z t`. This must fail closed: a
+     * failure to list the archive, or discovering no file entries or any unsafe entry,
+     * returns false so extraction is aborted rather than performed on an unverified
+     * archive.
      *
      * @param   string  $sevenZipPath  Path to the 7za executable.
      * @param   string  $filePath      Path to the archive file.
      *
-     * @return  bool                   True only if the listing succeeded and every entry
-     *                                 path is safe; false otherwise.
+     * @return  int|false              The number of listed (safe) file entries on success,
+     *                                 or false if the listing failed or any entry is unsafe.
      */
     private static function isSafeDestinationFileList($sevenZipPath, $filePath)
     {
-        $listingOutput = CommandRunner::exec($sevenZipPath, ['l', '-slt', $filePath]);
+        $listingFile = Path::getTmpPath() . '/7z-listing-' . uniqid('', true) . '.txt';
+        $stderrFile  = Path::getTmpPath() . '/7z-listing-' . uniqid('', true) . '.err';
+
+        $returnVar = CommandRunner::execToFile($sevenZipPath, ['l', '-slt', $filePath], $listingFile, $stderrFile);
+        if ($returnVar === false) {
+            Log::error('Path-traversal scan: unable to list archive: ' . $filePath);
+
+            return false;
+        }
+
+        $listingOutput = @file_get_contents($listingFile);
+        @unlink($listingFile);
+        @unlink($stderrFile);
+
         if (!is_string($listingOutput) || $listingOutput === '') {
             Log::error('Path-traversal scan: unable to list archive: ' . $filePath);
 
             return false;
         }
 
-        $blockSeparatorRegex = '/^\-{10,}\s*$/m';
-        $blocks              = preg_split($blockSeparatorRegex, $listingOutput);
-
-        // $blocks[0] is the header preamble (banner + archive metadata), not an entry.
-        // Every subsequent block is one archive entry.
-        array_shift($blocks);
-
+        // 7-Zip separates the `-slt` entry blocks with blank lines (a single dash
+        // line precedes the first entry, and the banner/header references the archive
+        // itself). Normalize line endings and split on blank lines so each block is
+        // one archive entry.
+        $listingOutput = str_replace("\r\n", "\n", $listingOutput);
+        $blocks        = preg_split('/\n[ \t]*\n/', $listingOutput);
         if (empty($blocks)) {
             // No entries listed at all - cannot validate, fail closed.
             Log::error('Path-traversal scan: no entries found in archive: ' . $filePath);
@@ -291,28 +304,51 @@ class Core
             return false;
         }
 
+        // The header block's `Path = <archive itself>` entry must not be validated
+        // or counted; skip any block that resolves to the archive file.
+        $archivePathNormalized = strtolower(str_replace('/', '\\', $filePath));
+
+        $numFiles = 0;
         foreach ($blocks as $block) {
             $block = trim($block);
             if ($block === '') {
                 continue;
             }
 
-            if (!preg_match('/^Path\s*=\s*(.*)$/m', $block, $match)) {
-                // A block without a parseable Path is unexpected - fail closed.
-                Log::error('Path-traversal scan: could not parse an entry path in ' . $filePath);
-
-                return false;
+            if (!preg_match('/^Path = (.*)$/m', $block, $match)) {
+                // Not an entry block (banner/scanning preamble lines) - skip.
+                continue;
             }
 
             $entryPath = trim($match[1]);
+            if (strtolower(str_replace('/', '\\', $entryPath)) === $archivePathNormalized) {
+                // Banner/header (and any trailing archive-summary) block.
+                continue;
+            }
+
             if (self::isUnsafeArchiveEntryPath($entryPath)) {
                 Log::error('Archive contains an unsafe entry path ("' . $entryPath . '"): ' . $filePath);
 
                 return false;
             }
+
+            // Directories are validated above but not counted as files, matching the
+            // file count previously reported by `7z t` (`Files:` excludes folders).
+            if (preg_match('/^Attributes = D\s*$/m', $block)) {
+                continue;
+            }
+
+            $numFiles++;
         }
 
-        return true;
+        if ($numFiles === 0) {
+            // Nothing to extract - cannot validate, fail closed.
+            Log::error('Path-traversal scan: no file entries found in archive: ' . $filePath);
+
+            return false;
+        }
+
+        return $numFiles;
     }
 
     /**

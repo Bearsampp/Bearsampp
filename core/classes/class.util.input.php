@@ -234,6 +234,72 @@ class UtilInput
     }
 
     /**
+     * Sanitizes a value that will be embedded in a generated .bat script.
+     *
+     * Batch scripts are written verbatim to disk by Batch::exec() and then run
+     * through cmd /c, so a value must not be able to terminate its own argument
+     * or start a new command line. The rules are:
+     *   - CR/LF and all other control characters are removed, because a newline
+     *     appends an entirely new command to the script.
+     *   - "%" is doubled so cmd performs no variable expansion.
+     *   - "!" is removed in case delayed expansion is ever enabled.
+     *   - The characters cmd treats as command separators or quoting are removed.
+     *
+     * Quotes are stripped from the returned value, so a caller that wraps the
+     * result in its own quotes always produces one well-formed argument.
+     * Values that must keep their literal form (identifiers, file names)
+     * should be validated with a whitelist instead, see sanitizeServiceName().
+     *
+     * @param   string|null  $value           The value to sanitize.
+     * @param   bool          $preserveQuotes  True when the value legitimately
+     *                                         contains quotes that must survive,
+     *                                         e.g. --defaults-file="C:\my.ini".
+     *
+     * @return string Returns the sanitized value, empty string for null/non-string input.
+     */
+    public static function sanitizeBatchValue($value, $preserveQuotes = false)
+    {
+        if (!is_string($value)) {
+            return '';
+        }
+
+        // Strip NUL and every control character, CR/LF included.
+        $sanitized = preg_replace('/[\x00-\x1F\x7F]/', '', $value);
+
+        $metacharacters = $preserveQuotes
+            ? array('&', '|', '<', '>', '^', '!')
+            : array('"', '&', '|', '<', '>', '^', '!');
+        $sanitized = str_replace($metacharacters, '', $sanitized);
+
+        // Double "%" so cmd does not expand %VAR%.
+        $sanitized = str_replace('%', '%%', $sanitized);
+
+        return $sanitized;
+    }
+
+    /**
+     * Prepares a value written between double quotes in a batch file (paths,
+     * display names). Inside quotes cmd treats & | < > ^ as literals, so they
+     * are kept and the filesystem identity of the path is preserved. Only
+     * control characters and quotes (invalid in Windows paths) are stripped,
+     * and "%" is doubled.
+     *
+     * @param   string|null  $value  The value to escape.
+     *
+     * @return string Escaped value, empty string for null/non-string input.
+     */
+    public static function sanitizeQuotedBatchValue($value)
+    {
+        if (!is_string($value)) {
+            return '';
+        }
+
+        $sanitized = preg_replace('/[\x00-\x1F\x7F"]/', '', $value);
+
+        return str_replace('%', '%%', $sanitized);
+    }
+
+    /**
      * Sanitizes output for display to prevent XSS attacks.
      * Escapes HTML special characters.
      *
@@ -249,7 +315,66 @@ class UtilInput
 
         $output = str_replace("\0", '', $output);
 
-        return htmlspecialchars($output, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        // ENT_SUBSTITUTE keeps invalid byte sequences visible as U+FFFD. Without it
+        // htmlspecialchars() returns an empty string, which would silently blank
+        // out any value that is not valid UTF-8.
+        return htmlspecialchars($output, ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    /**
+     * Sanitizes a URL for use in an href/src attribute.
+     *
+     * HTML-escaping alone is not enough for a URL: a value such as
+     * "javascript:alert(1)" contains no character that htmlspecialchars()
+     * touches, yet it executes when the link is clicked. Only http, https and
+     * protocol-relative URLs are allowed; anything else (javascript:, data:,
+     * vbscript:, file:) yields an empty string so the caller emits a dead link
+     * instead of a live one.
+     *
+     * @param   string  $url  The URL to sanitize.
+     *
+     * @return string Returns the escaped URL, or an empty string if not allowed.
+     */
+    public static function sanitizeUrl($url)
+    {
+        if (!is_string($url)) {
+            return '';
+        }
+
+        $url = str_replace(array("\0", "\r", "\n", "\t"), '', $url);
+        $url = trim($url);
+
+        if ($url === '') {
+            return '';
+        }
+
+        // Reject any remaining control character: it cannot legitimately appear
+        // in a URL, and one could break out of the attribute or smuggle a
+        // second scheme past the check below.
+        if (preg_match('/[\x00-\x1F\x7F]/', $url)) {
+            return '';
+        }
+
+        // Protocol-relative URLs inherit the page scheme and are always safe.
+        if (strpos($url, '//') === 0) {
+            return self::sanitizeOutput($url);
+        }
+
+        $scheme = parse_url($url, PHP_URL_SCHEME);
+
+        // parse_url() returns null when the value carries no scheme at all
+        // (a bare relative path, or a malformed string). Reject instead of
+        // feeding null into strtolower(), which is deprecated since PHP 8.1.
+        if (!is_string($scheme)) {
+            return '';
+        }
+
+        $scheme = strtolower($scheme);
+        if ($scheme !== 'http' && $scheme !== 'https') {
+            return '';
+        }
+
+        return self::sanitizeOutput($url);
     }
 }
 
