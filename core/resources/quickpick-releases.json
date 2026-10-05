@@ -575,7 +575,7 @@
       {
         "version": "1.31.4",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2026.10.4/bearsampp-mailpit-1.31.4-2026.10.4.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "1.31.2",
