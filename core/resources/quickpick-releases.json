@@ -423,6 +423,11 @@
     "module": "module-git",
     "versions": [
       {
+        "version": "2.56.0.2",
+        "url": "https://github.com/Bearsampp/module-git/releases/download/2026.10.5/bearsampp-git-2.56.0.2-2026.10.5.7z",
+        "prerelease": true
+      },
+      {
         "version": "2.55.0.5",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2026.8.26/bearsampp-git-2.55.0.5-2026.8.26.7z",
         "prerelease": false
@@ -575,7 +580,7 @@
       {
         "version": "1.31.4",
         "url": "https://github.com/Bearsampp/module-mailpit/releases/download/2026.10.4/bearsampp-mailpit-1.31.4-2026.10.4.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "1.31.2",
