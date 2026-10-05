@@ -78,6 +78,10 @@ class ActionSwitchVersion
                 $this->service        = $bearsamppBins->getApache()->getService();
                 $this->changePort     = true;
                 $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getApache()));
+                if ($folderList === false) {
+                    Log::error('Failed to scan Apache module folder list for path updates');
+                    $folderList = array();
+                }
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
                         'path'      => Path::getModuleRootPath($bearsamppBins->getApache()) . '/' . $folder,
@@ -91,6 +95,10 @@ class ActionSwitchVersion
                 $this->service        = $bearsamppBins->getApache()->getService();
                 $this->changePort     = false;
                 $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getPhp()));
+                if ($folderList === false) {
+                    Log::error('Failed to scan PHP module folder list for path updates');
+                    $folderList = array();
+                }
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
                         'path'      => Path::getModuleRootPath($bearsamppBins->getPhp()) . '/' . $folder,
@@ -104,6 +112,10 @@ class ActionSwitchVersion
                 $this->service        = $bearsamppBins->getMysql()->getService();
                 $this->changePort     = true;
                 $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getMysql()));
+                if ($folderList === false) {
+                    Log::error('Failed to scan MySQL module folder list for path updates');
+                    $folderList = array();
+                }
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
                         'path'      => Path::getModuleRootPath($bearsamppBins->getMysql()) . '/' . $folder,
@@ -117,6 +129,10 @@ class ActionSwitchVersion
                 $this->service        = $bearsamppBins->getMariadb()->getService();
                 $this->changePort     = true;
                 $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getMariadb()));
+                if ($folderList === false) {
+                    Log::error('Failed to scan MariaDB module folder list for path updates');
+                    $folderList = array();
+                }
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
                         'path'      => Path::getModuleRootPath($bearsamppBins->getMariadb()) . '/' . $folder,
@@ -130,6 +146,10 @@ class ActionSwitchVersion
                 $this->service        = $bearsamppBins->getPostgresql()->getService();
                 $this->changePort     = true;
                 $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getPostgresql()));
+                if ($folderList === false) {
+                    Log::error('Failed to scan PostgreSQL module folder list for path updates');
+                    $folderList = array();
+                }
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
                         'path'      => Path::getModuleRootPath($bearsamppBins->getPostgresql()) . '/' . $folder,
@@ -143,6 +163,10 @@ class ActionSwitchVersion
                 $this->service        = null;
                 $this->changePort     = false;
                 $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getNodejs()));
+                if ($folderList === false) {
+                    Log::error('Failed to scan Node.js module folder list for path updates');
+                    $folderList = array();
+                }
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
                         'path'      => Path::getModuleRootPath($bearsamppBins->getNodejs()) . '/' . $folder . '/etc',
@@ -166,6 +190,10 @@ class ActionSwitchVersion
                 $this->service        = $bearsamppBins->getMailpit()->getService();
                 $this->changePort     = false;
                 $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getMailpit()));
+                if ($folderList === false) {
+                    Log::error('Failed to scan Mailpit module folder list for path updates');
+                    $folderList = array();
+                }
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
                         'path'      => Path::getModuleRootPath($bearsamppBins->getMailpit()) . '/' . $folder,
@@ -179,6 +207,10 @@ class ActionSwitchVersion
                 $this->service        = $bearsamppBins->getXlight()->getService();
                 $this->changePort     = true;
                 $folderList           = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getXlight()));
+                if ($folderList === false) {
+                    Log::error('Failed to scan Xlight module folder list for path updates');
+                    $folderList = array();
+                }
                 foreach ($folderList as $folder) {
                     $this->pathsToScan[] = array(
                         'path'      => Path::getModuleRootPath($bearsamppBins->getXlight()) . '/' . $folder,
@@ -225,7 +257,10 @@ class ActionSwitchVersion
         // scan folder
         $this->bearsamppSplash->incrProgressBar();
         if (!empty($this->pathsToScan)) {
-            Path::changePath(Util::getFilesToScan($this->pathsToScan));
+            $filesToScan = Util::getFilesToScan($this->pathsToScan);
+            if (!empty($filesToScan)) {
+                Path::changePath($filesToScan);
+            }
         }
 
         // switch

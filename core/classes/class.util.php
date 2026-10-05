@@ -76,18 +76,21 @@ class Util
                 continue;
             }
             if (is_dir($path . '/' . $file)) {
-                $r = self::clearFolder($path . '/' . $file);
-                if (!$r) {
+                $r = self::clearFolder($path . '/' . $file, $exclude);
+                if ($r === null || !$r['return']) {
                     $result['return'] = false;
+                    closedir($handle);
 
                     return $result;
                 }
+                $result['nb_files'] += $r['nb_files'];
             } else {
                 $r = @unlink($path . '/' . $file);
                 if ($r) {
                     $result['nb_files']++;
                 } else {
                     $result['return'] = false;
+                    closedir($handle);
 
                     return $result;
                 }
@@ -196,13 +199,37 @@ class Util
     /**
      * Validates a port number.
      *
-     * @param   int  $port  The port number to validate.
+     * A padded setting such as '080' is a valid port and is accepted, because
+     * module configuration already tolerates it: the Apache bin validates its
+     * own configured port with is_numeric() > 0, which accepts leading zeros,
+     * so a stricter check here used to reject that port and abort the update.
+     * FILTER_VALIDATE_INT cannot be used for this because it reads a leading
+     * zero as an octal literal and rejects '080' outright.
+     *
+     * The value is therefore validated as decimal digits and normalized to an
+     * integer before the range check, so the padding is discarded rather than
+     * carried into any comparison. Callers that persist the port should cast
+     * with intval(), which is base 10 and keeps '080' -> 80.
+     *
+     * The (string) cast is required before ctype_digit(): given an int, PHP
+     * reads the value as a character code instead, so ctype_digit(80) would
+     * test 'P' and wrongly report false (and is deprecated since PHP 8.1).
+     *
+     * @param   mixed  $port  The port number to validate.
      *
      * @return bool Returns true if the port number is valid and within the range of 1 to 65535, otherwise false.
      */
     public static function isValidPort($port)
     {
-        return is_numeric($port) && ($port > 0 && $port <= 65535);
+        $portStr = trim((string) $port);
+
+        if (!ctype_digit($portStr)) {
+            return false;
+        }
+
+        $port = (int) $portStr;
+
+        return $port >= 1 && $port <= 65535;
     }
 
     /**
@@ -292,6 +319,10 @@ class Util
     /**
      * Performs replacements in a file based on a list of regular expression patterns.
      *
+     * Patterns are matched against each line content with its line ending removed, so
+     * end-anchored patterns (eg. '/^foo$/') match on both CRLF and LF files.
+     * The original line ending of each line is preserved on write.
+     *
      * @param   string  $path         The path to the file where replacements are to be made.
      * @param   array   $replaceList  An associative array where keys are regex patterns and values are replacement strings.
      *
@@ -299,39 +330,62 @@ class Util
      */
     public static function replaceInFile($path, $replaceList)
     {
-        if (file_exists($path)) {
-            $lines = file($path);
-            $fp    = fopen($path, 'w');
-            foreach ($lines as $nb => $line) {
-                $replaceDone = false;
-                foreach ($replaceList as $regex => $replace) {
-                    if (preg_match($regex, $line, $matches)) {
-                        $currentReplace = $replace;
-                        $countParams    = preg_match_all('/{{(\d+)}}/', $currentReplace, $paramsMatches);
-                        if ($countParams > 0 && $countParams <= count($matches)) {
-                            foreach ($paramsMatches[1] as $paramsMatch) {
-                                $currentReplace = str_replace('{{' . $paramsMatch . '}}', $matches[$paramsMatch], $currentReplace);
-                            }
+        if (!file_exists($path)) {
+            return;
+        }
+
+        $lines = file($path);
+        if ($lines === false) {
+            Log::error('replaceInFile(): Failed to read file: ' . $path);
+
+            return;
+        }
+
+        $fp = fopen($path, 'w');
+        if ($fp === false) {
+            Log::error('replaceInFile(): Failed to open file for writing: ' . $path);
+
+            return;
+        }
+
+        foreach ($lines as $nb => $line) {
+            // Preserve original line ending if present in $line
+            if (preg_match("/\r\n$/", $line)) {
+                $ending = "\r\n";
+            } elseif (preg_match("/\n$/", $line)) {
+                $ending = "\n";
+            } else {
+                $ending = '';
+            }
+            $content = rtrim($line, "\r\n");
+
+            $replaceDone = false;
+            foreach ($replaceList as $regex => $replace) {
+                if (preg_match($regex, $content, $matches)) {
+                    $currentReplace = $replace;
+                    $countParams    = preg_match_all('/{{(\d+)}}/', $currentReplace, $paramsMatches);
+                    if ($countParams > 0 && $countParams <= count($matches)) {
+                        foreach ($paramsMatches[1] as $paramsMatch) {
+                            $currentReplace = str_replace('{{' . $paramsMatch . '}}', $matches[$paramsMatch], $currentReplace);
                         }
-                        Log::trace('Replace in file ' . $path . ' :');
-                        Log::trace('## line_num: ' . trim($nb));
-                        Log::trace('## old: ' . trim($line));
-                        Log::trace('## new: ' . trim($currentReplace));
-
-                        // Preserve original line ending if present in $line
-                        $ending = (preg_match("/\r\n$/", $line)) ? "\r\n" : (preg_match("/\n$/", $line) ? "\n" : "");
-                        fwrite($fp, rtrim($currentReplace) . $ending);
-
-                        $replaceDone = true;
-                        break;
                     }
-                }
-                if (!$replaceDone) {
-                    fwrite($fp, $line);
+                    Log::trace('Replace in file ' . $path . ' :');
+                    Log::trace('## line_num: ' . trim($nb));
+                    Log::trace('## old: ' . trim($line));
+                    Log::trace('## new: ' . trim($currentReplace));
+
+                    fwrite($fp, rtrim($currentReplace, "\r\n") . $ending);
+
+                    $replaceDone = true;
+                    break;
                 }
             }
-            fclose($fp);
+            if (!$replaceDone) {
+                fwrite($fp, $line);
+            }
         }
+
+        fclose($fp);
     }
 
     /**
@@ -340,7 +394,7 @@ class Util
      *
      * @param   string  $path  The directory path to scan for version directories.
      *
-     * @return array|false Returns a sorted array of version suffixes, or false if the directory cannot be opened.
+     * @return array Returns a sorted array of version suffixes, or an empty array if the directory cannot be opened.
      */
     public static function getVersionList($path)
     {
@@ -348,7 +402,9 @@ class Util
 
         $handle = @opendir($path);
         if (!$handle) {
-            return false;
+            Log::debug('getVersionList(): Failed to open directory: ' . $path);
+
+            return $result;
         }
 
         $prefix = basename($path);
@@ -356,7 +412,7 @@ class Util
         while (false !== ($file = readdir($handle))) {
             $filePath = $path . '/' . $file;
             if ($file != '.' && $file != '..' && is_dir($filePath) && $file != 'current') {
-                if (strpos($file, $prefix) === 0) {
+                if (strpos($file, $prefix) === 0 && strlen($file) > strlen($prefix)) {
                     $version = substr($file, strlen($prefix));
                 } else {
                     $version = $file;
@@ -452,6 +508,10 @@ class Util
         $depth  = substr_count(str_replace($initPath, '', $startPath), '/');
         $result = array();
 
+        if (is_file($startPath . '/' . $checkFile)) {
+            $result[] = Path::formatUnixPath($startPath);
+        }
+
         $handle = @opendir($startPath);
         if (!$handle) {
             return $result;
@@ -466,8 +526,6 @@ class Util
                 foreach ($tmpResults as $tmpResult) {
                     $result[] = $tmpResult;
                 }
-            } elseif (is_file($startPath . '/' . $checkFile) && !in_array($startPath, $result)) {
-                $result[] = Path::formatUnixPath($startPath);
             }
         }
 
@@ -613,7 +671,8 @@ class Util
      * @param   bool         $useCache      Whether to use cached results (default: true).
      * @param   bool         $forceRefresh  Force refresh the cache even if valid (default: false).
      *
-     * @return array Returns an array of files found during the scan.
+     * @return array|false Returns an array of files found during the scan, or false if path discovery failed. A failed
+     *                      discovery returns false and is never cached, so an incomplete list cannot be reused later.
      */
     public static function getFilesToScan($path = null, $useCache = true, $forceRefresh = false)
     {
@@ -635,9 +694,22 @@ class Util
         Log::debug('File scan cache MISS (performing full scan)');
 
         // Perform the actual scan
-        $startTime   = self::getMicrotime();
-        $result      = array();
-        $pathsToScan = !empty($path) ? $path : self::getPathsToScan();
+        $startTime = self::getMicrotime();
+        $result    = array();
+
+        if (!empty($path)) {
+            $pathsToScan = $path;
+        } else {
+            $pathsToScan = self::getPathsToScan();
+            if ($pathsToScan === false) {
+                // Return before the cache is written: an incomplete list must not
+                // be reused, otherwise a transient scan failure poisons every
+                // later call that would have succeeded.
+                Log::error('getFilesToScan(): Path discovery failed, scan aborted and result not cached');
+
+                return false;
+            }
+        }
 
         foreach ($pathsToScan as $pathToScan) {
             $pathStartTime = self::getMicrotime();
@@ -682,12 +754,13 @@ class Util
      * important files within the BEARSAMPP environment, possibly for purposes like configuration
      * management, backup, or security auditing.
      *
-     * @return array An array of associative arrays, each containing 'path', 'includes', and 'recursive' keys.
+     * @return array|false Returns an array of associative arrays, each containing 'path', 'includes', and 'recursive' keys, or false if any module folder could not be scanned.
      */
     private static function getPathsToScan()
     {
         global $bearsamppRoot, $bearsamppCore, $bearsamppBins, $bearsamppApps, $bearsamppTools;
-        $paths = array();
+        $paths      = array();
+        $scanFailed = false;
 
         // Alias
         $paths[] = array(
@@ -718,7 +791,7 @@ class Util
         );
 
         // Apache
-        $folderList = self::getFolderList(Path::getModuleRootPath($bearsamppBins->getApache()));
+        $folderList = self::folderList(Path::getModuleRootPath($bearsamppBins->getApache()), $scanFailed);
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => Path::getModuleRootPath($bearsamppBins->getApache()) . '/' . $folder,
@@ -728,7 +801,7 @@ class Util
         }
 
         // PHP
-        $folderList = self::getFolderList(Path::getModuleRootPath($bearsamppBins->getPhp()));
+        $folderList = self::folderList(Path::getModuleRootPath($bearsamppBins->getPhp()), $scanFailed);
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => Path::getModuleRootPath($bearsamppBins->getPhp()) . '/' . $folder,
@@ -738,7 +811,7 @@ class Util
         }
 
         // MySQL
-        $folderList = self::getFolderList(Path::getModuleRootPath($bearsamppBins->getMysql()));
+        $folderList = self::folderList(Path::getModuleRootPath($bearsamppBins->getMysql()), $scanFailed);
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => Path::getModuleRootPath($bearsamppBins->getMysql()) . '/' . $folder,
@@ -748,7 +821,7 @@ class Util
         }
 
         // MariaDB
-        $folderList = self::getFolderList(Path::getModuleRootPath($bearsamppBins->getMariadb()));
+        $folderList = self::folderList(Path::getModuleRootPath($bearsamppBins->getMariadb()), $scanFailed);
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => Path::getModuleRootPath($bearsamppBins->getMariadb()) . '/' . $folder,
@@ -767,7 +840,7 @@ class Util
         }
 
         // PostgreSQL
-        $folderList = self::getFolderList(Path::getModuleRootPath($bearsamppBins->getPostgresql()));
+        $folderList = self::folderList(Path::getModuleRootPath($bearsamppBins->getPostgresql()), $scanFailed);
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => Path::getModuleRootPath($bearsamppBins->getPostgresql()) . '/' . $folder,
@@ -777,7 +850,7 @@ class Util
         }
 
         // Node.js
-        $folderList = self::getFolderList(Path::getModuleRootPath($bearsamppBins->getNodejs()));
+        $folderList = self::folderList(Path::getModuleRootPath($bearsamppBins->getNodejs()), $scanFailed);
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => Path::getModuleRootPath($bearsamppBins->getNodejs()) . '/' . $folder . '/etc',
@@ -792,7 +865,7 @@ class Util
         }
 
         // Composer
-        $folderList = self::getFolderList(Path::getModuleRootPath($bearsamppTools->getComposer()));
+        $folderList = self::folderList(Path::getModuleRootPath($bearsamppTools->getComposer()), $scanFailed);
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => Path::getModuleRootPath($bearsamppTools->getComposer()) . '/' . $folder,
@@ -802,7 +875,7 @@ class Util
         }
 
         // PowerShell
-        $folderList = self::getFolderList(Path::getModuleRootPath($bearsamppTools->getPowerShell()));
+        $folderList = self::folderList(Path::getModuleRootPath($bearsamppTools->getPowerShell()), $scanFailed);
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => Path::getModuleRootPath($bearsamppTools->getPowerShell()) . '/' . $folder,
@@ -812,7 +885,7 @@ class Util
         }
 
         // Python
-        $folderList = self::getFolderList(Path::getModuleRootPath($bearsamppTools->getPython()));
+        $folderList = self::folderList(Path::getModuleRootPath($bearsamppTools->getPython()), $scanFailed);
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => Path::getModuleRootPath($bearsamppTools->getPython()) . '/' . $folder . '/bin',
@@ -827,7 +900,7 @@ class Util
         }
 
         // Ruby
-        $folderList = self::getFolderList(Path::getModuleRootPath($bearsamppTools->getRuby()));
+        $folderList = self::folderList(Path::getModuleRootPath($bearsamppTools->getRuby()), $scanFailed);
         foreach ($folderList as $folder) {
             $paths[] = array(
                 'path'      => Path::getModuleRootPath($bearsamppTools->getRuby()) . '/' . $folder . '/bin',
@@ -836,7 +909,39 @@ class Util
             );
         }
 
+        if ($scanFailed) {
+            Log::error('getPathsToScan(): One or more module folders could not be scanned, path discovery is incomplete');
+
+            return false;
+        }
+
         return $paths;
+    }
+
+    /**
+     * Returns the folder list of a module or tool root directory, recording a
+     * failed scan instead of passing it off as a module with no versions.
+     *
+     * A module root that cannot be opened is not the same as one that holds no
+     * version folders: treating it as empty would silently drop every file of
+     * that module from the scan. getFolderList() logs the offending path, so
+     * this only has to flag the failure for the caller.
+     *
+     * @param   string  $path        The module/tool root path to scan.
+     * @param   bool    $scanFailed  Set to true by reference when the directory cannot be read.
+     *
+     * @return array Returns the folder names, or an empty array when the scan failed.
+     */
+    private static function folderList($path, &$scanFailed)
+    {
+        $folderList = self::getFolderList($path);
+        if ($folderList === false) {
+            $scanFailed = true;
+
+            return array();
+        }
+
+        return $folderList;
     }
 
     /**
@@ -901,29 +1006,36 @@ class Util
 
         $result = HttpClient::getApiJson($url);
         if (empty($result)) {
-            Log::error('Cannot retrieve latest github info for: ' . $result . ' RESULT');
+            Log::error('Cannot retrieve latest github info for: ' . $url);
             Log::trace('[VCHK-3] getLatestVersion() EXIT - empty response received');
 
             return null;
         }
 
         $resultArray = json_decode($result, true);
-        if (isset($resultArray['tag_name']) && isset($resultArray['assets'][0]['browser_download_url'])) {
-            $tagName     = $resultArray['tag_name'];
-            $downloadUrl = $resultArray['assets'][0]['browser_download_url'];
-            $name        = $resultArray['name'];
+        if (!is_array($resultArray)) {
+            Log::error('Cannot decode JSON response from: ' . $url);
+            Log::trace('[VCHK-3] getLatestVersion() EXIT - response is not valid JSON');
+
+            return null;
+        }
+
+        $tagName     = $resultArray['tag_name'] ?? null;
+        $downloadUrl = $resultArray['assets'][0]['browser_download_url'] ?? null;
+        $name        = $resultArray['name'] ?? '';
+        if ($tagName !== null && $downloadUrl !== null) {
             Log::trace('Latest version tag name: ' . $tagName);
             Log::trace('Download URL: ' . $downloadUrl);
             Log::trace('Name: ' . $name);
             Log::trace('[VCHK-3] getLatestVersion() SUCCESS - version found: ' . $tagName);
 
             return ['version' => $tagName, 'html_url' => $downloadUrl, 'name' => $name];
-        } else {
-            Log::error('Tag name, download URL, or name not found in the response: ' . $result);
-            Log::trace('[VCHK-3] getLatestVersion() EXIT - tag_name/download_url missing in JSON response');
-
-            return null;
         }
+
+        Log::error('Tag name, download URL, or name not found in the response: ' . $result);
+        Log::trace('[VCHK-3] getLatestVersion() EXIT - tag_name/download_url missing in JSON response');
+
+        return null;
     }
 
     /**
@@ -943,9 +1055,9 @@ class Util
         // Forced unit mode
         if ($unit !== '') {
             return match ($unit) {
-                'GB' => number_format($size / (1 << 30), 2) . 'GB',
-                'MB' => number_format($size / (1 << 20), 2) . 'MB',
-                'KB' => number_format($size / (1 << 10), 2) . 'KB',
+                'GB' => number_format($size / (1024 ** 3), 2) . 'GB',
+                'MB' => number_format($size / (1024 ** 2), 2) . 'MB',
+                'KB' => number_format($size / (1024 ** 1), 2) . 'KB',
                 default => number_format($size) . ' bytes',
             };
         }
@@ -964,19 +1076,6 @@ class Util
     }
 
     /**
-     * Checks if the operating system is 32-bit.
-     *
-     * @return bool True if the OS is 32-bit, false otherwise.
-     */
-    public static function is32BitsOs()
-    {
-        global $bearsamppRegistry;
-        $processor = $bearsamppRegistry->getProcessorRegKey();
-
-        return UtilString::contains($processor, 'x86');
-    }
-
-    /**
      * Validates a domain name based on specific criteria.
      *
      * @param   string  $domainName  The domain name to validate.
@@ -991,6 +1090,10 @@ class Util
     /**
      * Gets the list of folders in the specified path.
      *
+     * A directory that cannot be opened is reported as false so callers can tell
+     * "no folders" apart from "scan failed"; treating it as an empty list would
+     * let a caller silently build a scan from missing paths.
+     *
      * @param   string  $path  The directory path to scan for folders.
      *
      * @return array|false Returns a sorted array of folder names, or false if the directory cannot be opened.
@@ -1001,6 +1104,8 @@ class Util
 
         $handle = @opendir($path);
         if (!$handle) {
+            Log::error('getFolderList(): Failed to open directory: ' . $path);
+
             return false;
         }
 
@@ -1031,8 +1136,16 @@ class Util
         global $bearsamppWinbinder, $bearsamppConfig;
 
         $caption = preg_replace('/[<>:"\/\\\\|?*\x00-\x1F]|\.$/', '', trim($caption));
+        if ($caption === '') {
+            Log::error('openFileContent(): Caption is empty, using default caption');
+            $caption = 'bearsampp';
+        }
         $tmpFile = Path::getTmpPath() . '/' . $caption . '.txt';
-        file_put_contents($tmpFile, $content);
+        if (file_put_contents($tmpFile, $content) === false) {
+            Log::error('openFileContent(): Failed to write temporary file: ' . $tmpFile);
+
+            return;
+        }
 
         // Open the file with the editor configured in bearsampp.conf
         $editor = $bearsamppConfig->getNotepad();

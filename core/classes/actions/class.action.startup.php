@@ -33,6 +33,9 @@ class ActionStartup
     /** @var array The list of files to scan for path placeholders. */
     private $filesToScan;
 
+    /** @var bool True when the file scan failed and filesToScan is unusable. */
+    private $fileScanFailed = false;
+
     /** @var int Number of progress bar steps consumed per service. */
     const GAUGE_SERVICES = 5;
 
@@ -60,8 +63,9 @@ class ActionStartup
         $this->startTime = Util::getMicrotime();
         $this->error     = '';
 
-        $this->rootPath    = Path::getRootPath();
-        $this->filesToScan = array();
+        $this->rootPath       = Path::getRootPath();
+        $this->filesToScan    = array();
+        $this->fileScanFailed = false;
 
         $gauge = self::GAUGE_SERVICES * count($bearsamppBins->getServices());
         $gauge += self::GAUGE_OTHERS + 1;
@@ -752,10 +756,23 @@ class ActionStartup
             $this->writeLog('Scanning configuration files for placeholders');
         }
 
-        $scanStartTime     = Util::getMicrotime();
-        $this->filesToScan = Util::getFilesToScan();
-        $scanDuration      = round(Util::getMicrotime() - $scanStartTime, 3);
+        $scanStartTime = Util::getMicrotime();
+        $scanResult    = Util::getFilesToScan();
+        $scanDuration  = round(Util::getMicrotime() - $scanStartTime, 3);
 
+        if ($scanResult === false) {
+            // Discovery failed, so filesToScan would be incomplete. Keep it empty
+            // and flag the failure rather than running the path update on a
+            // partial list, which would rewrite some files and leave the rest
+            // pointing at the old path.
+            $this->fileScanFailed = true;
+            $this->filesToScan    = array();
+            $this->writeLog('File scan failed: module folder discovery was incomplete, path update will be skipped (attempted in ' . $scanDuration . 's)');
+
+            return;
+        }
+
+        $this->filesToScan = $scanResult;
         $this->writeLog('Files to scan: ' . count($this->filesToScan) . ' (scanned in ' . $scanDuration . 's)');
     }
 
@@ -765,6 +782,12 @@ class ActionStartup
     private function changePath()
     {
         global $bearsamppLang;
+
+        if ($this->fileScanFailed) {
+            $this->writeLog('Skipping path update: the preceding file scan failed');
+
+            return;
+        }
 
         $this->splash->setTextLoading(sprintf($bearsamppLang->getValue(Lang::STARTUP_CHANGE_PATH_TEXT), $this->rootPath));
         $this->splash->incrProgressBar();

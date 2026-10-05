@@ -103,7 +103,10 @@ class ActionReload
 
             // Update paths in scanned files
             if (!empty($pathsToScan)) {
-                Path::changePath(Util::getFilesToScan($pathsToScan));
+                $filesToScan = Util::getFilesToScan($pathsToScan);
+                if (!empty($filesToScan)) {
+                    Path::changePath($filesToScan);
+                }
             }
 
             // Reload bins and apps to recreate symlinks if needed

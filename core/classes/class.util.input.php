@@ -145,29 +145,32 @@ class UtilInput
      * Sanitizes a port number by ensuring it's a valid integer in the correct range.
      * This prevents command injection through port parameters.
      *
+     * The validation rule itself lives in Util::isValidPort() so that this
+     * class and the bin classes cannot drift apart; this method only adds the
+     * logging and returns the normalized integer. Leading zeros are accepted
+     * and stripped, so '080' becomes 80.
+     *
      * @param   mixed  $port  The port to sanitize.
      *
      * @return int|false Returns the sanitized port as integer, or false if invalid.
      */
     public static function sanitizePort($port)
     {
-        $portStr = trim((string)$port);
+        $portStr = trim((string) $port);
 
-        if ($portStr === '' || !preg_match('/^\d+$/', $portStr)) {
-            Log::warning('Invalid port provided: ' . var_export($port, true));
-
-            return false;
-        }
-
-        $portInt = (int)$portStr;
-
-        if ($portInt < 1 || $portInt > 65535) {
-            Log::warning('Port out of valid range: ' . $portInt);
+        if (!Util::isValidPort($port)) {
+            // The rule is applied only once, in Util::isValidPort(). Here the
+            // digit test just separates the two rejection reasons in the log.
+            Log::warning(
+                ctype_digit($portStr)
+                    ? 'Port out of valid range: ' . $portStr
+                    : 'Invalid port provided: ' . var_export($port, true)
+            );
 
             return false;
         }
 
-        return $portInt;
+        return (int) $portStr;
     }
 
     /**
