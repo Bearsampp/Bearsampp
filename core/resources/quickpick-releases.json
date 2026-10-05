@@ -425,7 +425,7 @@
       {
         "version": "2.56.0.2",
         "url": "https://github.com/Bearsampp/module-git/releases/download/2026.10.5/bearsampp-git-2.56.0.2-2026.10.5.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "2.55.0.5",
