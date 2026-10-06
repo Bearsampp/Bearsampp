@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bearsampp — Downloads Dashboard</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel-2: #1c2430;
+    --border: #2a323d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #0a7ea4;
+    --accent-2: #1e8e3e;
+    --accent-3: #b26a00;
+    --radius: 14px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f6f8fa;
+      --panel: #ffffff;
+      --panel-2: #f0f3f6;
+      --border: #d6dee6;
+      --text: #1f2733;
+      --muted: #5a6673;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 64px; }
+
+  header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
+  header img { height: 46px; width: auto; }
+  .head-text { flex: 1 1 260px; min-width: 0; }
+  .head-text h1 { margin: 0; font-size: 1.35rem; letter-spacing: -0.01em; }
+  .head-text p { margin: 2px 0 0; color: var(--muted); font-size: 0.86rem; }
+  .head-link {
+    font-size: 0.82rem; color: var(--text); text-decoration: none;
+    border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px;
+    background: var(--panel); white-space: nowrap;
+  }
+  .head-link:hover { border-color: var(--accent); color: var(--accent); }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 30px; }
+  .tile {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px;
+    border-top: 3px solid var(--tile-color, var(--accent));
+  }
+  .tile .k { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .tile .v { font-size: 2rem; font-weight: 650; font-variant-numeric: tabular-nums; margin-top: 4px; letter-spacing: -0.02em; }
+  .tile .s { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+  .pill {
+    display: inline-block; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 1px 7px; border-radius: 999px; margin-left: 6px; vertical-align: middle;
+    border: 1px solid var(--accent-3); color: var(--accent-3); font-weight: 600;
+  }
+
+  section { margin-bottom: 30px; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+  h2 { margin: 0; font-size: 1rem; letter-spacing: 0.01em; }
+  .sec-note { color: var(--muted); font-size: 0.79rem; }
+
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--panel); }
+  .seg button {
+    appearance: none; border: 0; background: transparent; color: var(--muted);
+    font: inherit; font-size: 0.78rem; padding: 5px 13px; cursor: pointer;
+  }
+  .seg button + button { border-left: 1px solid var(--border); }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+
+  .chart-card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
+  .chart-card img { width: 100%; height: auto; display: block; border-radius: 8px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 14px; }
+  .mini { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 12px 8px; }
+  .mini .cap { font-size: 0.76rem; color: var(--muted); margin: 0 0 8px 2px; text-transform: capitalize; }
+  .mini img { width: 100%; height: auto; display: block; border-radius: 6px; background: var(--panel-2); }
+
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; font-size: 0.85rem; }
+  th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+  th { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); font-weight: 600; background: var(--panel-2); }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+  .scroll { max-height: 320px; overflow-y: auto; }
+
+  .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .meta div { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; }
+  .meta .k { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+  .meta .v { font-family: var(--mono); font-size: 0.85rem; margin-top: 3px; word-break: break-all; }
+
+  footer { color: var(--muted); font-size: 0.76rem; border-top: 1px solid var(--border); padding-top: 14px; }
+  footer a { color: var(--muted); }
+  .stale { background: var(--panel-2); border: 1px dashed var(--border); border-radius: 10px; padding: 10px 14px; color: var(--muted); font-size: 0.8rem; }
+  @media (max-width: 520px) { .tile .v { font-size: 1.6rem; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img src="https://bearsampp.com/images/logo/Bearsampp%20with%20text-stroked.png" alt="Bearsampp">
+    <div class="head-text">
+      <h1>Downloads Dashboard</h1>
+      <p>Release asset download totals, tracked daily by GitHub Downloads Action.</p>
+    </div>
+    <a class="head-link" href="https://github.com/Bearsampp/Bearsampp/releases" target="_blank" rel="noopener">All releases</a>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+
+  <section>
+    <div class="sec-head">
+      <h2>Total downloads trend</h2>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span class="sec-note" id="window-note"></span>
+        <div class="seg" id="theme-seg" role="group" aria-label="Chart theme">
+          <button type="button" data-theme="black" aria-pressed="false">black</button>
+          <button type="button" data-theme="slate" aria-pressed="true">slate</button>
+          <button type="button" data-theme="orange" aria-pressed="false">orange</button>
+        </div>
+      </div>
+    </div>
+    <div class="chart-card"><img id="hero" alt="Total release download trend over time"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Chart matrix</h2>
+      <span class="sec-note">Every chart the action generates, by type and theme.</span>
+    </div>
+    <div class="grid" id="matrix"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Snapshot history</h2>
+      <span class="sec-note" id="snap-note"></span>
+    </div>
+    <div class="scroll"><table>
+      <thead><tr><th>Date</th><th style="text-align:right">Total downloads</th></tr></thead>
+      <tbody id="snap-rows"></tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Data source</h2></div>
+    <div class="meta" id="meta"></div>
+  </section>
+
+  <footer>
+    Generated by <a href="https://github.com/justagwas/github-downloads-action" target="_blank" rel="noopener">GitHub Downloads Action</a>.
+    Repository copies and auto-generated source archives are excluded; only files attached to GitHub Releases are counted.
+  </footer>
+
+</div>
+
+<script id="snapshot-data" type="application/json">
+{
+  "schemaVersion": "1",
+  "owner": "Bearsampp",
+  "repo": "Bearsampp",
+  "visibility": "public",
+  "generatedAt": "2026-10-06T00:45:27.711Z",
+  "stats": { "total": 5924, "day": 0, "week": 0, "month": 0 },
+  "partial": { "day": true, "week": true, "month": true },
+  "snapshots": {
+    "windowDays": 45,
+    "count": 1,
+    "firstDate": "2026-10-06",
+    "lastDate": "2026-10-06",
+    "series": { "2026-10-06": 5924 }
+  },
+  "profile": { "defaultMode": "daily", "hourlyEnabled": false }
+}
+</script>
+
+<script>
+(function () {
+  var FALLBACK = JSON.parse(document.getElementById("snapshot-data").textContent);
+
+  function num(n) { return Number(n || 0).toLocaleString("en-US"); }
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+
+  function render(d) {
+    var s = d.stats || {}, p = d.partial || {}, sn = d.snapshots || {}, series = sn.series || {};
+
+    var tiles = [
+      { k: "Total downloads", v: num(s.total), c: "#0A7EA4", s: "All releases, all assets" },
+      { k: "Today", v: num(s.day), c: "#1E8E3E", s: "Since yesterday's snapshot", p: p.day },
+      { k: "This week", v: num(s.week), c: "#0069C2", s: "Rolling 7 days", p: p.week },
+      { k: "This month", v: num(s.month), c: "#B26A00", s: "Rolling 30 days", p: p.month }
+    ];
+    var box = document.getElementById("tiles");
+    box.innerHTML = "";
+    tiles.forEach(function (t) {
+      var c = el("div", "tile");
+      c.style.setProperty("--tile-color", t.c);
+      c.appendChild(el("div", "k", t.k + (t.p ? '<span class="pill">partial</span>' : "")));
+      c.appendChild(el("div", "v", t.v));
+      c.appendChild(el("div", "s", t.s));
+      box.appendChild(c);
+    });
+
+    document.getElementById("window-note").textContent =
+      sn.windowDays ? "Rolling " + sn.windowDays + "-day window" : "";
+
+    var rows = Object.keys(series).sort().reverse();
+    var tb = document.getElementById("snap-rows");
+    tb.innerHTML = "";
+    if (!rows.length) {
+      var tr = el("tr");
+      var td = el("td", null, "No snapshots yet.");
+      td.colSpan = 2;
+      tr.appendChild(td);
+      tb.appendChild(tr);
+    } else {
+      rows.forEach(function (dte) {
+        var tr = el("tr");
+        tr.appendChild(el("td", null, dte));
+        var td = el("td", "num", num(series[dte]));
+        tr.appendChild(td);
+        tb.appendChild(tr);
+      });
+    }
+    document.getElementById("snap-note").textContent =
+      rows.length ? rows.length + " of " + (sn.windowDays || rows.length) + " days collected" : "";
+
+    var meta = [
+      ["Repository", (d.owner || "") + "/" + (d.repo || "")],
+      ["Last generated", (d.generatedAt || "").replace("T", " ").replace(/\.\d+Z$/, " UTC")],
+      ["Update mode", (d.profile && d.profile.defaultMode) || "—"],
+      ["Coverage", sn.firstDate && sn.lastDate && sn.firstDate !== sn.lastDate ? sn.firstDate + " → " + sn.lastDate : (sn.lastDate || "—")]
+    ];
+    var m = document.getElementById("meta");
+    m.innerHTML = "";
+    meta.forEach(function (pair) {
+      var d2 = el("div");
+      d2.appendChild(el("div", "k", pair[0]));
+      d2.appendChild(el("div", "v", pair[1]));
+      m.appendChild(d2);
+    });
+
+    var mx = document.getElementById("matrix");
+    mx.innerHTML = "";
+    ["total-trend", "daily", "weekly", "monthly"].forEach(function (type) {
+      var card = el("div", "mini");
+      card.appendChild(el("div", "cap", type.replace("-", " ")));
+      var img = el("img");
+      img.alt = type + " downloads chart";
+      img.src = "charts/" + type + "--slate.svg";
+      img.loading = "lazy";
+      card.appendChild(img);
+      mx.appendChild(card);
+    });
+
+    window.__theme = "slate";
+    setTheme("slate");
+  }
+
+  function setTheme(t) {
+    window.__theme = t;
+    document.getElementById("hero").src = "charts/total-trend--" + t + ".svg";
+    document.querySelectorAll("#theme-seg button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.theme === t));
+    });
+    document.querySelectorAll("#matrix .mini img").forEach(function (img, i) {
+      var type = ["total-trend", "daily", "weekly", "monthly"][i];
+      img.src = "charts/" + type + "--" + t + ".svg";
+    });
+  }
+
+  document.getElementById("theme-seg").addEventListener("click", function (e) {
+    if (e.target && e.target.dataset && e.target.dataset.theme) setTheme(e.target.dataset.theme);
+  });
+
+  render(FALLBACK);
+
+  fetch("downloads.json", { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) { if (d && d.stats) render(d); })
+    .catch(function () { /* previewed from file:// or offline — embedded data stands in */ });
+})();
+</script>
+</body>
+</html>
