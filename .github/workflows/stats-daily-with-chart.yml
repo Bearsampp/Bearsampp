@@ -1,4 +1,4 @@
-name: gh-dl-daily-with-chart
+name: stats-daily-with-chart
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: gh-dl-${{ github.repository }}-${{ github.ref }}
+  group: stats-${{ github.repository }}-${{ github.ref }}
   cancel-in-progress: false
 
 env:
@@ -39,13 +39,13 @@ jobs:
           window_days: "45"
           enable_hourly_profile: "false"
           output_branch: "gh-dl-data"
-          output_path: "gh-dl/downloads.json"
+          output_path: "stats/downloads.json"
           min_refresh_minutes: "0"
           publish_chart: "true"
-          chart_output_path: "gh-dl/downloads-trend.svg"
+          chart_output_path: "stats/downloads-trend.svg"
           chart_types: "total-trend,daily,weekly,monthly"
           chart_themes: "black"
-          charts_output_dir: "gh-dl/charts"
+          charts_output_dir: "stats/charts"
           chart_width: "1000"
           chart_height: "360"
           chart_zero_baseline: "true"
@@ -71,15 +71,15 @@ jobs:
         if: steps.check.outputs.changed == 'true'
         run: |
           git fetch --depth=1 origin gh-dl-data
-          git checkout FETCH_HEAD -- gh-dl
-          ls -R gh-dl
+          git checkout FETCH_HEAD -- stats
+          ls -R stats
 
       - name: Upload downloads files
         if: steps.check.outputs.changed == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: gh-dl-files
-          path: gh-dl
+          name: stats-files
+          path: stats
           if-no-files-found: error
 
   create-update-pr:
@@ -99,13 +99,34 @@ jobs:
       - name: Download downloads files
         uses: actions/download-artifact@v4
         with:
-          name: gh-dl-files
-          path: gh-dl-artifact
+          name: stats-files
+          path: stats-artifact
 
       - name: Apply downloads files
         run: |
-          rm -rf gh-dl
-          mv gh-dl-artifact gh-dl
+          # The tracking folder is now named stats (was gh-dl). Preserve the
+          # repo-customized dashboard pages through every snapshot write because
+          # github-downloads-action only produces the JSON and charts.
+          mkdir -p _dash
+          for f in dashboard.html dashboard.md; do
+            if [ -f "gh-dl/$f" ]; then
+              cp "gh-dl/$f" "_dash/$f"
+            elif [ -f "stats/$f" ]; then
+              cp "stats/$f" "_dash/$f"
+            fi
+          done
+          rm -rf stats
+          mv stats-artifact stats
+          if [ -f "_dash/dashboard.md" ]; then
+            sed -i 's@gh-dl@stats@g' "_dash/dashboard.md"
+            mv "_dash/dashboard.md" "stats/dashboard.md"
+          fi
+          if [ -f "_dash/dashboard.html" ]; then
+            mv "_dash/dashboard.html" "stats/dashboard.html"
+          fi
+          rm -rf _dash gh-dl
+          # Drop the previously synced gh-dl workflow so it stops racing this one.
+          rm -f .github/workflows/gh-dl-daily-with-chart.yml
           git status
 
       - name: Create Pull Request
@@ -114,7 +135,7 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
           author: Bearsampp <support@bearsampp.com>
-          branch: update-gh-dl
+          branch: update-stats
           base: main
           title: 'Update downloads tracking snapshot'
           body: |
@@ -124,9 +145,7 @@ jobs:
             Day: ${{ needs.publish-downloads.outputs.day }}
             Week: ${{ needs.publish-downloads.outputs.week }}
             Month: ${{ needs.publish-downloads.outputs.month }}
-          commit-message: 'Update gh-dl downloads snapshot'
-          add-paths: |
-            gh-dl/**
+          commit-message: 'Update stats downloads snapshot'
           delete-branch: true
 
       - name: Approve Pull Request

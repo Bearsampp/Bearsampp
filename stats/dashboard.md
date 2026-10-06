@@ -2,10 +2,10 @@
 
 Release asset download totals for [Bearsampp](https://github.com/Bearsampp/Bearsampp), tracked daily by [GitHub Downloads Action](https://github.com/justagwas/github-downloads-action).
 
-[![Total downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fgh-dl%2Fdownloads.json&query=%24.stats.total&label=downloads%2Ftotal&color=0A7EA4&style=flat-square&logo=github&cacheSeconds=900)](https://github.com/Bearsampp/Bearsampp/releases)
-[![Downloads today](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fgh-dl%2Fdownloads.json&query=%24.stats.day&label=downloads%2Fday&color=1E8E3E&style=flat-square&logo=github&cacheSeconds=900)](https://github.com/Bearsampp/Bearsampp/releases)
-[![Downloads this week](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fgh-dl%2Fdownloads.json&query=%24.stats.week&label=downloads%2Fweek&color=0069C2&style=flat-square&logo=github&cacheSeconds=900)](https://github.com/Bearsampp/Bearsampp/releases)
-[![Downloads this month](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fgh-dl%2Fdownloads.json&query=%24.stats.month&label=downloads%2Fmonth&color=B26A00&style=flat-square&logo=github&cacheSeconds=900)](https://github.com/Bearsampp/Bearsampp/releases)
+[![Total downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fstats%2Fdownloads.json&query=%24.stats.total&label=downloads%2Ftotal&color=0A7EA4&style=flat-square&logo=github&cacheSeconds=900)](https://github.com/Bearsampp/Bearsampp/releases)
+[![Downloads today](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fstats%2Fdownloads.json&query=%24.stats.day&label=downloads%2Fday&color=1E8E3E&style=flat-square&logo=github&cacheSeconds=900)](https://github.com/Bearsampp/Bearsampp/releases)
+[![Downloads this week](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fstats%2Fdownloads.json&query=%24.stats.week&label=downloads%2Fweek&color=0069C2&style=flat-square&logo=github&cacheSeconds=900)](https://github.com/Bearsampp/Bearsampp/releases)
+[![Downloads this month](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fstats%2Fdownloads.json&query=%24.stats.month&label=downloads%2Fmonth&color=B26A00&style=flat-square&logo=github&cacheSeconds=900)](https://github.com/Bearsampp/Bearsampp/releases)
 
 ## Total downloads trend
 
