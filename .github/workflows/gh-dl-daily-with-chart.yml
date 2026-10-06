@@ -24,7 +24,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           window_days: "45"
           enable_hourly_profile: "false"
-          output_branch: "gh-pages"
+          output_branch: "main"
           output_path: "gh-dl/downloads.json"
           min_refresh_minutes: "0"
           publish_chart: "true"
