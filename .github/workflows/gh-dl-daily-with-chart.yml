@@ -1,9 +1,14 @@
-name: gh-dl-daily-with-chart
+name: gh-dl-daily-with-chart-and-automerge
 
 on:
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:
+  pull_request_target:
+    types: [labeled, unlabeled, synchronize, opened]
+  check_suite:
+    types: [completed]
+  status: {}
 
 concurrency:
   group: gh-dl-${{ github.repository }}-${{ github.ref }}
@@ -11,9 +16,11 @@ concurrency:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   publish-downloads:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -21,10 +28,10 @@ jobs:
       - name: Publish downloads.json and trend chart to gh-pages
         uses: justagwas/github-downloads-action@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BEARSAMPP_BOT_PAT }}
           window_days: "45"
           enable_hourly_profile: "false"
-          output_branch: "main"
+          output_branch: "gh-pages"
           output_path: "gh-dl/downloads.json"
           min_refresh_minutes: "0"
           publish_chart: "true"
@@ -41,3 +48,14 @@ jobs:
           chart_date_label_format: "yyyy-mm-dd"
           chart_show_generated_at: "true"
           chart_title_mode: "default"
+
+  automerge:
+    if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: automerge
+        uses: pascalgn/automerge-action@v0.16.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.BEARSAMPP_BOT_PAT }}
+          MERGE_LABELS: "automerge"
+          MERGE_METHOD: "squash"
