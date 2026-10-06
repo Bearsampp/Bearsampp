@@ -9,22 +9,36 @@ concurrency:
   group: gh-dl-${{ github.repository }}-${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  # justagwas/github-downloads-action@v1 still declares node20
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 permissions:
   contents: write
 
 jobs:
   publish-downloads:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+      total: ${{ steps.publish.outputs.total }}
+      day: ${{ steps.publish.outputs.day }}
+      week: ${{ steps.publish.outputs.week }}
+      month: ${{ steps.publish.outputs.month }}
+
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-      - name: Publish downloads.json and trend chart to gh-pages
+      # main is protected (requires an approving review), so the snapshot is
+      # written to an unprotected staging branch and promoted by a PR below.
+      - name: Publish downloads.json and trend chart to staging branch
+        id: publish
         uses: justagwas/github-downloads-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           window_days: "45"
           enable_hourly_profile: "false"
-          output_branch: "main"
+          output_branch: "gh-dl-data"
           output_path: "gh-dl/downloads.json"
           min_refresh_minutes: "0"
           publish_chart: "true"
@@ -41,3 +55,129 @@ jobs:
           chart_date_label_format: "yyyy-mm-dd"
           chart_show_generated_at: "true"
           chart_title_mode: "default"
+
+      - name: Check for changes
+        id: check
+        run: |
+          if [ "${{ steps.publish.outputs.published }}" = "true" ] || [ "${{ steps.publish.outputs.chart_published }}" = "true" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Snapshot changed (json published: ${{ steps.publish.outputs.published }}, chart published: ${{ steps.publish.outputs.chart_published }})."
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No material change; skipping PR."
+          fi
+
+      - name: Collect generated files from staging branch
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git fetch --depth=1 origin gh-dl-data
+          git checkout FETCH_HEAD -- gh-dl
+          ls -R gh-dl
+
+      - name: Upload downloads files
+        if: steps.check.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gh-dl-files
+          path: gh-dl
+          if-no-files-found: error
+
+  create-update-pr:
+    runs-on: ubuntu-26.04
+    needs: publish-downloads
+    if: needs.publish-downloads.outputs.changed == 'true'
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
+
+      - name: Download downloads files
+        uses: actions/download-artifact@v4
+        with:
+          name: gh-dl-files
+          path: gh-dl-artifact
+
+      - name: Apply downloads files
+        run: |
+          rm -rf gh-dl
+          mv gh-dl-artifact gh-dl
+          git status
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GH_PAT }}
+          author: Bearsampp <support@bearsampp.com>
+          branch: update-gh-dl
+          base: main
+          title: 'Update downloads tracking snapshot'
+          body: |
+            Automated update of the release download snapshot and charts.
+
+            Total: ${{ needs.publish-downloads.outputs.total }}
+            Day: ${{ needs.publish-downloads.outputs.day }}
+            Week: ${{ needs.publish-downloads.outputs.week }}
+            Month: ${{ needs.publish-downloads.outputs.month }}
+          commit-message: 'Update gh-dl downloads snapshot'
+          add-paths: |
+            gh-dl/**
+          delete-branch: true
+
+      - name: Approve Pull Request
+        if: steps.cpr.outputs.pull-request-operation != 'none' && steps.cpr.outputs.pull-request-operation != ''
+        env:
+          GH_TOKEN: ${{ secrets.BEARSAMPP_BOT_PAT }}
+        run: |
+          set +e
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+          echo "Operation - ${{ steps.cpr.outputs.pull-request-operation }}"
+
+          gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}" \
+            || echo "::notice ::Could not approve PR (self-approval or missing permissions); continuing..."
+
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set +e
+          PR_NUMBER="${{ steps.cpr.outputs.pull-request-number }}"
+
+          # A PR that is already closed/merged has nothing to do.
+          PR_STATE=$(gh pr view "$PR_NUMBER" --json state --jq .state)
+          if [ "$PR_STATE" != "OPEN" ]; then
+            echo "PR #$PR_NUMBER is $PR_STATE; nothing to merge."
+            exit 0
+          fi
+
+          gh repo view --json autoMergeAllowed || echo "Failed to get repo settings"
+
+          echo "Attempting auto-merge..."
+          if gh pr merge --merge --auto --admin "$PR_NUMBER"; then
+            echo "✓ Auto-merge enabled"
+            exit 0
+          fi
+
+          # Give required checks a chance to settle, then merge directly.
+          echo "Waiting 30 seconds before direct merge attempt..."
+          sleep 30
+
+          gh pr view "$PR_NUMBER" --json state,mergeable,mergeStateStatus,statusCheckRollup \
+            || echo "Failed to get PR status"
+
+          if gh pr merge --merge --admin "$PR_NUMBER"; then
+            echo "✓ Direct merge successful"
+            exit 0
+          fi
+
+          echo "::warning ::Could not merge PR #$PR_NUMBER. It likely needs review or has failing checks."
+          gh pr view "$PR_NUMBER" || echo "Failed to read PR"
+          gh pr check "$PR_NUMBER" || echo "No checks found."
+          exit 0
