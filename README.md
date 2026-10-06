@@ -3,7 +3,7 @@
 
 <p align="center">  
   <a href="https://github.com/Bearsampp/Bearsampp/releases/latest"><img src="https://img.shields.io/github/release/bearsampp/bearsampp.svg?style=flat-square" alt="GitHub release"></a>  
- <a href="https://github.com/Bearsampp/Bearsampp/releases"><img src="https://img.shields.io/github/downloads/bearsampp/bearsampp/total.svg?style=flat-square" alt="Total downloads"></a>  
+ <a href="https://github.com/Bearsampp/Bearsampp/releases"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fgh-dl%2Fdownloads.json&query=%24.stats.total&label=downloads%2Ftotal&color=0A7EA4&style=flat-square&logo=github&cacheSeconds=900" alt="Total downloads"></a>  
  <br /><a href="https://github.com/sponsors/N6REJ"><img src="https://img.shields.io/badge/sponsor-N6REJ-181717.svg?logo=github&style=flat-square" alt="Become a sponsor"></a>  
  <a href="https://www.paypal.me/BearLeeAble"><img src="https://img.shields.io/badge/donate-paypal-00457c.svg?logo=paypal&style=flat-square" alt="Donate Paypal"></a>  
 </p>  
@@ -113,6 +113,14 @@ We would like to thank the following for supporting our project:
 
 |<a href="https://www.am-graphix.com/">AMGraphix<br><img src="https://github.com/Bearsampp/Bearsampp/assets/1850089/189797db-4292-467d-9de0-898cde9338bc" height="100px"/></a> | <a href="https://simplifyyourweb.com/">Olivier Buisard<br><img src="https://user-images.githubusercontent.com/1850089/191779113-6218a5df-d06d-41b5-92f9-86a9563b4d09.png" height="100px" /></a> |
 |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|  
+
+## Downloads
+
+<a href="https://github.com/Bearsampp/Bearsampp/releases"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fgh-dl%2Fdownloads.json&query=%24.stats.day&label=downloads%2Fday&color=1E8E3E&style=flat-square&logo=github&cacheSeconds=900" alt="Downloads today"></a>
+<a href="https://github.com/Bearsampp/Bearsampp/releases"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fgh-dl%2Fdownloads.json&query=%24.stats.week&label=downloads%2Fweek&color=0069C2&style=flat-square&logo=github&cacheSeconds=900" alt="Downloads this week"></a>
+<a href="https://github.com/Bearsampp/Bearsampp/releases"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fgh-dl%2Fdownloads.json&query=%24.stats.month&label=downloads%2Fmonth&color=B26A00&style=flat-square&logo=github&cacheSeconds=900" alt="Downloads this month"></a>
+
+![Downloads trend chart](https://raw.githubusercontent.com/Bearsampp/Bearsampp/main/gh-dl/downloads-trend.svg)
 
 ## Statistics
 ![Alt](https://repobeats.axiom.co/api/embed/c9ce2387f701a98fffe723eb85b330a440d56a63.svg "Repobeats analytics image")
