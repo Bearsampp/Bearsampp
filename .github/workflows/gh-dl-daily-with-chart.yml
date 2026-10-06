@@ -44,7 +44,7 @@ jobs:
           publish_chart: "true"
           chart_output_path: "gh-dl/downloads-trend.svg"
           chart_types: "total-trend,daily,weekly,monthly"
-          chart_themes: "black,slate,orange"
+          chart_themes: "black"
           charts_output_dir: "gh-dl/charts"
           chart_width: "1000"
           chart_height: "360"

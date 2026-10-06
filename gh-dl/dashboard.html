@@ -72,13 +72,7 @@
   h2 { margin: 0; font-size: 1rem; letter-spacing: 0.01em; }
   .sec-note { color: var(--muted); font-size: 0.79rem; }
 
-  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--panel); }
-  .seg button {
-    appearance: none; border: 0; background: transparent; color: var(--muted);
-    font: inherit; font-size: 0.78rem; padding: 5px 13px; cursor: pointer;
-  }
-  .seg button + button { border-left: 1px solid var(--border); }
-  .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  
 
   .chart-card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
   .chart-card img { width: 100%; height: auto; display: block; border-radius: 8px; }
@@ -123,14 +117,7 @@
   <section>
     <div class="sec-head">
       <h2>Total downloads trend</h2>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-        <span class="sec-note" id="window-note"></span>
-        <div class="seg" id="theme-seg" role="group" aria-label="Chart theme">
-          <button type="button" data-theme="black" aria-pressed="false">black</button>
-          <button type="button" data-theme="slate" aria-pressed="true">slate</button>
-          <button type="button" data-theme="orange" aria-pressed="false">orange</button>
-        </div>
-      </div>
+      <span class="sec-note" id="window-note"></span>
     </div>
     <div class="chart-card"><img id="hero" alt="Total release download trend over time"></div>
   </section>
@@ -257,6 +244,8 @@
       m.appendChild(d2);
     });
 
+    document.getElementById("hero").src = "charts/total-trend--black.svg";
+
     var mx = document.getElementById("matrix");
     mx.innerHTML = "";
     ["total-trend", "daily", "weekly", "monthly"].forEach(function (type) {
@@ -264,31 +253,12 @@
       card.appendChild(el("div", "cap", type.replace("-", " ")));
       var img = el("img");
       img.alt = type + " downloads chart";
-      img.src = "charts/" + type + "--slate.svg";
+      img.src = "charts/" + type + "--black.svg";
       img.loading = "lazy";
       card.appendChild(img);
       mx.appendChild(card);
     });
-
-    window.__theme = "slate";
-    setTheme("slate");
   }
-
-  function setTheme(t) {
-    window.__theme = t;
-    document.getElementById("hero").src = "charts/total-trend--" + t + ".svg";
-    document.querySelectorAll("#theme-seg button").forEach(function (b) {
-      b.setAttribute("aria-pressed", String(b.dataset.theme === t));
-    });
-    document.querySelectorAll("#matrix .mini img").forEach(function (img, i) {
-      var type = ["total-trend", "daily", "weekly", "monthly"][i];
-      img.src = "charts/" + type + "--" + t + ".svg";
-    });
-  }
-
-  document.getElementById("theme-seg").addEventListener("click", function (e) {
-    if (e.target && e.target.dataset && e.target.dataset.theme) setTheme(e.target.dataset.theme);
-  });
 
   render(FALLBACK);
 

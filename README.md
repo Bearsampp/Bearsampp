@@ -120,7 +120,7 @@ We would like to thank the following for supporting our project:
 <a href="https://github.com/Bearsampp/Bearsampp/releases"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fgh-dl%2Fdownloads.json&query=%24.stats.week&label=downloads%2Fweek&color=0069C2&style=flat-square&logo=github&cacheSeconds=900" alt="Downloads this week"></a>
 <a href="https://github.com/Bearsampp/Bearsampp/releases"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FBearsampp%2FBearsampp%2Fmain%2Fgh-dl%2Fdownloads.json&query=%24.stats.month&label=downloads%2Fmonth&color=B26A00&style=flat-square&logo=github&cacheSeconds=900" alt="Downloads this month"></a>
 
-![Downloads trend chart](https://raw.githubusercontent.com/Bearsampp/Bearsampp/main/gh-dl/downloads-trend.svg)
+![Downloads trend chart](https://raw.githubusercontent.com/Bearsampp/Bearsampp/main/gh-dl/charts/total-trend--black.svg)
 
 ## Statistics
 ![Alt](https://repobeats.axiom.co/api/embed/c9ce2387f701a98fffe723eb85b330a440d56a63.svg "Repobeats analytics image")
