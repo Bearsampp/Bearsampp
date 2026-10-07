@@ -36,7 +36,7 @@ jobs:
         uses: justagwas/github-downloads-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          window_days: "45"
+          window_days: "90"
           enable_hourly_profile: "false"
           output_branch: "gh-dl-data"
           output_path: "stats/downloads.json"
@@ -76,7 +76,7 @@ jobs:
 
       - name: Upload downloads files
         if: steps.check.outputs.changed == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: stats-files
           path: stats
@@ -92,12 +92,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Download downloads files
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: stats-files
           path: stats-artifact
