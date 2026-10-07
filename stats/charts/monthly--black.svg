@@ -19,7 +19,7 @@
   </defs>
   <rect class="bg" x="0" y="0" width="1000" height="360" rx="16" />
   <text class="title" x="64" y="34">Bearsampp/Bearsampp release downloads</text>
-  <text class="sub" x="64" y="352">Generated 2026-10-06</text>
+  <text class="sub" x="64" y="352">Generated 2026-10-07</text>
   <line x1="64" y1="52.00" x2="976" y2="52.00" class="grid"/>
   <text x="56" y="56.00" text-anchor="end" class="axis">1</text>
   <line x1="64" y1="94.00" x2="976" y2="94.00" class="grid"/>
@@ -38,6 +38,6 @@
   <polyline class="line" points="520.00,304.00"/>
   <circle class="dot" cx="520.00" cy="304.00" r="4.5"/>
   
-  <text class="axis" x="520.00" y="336" text-anchor="start">2026-10-06</text>
+  <text class="axis" x="520.00" y="336" text-anchor="start">2026-10-07</text>
   <text class="latest" x="976" y="34" text-anchor="end">Latest month: 0</text>
 </svg>
