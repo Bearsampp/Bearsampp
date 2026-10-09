@@ -36,7 +36,7 @@ jobs:
         uses: justagwas/github-downloads-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          window_days: "90"
+          window_days: "180"
           enable_hourly_profile: "false"
           output_branch: "gh-dl-data"
           output_path: "stats/downloads.json"
