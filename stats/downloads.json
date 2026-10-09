@@ -3,10 +3,10 @@
   "owner": "Bearsampp",
   "repo": "Bearsampp",
   "visibility": "public",
-  "generatedAt": "2026-10-08T09:57:44.551Z",
+  "generatedAt": "2026-10-09T07:41:04.698Z",
   "stats": {
     "total": 5926,
-    "day": 2,
+    "day": 0,
     "week": 2,
     "month": 2
   },
@@ -16,13 +16,14 @@
     "month": true
   },
   "snapshots": {
-    "windowDays": 90,
-    "count": 2,
+    "windowDays": 180,
+    "count": 3,
     "firstDate": "2026-10-07",
-    "lastDate": "2026-10-08",
+    "lastDate": "2026-10-09",
     "series": {
       "2026-10-07": 5924,
-      "2026-10-08": 5926
+      "2026-10-08": 5926,
+      "2026-10-09": 5926
     }
   },
   "profile": {
