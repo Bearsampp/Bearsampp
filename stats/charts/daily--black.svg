@@ -34,12 +34,12 @@
   <text x="56" y="266.00" text-anchor="end" class="axis">0</text>
   <line x1="64" y1="304.00" x2="976" y2="304.00" class="grid"/>
   <text x="56" y="308.00" text-anchor="end" class="axis">0</text>
-  <path d="M 64.00 304 L 64.00 304.00 L 520.00 52.00 L 976.00 304.00 L 976.00 304 Z" fill="url(#fill-daily-black)"/>
-  <polyline class="line" points="64.00,304.00 520.00,52.00 976.00,304.00"/>
-  <circle class="dot" cx="976.00" cy="304.00" r="4.5"/>
+  <path d="M 64.00 304 L 64.00 304.00 L 520.00 52.00 L 976.00 178.00 L 976.00 304 Z" fill="url(#fill-daily-black)"/>
+  <polyline class="line" points="64.00,304.00 520.00,52.00 976.00,178.00"/>
+  <circle class="dot" cx="976.00" cy="178.00" r="4.5"/>
   
   <text class="axis" x="64.00" y="336" text-anchor="start">2026-10-07</text>
   <text class="axis" x="520.00" y="336" text-anchor="middle">2026-10-08</text>
   <text class="axis" x="976.00" y="336" text-anchor="end">2026-10-09</text>
-  <text class="latest" x="976" y="34" text-anchor="end">Latest day: 0</text>
+  <text class="latest" x="976" y="34" text-anchor="end">Latest day: 1</text>
 </svg>
