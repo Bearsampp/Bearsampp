@@ -130,6 +130,82 @@ jobs:
           rm -f .github/workflows/gh-dl-daily-with-chart.yml
           git status
 
+      - name: Render dashboard data table from downloads.json
+        run: |
+          # Keep the dashboard "Data" table in sync with downloads.json so the
+          # JSON stays the single source of truth. The action only emits the JSON
+          # and charts; dashboard.md is repo-customized and preserved above.
+          python3 - <<'PY'
+          import json
+          import pathlib
+
+          root = pathlib.Path("stats")
+          dash = root / "dashboard.md"
+          if not dash.exists():
+              print("No stats/dashboard.md found; skipping data-table render.")
+              raise SystemExit(0)
+
+          data = json.loads((root / "downloads.json").read_text(encoding="utf-8"))
+          owner = data.get("owner", "")
+          repo = data.get("repo", "")
+          profile = data.get("profile") or {}
+          snap = data.get("snapshots") or {}
+          partial = data.get("partial") or {}
+
+          flags = [k for k in ("day", "week", "month") if partial.get(k)]
+          if not flags:
+              dwm = "complete"
+          elif len(flags) == 3:
+              dwm = "partial \u2014 not enough history yet"
+          else:
+              dwm = "partial \u2014 " + ", ".join(flags) + " not enough history yet"
+
+          table = [
+              "| Field | Value |",
+              "|---|---|",
+              f"| Repository | `{owner}/{repo}` |",
+              f"| Update mode | {profile.get('defaultMode', '')} |",
+              f"| Window | {snap.get('windowDays', '')} days |",
+              f"| Snapshots collected | {snap.get('count', '')} |",
+              f"| Day / week / month | {dwm} |",
+          ]
+
+          text = dash.read_text(encoding="utf-8")
+          trailing_newline = text.endswith(("\n", "\r"))
+          lines = text.splitlines()
+          out = []
+          i = 0
+          replaced = False
+          while i < len(lines):
+              if not replaced and lines[i].strip() == "| Field | Value |":
+                  j = i + 2
+                  while j < len(lines) and lines[j].lstrip().startswith("|"):
+                      j += 1
+                  out.extend(table)
+                  i = j
+                  replaced = True
+                  continue
+              out.append(lines[i])
+              i += 1
+
+          if not replaced:
+              try:
+                  idx = out.index("## Data")
+              except ValueError:
+                  print("No data table and no '## Data' heading; skipping.")
+                  raise SystemExit(0)
+              insert_at = idx + 1
+              if insert_at < len(out) and out[insert_at].strip() == "":
+                  insert_at += 1
+              out[insert_at:insert_at] = table + [""]
+
+          result = "\n".join(out).rstrip("\n")
+          if trailing_newline:
+              result += "\n"
+          dash.write_text(result, encoding="utf-8", newline="\n")
+          print("Updated stats/dashboard.md data table from stats/downloads.json")
+          PY
+
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v8
