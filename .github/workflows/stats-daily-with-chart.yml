@@ -28,10 +28,10 @@ jobs:
       month: ${{ steps.publish.outputs.month }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@v7
 
-      # main is protected (requires an approving review), so the snapshot is
-      # written to an unprotected staging branch and promoted by a PR below.
+      # The snapshot is written to an unprotected staging branch first, then
+      # committed straight to main below (no PR, so no notification emails).
       - name: Publish downloads.json and trend chart to staging branch
         id: publish
         uses: justagwas/github-downloads-action@v1
@@ -83,19 +83,21 @@ jobs:
           path: stats
           if-no-files-found: error
 
-  create-update-pr:
+  publish-to-main:
     runs-on: ubuntu-26.04
     needs: publish-downloads
     if: needs.publish-downloads.outputs.changed == 'true'
     permissions:
-      pull-requests: write
       contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
+          ref: main
           fetch-depth: 0
+          token: ${{ secrets.GH_PAT }}
+          persist-credentials: false
 
       - name: Download downloads files
         uses: actions/download-artifact@v8
@@ -132,7 +134,7 @@ jobs:
 
       - name: Render dashboard.md from downloads.json
         env:
-          STATS_BRANCH: ${{ github.ref_name }}
+          STATS_BRANCH: main
         run: |
           # Keep dashboard.md in sync with downloads.json. If a repository has no
           # dashboard.md yet (the action only emits the JSON and charts), seed a
@@ -285,74 +287,17 @@ jobs:
           print("Updated stats/dashboard.md data table from stats/downloads.json")
           PY
 
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ secrets.GH_PAT }}
-          author: Bearsampp <support@bearsampp.com>
-          branch: update-stats
-          base: main
-          title: 'Update downloads tracking snapshot'
-          body: |
-            Automated update of the release download snapshot and charts.
-
-            Total: ${{ needs.publish-downloads.outputs.total }}
-            Day: ${{ needs.publish-downloads.outputs.day }}
-            Week: ${{ needs.publish-downloads.outputs.week }}
-            Month: ${{ needs.publish-downloads.outputs.month }}
-          commit-message: 'Update stats downloads snapshot'
-          delete-branch: true
-
-      - name: Approve Pull Request
-        if: steps.cpr.outputs.pull-request-operation != 'none' && steps.cpr.outputs.pull-request-operation != ''
-        env:
-          GH_TOKEN: ${{ secrets.BEARSAMPP_BOT_PAT }}
-        run: |
-          set +e
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
-          echo "Operation - ${{ steps.cpr.outputs.pull-request-operation }}"
-
-          gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}" \
-            || echo "::notice ::Could not approve PR (self-approval or missing permissions); continuing..."
-
-      - name: Enable Pull Request Automerge
-        if: steps.cpr.outputs.pull-request-number != ''
+      - name: Commit and push to main
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          set +e
-          PR_NUMBER="${{ steps.cpr.outputs.pull-request-number }}"
-
-          # A PR that is already closed/merged has nothing to do.
-          PR_STATE=$(gh pr view "$PR_NUMBER" --json state --jq .state)
-          if [ "$PR_STATE" != "OPEN" ]; then
-            echo "PR #$PR_NUMBER is $PR_STATE; nothing to merge."
+          git config user.name "Bearsampp Bot"
+          git config user.email "bot@bearsampp.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
             exit 0
           fi
-
-          gh repo view --json autoMergeAllowed || echo "Failed to get repo settings"
-
-          echo "Attempting auto-merge..."
-          if gh pr merge --merge --auto --admin "$PR_NUMBER"; then
-            echo "✓ Auto-merge enabled"
-            exit 0
-          fi
-
-          # Give required checks a chance to settle, then merge directly.
-          echo "Waiting 30 seconds before direct merge attempt..."
-          sleep 30
-
-          gh pr view "$PR_NUMBER" --json state,mergeable,mergeStateStatus,statusCheckRollup \
-            || echo "Failed to get PR status"
-
-          if gh pr merge --merge --admin "$PR_NUMBER"; then
-            echo "✓ Direct merge successful"
-            exit 0
-          fi
-
-          echo "::warning ::Could not merge PR #$PR_NUMBER. It likely needs review or has failing checks."
-          gh pr view "$PR_NUMBER" || echo "Failed to read PR"
-          gh pr check "$PR_NUMBER" || echo "No checks found."
-          exit 0
+          git commit -m "Update stats downloads snapshot"
+          git push origin HEAD:main
