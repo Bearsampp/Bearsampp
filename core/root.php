@@ -196,8 +196,8 @@ $bearsamppAction->process();
 if ($bearsamppRoot->isRoot()) {
     $currentAction = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : '';
     if ($currentAction !== Action::LOADING && $currentAction !== Action::STARTUP) {
-        Log::debug('root.php: script ending, calling Util::stopLoading() for action: ' . $currentAction);
-        Util::stopLoading();
+        Log::debug('root.php: script ending, calling LoadingScreen::stopLoading() for action: ' . $currentAction);
+        LoadingScreen::stopLoading();
     }
 }
 

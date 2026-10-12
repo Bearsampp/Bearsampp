@@ -63,7 +63,7 @@ foreach ($bearsamppBins->getApache()->getVersionList() as $version) {
     $result['versions'] .= sprintf(
         $versionBadge,
         $isCurrent ? 'primary' : 'secondary',
-        UtilInput::sanitizeOutput($version)
+        Sanitizer::sanitizeOutput($version)
     );
 }
 
@@ -89,9 +89,9 @@ $result['vhostscount'] .= '<span class="m-1 float-end badge text-bg-primary">' .
  */
 foreach ($bearsamppBins->getApache()->getModulesFromConf() as $moduleName => $moduleStatus) {
         if ($moduleStatus == ActionSwitchApacheModule::SWITCH_ON) {
-            $result['moduleslist'] .= '<span class="p-1 col col-xs-12"><i class="fa-regular fa-circle-check"></i> <strong>' . UtilInput::sanitizeOutput($moduleName) . '</strong></span>';
+            $result['moduleslist'] .= '<span class="p-1 col col-xs-12"><i class="fa-regular fa-circle-check"></i> <strong>' . Sanitizer::sanitizeOutput($moduleName) . '</strong></span>';
         } else {
-            $result['moduleslist'] .= '<span class="p-1 col col-xs-12"><i class="fa-regular fa-circle"></i> ' . UtilInput::sanitizeOutput($moduleName) . '</span>';
+            $result['moduleslist'] .= '<span class="p-1 col col-xs-12"><i class="fa-regular fa-circle"></i> ' . Sanitizer::sanitizeOutput($moduleName) . '</span>';
         }
     }
 
@@ -100,7 +100,7 @@ foreach ($bearsamppBins->getApache()->getModulesFromConf() as $moduleName => $mo
  */
 foreach ($bearsamppBins->getApache()->getAlias() as $alias) {
         $result['aliaseslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer" href="'
-            . UtilInput::sanitizeUrl(Path::getLocalUrl($alias)) . '"><i class="fa-solid fa-link"></i> ' . UtilInput::sanitizeOutput($alias) . '</a></div>';
+            . Sanitizer::sanitizeUrl(Path::getLocalUrl($alias)) . '"><i class="fa-solid fa-link"></i> ' . Sanitizer::sanitizeOutput($alias) . '</a></div>';
     }
 
 /**
@@ -108,7 +108,7 @@ foreach ($bearsamppBins->getApache()->getAlias() as $alias) {
  */
 foreach ($bearsamppBins->getApache()->getWwwDirectories() as $wwwDirectory) {
         $result['wwwdirectory'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer" href="'
-            . UtilInput::sanitizeUrl(Path::getLocalUrl($wwwDirectory)) . '"><i class="fa-solid fa-link"></i> ' . UtilInput::sanitizeOutput($wwwDirectory) . '</a></div>';
+            . Sanitizer::sanitizeUrl(Path::getLocalUrl($wwwDirectory)) . '"><i class="fa-solid fa-link"></i> ' . Sanitizer::sanitizeOutput($wwwDirectory) . '</a></div>';
     }
 
 /**
@@ -116,9 +116,9 @@ foreach ($bearsamppBins->getApache()->getWwwDirectories() as $wwwDirectory) {
  */
 foreach ($bearsamppBins->getApache()->getVhostsUrl() as $vhost => $enabled) {
         if ($enabled) {
-            $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer" href="//' . UtilInput::sanitizeOutput($vhost) . '"><i class="fa-regular fa-circle-check"></i> ' . UtilInput::sanitizeOutput($vhost) . '</a></div>';
+            $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer" href="//' . Sanitizer::sanitizeOutput($vhost) . '"><i class="fa-regular fa-circle-check"></i> ' . Sanitizer::sanitizeOutput($vhost) . '</a></div>';
         } else {
-            $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer" href="//' . UtilInput::sanitizeOutput($vhost) . '"><i class="fa-regular fa-circle"></i> ' . UtilInput::sanitizeOutput($vhost) . '</a></div>';
+            $result['vhostslist'] .= '<div class="float-start p-1"><a class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer" href="//' . Sanitizer::sanitizeOutput($vhost) . '"><i class="fa-regular fa-circle"></i> ' . Sanitizer::sanitizeOutput($vhost) . '</a></div>';
         }
     }
 

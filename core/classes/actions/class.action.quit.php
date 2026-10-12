@@ -502,7 +502,7 @@ class ActionQuit
                             Log::warning('Failed to remove temp file: ' . $basename);
                         }
                     } elseif (is_dir($file)) {
-                        Util::deleteFolder($file);
+                        Filesystem::deleteFolder($file);
                         if (!file_exists($file)) {
                             $results['cleaned']++;
                             Log::debug('Removed temp directory: ' . $basename);

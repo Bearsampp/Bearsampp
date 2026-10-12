@@ -30,7 +30,7 @@ class ActionService
     public function __construct($args)
     {
         global $bearsamppBins;
-        Util::startLoading();
+        LoadingScreen::startLoading();
 
         // Reload bins
         $bearsamppBins->reload();
@@ -89,7 +89,7 @@ class ActionService
             }
         }
 
-        Util::stopLoading();
+        LoadingScreen::stopLoading();
     }
 
     /**
@@ -111,7 +111,7 @@ class ActionService
     private function start($bin, $syntaxCheckCmd)
     {
         // Update loading screen to show which service is starting
-        Util::updateLoadingText('Starting ' . $bin->getName() . '...');
+        LoadingScreen::updateLoadingText('Starting ' . $bin->getName() . '...');
 
         ServiceHelper::startService($bin, $syntaxCheckCmd, true);
     }
@@ -124,7 +124,7 @@ class ActionService
     private function stop($service)
     {
         // Update loading screen to show which service is stopping
-        Util::updateLoadingText('Stopping ' . $service->getName() . '...');
+        LoadingScreen::updateLoadingText('Stopping ' . $service->getName() . '...');
 
         $service->stop();
     }
@@ -138,7 +138,7 @@ class ActionService
     private function restart($bin, $syntaxCheckCmd)
     {
         // Update loading screen to show service is restarting
-        Util::updateLoadingText('Restarting ' . $bin->getName() . '...');
+        LoadingScreen::updateLoadingText('Restarting ' . $bin->getName() . '...');
 
         if ($bin->getService()->stop()) {
             $this->start($bin, $syntaxCheckCmd);

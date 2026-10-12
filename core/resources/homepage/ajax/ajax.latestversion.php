@@ -85,9 +85,9 @@ if (version_compare($bearsamppCurrentVersion, $githubLatestVersion, '<')) {
     // trusted: sanitizeUrl() rejects a non-http(s) scheme such as javascript:
     // that htmlspecialchars() alone would happily pass through, and
     // sanitizeOutput() escapes the release name before it reaches the DOM.
-    $downloadUrl = UtilInput::sanitizeUrl($githubLatestVersionUrl);
+    $downloadUrl = Sanitizer::sanitizeUrl($githubLatestVersionUrl);
     $result['download']  .= '<a role="button" class="btn btn-success fullversionurl" href="' . $downloadUrl . '" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-cloud-arrow-down"></i> ';
-    $result['download']  .= $bearsamppLang->getValue(Lang::DOWNLOAD) . ' <strong>' . UtilInput::sanitizeOutput(APP_TITLE) . ' ' . UtilInput::sanitizeOutput($githubVersionName) . '</strong><br />';
+    $result['download']  .= $bearsamppLang->getValue(Lang::DOWNLOAD) . ' <strong>' . Sanitizer::sanitizeOutput(APP_TITLE) . ' ' . Sanitizer::sanitizeOutput($githubVersionName) . '</strong><br />';
     $result['changelog'] = '';
 }
 

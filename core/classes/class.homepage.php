@@ -42,7 +42,7 @@ class Homepage
     {
         Log::initClass($this);
 
-        $page       = UtilInput::cleanGetVar('p');
+        $page       = Sanitizer::cleanGetVar('p');
         $this->page = !empty($page) && in_array($page, $this->pageList) ? $page : self::PAGE_INDEX;
 
         // Ensure JS files are always up to date with the current URL/protocol

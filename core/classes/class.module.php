@@ -264,7 +264,7 @@ abstract class Module
      */
     public function getVersionList()
     {
-        return Util::getVersionList($this->rootPath);
+        return Filesystem::getVersionList($this->rootPath);
     }
 
     /**

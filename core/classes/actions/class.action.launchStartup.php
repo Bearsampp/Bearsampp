@@ -30,7 +30,7 @@ class ActionLaunchStartup
         global $bearsamppConfig;
 
         if (isset($args[0])) {
-            Util::startLoading();
+            LoadingScreen::startLoading();
             $launchStartup = $args[0] == Config::ENABLED;
             if ($launchStartup) {
                 Util::enableLaunchStartup();
@@ -38,7 +38,7 @@ class ActionLaunchStartup
                 Util::disableLaunchStartup();
             }
             $bearsamppConfig->replace(Config::CFG_LAUNCH_STARTUP, $args[0]);
-            Util::stopLoading();
+            LoadingScreen::stopLoading();
         }
     }
 }

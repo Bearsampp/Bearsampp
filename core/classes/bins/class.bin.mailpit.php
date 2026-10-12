@@ -265,7 +265,7 @@ class BinMailpit extends Module
     {
         global $bearsamppWinbinder;
 
-        if (!Util::isValidPort($port)) {
+        if (!Validator::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
@@ -305,7 +305,7 @@ class BinMailpit extends Module
         global $bearsamppLang, $bearsamppWinbinder;
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
-        if (!Util::isValidPort($port)) {
+        if (!Validator::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
@@ -313,7 +313,7 @@ class BinMailpit extends Module
 
         $headers = HttpClient::getHeaders($this->listen, $port);
         if (!empty($headers)) {
-            if (UtilString::contains($headers[0], 'Mailpit')) {
+            if (Str::contains($headers[0], 'Mailpit')) {
                 Log::debug($this->getName() . ' port ' . $port . ' is used by: ' . str_replace('220 ', '', $headers[0]));
                 if ($showWindow) {
                     $bearsamppWinbinder->messageBoxInfo(

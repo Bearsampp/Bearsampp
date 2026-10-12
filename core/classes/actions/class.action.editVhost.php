@@ -205,7 +205,7 @@ class ActionEditVhost extends ActionDialogBase
     {
         global $bearsamppLang;
 
-        if (!Util::isValidDomainName($values['serverName'])) {
+        if (!Validator::isValidDomainName($values['serverName'])) {
             return [
                 'valid' => false,
                 'error' => sprintf($bearsamppLang->getValue(Lang::VHOST_NOT_VALID_DOMAIN), $values['serverName'])

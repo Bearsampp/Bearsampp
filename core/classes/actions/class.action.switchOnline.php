@@ -24,14 +24,14 @@ class ActionSwitchOnline
         global $bearsamppConfig;
 
         if (isset($args[0]) && $args[0] == Config::ENABLED || $args[0] == Config::DISABLED) {
-            Util::startLoading();
+            LoadingScreen::startLoading();
             $putOnline = $args[0] == Config::ENABLED;
 
             $this->switchApache($putOnline);
             $this->switchAlias($putOnline);
             $this->switchVhosts($putOnline);
             $bearsamppConfig->replace(Config::CFG_ONLINE, $args[0]);
-            Util::stopLoading();
+            LoadingScreen::stopLoading();
         }
     }
 

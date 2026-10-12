@@ -282,7 +282,7 @@ class BinApache extends Module
     {
         global $bearsamppWinbinder;
 
-        if (!Util::isValidPort($port)) {
+        if (!Validator::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
@@ -323,7 +323,7 @@ class BinApache extends Module
         global $bearsamppLang, $bearsamppWinbinder;
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
-        if (!Util::isValidPort($port)) {
+        if (!Validator::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
@@ -334,7 +334,7 @@ class BinApache extends Module
         $headers = HttpClient::getHttpHeaders('http' . ($ssl ? 's' : '') . '://localhost:' . $port . '/' . Path::getWebResourcesPath() . '/ping.php', false);
         if (!empty($headers)) {
             foreach ($headers as $row) {
-                if (UtilString::startWith($row, 'Server: ') || UtilString::startWith($row, 'server: ')) {
+                if (Str::startsWith($row, 'Server: ') || Str::startsWith($row, 'server: ')) {
                     Log::debug(
                         $this->getName() . ' port ' . $port . ' is used by: ' . $this->getName() . ' ' . str_replace('Server: ', '', str_replace('server: ', '', trim($row)))
                     );
@@ -537,7 +537,7 @@ class BinApache extends Module
             if (preg_match('/^(#)?LoadModule\s*([a-z0-9_-]+)\s*"?(.*)"?/i', $row, $modMatch)) {
                 $name = $modMatch[2];
                 //$path = $modMatch[3];
-                if (!UtilString::startWith($name, 'php')) {
+                if (!Str::startsWith($name, 'php')) {
                     if ($modMatch[1] == '#') {
                         $result[$name] = ActionSwitchApacheModule::SWITCH_OFF;
                     } else {
@@ -588,7 +588,7 @@ class BinApache extends Module
         }
 
         while (false !== ($file = readdir($handle))) {
-            if ($file != '.' && $file != '..' && UtilString::startWith($file, 'mod_') && (UtilString::endWith($file, '.so') || UtilString::endWith($file, '.dll'))) {
+            if ($file != '.' && $file != '..' && Str::startsWith($file, 'mod_') && (Str::endsWith($file, '.so') || Str::endsWith($file, '.dll'))) {
                 $name          = str_replace(array('mod_', '.so', '.dll'), '', $file) . '_module';
                 $result[$name] = ActionSwitchApacheModule::SWITCH_OFF;
             }
@@ -616,7 +616,7 @@ class BinApache extends Module
         }
 
         while (false !== ($file = readdir($handle))) {
-            if ($file != '.' && $file != '..' && UtilString::endWith($file, '.conf')) {
+            if ($file != '.' && $file != '..' && Str::endsWith($file, '.conf')) {
                 $result[] = str_replace('.conf', '', $file);
             }
         }
@@ -643,7 +643,7 @@ class BinApache extends Module
         }
 
         while (false !== ($file = readdir($handle))) {
-            if ($file != '.' && $file != '..' && UtilString::endWith($file, '.conf')) {
+            if ($file != '.' && $file != '..' && Str::endsWith($file, '.conf')) {
                 $result[] = str_replace('.conf', '', $file);
             }
         }
@@ -668,7 +668,7 @@ class BinApache extends Module
             $vhostContent = file(Path::getVhostsPath() . '/' . $vhost . '.conf');
             foreach ($vhostContent as $vhostLine) {
                 $vhostLine = trim($vhostLine);
-                $enabled   = !UtilString::startWith($vhostLine, '#');
+                $enabled   = !Str::startsWith($vhostLine, '#');
                 if (preg_match_all('/ServerName\s+(.*)/', $vhostLine, $matches)) {
                     foreach ($matches as $match) {
                         $found = isset($match[1]) ? trim($match[1]) : trim($match[0]);
@@ -751,7 +751,7 @@ class BinApache extends Module
         $version = $version != null ? $version : $this->getVersion();
         $result  = self::TAG_START_SWITCHONLINE . PHP_EOL;
 
-        if (UtilString::startWith($version, '2.4')) {
+        if (Str::startsWith($version, '2.4')) {
             $result .= 'Require all granted' . PHP_EOL;
         } else {
             $result .= 'Order Allow,Deny' . PHP_EOL .
@@ -773,7 +773,7 @@ class BinApache extends Module
         $version = $version != null ? $version : $this->getVersion();
         $result  = self::TAG_START_SWITCHONLINE . PHP_EOL;
 
-        if (UtilString::startWith($version, '2.4')) {
+        if (Str::startsWith($version, '2.4')) {
             $result .= 'Require local' . PHP_EOL;
         } else {
             $result .= 'Order Deny,Allow' . PHP_EOL .

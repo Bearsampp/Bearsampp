@@ -294,7 +294,7 @@ class BinPostgresql extends Module
     {
         global $bearsamppWinbinder;
 
-        if (!Util::isValidPort($port)) {
+        if (!Validator::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
@@ -334,7 +334,7 @@ class BinPostgresql extends Module
         global $bearsamppLang, $bearsamppWinbinder;
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
-        if (!Util::isValidPort($port)) {
+        if (!Validator::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
@@ -576,7 +576,7 @@ class BinPostgresql extends Module
 
         if (file_exists($path . '/data')) {
             // Even if it exists, ensure placeholders are replaced in the whole folder
-            $filesToScan = Util::getFilesToScan(array(
+            $filesToScan = FileScanner::getFilesToScan(array(
                 array(
                     'path'      => $path,
                     'includes'  => array('.conf', '.bat', '.ber'),
@@ -593,7 +593,7 @@ class BinPostgresql extends Module
         Batch::initializePostgresql($path);
 
         // Replace placeholders in the newly created data directory and the whole version folder
-        $filesToScan = Util::getFilesToScan(array(
+        $filesToScan = FileScanner::getFilesToScan(array(
             array(
                 'path'      => $path,
                 'includes'  => array('.conf', '.bat', '.ber'),

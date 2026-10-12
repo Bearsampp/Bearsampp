@@ -219,7 +219,7 @@ class BinXlight extends Module
     {
         global $bearsamppWinbinder;
 
-        if (!Util::isValidPort($port)) {
+        if (!Validator::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
@@ -259,7 +259,7 @@ class BinXlight extends Module
         global $bearsamppLang, $bearsamppWinbinder;
         $boxTitle = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
 
-        if (!Util::isValidPort($port)) {
+        if (!Validator::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
@@ -267,7 +267,7 @@ class BinXlight extends Module
 
         $headers = HttpClient::getHeaders(APP_LOCALHOST, $port);
         if (!empty($headers)) {
-            if (UtilString::contains($headers[0], 'Xlight')) {
+            if (Str::contains($headers[0], 'Xlight')) {
                 Log::debug($this->getName() . ' port ' . $port . ' is used by: ' . str_replace('220 ', '', $headers[0]));
                 if ($showWindow) {
                     $bearsamppWinbinder->messageBoxInfo(

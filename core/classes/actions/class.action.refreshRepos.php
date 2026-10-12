@@ -32,7 +32,7 @@ class ActionRefreshRepos
         global $bearsamppTools;
 
         // Start the loading process
-        Util::startLoading();
+        LoadingScreen::startLoading();
 
         // Check if the first argument is set and not empty
         if (isset($args[0]) && !empty($args[0])) {
@@ -43,7 +43,7 @@ class ActionRefreshRepos
         }
 
         // Stop the loading process
-        Util::stopLoading();
+        LoadingScreen::stopLoading();
     }
 }
 

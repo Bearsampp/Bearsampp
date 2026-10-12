@@ -37,7 +37,7 @@ class ActionManualRestart
 
         // Start the loading process
         Log::trace("Starting loading process");
-        Util::startLoading();
+        LoadingScreen::startLoading();
 
         // Delete all services managed by Bearsampp
         Log::trace("Deleting all services managed by Bearsampp");
@@ -56,7 +56,7 @@ class ActionManualRestart
 
         // Stop the loading process
         Log::trace("Stopping loading process");
-        Util::stopLoading();
+        LoadingScreen::stopLoading();
     }
 }
 

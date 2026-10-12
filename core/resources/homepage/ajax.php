@@ -158,11 +158,11 @@ $procMap = [
 /**
  * Clean and retrieve the 'proc' POST variable.
  *
- * UtilInput::cleanPostVar is assumed to be a method that sanitizes the input to prevent security issues such as SQL injection or XSS.
+ * Sanitizer::cleanPostVar is assumed to be a method that sanitizes the input to prevent security issues such as SQL injection or XSS.
  *
  * @var string $proc The cleaned 'proc' parameter from the POST request.
  */
-$proc = UtilInput::cleanPostVar('proc', 'text');  // Ensure 'proc' is cleaned and read correctly
+$proc = Sanitizer::cleanPostVar('proc', 'text');  // Ensure 'proc' is cleaned and read correctly
 
 /**
  * Define which endpoints require CSRF protection.

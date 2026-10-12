@@ -199,14 +199,14 @@ class Nssm
         // is stripped of CR/LF and cmd metacharacters before interpolation.
         // Quotes are preserved for AppParameters, which legitimately carries
         // --defaults-file="..." style arguments built by the bin classes.
-        $name         = UtilInput::sanitizeBatchValue($this->getName());
-        $binPath      = UtilInput::sanitizeQuotedBatchValue($this->getBinPath());
-        $params       = UtilInput::sanitizeBatchValue($this->getParams(), true);
-        $displayName  = UtilInput::sanitizeQuotedBatchValue($this->getDisplayName());
-        $stdout       = UtilInput::sanitizeQuotedBatchValue($this->getStdout());
-        $stderr       = UtilInput::sanitizeQuotedBatchValue($this->getStderr());
-        $envExtra     = UtilInput::sanitizeBatchValue($this->getEnvironmentExtra());
-        $start        = UtilInput::sanitizeQuotedBatchValue($this->getStart() != null ? $this->getStart() : self::SERVICE_DEMAND_START);
+        $name         = Sanitizer::sanitizeBatchValue($this->getName());
+        $binPath      = Sanitizer::sanitizeQuotedBatchValue($this->getBinPath());
+        $params       = Sanitizer::sanitizeBatchValue($this->getParams(), true);
+        $displayName  = Sanitizer::sanitizeQuotedBatchValue($this->getDisplayName());
+        $stdout       = Sanitizer::sanitizeQuotedBatchValue($this->getStdout());
+        $stderr       = Sanitizer::sanitizeQuotedBatchValue($this->getStderr());
+        $envExtra     = Sanitizer::sanitizeBatchValue($this->getEnvironmentExtra());
+        $start        = Sanitizer::sanitizeQuotedBatchValue($this->getStart() != null ? $this->getStart() : self::SERVICE_DEMAND_START);
 
         if ($name === '' || $binPath === '') {
             $this->writeLogError('Refusing to create service: name or binary path is empty after sanitization');

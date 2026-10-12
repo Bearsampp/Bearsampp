@@ -632,7 +632,7 @@ class BinPhp extends Module
         }
 
         while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && UtilString::endWith($file, '.dll')) {
+            if ($file != "." && $file != ".." && Str::endsWith($file, '.dll')) {
                 $name = preg_replace("/^php_/", "", preg_replace("/\.dll$/", "", trim($file)));
                 if ($this->isExtensionExcluded($name)) {
                     continue;

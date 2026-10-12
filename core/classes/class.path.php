@@ -853,7 +853,7 @@ class Path
     public static function getPowerShellPath()
     {
         if (is_dir('C:\Windows\System32\WindowsPowerShell')) {
-            return Util::findFile('C:\Windows\System32\WindowsPowerShell', 'powershell.exe');
+            return Filesystem::findFile('C:\Windows\System32\WindowsPowerShell', 'powershell.exe');
         }
 
         return false;

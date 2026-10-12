@@ -225,12 +225,12 @@ class Win32Ps
                 }
 
                 // Not kill inside www
-                if (UtilString::startWith($unixExePath, Path::getWwwPath() . '/') || UtilString::contains($unixCommandPath, Path::getWwwPath() . '/')) {
+                if (Str::startsWith($unixExePath, Path::getWwwPath() . '/') || Str::contains($unixCommandPath, Path::getWwwPath() . '/')) {
                     continue;
                 }
 
                 // Not kill external process
-                if (!UtilString::startWith($unixExePath, Path::getRootPath() . '/') && !UtilString::contains($unixCommandPath, Path::getRootPath() . '/')) {
+                if (!Str::startsWith($unixExePath, Path::getRootPath() . '/') && !Str::contains($unixCommandPath, Path::getRootPath() . '/')) {
                     continue;
                 }
 

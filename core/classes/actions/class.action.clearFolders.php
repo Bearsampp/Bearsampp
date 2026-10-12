@@ -32,17 +32,17 @@ class ActionClearFolders
         /**
          * Clears specific temporary folders in the root temporary path.
          *
-         * Util::clearFolder is used to clear the contents of the root temporary path, excluding
+         * Filesystem::clearFolder is used to clear the contents of the root temporary path, excluding
          * certain essential items such as 'cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache',
          * 'pip', 'opcache' and '.gitignore'. This ensures that important data and configurations are not lost.
          *
          * @param   string Path::getTmpPath() The root temporary path to be cleared.
          * @param   array  $exclusions  List of folders and files to be excluded from deletion.
          */
-        Util::clearFolder(Path::getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore'));
+        Filesystem::clearFolder(Path::getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore'));
 
         // Clear logs
-        Util::clearFolder(
+        Filesystem::clearFolder(
             Path::getLogsPath(),
             array(
                 'mariadb.log',
@@ -61,14 +61,14 @@ class ActionClearFolders
         /**
          * Clears the core temporary path.
          *
-         * Util::clearFolder is used to clear the contents of the core temporary path, excluding
+         * Filesystem::clearFolder is used to clear the contents of the core temporary path, excluding
          * the '.gitignore' file. This ensures that the core temporary path is cleaned without
          * removing the '.gitignore' file which might be necessary for version control.
          *
          * @param   string Path::getTmpPath() The core temporary path to be cleared.
          * @param   array  $exclusions  List of folders and files to be excluded from deletion.
          */
-        Util::clearFolder(Path::getTmpPath(), array('.gitignore'));
+        Filesystem::clearFolder(Path::getTmpPath(), array('.gitignore'));
 
         // Clear configuration caches (disk .cache files + in-memory module/config caches)
         Root::clearCaches();

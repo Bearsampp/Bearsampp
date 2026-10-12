@@ -51,9 +51,9 @@ if ($bearsamppBins->getMailpit()->isEnable()) {
  */
 foreach ($bearsamppBins->getMailpit()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getMailpit()->getVersion()) {
-        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . UtilInput::sanitizeOutput($version) . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . Sanitizer::sanitizeOutput($version) . '</span>';
     } else {
-        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . UtilInput::sanitizeOutput($bearsamppBins->getMailpit()->getVersion()) . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . Sanitizer::sanitizeOutput($bearsamppBins->getMailpit()->getVersion()) . '</span>';
     }
 }
 

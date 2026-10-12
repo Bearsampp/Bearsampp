@@ -83,7 +83,7 @@ class Action
     public function process()
     {
         if ($this->exists()) {
-            $action      = UtilInput::cleanArgv(1);
+            $action      = Sanitizer::cleanArgv(1);
             $actionClass = 'Action' . ucfirst($action);
 
             $args = array();

@@ -256,7 +256,7 @@ class BinMysql extends Module
     {
         global $bearsamppWinbinder;
 
-        if (!Util::isValidPort($port)) {
+        if (!Validator::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
@@ -297,7 +297,7 @@ class BinMysql extends Module
         $boxTitle  = sprintf($bearsamppLang->getValue(Lang::CHECK_PORT_TITLE), $this->getName(), $port);
         $startTime = microtime(true);
 
-        if (!Util::isValidPort($port)) {
+        if (!Validator::isValidPort($port)) {
             Log::error($this->getName() . ' port not valid: ' . $port);
 
             return false;
@@ -366,7 +366,7 @@ class BinMysql extends Module
 
             $version = explode('-', $row[0]);
             $version = count($version) > 1 ? $version[0] : $row[0];
-            $isMysql = UtilString::startWith(strtolower($row[1]), 'mysql');
+            $isMysql = Str::startsWith(strtolower($row[1]), 'mysql');
 
             if (!$isMysql) {
                 Log::debug($this->getName() . ' port used by another DBMS: ' . $port);
@@ -787,7 +787,7 @@ class BinMysql extends Module
         if (file_exists($bin)) {
             $tmpResult = Batch::exec('mysqlGetCmdLineOutput', '"' . $bin . '" ' . $cmd . ' ' . $outputFrom, 5);
             if ($tmpResult !== false && is_array($tmpResult)) {
-                $result['syntaxOk'] = empty($tmpResult) || !UtilString::contains(trim($tmpResult[count($tmpResult) - 1]), '[ERROR]');
+                $result['syntaxOk'] = empty($tmpResult) || !Str::contains(trim($tmpResult[count($tmpResult) - 1]), '[ERROR]');
                 for ($i = 0; $i < $removeLines; $i++) {
                     unset($tmpResult[$i]);
                 }

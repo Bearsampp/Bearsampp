@@ -53,9 +53,9 @@ if ($bearsamppBins->getPhp()->isEnable()) {
  */
 foreach ($bearsamppBins->getPhp()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getPhp()->getVersion()) {
-        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . UtilInput::sanitizeOutput($version) . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . Sanitizer::sanitizeOutput($version) . '</span>';
     } else {
-        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . UtilInput::sanitizeOutput($bearsamppBins->getPhp()->getVersion()) . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . Sanitizer::sanitizeOutput($bearsamppBins->getPhp()->getVersion()) . '</span>';
     }
 }
 
@@ -69,7 +69,7 @@ $result['extscount'] .= '<span class="m-1 float-end badge text-bg-primary">' . $
 /**
  * Retrieves the PEAR version and sets it in the result array.
  */
-$result['pearversion'] .= '<span class="m-1 float-end badge text-bg-primary">' . UtilInput::sanitizeOutput($bearsamppBins->getPhp()->getPearVersion(true)) . '</span>';
+$result['pearversion'] .= '<span class="m-1 float-end badge text-bg-primary">' . Sanitizer::sanitizeOutput($bearsamppBins->getPhp()->getPearVersion(true)) . '</span>';
 
 /**
  * Retrieves the list of PHP extensions from the configuration and sets it in the result array.
@@ -78,11 +78,11 @@ foreach ($bearsamppBins->getPhp()->getExtensionsFromConf() as $extName => $extSt
         if ($extStatus == ActionSwitchPhpExtension::SWITCH_ON) {
             // $extName is escaped for display only; phpversion() is still
             // called with the raw name so the lookup behaves as before.
-            $result['extslist'] .= '<span class="p-1 col-xs-12 col-md-2"><i class="fa-regular fa-circle-check"></i> <strong>' . UtilInput::sanitizeOutput($extName) . ' <sup>' . phpversion(
+            $result['extslist'] .= '<span class="p-1 col-xs-12 col-md-2"><i class="fa-regular fa-circle-check"></i> <strong>' . Sanitizer::sanitizeOutput($extName) . ' <sup>' . phpversion(
                 substr($extName, 4)
             ) . '</sup></strong></span>';
         } else {
-            $result['extslist'] .= '<span class="p-1 col-xs-12 col-md-2"><i class="fa-regular fa-circle"></i> ' . UtilInput::sanitizeOutput($extName) . '</span>';
+            $result['extslist'] .= '<span class="p-1 col-xs-12 col-md-2"><i class="fa-regular fa-circle"></i> ' . Sanitizer::sanitizeOutput($extName) . '</span>';
         }
     }
 

@@ -49,7 +49,7 @@ class Root
         // External classes
         require_once $this->path . '/classes/class.log.php';
         require_once $this->path . '/classes/class.util.php';
-        require_once $this->path . '/classes/class.util.string.php';
+        require_once $this->path . '/classes/class.str.php';
         Log::init();
 
         // Autoloader

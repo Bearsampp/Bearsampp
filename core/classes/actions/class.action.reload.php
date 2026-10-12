@@ -38,7 +38,7 @@ class ActionReload
         }
 
         // Start loading process
-        Util::startLoading();
+        LoadingScreen::startLoading();
 
         // Capture which database services are currently running so we can restart them once
         // the reload has finished. A running database server keeps executing the binary it was
@@ -74,7 +74,7 @@ class ActionReload
             $pathsToScan = array();
 
             // MySQL
-            $folderList = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getMysql()));
+            $folderList = Filesystem::getFolderList(Path::getModuleRootPath($bearsamppBins->getMysql()));
             if ($folderList === false) {
                 Log::error('Failed to scan MySQL module folder list for path updates');
                 $folderList = array();
@@ -88,7 +88,7 @@ class ActionReload
             }
 
             // MariaDB
-            $folderList = Util::getFolderList(Path::getModuleRootPath($bearsamppBins->getMariadb()));
+            $folderList = Filesystem::getFolderList(Path::getModuleRootPath($bearsamppBins->getMariadb()));
             if ($folderList === false) {
                 Log::error('Failed to scan MariaDB module folder list for path updates');
                 $folderList = array();
@@ -103,7 +103,7 @@ class ActionReload
 
             // Update paths in scanned files
             if (!empty($pathsToScan)) {
-                $filesToScan = Util::getFilesToScan($pathsToScan);
+                $filesToScan = FileScanner::getFilesToScan($pathsToScan);
                 if (!empty($filesToScan)) {
                     Path::changePath($filesToScan);
                 }
@@ -177,7 +177,7 @@ class ActionReload
             rename($reloadStatusTmpFile, $reloadStatusFile);
 
             // Stop loading process
-            Util::stopLoading();
+            LoadingScreen::stopLoading();
         }
     }
 }

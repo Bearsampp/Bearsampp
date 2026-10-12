@@ -199,7 +199,7 @@ class ToolGit extends Module
         } else {
             if (!empty($this->repos)) {
                 foreach ($this->repos as $repo) {
-                    $foundRepos = Util::findRepos($repo, $repo, '.git/config');
+                    $foundRepos = Filesystem::findRepos($repo, $repo, '.git/config');
                     if (!empty($foundRepos)) {
                         foreach ($foundRepos as $foundRepo) {
                             array_push($result, $foundRepo);

@@ -51,9 +51,9 @@ if ($bearsamppBins->getMysql()->isEnable()) {
  */
 foreach ($bearsamppBins->getMysql()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getMysql()->getVersion()) {
-        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . UtilInput::sanitizeOutput($version) . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . Sanitizer::sanitizeOutput($version) . '</span>';
     } else {
-        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . UtilInput::sanitizeOutput($bearsamppBins->getMysql()->getVersion()) . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . Sanitizer::sanitizeOutput($bearsamppBins->getMysql()->getVersion()) . '</span>';
     }
 }
 

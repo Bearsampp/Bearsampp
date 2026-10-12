@@ -116,27 +116,24 @@ class Autoloader
     {
         $file = $rootPath . '/classes/class.' . $class . '.php';
 
-        if (in_array($class, ['utilstring', 'utilinput'], true)) {
-            $class = substr_replace($class, '.', 4, 0);
-            $file  = $rootPath . '/classes/class.' . $class . '.php';
-        } elseif ($class === 'path') {
+        if ($class === 'path') {
             $file = $rootPath . '/classes/class.path.php';
-        } elseif (UtilString::startWith($class, 'bin')) {
+        } elseif (Str::startsWith($class, 'bin')) {
             $class = $class != 'bins' ? substr_replace($class, '.', 3, 0) : $class;
             $file  = $rootPath . '/classes/bins/class.' . $class . '.php';
-        } elseif (UtilString::startWith($class, 'tool')) {
+        } elseif (Str::startsWith($class, 'tool')) {
             $class = $class != 'tools' ? substr_replace($class, '.', 4, 0) : $class;
             $file  = $rootPath . '/classes/tools/class.' . $class . '.php';
-        } elseif (UtilString::startWith($class, 'app')) {
+        } elseif (Str::startsWith($class, 'app')) {
             $class = $class != 'apps' ? substr_replace($class, '.', 3, 0) : $class;
             $file  = $rootPath . '/classes/apps/class.' . $class . '.php';
-        } elseif (UtilString::startWith($class, 'action')) {
+        } elseif (Str::startsWith($class, 'action')) {
             $class = $class != 'action' ? substr_replace($class, '.', 6, 0) : $class;
             $file  = $rootPath . '/classes/actions/class.' . $class . '.php';
-        } elseif (UtilString::startWith($class, 'tplapp') && $class != 'tplapp') {
+        } elseif (Str::startsWith($class, 'tplapp') && $class != 'tplapp') {
             $class = substr_replace(substr_replace($class, '.', 3, 0), '.', 7, 0);
             $file  = $rootPath . '/classes/tpls/app/class.' . $class . '.php';
-        } elseif (UtilString::startWith($class, 'tpl')) {
+        } elseif (Str::startsWith($class, 'tpl')) {
             $class = $class != 'tpls' ? substr_replace($class, '.', 3, 0) : $class;
             $file  = $rootPath . '/classes/tpls/class.' . $class . '.php';
         }

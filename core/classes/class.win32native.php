@@ -1028,7 +1028,7 @@ class Win32Native
      * here, returning anywhere from 0 to 7 rows across identical runs and costing
      * up to 170ms.
      *
-     * Names are sanitized with UtilInput::sanitizeServiceName() before being
+     * Names are sanitized with Sanitizer::sanitizeServiceName() before being
      * interpolated into the WQL string.
      *
      * StartMode is excluded from the default property list on purpose. It is the
@@ -1055,7 +1055,7 @@ class Win32Native
 
         $safeNames = [];
         foreach ($names as $name) {
-            $safeName = UtilInput::sanitizeServiceName($name);
+            $safeName = Sanitizer::sanitizeServiceName($name);
             if ($safeName !== false) {
                 $safeNames[] = $safeName;
             }

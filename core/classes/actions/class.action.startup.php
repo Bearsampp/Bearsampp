@@ -270,7 +270,7 @@ class ActionStartup
         }
 
         Log::trace('Starting loading screen');
-        // Moved Util::startLoading() to after splash window destruction to prevent double progress bars
+        // Moved LoadingScreen::startLoading() to after splash window destruction to prevent double progress bars
 
         // Give the loading window time to initialize before we terminate this process
         Log::trace('Waiting for loading window to initialize');
@@ -286,7 +286,7 @@ class ActionStartup
         $bearsamppWinbinder->reset();
 
         // Start loading screen AFTER splash window is destroyed to prevent double progress bars
-        Util::startLoading();
+        LoadingScreen::startLoading();
 
         // Exit this startup process cleanly - the loading window will continue running
         Log::trace('Exiting startup process cleanly');
@@ -359,7 +359,7 @@ class ActionStartup
             Log::trace("Removing " . $total . " old archives");
             for ($i = 0; $i < $total; $i++) {
                 Log::trace("Deleting old archive: " . $archives[$i]);
-                Util::deleteFolder($archives[$i]);
+                Filesystem::deleteFolder($archives[$i]);
             }
         }
 
@@ -539,8 +539,8 @@ class ActionStartup
         $this->splash->incrProgressBar();
 
         $this->writeLog('Clear tmp folders');
-        Util::clearFolder(Path::getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore'));
-        Util::clearFolder(Path::getTmpPath(), array('.gitignore'));
+        Filesystem::clearFolder(Path::getTmpPath(), array('cachegrind', 'composer', 'openssl', 'mailpit', 'xlight', 'npm-cache', 'pip', 'opcache', '.gitignore'));
+        Filesystem::clearFolder(Path::getTmpPath(), array('.gitignore'));
 
         // Ensure opcache directory exists for persistent file cache
         $opcachePath = Path::getTmpPath() . DIRECTORY_SEPARATOR . 'opcache';
@@ -757,7 +757,7 @@ class ActionStartup
         }
 
         $scanStartTime = Util::getMicrotime();
-        $scanResult    = Util::getFilesToScan();
+        $scanResult    = FileScanner::getFilesToScan();
         $scanDuration  = round(Util::getMicrotime() - $scanStartTime, 3);
 
         if ($scanResult === false) {

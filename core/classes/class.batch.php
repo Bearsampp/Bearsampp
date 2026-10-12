@@ -60,7 +60,7 @@ class Batch
     public static function findExeByPid($pid)
     {
         // Sanitize PID to prevent command injection
-        $sanitizedPid = UtilInput::sanitizePID($pid);
+        $sanitizedPid = Sanitizer::sanitizePID($pid);
         if ($sanitizedPid === false) {
             self::writeLog('Invalid PID provided to findExeByPid: ' . var_export($pid, true));
 
@@ -88,7 +88,7 @@ class Batch
     public static function getProcessUsingPort($port)
     {
         // Sanitize port to prevent command injection
-        $sanitizedPort = UtilInput::sanitizePort($port);
+        $sanitizedPort = Sanitizer::sanitizePort($port);
         if ($sanitizedPort === false) {
             self::writeLog('Invalid port provided to getProcessUsingPort: ' . var_export($port, true));
 
@@ -98,11 +98,11 @@ class Batch
         $result = self::exec('getProcessUsingPort', 'NETSTAT -aon', 4);
         if ($result !== false) {
             foreach ($result as $row) {
-                if (!UtilString::startWith($row, 'TCP')) {
+                if (!Str::startsWith($row, 'TCP')) {
                     continue;
                 }
                 $rowExp = explode(' ', preg_replace('/\s+/', ' ', $row));
-                if (count($rowExp) == 5 && UtilString::endWith($rowExp[1], ':' . $sanitizedPort) && $rowExp[3] == 'LISTENING') {
+                if (count($rowExp) == 5 && Str::endsWith($rowExp[1], ':' . $sanitizedPort) && $rowExp[3] == 'LISTENING') {
                     $pid = intval($rowExp[4]);
                     $exe = self::findExeByPid($pid);
                     if ($exe !== false) {
@@ -161,7 +161,7 @@ class Batch
         $result = self::exec('getPearVersion', 'CMD /C "' . $bearsamppBins->getPhp()->getPearExe() . '" -V', 5);
         if (is_array($result)) {
             foreach ($result as $row) {
-                if (UtilString::startWith($row, 'PEAR Version:')) {
+                if (Str::startsWith($row, 'PEAR Version:')) {
                     $expResult = explode(' ', $row);
                     if (count($expResult) == 3) {
                         return trim($expResult[2]);
@@ -338,7 +338,7 @@ class Batch
         $result = self::exec('getOsInfo', 'ver', 5);
         if (is_array($result)) {
             foreach ($result as $row) {
-                if (UtilString::startWith($row, 'Microsoft')) {
+                if (Str::startsWith($row, 'Microsoft')) {
                     return trim($row);
                 }
             }
@@ -356,7 +356,7 @@ class Batch
     public static function setServiceDisplayName($serviceName, $displayName)
     {
         // Sanitize service name to prevent command injection
-        $sanitizedName = UtilInput::sanitizeServiceName($serviceName);
+        $sanitizedName = Sanitizer::sanitizeServiceName($serviceName);
         if ($sanitizedName === false) {
             self::writeLog('Invalid service name provided to setServiceDisplayName: ' . $serviceName);
 
@@ -365,7 +365,7 @@ class Batch
 
         // Neutralize anything that could terminate the argument or add a command
         // line, then quote the whole value so no spaces split it apart.
-        $sanitizedDisplayName = UtilInput::sanitizeBatchValue($displayName);
+        $sanitizedDisplayName = Sanitizer::sanitizeBatchValue($displayName);
 
         $cmd = 'sc config ' . $sanitizedName . ' DisplayName= "' . $sanitizedDisplayName . '"';
         self::exec('setServiceDisplayName', $cmd, true, false);
@@ -380,7 +380,7 @@ class Batch
     public static function setServiceDescription($serviceName, $desc)
     {
         // Sanitize service name to prevent command injection
-        $sanitizedName = UtilInput::sanitizeServiceName($serviceName);
+        $sanitizedName = Sanitizer::sanitizeServiceName($serviceName);
         if ($sanitizedName === false) {
             self::writeLog('Invalid service name provided to setServiceDescription: ' . $serviceName);
 
@@ -389,7 +389,7 @@ class Batch
 
         // Neutralize anything that could terminate the argument or add a command
         // line, then quote the whole value so no spaces split it apart.
-        $sanitizedDesc = UtilInput::sanitizeBatchValue($desc);
+        $sanitizedDesc = Sanitizer::sanitizeBatchValue($desc);
 
         $cmd = 'sc description ' . $sanitizedName . ' "' . $sanitizedDesc . '"';
         self::exec('setServiceDescription', $cmd, true, false);
@@ -404,7 +404,7 @@ class Batch
     public static function setServiceStartType($serviceName, $startType)
     {
         // Sanitize service name to prevent command injection
-        $sanitizedName = UtilInput::sanitizeServiceName($serviceName);
+        $sanitizedName = Sanitizer::sanitizeServiceName($serviceName);
         if ($sanitizedName === false) {
             self::writeLog('Invalid service name provided to setServiceStartType: ' . $serviceName);
 
@@ -461,7 +461,7 @@ class Batch
 
         // Redirect output
         if ($catchOutput) {
-            $content = '(' . PHP_EOL . $content . PHP_EOL . ') > "' . $resultFile . '"' . (!UtilString::endWith($content, '2') ? ' 2>&1' : '');
+            $content = '(' . PHP_EOL . $content . PHP_EOL . ') > "' . $resultFile . '"' . (!Str::endsWith($content, '2') ? ' 2>&1' : '');
         }
 
         // Header
@@ -555,6 +555,6 @@ class Batch
     {
         global $bearsamppCore;
 
-        return Path::formatWindowsPath(Path::getTmpPath() . '/' . (!empty($customName) ? $customName . '-' : '') . UtilString::random() . $ext);
+        return Path::formatWindowsPath(Path::getTmpPath() . '/' . (!empty($customName) ? $customName . '-' : '') . Random::random() . $ext);
     }
 }

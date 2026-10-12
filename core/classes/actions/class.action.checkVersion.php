@@ -58,7 +58,7 @@ class ActionCheckVersion
         if (!file_exists($bearsamppCore->getExec()) || $isMenuCheck) {
             if ($isMenuCheck) {
                 Log::debug('ActionCheckVersion: Manual check detected, starting loading');
-                Util::startLoading();
+                LoadingScreen::startLoading();
                 $this->didStartLoading = true;
             }
             $this->currentVersion = $bearsamppCore->getAppVersion();
@@ -81,14 +81,14 @@ class ActionCheckVersion
                 } else {
                     Log::debug('ActionCheckVersion: Version is up to date (background check)');
                     if ($this->didStartLoading) {
-                        Util::stopLoading();
+                        LoadingScreen::stopLoading();
                     }
                 }
             } elseif ($isMenuCheck) {
                 Log::debug('ActionCheckVersion: Failed to retrieve version data during manual check');
                 // If it's a menu check but we couldn't get version data, we must stop loading
                 if ($this->didStartLoading) {
-                    Util::stopLoading();
+                    LoadingScreen::stopLoading();
                 }
                 Log::debug('ActionCheckVersion: Showing error message box');
                 $bearsamppWinbinder->messageBoxError(
@@ -101,7 +101,7 @@ class ActionCheckVersion
                 Log::debug('ActionCheckVersion: Failed to retrieve version data (background check)');
                 // Not a menu check, only stop loading if we started it
                 if ($this->didStartLoading) {
-                    Util::stopLoading();
+                    LoadingScreen::stopLoading();
                 }
             }
         }
@@ -129,7 +129,7 @@ class ActionCheckVersion
         $this->wbBtnOk = $winbinder->createButton($this->wbWindow, $lang->getValue(Lang::BUTTON_OK), 280, 103);
         $this->wbImage = $winbinder->drawImage($this->wbWindow, Path::getImagesPath() . '/about.bmp');
 
-        Util::stopLoading();
+        LoadingScreen::stopLoading();
         $winbinder->setHandler($this->wbWindow, $this, 'processWindow');
         $winbinder->mainLoop();
         $winbinder->reset();
@@ -143,8 +143,8 @@ class ActionCheckVersion
      */
     private function showVersionOkMessageBox($lang, $winbinder)
     {
-        Log::debug('ActionCheckVersion: Calling Util::stopLoading() in showVersionOkMessageBox');
-        Util::stopLoading();
+        Log::debug('ActionCheckVersion: Calling LoadingScreen::stopLoading() in showVersionOkMessageBox');
+        LoadingScreen::stopLoading();
         Log::debug('ActionCheckVersion: Calling messageBoxInfo');
         $winbinder->messageBoxInfo(
             $lang->getValue(Lang::CHECK_VERSION_LATEST_TEXT),

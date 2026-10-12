@@ -26,12 +26,12 @@ class ActionEnable
         global $bearsamppBins;
 
         if (isset($args[0]) && !empty($args[0]) && isset($args[1])) {
-            Util::startLoading();
+            LoadingScreen::startLoading();
             $bin = $bearsamppBins->getBinByName($args[0]);
             if ($bin !== null) {
                 $bin->setEnable($args[1], true);
             }
-            Util::stopLoading();
+            LoadingScreen::stopLoading();
         }
     }
 }

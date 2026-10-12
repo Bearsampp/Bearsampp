@@ -53,9 +53,9 @@ if ($bearsamppBins->getMemcached()->isEnable()) {
  */
 foreach ($bearsamppBins->getMemcached()->getVersionList() as $version) {
     if ($version != $bearsamppBins->getMemcached()->getVersion()) {
-        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . UtilInput::sanitizeOutput($version) . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-secondary">' . Sanitizer::sanitizeOutput($version) . '</span>';
     } else {
-        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . UtilInput::sanitizeOutput($bearsamppBins->getMemcached()->getVersion()) . '</span>';
+        $result['versions'] .= '<span class="m-1 badge text-bg-primary">' . Sanitizer::sanitizeOutput($bearsamppBins->getMemcached()->getVersion()) . '</span>';
     }
 }
 

@@ -9,84 +9,17 @@
  */
 
 /**
- * String utility methods and cryptographically secure random generators.
- *
- * Provides case-insensitive substring checks, prefix/suffix tests, alphanumeric
- * validation, and secure random string/token/bytes generation.
- *
- * Note: This class is required directly by the bootstrap (class.root.php) because
- * the autoloader itself depends on UtilString::startWith().
+ * Cryptographically secure random string, token, and byte generators.
  *
  * Usage:
  * ```
- * UtilString::startWith('foobar', 'foo'); // true
- * UtilString::random(16);                 // cryptographically secure random string
+ * Random::random(16);                 // cryptographically secure random string
+ * Random::generateSecureToken(32);    // hex token for sessions / CSRF
+ * Random::generateSecureBytes(32);    // raw bytes for keys / IVs
  * ```
  */
-class UtilString
+class Random
 {
-    /**
-     * Checks if a string contains a specified substring (case-insensitive).
-     *
-     * @param   string  $string  The string to search in.
-     * @param   string  $search  The substring to search for.
-     *
-     * @return bool Returns true if the substring is found, otherwise false.
-     */
-    public static function contains($string, $search)
-    {
-        if (!empty($string) && !empty($search)) {
-            return stripos($string, $search) !== false;
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if a string starts with a specified substring.
-     *
-     * @param   string  $string  The string to check.
-     * @param   string  $search  The substring to look for at the start of the string.
-     *
-     * @return bool Returns true if the string starts with the search substring, otherwise false.
-     */
-    public static function startWith($string, $search)
-    {
-        if ($string === null || $string === '') {
-            return false;
-        }
-
-        return (substr($string, 0, strlen($search)) === $search);
-    }
-
-    /**
-     * Checks if a string ends with a specified substring.
-     *
-     * @param   string  $string  The string to check.
-     * @param   string  $search  The substring to look for at the end of the string.
-     *
-     * @return bool Returns true if the string ends with the search substring, otherwise false.
-     */
-    public static function endWith($string, $search)
-    {
-        $length = strlen($search);
-        $start  = $length * -1;
-
-        return (substr($string, $start) === $search);
-    }
-
-    /**
-     * Checks if a string is alphanumeric.
-     *
-     * @param   string  $string  The string to check.
-     *
-     * @return bool Returns true if the string is alphanumeric, false otherwise.
-     */
-    public static function isAlphanumeric($string)
-    {
-        return ctype_alnum($string);
-    }
-
     /**
      * Generates a cryptographically secure random string of specified length and character set.
      *
@@ -156,4 +89,3 @@ class UtilString
         }
     }
 }
-
