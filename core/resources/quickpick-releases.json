@@ -5,7 +5,7 @@
       {
         "version": "2.4.69",
         "url": "https://github.com/Bearsampp/module-apache/releases/download/2026.10.11/bearsampp-apache-2.4.69-2026.10.11.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "2.4.68",
