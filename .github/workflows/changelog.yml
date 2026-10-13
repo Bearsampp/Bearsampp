@@ -1,20 +1,75 @@
 name: Changelog creator
-on: workflow_dispatch
 
+# Appends a generated changelog to the body of an EXISTING release.
+# The release and any human notes are created by a maintainer or another
+# workflow. This workflow never creates a release, tag, or draft. It wakes up
+# when a release is published (or a pre-release is promoted to latest) and
+# edits only its body: existing notes stay on top, the generated changelog goes
+# below. Re-runs replace the marker-wrapped block instead of duplicating it.
+
+on:
+  release:
+    types: [published, prereleased, released]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to fill (e.g. 2026.10.11)'
+        required: true
+
+concurrency:
+  group: changelog-${{ github.repository }}-${{ github.event.release.tag_name || github.event.inputs.tag }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
 
 jobs:
-  test:
+  changelog:
     runs-on: ubuntu-26.04
+    if: ${{ !endsWith(github.repository, '.settings') }}
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     steps:
-    - name: Generate changelog
-      id: changelog
-      uses: metcalfc/changelog-generator@v5
-      with:
-        myToken: ${{ secrets.GITHUB_TOKEN }}
-    - name: Get the changelog
-      run: |
-        cat << "EOF"
-        ${{ steps.changelog.outputs.changelog }}
-        EOF
+      - name: Append generated changelog to release notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name || github.event.inputs.tag }}
+        run: |
+          set -euo pipefail
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/releases/generate-notes" \
+            -f tag_name="$TAG" -q .body > generated.md
+          gh release view "$TAG" --json body -q .body > existing.md || true
+          python3 - <<'PY'
+          import pathlib, re
+          p = pathlib.Path
+          existing = p("existing.md").read_text(encoding="utf-8") if p("existing.md").exists() else ""
+          existing = re.sub(r"<!-- changelog-start -->.*?<!-- changelog-end -->\n?", "", existing, flags=re.S).strip()
+          lines = p("generated.md").read_text(encoding="utf-8").splitlines()
+          kept = [l for l in lines if not re.match(r"^\*\s*Update\s+(?:downloads|stats)\s+(?:tracking\s+)?snapshot", l)]
+          out = []
+          i = 0
+          while i < len(kept):
+              line = kept[i]
+              if line.startswith(("## ", "### ")):
+                  j = i + 1
+                  while j < len(kept) and kept[j].strip() == "":
+                      j += 1
+                  if j >= len(kept) or kept[j].startswith(("## ", "### ")) or kept[j].startswith("**Full Changelog**"):
+                      i += 1
+                      continue
+              if line.strip() == "" and out and out[-1].strip() == "":
+                  i += 1
+                  continue
+              out.append(line)
+              i += 1
+          if not any(l.startswith("* ") for l in out):
+              print("Nothing to add; leaving release body unchanged.")
+              raise SystemExit(0)
+          generated = "\n".join(out).strip()
+          block = "<!-- changelog-start -->\n" + generated + "\n<!-- changelog-end -->"
+          body = (existing + "\n\n" + block + "\n") if existing else (block + "\n")
+          p("final.md").write_text(body, encoding="utf-8")
+          PY
+          if [[ -f final.md ]]; then
+            gh release edit "$TAG" --notes-file final.md
+          fi

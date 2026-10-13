@@ -1,0 +1,42 @@
+# GitHub "automatically generated release notes" configuration.
+#
+# This is NOT an action, workflow, or script. It is plain config data that
+# GitHub reads to build the notes our Changelog creator workflow appends to a
+# release. It never creates a release or tag on its own.
+#
+# Effect:
+#   - Merged PRs are grouped under the headings below by label.
+#   - PRs carrying an excluded label (automation/bot) are left out.
+#   - A "*" catch-all keeps everything else, so unlabeled work still shows.
+#     The Changelog creator workflow then drops the known noisy auto PRs
+#     ("Update downloads tracking snapshot ...") by title.
+#   - Docs: https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
+
+changelog:
+  exclude:
+    labels:
+      - automated
+      - releases-update
+      - bot :robot:
+      - Sync :arrow_forward:
+  categories:
+    - title: "🚀 Features"
+      labels:
+        - enhancement :sparkles:
+        - feature request :bulb:
+    - title: "🐛 Bug Fixes"
+      labels:
+        - bug :bug:
+    - title: "🔐 Security"
+      labels:
+        - Security :closed_lock_with_key:
+    - title: "📚 Documentation"
+      labels:
+        - documentation
+        - documentation :books:
+    - title: "⬆️ Dependencies"
+      labels:
+        - dependencies :man_cook:
+    - title: "What's Changed"
+      labels:
+        - "*"
