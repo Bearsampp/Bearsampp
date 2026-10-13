@@ -33,6 +33,7 @@ jobs:
       - name: Append generated changelog to release notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           TAG: ${{ github.event.release.tag_name || github.event.inputs.tag }}
         run: |
           set -euo pipefail
