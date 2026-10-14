@@ -1685,7 +1685,7 @@
       {
         "version": "8.6.0RC3",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.10.11/bearsampp-php-8.6.0RC3-2026.10.13.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "8.6.0RC2",
