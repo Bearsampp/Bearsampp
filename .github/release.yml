@@ -17,26 +17,26 @@ changelog:
     labels:
       - automated
       - releases-update
-      - bot :robot:
-      - Sync :arrow_forward:
+      - "bot :robot:"
+      - "Sync :arrow_forward:"
   categories:
     - title: "🚀 Features"
       labels:
-        - enhancement :sparkles:
-        - feature request :bulb:
+        - "enhancement :sparkles:"
+        - "feature request :bulb:"
     - title: "🐛 Bug Fixes"
       labels:
-        - bug :bug:
+        - "bug :bug:"
     - title: "🔐 Security"
       labels:
-        - Security :closed_lock_with_key:
+        - "Security :closed_lock_with_key:"
     - title: "📚 Documentation"
       labels:
         - documentation
-        - documentation :books:
+        - "documentation :books:"
     - title: "⬆️ Dependencies"
       labels:
-        - dependencies :man_cook:
+        - "dependencies :man_cook:"
     - title: "What's Changed"
       labels:
         - "*"
