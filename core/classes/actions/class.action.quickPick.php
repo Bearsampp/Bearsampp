@@ -440,82 +440,6 @@ class QuickPick
 	}
 	
 	/**
-	 * Validates the format of a given username key by checking it against an external API.
-	 *
-	 * This method performs several checks to ensure the validity of the username key:
-	 * 1. Logs the method call.
-	 * 2. Ensures the global configuration is available.
-	 * 3. Retrieves the username key from the global configuration.
-	 * 4. Ensures the username key is not empty.
-	 * 5. Constructs the API URL using the username key.
-	 * 6. Fetches the API response.
-	 * 7. Decodes the JSON response.
-	 * 8. Validates the response data.
-	 *
-	 * @return bool True if the username key is valid, false otherwise.
-	 */
-	public function checkDownloadId(): bool
-	{
-		global $bearsamppConfig;
-		
-		Log::debug('checkDownloadId method called.');
-		
-		// Ensure the global config is available
-		if (!isset($bearsamppConfig)) {
-			Log::error('Global configuration is not set.');
-			
-			return false;
-		}
-		
-		$DownloadId = $bearsamppConfig->getDownloadId();
-		
-		// Ensure the license key is not empty
-		if (empty($DownloadId)) {
-			Log::error('License key is empty.');
-			
-			return false;
-		}
-		
-		$url = QUICKPICK_API_URL . QUICKPICK_API_KEY . '&download_id=' . $DownloadId;
-		// Never log the raw URL: it embeds both the API key and the per-user download ID.
-		Log::debug('Validating download ID via QuickPick API.');
-		
-		// Attempt to fetch the API response (verified TLS context)
-		// Note: If this fails, PHP will generate a warning which will be logged by the error handler
-		// This is expected behavior when the API server is unavailable
-		$response = file_get_contents($url, false, HttpClient::getSslStreamContext());
-		
-		// Check if the response is false
-		if ($response === false) {
-			Log::error('Failed to validate QuickPick license - API server unavailable');
-			
-			return false;
-		}
-		
-		Log::debug('API response: ' . $response);
-		
-		$data = json_decode($response, true);
-		
-		// Check if the JSON decoding was successful
-		if (json_last_error() !== JSON_ERROR_NONE) {
-			Log::error('Error decoding JSON response: ' . json_last_error_msg());
-			
-			return false;
-		}
-		
-		// Validate the response data
-		if (isset($data['success']) && $data['success'] === true && isset($data['data']) && is_array($data['data']) && count($data['data']) > 0) {
-			Log::debug('License key valid: ' . $DownloadId);
-			
-			return true;
-		}
-		
-		Log::error('Invalid license key: ' . $DownloadId);
-		
-		return false;
-	}
-	
-	/**
 	 * Installs a specified module by fetching its URL and unzipping its contents.
 	 *
 	 * This method retrieves the URL of the specified module and version from the QuickPick JSON data.
@@ -1005,9 +929,8 @@ class QuickPick
 	 * Generates the HTML content for the QuickPick menu.
 	 *
 	 * This method creates the HTML structure for the QuickPick interface, including a dropdown
-	 * for selecting modules and their respective versions. It checks if the license key is valid
-	 * before displaying the modules. If the license key is invalid, it displays a subscription prompt.
-	 * If there is no internet connection, it displays a message indicating the lack of internet.
+	 * for selecting modules and their respective versions. If there is no internet connection,
+	 * it displays a message indicating the lack of internet.
 	 *
 	 * @param   array   $modules     An array of available modules.
 	 * @param   array   $versions    An associative array where the key is the module name and the value is an array containing the module versions.
@@ -1023,8 +946,7 @@ class QuickPick
 		
 		ob_start();
 		if (HttpClient::checkInternetState()) {
-			// Check if the license key is valid
-			if ($this->checkDownloadId()): ?>
+			?>
 				<div class = "enhanced-mode-toggle">
 					<label class = "form-check-label me-2" for = "enhancedQuickPickSwitch">
 						Enhanced Mode
@@ -1112,17 +1034,6 @@ class QuickPick
 					</div>
 				</div>
 			<?php
-			else: ?>
-				<div id = "subscribeContainer" class = "text-center">
-					<a href = "<?php
-					echo HttpClient::getWebsiteUrl('subscribe'); ?>" class = "btn btn-dark d-inline-flex align-items-center">
-						<img src = "<?php
-						echo $imagesPath . 'subscribe.svg'; ?>" alt = "Subscribe Icon" class = "me-2">
-						Subscribe to QuickPick now
-					</a>
-				</div>
-			<?php
-			endif;
 		} else {
 			?>
 			<div id = "InternetState" class = "text-center">
