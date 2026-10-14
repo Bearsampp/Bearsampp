@@ -40,8 +40,8 @@ Raw snapshot data lives in [`downloads.json`](downloads.json).
 | Repository | `Bearsampp/Bearsampp` |
 | Update mode | daily |
 | Window | 180 days |
-| Snapshots collected | 7 |
-| Day / week / month | partial — week, month not enough history yet |
+| Snapshots collected | 8 |
+| Day / week / month | partial — month not enough history yet |
 
 `day`, `week`, and `month` stay flagged partial until the action has collected enough daily history to compare against. Expect roughly a week before weekly comparisons become meaningful and a month before monthly ones do.
 
