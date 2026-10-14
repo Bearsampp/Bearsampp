@@ -50,6 +50,16 @@ ext {
     releaseFormat = buildProps.getProperty('release.format')
     releaseReleaseType = buildProps.getProperty('release.release.type')
 
+    // Pre-release keywords excluded from version selection (configurable via build.properties)
+    def prereleaseKeywordsRaw = buildProps.getProperty('release.excludePrereleaseKeywords',
+            'alpha,beta,rc,dev,snapshot,nightly,preview')
+    def prereleaseKeywords = prereleaseKeywordsRaw.split(',').collect { it.trim() }.findAll { it }
+    if (prereleaseKeywords.isEmpty()) {
+        prereleaseKeywords = ['alpha', 'beta', 'rc', 'dev', 'snapshot', 'nightly', 'preview']
+    }
+    excludePrereleaseKeywords = prereleaseKeywords
+    prereleasePattern = /(?i).*(?:^|[0-9.\-_])(?:${prereleaseKeywords.join('|')})(?:[0-9]|$|[.\-_]).*/
+
     // Development and build directories
     devDir = buildProps.getProperty('dev.dir')
     buildDirName = buildProps.getProperty('build.dir')
@@ -755,6 +765,11 @@ def getPrereleaseTags(String releasesUrl) {
     return prereleaseTags
 }
 
+// Returns true when a version string denotes a pre-release build (alpha/beta/rc/etc.)
+def isPrereleaseVersion(String version) {
+    return version ==~ prereleasePattern
+}
+
 // Task: updateVersions
 task updateVersions {
     group = 'build setup'
@@ -853,12 +868,22 @@ task updateVersions {
                         def releaseProps = new Properties()
                         propsFile.withInputStream { releaseProps.load(it) }
                         
-                        def prereleaseTags = getPrereleaseTags("https://github.com/Bearsampp/${repoName}/releases")
+                        def prereleaseTags = [] as Set
+                        try {
+                            prereleaseTags = getPrereleaseTags("https://github.com/Bearsampp/${repoName}/releases")
+                        } catch (Exception ex) {
+                            println "  [WARN] Could not fetch GitHub prerelease flags (${ex.message}); relying on name/tag filters"
+                        }
                         
                         def versions = releaseProps.stringPropertyNames().toList()
                         if (!versions.isEmpty()) {
-                            // Filter out date-like versions, versions with year suffixes, and prereleases
+                            // Filter out pre-release (alpha/beta/rc/etc.), date-like, and year-suffixed versions
                             def validVersions = versions.findAll { version ->
+                                // Exclude versions whose name denotes a pre-release build
+                                if (isPrereleaseVersion(version)) {
+                                    return false
+                                }
+                                
                                 def parts = version.split('[.-]')
                                 
                                 // Check if first part looks like a year (exclude date-like versions)
@@ -908,7 +933,7 @@ task updateVersions {
                                 updated = "${propName} = ${latest}"
                                 println "  [OK] Updated to ${latest}"
                             } else {
-                                println "  [SKIP] No valid versions found (filtered out date-like/prerelease versions)"
+                                println "  [SKIP] No valid versions found (filtered out prerelease/name/date-like versions)"
                             }
                         }
                     } catch (Exception e) {
