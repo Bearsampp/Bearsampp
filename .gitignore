@@ -1,6 +1,7 @@
 # Jetbrains
 /*.iml
 /.idea
+/.junie
 
 # Bearsampp
 /tmp/*
