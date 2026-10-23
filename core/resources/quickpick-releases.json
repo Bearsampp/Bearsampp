@@ -2590,7 +2590,7 @@
       {
         "version": "7.6.8",
         "url": "https://github.com/Bearsampp/module-powershell/releases/download/2026.10.23/bearsampp-powershell-7.6.8-2026.10.23.7z",
-        "prerelease": true
+        "prerelease": false
       },
       {
         "version": "7.6.6",
