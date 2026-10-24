@@ -46,7 +46,22 @@ jobs:
           existing = p("existing.md").read_text(encoding="utf-8") if p("existing.md").exists() else ""
           existing = re.sub(r"<!-- changelog-start -->.*?<!-- changelog-end -->\n?", "", existing, flags=re.S).strip()
           lines = p("generated.md").read_text(encoding="utf-8").splitlines()
-          kept = [l for l in lines if not re.match(r"^\*\s*Update\s+(?:downloads|stats)\s+(?:tracking\s+)?snapshot", l)]
+          def is_stats_noise(line):
+              if not line.startswith("*"):
+                  return False
+              text = line.casefold()
+              # The stats workflow publishes generated JSON and chart files
+              # with slightly different commit titles across synced repos.
+              # Suppress those maintenance commits from release notes.
+              return (
+                  "downloads snapshot" in text
+                  or "stats snapshot" in text
+                  or "downloads tracking" in text
+                  or "stats tracking" in text
+                  or "stats/downloads.json" in text
+              )
+
+          kept = [l for l in lines if not is_stats_noise(l)]
           out = []
           seen_entries = set()
           i = 0
