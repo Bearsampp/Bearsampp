@@ -47,18 +47,19 @@ jobs:
           existing = re.sub(r"<!-- changelog-start -->.*?<!-- changelog-end -->\n?", "", existing, flags=re.S).strip()
           lines = p("generated.md").read_text(encoding="utf-8").splitlines()
           def is_stats_noise(line):
-              if not line.startswith("*"):
+              # GitHub's generated notes commonly use `*`, but can return
+              # `-` bullets depending on the repository's notes format.
+              if not re.match(r"^\s*[-*]\s+", line):
                   return False
               text = line.casefold()
               # The stats workflow publishes generated JSON and chart files
               # with slightly different commit titles across synced repos.
               # Suppress those maintenance commits from release notes.
               return (
-                  "downloads snapshot" in text
-                  or "stats snapshot" in text
-                  or "downloads tracking" in text
-                  or "stats tracking" in text
-                  or "stats/downloads.json" in text
+                  "stats" in text
+                  and any(token in text for token in ("json", "snapshot", "tracking", "chart"))
+                  or "downloads" in text
+                  and any(token in text for token in ("json", "snapshot", "tracking", "chart"))
               )
 
           kept = [l for l in lines if not is_stats_noise(l)]
@@ -80,7 +81,7 @@ jobs:
               # GitHub's generated notes can repeat an entry when multiple
               # merged PRs resolve to the same underlying change. Keep the
               # first copy so a single run produces a clean changelog block.
-              if line.startswith("* "):
+              if re.match(r"^\s*[-*]\s+", line):
                   key = re.sub(r"\s+", " ", line).strip().casefold()
                   if key in seen_entries:
                       i += 1
