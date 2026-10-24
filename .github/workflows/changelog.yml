@@ -48,6 +48,7 @@ jobs:
           lines = p("generated.md").read_text(encoding="utf-8").splitlines()
           kept = [l for l in lines if not re.match(r"^\*\s*Update\s+(?:downloads|stats)\s+(?:tracking\s+)?snapshot", l)]
           out = []
+          seen_entries = set()
           i = 0
           while i < len(kept):
               line = kept[i]
@@ -61,6 +62,15 @@ jobs:
               if line.strip() == "" and out and out[-1].strip() == "":
                   i += 1
                   continue
+              # GitHub's generated notes can repeat an entry when multiple
+              # merged PRs resolve to the same underlying change. Keep the
+              # first copy so a single run produces a clean changelog block.
+              if line.startswith("* "):
+                  key = re.sub(r"\s+", " ", line).strip().casefold()
+                  if key in seen_entries:
+                      i += 1
+                      continue
+                  seen_entries.add(key)
               out.append(line)
               i += 1
           if not any(l.startswith("* ") for l in out):
