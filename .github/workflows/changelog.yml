@@ -52,14 +52,14 @@ jobs:
               if not re.match(r"^\s*[-*]\s+", line):
                   return False
               text = line.casefold()
-              # The stats workflow publishes generated JSON and chart files
-              # with slightly different commit titles across synced repos.
-              # Suppress those maintenance commits from release notes.
+              # These are automated PRs that refresh the combined releases
+              # index. They are operational data updates, not release changes.
               return (
-                  "stats" in text
-                  and any(token in text for token in ("json", "snapshot", "tracking", "chart"))
-                  or "downloads" in text
-                  and any(token in text for token in ("json", "snapshot", "tracking", "chart"))
+                  bool(re.search(r"update combined releases? json", text))
+                  or (
+                      ("stats" in text or "downloads" in text)
+                      and any(token in text for token in ("json", "snapshot", "tracking", "chart"))
+                  )
               )
 
           kept = [l for l in lines if not is_stats_noise(l)]
@@ -89,7 +89,7 @@ jobs:
                   seen_entries.add(key)
               out.append(line)
               i += 1
-          if not any(l.startswith("* ") for l in out):
+          if not any(re.match(r"^\s*[-*]\s+", l) for l in out):
               print("Nothing to add; leaving release body unchanged.")
               raise SystemExit(0)
           generated = "\n".join(out).strip()
