@@ -1728,6 +1728,11 @@
         "prerelease": false
       },
       {
+        "version": "8.5.13",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2026.11.24/bearsampp-php-8.5.13-2026.11.24.7z",
+        "prerelease": true
+      },
+      {
         "version": "8.5.12",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2026.10.22/bearsampp-php-8.5.12-2026.10.22.7z",
         "prerelease": false
@@ -1776,6 +1781,11 @@
         "version": "8.5.0",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.12.7/bearsampp-php-8.5.0-2025.12.07.7z",
         "prerelease": false
+      },
+      {
+        "version": "8.4.28",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2026.11.24/bearsampp-php-8.4.28-2026.11.24.7z",
+        "prerelease": true
       },
       {
         "version": "8.4.27",
@@ -1871,6 +1881,11 @@
         "version": "8.4.1",
         "url": "https://github.com/Bearsampp/module-php/releases/download/2025.2.11/bearsampp-php-8.4.1-2025.2.11.7z",
         "prerelease": false
+      },
+      {
+        "version": "8.3.37",
+        "url": "https://github.com/Bearsampp/module-php/releases/download/2026.11.24/bearsampp-php-8.3.37-2026.11.24.7z",
+        "prerelease": true
       },
       {
         "version": "8.3.36",
